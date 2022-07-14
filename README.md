@@ -44,8 +44,8 @@ Code contributions should be sent via Github as pull requests, from feature bran
 
 Credits
 -------
-Portions Copyright (c) 2014-2018 The Monero Project.
-Portions Copyright (c) 2011 Whisper Systems
-Portions Copyright (c) 2013-2017 Open Whisper Systems
-Portions Copyright (c) 2018-2021 Session 
+- Portions Copyright (c) 2014-2018 The Monero Project
+- Portions Copyright (c) 2011 Whisper Systems
+- Portions Copyright (c) 2013-2017 Open Whisper Systems
+- Portions Copyright (c) 2018-2021 Session 
 

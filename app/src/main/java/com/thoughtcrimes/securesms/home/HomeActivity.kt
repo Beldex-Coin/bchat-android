@@ -96,9 +96,10 @@ import android.widget.Button
 import android.widget.TextView
 
 import androidx.core.content.ContextCompat
-
-
-
+import androidx.recyclerview.widget.RecyclerView
+import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
+import io.beldex.bchat.databinding.ViewMessageRequestBannerBinding
+import java.util.*
 
 
 @AndroidEntryPoint
@@ -129,8 +130,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     private val publicKey: String
         get() = TextSecurePreferences.getLocalNumber(this)!!
 
+    /*Hales63*/
     private val homeAdapter: HomeAdapter by lazy {
-        HomeAdapter(context = this, cursor = threadDb.conversationList, listener = this)
+        HomeAdapter(context = this, cursor = threadDb.approvedConversationList, listener = this)
     }
 
     private val globalSearchAdapter = GlobalSearchAdapter { model ->
@@ -331,7 +333,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         } else {
             binding.seedReminderView.isVisible = false
         }*/
-
+        /*Hales63*/
+        setupMessageRequestsBanner()
         setupHeaderImage()
         // Set up recycler view
         binding.globalSearchInputLayout.listener = this
@@ -584,12 +587,37 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         binding.newConversationButtonSet.isVisible = !isShown
     }
 
+    /*Hales63*/
+    private fun setupMessageRequestsBanner() {
+        val messageRequestCount = threadDb.unapprovedConversationCount
+        // Set up message requests
+        if (messageRequestCount > 0 && !textSecurePreferences.hasHiddenMessageRequests()) {
+            with(ViewMessageRequestBannerBinding.inflate(layoutInflater)) {
+                unreadCountTextView.text = messageRequestCount.toString()
+                timestampTextView.text = DateUtils.getDisplayFormattedTimeSpanString(
+                    this@HomeActivity,
+                    Locale.getDefault(),
+                    threadDb.latestUnapprovedConversationTimestamp
+                )
+                root.setOnClickListener { showMessageRequests() }
+                root.setOnLongClickListener { hideMessageRequests(); true }
+                root.layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
+                homeAdapter.headerView = root
+                homeAdapter.notifyItemChanged(0)
+            }
+        } else {
+            homeAdapter.headerView = null
+        }
+    }
+
+
     override fun onCreateLoader(id: Int, bundle: Bundle?): Loader<Cursor> {
         return HomeLoader(this@HomeActivity)
     }
 
     override fun onLoadFinished(loader: Loader<Cursor>, cursor: Cursor?) {
         homeAdapter.changeCursor(cursor)
+        setupMessageRequestsBanner()
         updateEmptyState()
     }
 
@@ -1002,6 +1030,25 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     override fun joinOpenGroup() {
         val intent = Intent(this, JoinPublicChatNewActivity::class.java)
         show(intent)
+    }
+    /*Hales63*/
+    private fun showMessageRequests() {
+        val intent = Intent(this, MessageRequestsActivity::class.java)
+        push(intent)
+    }
+
+    private fun hideMessageRequests() {
+        AlertDialog.Builder(this)
+            .setMessage("Hide message requests?")
+            .setPositiveButton(R.string.yes) { _, _ ->
+                textSecurePreferences.setHasHiddenMessageRequests()
+                setupMessageRequestsBanner()
+                LoaderManager.getInstance(this).restartLoader(0, null, this)
+            }
+            .setNegativeButton(R.string.no) { _, _ ->
+                // Do nothing
+            }
+            .create().show()
     }
     // endregion
 }

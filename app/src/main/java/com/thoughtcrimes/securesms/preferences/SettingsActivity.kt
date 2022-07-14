@@ -36,6 +36,7 @@ import com.thoughtcrimes.securesms.avatar.AvatarSelection
 import com.thoughtcrimes.securesms.changelog.ChangeLogActivity
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
 import com.thoughtcrimes.securesms.home.PathActivity
+import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
 import com.thoughtcrimes.securesms.mms.GlideApp
 import com.thoughtcrimes.securesms.util.*
 import java.io.File
@@ -116,6 +117,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             pathContainer.disableClipping()
             privacyButton.setOnClickListener { showPrivacySettings() }
             notificationsButton.setOnClickListener { showNotificationSettings() }
+            messageRequestsButton.setOnClickListener { showMessageRequests() }
             chatsButton.setOnClickListener { showChatSettings() }
             sendInvitationButton.setOnClickListener { sendInvitation() }
             faqButton.setOnClickListener { showFAQ() }
@@ -436,6 +438,12 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
 
     private fun showNotificationSettings() {
         val intent = Intent(this, NotificationSettingsActivity::class.java)
+        push(intent)
+    }
+
+    //New Line
+    private fun showMessageRequests() {
+        val intent = Intent(this, MessageRequestsActivity::class.java)
         push(intent)
     }
 

@@ -764,6 +764,7 @@
     <string name="activity_settings_clear_all_data_button_title" translatable="false">Clear Data</string>
     <string name="activity_settings_clear_all_data_and_network_button_title" translatable="false">Clear Data Including Network</string>
     <string name="activity_settings_help_translate_bchat" translatable="false">Help us Translate BChat</string>
+    <string name="activity_settings_message_requests_button_title" translatable="false">Message Requests</string>
 
     <string name="activity_notification_settings_title" translatable="false">Notifications</string>
     <string name="activity_notification_settings_style_section_title" translatable="false">Notification Style</string>
@@ -1004,5 +1005,18 @@
     <string name="bchat_id_clipboard" translatable="false">Your BChat ID is copied to clipboard</string>
     <string name="beldex_address_clipboard" translatable="false">Your Beldex Address is copied to clipboard</string>
     <string name="copy_the_recovery_seed_to_continue" translatable="false">Copy the recovery seed to continue</string>
+    <string name="message_requests_notification" translatable="false">You have a new message request</string>
+    <string name="activity_message_requests_title" translatable="false">Message Requests</string>
+    <string name="message_requests_send_notice" translatable="false">Sending a message to this user will automatically accept their message request and reveal your BChat ID.</string>
+    <string name="accept" translatable="false">Accept</string>
+    <string name="decline" translatable="false">Decline</string>
+    <string name="message_requests_clear_all" translatable="false">Clear All</string>
+    <string name="message_requests_delete_message" translatable="false">Are you sure you want to delete this message request?</string>
+    <string name="message_requests_deleted" translatable="false">Message request deleted</string>
+    <string name="message_requests_clear_all_message" translatable="false">Are you sure you want to clear all message requests?</string>
+    <string name="message_requests_cleared" translatable="false">Message requests deleted</string>
+    <string name="message_requests_accepted" translatable="false">Your message request has been accepted.</string>
+    <string name="message_requests_pending" translatable="false">Your message request is currently pending.</string>
+    <string name="message_request_empty_state_message" translatable="false">No pending message requests</string>
 
 </resources>

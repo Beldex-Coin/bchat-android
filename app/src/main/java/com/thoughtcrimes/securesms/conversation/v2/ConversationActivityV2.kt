@@ -110,6 +110,8 @@ import com.thoughtcrimes.securesms.mediasend.Media
 import com.thoughtcrimes.securesms.mediasend.MediaSendActivity
 import com.thoughtcrimes.securesms.mms.*
 import com.thoughtcrimes.securesms.permissions.Permissions
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import nl.komponents.kovenant.ui.successUi
 
 
@@ -120,7 +122,7 @@ import nl.komponents.kovenant.ui.successUi
 class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDelegate,
     InputBarRecordingViewDelegate, AttachmentManager.AttachmentListener, ActivityDispatcher,
         ConversationActionModeCallbackDelegate, VisibleMessageContentViewDelegate, RecipientModifiedListener,
-        SearchBottomBar.EventListener, VoiceMessageViewDelegate {
+        SearchBottomBar.EventListener, VoiceMessageViewDelegate, LoaderManager.LoaderCallbacks<Cursor> {
 
 
     private lateinit var binding: ActivityConversationV2Binding
@@ -210,8 +212,9 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
         MnemonicCodec(loadFileContents).encode(hexEncodedSeed!!, MnemonicCodec.Language.Configuration.english)
     }
 
+    /*Hales63*/
     private val adapter by lazy {
-        val cursor = mmsSmsDb.getConversation(viewModel.threadId)
+        val cursor = mmsSmsDb.getConversation(viewModel.threadId, !isIncomingMessageRequestThread())
         val adapter = ConversationAdapter(
             this,
             cursor,
@@ -307,6 +310,8 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
         setUpSearchResultObserver()
         scrollToFirstUnreadMessageIfNeeded()
         showOrHideInputIfNeeded()
+        /*Hales63*/
+        setUpMessageRequestsBar()
         if (viewModel.recipient.isOpenGroupRecipient) {
             val openGroup = beldexThreadDb.getOpenGroupChat(viewModel.threadId)
             if (openGroup == null) {
@@ -346,32 +351,33 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
         baseDialog.show(supportFragmentManager, tag)
     }
 
+    override fun onCreateLoader(id: Int, bundle: Bundle?): Loader<Cursor> {
+        return ConversationLoader(viewModel.threadId, !isIncomingMessageRequestThread(), this@ConversationActivityV2)
+    }
+
+    override fun onLoadFinished(loader: Loader<Cursor>, cursor: Cursor?) {
+        adapter.changeCursor(cursor)
+        if (cursor != null) {
+            val messageTimestamp = messageToScrollTimestamp.getAndSet(-1)
+            val author = messageToScrollAuthor.getAndSet(null)
+            if (author != null && messageTimestamp >= 0) {
+                jumpToMessage(author, messageTimestamp, null)
+            }
+        }
+    }
+
+    override fun onLoaderReset(cursor: Loader<Cursor>) {
+        adapter.changeCursor(null)
+    }
+
+
+    /*Hales63*/
     private fun setUpRecyclerView() {
         binding.conversationRecyclerView.adapter = adapter
-        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true)
+        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, !isIncomingMessageRequestThread())
         binding.conversationRecyclerView.layoutManager = layoutManager
         // Workaround for the fact that CursorRecyclerViewAdapter doesn't auto-update automatically (even though it says it will)
-        LoaderManager.getInstance(this).restartLoader(0, null, object : LoaderManager.LoaderCallbacks<Cursor> {
-
-            override fun onCreateLoader(id: Int, bundle: Bundle?): Loader<Cursor> {
-                return ConversationLoader(viewModel.threadId, this@ConversationActivityV2)
-            }
-
-            override fun onLoadFinished(loader: Loader<Cursor>, cursor: Cursor?) {
-                adapter.changeCursor(cursor)
-                if (cursor != null) {
-                    val messageTimestamp = messageToScrollTimestamp.getAndSet(-1)
-                    val author = messageToScrollAuthor.getAndSet(null)
-                    if (author != null && messageTimestamp >= 0) {
-                        jumpToMessage(author, messageTimestamp, null)
-                    }
-                }
-            }
-
-            override fun onLoaderReset(cursor: Loader<Cursor>) {
-                adapter.changeCursor(null)
-            }
-        })
+        LoaderManager.getInstance(this).restartLoader(0, null, this)
         binding.conversationRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -382,7 +388,7 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
 
     private fun setUpToolBar() {
         //test
-        val actionBar = supportActionBar!!
+        val actionBar = supportActionBar ?: return
         actionBarBinding = ActivityConversationV2ActionBarBinding.inflate(layoutInflater)
         actionBar.title = ""
         actionBar.customView = actionBarBinding.root
@@ -559,6 +565,9 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
                     viewModel.messageShown(it.id)
                 }
                 addOpenGroupGuidelinesIfNeeded(uiState.isBeldexHostedOpenGroup)
+                if (uiState.isMessageRequestAccepted == true) {
+                    binding?.messageRequestBar?.visibility = View.GONE
+                }
             }
         }
     }
@@ -569,12 +578,65 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
         if (lastSeenItemPosition <= 3) { return }
         binding.conversationRecyclerView.scrollToPosition(lastSeenItemPosition)
     }
-
+    /*Hales63*/
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        ConversationMenuHelper.onPrepareOptionsMenu(menu, menuInflater, viewModel.recipient, viewModel.threadId, this) { onOptionsItemSelected(it) }
+        //New Line
+        if (!isMessageRequestThread()) {
+            ConversationMenuHelper.onPrepareOptionsMenu(menu, menuInflater, viewModel.recipient, viewModel.threadId, this) { onOptionsItemSelected(it) }
+        }
         super.onPrepareOptionsMenu(menu)
         return true
     }
+    /*Hales63*/
+    private fun setUpMessageRequestsBar() {
+        binding?.inputBar?.showMediaControls = !isOutgoingMessageRequestThread()
+        binding?.messageRequestBar?.isVisible = isIncomingMessageRequestThread()
+        binding?.acceptMessageRequestButton?.setOnClickListener {
+            acceptMessageRequest()
+        }
+        binding?.declineMessageRequestButton?.setOnClickListener {
+            viewModel.declineMessageRequest()
+            lifecycleScope.launch(Dispatchers.IO) {
+                ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(this@ConversationActivityV2)
+            }
+            finish()
+        }
+    }
+
+    private fun acceptMessageRequest() {
+        binding?.messageRequestBar?.isVisible = false
+        binding?.conversationRecyclerView?.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true)
+        //New Line 1
+        adapter.notifyDataSetChanged()
+        viewModel.acceptMessageRequest()
+        //New Line 1
+        LoaderManager.getInstance(this).restartLoader(0, null, this)
+        lifecycleScope.launch(Dispatchers.IO) {
+            ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(this@ConversationActivityV2)
+        }
+    }
+
+    private fun isMessageRequestThread(): Boolean {
+        /*val hasSent = threadDb.getLastSeenAndHasSent(viewModel.threadId).second()
+        return (!viewModel.recipient.isGroupRecipient && !hasSent) ||
+                (!viewModel.recipient.isGroupRecipient && hasSent && !(viewModel.recipient.hasApprovedMe() || viewModel.hasReceived()))*/
+        //New Line v32
+        return !viewModel.recipient.isGroupRecipient && !viewModel.recipient.isApproved
+    }
+
+    private fun isOutgoingMessageRequestThread(): Boolean {
+        return !viewModel.recipient.isGroupRecipient &&
+                !(viewModel.recipient.hasApprovedMe() || viewModel.hasReceived())
+    }
+
+    private fun isIncomingMessageRequestThread(): Boolean {
+        return !viewModel.recipient.isGroupRecipient &&
+                !viewModel.recipient.isApproved &&
+                !threadDb.getLastSeenAndHasSent(viewModel.threadId).second() &&
+                threadDb.getMessageCount(viewModel.threadId) > 0
+    }
+
 
     override fun onDestroy() {
         viewModel.saveDraft(binding.inputBar.text.trim())
@@ -633,9 +695,14 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
             if (viewModel.recipient.isContactRecipient) {
                 binding.blockedBanner.isVisible = viewModel.recipient.isBlocked
             }
+            //New Line v32
+            setUpMessageRequestsBar()
+            invalidateOptionsMenu()
             updateSubtitle()
             showOrHideInputIfNeeded()
-            actionBarBinding.profilePictureView.update(recipient)
+            actionBarBinding?.profilePictureView.update(recipient)
+            //New Line v32
+            actionBarBinding?.conversationTitleView?.text = recipient.toShortString()
         }
     }
 
@@ -1014,8 +1081,12 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
         val viewHolder = binding.conversationRecyclerView.findViewHolderForAdapterPosition(indexInAdapter) as? ConversationAdapter.VisibleMessageViewHolder
         viewHolder?.view?.playVoiceMessage()
     }
-
+    /*Hales63*/
     override fun sendMessage() {
+        //New Line v32
+       /* if (isIncomingMessageRequestThread()) {
+            acceptMessageRequest()
+        }*/
         if (viewModel.recipient.isContactRecipient && viewModel.recipient.isBlocked) {
             BlockedDialog(viewModel.recipient).show(supportFragmentManager, "Blocked Dialog")
             return
@@ -1028,6 +1099,16 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
             }else{
                 sendTextOnlyMessage()
             }
+        }
+    }
+
+    //New Line v32
+    private fun processMessageRequestApproval() {
+        if (isIncomingMessageRequestThread()) {
+            acceptMessageRequest()
+        } else if (viewModel.recipient?.isApproved == false) {
+            // edge case for new outgoing thread on new recipient without sending approval messages
+            viewModel.setRecipientApproved()
         }
     }
 
@@ -1049,6 +1130,9 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
     }
 
     private fun sendTextOnlyMessage(hasPermissionToSendSeed: Boolean = false) {
+        //New Line v32
+        processMessageRequestApproval()
+
         val text = getMessageBody()
         Log.d("Beldex","bchat id validation -- get bchat id")
         val userPublicKey = textSecurePreferences.getLocalNumber()
@@ -1086,6 +1170,9 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
         ApplicationContext.getInstance(this).typingStatusSender.onTypingStopped(viewModel.threadId)
     }
     private fun sendAttachments(attachments: List<Attachment>, body: String?, quotedMessage: MessageRecord? = null, linkPreview: LinkPreview? = null) {
+        //New Line v32
+        processMessageRequestApproval()
+
         // Create the message
         val message = VisibleMessage()
         message.sentTimestamp = System.currentTimeMillis()

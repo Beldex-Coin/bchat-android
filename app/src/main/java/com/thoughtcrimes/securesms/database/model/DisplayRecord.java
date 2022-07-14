@@ -118,8 +118,12 @@ public abstract class DisplayRecord {
     return SmsDatabase.Types.isMissedCall(type);
   }
   public boolean isDeleted() { return  MmsSmsColumns.Types.isDeletedMessage(type); }
+  /*Hales63*/
+  public boolean isMessageRequestResponse() { return  MmsSmsColumns.Types.isMessageRequestResponse(type); }
+
 
   public boolean isControlMessage() {
-    return isGroupUpdateMessage() || isExpirationTimerUpdate() || isDataExtractionNotification();
+    return isGroupUpdateMessage() || isExpirationTimerUpdate() || isDataExtractionNotification()
+            || isMessageRequestResponse();
   }
 }

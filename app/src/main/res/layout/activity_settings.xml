@@ -654,6 +654,23 @@
 
                 <TextView
                     android:fontFamily="@font/poppins_medium"
+                    android:id="@+id/messageRequestsButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/setting_button_height"
+                    android:background="@drawable/setting_button_background"
+                    android:gravity="center"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/medium_font_size"
+                    android:textStyle="bold"
+                    android:text="@string/activity_settings_message_requests_button_title" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/drawer_divider_color" />
+
+                <TextView
+                    android:fontFamily="@font/poppins_medium"
                     android:id="@+id/chatsButton"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/setting_button_height"

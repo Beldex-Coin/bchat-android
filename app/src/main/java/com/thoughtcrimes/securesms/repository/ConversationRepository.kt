@@ -1,6 +1,8 @@
 package com.thoughtcrimes.securesms.repository
 
 import com.beldex.libbchat.database.MessageDataProvider
+import com.beldex.libbchat.messaging.messages.Destination
+import com.beldex.libbchat.messaging.messages.control.MessageRequestResponse
 import com.beldex.libbchat.messaging.messages.control.UnsendRequest
 import com.beldex.libbchat.messaging.messages.signal.OutgoingTextMessage
 import com.beldex.libbchat.messaging.messages.visible.OpenGroupInvitation
@@ -16,6 +18,7 @@ import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.toHexString
 import com.thoughtcrimes.securesms.database.*
 import com.thoughtcrimes.securesms.database.model.MessageRecord
+import com.thoughtcrimes.securesms.database.model.ThreadRecord
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -29,6 +32,8 @@ interface ConversationRepository {
     fun inviteContacts(threadId: Long, contacts: List<Recipient>)
     fun unblock(recipient: Recipient)
     fun deleteLocally(recipient: Recipient, message: MessageRecord)
+    /*Hales63*/
+    fun setApproved(recipient: Recipient, isApproved: Boolean)
 
     suspend fun deleteForEveryone(
         threadId: Long,
@@ -46,6 +51,17 @@ interface ConversationRepository {
     suspend fun banUser(threadId: Long, recipient: Recipient): ResultOf<Unit>
 
     suspend fun banAndDeleteAll(threadId: Long, recipient: Recipient): ResultOf<Unit>
+
+    /*Hales63*/
+    suspend fun deleteMessageRequest(thread: ThreadRecord): ResultOf<Unit>
+
+    suspend fun clearAllMessageRequests(): ResultOf<Unit>
+
+    suspend fun acceptMessageRequest(threadId: Long, recipient: Recipient): ResultOf<Unit>
+
+    fun declineMessageRequest(threadId: Long, recipient: Recipient)
+
+    fun hasReceived(threadId: Long): Boolean
 }
 
 class DefaultConversationRepository @Inject constructor(
@@ -56,8 +72,10 @@ class DefaultConversationRepository @Inject constructor(
     private val beldexThreadDb: BeldexThreadDatabase,
     private val smsDb: SmsDatabase,
     private val mmsDb: MmsDatabase,
+    private val mmsSmsDb: MmsSmsDatabase,
     private val recipientDb: RecipientDatabase,
-    private val beldexMessageDb: BeldexMessageDatabase
+    private val beldexMessageDb: BeldexMessageDatabase,
+    private val bchatjobdatabase: BchatJobDatabase
 ) : ConversationRepository {
 
     override fun isBeldexHostedOpenGroup(threadId: Long): Boolean {
@@ -115,6 +133,10 @@ class DefaultConversationRepository @Inject constructor(
         }
         messageDataProvider.deleteMessage(message.id, !message.isMms)
     }
+    override fun setApproved(recipient: Recipient, isApproved: Boolean) {
+        recipientDb.setApproved(recipient, isApproved)
+    }
+
 
     override suspend fun deleteForEveryone(
         threadId: Long,
@@ -221,5 +243,48 @@ class DefaultConversationRepository @Inject constructor(
                     continuation.resumeWithException(error)
                 }
         }
+
+    override suspend fun deleteMessageRequest(thread: ThreadRecord): ResultOf<Unit> {
+        bchatjobdatabase.cancelPendingMessageSendJobs(thread.threadId)
+        recipientDb.setBlocked(thread.recipient, true)
+        return ResultOf.Success(Unit)
+    }
+
+    override suspend fun clearAllMessageRequests(): ResultOf<Unit> {
+        threadDb.readerFor(threadDb.unapprovedConversationList).use { reader ->
+            while (reader.next != null) {
+                deleteMessageRequest(reader.current)
+            }
+        }
+        return ResultOf.Success(Unit)
+    }
+
+    override suspend fun acceptMessageRequest(threadId: Long, recipient: Recipient): ResultOf<Unit> = suspendCoroutine { continuation ->
+        recipientDb.setApproved(recipient, true)
+        val message = MessageRequestResponse(true)
+        MessageSender.send(message, Destination.from(recipient.address))
+            .success {
+                threadDb.setHasSent(threadId, true)
+                continuation.resume(ResultOf.Success(Unit))
+            }.fail { error ->
+                continuation.resumeWithException(error)
+            }
+    }
+
+    override fun declineMessageRequest(threadId: Long, recipient: Recipient) {
+        recipientDb.setBlocked(recipient, true)
+    }
+
+    override fun hasReceived(threadId: Long): Boolean {
+        val cursor = mmsSmsDb.getConversation(threadId, true)
+        mmsSmsDb.readerFor(cursor).use { reader ->
+            while (reader.next != null) {
+                if (!reader.current.isOutgoing) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
 
 }

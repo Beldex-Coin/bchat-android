@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.beldex.libbchat.utilities.recipients.Recipient
+import com.beldex.libsignal.utilities.Log
 import com.thoughtcrimes.securesms.database.model.MessageRecord
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -21,15 +22,29 @@ class ConversationViewModel(
 
     private val _uiState = MutableStateFlow(ConversationUiState())
     val uiState: StateFlow<ConversationUiState> = _uiState
-
-    val recipient: Recipient by lazy {
-        repository.getRecipientForThreadId(threadId)
-    }
+    /*Hales63*/
+    val recipient: Recipient
+        get() = repository.getRecipientForThreadId(threadId)
 
     init {
         _uiState.update {
             it.copy(isBeldexHostedOpenGroup = repository.isBeldexHostedOpenGroup(threadId))
         }
+    }
+    fun acceptMessageRequest() = viewModelScope.launch {
+        repository.acceptMessageRequest(threadId, recipient)
+            .onSuccess {
+                _uiState.update {
+                    it.copy(isMessageRequestAccepted = true)
+                }
+            }
+            .onFailure {
+                showMessage("Couldn't accept message request due to error: $it")
+            }
+    }
+
+    fun declineMessageRequest() {
+        repository.declineMessageRequest(threadId, recipient)
     }
 
     fun saveDraft(text: String) {
@@ -52,6 +67,11 @@ class ConversationViewModel(
 
     fun deleteLocally(message: MessageRecord) {
         repository.deleteLocally(recipient, message)
+    }
+
+    //New Line v32
+    fun setRecipientApproved() {
+        repository.setApproved(recipient, true)
     }
 
     fun deleteForEveryone(message: MessageRecord) = viewModelScope.launch {
@@ -104,6 +124,11 @@ class ConversationViewModel(
             currentUiState.copy(uiMessages = messages)
         }
     }
+    /*Hales63*/
+    fun hasReceived(): Boolean {
+        return repository.hasReceived(threadId)
+    }
+
 
     @dagger.assisted.AssistedFactory
     interface AssistedFactory {
@@ -123,8 +148,9 @@ class ConversationViewModel(
 }
 
 data class UiMessage(val id: Long, val message: String)
-
+/*Hales63*/
 data class ConversationUiState(
     val isBeldexHostedOpenGroup: Boolean = false,
-    val uiMessages: List<UiMessage> = emptyList()
+    val uiMessages: List<UiMessage> = emptyList(),
+    val isMessageRequestAccepted: Boolean? = null
 )

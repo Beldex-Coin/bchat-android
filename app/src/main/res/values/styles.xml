@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Beldex -->
+    <style name="Widget.Bchat.ActionBar" parent="Widget.AppCompat.Light.ActionBar.Solid">
+        <item name="android:background">?colorPrimary</item>
+        <item name="elevation">1dp</item>
+        <item name="titleTextStyle">@style/TextAppearance.Bchat.DarkActionBar.TitleTextStyle</item>
+    </style>
+
+    <style name="Widget.Bchat.ActionBar.Flat">
+        <item name="android:elevation">0dp</item>
+        <item name="elevation">0dp</item>
+    </style>
+
+    <style name="TextAppearance.Bchat.DarkActionBar.TitleTextStyle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:textSize">@dimen/very_large_font_size</item>
+    </style>
+
+    <style name="Widget.Bchat.SearchView" parent="@style/Widget.AppCompat.SearchView">
+        <item name="closeIcon">@drawable/ic_clear</item>
+    </style>
+
+    <style name="ThemeOverlay.Bchat.AlertDialog" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.Bchat.AlertDialog.NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.Bchat.AlertDialog.PositiveButtonStyle</item>
+    </style>
+
+
+
+    <style name="Widget.Bchat.BottomSheetDialog" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/default_bottom_sheet_background</item>
+    </style>
+
+    <style name="Widget.Bchat.AlertDialog.NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/accent</item>
+    </style>
+
+    <style name="Widget.Bchat.AlertDialog.PositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/accent</item>
+    </style>
+
+    <style name="Widget.Bchat.AppBarLayout" parent="@style/Widget.Design.AppBarLayout">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+
+    </style>
+
+    <style name="Widget.Bchat.TabBar" parent="Widget.AppCompat.ActionBar.TabBar">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="elevation">1dp</item>
+    </style>
+
+    <style name="Widget.Bchat.TabLayout" parent="Widget.Design.TabLayout">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="elevation">1dp</item>
+        <item name="tabIndicatorColor">?colorAccent</item>
+        <item name="tabSelectedTextColor">@color/text</item>
+        <item name="tabTextColor">#8D8D8D</item>
+        <item name="tabIndicatorFullWidth">false</item>
+        <item name="tabIndicatorHeight">2dp</item>
+        <item name="tabRippleColor">@color/cell_selected</item>
+        <item name="tabTextAppearance">@style/TextAppearance.Bchat.Tab</item>
+    </style>
+
+    <style name="TextAppearance.Bchat.Tab" parent="TextAppearance.Design.Tab">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:textSize">@dimen/medium_font_size</item>
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <!--  TODO These button styles require proper background selectors for up/down visual state.  -->
+    <style name="Widget.Bchat.Button.Common" parent="">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/medium_font_size</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <!-- Helps to get rid of nasty elevation. We want a flat style here. -->
+        <!-- https://stackoverflow.com/a/31003693/3802890 -->
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
+    <style name="Widget.Bchat.Button.Common.ProminentFilled">
+        <item name="android:fontFamily">@font/poppins_semi_bold</item>
+        <item name="android:background">@drawable/prominent_filled_button_medium_background</item>
+        <item name="android:textColor">@color/text</item>
+        <item name="android:drawableTint" tools:ignore="NewApi">?android:textColorPrimary</item>
+    </style>
+    <!--New Line -->
+    <style name="Widget.Bchat.Button.Common.ProminentFilledState">
+        <item name="android:background">@drawable/button_state</item>
+        <item name="android:textColor">@color/text</item>
+        <item name="android:drawableTint" tools:ignore="NewApi">?android:textColorPrimary</item>
+    </style>
+    <style name="Widget.Bchat.Button.Common.ProminentFilled_ClearData">
+        <item name="android:fontFamily">@font/poppins_semi_bold</item>
+        <item name="android:background">@drawable/prominent_filled_button_medium_cleardata_background</item>
+        <item name="android:textColor">@color/text</item>
+        <item name="android:drawableTint" tools:ignore="NewApi">?android:textColorPrimary</item>
+    </style>
+
+    <style name="Widget.Bchat.Button.Common.Copy">
+        <item name="android:fontFamily">@font/poppins_semi_bold</item>
+        <item name="android:background">@drawable/copy_button_background</item>
+        <item name="android:textColor">@color/text_white</item>
+        <item name="android:drawableTint" tools:ignore="NewApi">?android:textColorPrimary</item>
+    </style>
+
+    <style name="clearButton">
+        <item name="android:fontFamily">@font/poppins_semi_bold</item>
+        <item name="android:background">@drawable/clear_button_medium_background</item>
+        <item name="android:textColor">@color/red</item>
+        <item name="android:drawableTint" tools:ignore="NewApi">?android:textColorPrimary</item>
+    </style>
+
+    <style name="Widget.Bchat.Button.Common.ProminentOutline">
+        <item name="android:fontFamily">@font/poppins_semi_bold</item>
+        <item name="android:background">@drawable/prominent_outline_button_medium_background</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:drawableTint" tools:ignore="NewApi">@color/accent</item>
+    </style>
+
+    <style name="Widget.Bchat.Button.Common.ProminentOutlineNew">
+        <item name="android:background">@drawable/prominent_outline_button_medium_background_new</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:drawableTint" tools:ignore="NewApi">@color/accent</item>
+    </style>
+
+    <style name="Widget.Bchat.Button.Common.UnimportantFilled">
+        <item name="android:background">@drawable/unimportant_filled_button_medium_background</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:drawableTint" tools:ignore="NewApi">?android:textColorPrimary</item>
+    </style>
+
+    <style name="Widget.Bchat.Button.Common.UnimportantFilled.New">
+        <item name="android:fontFamily">@font/poppins_semi_bold</item>
+        <item name="android:background">@drawable/unimportant_filled_button_medium_background_new</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:elevation">5dp</item>
+        <item name="android:drawableTint" tools:ignore="NewApi">?android:textColorPrimary</item>
+    </style>
+
+    <style name="Widget.Bchat.Button.Common.UnimportantOutline">
+        <item name="android:background">@drawable/unimportant_outline_button_medium_background</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:drawableTint" tools:ignore="NewApi">?android:textColorPrimary</item>
+    </style>
+
+    <style name="Widget.Bchat.Button.Dialog" parent="">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/small_font_size</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+    </style>
+
+    <style name="Widget.Bchat.Button.Dialog.Unimportant">
+        <item name="android:fontFamily">@font/poppins_semi_bold</item>
+        <item name="android:background">@drawable/unimportant_dialog_button_background</item>
+    </style>
+
+    <!-- New Line-->
+    <style name="Widget.Bchat.Button.Dialog.Unimportant.New">
+        <item name="android:fontFamily">@font/poppins_semi_bold</item>
+        <item name="android:background">@drawable/unimportant_filled_button_medium_background_new</item>
+        <item name="android:shadowColor">@color/black</item>
+    </style>
+
+    <style name="Widget.Bchat.Button.Dialog.Destructive.New">
+        <item name="android:background">@drawable/destructive_dialog_button_background_new</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+
+
+
+    <style name="Widget.Bchat.Button.Dialog.Destructive">
+        <item name="android:background">@drawable/destructive_dialog_button_background</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="Widget.Bchat.EditText.Compose" parent="@style/Signal.Text.Body">
+        <item name="android:padding">2dp</item>
+        <item name="android:background">@null</item>
+        <item name="android:maxLines">4</item>
+        <item name="android:maxLength">65536</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:capitalize">sentences</item>
+        <item name="android:autoText">true</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:imeOptions">flagNoEnterAction</item>
+        <item name="android:inputType">textAutoCorrect|textCapSentences|textMultiLine</item>
+        <item name="android:contentDescription">@string/conversation_activity__compose_description</item>
+        <item name="android:textColorHint">?android:textColorHint</item>
+        <item name="android:textSize">@dimen/small_font_size</item>
+        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor</item>
+        <item name="android:textAlignment">viewStart</item>
+    </style>
+
+    <style name="ThemeOverlay.Bchat.Settings" parent="PreferenceThemeOverlay.v14.Material" >
+        <item name="android:textColor">@color/text</item>
+        <item name="android:textColorSecondary">#99FFFFFF</item>
+        <item name="titleTextStyle">@style/BchatPreference</item>
+        <item name="android:textSize">@dimen/medium_font_size</item>
+    </style>
+
+    <style name="BchatPreference">
+        <item name="android:textColor">@color/red</item>
+        <item name="android:fontFamily">@font/poppins_regular</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="BchatIDTextView">
+        <item name="android:background">@drawable/bchat_id_text_view_background</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/button_green</item>
+        <item name="android:fontFamily">@font/poppins_regular</item>
+        <item name="android:textAlignment">viewStart</item>
+    </style>
+
+    <style name="BeldexAddressTextView">
+        <item name="android:background">@drawable/bchat_id_text_view_background</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/beldex_address</item>
+        <item name="android:fontFamily">@font/poppins_regular</item>
+        <item name="android:textAlignment">viewStart</item>
+    </style>
+
+    <style name="BchatEditText">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:background">@drawable/bchat_id_text_view_background</item>
+        <item name="android:paddingLeft">@dimen/medium_spacing</item>
+        <item name="android:paddingTop">30dp</item>
+        <item name="android:paddingRight">@dimen/medium_spacing</item>
+        <item name="android:paddingBottom">30dp</item>
+        <item name="android:textSize">@dimen/small_font_size</item>
+        <item name="android:textColor">@color/text</item>
+        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor</item>
+        <item name="android:textAlignment">viewStart</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="SmallBchatEditText">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:background">@drawable/bchat_id_text_view_background</item>
+        <item name="android:paddingLeft">@dimen/medium_spacing</item>
+        <item name="android:paddingTop">@dimen/medium_spacing</item>
+        <item name="android:paddingRight">@dimen/medium_spacing</item>
+        <item name="android:paddingBottom">@dimen/medium_spacing</item>
+        <item name="android:textSize">@dimen/small_font_size</item>
+        <item name="android:textColor">@color/text</item>
+        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor</item>
+        <item name="android:textAlignment">viewStart</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="SmallBChatEditText">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="android:paddingLeft">@dimen/medium_spacing</item>
+        <item name="android:paddingTop">@dimen/medium_spacing</item>
+        <item name="android:paddingRight">@dimen/medium_spacing</item>
+        <item name="android:paddingBottom">@dimen/medium_spacing</item>
+        <item name="android:textSize">@dimen/very_small_font_size</item>
+        <item name="android:textColor">@color/text</item>
+        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor</item>
+        <item name="android:textAlignment">viewStart</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="BigBChatEditText">
+        <item name="android:background">@color/transparent</item>
+        <item name="android:paddingLeft">@dimen/medium_spacing</item>
+        <item name="android:paddingTop">@dimen/medium_spacing</item>
+        <item name="android:paddingRight">@dimen/medium_spacing</item>
+        <item name="android:paddingBottom">@dimen/medium_spacing</item>
+        <item name="android:textSize">@dimen/medium_font_size</item>
+        <item name="android:textColor">@color/text</item>
+        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor</item>
+        <item name="android:textAlignment">viewStart</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="FakeChatViewMessageBubble">
+        <item name="android:paddingLeft">@dimen/medium_spacing</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingRight">@dimen/medium_spacing</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+    </style>
+
+    <style name="FakeChatViewMessageBubble.Incoming">
+        <item name="android:background">@drawable/fake_chat_view_incoming_message_background</item>
+        <item name="android:elevation">10dp</item>
+    </style>
+
+    <style name="FakeChatViewMessageBubble.Outgoing">
+        <item name="android:background">@drawable/fake_chat_view_outgoing_message_background</item>
+        <item name="android:elevation">10dp</item>
+    </style>
+    <!-- Bchat -->
+
+    <style name="NoAnimation.Theme.AppCompat.Light.DarkActionBar" parent="@style/Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:windowAnimationStyle">@null</item>
+    </style>
+
+    <style name="AppCompatAlertDialogStyleLight" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/signal_primary_dark</item>
+    </style>
+
+    <style name="AppCompatDialogStyleLight" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/signal_primary_dark</item>
+        <item name="android:windowBackground">@drawable/dialog_background</item>
+    </style>
+
+    <!-- ActionBar styles -->
+
+    <!-- For Holo Light Dialog Activity Styling Emulation -->
+
+    <style name="AttachmentTypeLabel">
+        <item name="android:textColor">?android:textColorTertiary</item>
+        <item name="android:textSize">@dimen/small_font_size</item>
+    </style>
+
+    <!-- RedPhone -->
+
+    <!-- Buttons in the main "button row" of the in-call onscreen touch UI. -->
+
+    <!-- "Compound button" variation of InCallButton.
+           These buttons have the concept of two states: checked and unchecked.
+           (This style is just like "InCallButton" except that we also
+           clear out android:textOn and android:textOff, to avoid the default
+           text label behavior of the ToggleButton class.) -->
+
+    <style name="BackupPassphrase">
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:typeface">monospace</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:clickable">false</item>
+        <item name="android:focusable">false</item>
+    </style>
+
+    <style name="PreferenceThemeOverlay.Fix" parent="PreferenceThemeOverlay.v14.Material">
+    </style>
+
+    <style name="BottomSheetActionItem">
+        <item name="android:fontFamily">@font/poppins_regular</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/action_item_height</item>
+        <item name="android:textSize">@dimen/medium_font_size</item>
+        <item name="android:drawablePadding">@dimen/drawable_padding</item>
+        <item name="android:padding">@dimen/normal_padding</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:selectable">true</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+    </style>
+
+    <style name="MenuItemStyle">
+        <item name="android:itemBackground">@drawable/bchat_id_text_view_background</item>
+        <item name="android:textColor">@color/text</item>
+    </style>
+
+    <style name="popupOverflowMenu" parent="@style/Widget.MaterialComponents.PopupMenu.Overflow">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:popupBackground">@drawable/bchat_id_text_view_background</item>
+    </style>
+
+    <style name="BChatAlertDialog" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.BChat.AlertDialog.NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.BChat.AlertDialog.PositiveButtonStyle</item>
+        <item name="android:background">@color/card_color</item>
+        <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
+        <item name="colorControlActivated">@color/alert_ok</item>
+    </style>
+
+    <style name="BChatAlertDialog_ForBan" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.BChat.AlertDialog.NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.BChat.AlertDialog.PositiveButtonStyle</item>
+        <item name="android:background">@color/card_color</item>
+        <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
+        <item name="colorControlActivated">@color/alert_ok</item>
+        <item name="colorControlNormal">@color/alert_ok</item>
+    </style>
+
+    <style name="BChatAlertDialog_remove" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.BChat.AlertDialog.NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.BChat.AlertDialog.PositiveButtonStyle</item>
+        <item name="android:background">@color/card_color</item>
+        <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
+        <item name="colorControlActivated">@color/red</item>
+    </style>
+
+    <style name="BChatAlertDialog_remove_new" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:itemTextAppearance">@style/textViewStyle</item>
+        <item name="android:textViewStyle">@style/textViewStyle</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.BChat.AlertDialog.NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.BChat.AlertDialog.PositiveButtonStyle_New</item>
+        <item name="android:background">@color/card_color</item>
+        <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
+        <item name="colorControlActivated">@color/red</item>
+    </style>
+
+    <style name="privacy_background">
+        <item name="android:background">@drawable/bchat_id_text_view_background</item>
+    </style>
+
+    <style name="BChatAlertDialog_centre" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="android:textViewStyle">@style/textViewStyle</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.BChat.AlertDialog.NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.BChat.AlertDialog.PositiveButtonStyle</item>
+        <item name="android:background">@color/card_color</item>
+        <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
+<!--        <item name="android:gravity">center</item>-->
+<!--        <item name="android:textAlignment">center</item>-->
+<!--        <item name="titleTextStyle">@style/TextAppearance.BChat.TitleTextStyle</item>-->
+
+    </style>
+
+    <style name="textViewStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+    </style>
+
+    <style name="Widget.BChat.AlertDialog.PositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/alert_ok</item>
+    </style>
+
+    <style name="Widget.BChat.AlertDialog.PositiveButtonStyle_New" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/red</item>
+    </style>
+
+    <style name="Widget.BChat.AlertDialog.NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/text</item>
+    </style>
+
+    <style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.Dark">
+        <item name="android:homeAsUpIndicator">@drawable/ic_back</item>
+    </style>
+
+
+<!--    <style name="TextAppearance.BChat.TitleTextStyle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">-->
+<!--        <item name="android:textColor">?android:textColorPrimary</item>-->
+<!--        <item name="android:textSize">@dimen/very_large_font_size</item>-->
+<!--        <item name="android:textAlignment">center</item>-->
+<!--        <item name="android:gravity">center</item>-->
+<!--        <item name="android:layout_gravity">center_horizontal</item>-->
+<!--    </style>-->
+
+    <style name="chipText" parent="TextAppearance.MaterialComponents.Chip">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/poppins_regular</item>
+    </style>
+
+    <style name="menuTextAppearance" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+    </style>
+</resources>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/page_background"
+    android:layout_height="match_parent">
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
+            style="@style/Widget.Bchat.TabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/tab_bar_height"
+            android:paddingTop="30dp" />
+
+    </androidx.viewpager.widget.ViewPager>
+
+    <RelativeLayout
+        android:id="@+id/loader"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#A4000000"
+        android:visibility="gone"
+        android:alpha="0">
+
+        <!--<com.github.ybq.android.spinkit.SpinKitView
+            style="@style/SpinKitView.Large.ThreeBounce"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_centerInParent="true"
+            app:SpinKit_Color="@android:color/white" />-->
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/defaultRoomsLoader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="8dp"
+            app:layout_constraintDimensionRatio="1:1"
+            app:lottie_fileName="load_animation.json"
+            app:lottie_loop="true"
+            app:lottie_speed="1"
+            app:lottie_autoPlay="true"
+            app:lottie_enableMergePathsForKitKatAndAbove="true"
+            tools:ignore="ContentDescription"/>
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/page_background"
+    android:fillViewport="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_weight="0"/>
+
+        <TextView
+            android:fontFamily="@font/poppins_bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/text"
+            android:text="@string/display_name_screen_title_content" />
+        <TextView
+            android:fontFamily="@font/poppins_medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="textStart"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:text="@string/display_name_screen_description_content"
+            android:textSize="@dimen/very_small_font_size"
+            android:layout_marginTop="@dimen/medium_spacing"
+            android:textStyle="normal"  />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/large_spacing"
+        android:layout_marginTop="@dimen/large_spacing"
+        android:layout_marginRight="@dimen/large_spacing"
+        app:cardBackgroundColor="@color/card_color"
+        app:cardCornerRadius="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            style="@style/SmallBchatEditText"
+            android:id="@+id/displayNameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:paddingTop="0dp"
+            android:paddingBottom="0dp"
+            android:gravity="center_vertical"
+            android:inputType="textCapWords"
+            android:hint="@string/activity_display_name_edit_text_hint" />
+
+    </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <Button
+            style="@style/Widget.Bchat.Button.Common.ProminentFilled"
+            android:id="@+id/registerButton"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/medium_button_height"
+            android:layout_marginLeft="@dimen/massive_spacing"
+            android:layout_marginRight="@dimen/massive_spacing"
+            android:layout_marginBottom="30dp"
+            android:text="@string/continue_2" />
+    </LinearLayout>
+</ScrollView>

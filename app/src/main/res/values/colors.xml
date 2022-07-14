@@ -1,0 +1,147 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+    <color name="accent">#128D15</color>
+    <color name="accent_alpha50">#8000F782</color>
+    <color name="text">#FFFFFF</color>
+    <color name="destructive">#FF453A</color>
+    <color name="unimportant">#D8D8D8</color>
+    <color name="profile_picture_background">#353535</color>
+    <color name="cell_background">#24242F</color>
+    <color name="cell_selected">#0C0C0C</color>
+    <color name="action_bar_background">#1c1c26</color>
+    <color name="separator">#36383C</color>
+    <color name="unimportant_button_background">@color/card_color</color>
+    <color name="dialog_background">#101011</color>
+    <color name="unimportant_dialog_button_background">@color/unimportant_button_background</color>
+    <color name="app_icon_background">#333132</color>
+    <color name="progress_bar_background">#0AFFFFFF</color>
+    <color name="compose_view_background">#1B1B1B</color>
+    <color name="compose_text_view_background">#141414</color>
+    <color name="quote_not_found_background">#80FFFFFF</color>
+    <color name="new_conversation_button_collapsed_background">#2F2F40</color>
+    <color name="new_conversation_button_shadow">#077C44</color>
+    <color name="pn_option_background">#1B1B1B</color>
+    <color name="pn_option_border">#212121</color>
+    <color name="paths_building">#FFCE3A</color>
+    <color name="open_group_chip_color">#0DFFFFFF</color>
+    <color name="message_selected">#292979FB</color>
+    <color name="input_bar_background">@color/card_color</color>
+    <color name="input_bar_button_background">#0DFFFFFF</color>
+    <color name="input_bar_button_background_opaque">#232323</color>
+    <color name="input_bar_button_background_opaque_border">#33FFFFFF</color>
+    <color name="input_bar_lock_view_background">#171717</color>
+    <color name="input_bar_lock_view_border">#66FFFFFF</color>
+    <color name="mention_candidates_view_background">#171717</color>
+    <color name="mention_candidates_view_background_ripple">#0C0C0C</color>
+    <color name="link_preview_background">#000000</color>
+    <color name="scroll_to_bottom_button_background">#171717</color>
+    <color name="scroll_to_bottom_button_border">#99FFFFFF</color>
+    <color name="conversation_unread_count_indicator_background">#303030</color>
+    <color name="conversation_pinned_background">#404040</color>
+    <color name="conversation_pinned_icon">#B3B3B3</color>
+
+    <array name="profile_picture_placeholder_colors">
+        <item>#FF5722</item>
+        <item>#2979FB</item>
+        <item>#FF6663</item>
+        <item>#009688</item>
+        <item>#FE64A3</item>
+        <item>#00B1FF</item>
+        <item>#673AB7</item>
+        <item>#E91E63</item>
+        <item>#9C27B0</item>
+    </array>
+
+    <color name="beldex_darkest_gray">#0a0a0a</color>
+
+    <color name="signal_primary">@color/accent</color>
+    <color name="signal_primary_dark">@color/accent</color>
+
+    <color name="textsecure_primary">@color/signal_primary</color>
+    <color name="textsecure_primary_dark">@color/signal_primary_dark</color>
+
+    <color name="white">#ffffffff</color>
+    <color name="black">#ff000000</color>
+    <color name="gray12">#ffe0e0e0</color>
+    <color name="gray13">#ffababab</color>
+    <color name="gray20">#ffcccccc</color>
+    <color name="gray27">#ffbbbbbb</color>
+    <color name="gray50">#ff808080</color>
+    <color name="gray65">#ff595959</color>
+    <color name="gray70">#ff4d4d4d</color>
+    <color name="gray78">#ff383838</color>
+
+    <color name="transparent_black_30">#30000000</color>
+    <color name="transparent_black_40">#40000000</color>
+    <color name="transparent_black_70">#70000000</color>
+    <color name="transparent_black_90">#90000000</color>
+
+    <color name="transparent_white_30">#30ffffff</color>
+    <color name="transparent_white_40">#40ffffff</color>
+    <color name="transparent_white_aa">#aaffffff</color>
+
+    <color name="action_mode_status_bar">@color/gray65</color>
+    <color name="touch_highlight">#22000000</color>
+
+    <color name="device_link_item_background_light">#ffffffff</color>
+    <color name="device_link_item_background_dark">#ff333333</color>
+
+    <color name="transparent">#00FFFFFF</color>
+    <color name="transparent_black">#00000000</color>
+
+    <color name="MediaOverview_Media_selected_overlay">#88000000</color>
+
+    <color name="avatar_background">@color/transparent_black_90</color>
+
+    <color name="default_background_start">#121212</color>
+    <color name="default_background_end">#171717</color>
+    <color name="button_green">#128D15</color>
+    <color name="text_white">#FFFFFF</color>
+    <color name="sign_in_black">#3F3E4A</color>
+    <color name="card_color">#343441</color>
+    <color name="page_background">#24242F</color>
+    <color name="welcome_bg">#000000</color>
+    <color name="play_button">#000000</color>
+    <color name="drawer_card_color">#16161f</color>
+    <color name="drawer_divider_color">#23232F</color>
+    <color name="qr_code_card_color">#40404D</color>
+    <color name="scan_qr_code_text_color">#82828D</color>
+    <color name="default_dialog_background_color_inset">#1c1c26</color>
+    <color name="clear_all_data_chat_id">#1AB51E</color>
+    <color name="clear_all_data_description">#6A6A77</color>
+    <color name="unimportant_dialog_button_background_new">@color/card_color</color>
+    <color name="unimportant_dialog_button_background_border_new">@color/card_color</color>
+    <color name="drawer_icon_color">#d1d1d3</color>
+    <color name="appearance_text">#FFFFFF</color>
+    <color name="bchat_version">#797984</color>
+    <color name="drawer_beldex_text">#1AB51E</color>
+    <color name="drawer_background">#1C1C26</color>
+    <color name="show_keys_divider_color">#2C2C3C</color>
+    <color name="preference_screen_background_color">#1c1c26</color>
+    <color name="landing_page_background">#24242F</color>
+    <color name="restore_from_seed_divider_color">#39394B</color>
+    <color name="home_search_icon_and_hint">#B9B9B9</color>
+    <color name="empty_state_container_text">#646474</color>
+    <color name="conversation_list_divider_shape">#2C2C3C</color>
+    <color name="rounded_indicator">#00B705</color>
+    <color name="rounded_indicator_border">#19191B</color>
+    <color name="document_text">#000000</color>
+    <color name="copy_and_share">@color/card_color</color>
+    <color name="alert_ok">#29fd2e</color>
+    <color name="default_group_bg">#0A0A0A</color>
+    <color name="text_hint">#D8D8D8</color>
+
+    <color name="keyboard_background">#131319</color>
+    <color name="button_background">#2F2F3C</color>
+    <color name="button_text">#FFFFFF</color>
+    <color name="send_message_background">#2979FB</color>
+    <color name="chat_id_card_background">#282833</color>
+    <color name="chat_id_description_text">#82828D</color>
+    <color name="beldex_address">#1782FF</color>
+    <color name="start_color">#25253C</color>
+    <color name="end_color">#21212C</color>
+    <color name="stroke_color">#A6A6B5</color>
+    <color name="chat_user_name_color">#29FD2E</color>
+    <color name="disable_button_text_color">#686774</color>
+    <color name="animation_popup_background">#1C1C26</color>
+</resources>

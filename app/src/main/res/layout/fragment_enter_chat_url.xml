@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/contentView"
+    android:layout_width="match_parent"
+    android:background="@color/page_background"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="?android:dividerHorizontal"
+        android:elevation="1dp" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/large_spacing"
+        android:layout_marginTop="@dimen/large_spacing"
+        android:layout_marginRight="@dimen/large_spacing"
+        app:cardBackgroundColor="@color/card_color"
+        app:cardCornerRadius="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+    <EditText
+        style="@style/SmallBchatEditText"
+        android:id="@+id/chatURLEditText"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:inputType="textWebEmailAddress|textMultiLine"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        android:gravity="center_vertical"
+        android:maxLines="3"
+        android:hint="@string/fragment_enter_chat_url_edit_text_hint" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <RelativeLayout
+        android:id="@+id/defaultRoomsLoaderContainer"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginTop="56dp"
+        android:visibility="gone">
+
+        <!--<com.github.ybq.android.spinkit.SpinKitView
+            android:id="@+id/defaultRoomsLoader"
+            style="@style/SpinKitView.Large.ThreeBounce"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            app:SpinKit_Color="@color/text" />-->
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/defaultRoomsLoader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_centerInParent="true"
+            app:layout_constraintDimensionRatio="1:1"
+            app:lottie_fileName="load_animation.json"
+            app:lottie_loop="true"
+            app:lottie_speed="1"
+            app:lottie_autoPlay="true"
+            android:visibility="gone"
+            app:lottie_enableMergePathsForKitKatAndAbove="true"
+            tools:ignore="ContentDescription"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/defaultRoomsContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_marginVertical="16dp"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:alpha="0.5"
+            android:paddingHorizontal="24dp"
+            android:text="@string/dummy_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_marginVertical="14dp"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:paddingHorizontal="24dp"
+            android:text="@string/or_join_here"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <androidx.gridlayout.widget.GridLayout
+            android:id="@+id/defaultRoomsGridLayout"
+            app:columnCount="2"
+            android:weightSum="2"
+            app:orientation="horizontal"
+            android:paddingHorizontal="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <Button
+        style="@style/Widget.Bchat.Button.Common.ProminentFilled"
+        android:id="@+id/joinPublicChatButton"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/medium_button_height"
+        android:layout_marginLeft="@dimen/massive_spacing"
+        android:layout_marginRight="@dimen/massive_spacing"
+        android:layout_marginBottom="30dp"
+        android:text="@string/next" />
+
+</LinearLayout>

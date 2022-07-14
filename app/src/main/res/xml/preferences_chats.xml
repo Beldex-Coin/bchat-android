@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- <PreferenceCategory android:key="media_download" android:title="@string/preferences_chats__media_auto_download">
+
+        <MultiSelectListPreference
+            android:title="@string/preferences_chats__when_using_mobile_data"
+            android:key="pref_media_download_mobile"
+            android:defaultValue="@array/pref_media_download_mobile_data_default"
+            android:persistent="true"
+            android:entries="@array/pref_media_download_values"
+            android:entryValues="@array/pref_media_download_entries" />
+
+        <MultiSelectListPreference
+            android:title="@string/preferences_chats__when_using_wifi"
+            android:key="pref_media_download_wifi"
+            android:defaultValue="@array/pref_media_download_wifi_default"
+            android:persistent="true"
+            android:entries="@array/pref_media_download_values"
+            android:entryValues="@array/pref_media_download_entries" />
+
+        <MultiSelectListPreference
+            android:title="@string/preferences_chats__when_roaming"
+            android:key="pref_media_download_roaming"
+            android:defaultValue="@array/pref_media_download_roaming_default"
+            android:persistent="true"
+            android:entries="@array/pref_media_download_values"
+            android:entryValues="@array/pref_media_download_entries" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:layout="@layout/preference_divider"/> -->
+
+    <PreferenceCategory android:title="@string/preferences_chats__chats"
+        app:iconSpaceReserved="false"
+        app:layout="@layout/preference_layout_header">
+
+        <!-- <SignalListPreference
+            android:key="pref_message_body_text_size"
+            android:title="@string/preferences_chats__message_text_size"
+            android:entries="@array/pref_message_font_size_entries"
+            android:entryValues="@array/pref_message_font_size_values"
+            android:defaultValue="16" /> -->
+
+        <!-- <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="pref_show_invite_reminder"
+            android:title="@string/preferences_chats__show_invitation_prompts"
+            android:summary="@string/preferences_chats__display_invitation_prompts_for_contacts_without_signal" /> -->
+
+        <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="pref_system_emoji"
+            app:isPreferenceVisible="false"
+            android:title="@string/preferences_advanced__use_system_emoji"
+            app:layout="@layout/preference_layout"/>
+
+        <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="pref_enter_sends"
+            app:iconSpaceReserved="false"
+            android:title="@string/preferences__pref_enter_sends_title"
+            app:layout="@layout/preference_layout"/>
+
+    </PreferenceCategory>
+
+
+    <PreferenceCategory android:key="message_trimming" android:title="@string/preferences_chats__message_trimming"
+        app:iconSpaceReserved="false"
+        app:layout="@layout/preference_layout_header">
+
+        <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
+            android:defaultValue="false"
+            app:iconSpaceReserved="false"
+            android:key="pref_trim_threads"
+            android:title="@string/preferences__delete_old_messages"
+            app:layout="@layout/preference_layout"/>
+
+        <EditTextPreference
+            android:defaultValue="500"
+            android:key="pref_trim_length"
+            android:title="@string/preferences__conversation_length_limit"
+            android:inputType="number"
+            app:iconSpaceReserved="false"
+            android:dependency="pref_trim_threads"
+            app:layout="@layout/preference_layout"/>
+
+        <Preference
+            android:key="pref_trim_now"
+            app:iconSpaceReserved="false"
+            android:title="@string/preferences__trim_all_conversations_now"
+            android:dependency="pref_trim_threads"
+            app:layout="@layout/preference_layout"/>
+
+    </PreferenceCategory>
+
+    <!-- <PreferenceCategory android:layout="@layout/preference_divider" />
+
+    <PreferenceCategory android:key="backup_category" android:title="@string/preferences_chats__backups">
+
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="pref_backup_enabled_v3"
+            android:title="@string/preferences_chats__chat_backups"
+            android:summary="@string/preferences_chats__backup_chats_to_external_storage" />
+
+        <ProgressPreference
+            android:key="pref_backup_create"
+            android:title="@string/preferences_chats__create_backup"
+            android:persistent="false"
+            android:dependency="pref_backup_enabled_v3"
+            tools:summary="Last backup: 3 days ago" />
+
+    </PreferenceCategory> -->
+
+</PreferenceScreen>

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory android:title="@string/preferences_notifications__messages"
+        app:iconSpaceReserved="false"
+        app:layout="@layout/preference_layout_header"
+        />
+
+        <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
+            android:key="pref_key_enable_notifications"
+            android:title="@string/preferences__notifications"
+            app:iconSpaceReserved="false"
+            android:defaultValue="true"
+            app:layout="@layout/preference_layout"
+            />
+
+        <com.thoughtcrimes.securesms.preferences.widgets.SignalListPreference
+            android:key="pref_notification_priority"
+            android:title="@string/preferences_notifications__priority"
+            app:iconSpaceReserved="false"
+            android:dependency="pref_key_enable_notifications"
+            android:defaultValue="1"
+            android:entries="@array/pref_notification_priority_entries"
+            android:entryValues="@array/pref_notification_priority_values"
+            app:layout="@layout/preference_layout"/>
+
+
+
+
+    <PreferenceCategory android:title="@string/preferences_notifications_strategy_category_title"
+        app:iconSpaceReserved="false"
+        app:layout="@layout/preference_layout_header">
+
+        <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
+            android:dependency="pref_key_enable_notifications"
+            android:key="pref_key_use_fcm"
+            app:iconSpaceReserved="false"
+            android:title="@string/preferences_notifications_strategy_category_fast_mode_title"
+            android:summary="@string/preferences_notifications_strategy_category_fast_mode_summary"
+            android:defaultValue="false"
+            app:layout="@layout/preference_layout"/>
+
+    </PreferenceCategory>
+
+
+    <PreferenceCategory android:title="@string/activity_notification_settings_style_section_title"
+        app:iconSpaceReserved="false"
+        app:layout="@layout/preference_layout_header">
+
+        <com.thoughtcrimes.securesms.preferences.widgets.SignalPreference
+            android:dependency="pref_key_enable_notifications"
+            android:key="pref_key_ringtone"
+            app:iconSpaceReserved="false"
+            android:title="@string/preferences__sound"
+            android:persistent="false"
+            android:defaultValue="content://settings/system/notification_sound"
+            app:layout="@layout/preference_layout"/>
+
+        <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
+            android:dependency="pref_key_enable_notifications"
+            android:key="pref_key_vibrate"
+            app:iconSpaceReserved="false"
+            android:defaultValue="true"
+            android:title="@string/preferences__vibrate"
+            app:layout="@layout/preference_layout"/>
+
+        <com.thoughtcrimes.securesms.preferences.widgets.LEDColorListPreference
+            android:key="pref_led_color"
+            android:defaultValue="blue"
+            android:title="@string/preferences__led_color"
+            app:iconSpaceReserved="false"
+            android:dependency="pref_key_enable_notifications"
+            android:entries="@array/pref_led_color_entries"
+            android:entryValues="@array/pref_led_color_values"
+            app:isPreferenceVisible="false"
+            app:layout="@layout/preference_layout"/>
+
+        <com.thoughtcrimes.securesms.preferences.widgets.SignalListPreference
+            android:key="pref_led_blink"
+            android:defaultValue="500,2000"
+            android:title="@string/preferences__pref_led_blink_title"
+            android:dependency="pref_led_color"
+            app:iconSpaceReserved="false"
+            app:isPreferenceVisible="false"
+            android:entries="@array/pref_led_blink_pattern_entries"
+            android:entryValues="@array/pref_led_blink_pattern_values"
+            app:layout="@layout/preference_layout"/>
+
+        <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
+            android:key="pref_key_inthread_notifications"
+            android:title="@string/preferences_notifications__in_chat_sounds"
+            app:iconSpaceReserved="false"
+            android:dependency="pref_key_enable_notifications"
+            android:defaultValue="true"
+            app:layout="@layout/preference_layout"/>
+
+        <com.thoughtcrimes.securesms.preferences.widgets.SignalListPreference
+            android:key="pref_repeat_alerts"
+            android:defaultValue="0"
+            android:title="@string/preferences__repeat_alerts"
+            app:iconSpaceReserved="false"
+            android:dependency="pref_key_enable_notifications"
+            android:entries="@array/pref_repeat_alerts_entries"
+            android:entryValues="@array/pref_repeat_alerts_values"
+            app:layout="@layout/preference_layout"/>
+
+    </PreferenceCategory>
+
+
+
+    <PreferenceCategory android:title="@string/activity_notification_settings_content_section_title"
+        app:iconSpaceReserved="false"
+        app:layout="@layout/preference_layout_header">
+
+        <com.thoughtcrimes.securesms.preferences.widgets.SignalListPreference
+            android:key="pref_notification_privacy"
+            android:title="@string/preferences_notifications__show"
+            app:iconSpaceReserved="false"
+            android:dependency="pref_key_enable_notifications"
+            android:defaultValue="all"
+            android:entries="@array/pref_notification_privacy_entries"
+            android:entryValues="@array/pref_notification_privacy_values"
+            app:layout="@layout/preference_layout"/>
+
+    </PreferenceCategory>
+
+    <!-- </PreferenceCategory>
+
+    <PreferenceCategory android:layout="@layout/preference_divider"/>
+
+    <PreferenceCategory android:title="@string/preferences_notifications__calls">
+
+        <SwitchPreferenceCompat
+                android:key="pref_call_notifications"
+                android:title="@string/preferences__notifications"
+                android:defaultValue="true" />
+
+        <SignalPreference
+                android:dependency="pref_call_notifications"
+                android:key="pref_call_ringtone"
+                android:title="@string/preferences_notifications__ringtone"
+                android:persistent="false"
+                android:defaultValue="content://settings/system/ringtone" />
+
+        <SwitchPreferenceCompat
+                android:dependency="pref_call_notifications"
+                android:key="pref_call_vibrate"
+                android:defaultValue="true"
+                android:title="@string/preferences__vibrate"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:layout="@layout/preference_divider"/>
+
+    <PreferenceCategory android:title="@string/preferences_notifications__events">
+        <SwitchPreferenceCompat
+            android:key="pref_enable_new_contacts_notifications"
+            android:title="@string/preferences_events__contact_joined_signal"
+            android:defaultValue="true" />
+    </PreferenceCategory> -->
+
+</PreferenceScreen>

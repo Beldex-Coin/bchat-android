@@ -1,0 +1,5 @@
+rootProject.name = "bchat-android"
+
+include ':app'
+include ':libsession'
+include ':libsignal'

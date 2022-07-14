@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@color/landing_page_background"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:background="@color/landing_page_background"
+        android:orientation="vertical">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/img"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="10dp"
+        android:adjustViewBounds="true"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintVertical_bias="0.4"
+        app:lottie_fileName="landing_animation_light_theme.json"
+        app:lottie_loop="true"
+        app:lottie_speed="1"
+        app:lottie_autoPlay="true"
+        app:lottie_enableMergePathsForKitKatAndAbove="true"
+        tools:ignore="ContentDescription"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
+    <TextView
+        android:fontFamily="@font/poppins_bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:layout_below= "@+id/img"
+        android:text="@string/hey_you"
+        android:textSize="@dimen/large_font_size"
+        android:layout_marginTop="30dp"
+        android:layout_alignParentBottom="true"
+        android:textStyle="bold" />
+    <TextView
+        android:fontFamily="@font/poppins_bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="@string/chat_anonymously_now"
+        android:layout_marginTop="5dp"
+        android:layout_alignParentBottom="true"
+
+        android:textSize="@dimen/large_font_size"
+        android:textStyle="bold" />
+    <TextView
+        android:fontFamily="@font/poppins_medium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:layout_marginStart="@dimen/very_large_spacing"
+        android:layout_marginEnd="@dimen/very_large_spacing"
+        android:text="@string/landing_screen_content"
+        android:textSize="@dimen/very_small_font_size"
+        android:layout_marginTop="@dimen/medium_spacing"
+        android:textStyle="normal" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/very_large_spacing"
+        android:layout_marginRight="@dimen/very_large_spacing"
+        android:textSize="@dimen/very_large_font_size"
+        android:visibility="gone"
+        android:textStyle="bold"
+        android:text="@string/activity_landing_title_2" />
+
+    <com.thoughtcrimes.securesms.onboarding.FakeChatView
+        android:id="@+id/fakeChatView"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="@dimen/fake_chat_view_height"
+        android:layout_marginTop="@dimen/medium_spacing" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="20dp"/>
+
+    <Button
+        style="@style/Widget.Bchat.Button.Common.ProminentFilled"
+        android:id="@+id/registerButton"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/medium_button_height"
+        android:layout_marginLeft="@dimen/massive_spacing"
+        android:layout_marginRight="@dimen/massive_spacing"
+        android:text="@string/activity_landing_register_button_title" />
+
+    <Button
+        style="@style/Widget.Bchat.Button.Common.ProminentOutline"
+        android:id="@+id/restoreButton"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/medium_button_height"
+        android:layout_marginLeft="@dimen/massive_spacing"
+        android:layout_marginTop="@dimen/medium_spacing"
+        android:layout_marginRight="@dimen/massive_spacing"
+        android:text="@string/activity_landing_restore_button_title" />
+
+    <TextView
+        android:fontFamily="@font/poppins_regular"
+        android:id="@+id/TermsandCondtionsTxt"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/onboarding_button_bottom_offset"
+        android:layout_marginLeft="@dimen/massive_spacing"
+        android:layout_marginRight="@dimen/massive_spacing"
+        android:gravity="center"
+        android:background="@color/transparent"
+        android:textAllCaps="false"
+        android:layout_marginBottom="30dp"
+        android:textSize="@dimen/very_small_font_size"
+        android:text="@string/terms_and_conditions"
+        />
+</LinearLayout>
+</ScrollView>

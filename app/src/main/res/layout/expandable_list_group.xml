@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp"
+    android:background="@color/card_color">
+
+
+    <TextView
+        android:fontFamily="@font/poppins_semi_bold"
+        android:id="@+id/lblListHeader"
+        android:layout_width="0dp"
+        android:layout_weight="2"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:textSize="17sp"
+        android:text="list"
+        android:textColor="@color/text" />
+
+    <ImageView
+        android:id="@+id/lblListImage"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_baseline_keyboard_arrow_down_24"/>
+
+</LinearLayout>

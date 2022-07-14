@@ -1,0 +1,865 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/action_bar_background"
+    tools:context="com.thoughtcrimes.securesms.preferences.SettingsActivity"
+    tools:menu="@menu/settings_general"
+    tools:theme="@style/Theme.Bchat.DayNight.NoActionBar">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:background="@color/action_bar_background"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/action_bar_background"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <!-- <androidx.cardview.widget.CardView
+                 android:id="@+id/qrCodeCardView"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:background="@drawable/card_gradiant_background"
+                 app:cardCornerRadius="10dp"
+                 android:layout_gravity="center"
+                 android:layout_margin="10dp">
+
+                 <LinearLayout
+                     android:id="@+id/contentViewNew"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:gravity="center"
+                     android:background="@drawable/card_gradiant_background"
+                     android:layout_gravity="center"
+                     android:orientation="vertical">
+
+                     <FrameLayout
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content">
+
+                         <ImageView
+                             android:id="@+id/qrCodeImageView"
+                             android:layout_width="250dp"
+                             android:layout_height="250dp"
+                             android:layout_gravity="center"
+                             android:layout_marginStart="@dimen/very_large_spacing"
+                             android:layout_marginTop="@dimen/very_large_spacing"
+                             android:layout_marginEnd="@dimen/very_large_spacing"
+                             android:layout_marginBottom="12dp"/>
+
+                         <ImageView
+                             android:id="@+id/profileViewImage"
+                             android:layout_width="40dp"
+                             android:layout_height="40dp"
+                             android:visibility="visible"
+                             android:src="@drawable/ic_profile_default"
+                             android:layout_marginEnd="15dp"
+                             android:layout_marginTop="30dp"
+                             android:layout_gravity="end"/>
+
+                     </FrameLayout>
+
+                     <Button
+                         style="@style/Widget.Bchat.Button.Common.ProminentFilled"
+                         android:id="@+id/qrCodeShareButton"
+                         android:layout_width="150dp"
+                         android:drawableStart="@drawable/ic_baseline_share_24"
+                         android:layout_height="@dimen/medium_button_height"
+                         android:layout_marginLeft="@dimen/massive_spacing"
+                         android:layout_marginRight="@dimen/massive_spacing"
+                         android:layout_marginTop="28dp"
+                         android:layout_marginBottom="@dimen/medium_spacing"
+                         android:layout_marginStart="4dp"
+                         android:gravity="center"
+                         android:paddingLeft="15dp"
+                         android:paddingRight="15dp"
+                         android:textSize="16sp"
+                         android:textStyle="bold"
+                         android:text="@string/share" />
+                 </LinearLayout>
+             </androidx.cardview.widget.CardView>-->
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/profileCardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                app:cardCornerRadius="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_gradiant_background"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/backViewLinearLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <FrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <!--<ImageView
+                                android:id="@+id/qrCodeShareButton"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:layout_gravity="end|bottom"
+                                android:layout_marginBottom="5dp"
+                                android:layout_marginEnd="15dp"
+                                android:src="@drawable/ic_baseline_share_24"
+                                android:visibility="visible" />-->
+
+                            <ImageView
+                                android:id="@+id/qrCodeImageView"
+                                android:layout_width="167dp"
+                                android:layout_height="167dp"
+                                android:layout_gravity="start"
+                                android:layout_marginStart="15dp"
+                                android:layout_marginTop="23dp"
+                                android:layout_marginEnd="@dimen/very_large_spacing"
+                                android:layout_marginBottom="19dp" />
+
+                            <ImageView
+                                android:id="@+id/logo"
+                                android:layout_width="35dp"
+                                android:layout_height="35dp"
+                                android:layout_gravity="start"
+                                android:layout_marginStart="80dp"
+                                android:layout_marginTop="93dp"
+                                android:src="@drawable/ic_bchat_qr" />
+
+                            <ImageView
+                                android:id="@+id/profileButton"
+                                android:layout_width="35dp"
+                                android:layout_height="35dp"
+                                android:layout_gravity="end"
+                                android:layout_marginTop="20dp"
+                                android:layout_marginEnd="15dp"
+                                android:src="@drawable/ic_profile_button"
+                                android:visibility="visible" />
+                            <TextView
+                                android:fontFamily="@font/poppins_medium"
+                                android:id="@+id/scan_qr_code_title_textView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/activity_join_public_chat_scan_qr_code_tab_title"
+                                android:layout_gravity="end"
+                                android:layout_marginTop="67dp"
+                                android:layout_marginEnd="15dp"
+                                android:gravity="center|end"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text"/>
+                            <TextView
+                                android:fontFamily="@font/poppins_medium"
+                                android:id="@+id/or_title_textView"
+                                android:layout_width="105dp"
+                                android:layout_height="wrap_content"
+                                android:text="or"
+                                android:layout_gravity="end"
+                                android:layout_marginTop="93dp"
+                                android:layout_marginEnd="15dp"
+                                android:gravity="center|end"
+                                android:textSize="16sp"
+                                android:textAlignment="center"
+                                android:textColor="@color/text"/>
+
+                            <Button
+                                android:id="@+id/qrCodeShareButton"
+                                style="@style/Widget.Bchat.Button.Common.ProminentFilled"
+                                android:layout_width="105dp"
+                                android:layout_height="35dp"
+                                android:layout_gravity="end"
+                                android:layout_marginTop="122dp"
+                                android:layout_marginEnd="15dp"
+                                android:drawableStart="@drawable/ic_baseline_share_24"
+                                android:gravity="center|end"
+                                android:paddingLeft="15dp"
+                                android:paddingRight="15dp"
+                                android:text="@string/share"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                        </FrameLayout>
+
+                        <!--<Button
+                            android:id="@+id/qrCodeShareButton"
+                            style="@style/Widget.Bchat.Button.Common.ProminentFilled"
+                            android:layout_width="150dp"
+                            android:layout_height="@dimen/medium_button_height"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginLeft="@dimen/massive_spacing"
+                            android:layout_marginTop="28dp"
+                            android:layout_marginRight="@dimen/massive_spacing"
+                            android:layout_marginBottom="@dimen/medium_spacing"
+                            android:drawableStart="@drawable/ic_baseline_share_24"
+                            android:gravity="center"
+                            android:paddingLeft="15dp"
+                            android:paddingRight="15dp"
+                            android:text="@string/share"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />-->
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/frontViewLinearLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="visible">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="10dp">
+
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="top"
+                                android:layout_marginTop="10dp">
+
+                                <com.thoughtcrimes.securesms.components.ProfilePictureView
+                                    android:id="@+id/profilePictureView"
+                                    android:layout_width="@dimen/large_profile_picture_size"
+                                    android:layout_height="@dimen/large_profile_picture_size"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_marginStart="10dp"
+                                    android:layout_marginTop="0dp"
+                                    android:gravity="center" />
+
+                                <ImageView
+                                    android:id="@+id/profilePictureViewButton"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentTop="true"
+                                    android:layout_marginStart="55dp"
+                                    android:layout_marginTop="50dp"
+                                    android:src="@drawable/ic_camera_profile_pic" />
+                            </RelativeLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:layout_marginStart="15dp"
+                                android:layout_marginEnd="15dp"
+                                android:gravity="center"
+                                android:orientation="horizontal">
+
+                                <RelativeLayout
+                                    android:id="@+id/ctnGroupNameSection"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="1">
+
+                                    <EditText
+                                        android:id="@+id/displayNameEditText"
+                                        style="@style/BchatEditText"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_centerInParent="true"
+                                        android:hint="@string/activity_settings_display_name_edit_text_hint"
+                                        android:paddingTop="12dp"
+                                        android:paddingBottom="12dp"
+                                        android:textAlignment="center"
+                                        android:visibility="invisible" />
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentStart="true"
+                                        android:layout_centerInParent="true"
+                                        android:orientation="vertical">
+                                        <LinearLayout
+                                            android:id="@+id/displayNameTitleLinearLayout"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:orientation="horizontal">
+                                            <TextView
+                                                android:fontFamily="@font/poppins_medium"
+                                                android:id="@+id/displayNameTitleTextView"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:text="@string/activity_settings_profile_name_title"
+                                                android:textAlignment="textStart"
+                                                android:textColor="@color/grey_600"
+                                                android:textSize="14sp"
+                                                android:textStyle="bold"/>
+                                            <ImageView
+                                                android:id="@+id/profileEditImageView"
+                                                android:layout_width="14dp"
+                                                android:layout_height="14dp"
+                                                android:layout_gravity="center"
+                                                android:layout_marginStart="5dp"
+                                                android:src="@drawable/ic_profile_edit"/>
+                                        </LinearLayout>
+
+                                        <TextView
+                                            android:fontFamily="@font/poppins_bold"
+                                            android:id="@+id/btnGroupNameDisplay"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="@string/activity_settings_profile_name_title"
+                                            android:textAlignment="textStart"
+                                            android:textColor="@color/text"
+                                            android:textSize="@dimen/account_name_font_size"
+                                            android:textStyle="bold" />
+                                    </LinearLayout>
+
+                                </RelativeLayout>
+
+                                <ImageView
+                                    android:id="@+id/qrCodeButton"
+                                    android:layout_width="35dp"
+                                    android:layout_height="35dp"
+                                    android:layout_gravity="top"
+                                    android:layout_marginTop="10dp"
+                                    android:src="@drawable/ic_qr_code_24" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/addressDetailsLinearLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:layout_marginBottom="10dp"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:id="@+id/bchatLinearLayout"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <androidx.constraintlayout.widget.ConstraintLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:textAlignment="center">
+
+                                    <TextView
+                                        android:fontFamily="@font/poppins_medium"
+                                        android:id="@+id/settings_chat_title"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:gravity="center"
+                                        android:text="BChat ID"
+                                        android:textColor="@color/text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold"
+                                        android:layout_marginStart="15dp"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintLeft_toLeftOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent" />
+
+                                    <ImageView
+                                        android:id="@+id/copyButton"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="10dp"
+                                        android:src="@drawable/ic_baseline_content_copy_24"
+                                        android:textAlignment="textEnd"
+                                        android:visibility="gone"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintRight_toLeftOf="@id/shareButton"
+                                        app:layout_constraintTop_toTopOf="parent" />
+
+                                    <ImageView
+                                        android:id="@+id/shareButton"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:src="@drawable/ic_baseline_share_24"
+                                        android:visibility="gone"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintRight_toRightOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent" />
+                                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                                <com.thoughtcrimes.securesms.components.LabeledSeparatorView
+                                    android:id="@+id/separatorView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="32dp"
+                                    android:layout_marginLeft="@dimen/large_spacing"
+                                    android:layout_marginTop="20dp"
+                                    android:layout_marginRight="@dimen/large_spacing"
+                                    android:visibility="gone" />
+
+                                <androidx.cardview.widget.CardView
+                                    android:id="@+id/publicKeyCardView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_marginStart="10dp"
+                                    android:layout_marginBottom="10dp"
+                                    android:layout_marginEnd="10dp"
+                                    app:cardBackgroundColor="@color/card_color"
+                                    app:cardCornerRadius="10dp"
+                                    app:cardElevation="5dp">
+
+                                    <TextView
+                                        android:fontFamily="@font/poppins_regular"
+                                        android:id="@+id/publicKeyTextView"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:ellipsize="end"
+                                        android:maxLines="1"
+                                        android:padding="15dp"
+                                        android:textAlignment="textStart"
+                                        android:textColor="@color/button_green"
+                                        android:textSize="@dimen/medium_font_size"
+                                        tools:text="05987d601943c267879be41830888066c6a024cbdc9a548d06813924bf3372ea78" />
+                                </androidx.cardview.widget.CardView>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/beldexAddressLinearLayout"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="5dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <androidx.constraintlayout.widget.ConstraintLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:textAlignment="center">
+
+                                    <TextView
+                                        android:fontFamily="@font/poppins_medium"
+                                        android:id="@+id/settings_beldex_address_title"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:gravity="center"
+                                        android:text="Beldex Address"
+                                        android:textColor="@color/text"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold"
+                                        android:layout_marginStart="15dp"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintLeft_toLeftOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent" />
+
+                                    <ImageView
+                                        android:id="@+id/beldexAddressCopyButton"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="10dp"
+                                        android:src="@drawable/ic_baseline_content_copy_24"
+                                        android:textAlignment="textEnd"
+                                        android:visibility="gone"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintRight_toLeftOf="@id/beldexAddressShareButton"
+                                        app:layout_constraintTop_toTopOf="parent" />
+
+                                    <ImageView
+                                        android:id="@+id/beldexAddressShareButton"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:src="@drawable/ic_baseline_share_24"
+                                        android:visibility="gone"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintRight_toRightOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent" />
+                                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                                <androidx.cardview.widget.CardView
+                                    android:id="@+id/beldexAddressCardView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_marginStart="10dp"
+                                    android:layout_marginBottom="10dp"
+                                    android:layout_marginEnd="10dp"
+                                    app:cardBackgroundColor="@color/card_color"
+                                    app:cardCornerRadius="10dp"
+                                    app:cardElevation="5dp">
+
+                                    <TextView
+                                        android:fontFamily="@font/poppins_regular"
+                                        android:id="@+id/beldexAddressTextView"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:ellipsize="end"
+                                        android:maxLines="1"
+                                        android:padding="15dp"
+                                        android:textAlignment="textStart"
+                                        android:textColor="@color/beldex_address"
+                                        android:textSize="@dimen/medium_font_size"
+                                        tools:text="05987d601943c267879be41830888066c6a024cbdc9a548d06813924bf3372ea78" />
+                                </androidx.cardview.widget.CardView>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/large_spacing"
+                android:layout_marginTop="@dimen/large_spacing"
+                android:layout_marginRight="@dimen/large_spacing"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/copyButton1"
+                    style="@style/Widget.Bchat.Button.Common.ProminentOutline"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/medium_button_height"
+                    android:layout_weight="1"
+                    android:text="Copy" />
+
+                <Button
+                    android:id="@+id/shareButton1"
+                    style="@style/Widget.Bchat.Button.Common.UnimportantOutline"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/medium_button_height"
+                    android:layout_marginStart="@dimen/medium_spacing"
+                    android:layout_weight="1"
+                    android:text="@string/share" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginTop="@dimen/large_spacing"
+                android:background="@color/drawer_divider_color" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/page_background"
+                android:orientation="vertical">
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/pathButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/setting_button_height"
+                    android:background="@drawable/setting_button_background"
+                    android:orientation="horizontal"
+                    app:alignItems="center"
+                    app:justifyContent="center">
+
+                    <TextView
+                        android:fontFamily="@font/poppins_medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="@string/activity_path_title"
+                        android:textColor="@color/text"
+                        android:textSize="@dimen/medium_font_size"
+                        android:textStyle="bold" />
+
+                    <FrameLayout
+                        android:id="@+id/pathContainer"
+                        android:layout_width="@dimen/small_profile_picture_size"
+                        android:layout_height="@dimen/small_profile_picture_size">
+
+                        <com.thoughtcrimes.securesms.home.PathStatusView
+                            android:layout_width="@dimen/path_status_view_size"
+                            android:layout_height="@dimen/path_status_view_size"
+                            android:layout_gravity="center" />
+                    </FrameLayout>
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/drawer_divider_color"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:fontFamily="@font/poppins_medium"
+                    android:id="@+id/privacyButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/setting_button_height"
+                    android:background="@drawable/setting_button_background"
+                    android:gravity="center"
+                    android:text="@string/activity_settings_privacy_button_title"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/medium_font_size"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/drawer_divider_color"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:fontFamily="@font/poppins_medium"
+                    android:id="@+id/notificationsButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/setting_button_height"
+                    android:background="@drawable/setting_button_background"
+                    android:gravity="center"
+                    android:text="@string/activity_settings_notifications_button_title"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/medium_font_size"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/drawer_divider_color" />
+
+                <TextView
+                    android:fontFamily="@font/poppins_medium"
+                    android:id="@+id/appLockButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/setting_button_height"
+                    android:background="@drawable/setting_button_background"
+                    android:gravity="center"
+                    android:text="@string/activity_settings_app_lock_button_title"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/medium_font_size"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/drawer_divider_color" />
+
+                <TextView
+                    android:fontFamily="@font/poppins_medium"
+                    android:id="@+id/chatsButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/setting_button_height"
+                    android:background="@drawable/setting_button_background"
+                    android:gravity="center"
+                    android:text="@string/activity_settings_chats_button_title"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/medium_font_size"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/drawer_divider_color" />
+
+                <TextView
+                    android:fontFamily="@font/poppins_medium"
+                    android:id="@+id/seedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/setting_button_height"
+                    android:background="@drawable/setting_button_background"
+                    android:gravity="center"
+                    android:text="@string/activity_settings_recovery_phrase_button_title"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/medium_font_size"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/drawer_divider_color" />
+
+                <TextView
+                    android:fontFamily="@font/poppins_medium"
+                    android:id="@+id/clearAllDataButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/setting_button_height"
+                    android:background="@drawable/setting_button_background"
+                    android:gravity="center"
+                    android:text="@string/activity_settings_clear_all_data_button_title"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/medium_font_size"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/drawer_divider_color" />
+
+                <TextView
+                    android:fontFamily="@font/poppins_medium"
+                    android:id="@+id/sendInvitationButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/setting_button_height"
+                    android:background="@drawable/setting_button_background"
+                    android:gravity="center"
+                    android:padding="@dimen/small_spacing"
+                    android:text="@string/activity_settings_invite_button_title"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/medium_font_size"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/drawer_divider_color" />
+
+                <TextView
+                    android:fontFamily="@font/poppins_medium"
+                    android:id="@+id/surveyButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/setting_button_height"
+                    android:background="@drawable/setting_button_background"
+                    android:gravity="center"
+                    android:text="@string/activity_settings_survey_feedback"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/medium_font_size"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/drawer_divider_color" />
+
+                <TextView
+                    android:fontFamily="@font/poppins_medium"
+                    android:id="@+id/faqButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/setting_button_height"
+                    android:background="@drawable/setting_button_background"
+                    android:gravity="center"
+                    android:text="@string/activity_settings_faq_button_title"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/medium_font_size"
+                    android:textStyle="bold" />
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/drawer_divider_color" />
+
+                <TextView
+                    android:fontFamily="@font/poppins_medium"
+                    android:id="@+id/changeLogButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/setting_button_height"
+                    android:background="@drawable/setting_button_background"
+                    android:gravity="center"
+                    android:text="@string/changelog"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/medium_font_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:fontFamily="@font/poppins_medium"
+                    android:id="@+id/debugLogButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/setting_button_height"
+                    android:background="@drawable/setting_button_background"
+                    android:gravity="center"
+                    android:text="@string/activity_settings_support"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/medium_font_size"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/drawer_divider_color" />
+
+                <TextView
+                    android:fontFamily="@font/poppins_medium"
+                    android:id="@+id/helpTranslateButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/setting_button_height"
+                    android:background="@drawable/setting_button_background"
+                    android:gravity="center"
+                    android:text="@string/activity_settings_help_translate_bchat"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/medium_font_size"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <!--
+                  <View
+                      android:layout_width="match_parent"
+                      android:layout_height="1px"
+                      android:background="?android:dividerHorizontal" />
+                  <TextView
+                      android:fontFamily="@font/poppins_medium"
+                      android:id="@+id/versionTextView"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginTop="4dp"
+                      android:layout_marginBottom="@dimen/medium_spacing"
+                      android:gravity="center"
+                      android:text="@string/version_s"
+                      android:textColor="@color/text"
+                      android:alpha="0.6"
+                      android:textSize="@dimen/very_small_font_size" />-->
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true">
+
+        <RelativeLayout
+            android:id="@+id/loader"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#A4000000"
+            android:visibility="gone">
+
+            <!--<com.github.ybq.android.spinkit.SpinKitView
+                style="@style/SpinKitView.Large.ThreeBounce"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="8dp"
+                app:SpinKit_Color="@android:color/white" />-->
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/defaultRoomsLoader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="8dp"
+                android:adjustViewBounds="true"
+                app:layout_constraintDimensionRatio="1:1"
+                app:lottie_autoPlay="true"
+                app:lottie_enableMergePathsForKitKatAndAbove="true"
+                app:lottie_fileName="load_animation.json"
+                app:lottie_loop="true"
+                app:lottie_speed="1"
+                tools:ignore="ContentDescription" />
+
+        </RelativeLayout>
+
+    </FrameLayout>
+
+</RelativeLayout>

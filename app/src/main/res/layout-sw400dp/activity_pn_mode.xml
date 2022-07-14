@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/contentView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/very_large_spacing"
+            android:layout_marginTop="@dimen/very_large_spacing"
+            android:layout_marginRight="@dimen/very_large_spacing"
+            android:textSize="@dimen/very_large_font_size"
+            android:textStyle="bold"
+            android:textColor="@color/text"
+            android:text="@string/activity_pn_mode_message_notifications" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/very_large_spacing"
+            android:layout_marginTop="@dimen/large_spacing"
+            android:layout_marginRight="@dimen/very_large_spacing"
+            android:textSize="@dimen/medium_font_size"
+            android:textColor="@color/text"
+            android:text="@string/activity_pn_mode_explanation" />
+
+        <com.thoughtcrimes.securesms.util.PNModeView
+            android:id="@+id/fcmOptionView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/very_large_spacing"
+            android:layout_marginTop="@dimen/large_spacing"
+            android:layout_marginRight="@dimen/very_large_spacing"
+            android:padding="12dp"
+            android:orientation="vertical"
+            android:background="@drawable/pn_option_background">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/medium_font_size"
+                android:textColor="@color/text"
+                android:textStyle="bold"
+                android:text="@string/activity_pn_mode_fast_mode" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textSize="@dimen/very_small_font_size"
+                android:textColor="@color/text"
+                android:text="@string/activity_pn_mode_fast_mode_explanation" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textSize="@dimen/small_font_size"
+                android:textColor="@color/accent"
+                android:textStyle="bold"
+                android:text="@string/activity_pn_mode_recommended_option_tag" />
+
+        </com.thoughtcrimes.securesms.util.PNModeView>
+
+        <com.thoughtcrimes.securesms.util.PNModeView
+            android:id="@+id/backgroundPollingOptionView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/very_large_spacing"
+            android:layout_marginTop="@dimen/small_spacing"
+            android:layout_marginRight="@dimen/very_large_spacing"
+            android:padding="12dp"
+            android:orientation="vertical"
+            android:background="@drawable/pn_option_background">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/medium_font_size"
+                android:textColor="@color/text"
+                android:textStyle="bold"
+                android:text="@string/activity_pn_mode_slow_mode" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textSize="@dimen/very_small_font_size"
+                android:textColor="@color/text"
+                android:text="@string/activity_pn_mode_slow_mode_explanation" />
+
+        </com.thoughtcrimes.securesms.util.PNModeView>
+
+        <Button
+            style="@style/Widget.Bchat.Button.Common.ProminentFilled"
+            android:id="@+id/registerButton"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/medium_button_height"
+            android:layout_marginLeft="@dimen/massive_spacing"
+            android:layout_marginTop="@dimen/very_large_spacing"
+            android:layout_marginRight="@dimen/massive_spacing"
+            android:layout_marginBottom="@dimen/onboarding_button_bottom_offset"
+            android:text="@string/continue_2" />
+
+    </LinearLayout>
+
+</ScrollView>

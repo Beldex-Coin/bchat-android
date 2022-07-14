@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingHorizontal="@dimen/massive_spacing"
+    android:paddingVertical="@dimen/medium_spacing">
+
+    <TextView
+        android:fontFamily="@font/poppins_regular"
+        android:id="@+id/dateBreakTextView"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:textColor="@color/text"
+        android:textSize="@dimen/very_small_font_size"
+        android:textStyle="bold"
+        tools:text="@tools:sample/date/hhmm" />
+
+    <ImageView
+        android:id="@+id/iconImageView"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_marginBottom="@dimen/small_spacing"
+        app:tint="@color/text"
+        tools:src="@drawable/ic_timer" />
+
+    <TextView
+        android:fontFamily="@font/poppins_regular"
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/text"
+        android:textSize="@dimen/very_small_font_size"
+        android:textStyle="bold"
+        tools:text="@string/MessageRecord_you_disabled_disappearing_messages" />
+
+</LinearLayout>

@@ -1,0 +1,60 @@
+{
+  "change_log": [
+    {
+      "title": "1.0.0",
+      "descriptions": [
+        {
+          "description":"- Initial Release"
+        },
+        {
+          "description":"- Added Changelog"
+        }
+      ]
+    },
+    {
+      "title": "1.0.1",
+      "descriptions": [
+        {
+          "description":"- Minor Bug Fixes"
+        }
+      ]
+    },
+    {
+      "title": "1.0.2",
+      "descriptions": [
+        {
+          "description":"- ScheduleReminder Bug Fixes"
+        },
+        {
+          "description":"- Minor Bug Fixes"
+        }
+      ]
+    },
+    {
+      "title": "1.0.3",
+      "descriptions": [
+        {
+          "description":"- Updated Font Family"
+        },
+        {
+          "description":"- Minor Bug Fixes"
+        }
+      ]
+    },
+    {
+      "title": "1.0.4",
+      "descriptions": [
+        {
+          "description":"- Updated Font Family"
+        },
+        {
+          "description":"- Airdrop Pop-up Removed"
+        },
+        {
+          "description":"- Updated Minor Content"
+        }
+      ]
+    }
+
+  ]
+}

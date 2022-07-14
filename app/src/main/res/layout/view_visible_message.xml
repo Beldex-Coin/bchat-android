@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:fontFamily="@font/poppins_regular"
+        android:id="@+id/dateBreakTextView"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:textColor="@color/text"
+        android:textSize="@dimen/very_small_font_size"
+        android:textStyle="bold"
+        android:gravity="center" />
+
+    <RelativeLayout
+        android:id="@+id/mainContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="bottom">
+
+        <FrameLayout
+            android:layout_alignBottom="@id/messageContentContainer"
+            android:id="@+id/profilePictureContainer"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.thoughtcrimes.securesms.components.ProfilePictureView
+                android:id="@+id/profilePictureView"
+                android:layout_width="@dimen/groupuser_profile_picture_size"
+                android:layout_height="@dimen/groupuser_profile_picture_size"
+                android:layout_gravity="center" />
+
+            <ImageView
+                android:id="@+id/moderatorIconImageView"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginEnd="@dimen/small_spacing"
+                android:src="@drawable/ic_crown"
+                android:layout_gravity="bottom|end" />
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/messageContentContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:fontFamily="@font/poppins_medium"
+                android:id="@+id/senderNameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:textColor="@color/chat_user_name_color"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <LinearLayout
+                android:id="@+id/expirationTimerViewContainer"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
+
+                <com.thoughtcrimes.securesms.conversation.v2.messages.VisibleMessageContentView
+                    android:id="@+id/messageContentView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="0dp"/>
+
+                <com.thoughtcrimes.securesms.conversation.v2.components.ExpirationTimerView
+                    android:id="@+id/expirationTimerView"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_gravity="center_vertical" />
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:fontFamily="@font/poppins_regular"
+                    android:id="@+id/messageTimestampTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="2dp"
+                    android:maxLines="1"
+                    android:textSize="11sp" />
+
+                <ImageView
+                    android:id="@+id/messageStatusImageView"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="2dp"
+                    android:padding="2dp"
+                    android:src="@drawable/ic_delivery_status_sent" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

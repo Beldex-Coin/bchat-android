@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/page_background">
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/page_background"
+    tools:context="com.thoughtcrimes.securesms.seed.RecoveryGetSeedDetailsActivity">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/restoreSeedWalletNameCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:cardBackgroundColor="@color/card_color"
+        app:layout_constraintRight_toRightOf="parent"
+        app:cardCornerRadius="10dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/card_color">
+            <EditText
+                style="@style/SmallBchatEditText"
+                android:id="@+id/restoreSeedWalletName"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                app:layout_constraintHorizontal_weight="4"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
+                android:gravity="center_vertical"
+                android:inputType="textMultiLine"
+                android:maxLines="1"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:hint="Display Name" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <ImageView
+        android:id="@+id/restoreSeedLine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_line"
+        android:layout_marginTop="25dp"
+        android:layout_marginStart="45dp"
+        android:layout_marginEnd="45dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/restoreSeedWalletNameCard"
+        app:layout_constraintBottom_toTopOf="@id/restoreFromHeightDescription"/>
+
+    <TextView
+        android:fontFamily="@font/poppins_medium"
+        android:id="@+id/restoreFromHeightDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="30dp"
+        android:textColor="@color/chat_id_description_text"
+        app:layout_constraintTop_toBottomOf="@id/restoreSeedLine"
+        android:text="@string/if_you_don_t_know_the_restore_blockheight_you_can_skip_it"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/restoreSeedWalletRestoreHeightCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/restoreFromHeightDescription"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:cardBackgroundColor="@color/card_color"
+        app:layout_constraintRight_toRightOf="parent"
+        app:cardCornerRadius="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/card_color">
+            <EditText
+                style="@style/SmallBchatEditText"
+                android:id="@+id/restoreSeedWalletRestoreHeight"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                app:layout_constraintHorizontal_weight="4"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:inputType="number"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:hint="Restore from Blockheight" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:fontFamily="@font/poppins_bold"
+        android:id="@+id/restoreSeedOrText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="OR"
+        android:textColor="@color/text"
+        android:textStyle="bold"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/restoreSeedWalletRestoreHeightCard"
+        app:layout_constraintBottom_toTopOf="@id/restoreFromDateDescription"/>
+    <TextView
+        android:fontFamily="@font/poppins_medium"
+        android:id="@+id/restoreFromDateDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="30dp"
+        android:textColor="@color/chat_id_description_text"
+        app:layout_constraintTop_toBottomOf="@id/restoreSeedOrText"
+        android:text="@string/if_you_don_t_know_the_restore_date_you_can_skip_it"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/restoreSeedWalletRestoreDateCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/restoreFromDateDescription"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:cardBackgroundColor="@color/card_color"
+        app:layout_constraintRight_toRightOf="parent"
+        app:cardCornerRadius="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/card_color">
+            <TextView
+                style="@style/SmallBchatEditText"
+                android:id="@+id/restoreSeedWalletRestoreDate"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                app:layout_constraintHorizontal_weight="4"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:hint="Restore from Date" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+    <View
+        android:id="@+id/restoreSeedView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/restoreSeedWalletRestoreDateCard"
+        app:layout_constraintBottom_toTopOf="@id/restoreSeedRestoreButton"
+        app:layout_constraintVertical_weight="1"/>
+
+    <Button
+        android:id="@+id/restoreSeedRestoreButton"
+        style="@style/Widget.Bchat.Button.Common.ProminentFilled"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/medium_button_height"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="30dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf= "@id/restoreSeedView"
+        android:text="Restore" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

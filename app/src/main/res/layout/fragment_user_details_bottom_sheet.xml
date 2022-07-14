@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:paddingLeft="@dimen/large_spacing"
+    android:paddingRight="@dimen/large_spacing"
+    android:paddingBottom="@dimen/large_spacing"
+    app:behavior_hideable="true"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <com.thoughtcrimes.securesms.components.ProfilePictureView
+        android:id="@+id/profilePictureView"
+        android:layout_width="@dimen/large_profile_picture_size"
+        android:layout_height="@dimen/large_profile_picture_size"
+        android:layout_marginTop="@dimen/large_spacing"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/medium_spacing"
+        android:gravity="center">
+
+        <LinearLayout
+            android:id="@+id/nameTextViewContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_centerInParent="true"
+            android:visibility="visible">
+
+            <View
+                android:layout_width="24dp"
+                android:layout_height="24dp" />
+
+            <TextView
+                android:fontFamily="@font/poppins_medium"
+                android:id="@+id/nameTextView"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/small_spacing"
+                android:layout_marginEnd="@dimen/small_spacing"
+                android:textSize="@dimen/large_font_size"
+                android:textStyle="bold"
+                android:textColor="@color/text"
+                android:textAlignment="center"
+                android:text="Profile Name" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_baseline_edit_24" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/nameEditTextContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="invisible">
+
+            <ImageView
+                android:id="@+id/cancelNicknameEditingButton"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_baseline_clear_24" />
+
+            <EditText
+                android:id="@+id/nicknameEditText"
+                style="@style/SmallBchatEditText"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/small_spacing"
+                android:layout_marginEnd="@dimen/small_spacing"
+                android:textAlignment="center"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:inputType="text"
+                android:singleLine="true"
+                android:imeOptions="actionDone"
+                android:hint="@string/fragment_user_details_bottom_sheet_edit_text_hint" />
+
+            <ImageView
+                android:id="@+id/saveNicknameButton"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_baseline_done_24" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/large_spacing"
+        app:cardBackgroundColor="@color/card_color"
+        app:cardCornerRadius="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+    <TextView
+        style="@style/BchatIDTextView"
+        android:id="@+id/publicKeyTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/medium_font_size"
+        android:textIsSelectable="true"
+        tools:text="@string/dummy_bchat_id" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <Button
+        style="@style/Widget.Bchat.Button.Common.ProminentFilled"
+        android:id="@+id/messageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/medium_button_height"
+        android:layout_marginTop="@dimen/medium_spacing"
+        android:paddingLeft="@dimen/large_spacing"
+        android:paddingRight="@dimen/large_spacing"
+        android:text="@string/ConversationActivity_message" />
+
+</LinearLayout>

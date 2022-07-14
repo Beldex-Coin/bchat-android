@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.thoughtcrimes.securesms.groups.EditClosedGroupActivity">
+
+    <LinearLayout
+        android:id="@+id/mainContentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/ctnGroupNameSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/page_background"
+            android:padding="@dimen/large_spacing"
+            android:gravity="center">
+
+            <LinearLayout
+                android:id="@+id/cntGroupNameEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:background="@drawable/group_name_edit_background"
+                android:orientation="horizontal"
+                android:visibility="invisible"
+                tools:visibility="invisible">
+
+                <ImageView
+                    android:id="@+id/btnCancelGroupNameEdit"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="10dp"
+                    android:src="@drawable/ic_baseline_clear_24" />
+
+                <EditText
+                    android:id="@+id/edtGroupName"
+                    style="@style/BchatEditText"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/small_spacing"
+                    android:layout_marginEnd="@dimen/small_spacing"
+                    android:hint="@string/activity_edit_closed_group_edit_text_hint"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:paddingTop="8dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:paddingBottom="8dp"
+                    android:singleLine="true"
+                    android:textAlignment="center" />
+
+                <ImageView
+                    android:id="@+id/btnSaveGroupNameEdit"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/ic_tick_displayname_done" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/cntGroupNameDisplay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:visibility="visible"
+                tools:visibility="visible">
+
+                <TextView
+                    android:fontFamily="@font/poppins_medium"
+                    android:id="@+id/lblGroupNameDisplay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:drawableEnd="@drawable/ic_baseline_edit_group_name"
+                    android:drawablePadding="@dimen/small_spacing"
+                    android:paddingStart="24dp"
+                    android:paddingEnd="0dp"
+                    android:textAlignment="center"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/very_large_font_size"
+                    android:textStyle="bold"
+                    tools:text="SomeGroupName" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="?android:dividerHorizontal" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/page_background"
+            android:orientation="horizontal">
+
+            <TextView
+                android:fontFamily="@font/poppins_medium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/medium_spacing"
+                android:layout_marginTop="@dimen/small_spacing"
+                android:layout_marginEnd="@dimen/small_spacing"
+                android:layout_marginBottom="@dimen/small_spacing"
+                android:layout_weight="1"
+                android:text="@string/activity_edit_closed_group_edit_members"
+                android:textColor="@color/text"
+                android:textSize="@dimen/medium_font_size" />
+
+            <Button
+                android:id="@+id/addMembersClosedGroupButton"
+                style="@style/Widget.Bchat.Button.Common.ProminentFilled"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/small_button_height"
+                android:layout_marginTop="@dimen/small_spacing"
+                android:layout_marginEnd="@dimen/medium_spacing"
+                android:layout_marginStart="@dimen/small_spacing"
+                android:layout_marginBottom="@dimen/small_spacing"
+                android:paddingStart="@dimen/medium_spacing"
+                android:paddingEnd="@dimen/medium_spacing"
+                android:text="@string/activity_edit_closed_group_add_members" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="?android:dividerHorizontal" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvUserList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/view_user"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/emptyStateContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:layout_centerInParent="true">
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/loaderContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#A4000000"
+        android:visibility="gone"
+        android:alpha="0">
+
+        <!--<com.github.ybq.android.spinkit.SpinKitView
+            style="@style/SpinKitView.Large.ThreeBounce"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_centerInParent="true"
+            app:SpinKit_Color="@android:color/white" />-->
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/defaultRoomsLoader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="8dp"
+            app:layout_constraintDimensionRatio="1:1"
+            app:lottie_fileName="load_animation.json"
+            app:lottie_loop="true"
+            app:lottie_speed="1"
+            app:lottie_autoPlay="true"
+            app:lottie_enableMergePathsForKitKatAndAbove="true"
+            tools:ignore="ContentDescription"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

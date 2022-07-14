@@ -1,0 +1,10 @@
+syntax = "proto2";
+
+package signalservice;
+
+option java_package = "com.beldex.libsignal.protos";
+option java_outer_classname = "UtilProtos";
+
+message ByteArrayList {
+  repeated bytes content = 1;
+}

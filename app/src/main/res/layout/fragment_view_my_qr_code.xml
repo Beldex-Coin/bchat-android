@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/page_background">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="?android:dividerHorizontal"
+        android:elevation="1dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:gravity="center"
+            app:cardBackgroundColor="@color/qr_code_card_color"
+            app:cardCornerRadius="15dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp">
+
+        <LinearLayout
+            android:id="@+id/contentView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/very_large_spacing"
+                android:layout_marginTop="@dimen/very_large_spacing"
+                android:layout_marginRight="@dimen/very_large_spacing"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/qrCodeImageView"
+                    android:layout_width="250dp"
+                    android:layout_height="250dp" />
+
+            </RelativeLayout>
+
+            <Button
+                style="@style/Widget.Bchat.Button.Common.ProminentFilled"
+                android:id="@+id/shareButton"
+                android:layout_width="150dp"
+                android:drawableStart="@drawable/ic_baseline_share_24"
+                android:layout_height="@dimen/medium_button_height"
+                android:layout_marginLeft="@dimen/massive_spacing"
+                android:layout_marginRight="@dimen/massive_spacing"
+                android:layout_marginTop="28dp"
+                android:layout_marginBottom="@dimen/medium_spacing"
+                android:layout_marginStart="4dp"
+                android:gravity="center"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:text="@string/share" />
+        </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+    </ScrollView>
+
+</RelativeLayout>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/page_background"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_weight="0"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="35dp"
+            android:layout_marginRight="@dimen/very_large_spacing"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/text"
+            android:text="@string/enable_app_lock" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="35dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="@dimen/very_large_spacing"
+            android:layout_marginBottom="30dp"
+            android:alpha="0.2"
+            android:textSize="@dimen/small_font_size"
+            android:textColor="@color/text"
+            android:text="@string/dummy_content" />
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <Button
+            style="@style/Widget.Bchat.Button.Common.ProminentOutline"
+            android:id="@+id/laterButton"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/medium_button_height"
+            android:layout_marginLeft="@dimen/massive_spacing"
+            android:layout_marginRight="@dimen/massive_spacing"
+            android:layout_marginBottom="@dimen/small_spacing"
+            android:visibility="visible"
+            android:text="@string/later" />
+
+        <Button
+            style="@style/Widget.Bchat.Button.Common.ProminentFilled"
+            android:id="@+id/enableButton"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/medium_button_height"
+            android:layout_marginLeft="@dimen/massive_spacing"
+            android:layout_marginRight="@dimen/massive_spacing"
+            android:layout_marginBottom="30dp"
+            android:text="@string/enable" />
+
+    </LinearLayout>
+</ScrollView>

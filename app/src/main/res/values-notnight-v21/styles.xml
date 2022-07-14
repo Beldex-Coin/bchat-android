@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Widget.Bchat.Button.Common.ProminentOutline">
+        <item name="android:fontFamily">@font/poppins_semi_bold</item>
+        <item name="android:background">@drawable/prominent_outline_button_medium_background</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:drawableTint" tools:ignore="NewApi">?android:textColorPrimary</item>
+    </style>
+
+    <style name="Widget.Bchat.Button.Common.ProminentOutlineNew">
+        <item name="android:background">@drawable/prominent_outline_button_medium_background_new</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:drawableTint" tools:ignore="NewApi">?android:textColorPrimary</item>
+    </style>
+
+    <style name="Widget.Bchat.Button.Common.ProminentFilled">
+        <item name="android:fontFamily">@font/poppins_semi_bold</item>
+        <item name="android:background">@drawable/prominent_filled_button_medium_background</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:drawableTint" tools:ignore="NewApi">@android:color/white</item>
+    </style>
+
+    <!--New Line -->
+    <style name="Widget.Bchat.Button.Common.ProminentFilledState">
+        <item name="android:background">@drawable/button_state</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:drawableTint" tools:ignore="NewApi">@android:color/white</item>
+    </style>
+
+    <style name="FakeChatViewMessageBubble.Incoming">
+        <item name="android:background">@drawable/fake_chat_view_incoming_message_background</item>
+        <item name="android:elevation">4dp</item>
+    </style>
+
+    <style name="FakeChatViewMessageBubble.Outgoing">
+        <item name="android:background">@drawable/fake_chat_view_outgoing_message_background</item>
+        <item name="android:elevation">4dp</item>
+    </style>
+
+    <style name="Widget.Bchat.Button.Dialog.Destructive">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textColor">@color/destructive</item>
+    </style>
+
+    <style name="chipText" parent="TextAppearance.MaterialComponents.Chip">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/poppins_regular</item>
+    </style>
+
+</resources>

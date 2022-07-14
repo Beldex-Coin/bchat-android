@@ -7,6 +7,7 @@ import com.beldex.libbchat.messaging.jobs.AttachmentUploadJob
 import com.beldex.libbchat.messaging.jobs.Job
 import com.beldex.libbchat.messaging.jobs.MessageSendJob
 import com.beldex.libbchat.messaging.messages.control.ConfigurationMessage
+import com.beldex.libbchat.messaging.messages.control.MessageRequestResponse
 import com.beldex.libbchat.messaging.messages.visible.Attachment
 import com.beldex.libbchat.messaging.messages.visible.VisibleMessage
 import com.beldex.libbchat.messaging.open_groups.OpenGroupV2
@@ -158,4 +159,9 @@ interface StorageProtocol {
      */
     fun persist(message: VisibleMessage, quotes: QuoteModel?, linkPreview: List<LinkPreview?>, groupPublicKey: String?, openGroupID: String?, attachments: List<Attachment>): Long?
     fun insertDataExtractionNotificationMessage(senderPublicKey: String, message: DataExtractionNotificationInfoMessage, sentTimestamp: Long)
+    /*Hales63*/
+    fun insertMessageRequestResponse(response: MessageRequestResponse)
+    //New Line v32
+    fun setRecipientApproved(recipient: Recipient, approved: Boolean)
+    fun setRecipientApprovedMe(recipient: Recipient, approvedMe: Boolean)
 }

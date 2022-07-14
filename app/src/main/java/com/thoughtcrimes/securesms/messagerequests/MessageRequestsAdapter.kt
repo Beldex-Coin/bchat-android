@@ -88,7 +88,7 @@ private fun PopupMenu.forceShowIcon() {
             menu.javaClass.getDeclaredMethod("setForceShowIcon", Boolean::class.java)
                 .invoke(menu, true)
         } catch (exception: Exception) {
-            Log.d("Loki", "Couldn't show message request popupmenu due to error: $exception.")
+            Log.d("Beldex", "Couldn't show message request popupmenu due to error: $exception.")
         }
     }
 }

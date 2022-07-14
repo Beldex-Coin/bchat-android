@@ -127,12 +127,6 @@ public class RecipientDatabase extends Database {
             "WHERE " + ADDRESS + " NOT LIKE '" + OPEN_GROUP_PREFIX + "%'";
   }
 
- /* public static String getUpdateResetApprovedCommand() {
-    return "UPDATE "+ TABLE_NAME + " " +
-            "SET " + APPROVED + " = 0, " + APPROVED_ME + " = 0 " +
-            "WHERE " + ADDRESS + " NOT LIKE '" + OPEN_GROUP_PREFIX + "%'";
-  }*/
-
   public static String getUpdateApprovedSelectConversations() {
     return "UPDATE "+ TABLE_NAME + " SET "+APPROVED+" = 1, "+APPROVED_ME+" = 1 "+
             "WHERE "+ADDRESS+ " NOT LIKE '"+OPEN_GROUP_PREFIX+"%' " +

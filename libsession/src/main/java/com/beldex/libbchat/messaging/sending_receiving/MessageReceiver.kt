@@ -103,6 +103,8 @@ object MessageReceiver {
         ExpirationTimerUpdate.fromProto(proto) ?:
         ConfigurationMessage.fromProto(proto) ?:
         UnsendRequest.fromProto(proto) ?:
+        /*Hales63*/
+        MessageRequestResponse.fromProto(proto) ?:
         VisibleMessage.fromProto(proto,address!!) ?: throw Error.UnknownMessage
         // Ignore self send if needed
         if (!message.isSelfSendValid && sender == userPublicKey) throw Error.SelfSend

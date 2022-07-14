@@ -23127,7 +23127,7 @@ public final class SignalServiceProtos {
                     "\010 \001(\0132 .signalservice.DataMessage.Quote\022" +
                     "3\n\007preview\030\n \003(\0132\".signalservice.DataMes" +
                     "sage.Preview\0227\n\007profile\030e \001(\0132&.signalse" +
-                    "rvice.DataMessage.LokiProfile\022K\n\023openGro" +
+                    "rvice.DataMessage.BeldexProfile\022K\n\023openGro" +
                     "upInvitation\030f \001(\0132..signalservice.DataM" +
                     "essage.OpenGroupInvitation\022W\n\031closedGrou" +
                     "pControlMessage\030h \001(\01324.signalservice.Da" +
@@ -23141,7 +23141,7 @@ public final class SignalServiceProtos {
                     "hmentPointer\022\r\n\005flags\030\004 \001(\r\"\032\n\005Flags\022\021\n\r" +
                     "VOICE_MESSAGE\020\001\032V\n\007Preview\022\013\n\003url\030\001 \002(\t\022" +
                     "\r\n\005title\030\002 \001(\t\022/\n\005image\030\003 \001(\0132 .signalse" +
-                    "rvice.AttachmentPointer\032:\n\013LokiProfile\022\023",
+                    "rvice.AttachmentPointer\032:\n\013BeldexProfile\022\023",
             "\n\013displayName\030\001 \001(\t\022\026\n\016profilePicture\030\002 " +
                     "\001(\t\0320\n\023OpenGroupInvitation\022\013\n\003url\030\001 \002(\t\022" +
                     "\014\n\004name\030\003 \002(\t\032\374\003\n\031ClosedGroupControlMess" +

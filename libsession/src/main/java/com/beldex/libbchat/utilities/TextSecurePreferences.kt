@@ -163,6 +163,9 @@ interface TextSecurePreferences {
     fun getAirdropAnimationStatus(): Boolean
     fun setPlayerStatus(status:Boolean)
     fun getPlayerStatus(): Boolean
+    /*Hales63*/
+    fun hasHiddenMessageRequests(): Boolean
+    fun setHasHiddenMessageRequests()
 
 
     companion object {
@@ -244,6 +247,7 @@ interface TextSecurePreferences {
         const val MY_ADDRESS = "my_address"
         const val AIRDROP_STATUS = "airdrop_status"
         const val PLAYER_STATUS = "player_status"
+        const val HAS_HIDDEN_MESSAGE_REQUESTS = "pref_message_requests_hidden"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -951,6 +955,16 @@ interface TextSecurePreferences {
         fun clearAll(context: Context) {
             getDefaultSharedPreferences(context).edit().clear().commit()
         }
+
+        @JvmStatic
+        fun hasHiddenMessageRequests(context: Context): Boolean {
+            return getBooleanPreference(context, HAS_HIDDEN_MESSAGE_REQUESTS, false)
+        }
+
+        @JvmStatic
+        fun removeHasHiddenMessageRequests(context: Context) {
+            removePreference(context, HAS_HIDDEN_MESSAGE_REQUESTS)
+        }
     }
 }
 
@@ -1554,5 +1568,12 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun clearAll() {
         getDefaultSharedPreferences(context).edit().clear().commit()
+    }
+    override fun hasHiddenMessageRequests(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.HAS_HIDDEN_MESSAGE_REQUESTS, false)
+    }
+
+    override fun setHasHiddenMessageRequests() {
+        setBooleanPreference(TextSecurePreferences.HAS_HIDDEN_MESSAGE_REQUESTS, true)
     }
 }

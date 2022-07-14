@@ -31,6 +31,8 @@ import com.beldex.libsignal.utilities.toHexString
 import java.security.MessageDigest
 import java.util.*
 import kotlin.collections.ArrayList
+import com.beldex.libbchat.messaging.messages.control.MessageRequestResponse
+
 
 internal fun MessageReceiver.isBlocked(publicKey: String): Boolean {
     val context = MessagingModuleConfiguration.shared.context
@@ -47,8 +49,14 @@ fun MessageReceiver.handle(message: Message, proto: SignalServiceProtos.Content,
         is DataExtractionNotification -> handleDataExtractionNotification(message)
         is ConfigurationMessage -> handleConfigurationMessage(message)
         is UnsendRequest -> handleUnsendRequest(message)
+        /*Hales63*/
+        is MessageRequestResponse -> handleMessageRequestResponse(message)
         is VisibleMessage -> handleVisibleMessage(message, proto, openGroupID)
     }
+}
+
+fun handleMessageRequestResponse(message: MessageRequestResponse) {
+    MessagingModuleConfiguration.shared.storage.insertMessageRequestResponse(message)
 }
 
 // region Control Messages
@@ -113,14 +121,30 @@ private fun handleConfigurationMessage(message: ConfigurationMessage) {
         && !TextSecurePreferences.shouldUpdateProfile(context, message.sentTimestamp!!)) return
     val userPublicKey = storage.getUserPublicKey()
     if (userPublicKey == null || message.sender != storage.getUserPublicKey()) return
+
+    //New Line
+    val firstTimeSync = !TextSecurePreferences.getConfigurationMessageSynced(context)
+
     TextSecurePreferences.setConfigurationMessageSynced(context, true)
     TextSecurePreferences.setLastProfileUpdateTime(context, message.sentTimestamp!!)
     val allClosedGroupPublicKeys = storage.getAllClosedGroupPublicKeys()
-    for (closedGroup in message.closedGroups) {
+    /*for (closedGroup in message.closedGroups) {
         if (allClosedGroupPublicKeys.contains(closedGroup.publicKey)) continue
         handleNewClosedGroup(message.sender!!, message.sentTimestamp!!, closedGroup.publicKey, closedGroup.name,
             closedGroup.encryptionKeyPair!!, closedGroup.members, closedGroup.admins, message.sentTimestamp!!, closedGroup.expirationTimer)
+    }*/
+    //New Line v32
+    for (closedGroup in message.closedGroups) {
+        if (allClosedGroupPublicKeys.contains(closedGroup.publicKey)) {
+            // just handle the closed group encryption key pairs to avoid sync'd devices getting out of sync
+            storage.addClosedGroupEncryptionKeyPair(closedGroup.encryptionKeyPair!!, closedGroup.publicKey)
+        } else if (firstTimeSync) {
+            // only handle new closed group if it's first time sync
+            handleNewClosedGroup(message.sender!!, message.sentTimestamp!!, closedGroup.publicKey, closedGroup.name,
+                closedGroup.encryptionKeyPair!!, closedGroup.members, closedGroup.admins, message.sentTimestamp!!, closedGroup.expirationTimer)
+        }
     }
+
     val allV2OpenGroups = storage.getAllV2OpenGroups().map { it.value.joinURL }
     for (openGroup in message.openGroups) {
         if (allV2OpenGroups.contains(openGroup)) continue
@@ -180,10 +204,11 @@ fun MessageReceiver.handleVisibleMessage(message: VisibleMessage, proto: SignalS
         throw MessageReceiver.Error.NoThread
     }
     // Update profile if needed
+    /*Hales63*/
+    val recipient = Recipient.from(context, Address.fromSerialized(message.sender!!), false)
     val profile = message.profile
     if (profile != null && userPublicKey != message.sender) {
         val profileManager = SSKEnvironment.shared.profileManager
-        val recipient = Recipient.from(context, Address.fromSerialized(message.sender!!), false)
         val name = profile.displayName!!
         if (name.isNotEmpty()) {
             profileManager.setName(context, recipient, name)
@@ -275,8 +300,11 @@ private fun MessageReceiver.handleClosedGroupControlMessage(message: ClosedGroup
     }
 }
 
+/*Hales63*/
 private fun MessageReceiver.handleNewClosedGroup(message: ClosedGroupControlMessage) {
     val kind = message.kind!! as? ClosedGroupControlMessage.Kind.New ?: return
+    val recipient = Recipient.from(MessagingModuleConfiguration.shared.context, Address.fromSerialized(message.sender!!), false)
+    if (!recipient.isApproved) return
     val groupPublicKey = kind.publicKey.toByteArray().toHexString()
     val members = kind.members.map { it.toByteArray().toHexString() }
     val admins = kind.admins.map { it.toByteArray().toHexString() }

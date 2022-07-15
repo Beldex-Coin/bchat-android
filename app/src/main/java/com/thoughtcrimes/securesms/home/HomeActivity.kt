@@ -909,7 +909,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                 // Cancel any outstanding jobs
                 DatabaseComponent.get(context).bchatJobDatabase()
                     .cancelPendingMessageSendJobs(threadID)
-                // Send a leave group message if this is an active closed group
+                // Send a leave group message if this is an active secret group
                 if (recipient.address.isClosedGroup && DatabaseComponent.get(context)
                         .groupDatabase().isActive(recipient.address.toGroupString())
                 ) {

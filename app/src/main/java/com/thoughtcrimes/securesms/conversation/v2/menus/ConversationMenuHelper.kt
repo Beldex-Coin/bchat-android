@@ -79,7 +79,7 @@ object ConversationMenuHelper {
                 inflater.inflate(R.menu.menu_conversation_block, menu)
             }
         }
-        // Closed group menu (options that should only be present in closed groups)
+        // Secret group menu (options that should only be present in secret groups)
         if (thread.isClosedGroupRecipient) {
             inflater.inflate(R.menu.menu_conversation_closed_group, menu)
         }

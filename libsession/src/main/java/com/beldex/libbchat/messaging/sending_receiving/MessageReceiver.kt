@@ -129,7 +129,7 @@ object MessageReceiver {
             // • The app performed a background poll or received a push notification
             // • This method was invoked and the received message timestamps table was updated
             // • Processing wasn't finished
-            // • The user doesn't see the new closed group
+            // • The user doesn't see the new secret group
         } else {
             if (storage.isDuplicateMessage(envelope.timestamp)) { throw Error.DuplicateMessage }
             storage.addReceivedMessageTimestamp(envelope.timestamp)

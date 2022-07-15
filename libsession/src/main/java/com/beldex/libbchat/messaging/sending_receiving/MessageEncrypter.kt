@@ -19,7 +19,7 @@ object MessageEncrypter {
      * Encrypts `plaintext` using the Bchat protocol for `hexEncodedX25519PublicKey`.
      *
      * @param plaintext the plaintext to encrypt. Must already be padded.
-     * @param recipientHexEncodedX25519PublicKey the X25519 public key to encrypt for. Could be the Bchat ID of a user, or the public key of a closed group.
+     * @param recipientHexEncodedX25519PublicKey the X25519 public key to encrypt for. Could be the Bchat ID of a user, or the public key of a secret group.
      *
      * @return the encrypted message.
      */

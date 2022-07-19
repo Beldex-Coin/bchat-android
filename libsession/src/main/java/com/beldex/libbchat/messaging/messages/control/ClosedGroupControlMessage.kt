@@ -132,7 +132,7 @@ class ClosedGroupControlMessage() : ControlMessage() {
     override fun toProto(): SignalServiceProtos.Content? {
         val kind = kind
         if (kind == null) {
-            Log.w(TAG, "Couldn't construct closed group control message proto from: $this.")
+            Log.w(TAG, "Couldn't construct Secret group control message proto from: $this.")
             return null
         }
         try {
@@ -179,7 +179,7 @@ class ClosedGroupControlMessage() : ControlMessage() {
             contentProto.dataMessage = dataMessageProto.build()
             return contentProto.build()
         } catch (e: Exception) {
-            Log.w(TAG, "Couldn't construct closed group control message proto from: $this.")
+            Log.w(TAG, "Couldn't construct Secret group control message proto from: $this.")
             return null
         }
     }

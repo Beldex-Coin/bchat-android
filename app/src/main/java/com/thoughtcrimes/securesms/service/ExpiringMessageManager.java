@@ -96,7 +96,7 @@ public class ExpiringMessageManager implements SSKEnvironment.MessageExpirationM
     Address address = Address.fromSerialized(senderPublicKey);
     Recipient recipient = Recipient.from(context, address, false);
 
-    // if the sender is blocked, we don't display the update, except if it's in a closed group
+    // if the sender is blocked, we don't display the update, except if it's in a Secret group
     if (recipient.isBlocked() && groupId == null) return;
 
     try {

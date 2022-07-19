@@ -19,3 +19,4 @@ external-libs
 play
 app/.cxx
 app/build
+gradle

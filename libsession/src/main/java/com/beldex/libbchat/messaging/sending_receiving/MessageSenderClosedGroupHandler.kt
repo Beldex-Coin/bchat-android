@@ -47,7 +47,7 @@ fun MessageSender.create(name: String, members: Collection<String>): Promise<Str
         storage.createGroup(groupID, name, LinkedList(members.map { Address.fromSerialized(it) }),
             null, null, LinkedList(admins.map { Address.fromSerialized(it) }), System.currentTimeMillis())
         storage.setProfileSharing(Address.fromSerialized(groupID), true)
-        // Send a closed group update message to all members individually
+        // Send a Secret group update message to all members individually
         val closedGroupUpdateKind = ClosedGroupControlMessage.Kind.New(ByteString.copyFrom(
             Hex.fromStringCondensed(groupPublicKey)), name, encryptionKeyPair, membersAsData, adminsAsData, 0)
         val sentTime = System.currentTimeMillis()
@@ -85,7 +85,7 @@ fun MessageSender.update(groupPublicKey: String, members: List<String>, name: St
     val storage = MessagingModuleConfiguration.shared.storage
     val groupID = GroupUtil.doubleEncodeGroupID(groupPublicKey)
     val group = storage.getGroup(groupID) ?: run {
-        Log.d("Beldex", "Can't update nonexistent closed group.")
+        Log.d("Beldex", "Can't update nonexistent Secret group.")
         throw Error.NoThread
     }
     // Update name if needed
@@ -103,7 +103,7 @@ fun MessageSender.setName(groupPublicKey: String, newName: String) {
     val storage = MessagingModuleConfiguration.shared.storage
     val groupID = GroupUtil.doubleEncodeGroupID(groupPublicKey)
     val group = storage.getGroup(groupID) ?: run {
-        Log.d("Beldex", "Can't change name for nonexistent closed group.")
+        Log.d("Beldex", "Can't change name for nonexistent Secret group.")
         throw Error.NoThread
     }
     val members = group.members.map { it.serialize() }.toSet()
@@ -127,13 +127,13 @@ fun MessageSender.addMembers(groupPublicKey: String, membersToAdd: List<String>)
     val storage = MessagingModuleConfiguration.shared.storage
     val groupID = GroupUtil.doubleEncodeGroupID(groupPublicKey)
     val group = storage.getGroup(groupID) ?: run {
-        Log.d("Beldex", "Can't add members to nonexistent closed group.")
+        Log.d("Beldex", "Can't add members to nonexistent Secret group.")
         throw Error.NoThread
     }
     val recipient = Recipient.from(context, fromSerialized(groupID), false)
     val expireTimer = recipient.expireMessages
     if (membersToAdd.isEmpty()) {
-        Log.d("Beldex", "Invalid closed group update.")
+        Log.d("Beldex", "Invalid Secret group update.")
         throw Error.InvalidClosedGroupUpdate
     }
     val updatedMembers = group.members.map { it.serialize() }.toSet() + membersToAdd
@@ -144,7 +144,7 @@ fun MessageSender.addMembers(groupPublicKey: String, membersToAdd: List<String>)
     val admins = group.admins.map { it.serialize() }
     val adminsAsData = admins.map { ByteString.copyFrom(Hex.fromStringCondensed(it)) }
     val encryptionKeyPair = storage.getLatestClosedGroupEncryptionKeyPair(groupPublicKey) ?: run {
-        Log.d("Beldex", "Couldn't get encryption key pair for closed group.")
+        Log.d("Beldex", "Couldn't get encryption key pair for Secret group.")
         throw Error.NoKeyPair
     }
     val name = group.title
@@ -154,14 +154,14 @@ fun MessageSender.addMembers(groupPublicKey: String, membersToAdd: List<String>)
     val closedGroupControlMessage = ClosedGroupControlMessage(memberUpdateKind)
     closedGroupControlMessage.sentTimestamp = sentTime
     send(closedGroupControlMessage, Address.fromSerialized(groupID))
-    // Send closed group update messages to any new members individually
+    // Send Secret group update messages to any new members individually
     for (member in membersToAdd) {
         val closedGroupNewKind = ClosedGroupControlMessage.Kind.New(ByteString.copyFrom(
             Hex.fromStringCondensed(groupPublicKey)), name, encryptionKeyPair, membersAsData, adminsAsData, expireTimer)
         val closedGroupControlMessage = ClosedGroupControlMessage(closedGroupNewKind)
         // It's important that the sent timestamp of this message is greater than the sent timestamp
         // of the `MembersAdded` message above. The reason is that upon receiving this `New` message,
-        // the recipient will update the closed group formation timestamp and ignore any closed group
+        // the recipient will update the Secret group formation timestamp and ignore any Secret group
         // updates from before that timestamp. By setting the timestamp of the message below to a value
         // greater than that of the `MembersAdded` message, we ensure that newly added members ignore
         // the `MembersAdded` message.
@@ -180,11 +180,11 @@ fun MessageSender.removeMembers(groupPublicKey: String, membersToRemove: List<St
     val userPublicKey = storage.getUserPublicKey()!!
     val groupID = GroupUtil.doubleEncodeGroupID(groupPublicKey)
     val group = storage.getGroup(groupID) ?: run {
-        Log.d("Beldex", "Can't remove members from nonexistent closed group.")
+        Log.d("Beldex", "Can't remove members from nonexistent Secret group.")
         throw Error.NoThread
     }
     if (membersToRemove.isEmpty() || membersToRemove.contains(userPublicKey)) {
-        Log.d("Beldex", "Invalid closed group update.")
+        Log.d("Beldex", "Invalid Secret group update.")
         throw Error.InvalidClosedGroupUpdate
     }
     val admins = group.admins.map { it.serialize() }
@@ -194,7 +194,7 @@ fun MessageSender.removeMembers(groupPublicKey: String, membersToRemove: List<St
     }
     val updatedMembers = group.members.map { it.serialize() }.toSet() - membersToRemove
     if (membersToRemove.any { it in admins } && updatedMembers.isNotEmpty()) {
-        Log.d("Beldex", "Can't remove admin from closed group unless the group is destroyed entirely.")
+        Log.d("Beldex", "Can't remove admin from Secret group unless the group is destroyed entirely.")
         throw Error.InvalidClosedGroupUpdate
     }
     // Save the new group members
@@ -263,7 +263,7 @@ fun MessageSender.generateAndSendNewEncryptionKeyPair(groupPublicKey: String, ta
     val userPublicKey = storage.getUserPublicKey()!!
     val groupID = GroupUtil.doubleEncodeGroupID(groupPublicKey)
     val group = storage.getGroup(groupID) ?: run {
-        Log.d("Beldex", "Can't update nonexistent closed group.")
+        Log.d("Beldex", "Can't update nonexistent Secret group.")
         throw Error.NoThread
     }
     if (!group.admins.map { it.toString() }.contains(userPublicKey)) {
@@ -317,7 +317,7 @@ fun MessageSender.sendLatestEncryptionKeyPair(publicKey: String, groupPublicKey:
     val storage = MessagingModuleConfiguration.shared.storage
     val groupID = GroupUtil.doubleEncodeGroupID(groupPublicKey)
     val group = storage.getGroup(groupID) ?: run {
-        Log.d("Beldex", "Can't send encryption key pair for nonexistent closed group.")
+        Log.d("Beldex", "Can't send encryption key pair for nonexistent Secret group.")
         throw Error.NoThread
     }
     val members = group.members.map { it.serialize() }

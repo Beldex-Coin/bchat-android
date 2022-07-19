@@ -62,7 +62,7 @@ class DefaultConversationRepository @Inject constructor(
 
     override fun isBeldexHostedOpenGroup(threadId: Long): Boolean {
         val openGroup = beldexThreadDb.getOpenGroupChat(threadId)
-        Log.d("Beldex","social group $openGroup")
+        Log.d("Beldex","Social group $openGroup")
         return openGroup?.room == "bchat" || openGroup?.room == "beldex"
                 || openGroup?.room == "crypto"  || openGroup?.room == "masternode"
     }

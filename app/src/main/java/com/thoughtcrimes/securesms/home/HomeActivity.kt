@@ -874,27 +874,31 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
             resources.getString(R.string.activity_home_delete_conversation_dialog_message)
         }
         val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog)
-        .setMessage(message)
-        .setPositiveButton(R.string.yes) { _, _ ->
-            lifecycleScope.launch(Dispatchers.Main) {
-                val context = this@HomeActivity as Context
-                // Cancel any outstanding jobs
-                DatabaseComponent.get(context).bchatJobDatabase()
-                    .cancelPendingMessageSendJobs(threadID)
-                // Send a leave group message if this is an active closed group
-                if (recipient.address.isClosedGroup && DatabaseComponent.get(context)
-                        .groupDatabase().isActive(recipient.address.toGroupString())
-                ) {
-                    var isClosedGroup: Boolean
-                    var groupPublicKey: String?
-                    try {
-                        groupPublicKey = GroupUtil.doubleDecodeGroupID(recipient.address.toString())
-                            .toHexString()
-                        isClosedGroup = DatabaseComponent.get(context).beldexAPIDatabase()
-                            .isClosedGroup(groupPublicKey)
-                    } catch (e: IOException) {
-                        groupPublicKey = null
-                        isClosedGroup = false
+            .setMessage(message)
+            .setPositiveButton(R.string.yes) { _, _ ->
+                lifecycleScope.launch(Dispatchers.Main) {
+                    val context = this@HomeActivity as Context
+                    // Cancel any outstanding jobs
+                    DatabaseComponent.get(context).bchatJobDatabase()
+                        .cancelPendingMessageSendJobs(threadID)
+                    // Send a leave group message if this is an active Secret group
+                    if (recipient.address.isClosedGroup && DatabaseComponent.get(context)
+                            .groupDatabase().isActive(recipient.address.toGroupString())
+                    ) {
+                        var isClosedGroup: Boolean
+                        var groupPublicKey: String?
+                        try {
+                            groupPublicKey = GroupUtil.doubleDecodeGroupID(recipient.address.toString())
+                                .toHexString()
+                            isClosedGroup = DatabaseComponent.get(context).beldexAPIDatabase()
+                                .isClosedGroup(groupPublicKey)
+                        } catch (e: IOException) {
+                            groupPublicKey = null
+                            isClosedGroup = false
+                        }
+                        if (isClosedGroup) {
+                            MessageSender.explicitLeave(groupPublicKey!!, false)
+                        }
                     }
                     if (isClosedGroup) {
                         MessageSender.explicitLeave(groupPublicKey!!, false)

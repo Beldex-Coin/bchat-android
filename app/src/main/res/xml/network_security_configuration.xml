@@ -73,21 +73,21 @@
         </trust-anchors>
     </domain-config>
 
-</network-security-config>-->
+</network-security-config>
+-->
 
+         <!--      Testnet
 
-    <!--           Testnet-->
+        <?xml version="1.0" encoding="utf-8"?>
+    <network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">127.0.0.1</domain>
+    </domain-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">3.109.123.6</domain>
+        <trust-anchors>
+            <certificates src="@raw/publicnode3"/>
+        </trust-anchors>
+    </domain-config>
 
-    <!--    <?xml version="1.0" encoding="utf-8"?>-->
-    <!--<network-security-config>-->
-    <!--<domain-config cleartextTrafficPermitted="true">-->
-    <!--    <domain includeSubdomains="true">127.0.0.1</domain>-->
-    <!--</domain-config>-->
-    <!--<domain-config cleartextTrafficPermitted="true">-->
-    <!--    <domain includeSubdomains="false">3.109.123.6</domain>-->
-    <!--    <trust-anchors>-->
-    <!--        <certificates src="@raw/publicnode3"/>-->
-    <!--    </trust-anchors>-->
-    <!--</domain-config>-->
-
-    <!--</network-security-config>-->
+    </network-security-config>-->

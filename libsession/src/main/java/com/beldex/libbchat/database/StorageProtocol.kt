@@ -97,7 +97,7 @@ interface StorageProtocol {
     fun setErrorMessage(timestamp: Long, author: String, error: Exception)
     fun setMessageServerHash(messageID: Long, serverHash: String)
 
-    // Closed Groups
+    // Secret groups
     fun getGroup(groupID: String): GroupRecord?
     fun createGroup(groupID: String, title: String?, members: List<Address>, avatar: SignalServiceAttachmentPointer?, relay: String?, admins: List<Address>, formationTimestamp: Long)
     fun isGroupActive(groupPublicKey: String): Boolean

@@ -437,7 +437,7 @@ interface TextSecurePreferences {
 
         @JvmStatic
         fun isLinkPreviewsEnabled(context: Context): Boolean {
-            return getBooleanPreference(context, LINK_PREVIEWS, false)
+            return getBooleanPreference(context, LINK_PREVIEWS, true)
         }
 
         @JvmStatic
@@ -1126,7 +1126,7 @@ class AppTextSecurePreferences @Inject constructor(
     }
 
     override fun isLinkPreviewsEnabled(): Boolean {
-        return getBooleanPreference(TextSecurePreferences.LINK_PREVIEWS, false)
+        return getBooleanPreference(TextSecurePreferences.LINK_PREVIEWS, true)
     }
 
     override fun setLinkPreviewsEnabled(enabled: Boolean) {
@@ -1559,7 +1559,7 @@ class AppTextSecurePreferences @Inject constructor(
     }
 
     override fun hasSeenLinkPreviewSuggestionDialog(): Boolean {
-        return getBooleanPreference("has_seen_link_preview_suggestion_dialog", false)
+        return getBooleanPreference("has_seen_link_preview_suggestion_dialog", true)
     }
 
     override fun setHasSeenLinkPreviewSuggestionDialog() {

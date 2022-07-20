@@ -44,11 +44,13 @@ message UnsendRequest {
 
 message Content {
   optional DataMessage                dataMessage                = 1;
+  optional CallMessage                callMessage                = 3;
   optional ReceiptMessage             receiptMessage             = 5;
   optional TypingMessage              typingMessage              = 6;
   optional ConfigurationMessage       configurationMessage       = 7;
   optional DataExtractionNotification dataExtractionNotification = 8;
   optional UnsendRequest              unsendRequest              = 9;
+  optional MessageRequestResponse     messageRequestResponse     = 10;
 }
 
 message KeyPair {
@@ -161,6 +163,28 @@ message DataMessage {
   optional string                    syncTarget                = 105;
 }
 
+message CallMessage {
+
+  enum Type {
+    PRE_OFFER          = 6;
+    OFFER              = 1;
+    ANSWER             = 2;
+    PROVISIONAL_ANSWER = 3;
+    ICE_CANDIDATES     = 4;
+    END_CALL           = 5;
+  }
+
+  // Multiple ICE candidates may be batched together for performance
+
+  // @required
+  required Type   type            = 1;
+  repeated string sdps            = 2;
+  repeated uint32 sdpMLineIndexes = 3;
+  repeated string sdpMids         = 4;
+  // @required
+  required string uuid            = 5;
+}
+
 message ConfigurationMessage {
 
   message ClosedGroup {
@@ -179,6 +203,9 @@ message ConfigurationMessage {
     required string name              = 2;
     optional string profilePicture    = 3;
     optional bytes  profileKey        = 4;
+    optional bool isApproved          = 5;
+    optional bool isBlocked           = 6;
+    optional bool didApproveMe        = 7;
   }
 
   repeated ClosedGroup closedGroups   = 1;
@@ -187,6 +214,10 @@ message ConfigurationMessage {
   optional string      profilePicture = 4;
   optional bytes       profileKey     = 5;
   repeated Contact     contacts       = 6;
+}
+message MessageRequestResponse {
+    // @required
+    required bool   isApproved  = 1; // Whether the request was approved
 }
 
 message ReceiptMessage {

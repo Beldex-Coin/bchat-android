@@ -23,7 +23,7 @@ object MessageDecrypter {
      * Decrypts `ciphertext` using the Bchat protocol and `x25519KeyPair`.
      *
      * @param ciphertext the data to decrypt.
-     * @param x25519KeyPair the key pair to use for decryption. This could be the current user's key pair, or the key pair of a Secret group.
+     * @param x25519KeyPair the key pair to use for decryption. This could be the current user's key pair, or the key pair of a closed group.
      *
      * @return the padded plaintext.
      */

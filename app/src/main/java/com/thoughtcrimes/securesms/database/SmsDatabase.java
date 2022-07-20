@@ -31,6 +31,7 @@ import net.sqlcipher.database.SQLiteStatement;
 
 
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration;
+import com.beldex.libbchat.messaging.calls.CallMessageType;
 import com.beldex.libbchat.messaging.messages.signal.IncomingGroupMessage;
 import com.beldex.libbchat.messaging.messages.signal.IncomingTextMessage;
 import com.beldex.libbchat.messaging.messages.signal.OutgoingTextMessage;
@@ -368,7 +369,7 @@ public class SmsDatabase extends MessagingDatabase {
     return new Pair<>(messageId, threadId);
   }
 
-  protected Optional<InsertResult> insertMessageInbox(IncomingTextMessage message, long type, long serverTimestamp) {
+  protected Optional<InsertResult> insertMessageInbox(IncomingTextMessage message, long type, long serverTimestamp,boolean runIncrement,boolean runThreadUpdate) {
     if (message.isSecureMessage()) {
       type |= Types.SECURE_MESSAGE_BIT;
     } else if (message.isGroup()) {
@@ -379,6 +380,24 @@ public class SmsDatabase extends MessagingDatabase {
     if (message.isPush()) type |= Types.PUSH_MESSAGE_BIT;
 
     if (message.isOpenGroupInvitation()) type |= Types.OPEN_GROUP_INVITATION_BIT;
+
+    CallMessageType callMessageType = message.getCallType();
+    if (callMessageType != null) {
+      switch (callMessageType) {
+        case CALL_OUTGOING:
+          type |= Types.OUTGOING_CALL_TYPE;
+          break;
+        case CALL_INCOMING:
+          type |= Types.INCOMING_CALL_TYPE;
+          break;
+        case CALL_MISSED:
+          type |= Types.MISSED_CALL_TYPE;
+          break;
+        case CALL_FIRST_MISSED:
+          type |= Types.FIRST_MISSED_CALL_TYPE;
+          break;
+      }
+    }
 
     Recipient recipient = Recipient.from(context, message.getSender(), true);
 
@@ -391,7 +410,7 @@ public class SmsDatabase extends MessagingDatabase {
     }
 
     boolean    unread     = (Util.isDefaultSmsProvider(context) ||
-            message.isSecureMessage() || message.isGroup());
+            message.isSecureMessage() || message.isGroup() || message.isCallInfo());
 
     long       threadId;
 
@@ -432,11 +451,13 @@ public class SmsDatabase extends MessagingDatabase {
       SQLiteDatabase db        = databaseHelper.getWritableDatabase();
       long           messageId = db.insert(TABLE_NAME, null, values);
 
-      if (unread) {
+      if (unread && runIncrement) {
         DatabaseComponent.get(context).threadDatabase().incrementUnread(threadId, 1);
       }
 
-      DatabaseComponent.get(context).threadDatabase().update(threadId, true);
+      if (runThreadUpdate) {
+        DatabaseComponent.get(context).threadDatabase().update(threadId, true);
+      }
 
       if (message.getSubscriptionId() != -1) {
         DatabaseComponent.get(context).recipientDatabase().setDefaultSubscriptionId(recipient, message.getSubscriptionId());
@@ -448,13 +469,18 @@ public class SmsDatabase extends MessagingDatabase {
     }
   }
 
-  public Optional<InsertResult> insertMessageInbox(IncomingTextMessage message) {
+  public Optional<InsertResult> insertMessageInbox(IncomingTextMessage message,boolean runIncrement, boolean runThreadUpdate) {
     //Important For Group Message
-    return insertMessageInbox(message, Types.BASE_INBOX_TYPE, 0);
+    return insertMessageInbox(message, Types.BASE_INBOX_TYPE, 0,runIncrement,runThreadUpdate);
   }
 
-  public Optional<InsertResult> insertMessageInboxNew(IncomingTextMessage message, long serverTimestamp) {
-    return insertMessageInbox(message, Types.BASE_INBOX_TYPE, serverTimestamp);
+  //New Line
+  public Optional<InsertResult> insertCallMessage(IncomingTextMessage message) {
+    return insertMessageInbox(message, 0, 0, true, true);
+  }
+
+  public Optional<InsertResult> insertMessageInboxNew(IncomingTextMessage message, long serverTimestamp,boolean runIncrement, boolean runThreadUpdate) {
+    return insertMessageInbox(message, Types.BASE_INBOX_TYPE, serverTimestamp,runIncrement,runThreadUpdate);
   }
 
   public Optional<InsertResult> insertMessageOutboxNew(long threadId, OutgoingTextMessage message, long serverTimestamp) {

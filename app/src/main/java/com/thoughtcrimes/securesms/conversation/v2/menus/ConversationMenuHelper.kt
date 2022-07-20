@@ -28,6 +28,7 @@ import io.beldex.bchat.R
 import com.beldex.libbchat.messaging.messages.control.ExpirationTimerUpdate
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.messaging.sending_receiving.leave
+import com.beldex.libbchat.utilities.Contact
 import com.beldex.libbchat.utilities.ExpirationUtil
 import com.beldex.libbchat.utilities.GroupUtil.doubleDecodeGroupID
 import com.beldex.libbchat.utilities.TextSecurePreferences
@@ -36,12 +37,16 @@ import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.guava.Optional
 import com.beldex.libsignal.utilities.toHexString
 import com.thoughtcrimes.securesms.*
+import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
+import com.thoughtcrimes.securesms.contacts.ContactSelectionListItem
 import com.thoughtcrimes.securesms.contacts.SelectContactsActivity
 import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
 import com.thoughtcrimes.securesms.conversation.v2.utilities.NotificationUtils
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.groups.EditClosedGroupActivity
 import com.thoughtcrimes.securesms.groups.EditClosedGroupActivity.Companion.groupIDKey
+import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
+import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.util.BitmapUtil
 import com.thoughtcrimes.securesms.util.getColorWithID
 import java.io.IOException
@@ -78,7 +83,7 @@ object ConversationMenuHelper {
                 inflater.inflate(R.menu.menu_conversation_block, menu)
             }
         }
-        // Secret group menu (options that should only be present in Secret groups)
+        // Closed group menu (options that should only be present in closed groups)
         if (thread.isClosedGroupRecipient) {
             inflater.inflate(R.menu.menu_conversation_closed_group, menu)
         }
@@ -95,6 +100,11 @@ object ConversationMenuHelper {
 
         if (thread.isGroupRecipient && !thread.isMuted) {
             inflater.inflate(R.menu.menu_conversation_notification_settings, menu)
+        }
+
+        //New Line
+        if (!thread.isGroupRecipient && !thread.isLocalNumber) {
+            inflater.inflate(R.menu.menu_conversation_call, menu)
         }
 
         // Search
@@ -151,6 +161,7 @@ object ConversationMenuHelper {
             R.id.menu_unmute_notifications -> { unmute(context, thread) }
             R.id.menu_mute_notifications -> { mute(context, thread) }
             R.id.menu_notification_settings -> { setNotifyType(context, thread) }
+            R.id.menu_call -> { call(context, thread) }
         }
         return true
     }
@@ -165,6 +176,33 @@ object ConversationMenuHelper {
     private fun search(context: Context) {
         val searchViewModel = (context as ConversationActivityV2).searchViewModel
         searchViewModel.onSearchOpened()
+    }
+
+    //New Line
+    private fun call(context: Context, thread: Recipient) {
+
+        if (!TextSecurePreferences.isCallNotificationsEnabled(context)) {
+            AlertDialog.Builder(context)
+                .setTitle(R.string.ConversationActivity_call_title)
+                .setMessage(R.string.ConversationActivity_call_prompt)
+                .setPositiveButton(R.string.activity_settings_title) { _, _ ->
+                    val intent = Intent(context, PrivacySettingsActivity::class.java)
+                    context.startActivity(intent)
+                }
+                .setNeutralButton(R.string.cancel) { d, _ ->
+                    d.dismiss()
+                }.show()
+            return
+        }
+
+        val service = WebRtcCallService.createCall(context, thread)
+        context.startService(service)
+
+        val activity = Intent(context, WebRtcCallActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        context.startActivity(activity)
+
     }
 
     @SuppressLint("StaticFieldLeak")

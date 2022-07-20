@@ -86,7 +86,7 @@ class BeldexAPIDatabase(context: Context, helper: SQLCipherOpenHelper) : Databas
         public val openGroupProfilePictureTable = "open_group_avatar_cache"
         private val openGroupProfilePicture = "open_group_avatar"
         @JvmStatic val createOpenGroupProfilePictureTableCommand = "CREATE TABLE $openGroupProfilePictureTable ($publicChatID STRING PRIMARY KEY, $openGroupProfilePicture TEXT NULLABLE DEFAULT NULL);"
-        // Secret groups (V2)
+        // Closed groups (V2)
         public val closedGroupEncryptionKeyPairsTable = "closed_group_encryption_key_pairs_table"
         public val closedGroupsEncryptionKeyPairIndex = "closed_group_encryption_key_pair_index"
         public val encryptionKeyPairPublicKey = "encryption_key_pair_public_key"

@@ -9,10 +9,7 @@ import com.beldex.libbchat.messaging.jobs.MessageSendJob
 import com.beldex.libbchat.messaging.jobs.NotifyPNServerJob
 import com.beldex.libbchat.messaging.messages.Destination
 import com.beldex.libbchat.messaging.messages.Message
-import com.beldex.libbchat.messaging.messages.control.ClosedGroupControlMessage
-import com.beldex.libbchat.messaging.messages.control.ConfigurationMessage
-import com.beldex.libbchat.messaging.messages.control.ExpirationTimerUpdate
-import com.beldex.libbchat.messaging.messages.control.UnsendRequest
+import com.beldex.libbchat.messaging.messages.control.*
 import com.beldex.libbchat.messaging.messages.visible.*
 import com.beldex.libbchat.messaging.open_groups.*
 import com.beldex.libbchat.messaging.utilities.MessageWrapper
@@ -41,7 +38,7 @@ object MessageSender {
         object SigningFailed : Error("Couldn't sign message.")
         object EncryptionFailed : Error("Couldn't encrypt message.")
 
-        // Secret groups
+        // Closed groups
         object NoThread : Error("Couldn't find a thread associated with the given group public key.")
         object NoKeyPair: Error("Couldn't find a private key associated with the given group public key.")
         object InvalidClosedGroupUpdate : Error("Invalid group update.")
@@ -61,7 +58,7 @@ object MessageSender {
         }
     }
 
-    // One-on-One Chats & Secret groups
+    // One-on-One Chats & Closed Groups
     private fun sendToMnodeDestination(destination: Destination, message: Message, isSyncMessage: Boolean = false): Promise<Unit, Exception> {
         val deferred = deferred<Unit, Exception>()
         val promise = deferred.promise
@@ -96,7 +93,7 @@ object MessageSender {
             // Stop here if this is a self-send, unless it's:
             // • a configuration message
             // • a sync message
-            // • a Secret group control message of type `new`
+            // • a closed group control message of type `new`
             var isNewClosedGroupControlMessage = false
             if (message is ClosedGroupControlMessage && message.kind is ClosedGroupControlMessage.Kind.New) isNewClosedGroupControlMessage = true
             if (isSelfSend && message !is ConfigurationMessage && !isSyncMessage && !isNewClosedGroupControlMessage && message !is UnsendRequest) {
@@ -174,7 +171,7 @@ object MessageSender {
                         val hash = it["hash"] as? String
                         message.serverHash = hash
                         handleSuccessfulMessageSend(message, destination, isSyncMessage)
-                        var shouldNotify = ((message is VisibleMessage || message is UnsendRequest) && !isSyncMessage)
+                        var shouldNotify = ((message is VisibleMessage || message is UnsendRequest || message is CallMessage) && !isSyncMessage)
                         /*
                         if (message is ClosedGroupControlMessage && message.kind is ClosedGroupControlMessage.Kind.New) {
                             shouldNotify = true
@@ -351,7 +348,7 @@ object MessageSender {
         return send(message, destination)
     }
 
-    // Secret groups
+    // Closed groups
     fun createClosedGroup(name: String, members: Collection<String>): Promise<String, Exception> {
         return create(name, members)
     }

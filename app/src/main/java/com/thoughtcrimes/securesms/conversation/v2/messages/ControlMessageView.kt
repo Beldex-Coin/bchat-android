@@ -30,16 +30,29 @@ class ControlMessageView : LinearLayout {
     fun bind(message: MessageRecord, previous: MessageRecord?) {
         binding.dateBreakTextView.showDateBreak(message, previous)
         binding.iconImageView.visibility = View.GONE
-        if (message.isExpirationTimerUpdate) {
-            binding.iconImageView.setImageDrawable(
-                ResourcesCompat.getDrawable(resources, R.drawable.ic_timer, context.theme)
-            )
-            binding.iconImageView.visibility = View.VISIBLE
-        } else if (message.isMediaSavedNotification) {
-            binding.iconImageView.setImageDrawable(
-                ResourcesCompat.getDrawable(resources, R.drawable.ic_file_download_white_36dp, context.theme)
-            )
-            binding.iconImageView.visibility = View.VISIBLE
+        when {
+            message.isExpirationTimerUpdate -> {
+                binding.iconImageView.setImageDrawable(
+                    ResourcesCompat.getDrawable(resources, R.drawable.ic_timer, context.theme)
+                )
+                binding.iconImageView.visibility = View.VISIBLE
+            }
+            message.isMediaSavedNotification -> {
+                binding.iconImageView.setImageDrawable(
+                    ResourcesCompat.getDrawable(resources, R.drawable.ic_file_download_white_36dp, context.theme)
+                )
+                binding.iconImageView.visibility = View.VISIBLE
+            }
+            message.isCallLog -> {
+                val drawable = when {
+                    message.isIncomingCall -> R.drawable.ic_incoming_call
+                    message.isOutgoingCall -> R.drawable.ic_outgoing_call
+                    message.isFirstMissedCall -> R.drawable.ic_info_outline_light
+                    else -> R.drawable.ic_missed_call
+                }
+                binding.iconImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, drawable, context.theme))
+                binding.iconImageView.visibility = View.VISIBLE
+            }
         }
         binding.textView.text = message.getDisplayBody(context)
     }

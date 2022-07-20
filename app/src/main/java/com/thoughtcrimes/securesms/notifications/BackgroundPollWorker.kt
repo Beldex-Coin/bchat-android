@@ -58,7 +58,7 @@ class BackgroundPollWorker(val context: Context, params: WorkerParameters) : Wor
             }
             promises.addAll(dmsPromise.get())
 
-            // Secret groups
+            // Closed groups
             val closedGroupPoller = ClosedGroupPollerV2() // Intentionally don't use shared
             val storage = MessagingModuleConfiguration.shared.storage
             val allGroupPublicKeys = storage.getAllClosedGroupPublicKeys()

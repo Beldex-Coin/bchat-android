@@ -132,4 +132,6 @@
     <item name="alpha_value" type="integer" format="float">0.08</item>
     <dimen name="path_status_view_size_new">12dp</dimen>
 
+    <dimen name="large_button_height">54dp</dimen>
+
 </resources>

@@ -144,4 +144,10 @@
     <color name="chat_user_name_color">#29FD2E</color>
     <color name="disable_button_text_color">#686774</color>
     <color name="animation_popup_background">#1C1C26</color>
+
+    <color name="call_action_button">#DD353535</color>
+    <color name="call_action_button_highlighted">#FFFFFF</color>
+    <color name="call_action_foreground">#D8D8D8</color>
+    <color name="call_action_foreground_highlighted">#171717</color>
+    <color name="call_background">#171717</color>
 </resources>

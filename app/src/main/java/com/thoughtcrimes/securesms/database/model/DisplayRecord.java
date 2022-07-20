@@ -119,7 +119,12 @@ public abstract class DisplayRecord {
   }
   public boolean isDeleted() { return  MmsSmsColumns.Types.isDeletedMessage(type); }
 
+  //New Line
+  public boolean isFirstMissedCall() {
+    return SmsDatabase.Types.isFirstMissedCall(type);
+  }
+
   public boolean isControlMessage() {
-    return isGroupUpdateMessage() || isExpirationTimerUpdate() || isDataExtractionNotification();
+    return isGroupUpdateMessage() || isExpirationTimerUpdate() || isDataExtractionNotification() ||isCallLog();
   }
 }

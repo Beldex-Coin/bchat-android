@@ -12,6 +12,9 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import com.beldex.libbchat.R
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.CALL_NOTIFICATIONS_ENABLED
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.SHOWN_CALL_NOTIFICATION
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.SHOWN_CALL_WARNING
 import com.beldex.libsignal.utilities.Log
 import java.io.IOException
 import java.util.Arrays
@@ -163,6 +166,9 @@ interface TextSecurePreferences {
     fun getAirdropAnimationStatus(): Boolean
     fun setPlayerStatus(status:Boolean)
     fun getPlayerStatus(): Boolean
+    fun isCallNotificationsEnabled(): Boolean
+    fun setShownCallWarning(): Boolean
+    fun setShownCallNotification(): Boolean
 
 
     companion object {
@@ -244,6 +250,9 @@ interface TextSecurePreferences {
         const val MY_ADDRESS = "my_address"
         const val AIRDROP_STATUS = "airdrop_status"
         const val PLAYER_STATUS = "player_status"
+        const val CALL_NOTIFICATIONS_ENABLED = "pref_call_notifications_enabled"
+        const val SHOWN_CALL_WARNING = "pref_shown_call_warning" // call warning is user-facing warning of enabling calls
+        const val SHOWN_CALL_NOTIFICATION = "pref_shown_call_notification" // call notification is a promp to check privacy settings
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -951,6 +960,22 @@ interface TextSecurePreferences {
         fun clearAll(context: Context) {
             getDefaultSharedPreferences(context).edit().clear().commit()
         }
+
+        @JvmStatic
+        fun isCallNotificationsEnabled(context: Context): Boolean {
+            return getBooleanPreference(context, CALL_NOTIFICATIONS_ENABLED, false)
+        }
+
+        @JvmStatic
+        fun setShownCallWarning(context: Context): Boolean {
+            val previousValue = getBooleanPreference(context, SHOWN_CALL_WARNING, false)
+            if (previousValue) {
+                return false
+            }
+            val setValue = true
+            setBooleanPreference(context, SHOWN_CALL_WARNING, setValue)
+            return previousValue != setValue
+        }
     }
 }
 
@@ -1554,5 +1579,31 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun clearAll() {
         getDefaultSharedPreferences(context).edit().clear().commit()
+    }
+
+    override fun isCallNotificationsEnabled(): Boolean {
+        return getBooleanPreference(CALL_NOTIFICATIONS_ENABLED, false)
+    }
+
+    /**
+     * Set the SHOWN_CALL_WARNING preference to `true`
+     * Return `true` if the value did update (it was previously unset)
+     */
+    override fun setShownCallWarning() : Boolean {
+        val previousValue = getBooleanPreference(SHOWN_CALL_WARNING, false)
+        if (previousValue) {
+            return false
+        }
+        val setValue = true
+        setBooleanPreference(SHOWN_CALL_WARNING, setValue)
+        return previousValue != setValue
+    }
+
+    override fun setShownCallNotification(): Boolean {
+        val previousValue = getBooleanPreference(SHOWN_CALL_NOTIFICATION, false)
+        if (previousValue) return false
+        val setValue = true
+        setBooleanPreference(SHOWN_CALL_NOTIFICATION, setValue)
+        return previousValue != setValue
     }
 }

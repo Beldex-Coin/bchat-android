@@ -881,7 +881,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                     // Cancel any outstanding jobs
                     DatabaseComponent.get(context).bchatJobDatabase()
                         .cancelPendingMessageSendJobs(threadID)
-                    // Send a leave group message if this is an active Secret group
+                    // Send a leave group message if this is an active closed group
                     if (recipient.address.isClosedGroup && DatabaseComponent.get(context)
                             .groupDatabase().isActive(recipient.address.toGroupString())
                     ) {
@@ -900,31 +900,27 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                             MessageSender.explicitLeave(groupPublicKey!!, false)
                         }
                     }
-                    if (isClosedGroup) {
-                        MessageSender.explicitLeave(groupPublicKey!!, false)
+                    // Delete the conversation
+                    val v2OpenGroup = DatabaseComponent.get(this@HomeActivity).beldexThreadDatabase()
+                        .getOpenGroupChat(threadID)
+                    if (v2OpenGroup != null) {
+                        OpenGroupManager.delete(v2OpenGroup.server, v2OpenGroup.room, this@HomeActivity)
+                    } else {
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            threadDb.deleteConversation(threadID)
+                        }
                     }
+                    // Update the badge count
+                    ApplicationContext.getInstance(context).messageNotifier.updateNotification(context)
+                    // Notify the user
+                    val toastMessage =
+                        if (recipient.isGroupRecipient) R.string.MessageRecord_left_group else R.string.activity_home_conversation_deleted_message
+                    Toast.makeText(context, toastMessage, Toast.LENGTH_LONG).show()
                 }
-                // Delete the conversation
-                val v2OpenGroup = DatabaseComponent.get(this@HomeActivity).beldexThreadDatabase()
-                    .getOpenGroupChat(threadID)
-                if (v2OpenGroup != null) {
-                    OpenGroupManager.delete(v2OpenGroup.server, v2OpenGroup.room, this@HomeActivity)
-                } else {
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        threadDb.deleteConversation(threadID)
-                    }
-                }
-                // Update the badge count
-                ApplicationContext.getInstance(context).messageNotifier.updateNotification(context)
-                // Notify the user
-                val toastMessage =
-                    if (recipient.isGroupRecipient) R.string.MessageRecord_left_group else R.string.activity_home_conversation_deleted_message
-                Toast.makeText(context, toastMessage, Toast.LENGTH_LONG).show()
             }
-        }
-        .setNegativeButton(R.string.no) { _, _ ->
-            // Do nothing
-        }.show()
+            .setNegativeButton(R.string.no) { _, _ ->
+                // Do nothing
+            }.show()
 
         //New Line
         val textView: TextView? = dialog.findViewById(android.R.id.message)

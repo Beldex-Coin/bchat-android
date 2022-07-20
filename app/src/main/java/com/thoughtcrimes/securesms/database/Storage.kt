@@ -3,6 +3,7 @@ package com.thoughtcrimes.securesms.database
 import android.content.Context
 import android.net.Uri
 import com.beldex.libbchat.database.StorageProtocol
+import com.beldex.libbchat.messaging.calls.CallMessageType
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.messaging.jobs.*
 import com.beldex.libbchat.messaging.messages.control.ConfigurationMessage
@@ -96,7 +97,7 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
         return database.getAttachmentsForMessage(messageID)
     }
 
-    override fun persist(message: VisibleMessage, quotes: QuoteModel?, linkPreview: List<LinkPreview?>, groupPublicKey: String?, openGroupID: String?, attachments: List<Attachment>): Long? {
+    override fun persist(message: VisibleMessage, quotes: QuoteModel?, linkPreview: List<LinkPreview?>, groupPublicKey: String?, openGroupID: String?, attachments: List<Attachment>,runIncrement:Boolean,runThreadUpdate:Boolean): Long? {
         var messageID: Long? = null
         val senderAddress = Address.fromSerialized(message.sender!!)
         val isUserSender = (message.sender!! == getUserPublicKey())
@@ -173,7 +174,7 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
                             it,1)
                     }
                 }
-                smsDatabase.insertMessageInboxNew(encrypted, message.receivedTimestamp ?: 0)
+                smsDatabase.insertMessageInboxNew(encrypted, message.receivedTimestamp ?: 0,runIncrement,runThreadUpdate)
 
             }
             insertResult.orNull()?.let { result ->
@@ -470,7 +471,7 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
                 true
             )
         val smsDB = DatabaseComponent.get(context).smsDatabase()
-        smsDB.insertMessageInbox(infoMessage)
+        smsDB.insertMessageInbox(infoMessage,true,true)
     }
 
     override fun insertOutgoingInfoMessage(context: Context, groupID: String, type: SignalServiceGroup.Type, name: String, members: Collection<String>, admins: Collection<String>, threadID: Long, sentTimestamp: Long) {
@@ -700,5 +701,12 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
             )
 
         database.insertSecureDecryptedMessageInbox(mediaMessage, -1)
+    }
+
+    override fun insertCallMessage(senderPublicKey: String, callMessageType: CallMessageType, sentTimestamp: Long) {
+        val database = DatabaseComponent.get(context).smsDatabase()
+        val address = fromSerialized(senderPublicKey)
+        val callMessage = IncomingTextMessage.fromCallInfo(callMessageType, address, Optional.absent(), sentTimestamp)
+        database.insertCallMessage(callMessage)
     }
 }

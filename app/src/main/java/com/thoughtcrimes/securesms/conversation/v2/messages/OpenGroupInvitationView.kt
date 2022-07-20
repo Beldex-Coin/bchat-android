@@ -44,6 +44,6 @@ class OpenGroupInvitationView : LinearLayout {
     fun joinOpenGroup() {
         val data = data ?: return
         val activity = context as AppCompatActivity
-        JoinOpenGroupDialog(data.groupName, data.groupUrl).show(activity.supportFragmentManager, "Join Social group Dialog")
+        JoinOpenGroupDialog(data.groupName, data.groupUrl).show(activity.supportFragmentManager, "Join Open Group Dialog")
     }
 }

@@ -64,4 +64,4 @@ inline void slow_hash_broken(const void *data, char *hash, int variant) {
 }
 #endif
 
-#endif
+#endif //SESSION_ANDROID_APP_H

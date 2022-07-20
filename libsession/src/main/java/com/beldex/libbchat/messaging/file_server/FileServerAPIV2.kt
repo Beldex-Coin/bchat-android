@@ -14,6 +14,19 @@ import com.beldex.libsignal.utilities.JsonUtil
 import com.beldex.libsignal.utilities.Log
 
 object FileServerAPIV2 {
+
+    //http://49.206.200.190:8080/Diva?public_key=d79d96957f574852ececd0f60930fa160837f5bf7dfc122e99af1cc5f09a8e38
+    //private const val serverPublicKey = "d79d96957f574852ececd0f60930fa160837f5bf7dfc122e99af1cc5f09a8e38"
+
+    //Original
+    //private const val serverPublicKey = "4eb70e67faebd5da48b144096e2082f7e253c67ff48aabd8510a66286b81986f"
+    //10-05-2022
+    //private const val serverPublicKey = "1071fdc1e1cc6565a0306285d1c79c52a376fc7262313e0532a8b1ac7578902b"
+    //const val server = "http://49.206.200.190:8080"
+    //Original
+    //const val server = "http://13.233.251.36"
+    //10-05-2022
+    //const val server = "http://fs.rpcnode.stream"
     //10-06-2022
     private const val serverPublicKey = "f3024b309be838eff764c6804c417b667096d6c5301184f90fb66e9e4515444c"
     const val server = "http://fs1.rpcnode.stream"

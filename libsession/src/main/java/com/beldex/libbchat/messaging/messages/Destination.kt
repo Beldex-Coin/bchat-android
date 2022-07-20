@@ -40,7 +40,7 @@ sealed class Destination {
                     }
                 }
                 else -> {
-                    throw Exception("TODO: Handle legacy Secret groups.")
+                    throw Exception("TODO: Handle legacy closed groups.")
                 }
             }
         }

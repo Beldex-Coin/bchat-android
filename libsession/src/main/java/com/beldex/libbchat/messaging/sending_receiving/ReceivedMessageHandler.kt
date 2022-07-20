@@ -14,6 +14,7 @@ import com.beldex.libbchat.messaging.sending_receiving.link_preview.LinkPreview
 import com.beldex.libbchat.messaging.sending_receiving.notifications.PushNotificationAPI
 import com.beldex.libbchat.messaging.sending_receiving.pollers.ClosedGroupPollerV2
 import com.beldex.libbchat.messaging.sending_receiving.quotes.QuoteModel
+import com.beldex.libbchat.messaging.utilities.WebRtcUtils
 import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.*
 import com.beldex.libbchat.utilities.recipients.Recipient
@@ -47,7 +48,10 @@ fun MessageReceiver.handle(message: Message, proto: SignalServiceProtos.Content,
         is DataExtractionNotification -> handleDataExtractionNotification(message)
         is ConfigurationMessage -> handleConfigurationMessage(message)
         is UnsendRequest -> handleUnsendRequest(message)
-        is VisibleMessage -> handleVisibleMessage(message, proto, openGroupID)
+        is VisibleMessage -> handleVisibleMessage(message, proto, openGroupID, runIncrement = true, runThreadUpdate = true)
+
+        //New Line
+        is CallMessage -> handleCallMessage(message)
     }
 }
 
@@ -55,6 +59,11 @@ fun MessageReceiver.handle(message: Message, proto: SignalServiceProtos.Content,
 private fun MessageReceiver.handleReadReceipt(message: ReadReceipt) {
     val context = MessagingModuleConfiguration.shared.context
     SSKEnvironment.shared.readReceiptManager.processReadReceipts(context, message.sender!!, message.timestamps!!, message.receivedTimestamp!!)
+}
+
+private fun MessageReceiver.handleCallMessage(message: CallMessage) {
+    // TODO: refactor this out to persistence, just to help debug the flow and send/receive in synchronous testing
+    WebRtcUtils.SIGNAL_QUEUE.trySend(message)
 }
 
 private fun MessageReceiver.handleTypingIndicator(message: TypingIndicator) {
@@ -166,7 +175,7 @@ fun MessageReceiver.handleUnsendRequest(message: UnsendRequest) {
 //endregion
 
 // region Visible Messages
-fun MessageReceiver.handleVisibleMessage(message: VisibleMessage, proto: SignalServiceProtos.Content, openGroupID: String?) {
+fun MessageReceiver.handleVisibleMessage(message: VisibleMessage, proto: SignalServiceProtos.Content, openGroupID: String?,runIncrement:Boolean,runThreadUpdate:Boolean) {
     val storage = MessagingModuleConfiguration.shared.storage
     val context = MessagingModuleConfiguration.shared.context
     val userPublicKey = storage.getUserPublicKey()
@@ -242,7 +251,7 @@ fun MessageReceiver.handleVisibleMessage(message: VisibleMessage, proto: SignalS
     }
     // Persist the message
     message.threadID = threadID
-    val messageID = storage.persist(message, quoteModel, linkPreviews, message.groupPublicKey, openGroupID, attachments) ?: throw MessageReceiver.Error.DuplicateMessage
+    val messageID = storage.persist(message, quoteModel, linkPreviews, message.groupPublicKey, openGroupID, attachments,runIncrement,runThreadUpdate) ?: throw MessageReceiver.Error.DuplicateMessage
     // Parse & persist attachments
     // Start attachment downloads if needed
     storage.getAttachmentsForMessage(messageID).iterator().forEach { attachment ->
@@ -263,7 +272,7 @@ fun MessageReceiver.handleVisibleMessage(message: VisibleMessage, proto: SignalS
 }
 //endregion
 
-// region Secret Groups
+// region Closed Groups
 private fun MessageReceiver.handleClosedGroupControlMessage(message: ClosedGroupControlMessage) {
     when (message.kind!!) {
         is ClosedGroupControlMessage.Kind.New -> handleNewClosedGroup(message)
@@ -337,15 +346,15 @@ private fun MessageReceiver.handleClosedGroupEncryptionKeyPair(message: ClosedGr
     // Unwrap the message
     val groupID = GroupUtil.doubleEncodeGroupID(groupPublicKey)
     val group = storage.getGroup(groupID) ?: run {
-        Log.d("Beldex", "Ignoring Secret group encryption key pair for nonexistent group.")
+        Log.d("Beldex", "Ignoring closed group encryption key pair for nonexistent group.")
         return
     }
     if (!group.isActive) {
-        Log.d("Beldex", "Ignoring Secret group encryption key pair for inactive group.")
+        Log.d("Beldex", "Ignoring closed group encryption key pair for inactive group.")
         return
     }
     if (!group.admins.map { it.toString() }.contains(senderPublicKey)) {
-        Log.d("Beldex", "Ignoring Secret group encryption key pair from non-admin.")
+        Log.d("Beldex", "Ignoring closed group encryption key pair from non-admin.")
         return
     }
     // Find our wrapper and decrypt it if possible
@@ -363,11 +372,11 @@ private fun MessageReceiver.handleClosedGroupEncryptionKeyPair(message: ClosedGr
     // Store it if needed
     val closedGroupEncryptionKeyPairs = storage.getClosedGroupEncryptionKeyPairs(groupPublicKey)
     if (closedGroupEncryptionKeyPairs.contains(keyPair)) {
-        Log.d("Beldex", "Ignoring duplicate Secret group encryption key pair.")
+        Log.d("Beldex", "Ignoring duplicate closed group encryption key pair.")
         return
     }
     storage.addClosedGroupEncryptionKeyPair(keyPair, groupPublicKey)
-    Log.d("Beldex", "Received a new Secret group encryption key pair.")
+    Log.d("Beldex", "Received a new closed group encryption key pair.")
 }
 
 private fun MessageReceiver.handleClosedGroupNameChanged(message: ClosedGroupControlMessage) {
@@ -380,11 +389,11 @@ private fun MessageReceiver.handleClosedGroupNameChanged(message: ClosedGroupCon
     // Check that the sender is a member of the group (before the update)
     val groupID = GroupUtil.doubleEncodeGroupID(groupPublicKey)
     val group = storage.getGroup(groupID) ?: run {
-        Log.d("Beldex", "Ignoring Secret group update for nonexistent group.")
+        Log.d("Beldex", "Ignoring closed group update for nonexistent group.")
         return
     }
     if (!group.isActive) {
-        Log.d("Beldex", "Ignoring Secret group update for inactive group.")
+        Log.d("Beldex", "Ignoring closed group update for inactive group.")
         return
     }
     // Check common group update logic
@@ -413,11 +422,11 @@ private fun MessageReceiver.handleClosedGroupMembersAdded(message: ClosedGroupCo
     val groupPublicKey = message.groupPublicKey ?: return
     val groupID = GroupUtil.doubleEncodeGroupID(groupPublicKey)
     val group = storage.getGroup(groupID) ?: run {
-        Log.d("Beldex", "Ignoring Secret group update for nonexistent group.")
+        Log.d("Beldex", "Ignoring closed group update for nonexistent group.")
         return
     }
     if (!group.isActive) {
-        Log.d("Beldex", "Ignoring Secret group update for inactive group.")
+        Log.d("Beldex", "Ignoring closed group update for inactive group.")
         return
     }
     if (!isValidGroupUpdate(group, message.sentTimestamp!!, senderPublicKey)) { return }
@@ -459,7 +468,7 @@ private fun MessageReceiver.handleClosedGroupMembersAdded(message: ClosedGroupCo
         val encryptionKeyPair = pendingKeyPairs[groupPublicKey]?.orNull()
             ?: storage.getLatestClosedGroupEncryptionKeyPair(groupPublicKey)
         if (encryptionKeyPair == null) {
-            Log.d("Beldex", "Couldn't get encryption key pair for Secret group.")
+            Log.d("Beldex", "Couldn't get encryption key pair for closed group.")
         } else {
             for (user in updateMembers) {
                 MessageSender.sendEncryptionKeyPair(groupPublicKey, encryptionKeyPair, setOf(user), targetUser = user, force = false)
@@ -472,7 +481,7 @@ private fun MessageReceiver.handleClosedGroupMembersAdded(message: ClosedGroupCo
 /// • it wasn't the admin that was removed (that should happen through a `MEMBER_LEFT` message).
 /// • the admin sent the message (only the admin can truly remove members).
 /// If we're among the users that were removed, delete all encryption key pairs and the group public key, unsubscribe
-/// from push notifications for this Secret group, and remove the given members from the zombie list for this group.
+/// from push notifications for this closed group, and remove the given members from the zombie list for this group.
 private fun MessageReceiver.handleClosedGroupMembersRemoved(message: ClosedGroupControlMessage) {
     val context = MessagingModuleConfiguration.shared.context
     val storage = MessagingModuleConfiguration.shared.storage
@@ -482,11 +491,11 @@ private fun MessageReceiver.handleClosedGroupMembersRemoved(message: ClosedGroup
     val groupPublicKey = message.groupPublicKey ?: return
     val groupID = GroupUtil.doubleEncodeGroupID(groupPublicKey)
     val group = storage.getGroup(groupID) ?: run {
-        Log.d("Beldex", "Ignoring Secret group update for nonexistent group.")
+        Log.d("Beldex", "Ignoring closed group update for nonexistent group.")
         return
     }
     if (!group.isActive) {
-        Log.d("Beldex", "Ignoring Secret group update for inactive group.")
+        Log.d("Beldex", "Ignoring closed group update for inactive group.")
         return
     }
     val name = group.title
@@ -497,12 +506,12 @@ private fun MessageReceiver.handleClosedGroupMembersRemoved(message: ClosedGroup
     val zombies: Set<String> = storage.getZombieMembers(groupID)
     // Check that the admin wasn't removed
     if (removedMembers.contains(admins.first())) {
-        Log.d("Beldex", "Ignoring invalid Secret group update.")
+        Log.d("Beldex", "Ignoring invalid closed group update.")
         return
     }
     // Check that the message was sent by the group admin
     if (!admins.contains(senderPublicKey)) {
-        Log.d("Beldex", "Ignoring invalid Secret group update.")
+        Log.d("Beldex", "Ignoring invalid closed group update.")
         return
     }
     if (!isValidGroupUpdate(group, message.sentTimestamp!!, senderPublicKey)) { return }
@@ -552,11 +561,11 @@ private fun MessageReceiver.handleClosedGroupMemberLeft(message: ClosedGroupCont
     val groupPublicKey = message.groupPublicKey ?: return
     val groupID = GroupUtil.doubleEncodeGroupID(groupPublicKey)
     val group = storage.getGroup(groupID) ?: run {
-        Log.d("Beldex", "Ignoring Secret group update for nonexistent group.")
+        Log.d("Beldex", "Ignoring closed group update for nonexistent group.")
         return
     }
     if (!group.isActive) {
-        Log.d("Beldex", "Ignoring Secret group update for inactive group.")
+        Log.d("Beldex", "Ignoring closed group update for inactive group.")
         return
     }
     val name = group.title
@@ -591,12 +600,12 @@ private fun isValidGroupUpdate(group: GroupRecord, sentTimestamp: Long, senderPu
     val oldMembers = group.members.map { it.serialize() }
     // Check that the message isn't from before the group was created
     if (group.formationTimestamp > sentTimestamp) {
-        Log.d("Beldex", "Ignoring Secret group update from before thread was created.")
+        Log.d("Beldex", "Ignoring closed group update from before thread was created.")
         return false
     }
     // Check that the sender is a member of the group (before the update)
     if (senderPublicKey !in oldMembers) {
-        Log.d("Beldex", "Ignoring Secret group info message from non-member.")
+        Log.d("Beldex", "Ignoring closed group info message from non-member.")
         return false
     }
     return true

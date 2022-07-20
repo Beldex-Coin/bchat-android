@@ -32,15 +32,15 @@ class CallMessageProcessor (private val context: Context, private val textSecure
         lifecycle.coroutineScope.launch(Dispatchers.IO) {
             while (isActive) {
                 val nextMessage = WebRtcUtils.SIGNAL_QUEUE.receive()
-                Log.d("Beldex", nextMessage.type?.name ?: "CALL MESSAGE RECEIVED")
+                Log.d("Loki", nextMessage.type?.name ?: "CALL MESSAGE RECEIVED")
                 val sender = nextMessage.sender ?: continue
                 /*Hales63*/
                 /*val approvedContact = Recipient.from(context, Address.fromSerialized(sender), false).isApproved
-                Log.i("Beldex", "Contact is approved?: $approvedContact")
+                Log.i("Loki", "Contact is approved?: $approvedContact")
                 if (!approvedContact && storage.getUserPublicKey() != sender) continue*/
 
                 if (!textSecurePreferences.isCallNotificationsEnabled()) {
-                    Log.d("Beldex","Dropping call message if call notifications disabled")
+                    Log.d("Loki","Dropping call message if call notifications disabled")
                     if (nextMessage.type != PRE_OFFER) continue
                     val sentTimestamp = nextMessage.sentTimestamp ?: continue
                     if (textSecurePreferences.setShownCallNotification()) {

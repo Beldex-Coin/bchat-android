@@ -140,7 +140,7 @@
             </LinearLayout>
 
         </androidx.appcompat.widget.Toolbar>
-       <!-- <com.airbnb.lottie.LottieAnimationView
+        <!--<com.airbnb.lottie.LottieAnimationView
             android:id="@+id/airdropIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -151,7 +151,6 @@
             app:lottie_loop="true"
             app:lottie_speed="1"
             app:lottie_autoPlay="true"
-            android:visibility="gone"
             app:lottie_enableMergePathsForKitKatAndAbove="true"
             tools:ignore="ContentDescription"/>-->
 

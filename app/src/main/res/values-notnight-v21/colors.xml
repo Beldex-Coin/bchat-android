@@ -3,7 +3,7 @@
     <color name="accent">#128D15</color>
     <color name="accent_alpha50">#8000E97B</color>
     <color name="text">#000000</color>
-    <color name="destructive">#f26f55</color>
+    <color name="destructive">#FF453A</color>
     <color name="unimportant">#606060</color>
     <color name="profile_picture_background">#B0B0B0</color>
     <color name="cell_background">#EDEDED</color>

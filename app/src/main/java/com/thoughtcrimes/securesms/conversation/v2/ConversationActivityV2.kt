@@ -592,15 +592,39 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
         binding?.inputBar?.showMediaControls = !isOutgoingMessageRequestThread()
         binding?.messageRequestBar?.isVisible = isIncomingMessageRequestThread()
         binding?.acceptMessageRequestButton?.setOnClickListener {
-            acceptMessageRequest()
+            acceptAlartDialog()
         }
         binding?.declineMessageRequestButton?.setOnClickListener {
+            declineAlartDialog()
+        }
+    }
+
+    /*Hales63*/
+    private fun acceptAlartDialog() {
+        val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog)
+        dialog.setMessage(resources.getString(R.string.message_requests_accept_message))
+        dialog.setPositiveButton(R.string.accept) { _, _ ->
+            acceptMessageRequest()
+        }
+        dialog.setNegativeButton(R.string.cancel) { _, _ ->
+            // Do nothing
+        }
+        dialog.create().show()
+    }
+    private fun declineAlartDialog() {
+        val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog_remove_new)
+        dialog.setMessage(resources.getString(R.string.message_requests_decline_message))
+        dialog.setPositiveButton(R.string.decline) { _, _ ->
             viewModel.declineMessageRequest()
             lifecycleScope.launch(Dispatchers.IO) {
                 ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(this@ConversationActivityV2)
             }
             finish()
         }
+        dialog.setNegativeButton(R.string.cancel) { _, _ ->
+            // Do nothing
+        }
+        dialog.create().show()
     }
 
     private fun acceptMessageRequest() {

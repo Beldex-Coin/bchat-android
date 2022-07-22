@@ -87,11 +87,6 @@
         <item name="android:drawableTint" tools:ignore="NewApi">?android:textColorPrimary</item>
     </style>
     <!--New Line -->
-    <style name="Widget.Bchat.Button.Common.ProminentFilledState">
-        <item name="android:background">@drawable/button_state</item>
-        <item name="android:textColor">@color/text</item>
-        <item name="android:drawableTint" tools:ignore="NewApi">?android:textColorPrimary</item>
-    </style>
     <style name="Widget.Bchat.Button.Common.ProminentFilled_ClearData">
         <item name="android:fontFamily">@font/poppins_semi_bold</item>
         <item name="android:background">@drawable/prominent_filled_button_medium_cleardata_background</item>
@@ -163,13 +158,6 @@
         <item name="android:background">@drawable/unimportant_filled_button_medium_background_new</item>
         <item name="android:shadowColor">@color/black</item>
     </style>
-
-    <style name="Widget.Bchat.Button.Dialog.Destructive.New">
-        <item name="android:background">@drawable/destructive_dialog_button_background_new</item>
-        <item name="android:textColor">@android:color/white</item>
-    </style>
-
-
 
 
     <style name="Widget.Bchat.Button.Dialog.Destructive">
@@ -358,11 +346,6 @@
         <item name="android:foreground">?attr/selectableItemBackground</item>
     </style>
 
-    <style name="MenuItemStyle">
-        <item name="android:itemBackground">@drawable/bchat_id_text_view_background</item>
-        <item name="android:textColor">@color/text</item>
-    </style>
-
     <style name="popupOverflowMenu" parent="@style/Widget.MaterialComponents.PopupMenu.Overflow">
         <item name="android:fontFamily">@font/poppins_medium</item>
         <item name="android:popupBackground">@drawable/bchat_id_text_view_background</item>
@@ -386,14 +369,6 @@
         <item name="colorControlNormal">@color/alert_ok</item>
     </style>
 
-    <style name="BChatAlertDialog_remove" parent="ThemeOverlay.AppCompat.Dialog.Alert">
-        <item name="buttonBarNegativeButtonStyle">@style/Widget.BChat.AlertDialog.NegativeButtonStyle</item>
-        <item name="buttonBarPositiveButtonStyle">@style/Widget.BChat.AlertDialog.PositiveButtonStyle</item>
-        <item name="android:background">@color/card_color</item>
-        <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
-        <item name="colorControlActivated">@color/red</item>
-    </style>
-
     <style name="BChatAlertDialog_remove_new" parent="ThemeOverlay.AppCompat.Dialog.Alert">
         <item name="android:fontFamily">@font/poppins_medium</item>
         <item name="android:itemTextAppearance">@style/textViewStyle</item>
@@ -402,11 +377,23 @@
         <item name="buttonBarPositiveButtonStyle">@style/Widget.BChat.AlertDialog.PositiveButtonStyle_New</item>
         <item name="android:background">@color/card_color</item>
         <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
-        <item name="colorControlActivated">@color/red</item>
     </style>
 
-    <style name="privacy_background">
-        <item name="android:background">@drawable/bchat_id_text_view_background</item>
+    <style name="BChatAlertDialog_Clear" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.BChat.AlertDialog.NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.BChat.AlertDialog.PositiveButtonStyle</item>
+        <item name="android:background">@color/card_color</item>
+        <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
+        <item name="colorControlActivated">@color/red</item>
+        <item name="colorControlNormal">@color/red</item>
+    </style>
+    <style name="BChatAlertDialog_Accept" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.BChat.AlertDialog.NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.BChat.AlertDialog.PositiveButtonStyle</item>
+        <item name="android:background">@color/card_color</item>
+        <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
+        <item name="colorControlActivated">@color/alert_ok</item>
+        <item name="colorControlNormal">@color/alert_ok</item>
     </style>
 
     <style name="BChatAlertDialog_centre" parent="ThemeOverlay.AppCompat.Dialog.Alert">
@@ -429,20 +416,16 @@
         <item name="android:textColor">@color/alert_ok</item>
     </style>
 
-    <style name="Widget.BChat.AlertDialog.PositiveButtonStyle_New" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+    <style name="Widget.BChat.AlertDialog.PositiveButtonStyle_New" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:textColor">@color/red</item>
     </style>
 
-    <style name="Widget.BChat.AlertDialog.NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+    <style name="Widget.BChat.AlertDialog.NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:textColor">@color/text</item>
     </style>
 
-    <style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.Dark">
-        <item name="android:homeAsUpIndicator">@drawable/ic_back</item>
-    </style>
 
-
-<!--    <style name="TextAppearance.BChat.TitleTextStyle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">-->
+    <!--    <style name="TextAppearance.BChat.TitleTextStyle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">-->
 <!--        <item name="android:textColor">?android:textColorPrimary</item>-->
 <!--        <item name="android:textSize">@dimen/very_large_font_size</item>-->
 <!--        <item name="android:textAlignment">center</item>-->

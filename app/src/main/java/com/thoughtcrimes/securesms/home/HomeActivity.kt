@@ -600,6 +600,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                     threadDb.latestUnapprovedConversationTimestamp
                 )
                 root.setOnClickListener { showMessageRequests() }
+                expandMessageRequest.setOnClickListener{ showMessageRequests() }
                 root.setOnLongClickListener { hideMessageRequests(); true }
                 root.layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
                 homeAdapter.headerView = root

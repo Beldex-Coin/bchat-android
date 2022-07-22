@@ -7,7 +7,6 @@
     <dimen name="medium_font_size">17sp</dimen>
     <dimen name="large_font_size">20sp</dimen>
     <dimen name="very_large_font_size">26sp</dimen>
-    <dimen name="massive_font_size">50sp</dimen>
 
     <!-- Element Sizes -->
     <dimen name="small_button_height">34dp</dimen>
@@ -56,7 +55,6 @@
     <dimen name="min_custom_keyboard_top_margin_portrait">170dp</dimen>
     <dimen name="emoji_drawer_item_width">48dp</dimen>
     <dimen name="conversation_item_body_text_size">16sp</dimen>
-    <dimen name="conversation_item_date_text_size">12sp</dimen>
     <dimen name="contact_photo_target_size">64dp</dimen>
 
     <dimen name="album_total_width">210dp</dimen>
@@ -121,13 +119,9 @@
 
     <dimen name="alertview_small_icon_size">14dp</dimen>
 
-    <dimen name="recording_voice_lock_target">-96dp</dimen>
-
     <dimen name="drawable_padding">24dp</dimen>
     <dimen name="normal_padding">16dp</dimen>
     <dimen name="action_item_height">56dp</dimen>
-    <dimen name="conversation_item_quote_width">120dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
     <dimen name="account_name_font_size">20sp</dimen>
     <item name="alpha_value" type="integer" format="float">0.08</item>
     <dimen name="path_status_view_size_new">12dp</dimen>

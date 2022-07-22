@@ -10,19 +10,45 @@
     android:paddingStart="@dimen/accent_line_thickness"
     android:paddingEnd="@dimen/medium_spacing">
 
+    <RelativeLayout
+        android:id="@+id/profilePictureView_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/medium_spacing"
+        android:layout_marginStart="@dimen/medium_spacing"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" >
+
     <com.thoughtcrimes.securesms.components.CircleColorImageView
         android:id="@+id/profilePictureView"
         android:layout_width="@dimen/medium_profile_picture_size"
         android:layout_height="@dimen/medium_profile_picture_size"
-        android:layout_marginVertical="@dimen/medium_spacing"
-        android:layout_marginStart="@dimen/medium_spacing"
         android:padding="10dp"
-        android:src="@drawable/ic_outline_message_requests_24"
-        app:circleColor="#585858"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginTop="5dp"
+        android:src="@drawable/ic_message_request"
+        app:circleColor="@color/blue"/>
+        <RelativeLayout
+            android:id="@+id/unreadCountIndicator"
+            android:layout_width="wrap_content"
+            android:layout_marginStart="35dp"
+            android:layout_height="20dp"
+            android:layout_marginEnd="1dp"
+            android:background="@drawable/rounded_indicator">
 
+            <TextView
+                android:id="@+id/unreadCountTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="5"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
     <TextView
         android:id="@+id/conversationViewDisplayNameTextView"
         android:layout_width="0dp"
@@ -37,31 +63,8 @@
         android:textSize="@dimen/medium_font_size"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/profilePictureView"
+        app:layout_constraintStart_toEndOf="@id/profilePictureView_layout"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <RelativeLayout
-        android:id="@+id/unreadCountIndicator"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="4dp"
-        android:background="@drawable/circle_tintable"
-        android:backgroundTint="#585858"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/conversationViewDisplayNameTextView"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/unreadCountTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:textColor="@color/white"
-            android:textSize="@dimen/very_small_font_size"
-            android:textStyle="bold"
-            tools:text="8" />
-
-    </RelativeLayout>
 
     <TextView
         android:id="@+id/timestampTextView"
@@ -73,9 +76,22 @@
         android:maxLines="1"
         android:textColor="@color/text"
         android:textSize="@dimen/small_font_size"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/expandMessageRequest"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="9:41 AM" />
+    <ImageView
+        android:id="@+id/expandMessageRequest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:rotation="180"
+        android:src="@drawable/ic_back"
+        android:maxLines="1"
+        android:textColor="@color/text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="9:41 AM" />
+         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

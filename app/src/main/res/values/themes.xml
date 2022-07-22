@@ -82,7 +82,7 @@
         <item name="menu_delete_icon">@drawable/ic_baseline_delete_24</item>
         <item name="menu_copy_icon">@drawable/ic_baseline_file_copy_24</item>
         <item name="menu_reply_icon">@drawable/ic_baseline_reply_24</item>
-        <item name="menu_selectall_icon">@drawable/ic_baseline_select_all_24</item>
+        <item name="menu_selectall_icon">@drawable/ic_select_all</item>
         <item name="menu_split_icon">@drawable/ic_baseline_call_split_24</item>
         <item name="menu_popup_expand">@drawable/ic_baseline_launch_24</item>
         <item name="menu_info_icon">@drawable/ic_baseline_info_24</item>
@@ -297,8 +297,5 @@
         <item name="android:background">@drawable/default_dialog_background</item>
         <item name="android:windowNoTitle">true</item>
     </style>
-    <style name="Theme.Bchat.DayNight.AppBarOverlay"
-        parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-    <style name="Theme.Bchat.DayNight.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>

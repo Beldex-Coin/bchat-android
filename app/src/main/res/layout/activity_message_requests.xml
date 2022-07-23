@@ -62,30 +62,33 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="@dimen/medium_spacing"
+                android:gravity="center"
                 android:orientation="horizontal">
-
 
                 <Button
                     android:id="@+id/clearAllMessageRequestsButton"
                     style="@style/Widget.Bchat.Button.Common.ProminentFilled_ClearData"
-                    android:layout_width="150dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="@dimen/medium_button_height"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:gravity="center"
+                    android:paddingStart="30dp"
+                    android:paddingEnd="30dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
                     android:text="@string/message_requests_clear_all" />
 
-                <Button
+               <!-- <Button
                     android:id="@+id/acceptAllMessageRequestsButton"
                     style="@style/Widget.Bchat.Button.Common.ProminentFilled"
-                    android:layout_width="150dp"
+                    android:layout_width="0dp"
                     android:layout_height="@dimen/medium_button_height"
-                    android:gravity="center"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:text="@string/message_requests_accept_all" />
+                    android:layout_weight="1"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:visibility="gone"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginStart="15dp"
+                    android:text="@string/message_requests_accept_all" />-->
+
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>

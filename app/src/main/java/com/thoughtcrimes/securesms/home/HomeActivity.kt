@@ -1038,8 +1038,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         push(intent)
     }
 
-    private fun hideMessageRequests() {
-        AlertDialog.Builder(this)
+    private fun hideMessageRequests() { 
+        AlertDialog.Builder(this,R.style.BChatAlertDialog)
             .setMessage("Hide message requests?")
             .setPositiveButton(R.string.yes) { _, _ ->
                 textSecurePreferences.setHasHiddenMessageRequests()

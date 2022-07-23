@@ -523,6 +523,7 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
         binding.blockedBannerTextView.text = resources.getString(R.string.activity_conversation_blocked_banner_text, name)
         binding.blockedBanner.isVisible = viewModel.recipient.isBlocked
         binding.blockedBanner.setOnClickListener { viewModel.unblock() }
+        binding.unblockButton.setOnClickListener{viewModel.unblock()}
     }
 
     private fun setUpLinkPreviewObserver() {

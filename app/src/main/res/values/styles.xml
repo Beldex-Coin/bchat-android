@@ -94,6 +94,13 @@
         <item name="android:drawableTint" tools:ignore="NewApi">?android:textColorPrimary</item>
     </style>
 
+    <style name="Widget.Bchat.Button.Common.ProminentFilled_ClearData_WhiteText">
+        <item name="android:fontFamily">@font/poppins_semi_bold</item>
+        <item name="android:background">@drawable/prominent_filled_button_medium_cleardata_background</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:drawableTint" tools:ignore="NewApi">?android:textColorPrimary</item>
+    </style>
+
     <style name="Widget.Bchat.Button.Common.Copy">
         <item name="android:fontFamily">@font/poppins_semi_bold</item>
         <item name="android:background">@drawable/copy_button_background</item>
@@ -356,6 +363,7 @@
         <item name="buttonBarNegativeButtonStyle">@style/Widget.BChat.AlertDialog.NegativeButtonStyle</item>
         <item name="buttonBarPositiveButtonStyle">@style/Widget.BChat.AlertDialog.PositiveButtonStyle</item>
         <item name="android:background">@color/card_color</item>
+        <item name="android:textSize">15sp</item>
         <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
         <item name="colorControlActivated">@color/alert_ok</item>
     </style>
@@ -371,6 +379,7 @@
 
     <style name="BChatAlertDialog_remove_new" parent="ThemeOverlay.AppCompat.Dialog.Alert">
         <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:textSize">15sp</item>
         <item name="android:itemTextAppearance">@style/textViewStyle</item>
         <item name="android:textViewStyle">@style/textViewStyle</item>
         <item name="buttonBarNegativeButtonStyle">@style/Widget.BChat.AlertDialog.NegativeButtonStyle</item>
@@ -388,12 +397,11 @@
         <item name="colorControlNormal">@color/red</item>
     </style>
     <style name="BChatAlertDialog_Accept" parent="ThemeOverlay.AppCompat.Dialog.Alert">
-        <item name="buttonBarNegativeButtonStyle">@style/Widget.BChat.AlertDialog.NegativeButtonStyle</item>
-        <item name="buttonBarPositiveButtonStyle">@style/Widget.BChat.AlertDialog.PositiveButtonStyle</item>
         <item name="android:background">@color/card_color</item>
         <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
         <item name="colorControlActivated">@color/alert_ok</item>
         <item name="colorControlNormal">@color/alert_ok</item>
+
     </style>
 
     <style name="BChatAlertDialog_centre" parent="ThemeOverlay.AppCompat.Dialog.Alert">

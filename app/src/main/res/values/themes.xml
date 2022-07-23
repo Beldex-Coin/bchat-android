@@ -77,12 +77,13 @@
         <item name="menu_trash_icon">@drawable/ic_baseline_delete_24</item>
         <item name="menu_block_icon">@drawable/ic_baseline_block_24</item>
         <item name="menu_forward_icon">@drawable/ic_baseline_forward_24</item>
-        <item name="menu_save_icon">@drawable/ic_baseline_save_24</item>
+        <item name="menu_save_icon">@drawable/ic_menu_save_icon</item>
         <item name="menu_photo_library_icon">@drawable/ic_baseline_photo_library_24</item>
         <item name="menu_delete_icon">@drawable/ic_baseline_delete_24</item>
         <item name="menu_copy_icon">@drawable/ic_baseline_file_copy_24</item>
         <item name="menu_reply_icon">@drawable/ic_baseline_reply_24</item>
         <item name="menu_selectall_icon">@drawable/ic_select_all</item>
+        <item name="menu_select_all_icon_new">@drawable/ic_select_all_new</item>
         <item name="menu_split_icon">@drawable/ic_baseline_call_split_24</item>
         <item name="menu_popup_expand">@drawable/ic_baseline_launch_24</item>
         <item name="menu_info_icon">@drawable/ic_baseline_info_24</item>

@@ -184,9 +184,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/page_background"
-        android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone"
+        android:gravity="center"
         tools:visibility="visible">
 
         <TextView
@@ -206,10 +206,10 @@
             style="@style/Widget.Bchat.Button.Common.ProminentFilled_ClearData_WhiteText"
             android:layout_width="wrap_content"
             android:layout_height="38dp"
-            android:layout_marginBottom="10dp"
-            android:fontFamily="@font/poppins_medium"
             android:paddingStart="30dp"
             android:paddingEnd="30dp"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="@font/poppins_medium"
             android:text="@string/ConversationActivity_unblock" />
     </LinearLayout>
 
@@ -309,7 +309,7 @@
 
                 <Button
                     android:id="@+id/declineMessageRequestButton"
-                    style="@style/Widget.Bchat.Button.Common.ProminentFilled_ClearData"
+                    style="@style/Widget.Bchat.Button.Common.ProminentFilled_ClearData_WhiteText"
                     android:layout_width="0dp"
                     android:fontFamily="@font/poppins_medium"
                     android:layout_height="@dimen/medium_button_height"

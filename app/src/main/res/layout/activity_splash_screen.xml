@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/page_background"
     tools:context="com.thoughtcrimes.securesms.onboarding.SplashScreenActivity">
-    <com.airbnb.lottie.LottieAnimationView
+   <!-- <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/img"
         android:layout_width="match_parent"
         android:layout_height="300dp"
@@ -22,7 +22,18 @@
         app:lottie_loop="true"
         app:lottie_speed="1"
         app:lottie_autoPlay="true"
+        android:visibility="gone"
         app:lottie_enableMergePathsForKitKatAndAbove="true"
-        tools:ignore="ContentDescription"/>
+        tools:ignore="ContentDescription"/>-->
+    <ImageView
+        android:id="@+id/bchat_splash_imageView"
+        android:layout_width="200dp"
+        android:layout_height="180dp"
+        android:visibility="visible"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:src="@drawable/ic_bchat_shield"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

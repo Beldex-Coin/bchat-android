@@ -54,40 +54,41 @@
             android:layout_height="80dp"
             app:cardBackgroundColor="@color/card_color"
             android:layout_alignParentBottom="true"
-            android:background="@color/card_color"
-            >
-
+            android:background="@color/card_color">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="@dimen/medium_spacing"
+                android:gravity="center"
                 android:orientation="horizontal">
-
 
                 <Button
                     android:id="@+id/clearAllMessageRequestsButton"
-                    style="@style/Widget.Bchat.Button.Common.ProminentFilled_ClearData"
-                    android:layout_width="150dp"
+                    style="@style/Widget.Bchat.Button.Common.ProminentFilled_ClearData_WhiteText"
+                    android:layout_width="0dp"
                     android:layout_height="@dimen/medium_button_height"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
                     android:text="@string/message_requests_clear_all" />
 
                 <Button
                     android:id="@+id/acceptAllMessageRequestsButton"
                     style="@style/Widget.Bchat.Button.Common.ProminentFilled"
-                    android:layout_width="150dp"
+                    android:layout_width="0dp"
                     android:layout_height="@dimen/medium_button_height"
-                    android:gravity="center"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
+                    android:layout_weight="1"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginStart="15dp"
                     android:text="@string/message_requests_accept_all" />
 
             </LinearLayout>
+
         </androidx.cardview.widget.CardView>
 
     </RelativeLayout>

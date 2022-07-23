@@ -427,6 +427,7 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
     private class ActionModeCallback implements ActionMode.Callback {
 
       private int originalStatusBarColor;
+      private boolean selectedStatus = false;
 
       @Override
       public boolean onCreateActionMode(ActionMode mode, Menu menu) {
@@ -457,7 +458,20 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
             actionMode.finish();
             return true;
           case R.id.select_all:
-            handleSelectAllMedia();
+
+            //New Line
+            if(selectedStatus) {
+              selectedStatus = false;
+              menuItem.setIcon(R.drawable.ic_select_all);
+              getListAdapter().clearSelection();
+              actionMode.finish();
+            }else {
+              selectedStatus = true;
+              menuItem.setIcon(R.drawable.ic_select_all_new);
+              handleSelectAllMedia();
+            }
+
+            //handleSelectAllMedia();
             return true;
         }
         return false;
@@ -465,6 +479,9 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
 
       @Override
       public void onDestroyActionMode(ActionMode mode) {
+        //New Line
+        selectedStatus = false;
+
         actionMode = null;
         getListAdapter().clearSelection();
         ((MediaOverviewActivity) getActivity()).onExitMultiSelect();

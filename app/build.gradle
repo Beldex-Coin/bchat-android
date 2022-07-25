@@ -169,7 +169,7 @@ dependencies {
 }
 
 def canonicalVersionCode = 20
-def canonicalVersionName = "1.0.5"
+def canonicalVersionName = "1.1.0"
 
 //First Release Date 17-06-2022
 //Version Code 15 Version Name 1.0.0
@@ -187,7 +187,7 @@ def canonicalVersionName = "1.0.5"
 //Version Code 19 Version Name 1.0.4
 
 //Six Release Date -
-//Version Code 20 Version Name 1.0.5
+//Version Code 20 Version Name 1.1.0
 
 
 def postFixSize = 10
@@ -314,6 +314,9 @@ android {
     }
 
     lintOptions {
+/*
+        checkReleaseBuilds false
+*/
         abortOnError true
         baseline file("lint-baseline.xml")
     }

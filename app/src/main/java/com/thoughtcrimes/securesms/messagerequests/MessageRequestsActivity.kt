@@ -82,7 +82,7 @@ class MessageRequestsActivity : PassphraseRequiredActionBarActivity(), Conversat
     }
 
     override fun onLongConversationClick(thread: ThreadRecord) {
-        val dialog = AlertDialog.Builder(this)
+        val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog_Clear_All)
         dialog.setMessage(resources.getString(R.string.message_requests_delete_message))
         dialog.setPositiveButton(R.string.yes) { _, _ ->
             viewModel.deleteMessageRequest(thread)
@@ -106,18 +106,18 @@ class MessageRequestsActivity : PassphraseRequiredActionBarActivity(), Conversat
     }
 
     private fun deleteAllAndBlock() {
-        val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog_remove_new)
-            .setMessage(resources.getString(R.string.message_requests_clear_all_message))
-            .setPositiveButton(R.string.message_requests_clear) { _, _ ->
+        val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog_Clear_All)
+           dialog.setMessage(resources.getString(R.string.message_requests_clear_all_message))
+           dialog.setPositiveButton(R.string.message_requests_clear) { _, _ ->
             viewModel.clearAllMessageRequests()
             LoaderManager.getInstance(this).restartLoader(0, null, this)
             lifecycleScope.launch(Dispatchers.IO) {
                 ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(this@MessageRequestsActivity)
             }
         }
-        .setNegativeButton(R.string.cancel) { _, _ ->
+        dialog.setNegativeButton(R.string.cancel) { _, _ ->
             // Do nothing
-        }.show()
+        }.create().show()
     }
 
     private fun acceptAllMessageRequest() {

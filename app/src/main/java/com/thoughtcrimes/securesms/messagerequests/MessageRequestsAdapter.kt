@@ -31,7 +31,8 @@ class MessageRequestsAdapter(
         val view = MessageRequestView(context)
         view.setOnClickListener { view.thread?.let { listener.onConversationClick(it) } }
         view.setOnLongClickListener {
-            view.thread?.let { showPopupMenu(view) }
+            view.thread?.let {
+                listener.onLongConversationClick(view.thread!!) }
             true
         }
         return ViewHolder(view)
@@ -48,7 +49,7 @@ class MessageRequestsAdapter(
     }
 
     private fun showPopupMenu(view: MessageRequestView) {
-        val popupMenu = PopupMenu(context, view)
+        val popupMenu = PopupMenu(context, view,R.style.MessageRequest_PopupMenu)
         popupMenu.menuInflater.inflate(R.menu.menu_message_request, popupMenu.menu)
         popupMenu.setOnMenuItemClickListener { menuItem ->
             if (menuItem.itemId == R.id.menu_delete_message_request) {

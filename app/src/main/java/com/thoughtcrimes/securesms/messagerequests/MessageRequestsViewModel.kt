@@ -20,5 +20,8 @@ class MessageRequestsViewModel @Inject constructor(
     fun clearAllMessageRequests() = viewModelScope.launch {
         repository.clearAllMessageRequests()
     }
+    fun acceptAllMessageRequests() = viewModelScope.launch {
+        repository.acceptAllMessageRequests()
+    }
 
 }

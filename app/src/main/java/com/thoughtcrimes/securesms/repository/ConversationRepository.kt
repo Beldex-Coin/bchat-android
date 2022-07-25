@@ -57,6 +57,14 @@ interface ConversationRepository {
 
     suspend fun clearAllMessageRequests(): ResultOf<Unit>
 
+    suspend fun acceptAllMessageRequests(): ResultOf<Unit>
+
+    suspend fun acceptAllMessageRequest(thread: ThreadRecord): ResultOf<Unit>
+
+    suspend fun request(): ResultOf<Unit>
+
+
+
     suspend fun acceptMessageRequest(threadId: Long, recipient: Recipient): ResultOf<Unit>
 
     fun declineMessageRequest(threadId: Long, recipient: Recipient)
@@ -250,6 +258,20 @@ class DefaultConversationRepository @Inject constructor(
         return ResultOf.Success(Unit)
     }
 
+    override suspend fun acceptAllMessageRequest(thread: ThreadRecord): ResultOf<Unit>{
+        bchatjobdatabase.cancelPendingMessageSendJobs(thread.threadId)
+        recipientDb.setApproved(thread.recipient, true)
+        val message = MessageRequestResponse(true)
+        MessageSender.send(message, Destination.from(thread.recipient.address))
+            .success {
+                threadDb.setHasSent(thread.threadId, true)
+                //continuation.resume(ResultOf.Success(Unit))
+            }.fail { error ->
+                //continuation.resumeWithException(error)
+            }
+        return ResultOf.Success(Unit)
+    }
+
     override suspend fun clearAllMessageRequests(): ResultOf<Unit> {
         threadDb.readerFor(threadDb.unapprovedConversationList).use { reader ->
             while (reader.next != null) {
@@ -257,6 +279,19 @@ class DefaultConversationRepository @Inject constructor(
             }
         }
         return ResultOf.Success(Unit)
+    }
+
+    override suspend fun acceptAllMessageRequests(): ResultOf<Unit> {
+        threadDb.readerFor(threadDb.unapprovedConversationList).use { reader ->
+            while (reader.next != null) {
+                acceptAllMessageRequest(reader.current)
+            }
+        }
+        return request()
+    }
+
+    override suspend fun request(): ResultOf<Unit> = suspendCoroutine { continuation ->
+        continuation.resume(ResultOf.Success(Unit))
     }
 
     override suspend fun acceptMessageRequest(threadId: Long, recipient: Recipient): ResultOf<Unit> = suspendCoroutine { continuation ->

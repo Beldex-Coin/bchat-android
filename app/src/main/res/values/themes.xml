@@ -76,6 +76,7 @@
         <item name="menu_accept_icon">@drawable/ic_baseline_done_24</item>
         <item name="menu_trash_icon">@drawable/ic_baseline_delete_24</item>
         <item name="menu_block_icon">@drawable/ic_baseline_block_24</item>
+        <item name="menu_un_block_icon">@drawable/ic_baseline_unblock_24</item>
         <item name="menu_forward_icon">@drawable/ic_baseline_forward_24</item>
         <item name="menu_save_icon">@drawable/ic_menu_save_icon</item>
         <item name="menu_photo_library_icon">@drawable/ic_baseline_photo_library_24</item>

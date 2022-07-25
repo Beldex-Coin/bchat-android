@@ -21,10 +21,12 @@
     <color name="new_conversation_button_collapsed_background">#2F2F40</color>
     <color name="new_conversation_button_shadow">#077C44</color>
     <color name="pn_option_background">#1B1B1B</color>
+    <color name="open_group_chip_color">#0D000000</color>
     <color name="pn_option_border">#212121</color>
     <color name="paths_building">#FFCE3A</color>
     <color name="message_selected">#292979FB</color>
     <color name="input_bar_background">@color/card_color</color>
+    <color name="input_bar_button_background">#0D000000</color>
     <color name="input_bar_button_background_opaque">#232323</color>
     <color name="input_bar_button_background_opaque_border">#33FFFFFF</color>
     <color name="input_bar_lock_view_background">#171717</color>
@@ -32,6 +34,8 @@
     <color name="mention_candidates_view_background">#171717</color>
     <color name="mention_candidates_view_background_ripple">#0C0C0C</color>
     <color name="link_preview_background">#000000</color>
+    <color name="scroll_to_bottom_button_background">#FCFCFC</color>
+    <color name="scroll_to_bottom_button_border">#99000000</color>
     <color name="conversation_unread_count_indicator_background">#303030</color>
     <color name="conversation_pinned_background">#404040</color>
     <color name="conversation_pinned_icon">#B3B3B3</color>
@@ -95,17 +99,23 @@
     <color name="sign_in_black">#3F3E4A</color>
     <color name="card_color">#343441</color>
     <color name="page_background">#24242F</color>
+    <color name="welcome_bg">#EDEDED</color>
     <color name="play_button">#000000</color>
     <color name="drawer_card_color">#16161f</color>
     <color name="drawer_divider_color">#23232F</color>
     <color name="qr_code_card_color">#40404D</color>
     <color name="scan_qr_code_text_color">#82828D</color>
     <color name="default_dialog_background_color_inset">#1c1c26</color>
+    <color name="clear_all_data_chat_id">#1AB51E</color>
+    <color name="unimportant_dialog_button_background_new">@color/white</color>
+    <color name="unimportant_dialog_button_background_border_new">#82828D</color>
     <color name="drawer_icon_color">#d1d1d3</color>
     <color name="appearance_text">#FFFFFF</color>
     <color name="bchat_version">#797984</color>
+    <color name="drawer_beldex_text">#1AB51E</color>
     <color name="drawer_background">#1C1C26</color>
     <color name="show_keys_divider_color">#2C2C3C</color>
+    <color name="preference_screen_background_color">#F4F4F4</color>
     <color name="landing_page_background">#24242F</color>
     <color name="restore_from_seed_divider_color">#39394B</color>
     <color name="home_search_icon_and_hint">#B9B9B9</color>
@@ -116,6 +126,8 @@
     <color name="document_text">#000000</color>
     <color name="copy_and_share">@color/card_color</color>
     <color name="alert_ok">#29fd2e</color>
+    <color name="default_group_bg">#F5F5F5</color>
+    <color name="text_hint">#272727</color>
 
     <color name="keyboard_background">#131319</color>
     <color name="button_background">#2F2F3C</color>
@@ -129,4 +141,5 @@
     <color name="stroke_color">#A6A6B5</color>
     <color name="chat_user_name_color">#29FD2E</color>
     <color name="disable_button_text_color">#686774</color>
+    <color name="animation_popup_background">#1C1C26</color>
 </resources>

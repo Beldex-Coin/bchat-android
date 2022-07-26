@@ -367,7 +367,6 @@
         <item name="android:background">@color/card_color</item>
         <item name="android:textSize">15sp</item>
         <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
-        <item name="colorControlActivated">@color/alert_ok</item>
     </style>
 
     <style name="BChatAlertDialog_ForBan" parent="ThemeOverlay.AppCompat.Dialog.Alert">
@@ -376,8 +375,6 @@
         <item name="android:background">@color/card_color</item>
         <item name="android:textSize">15sp</item>
         <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
-        <item name="colorControlActivated">@color/alert_ok</item>
-        <item name="colorControlNormal">@color/alert_ok</item>
     </style>
 
     <style name="BChatAlertDialog_remove_new" parent="ThemeOverlay.AppCompat.Dialog.Alert">

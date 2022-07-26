@@ -403,9 +403,11 @@
 
     <style name="AlertDialog_Positive_Button" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
         <item name="android:textColor">@color/red</item>
+        <item name="android:textSize">15sp</item>
     </style>
     <style name="AlertDialog_Negative_Button" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
         <item name="android:textColor">@color/text</item>
+        <item name="android:textSize">15sp</item>
     </style>
     <style name="BChatAlertDialog_Accept" parent="ThemeOverlay.AppCompat.Dialog.Alert">
         <item name="android:background">@color/card_color</item>
@@ -433,14 +435,18 @@
 
     <style name="Widget.BChat.AlertDialog.PositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
         <item name="android:textColor">@color/alert_ok</item>
+        <item name="android:textAllCaps">true</item>
     </style>
 
     <style name="Widget.BChat.AlertDialog.PositiveButtonStyle_New" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:textColor">@color/red</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">15sp</item>
     </style>
 
     <style name="Widget.BChat.AlertDialog.NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:textColor">@color/text</item>
+        <item name="android:textAllCaps">true</item>
     </style>
 
 

@@ -82,6 +82,7 @@ import android.content.*
 
 import android.os.*
 import android.view.ViewGroup.MarginLayoutParams
+import android.widget.TextView
 import com.beldex.libbchat.messaging.messages.signal.OutgoingMediaMessage
 import com.beldex.libbchat.messaging.messages.signal.OutgoingTextMessage
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment
@@ -603,29 +604,37 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
     /*Hales63*/
     private fun acceptAlartDialog() {
         val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog)
-        dialog.setMessage(resources.getString(R.string.message_requests_accept_message))
-        dialog.setPositiveButton(R.string.accept) { _, _ ->
-            acceptMessageRequest()
-        }
-        dialog.setNegativeButton(R.string.cancel) { _, _ ->
-            // Do nothing
-        }
-        dialog.create().show()
+            .setMessage(resources.getString(R.string.message_requests_accept_message))
+            .setPositiveButton(R.string.accept) { _, _ ->
+                acceptMessageRequest()
+            }
+            .setNegativeButton(R.string.cancel) { _, _ ->
+                // Do nothing
+            }.show()
+
+        //SteveJosephh21
+        val textView: TextView? = dialog.findViewById(android.R.id.message)
+        val face:Typeface =Typeface.createFromAsset(assets,"fonts/poppins_medium.ttf")
+        textView!!.typeface = face
     }
     private fun declineAlartDialog() {
         val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog_remove_new)
-        dialog.setMessage(resources.getString(R.string.message_requests_decline_message))
-        dialog.setPositiveButton(R.string.decline) { _, _ ->
+            .setMessage(resources.getString(R.string.message_requests_decline_message))
+            .setPositiveButton(R.string.decline) { _, _ ->
             viewModel.declineMessageRequest()
             lifecycleScope.launch(Dispatchers.IO) {
                 ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(this@ConversationActivityV2)
             }
             finish()
         }
-        dialog.setNegativeButton(R.string.cancel) { _, _ ->
+            .setNegativeButton(R.string.cancel) { _, _ ->
             // Do nothing
-        }
-        dialog.create().show()
+        }.show()
+
+        //SteveJosephh21
+        val textView:TextView? = dialog.findViewById(android.R.id.message)
+        val face:Typeface =Typeface.createFromAsset(assets,"fonts/poppins_medium.ttf")
+        textView!!.typeface = face
     }
 
     private fun acceptMessageRequest() {

@@ -1039,7 +1039,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     }
 
     private fun hideMessageRequests() { 
-        AlertDialog.Builder(this,R.style.BChatAlertDialog)
+        val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog)
             .setMessage("Hide message requests?")
             .setPositiveButton(R.string.yes) { _, _ ->
                 textSecurePreferences.setHasHiddenMessageRequests()
@@ -1048,8 +1048,12 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
             }
             .setNegativeButton(R.string.no) { _, _ ->
                 // Do nothing
-            }
-            .create().show()
+            }.show()
+
+        //SteveJosephh21
+        val textView:TextView = dialog.findViewById(android.R.id.message)
+        val face:Typeface =Typeface.createFromAsset(assets,"fonts/poppins_medium.ttf")
+        textView.typeface = face
     }
     // endregion
 }

@@ -660,13 +660,16 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
     }
 
     private fun isOutgoingMessageRequestThread(): Boolean {
-        return !viewModel.recipient.isGroupRecipient &&
-                !(viewModel.recipient.hasApprovedMe() || viewModel.hasReceived())
+        val recipient = viewModel.recipient ?: return false
+        return !recipient.isGroupRecipient &&
+                !recipient.isLocalNumber &&
+                !(recipient.hasApprovedMe() || viewModel.hasReceived())
     }
-
     private fun isIncomingMessageRequestThread(): Boolean {
-        return !viewModel.recipient.isGroupRecipient &&
-                !viewModel.recipient.isApproved &&
+        val recipient = viewModel.recipient ?: return false
+        return !recipient.isGroupRecipient &&
+                !recipient.isApproved &&
+                !recipient.isLocalNumber &&
                 !threadDb.getLastSeenAndHasSent(viewModel.threadId).second() &&
                 threadDb.getMessageCount(viewModel.threadId) > 0
     }
@@ -1232,6 +1235,7 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
         // Reset the attachment manager
         attachmentManager.clear()
         // Reset attachments button if needed
+        Log.d("Loki","isShowingAttachmentOptions value in sendAttachments $isShowingAttachmentOptions")
         if (isShowingAttachmentOptions) { toggleAttachmentOptions() }
         // Put the message in the database
         message.id = mmsDb.insertMessageOutbox(outgoingTextMessage, viewModel.threadId, false) { }

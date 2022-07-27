@@ -11,6 +11,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
+import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.thoughtcrimes.securesms.ApplicationContext;
 import com.thoughtcrimes.securesms.database.MessagingDatabase;
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent;
@@ -84,7 +85,8 @@ public class MarkReadReceiver extends BroadcastReceiver {
 
     for (Address address : addressMap.keySet()) {
       List<Long> timestamps = Stream.of(addressMap.get(address)).map(MessagingDatabase.SyncMessageId::getTimetamp).toList();
-      if (!BchatMetaProtocol.shouldSendReadReceipt(address)) { continue; }
+      /*Hales63*/
+      if (!BchatMetaProtocol.shouldSendReadReceipt(Recipient.from(context, address, false))) { continue; }
       ReadReceipt readReceipt = new ReadReceipt(timestamps);
       readReceipt.setSentTimestamp(System.currentTimeMillis());
       MessageSender.send(readReceipt, address);

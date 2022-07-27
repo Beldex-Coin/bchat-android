@@ -163,6 +163,12 @@ interface TextSecurePreferences {
     fun getAirdropAnimationStatus(): Boolean
     fun setPlayerStatus(status:Boolean)
     fun getPlayerStatus(): Boolean
+    /*Hales63*/
+    fun hasHiddenMessageRequests(): Boolean
+    fun setHasHiddenMessageRequests()
+    //New Line
+    fun hasShowMessageRequests(): Boolean
+    fun setHasShowMessageRequests(status:Boolean)
 
 
     companion object {
@@ -244,6 +250,8 @@ interface TextSecurePreferences {
         const val MY_ADDRESS = "my_address"
         const val AIRDROP_STATUS = "airdrop_status"
         const val PLAYER_STATUS = "player_status"
+        const val HAS_HIDDEN_MESSAGE_REQUESTS = "pref_message_requests_hidden"
+        const val HAS_SHOW_MESSAGE_REQUESTS = "pref_message_requests_show"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -433,7 +441,7 @@ interface TextSecurePreferences {
 
         @JvmStatic
         fun isLinkPreviewsEnabled(context: Context): Boolean {
-            return getBooleanPreference(context, LINK_PREVIEWS, false)
+            return getBooleanPreference(context, LINK_PREVIEWS, true)
         }
 
         @JvmStatic
@@ -951,6 +959,26 @@ interface TextSecurePreferences {
         fun clearAll(context: Context) {
             getDefaultSharedPreferences(context).edit().clear().commit()
         }
+
+        @JvmStatic
+        fun hasHiddenMessageRequests(context: Context): Boolean {
+            return getBooleanPreference(context, HAS_HIDDEN_MESSAGE_REQUESTS, false)
+        }
+
+        @JvmStatic
+        fun removeHasHiddenMessageRequests(context: Context) {
+            removePreference(context, HAS_HIDDEN_MESSAGE_REQUESTS)
+        }
+
+        @JvmStatic
+        fun hasShowMessageRequests(context: Context): Boolean {
+            return getBooleanPreference(context, HAS_SHOW_MESSAGE_REQUESTS, false)
+        }
+
+        @JvmStatic
+        fun setHasShowMessageRequests(context:Context,status: Boolean) {
+            setBooleanPreference(context, HAS_SHOW_MESSAGE_REQUESTS, status)
+        }
     }
 }
 
@@ -1112,7 +1140,7 @@ class AppTextSecurePreferences @Inject constructor(
     }
 
     override fun isLinkPreviewsEnabled(): Boolean {
-        return getBooleanPreference(TextSecurePreferences.LINK_PREVIEWS, false)
+        return getBooleanPreference(TextSecurePreferences.LINK_PREVIEWS, true)
     }
 
     override fun setLinkPreviewsEnabled(enabled: Boolean) {
@@ -1545,7 +1573,7 @@ class AppTextSecurePreferences @Inject constructor(
     }
 
     override fun hasSeenLinkPreviewSuggestionDialog(): Boolean {
-        return getBooleanPreference("has_seen_link_preview_suggestion_dialog", false)
+        return getBooleanPreference("has_seen_link_preview_suggestion_dialog", true)
     }
 
     override fun setHasSeenLinkPreviewSuggestionDialog() {
@@ -1554,5 +1582,20 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun clearAll() {
         getDefaultSharedPreferences(context).edit().clear().commit()
+    }
+    override fun hasHiddenMessageRequests(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.HAS_HIDDEN_MESSAGE_REQUESTS, false)
+    }
+
+    override fun setHasHiddenMessageRequests() {
+        setBooleanPreference(TextSecurePreferences.HAS_HIDDEN_MESSAGE_REQUESTS, true)
+    }
+
+    override fun hasShowMessageRequests(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.HAS_SHOW_MESSAGE_REQUESTS, false)
+    }
+
+    override fun setHasShowMessageRequests(status: Boolean) {
+        setBooleanPreference(TextSecurePreferences.HAS_SHOW_MESSAGE_REQUESTS, status)
     }
 }

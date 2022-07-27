@@ -179,7 +179,7 @@ class NewConversationButtonSetView : RelativeLayout {
         bchatButtonLayoutParams.addRule(ALIGN_PARENT_END, TRUE)
         bchatButtonLayoutParams.addRule(ALIGN_PARENT_BOTTOM, TRUE)
         bchatButtonLayoutParams.bottomMargin = bottomMargin.toInt()
-        // Set up closed group button
+        // Set up secret group button
         addView(closedGroupButton)
         closedGroupButton.alpha = 0.0f
         val closedGroupButtonLayoutParams = closedGroupButton.layoutParams as LayoutParams

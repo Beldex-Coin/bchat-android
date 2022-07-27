@@ -41,7 +41,7 @@ object MessageSender {
         object SigningFailed : Error("Couldn't sign message.")
         object EncryptionFailed : Error("Couldn't encrypt message.")
 
-        // Closed groups
+        // Secret groups
         object NoThread : Error("Couldn't find a thread associated with the given group public key.")
         object NoKeyPair: Error("Couldn't find a private key associated with the given group public key.")
         object InvalidClosedGroupUpdate : Error("Invalid group update.")
@@ -61,7 +61,7 @@ object MessageSender {
         }
     }
 
-    // One-on-One Chats & Closed Groups
+    // One-on-One Chats & Secret Groups
     private fun sendToMnodeDestination(destination: Destination, message: Message, isSyncMessage: Boolean = false): Promise<Unit, Exception> {
         val deferred = deferred<Unit, Exception>()
         val promise = deferred.promise
@@ -96,7 +96,7 @@ object MessageSender {
             // Stop here if this is a self-send, unless it's:
             // • a configuration message
             // • a sync message
-            // • a closed group control message of type `new`
+            // • a secret group control message of type `new`
             var isNewClosedGroupControlMessage = false
             if (message is ClosedGroupControlMessage && message.kind is ClosedGroupControlMessage.Kind.New) isNewClosedGroupControlMessage = true
             if (isSelfSend && message !is ConfigurationMessage && !isSyncMessage && !isNewClosedGroupControlMessage && message !is UnsendRequest) {
@@ -351,7 +351,7 @@ object MessageSender {
         return send(message, destination)
     }
 
-    // Closed groups
+    // Secret groups
     fun createClosedGroup(name: String, members: Collection<String>): Promise<String, Exception> {
         return create(name, members)
     }

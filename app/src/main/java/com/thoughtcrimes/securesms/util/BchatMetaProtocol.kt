@@ -47,13 +47,15 @@ object BchatMetaProtocol {
         return hasBody || hasAttachment || hasLinkPreview
     }
 
+    /*Hales63*/
     @JvmStatic
-    fun shouldSendReadReceipt(address: Address): Boolean {
-        return !address.isGroup
+    fun shouldSendReadReceipt(recipient: Recipient): Boolean {
+        return !recipient.isGroupRecipient && recipient.isApproved
     }
 
+
     @JvmStatic
-    fun shouldSendTypingIndicator(address: Address): Boolean {
-        return !address.isGroup
+    fun shouldSendTypingIndicator(recipient: Recipient): Boolean {
+        return !recipient.isGroupRecipient && recipient.isApproved
     }
 }

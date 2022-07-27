@@ -178,6 +178,18 @@ public class MmsDatabase extends MessagingDatabase {
   private final EarlyReceiptCache earlyDeliveryReceiptCache = new EarlyReceiptCache();
   private final EarlyReceiptCache earlyReadReceiptCache     = new EarlyReceiptCache();
 
+
+
+
+  /*Hales63*/
+  public static String getCreateMessageRequestResponseCommand() {
+    return "ALTER TABLE "+ TABLE_NAME + " " +
+            "ADD COLUMN " + MESSAGE_REQUEST_RESPONSE + " INTEGER DEFAULT 0;";
+  }
+
+
+
+
   public MmsDatabase(Context context, SQLCipherOpenHelper databaseHelper) {
     super(context, databaseHelper);
   }
@@ -664,6 +676,8 @@ public class MmsDatabase extends MessagingDatabase {
     contentValues.put(EXPIRES_IN, retrieved.getExpiresIn());
     contentValues.put(READ, retrieved.isExpirationUpdate() ? 1 : 0);
     contentValues.put(UNIDENTIFIED, retrieved.isUnidentified());
+    /*Hales63*/
+    contentValues.put(MESSAGE_REQUEST_RESPONSE, retrieved.isMessageRequestResponse());
 
     if (!contentValues.containsKey(DATE_SENT)) {
       contentValues.put(DATE_SENT, contentValues.getAsLong(DATE_RECEIVED));
@@ -680,7 +694,8 @@ public class MmsDatabase extends MessagingDatabase {
       quoteAttachments = retrieved.getQuote().getAttachments();
     }
 
-    if (retrieved.isPushMessage() && isDuplicate(retrieved, threadId)) {
+    if ((retrieved.isPushMessage() && isDuplicate(retrieved, threadId)) ||
+            retrieved.isMessageRequestResponse() && isDuplicateMessageRequestResponse(retrieved, threadId)) {
       Log.w(TAG, "Ignoring duplicate media message (" + retrieved.getSentTimeMillis() + ")");
       return Optional.absent();
     }
@@ -749,6 +764,11 @@ public class MmsDatabase extends MessagingDatabase {
     if (retrieved.isMediaSavedDataExtraction()) {
       type |= Types.MEDIA_SAVED_EXTRACTION_BIT;
     }
+
+    if (retrieved.isMessageRequestResponse()) {
+      type |= Types.MESSAGE_REQUEST_RESPONSE_BIT;
+    }
+
 
     return insertMessageInbox(retrieved, "", threadId, type, serverTimestamp);
   }
@@ -1000,6 +1020,19 @@ public class MmsDatabase extends MessagingDatabase {
     return linkPreviewJson.toString();
   }
 
+  /*Hales63*/
+  private boolean isDuplicateMessageRequestResponse(IncomingMediaMessage message, long threadId) {
+    SQLiteDatabase database = databaseHelper.getReadableDatabase();
+    Cursor         cursor   = database.query(TABLE_NAME, null, MESSAGE_REQUEST_RESPONSE + " = 1 AND " + ADDRESS + " = ? AND " + THREAD_ID + " = ?",
+            new String[]{message.getFrom().serialize(), String.valueOf(threadId)},
+            null, null, null, "1");
+
+    try {
+      return cursor != null && cursor.moveToFirst();
+    } finally {
+      if (cursor != null) cursor.close();
+    }
+  }
   private boolean isDuplicate(IncomingMediaMessage message, long threadId) {
     SQLiteDatabase database = databaseHelper.getReadableDatabase();
     Cursor         cursor   = database.query(TABLE_NAME, null, DATE_SENT + " = ? AND " + ADDRESS + " = ? AND " + THREAD_ID + " = ?",

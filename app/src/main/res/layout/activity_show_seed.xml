@@ -52,16 +52,19 @@
         android:layout_marginEnd="15dp"
         android:layout_marginRight="@dimen/very_large_spacing"
         android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/showSeedCardView">
 
         <Button
             android:id="@+id/showSeedCopyButton"
             style="@style/Widget.Bchat.Button.Common.Copy"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="30dp"
-            android:layout_marginEnd="4dp"
+            android:layout_marginEnd="90dp"
+            android:layout_marginStart="90dp"
             android:layout_weight="1"
             android:drawableStart="@drawable/ic_baseline_content_copy_24"
             android:gravity="center"
@@ -85,6 +88,7 @@
             android:paddingRight="15dp"
             android:text="@string/share"
             android:textSize="16sp"
+            android:visibility="gone"
             android:textColor="@color/text"
             tools:ignore="RtlHardcoded" />
 

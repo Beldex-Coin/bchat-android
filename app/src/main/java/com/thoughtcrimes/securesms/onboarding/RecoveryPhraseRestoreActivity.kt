@@ -1,5 +1,7 @@
 package com.thoughtcrimes.securesms.onboarding
 
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
@@ -25,6 +27,10 @@ import com.thoughtcrimes.securesms.crypto.MnemonicUtilities
 import com.thoughtcrimes.securesms.util.push
 import com.thoughtcrimes.securesms.util.setUpActionBarBchatLogo
 import com.thoughtcrimes.securesms.seed.RecoveryGetSeedDetailsActivity
+import android.content.ClipData
+
+
+
 
 
 class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
@@ -107,9 +113,17 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
             binding.recoveryPhraseCountWord?.text= "0/25"
         }
 
-        binding.recoveryPhrasePasteIcon?.setOnClickListener {
+       /* binding.recoveryPhrasePasteIcon?.setOnClickListener {
             val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
             binding.mnemonicEditText.setText(clipboard.text.toString())
+        }*/
+
+        binding.recoveryPhrasePasteIcon?.setOnClickListener {
+            val clipboard = this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            //since the clipboard contains plain text.
+            val item = clipboard.primaryClip!!.getItemAt(0)
+            // Gets the clipboard as text.
+            binding.mnemonicEditText.setText(item.text.toString())
         }
     }
 

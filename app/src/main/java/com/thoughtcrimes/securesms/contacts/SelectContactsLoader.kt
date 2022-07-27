@@ -4,12 +4,13 @@ import android.content.Context
 import com.thoughtcrimes.securesms.util.ContactUtilities
 import com.thoughtcrimes.securesms.util.AsyncLoader
 
-class SelectContactsLoader(context: Context, val usersToExclude: Set<String>) : AsyncLoader<List<String>>(context) {
+class SelectContactsLoader(context: Context, private val usersToExclude: Set<String>) : AsyncLoader<List<String>>(context) {
 
+    /*Hales63*/
     override fun loadInBackground(): List<String> {
         val contacts = ContactUtilities.getAllContacts(context)
-        return contacts.filter { contact ->
-            !contact.isGroupRecipient && !usersToExclude.contains(contact.address.toString())
+        return contacts.filter {
+            !it.isGroupRecipient && !usersToExclude.contains(it.address.toString()) && it.hasApprovedMe()
         }.map {
             it.address.toString()
         }

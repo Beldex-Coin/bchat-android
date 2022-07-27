@@ -79,7 +79,7 @@
         <activity
             android:name="com.thoughtcrimes.securesms.onboarding.AboutActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"  />
+            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.changelog.ChangeLogActivity"
             android:screenOrientation="portrait"
@@ -249,6 +249,11 @@
                 android:resource="@mipmap/ic_launcher" />
         </activity-alias>
 
+        <activity
+            android:name="com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity"
+            android:exported="false"
+            android:label="@string/activity_message_requests_title"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.thoughtcrimes.securesms.preferences.SettingsActivity"
             android:label="@string/activity_settings_title"

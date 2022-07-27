@@ -109,6 +109,7 @@
     <attr name="menu_popup_expand" format="reference"/>
     <attr name="menu_trash_icon" format="reference" />
     <attr name="menu_selectall_icon" format="reference" />
+    <attr name="menu_select_all_icon_new" format="reference"/>
     <attr name="menu_split_icon" format="reference" />
     <attr name="menu_accept_icon" format="reference" />
     <attr name="menu_copy_icon" format="reference" />
@@ -116,6 +117,7 @@
     <attr name="menu_save_icon" format="reference" />
     <attr name="menu_reply_icon" format="reference" />
     <attr name="menu_block_icon" format="reference" />
+    <attr name="menu_un_block_icon" format="reference"/>
     <attr name="menu_photo_library_icon" format="reference" />
     <attr name="menu_delete_icon" format="reference" />
     <attr name="menu_info_icon" format="reference" />

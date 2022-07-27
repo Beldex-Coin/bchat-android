@@ -54,6 +54,26 @@
           "description":"- Updated Minor Content"
         }
       ]
+    },
+    {
+      "title": "1.1.1",
+      "descriptions": [
+        {
+          "description":"- Implemented Message Request"
+        },
+        {
+          "description":"- UI Improvements"
+        },
+        {
+          "description":"- Set Link Preview as Default"
+        },
+        {
+          "description":"- Updated Splashscreen"
+        },
+        {
+          "description":"- Minor Bug Fixes"
+        }
+      ]
     }
 
   ]

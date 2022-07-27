@@ -36,6 +36,7 @@ import com.thoughtcrimes.securesms.avatar.AvatarSelection
 import com.thoughtcrimes.securesms.changelog.ChangeLogActivity
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
 import com.thoughtcrimes.securesms.home.PathActivity
+import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
 import com.thoughtcrimes.securesms.mms.GlideApp
 import com.thoughtcrimes.securesms.util.*
 import java.io.File

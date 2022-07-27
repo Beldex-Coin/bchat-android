@@ -57,7 +57,7 @@ public class GroupDatabase extends Database implements BeldexOpenGroupDatabasePr
 
   // Beldex
   private static final String AVATAR_URL          = "avatar_url";
-  private static final String ADMINS              = "admins";
+  public static final String ADMINS              = "admins";
 
   public static final String CREATE_TABLE =
       "CREATE TABLE " + TABLE_NAME +

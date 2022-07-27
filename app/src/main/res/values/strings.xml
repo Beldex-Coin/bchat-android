@@ -1023,5 +1023,4 @@
     <string name="message_requests_accept_message" translatable="false">Are you sure you want to accept this request?</string>
     <string name="message_requests_decline_message" translatable="false">Declining this request will permanently block this user, are you sure?</string>
 
-
 </resources>

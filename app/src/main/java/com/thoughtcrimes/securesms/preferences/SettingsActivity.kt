@@ -117,7 +117,6 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             pathContainer.disableClipping()
             privacyButton.setOnClickListener { showPrivacySettings() }
             notificationsButton.setOnClickListener { showNotificationSettings() }
-            messageRequestsButton.setOnClickListener { showMessageRequests() }
             chatsButton.setOnClickListener { showChatSettings() }
             sendInvitationButton.setOnClickListener { sendInvitation() }
             faqButton.setOnClickListener { showFAQ() }
@@ -438,12 +437,6 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
 
     private fun showNotificationSettings() {
         val intent = Intent(this, NotificationSettingsActivity::class.java)
-        push(intent)
-    }
-
-    //New Line
-    private fun showMessageRequests() {
-        val intent = Intent(this, MessageRequestsActivity::class.java)
         push(intent)
     }
 

@@ -369,6 +369,16 @@
         <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
     </style>
 
+    //New Line
+    <style name="BChatAlertDialog_New" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.BChat.AlertDialog.NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.BChat.AlertDialog.PositiveButtonStyle</item>
+        <item name="android:background">@color/card_color</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
+    </style>
+
     <style name="BChatAlertDialog_ForBan" parent="ThemeOverlay.AppCompat.Dialog.Alert">
         <item name="buttonBarNegativeButtonStyle">@style/Widget.BChat.AlertDialog.NegativeButtonStyle</item>
         <item name="buttonBarPositiveButtonStyle">@style/Widget.BChat.AlertDialog.PositiveButtonStyle</item>
@@ -382,7 +392,7 @@
         <item name="android:textSize">15sp</item>
         <item name="android:itemTextAppearance">@style/textViewStyle</item>
         <item name="android:textViewStyle">@style/textViewStyle</item>
-        <item name="buttonBarNegativeButtonStyle">@style/Widget.BChat.AlertDialog.NegativeButtonStyle</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.BChat.AlertDialog.NegativeButtonStyle_New</item>
         <item name="buttonBarPositiveButtonStyle">@style/Widget.BChat.AlertDialog.PositiveButtonStyle_New</item>
         <item name="android:background">@color/card_color</item>
         <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
@@ -444,6 +454,12 @@
     <style name="Widget.BChat.AlertDialog.NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:textColor">@color/text</item>
         <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="Widget.BChat.AlertDialog.NegativeButtonStyle_New" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/text</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">15sp</item>
     </style>
 
 

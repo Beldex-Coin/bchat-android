@@ -185,6 +185,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     private var items = arrayListOf(
         NavigationItemModel(R.drawable.ic_my_account, "My Account"),
         NavigationItemModel(R.drawable.ic_notifications, "Notification"),
+        NavigationItemModel(R.drawable.ic_message_requests,"Message Requests"),
         NavigationItemModel(R.drawable.ic_privacy, "Privacy"),
         NavigationItemModel(R.drawable.ic_app_permissions, "App Permissions"),
         NavigationItemModel(R.drawable.ic_recovery_seed, "Recovery Seed"),
@@ -241,10 +242,14 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                         showNotificationSettings()
                     }
                     2 -> {
+                        // # Message Requests Activity
+                        showMessageRequests()
+                    }
+                    3 -> {
                         // # Privacy Activity
                         showPrivacySettings()
                     }
-                    3 -> {
+                    4 -> {
                         // # App Permissions Activity
                         val intent = Intent()
                         intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
@@ -252,7 +257,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                         intent.data = uri
                         push(intent)
                     }
-                    4 -> {
+                    5 -> {
                         // # Recovery Seed Activity
                         showSeed()
                     }
@@ -260,15 +265,15 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                         // # Recovery Key Activity
                         showKeys()
                     }*/
-                    5 -> {
+                    6 -> {
                         // # Help Activity
                         help()
                     }
-                    6 -> {
+                    7 -> {
                         // # Invite Activity
                         sendInvitation()
                     }
-                    7 -> {
+                    8 -> {
                         // # About Activity
                         showAbout()
                     }
@@ -610,6 +615,38 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
             homeAdapter.headerView = null
         }
     }
+
+    /*//New Line
+    private fun setupMessageRequestsBanner() {
+        val messageRequestCount = threadDb.unapprovedConversationCount
+        // Set up message requests
+        if (messageRequestCount > 0 && !textSecurePreferences.hasHiddenMessageRequests()) {
+            //New Line
+            textSecurePreferences.setHasShowMessageRequests(true)
+        }
+
+        //New Line
+        if(textSecurePreferences.hasShowMessageRequests()) {
+            with(ViewMessageRequestBannerBinding.inflate(layoutInflater)) {
+                unreadCountTextView.text = messageRequestCount.toString()
+                if(messageRequestCount>0) {
+                    timestampTextView.text = DateUtils.getDisplayFormattedTimeSpanString(
+                        this@HomeActivity,
+                        Locale.getDefault(),
+                        threadDb.latestUnapprovedConversationTimestamp
+                    )
+                }
+                root.setOnClickListener { showMessageRequests() }
+                expandMessageRequest.setOnClickListener{ showMessageRequests() }
+                root.setOnLongClickListener { hideMessageRequests(); true }
+                root.layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
+                homeAdapter.headerView = root
+                homeAdapter.notifyItemChanged(0)
+            }
+        } else {
+            homeAdapter.headerView = null
+        }
+    }*/
 
 
     override fun onCreateLoader(id: Int, bundle: Bundle?): Loader<Cursor> {
@@ -1039,10 +1076,14 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     }
 
     private fun hideMessageRequests() { 
-        val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog)
-            .setMessage("Hide message requests?")
+        val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog_New)
+            .setTitle("Hide message requests?")
+            .setMessage("Once they are hidden, you can access them from Settings > Message Requests")
             .setPositiveButton(R.string.yes) { _, _ ->
                 textSecurePreferences.setHasHiddenMessageRequests()
+                /*//New Line
+                textSecurePreferences.setHasShowMessageRequests(false)*/
+
                 setupMessageRequestsBanner()
                 LoaderManager.getInstance(this).restartLoader(0, null, this)
             }
@@ -1051,9 +1092,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
             }.show()
 
         //SteveJosephh21
-        val textView:TextView = dialog.findViewById(android.R.id.message)
-        val face:Typeface =Typeface.createFromAsset(assets,"fonts/poppins_medium.ttf")
-        textView.typeface = face
+
+        val message:TextView = dialog.findViewById(android.R.id.message)
+        val messageFace:Typeface =Typeface.createFromAsset(assets,"fonts/poppins_medium.ttf")
+        message.typeface = messageFace
     }
     // endregion
 }

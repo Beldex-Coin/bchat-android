@@ -54,7 +54,7 @@ object BeldexPushNotificationManager {
                 Log.d("Beldex", "Couldn't disable FCM due to error: ${exception}.")
             }
         }
-        // Unsubscribe from all closed groups
+        // Unsubscribe from all secret groups
         val allClosedGroupPublicKeys = DatabaseComponent.get(context).beldexAPIDatabase().getAllClosedGroupPublicKeys()
         val userPublicKey = TextSecurePreferences.getLocalNumber(context)!!
         allClosedGroupPublicKeys.iterator().forEach { closedGroup ->
@@ -85,7 +85,7 @@ object BeldexPushNotificationManager {
                 Log.d("Beldex", "Couldn't register for FCM due to error: ${exception}.")
             }
         }
-        // Subscribe to all closed groups
+        // Subscribe to all secret groups
         val allClosedGroupPublicKeys = DatabaseComponent.get(context).beldexAPIDatabase().getAllClosedGroupPublicKeys()
         allClosedGroupPublicKeys.iterator().forEach { closedGroup ->
             performOperation(context, ClosedGroupOperation.Subscribe, closedGroup, publicKey)
@@ -103,10 +103,10 @@ object BeldexPushNotificationManager {
             OnionRequestAPI.sendOnionRequest(request.build(), server, pnServerPublicKey, "/beldex/v2/lsrpc").map { json ->
                 val code = json["code"] as? Int
                 if (code == null || code == 0) {
-                    Log.d("Beldex", "Couldn't subscribe/unsubscribe closed group: $closedGroupPublicKey due to error: ${json["message"] as? String ?: "null"}.")
+                    Log.d("Beldex", "Couldn't subscribe/unsubscribe secret group: $closedGroupPublicKey due to error: ${json["message"] as? String ?: "null"}.")
                 }
             }.fail { exception ->
-                Log.d("Beldex", "Couldn't subscribe/unsubscribe closed group: $closedGroupPublicKey due to error: ${exception}.")
+                Log.d("Beldex", "Couldn't subscribe/unsubscribe secret group: $closedGroupPublicKey due to error: ${exception}.")
             }
         }
     }

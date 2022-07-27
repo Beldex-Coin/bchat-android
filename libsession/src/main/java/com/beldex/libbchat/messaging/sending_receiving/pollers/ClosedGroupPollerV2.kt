@@ -107,7 +107,7 @@ class ClosedGroupPollerV2 {
             }
         }
         promise.fail {
-            Log.d("Beldex", "Polling failed for closed group due to error: $it.")
+            Log.d("Beldex", "Polling failed for secret group due to error: $it.")
         }
         return promise.map { }
     }

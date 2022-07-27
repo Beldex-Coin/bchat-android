@@ -8,6 +8,7 @@ import com.thoughtcrimes.securesms.util.AbstractCursorLoader
 class HomeLoader(context: Context) : AbstractCursorLoader(context) {
 
     override fun getCursor(): Cursor {
-        return DatabaseComponent.get(context).threadDatabase().conversationList
+        /*Hales63*/
+        return DatabaseComponent.get(context).threadDatabase().approvedConversationList
     }
 }

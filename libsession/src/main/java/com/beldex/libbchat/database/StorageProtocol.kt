@@ -8,6 +8,7 @@ import com.beldex.libbchat.messaging.jobs.AttachmentUploadJob
 import com.beldex.libbchat.messaging.jobs.Job
 import com.beldex.libbchat.messaging.jobs.MessageSendJob
 import com.beldex.libbchat.messaging.messages.control.ConfigurationMessage
+import com.beldex.libbchat.messaging.messages.control.MessageRequestResponse
 import com.beldex.libbchat.messaging.messages.visible.Attachment
 import com.beldex.libbchat.messaging.messages.visible.VisibleMessage
 import com.beldex.libbchat.messaging.open_groups.OpenGroupV2
@@ -98,7 +99,7 @@ interface StorageProtocol {
     fun setErrorMessage(timestamp: Long, author: String, error: Exception)
     fun setMessageServerHash(messageID: Long, serverHash: String)
 
-    // Closed Groups
+    // Secret Groups
     fun getGroup(groupID: String): GroupRecord?
     fun createGroup(groupID: String, title: String?, members: List<Address>, avatar: SignalServiceAttachmentPointer?, relay: String?, admins: List<Address>, formationTimestamp: Long)
     fun isGroupActive(groupPublicKey: String): Boolean
@@ -160,4 +161,9 @@ interface StorageProtocol {
     fun persist(message: VisibleMessage, quotes: QuoteModel?, linkPreview: List<LinkPreview?>, groupPublicKey: String?, openGroupID: String?, attachments: List<Attachment>,runIncrement:Boolean,runThreadUpdate:Boolean): Long?
     fun insertDataExtractionNotificationMessage(senderPublicKey: String, message: DataExtractionNotificationInfoMessage, sentTimestamp: Long)
     fun insertCallMessage(senderPublicKey: String, callMessageType: CallMessageType, sentTimestamp: Long)
+    /*Hales63*/
+    fun insertMessageRequestResponse(response: MessageRequestResponse)
+    //New Line v32
+    fun setRecipientApproved(recipient: Recipient, approved: Boolean)
+    fun setRecipientApprovedMe(recipient: Recipient, approvedMe: Boolean)
 }

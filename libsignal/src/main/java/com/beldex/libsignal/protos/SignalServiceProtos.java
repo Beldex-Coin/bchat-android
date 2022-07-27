@@ -18859,7 +18859,6 @@ public final class SignalServiceProtos {
           onChanged();
           return this;
         }
-
         // @@protoc_insertion_point(builder_scope:signalservice.ConfigurationMessage.Contact)
       }
 

@@ -71,9 +71,10 @@ public class SQLCipherOpenHelper extends SQLiteOpenHelper {
   private static final int beldexV28                          = 49;
   private static final int beldexV29                          = 50;
   private static final int beldexV30                          = 51;
+  private static final int beldexV31                          = 52;
 
   // beldex - onUpgrade(...) must be updated to use beldex version numbers if Signal makes any database changes
-  private static final int    DATABASE_VERSION = beldexV30;
+  private static final int    DATABASE_VERSION = beldexV31;
   private static final String DATABASE_NAME    = "bchat.db";
 
   private final Context        context;
@@ -147,6 +148,9 @@ public class SQLCipherOpenHelper extends SQLiteOpenHelper {
     db.execSQL(RecipientDatabase.getCreateNotificationTypeCommand());
     db.execSQL(ThreadDatabase.getCreatePinnedCommand());
     db.execSQL(GroupDatabase.getCreateUpdatedTimestampCommand());
+    db.execSQL(RecipientDatabase.getCreateApprovedCommand());
+    db.execSQL(RecipientDatabase.getCreateApprovedMeCommand());
+    db.execSQL(MmsDatabase.getCreateMessageRequestResponseCommand());
 
     executeStatements(db, SmsDatabase.CREATE_INDEXS);
     executeStatements(db, MmsDatabase.CREATE_INDEXS);
@@ -327,6 +331,13 @@ public class SQLCipherOpenHelper extends SQLiteOpenHelper {
 
       if (oldVersion < beldexV30) {
         db.execSQL(GroupDatabase.getCreateUpdatedTimestampCommand());
+      }
+      if (oldVersion < beldexV31) {
+        db.execSQL(RecipientDatabase.getCreateApprovedCommand());
+        db.execSQL(RecipientDatabase.getCreateApprovedMeCommand());
+        db.execSQL(RecipientDatabase.getUpdateApprovedCommand());
+        db.execSQL(RecipientDatabase.getUpdateApprovedSelectConversations());
+        db.execSQL(MmsDatabase.getCreateMessageRequestResponseCommand());
       }
 
       db.setTransactionSuccessful();

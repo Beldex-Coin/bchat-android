@@ -16,13 +16,28 @@ class ControlMessageView : LinearLayout {
     private lateinit var binding: ViewControlMessageBinding
 
     // region Lifecycle
-    constructor(context: Context) : super(context) { initialize() }
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) { initialize() }
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) { initialize() }
+    constructor(context: Context) : super(context) {
+        initialize()
+    }
+
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
+        initialize()
+    }
+
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
+        initialize()
+    }
 
     private fun initialize() {
         binding = ViewControlMessageBinding.inflate(LayoutInflater.from(context), this, true)
-        layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
+        layoutParams = RecyclerView.LayoutParams(
+            RecyclerView.LayoutParams.MATCH_PARENT,
+            RecyclerView.LayoutParams.WRAP_CONTENT
+        )
     }
     // endregion
 
@@ -30,6 +45,8 @@ class ControlMessageView : LinearLayout {
     fun bind(message: MessageRecord, previous: MessageRecord?) {
         binding.dateBreakTextView.showDateBreak(message, previous)
         binding.iconImageView.visibility = View.GONE
+        /*Hales63*/
+        var messageBody: CharSequence = message.getDisplayBody(context)
         when {
             message.isExpirationTimerUpdate -> {
                 binding.iconImageView.setImageDrawable(
@@ -39,7 +56,11 @@ class ControlMessageView : LinearLayout {
             }
             message.isMediaSavedNotification -> {
                 binding.iconImageView.setImageDrawable(
-                    ResourcesCompat.getDrawable(resources, R.drawable.ic_file_download_white_36dp, context.theme)
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.ic_file_download_white_36dp,
+                        context.theme
+                    )
                 )
                 binding.iconImageView.visibility = View.VISIBLE
             }
@@ -50,11 +71,20 @@ class ControlMessageView : LinearLayout {
                     message.isFirstMissedCall -> R.drawable.ic_info_outline_light
                     else -> R.drawable.ic_missed_call
                 }
-                binding.iconImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, drawable, context.theme))
+                binding.iconImageView.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        drawable,
+                        context.theme
+                    )
+                )
                 binding.iconImageView.visibility = View.VISIBLE
             }
+            message.isMessageRequestResponse -> {
+                messageBody = context.getString(R.string.message_requests_accepted)
+            }
         }
-        binding.textView.text = message.getDisplayBody(context)
+        binding.textView.text = messageBody
     }
 
     fun recycle() {

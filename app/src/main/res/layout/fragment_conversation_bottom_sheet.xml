@@ -13,7 +13,7 @@
     <TextView
         android:id="@+id/detailsTextView"
         style="@style/BottomSheetActionItem"
-        android:drawableStart="@drawable/ic_info_outline_white_24dp"
+        android:drawableStart="@drawable/ic_details"
         android:drawableTint="?attr/colorControlNormal"
         android:text="@string/details" />
 
@@ -44,7 +44,7 @@
     <TextView
         android:id="@+id/unblockTextView"
         style="@style/BottomSheetActionItem"
-        android:drawableStart="?attr/menu_accept_icon"
+        android:drawableStart="?attr/menu_un_block_icon"
         android:text="@string/RecipientPreferenceActivity_unblock"
         android:visibility="gone"
         tools:visibility="visible" />
@@ -81,6 +81,7 @@
         style="@style/BottomSheetActionItem"
         android:drawableStart="?attr/menu_mark_all_as_read"
         android:text="@string/mark_all_as_read"
+        tools:visibility="visible"
         android:visibility="gone"
         />
 

@@ -40,7 +40,12 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
     var showInput: Boolean = true
         set(value) { field = value; showOrHideInputIfNeeded() }
 
-
+    var showMediaControls: Boolean = true
+        set(value) {
+            field = value
+            showOrHideMediaControlsIfNeeded()
+            binding.inputBarEditText.showMediaControls = value
+        }
     var text: String
         get() { return binding.inputBarEditText.text?.toString() ?: "" }
         set(value) { binding.inputBarEditText.setText(value) }
@@ -187,6 +192,10 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
             val views = setOf( binding.inputBarEditText, attachmentsButton, microphoneButton, sendButton )
             views.forEach { it.isVisible = false }
         }
+    }
+    /*Hales63*/
+    private fun showOrHideMediaControlsIfNeeded() {
+        setOf(attachmentsButton, microphoneButton).forEach { it.snIsEnabled = showMediaControls }
     }
 
     fun addTextChangedListener(textWatcher: TextWatcher) {

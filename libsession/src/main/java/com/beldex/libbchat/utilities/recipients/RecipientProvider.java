@@ -55,10 +55,6 @@ class RecipientProvider {
   private static final RecipientCache  recipientCache         = new RecipientCache();
   private static final ExecutorService asyncRecipientResolver = Util.newSingleThreadedLifoExecutor();
 
-  private static final Map<String, RecipientDetails> STATIC_DETAILS = new HashMap<String, RecipientDetails>() {{
-    put("262966", new RecipientDetails("Amazon", null, false, false, null, null));
-  }};
-
   @NonNull Recipient getRecipient(@NonNull Context context, @NonNull Address address, @NonNull Optional<Recipient.RecipientSettings> settings, @NonNull Optional<GroupRecord> groupRecord, boolean asynchronous) {
     Recipient cachedRecipient = recipientCache.get(address);
 
@@ -121,13 +117,10 @@ class RecipientProvider {
       settings = Optional.fromNullable(MessagingModuleConfiguration.shared.getStorage().getRecipientSettings(address));
     }
 
-    if (!settings.isPresent() && STATIC_DETAILS.containsKey(address.serialize())) {
-      return STATIC_DETAILS.get(address.serialize());
-    } else {
-      boolean systemContact = settings.isPresent() && !TextUtils.isEmpty(settings.get().getSystemDisplayName());
-      boolean isLocalNumber = address.serialize().equals(TextSecurePreferences.getLocalNumber(context));
-      return new RecipientDetails(null, null, systemContact, isLocalNumber, settings.orNull(), null);
-    }
+    //New Line v32
+    boolean systemContact = settings.isPresent() && !TextUtils.isEmpty(settings.get().getSystemDisplayName());
+    boolean isLocalNumber = address.serialize().equals(TextSecurePreferences.getLocalNumber(context));
+    return new RecipientDetails(null, null, systemContact, isLocalNumber, settings.orNull(), null);
   }
 
   private @NonNull RecipientDetails getGroupRecipientDetails(Context context, Address groupId, Optional<GroupRecord> groupRecord, Optional<Recipient.RecipientSettings> settings, boolean asynchronous) {
@@ -175,6 +168,8 @@ class RecipientProvider {
     @Nullable final Recipient.VibrateState messageVibrateState;
     @Nullable final Recipient.VibrateState callVibrateState;
     final boolean                blocked;
+    final boolean                approved;
+    final boolean                approvedMe;
     final int                    expireMessages;
     @NonNull  final List<Recipient>        participants;
     @Nullable final String                 profileName;
@@ -205,6 +200,8 @@ class RecipientProvider {
       this.messageVibrateState             = settings     != null ? settings.getMessageVibrateState() : null;
       this.callVibrateState                = settings     != null ? settings.getCallVibrateState() : null;
       this.blocked                         = settings     != null && settings.isBlocked();
+      this.approved                        = settings     != null && settings.isApproved();
+      this.approvedMe                      = settings     != null && settings.hasApprovedMe();
       this.expireMessages                  = settings     != null ? settings.getExpireMessages() : 0;
       this.participants                    = participants == null ? new LinkedList<>() : participants;
       this.profileName                     = settings     != null ? settings.getProfileName() : null;

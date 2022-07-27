@@ -220,6 +220,11 @@ message MessageRequestResponse {
     required bool   isApproved  = 1; // Whether the request was approved
 }
 
+message MessageRequestResponse {
+  // @required
+  required bool   isApproved  = 1; // Whether the request was approved
+}
+
 message ReceiptMessage {
 
   enum Type {

@@ -81,7 +81,7 @@ public class TypingStatusSender {
     ThreadDatabase threadDatabase = DatabaseComponent.get(context).threadDatabase();
     Recipient recipient = threadDatabase.getRecipientForThreadId(threadId);
     if (recipient == null) { return; }
-    if (!BchatMetaProtocol.shouldSendTypingIndicator(recipient.getAddress())) { return; }
+    if (!BchatMetaProtocol.shouldSendTypingIndicator(recipient)) { return; }
     TypingIndicator typingIndicator;
     if (typingStarted) {
       typingIndicator = new TypingIndicator(TypingIndicator.Kind.STARTED);

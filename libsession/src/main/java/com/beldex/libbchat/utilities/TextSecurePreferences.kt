@@ -169,6 +169,12 @@ interface TextSecurePreferences {
     fun isCallNotificationsEnabled(): Boolean
     fun setShownCallWarning(): Boolean
     fun setShownCallNotification(): Boolean
+    /*Hales63*/
+    fun hasHiddenMessageRequests(): Boolean
+    fun setHasHiddenMessageRequests()
+    //New Line
+    fun hasShowMessageRequests(): Boolean
+    fun setHasShowMessageRequests(status:Boolean)
 
 
     companion object {
@@ -253,6 +259,8 @@ interface TextSecurePreferences {
         const val CALL_NOTIFICATIONS_ENABLED = "pref_call_notifications_enabled"
         const val SHOWN_CALL_WARNING = "pref_shown_call_warning" // call warning is user-facing warning of enabling calls
         const val SHOWN_CALL_NOTIFICATION = "pref_shown_call_notification" // call notification is a promp to check privacy settings
+        const val HAS_HIDDEN_MESSAGE_REQUESTS = "pref_message_requests_hidden"
+        const val HAS_SHOW_MESSAGE_REQUESTS = "pref_message_requests_show"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -976,6 +984,25 @@ interface TextSecurePreferences {
             setBooleanPreference(context, SHOWN_CALL_WARNING, setValue)
             return previousValue != setValue
         }
+        @JvmStatic
+        fun hasHiddenMessageRequests(context: Context): Boolean {
+            return getBooleanPreference(context, HAS_HIDDEN_MESSAGE_REQUESTS, false)
+        }
+
+        @JvmStatic
+        fun removeHasHiddenMessageRequests(context: Context) {
+            removePreference(context, HAS_HIDDEN_MESSAGE_REQUESTS)
+        }
+
+        @JvmStatic
+        fun hasShowMessageRequests(context: Context): Boolean {
+            return getBooleanPreference(context, HAS_SHOW_MESSAGE_REQUESTS, false)
+        }
+
+        @JvmStatic
+        fun setHasShowMessageRequests(context:Context,status: Boolean) {
+            setBooleanPreference(context, HAS_SHOW_MESSAGE_REQUESTS, status)
+        }
     }
 }
 
@@ -1605,5 +1632,20 @@ class AppTextSecurePreferences @Inject constructor(
         val setValue = true
         setBooleanPreference(SHOWN_CALL_NOTIFICATION, setValue)
         return previousValue != setValue
+    }
+    override fun hasHiddenMessageRequests(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.HAS_HIDDEN_MESSAGE_REQUESTS, false)
+    }
+
+    override fun setHasHiddenMessageRequests() {
+        setBooleanPreference(TextSecurePreferences.HAS_HIDDEN_MESSAGE_REQUESTS, true)
+    }
+
+    override fun hasShowMessageRequests(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.HAS_SHOW_MESSAGE_REQUESTS, false)
+    }
+
+    override fun setHasShowMessageRequests(status: Boolean) {
+        setBooleanPreference(TextSecurePreferences.HAS_SHOW_MESSAGE_REQUESTS, status)
     }
 }

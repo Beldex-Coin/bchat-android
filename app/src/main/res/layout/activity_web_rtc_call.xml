@@ -9,13 +9,17 @@
 
     <FrameLayout
         android:id="@+id/remote_parent"
-        android:background="@color/black"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+        <com.thoughtcrimes.securesms.conversation.ChatWallpaperImageView
+            android:id="@+id/contentImageView"
+            android:layout_width="match_parent"
+            android:src="@drawable/chat_wallpaper"
+            android:layout_height="match_parent"/>
 
         <FrameLayout
             android:id="@+id/remote_renderer"

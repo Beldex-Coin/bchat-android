@@ -75,7 +75,7 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         }
 
         with(binding){
-            restoreSeedWalletRestoreDate.setOnClickListener {
+            /*restoreSeedWalletRestoreDate.setOnClickListener {
                 restoreSeedWalletRestoreDate.inputType = InputType.TYPE_NULL;
                 DatePickerDialog(this@RecoveryGetSeedDetailsActivity,
                     dateSetListener,
@@ -83,6 +83,19 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
                     cal.get(Calendar.YEAR),
                     cal.get(Calendar.MONTH),
                     cal.get(Calendar.DAY_OF_MONTH)).show()
+            }*/
+
+            //SteveJosephh21
+            restoreSeedWalletRestoreDate.setOnClickListener {
+                restoreSeedWalletRestoreDate.inputType = InputType.TYPE_NULL;
+                val datePickerDialog = DatePickerDialog(this@RecoveryGetSeedDetailsActivity,
+                    dateSetListener,
+                    // set DatePickerDialog to point to today's date when it loads up
+                    cal.get(Calendar.YEAR),
+                    cal.get(Calendar.MONTH),
+                    cal.get(Calendar.DAY_OF_MONTH))
+                datePickerDialog.datePicker.maxDate = System.currentTimeMillis()
+                datePickerDialog.show()
             }
 
             restoreSeedWalletName.imeOptions = restoreSeedWalletName.imeOptions or 16777216 // Always use incognito keyboard

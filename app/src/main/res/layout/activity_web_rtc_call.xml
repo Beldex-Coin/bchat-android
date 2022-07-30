@@ -13,6 +13,7 @@
         android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:background="@color/remote_parent_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
         <com.thoughtcrimes.securesms.conversation.ChatWallpaperImageView
@@ -41,15 +42,13 @@
         android:id="@+id/back_arrow"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:background="@drawable/call_controls_background"
         android:elevation="8dp"
-        android:layout_marginLeft="@dimen/small_spacing"
+        android:layout_marginStart="@dimen/small_spacing"
         android:layout_marginTop="@dimen/small_spacing"
-        android:src="@drawable/ic_baseline_arrow_back_24"
+        android:src="@drawable/ic_back"
         android:scaleType="centerInside"
         android:layout_width="@dimen/medium_profile_picture_size"
-        android:layout_height="@dimen/medium_profile_picture_size"
-        app:tint="@color/call_action_foreground" />
+        android:layout_height="@dimen/medium_profile_picture_size"/>
 
     <TextView
         app:layout_constraintTop_toTopOf="parent"
@@ -58,12 +57,29 @@
         android:layout_marginHorizontal="@dimen/massive_spacing"
         android:layout_marginTop="@dimen/medium_spacing"
         android:textAlignment="center"
+        android:id="@+id/status_view"
+        android:textStyle="bold"
+        tools:text="@tools:sample/full_names"
+        android:ellipsize="end"
+        android:textSize="20sp"
+        android:layout_width="0dp"
+        android:textColor="@color/text"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        app:layout_constraintTop_toBottomOf="@id/remote_recipient"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="@dimen/massive_spacing"
+        android:layout_marginTop="10dp"
+        android:textAlignment="center"
         android:id="@+id/remote_recipient_name"
         android:textStyle="bold"
         tools:text="@tools:sample/full_names"
         android:ellipsize="end"
         android:textSize="20sp"
         android:layout_width="0dp"
+        android:textColor="@color/text"
         android:layout_height="wrap_content"/>
 
     <com.github.ybq.android.spinkit.SpinKitView
@@ -74,39 +90,44 @@
         android:layout_gravity="center"
         android:foregroundGravity="center"
         android:visibility="gone"
-        app:SpinKit_Color="@color/core_white"
-        app:layout_constraintEnd_toEndOf="@+id/remote_recipient"
-        app:layout_constraintStart_toStartOf="@+id/remote_recipient"
-        app:layout_constraintTop_toBottomOf="@id/remote_recipient"
+        app:SpinKit_Color="@color/text"
+        app:layout_constraintEnd_toEndOf="@id/reconnecting_text"
+        app:layout_constraintStart_toStartOf="@id/reconnecting_text"
+        app:layout_constraintTop_toBottomOf="@id/reconnecting_text"
         tools:visibility="visible" />
 
     <TextView
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@+id/remote_loading_view"
+        tools:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@+id/remote_recipient_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="@string/WebRtcCallActivity_Reconnecting"
         android:id="@+id/reconnecting_text"
         android:layout_width="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/text"
         android:layout_height="wrap_content"/>
 
     <TextView
+        android:fontFamily="@font/poppins_medium"
         android:id="@+id/bchatCallText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/WebRtcCallActivity_Bchat_Call"
-        android:textColor="?android:textColorPrimary"
+        android:textColor="@color/text"
         android:textSize="11sp"
-        app:layout_constraintBottom_toTopOf="@+id/controlGroupBarrier"
-        android:layout_marginBottom="@dimen/small_spacing"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="113dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         />
 
     <TextView
+        android:fontFamily="@font/poppins_semi_bold"
         android:id="@+id/callTime"
-        android:textSize="@dimen/medium_font_size"
-        android:textColor="?android:textColorPrimary"
+        android:textSize="25sp"
+        android:textColor="@color/text"
         tools:text="@tools:sample/date/hhmmss"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -151,66 +172,67 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="@dimen/large_spacing"
+        android:layout_marginBottom="30dp"
         />
 
     <ImageView
+        android:id="@+id/callActionIconBackgroundImageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:src="@drawable/ic_call_action_icon_background"/>
+
+    <ImageView
         android:id="@+id/switchCameraButton"
-        android:background="@drawable/call_controls_background"
         android:src="@drawable/ic_baseline_flip_camera_android_24"
         android:padding="@dimen/medium_spacing"
         app:tint="@color/call_action_foreground"
         android:layout_width="@dimen/large_button_height"
         android:layout_height="@dimen/large_button_height"
-        app:layout_constraintBottom_toTopOf="@+id/endCallButton"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="@dimen/large_spacing"
+        app:layout_constraintEnd_toStartOf="@id/enableCameraButton"
+        android:layout_marginBottom="10dp"
         app:layout_constraintHorizontal_bias="0.1"
         />
 
     <ImageView
         android:id="@+id/enableCameraButton"
-        android:background="@drawable/circle_tintable"
-        android:backgroundTint="@color/state_list_call_action_background"
-        app:tint="@color/state_list_call_action_foreground"
         android:src="@drawable/ic_baseline_videocam_24"
         android:padding="@dimen/medium_spacing"
         android:layout_width="@dimen/large_button_height"
         android:layout_height="@dimen/large_button_height"
-        app:layout_constraintBottom_toTopOf="@+id/endCallButton"
+        android:layout_marginEnd="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/switchCameraButton"
         app:layout_constraintEnd_toStartOf="@id/microphoneButton"
-        android:layout_marginBottom="@dimen/large_spacing"
+        android:layout_marginBottom="10dp"
         />
 
     <ImageView
         android:id="@+id/microphoneButton"
         android:layout_width="@dimen/large_button_height"
         android:layout_height="@dimen/large_button_height"
+        android:layout_marginStart="50dp"
         android:padding="@dimen/medium_spacing"
         android:src="@drawable/ic_baseline_mic_off_24"
-        android:layout_marginBottom="@dimen/large_spacing"
-        app:layout_constraintBottom_toTopOf="@+id/endCallButton"
-        android:background="@drawable/circle_tintable"
-        android:backgroundTint="@color/state_list_call_action_mic_background"
-        app:tint="@color/call_action_foreground"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/speakerPhoneButton"
         app:layout_constraintStart_toEndOf="@id/enableCameraButton"/>
 
     <ImageView
         android:id="@+id/speakerPhoneButton"
-        android:background="@drawable/circle_tintable"
-        android:backgroundTint="@color/state_list_call_action_background"
-        app:tint="@color/state_list_call_action_foreground"
         android:src="@drawable/ic_baseline_volume_up_24"
         android:padding="@dimen/medium_spacing"
         android:layout_width="@dimen/large_button_height"
         android:layout_height="@dimen/large_button_height"
-        app:layout_constraintBottom_toTopOf="@+id/endCallButton"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/microphoneButton"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="@dimen/large_spacing"
+        android:layout_marginBottom="10dp"
         app:layout_constraintHorizontal_bias="0.9"
         />
 
@@ -249,13 +271,14 @@
         android:id="@+id/controlGroup"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:constraint_referenced_ids="enableCameraButton,endCallButton,switchCameraButton,speakerPhoneButton,microphoneButton"
+        app:constraint_referenced_ids="enableCameraButton,endCallButton,switchCameraButton,speakerPhoneButton,microphoneButton,callActionIconBackgroundImageView"
         />
 
     <androidx.constraintlayout.widget.Group
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:id="@+id/incomingControlGroup"
+        android:visibility="gone"
         app:constraint_referenced_ids="acceptCallButton,declineCallButton"/>
 
     <androidx.constraintlayout.widget.Barrier
@@ -264,7 +287,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:constraint_referenced_ids="switchCameraButton,enableCameraButton,microphoneButton,speakerPhoneButton,acceptCallButton,declineCallButton"
+        app:constraint_referenced_ids="switchCameraButton,enableCameraButton,microphoneButton,speakerPhoneButton,acceptCallButton,declineCallButton,callActionIconBackgroundImageView"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

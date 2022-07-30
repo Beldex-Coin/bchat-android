@@ -11,6 +11,7 @@ import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewControlMessageBinding
 import com.thoughtcrimes.securesms.database.model.MessageRecord
 
+
 class ControlMessageView : LinearLayout {
 
     private lateinit var binding: ViewControlMessageBinding
@@ -45,6 +46,11 @@ class ControlMessageView : LinearLayout {
     fun bind(message: MessageRecord, previous: MessageRecord?) {
         binding.dateBreakTextView.showDateBreak(message, previous)
         binding.iconImageView.visibility = View.GONE
+
+        //SteveJosephh21
+        binding.receiverStatusIconCardView.visibility = View.GONE
+        binding.senderStatusIconCardView.visibility = View.GONE
+
         /*Hales63*/
         var messageBody: CharSequence = message.getDisplayBody(context)
         when {
@@ -66,19 +72,44 @@ class ControlMessageView : LinearLayout {
             }
             message.isCallLog -> {
                 val drawable = when {
-                    message.isIncomingCall -> R.drawable.ic_incoming_call
-                    message.isOutgoingCall -> R.drawable.ic_outgoing_call
+                    message.isIncomingCall -> R.drawable.ic_filled_circle_incoming_call
+                    message.isOutgoingCall -> R.drawable.ic_filled_circle_outgoing_call
                     message.isFirstMissedCall -> R.drawable.ic_info_outline_light
-                    else -> R.drawable.ic_missed_call
+                    else -> R.drawable.ic_filled_circle_missed_call
                 }
-                binding.iconImageView.setImageDrawable(
+               /* binding.iconImageView.setImageDrawable(
                     ResourcesCompat.getDrawable(
                         resources,
                         drawable,
                         context.theme
                     )
                 )
-                binding.iconImageView.visibility = View.VISIBLE
+                binding.iconImageView.visibility = View.VISIBLE*/
+
+                //SteveJosephh21
+                if(message.isOutgoing){
+                    binding.senderStatusIconCardView.visibility = View.VISIBLE
+                    binding.senderStatusIconImageView.setImageDrawable(
+                        ResourcesCompat.getDrawable(
+                            resources,
+                            drawable,
+                            context.theme
+                        )
+                    )
+                    binding.senderStatusIconTextView.text = messageBody
+                    messageBody = ""
+                }else{
+                    binding.receiverStatusIconCardView.visibility = View.VISIBLE
+                    binding.receiverStatusIconImageView.setImageDrawable(
+                        ResourcesCompat.getDrawable(
+                            resources,
+                            drawable,
+                            context.theme
+                        )
+                    )
+                    binding.receiverStatusIconTextView.text = messageBody
+                    messageBody = ""
+                }
             }
             message.isMessageRequestResponse -> {
                 messageBody = context.getString(R.string.message_requests_accepted)

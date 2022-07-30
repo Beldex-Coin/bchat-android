@@ -9,12 +9,11 @@ import android.media.AudioManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.MenuItem
-import android.view.OrientationEventListener
-import android.view.WindowManager
+import android.view.*
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.core.view.marginBottom
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.beldex.libbchat.avatars.ProfileContactPhoto
@@ -46,6 +45,10 @@ import com.thoughtcrimes.securesms.webrtc.CallViewModel.State.CALL_RECONNECTING
 import com.thoughtcrimes.securesms.webrtc.audio.SignalAudioManager.AudioDevice.EARPIECE
 import com.thoughtcrimes.securesms.webrtc.audio.SignalAudioManager.AudioDevice.SPEAKER_PHONE
 import dagger.hilt.android.AndroidEntryPoint
+import android.widget.LinearLayout
+
+
+
 
 @AndroidEntryPoint
 class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
@@ -71,6 +74,9 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                 WebRtcCallService.broadcastWantsToAnswer(this, value)
             }
         private var hangupReceiver: BroadcastReceiver? = null
+
+        //SteveJosephh21
+        private var flipCamera:Boolean =true
 
         private val rotationListener by lazy {
             object : OrientationEventListener(this) {
@@ -173,6 +179,13 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
             }
 
             binding.switchCameraButton.setOnClickListener {
+                if(flipCamera && binding.enableCameraButton.isSelected){
+                    binding.switchCameraButton.setColorFilter(ContextCompat.getColor(this,R.color.green))
+                    flipCamera=false
+                }else{
+                    binding.switchCameraButton.setColorFilter(ContextCompat.getColor(this,R.color.text))
+                    flipCamera=true
+                }
                 startService(WebRtcCallService.flipCamera(this))
             }
 
@@ -234,6 +247,21 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                         ) && !wantsToAnswer
                     reconnectingText.isVisible = state == CALL_RECONNECTING
                     endCallButton.isVisible = endCallButton.isVisible || state == CALL_RECONNECTING
+                    when {
+                        incomingControlGroup.isVisible -> {
+                            statusView.text = getString(R.string.incoming_call)
+                        }
+                    }
+                    //SteveJosephh21
+                    if(state == CALL_OUTGOING){
+                        binding.statusView.text=getString(R.string.outgoing_call)
+                    }
+                    else if(state == CALL_INCOMING){
+                        binding.statusView.text=getString(R.string.incoming_call)
+                    }
+                    if(reconnectingText.isVisible) {
+                        statusView.text = getString(R.string.end_to_end_encrypted)
+                    }
                 }
             }
         }
@@ -248,6 +276,13 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                         val speakerEnabled = state.selectedDevice == SPEAKER_PHONE
                         // change drawable background to enabled or not
                         binding.speakerPhoneButton.isSelected = speakerEnabled
+                        //SteveJosephh21
+                        if(binding.speakerPhoneButton.isSelected){
+                            binding.speakerPhoneButton.setColorFilter(ContextCompat.getColor(this@WebRtcCallActivity,R.color.green))
+                        }
+                        else{
+                            binding.speakerPhoneButton.setColorFilter(ContextCompat.getColor(this@WebRtcCallActivity,R.color.text))
+                        }
                     }
                 }
 
@@ -262,6 +297,8 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                                 }
                             }
                             CALL_OUTGOING -> {
+                                //SteveJosephh21
+                                binding.statusView.text=getString(R.string.outgoing_call)
                             }
                             CALL_CONNECTED -> {
                                 wantsToAnswer = false
@@ -326,6 +363,10 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                                 System.currentTimeMillis() - startTime,
                                 CALL_DURATION_FORMAT
                             )
+                            //SteveJosephh21
+                            if(binding.remoteRecipientName.isVisible){
+                                binding.statusView.text=getString(R.string.end_to_end_encrypted)
+                            }
                         }
 
                         delay(1_000)
@@ -336,6 +377,12 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                     viewModel.localAudioEnabledState.collect { isEnabled ->
                         // change drawable background to enabled or not
                         binding.microphoneButton.isSelected = !isEnabled
+                        //SteveJosephh21
+                        if(binding.microphoneButton.isSelected){
+                            binding.microphoneButton.setColorFilter(ContextCompat.getColor(this@WebRtcCallActivity,R.color.green))
+                        }else{
+                            binding.microphoneButton.setColorFilter(ContextCompat.getColor(this@WebRtcCallActivity,R.color.text))
+                        }
                     }
                 }
 
@@ -350,6 +397,15 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                         }
                         binding.localRenderer.isVisible = isEnabled
                         binding.enableCameraButton.isSelected = isEnabled
+                        //SteveJosephh21
+                        if(isEnabled){
+                            binding.enableCameraButton.setColorFilter(ContextCompat.getColor(this@WebRtcCallActivity,R.color.green))
+                        }
+                        else{
+                            binding.enableCameraButton.setColorFilter(ContextCompat.getColor(this@WebRtcCallActivity,R.color.text))
+                            binding.switchCameraButton.setColorFilter(ContextCompat.getColor(this@WebRtcCallActivity,R.color.text))
+                            flipCamera=false
+                        }
                     }
                 }
 
@@ -363,6 +419,12 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                         }
                         binding.remoteRenderer.isVisible = isEnabled
                         binding.remoteRecipient.isVisible = !isEnabled
+
+                        //SteveJosephh21
+                        binding.remoteRecipientName.isVisible = !isEnabled
+                        if(!binding.remoteRecipientName.isVisible){
+                            binding.statusView.text=binding.remoteRecipientName.text.toString()
+                        }
                     }
                 }
             }

@@ -1037,7 +1037,7 @@
     <string name="WebRtcCallActivity_Reconnecting" translatable="false">Reconnecting…</string>
     <string name="conversation_context__menu_call" translatable="false">Call</string>
     <string name="ConversationActivity_call_title" translatable="false">Call Permissions Required</string>
-    <string name="ConversationActivity_call_prompt" translatable="false">You can enable the \'Voice and video calls\' permission in the Privacy Settings.</string>
+    <string name="ConversationActivity_call_prompt" translatable="false">You missed a call because you need to enable the \'Voice and video calls\' permission in the privacy Settings.</string>
     <string name="dialog_voice_video_title" translatable="false">Voice / video calls</string>
     <string name="dialog_voice_video_message" translatable="false">The current implementation of voice / video calls will expose your IP address to the Beldex servers and the calling / called user</string>
     <string name="CallNotificationBuilder_system_notification_title" translatable="false">Notifications</string>
@@ -1045,5 +1045,8 @@
     <string name="dismiss" translatable="false">Dismiss</string>
     <string name="preferences__voice_video_calls" translatable="false">Voice and video calls</string>
     <string name="preferences__allow_access_voice_video" translatable="false">Allow access to accept voice and video calls from other users</string>
+    <string name="incoming_call" translatable="false">Incoming Call</string>
+    <string name="outgoing_call" translatable="false">Outgoing Call</string>
+    <string name="end_to_end_encrypted" translatable="false">End to End Encrypted</string>
 
 </resources>

@@ -148,4 +148,7 @@
     <color name="call_action_foreground">#D8D8D8</color>
     <color name="call_action_foreground_highlighted">#171717</color>
     <color name="call_background">#171717</color>
+    <color name="color_action_icon_background">#353545</color>
+    <color name="remote_parent_background">#00000000</color>
+    <color name="dialog_header_background">#FC3B3B</color>
 </resources>

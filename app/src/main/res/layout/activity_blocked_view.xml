@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/page_background"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/contentView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="@dimen/medium_spacing">
+
+        <com.thoughtcrimes.securesms.components.ProfilePictureView
+            android:id="@+id/profilePictureView"
+            android:layout_width="@dimen/medium_profile_picture_size"
+            android:layout_height="@dimen/medium_profile_picture_size" />
+
+        <TextView
+            android:fontFamily="@font/poppins_medium"
+            android:id="@+id/nameTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/medium_spacing"
+            android:maxLines="1"
+            android:textAlignment="viewStart"
+            android:ellipsize="end"
+            android:textSize="@dimen/medium_font_size"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            tools:text="User Name" />
+
+        <Button
+            android:id="@+id/unblockButtonBlockedList"
+            style="@style/Widget.Bchat.Button.Common.ProminentFilled_ClearData"
+            android:layout_width="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_height="@dimen/medium_button_height"
+            android:text="@string/ConversationActivity_unblock" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="?android:dividerHorizontal" />
+
+</LinearLayout>

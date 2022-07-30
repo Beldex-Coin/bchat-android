@@ -169,6 +169,9 @@ interface TextSecurePreferences {
     //New Line
     fun hasShowMessageRequests(): Boolean
     fun setHasShowMessageRequests(status:Boolean)
+    /*Hales63*/
+    fun isUnBlocked(): Boolean
+    fun setUnBlockedStatus(status: Boolean)
 
 
     companion object {
@@ -252,6 +255,7 @@ interface TextSecurePreferences {
         const val PLAYER_STATUS = "player_status"
         const val HAS_HIDDEN_MESSAGE_REQUESTS = "pref_message_requests_hidden"
         const val HAS_SHOW_MESSAGE_REQUESTS = "pref_message_requests_show"
+        const val UN_BLOCK_STATUS = "un_blocked"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -979,6 +983,16 @@ interface TextSecurePreferences {
         fun setHasShowMessageRequests(context:Context,status: Boolean) {
             setBooleanPreference(context, HAS_SHOW_MESSAGE_REQUESTS, status)
         }
+        @JvmStatic
+        fun isUnBlocked(context: Context): Boolean {
+            return getBooleanPreference(context, UN_BLOCK_STATUS, false)
+        }
+
+        @JvmStatic
+        fun setUnBlockStatus(context:Context,status: Boolean) {
+            setBooleanPreference(context, UN_BLOCK_STATUS, status)
+        }
+
     }
 }
 
@@ -1597,5 +1611,13 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun setHasShowMessageRequests(status: Boolean) {
         setBooleanPreference(TextSecurePreferences.HAS_SHOW_MESSAGE_REQUESTS, status)
+    }
+
+    override fun isUnBlocked(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.UN_BLOCK_STATUS, false)
+    }
+
+    override fun setUnBlockedStatus(status: Boolean) {
+        setBooleanPreference(TextSecurePreferences.UN_BLOCK_STATUS, status)
     }
 }

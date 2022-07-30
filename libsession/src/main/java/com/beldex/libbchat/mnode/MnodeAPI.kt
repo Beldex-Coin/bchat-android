@@ -53,7 +53,7 @@ object MnodeAPI {
     private val seedNodePool by lazy {
         if (useTestnet) {
             Log.d("beldex","here testnet")
-              setOf("http://3.109.123.6:29096")
+              setOf("http://3.111.42.102:29096")
         } else {
             Log.d("beldex","here mainnet")
             setOf("https://publicnode5.rpcnode.stream:$nodePort","https://publicnode1.rpcnode.stream:$nodePort","https://publicnode2.rpcnode.stream:$nodePort","https://publicnode3.rpcnode.stream:$nodePort","https://publicnode4.rpcnode.stream:$nodePort")//"https://mainnet.beldex.io:29095","https://explorer.beldex.io:19091","https://publicnode5.rpcnode.stream:29095","http://publicnode1.rpcnode.stream:29095","http://publicnode2.rpcnode.stream:29095","http://publicnode3.rpcnode.stream:29095","http://publicnode4.rpcnode.stream:29095"

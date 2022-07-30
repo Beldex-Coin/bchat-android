@@ -77,6 +77,9 @@
         android:theme="@style/Theme.Bchat.DayNight"
         tools:replace="android:allowBackup">
         <activity
+            android:name="com.thoughtcrimes.securesms.contacts.BlockedContactActivity"
+            android:exported="false" />
+        <activity
             android:name="com.thoughtcrimes.securesms.onboarding.AboutActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />

@@ -1048,5 +1048,8 @@
     <string name="incoming_call" translatable="false">Incoming Call</string>
     <string name="outgoing_call" translatable="false">Outgoing Call</string>
     <string name="end_to_end_encrypted" translatable="false">End to End Encrypted</string>
+    <string name="call_duration" translatable="false">00:10:10</string>
+    <string name="hang_up" translatable="false">Hangup</string>
+    <string name="back_to_call" translatable="false">Back to call</string>
 
 </resources>

@@ -48,7 +48,7 @@
         android:visibility="gone"
         tools:visibility="visible"
         android:layout_gravity="start"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="20dp"
         app:cardBackgroundColor="@color/card_color">
         <LinearLayout
             android:id="@+id/receiverStatusIconLinearLayout"
@@ -57,7 +57,10 @@
             android:orientation="horizontal"
             android:gravity="center"
             android:layout_gravity="center"
-            android:padding="10dp">
+            android:paddingTop="15dp"
+            android:paddingStart="13dp"
+            android:paddingEnd="13dp"
+            android:paddingBottom="15dp">
             <ImageView
                 android:id="@+id/receiverStatusIconImageView"
                 android:layout_width="wrap_content"
@@ -70,7 +73,7 @@
                 android:fontFamily="@font/poppins_regular"
                 android:id="@+id/receiverStatusIconTextView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textAlignment="center"
                 android:layout_gravity="center"
@@ -90,7 +93,7 @@
         android:layout_gravity="end"
         android:visibility="gone"
         tools:visibility="visible"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="20dp"
         app:cardBackgroundColor="@color/send_message_background">
         <LinearLayout
             android:id="@+id/senderStatusIconLinearLayout"
@@ -99,12 +102,15 @@
             android:orientation="horizontal"
             android:gravity="center"
             android:layout_gravity="center"
-            android:padding="10dp">
+            android:paddingTop="15dp"
+            android:paddingStart="13dp"
+            android:paddingEnd="13dp"
+            android:paddingBottom="15dp">
             <TextView
                 android:fontFamily="@font/poppins_regular"
                 android:id="@+id/senderStatusIconTextView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textAlignment="center"
                 android:layout_gravity="center"

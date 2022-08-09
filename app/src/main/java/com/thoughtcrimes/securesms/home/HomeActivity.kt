@@ -97,8 +97,13 @@ import android.widget.TextView
 
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
+import com.thoughtcrimes.securesms.service.WebRtcCallService
+import com.thoughtcrimes.securesms.webrtc.CallViewModel
 import io.beldex.bchat.databinding.ViewMessageRequestBannerBinding
+import kotlinx.coroutines.*
+import org.apache.commons.lang3.time.DurationFormatUtils
 import java.util.*
 
 
@@ -113,6 +118,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     private lateinit var binding: ActivityHomeBinding
     private lateinit var glide: GlideRequests
     private var broadcastReceiver: BroadcastReceiver? = null
+    private var uiJob: Job? = null
+    private val viewModel by viewModels<CallViewModel>()
+    private val CALLDURATIONFORMAT = "HH:mm:ss"
 
     @Inject
     lateinit var threadDb: ThreadDatabase
@@ -469,6 +477,47 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
             launchSuccessLottieDialog()
         }*/
     }
+
+
+    private fun setupCallActionBar() {
+
+        val startTimeNew = viewModel.callStartTime
+        if(startTimeNew==-1L) {
+            binding.toolbarCall.isVisible = false
+        }
+        else {
+            binding.toolbarCall.isVisible = true
+            uiJob = lifecycleScope.launch {
+                launch {
+                    while (isActive) {
+                        val startTime = viewModel.callStartTime
+                        if (startTime == -1L) {
+                            binding.toolbarCall.isVisible = false
+                        } else {
+                            binding.toolbarCall.isVisible = true
+                            binding.callDurationCall.text = DurationFormatUtils.formatDuration(
+                                System.currentTimeMillis() - startTime,
+                                CALLDURATIONFORMAT
+                            )
+                        }
+
+                        delay(1_000)
+                    }
+                }
+            }
+        }
+        binding.hanUpCall.setOnClickListener {
+            startService(WebRtcCallService.hangupIntent(this))
+            binding.toolbarCall.isVisible = false
+            Toast.makeText(this, "Call ended", Toast.LENGTH_SHORT).show()
+        }
+        binding.backToCallCall.setOnClickListener {
+            val intent = Intent(this, WebRtcCallActivity::class.java)
+            push(intent)
+        }
+    }
+
+
     //New Line
     /*private fun launchSuccessLottieDialog() {
         val button = Button(this)
@@ -669,6 +718,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     }
     override fun onResume() {
         super.onResume()
+        setupCallActionBar()
         ApplicationContext.getInstance(this).messageNotifier.setHomeScreenVisible(true)
         if (TextSecurePreferences.getLocalNumber(this) == null) {
             return; } // This can be the case after a secondary device is auto-cleared

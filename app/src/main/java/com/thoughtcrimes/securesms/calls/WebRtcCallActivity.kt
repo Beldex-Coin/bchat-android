@@ -47,9 +47,6 @@ import com.thoughtcrimes.securesms.webrtc.audio.SignalAudioManager.AudioDevice.S
 import dagger.hilt.android.AndroidEntryPoint
 import android.widget.LinearLayout
 
-
-
-
 @AndroidEntryPoint
 class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
 

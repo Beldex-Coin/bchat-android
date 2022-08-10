@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.preference.Preference;
@@ -26,6 +27,7 @@ import com.thoughtcrimes.securesms.service.KeyCachingService;
 import com.thoughtcrimes.securesms.util.CallNotificationBuilder;
 import com.thoughtcrimes.securesms.util.IntentUtils;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import io.beldex.bchat.BuildConfig;
@@ -90,6 +92,12 @@ public class AppProtectionPreferenceFragment extends CorrectedPreferenceFragment
               .show();
     }
     return null;
+  }
+  //Hales63
+  @Override
+  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    Permissions.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
   }
 
   @Override
@@ -216,7 +224,7 @@ public class AppProtectionPreferenceFragment extends CorrectedPreferenceFragment
       if (val) {
         // check if we've shown the info dialog and check for microphone permissions
         if (TextSecurePreferences.setShownCallWarning(context.requireContext())) {
-          new AlertDialog.Builder(context.requireContext())
+          new AlertDialog.Builder(context.requireContext(),R.style.BChatAlertDialog)
                   .setTitle(R.string.dialog_voice_video_title)
                   .setMessage(R.string.dialog_voice_video_message)
                   .setPositiveButton(R.string.dialog_link_preview_enable_button_title, (d, w) -> {

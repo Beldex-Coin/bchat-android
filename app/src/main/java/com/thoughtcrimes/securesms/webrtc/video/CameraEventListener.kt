@@ -4,7 +4,7 @@ interface CameraEventListener {
     fun onCameraSwitchCompleted(newCameraState: CameraState)
 }
 
-data class CameraState(val activeDirection: Direction, val cameraCount: Int) {
+data class CameraState(var activeDirection: Direction, val cameraCount: Int) {
     companion object {
         val UNKNOWN = CameraState(Direction.NONE, 0)
     }

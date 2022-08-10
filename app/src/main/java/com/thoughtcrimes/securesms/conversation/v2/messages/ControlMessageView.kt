@@ -74,7 +74,7 @@ class ControlMessageView : LinearLayout {
                 val drawable = when {
                     message.isIncomingCall -> R.drawable.ic_filled_circle_incoming_call
                     message.isOutgoingCall -> R.drawable.ic_filled_circle_outgoing_call
-                    message.isFirstMissedCall -> R.drawable.ic_info_outline_light
+                    message.isFirstMissedCall -> R.drawable.ic_first_missed_call
                     else -> R.drawable.ic_filled_circle_missed_call
                 }
                /* binding.iconImageView.setImageDrawable(

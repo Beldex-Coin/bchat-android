@@ -182,7 +182,14 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
 
 
             localRenderer?.init(base.eglBaseContext, null)
-            localRenderer?.setMirror(localCameraState.activeDirection == CameraState.Direction.FRONT)
+
+            if(localCameraState.activeDirection == CameraState.Direction.FRONT)
+            {
+                localRenderer?.setMirror(false)
+            }
+            else{
+                localRenderer?.setMirror(true)
+            }
             remoteRenderer?.init(base.eglBaseContext, null)
             remoteRotationSink!!.setSink(remoteRenderer!!)
 
@@ -591,8 +598,18 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
         if (!localCameraState.enabled) return
         peerConnection?.let { connection ->
             connection.flipCamera()
-            localCameraState = connection.getCameraState()
-            localRenderer?.setMirror(localCameraState.activeDirection == CameraState.Direction.FRONT)
+            //localCameraState = connection.getCameraState()
+
+            if(localCameraState.activeDirection == CameraState.Direction.FRONT)
+            {
+                localRenderer?.setMirror(false)
+                localCameraState.activeDirection = CameraState.Direction.PENDING
+            }
+            else
+            {
+                localRenderer?.setMirror(true)
+                localCameraState.activeDirection = CameraState.Direction.FRONT
+            }
         }
     }
 

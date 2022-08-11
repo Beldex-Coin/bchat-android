@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            android:background="@color/page_background"
+            android:background="@color/call_toolbar_background"
             app:contentInsetStart="0dp">
 
             <LinearLayout
@@ -38,10 +38,12 @@
 
                     <ImageView
                         android:id="@+id/profileButton_Call"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
                         android:layout_centerVertical="true"
-                        android:layout_marginStart="10dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="10dp"
                         android:src="@drawable/ic_attend_call" />
 
 
@@ -50,41 +52,26 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
-                        android:layout_marginStart="20dp"
+                        android:layout_marginStart="10dp"
                         android:layout_marginEnd="20dp"
+                        android:textColor="@color/white"
                         android:layout_toEndOf="@id/profileButton_Call"
                         android:fontFamily="@font/poppins_bold"
                         tools:text="@tools:sample/date/hhmmss"
                         android:textSize="15sp"
                         android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/hanUp_Call"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_toLeftOf="@id/backToCall_Call"
-                        android:fontFamily="@font/poppins_bold"
-                        android:text="Hangup"
-                        android:textColor="@color/red"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/backToCall_Call"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    <ImageView
+                        android:id="@+id/hanUp_Call"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:layout_alignParentEnd="true"
                         android:layout_centerInParent="true"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
-                        android:textColor="@color/text"
-                        android:fontFamily="@font/poppins_bold"
-                        android:text="Back to call"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:src="@drawable/ic_hangup"
+                        />
 
                     <!-- <RelativeLayout
                          android:id="@+id/searchViewContainer"

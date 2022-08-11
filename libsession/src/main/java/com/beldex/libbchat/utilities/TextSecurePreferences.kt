@@ -285,7 +285,7 @@ interface TextSecurePreferences {
 
         @JvmStatic
         fun isUsingFCM(context: Context): Boolean {
-            return getBooleanPreference(context, IS_USING_FCM, false)
+            return getBooleanPreference(context, IS_USING_FCM, true)
         }
 
         @JvmStatic

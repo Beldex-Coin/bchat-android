@@ -36,18 +36,13 @@ class PeerConnectionWrapper(private val context: Context,
 
     private fun initPeerConnection() {
         val random = SecureRandom().asKotlinRandom()
-        /*val iceServers = listOf("turn.communication0","turn.communication1","turn.communication2","turn.communication3","turn.communication4","turn.communication5").shuffled(random).take(2).map { sub ->
+        val iceServers = listOf("turn.communication0","turn.communication1","turn.communication2","turn.communication3","turn.communication4","turn.communication5").shuffled(random).take(2).map { sub ->
             PeerConnection.IceServer.builder("turn:$sub.beldex.io")
                 .setUsername("beldex")
                 .setPassword("beldex@123")
                 .createIceServer()
-        }*/
-        val iceServers = listOf("turn.call","turn.call1","turn.call2","turn.call3","turn.call4","turn.call5").shuffled(random).take(2).map { sub ->
-            PeerConnection.IceServer.builder("turn:$sub.beldex.io")
-                .setUsername("test")
-                .setPassword("test@123")
-                .createIceServer()
         }
+
 
         val constraints = MediaConstraints().apply {
             optional.add(MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"))

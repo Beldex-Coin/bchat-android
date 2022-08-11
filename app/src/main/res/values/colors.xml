@@ -151,4 +151,5 @@
     <color name="color_action_icon_background">#353545</color>
     <color name="remote_parent_background">#00000000</color>
     <color name="dialog_header_background">#FC3B3B</color>
+    <color name="call_toolbar_background">#128D15</color>
 </resources>

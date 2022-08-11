@@ -511,7 +511,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
             binding.toolbarCall.isVisible = false
             Toast.makeText(this, "Call ended", Toast.LENGTH_SHORT).show()
         }
-        binding.backToCallCall.setOnClickListener {
+        binding.toolbarCall.setOnClickListener{
             val intent = Intent(this, WebRtcCallActivity::class.java)
             push(intent)
         }

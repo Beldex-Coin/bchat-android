@@ -74,6 +74,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
 
         //SteveJosephh21
         private var flipCamera:Boolean =true
+        private var microPhoneEnable = false
 
         private val rotationListener by lazy {
             object : OrientationEventListener(this) {
@@ -132,6 +133,23 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
             }
 
             binding.microphoneButton.setOnClickListener {
+                microPhoneEnable = !microPhoneEnable
+
+                if (microPhoneEnable) {
+                    binding.microphoneButton.setColorFilter(
+                        ContextCompat.getColor(
+                            this@WebRtcCallActivity,
+                            R.color.green
+                        )
+                    )
+                } else {
+                    binding.microphoneButton.setColorFilter(
+                        ContextCompat.getColor(
+                            this@WebRtcCallActivity,
+                            R.color.text
+                        )
+                    )
+                }
                 val audioEnabledIntent =
                     WebRtcCallService.microphoneIntent(this, !viewModel.microphoneEnabled)
                 startService(audioEnabledIntent)
@@ -354,8 +372,15 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                         val startTime = viewModel.callStartTime
                         if (startTime == -1L) {
                             binding.callTime.isVisible = false
+                            //SteveJosephh21
+                            binding.microphoneButton.isClickable =false
+                            binding.microphoneButton.alpha=0.1f
                         } else {
                             binding.callTime.isVisible = true
+                            //SteveJosephh21
+                            binding.microphoneButton.isClickable =true
+                            binding.microphoneButton.alpha=1.0f
+
                             binding.callTime.text = DurationFormatUtils.formatDuration(
                                 System.currentTimeMillis() - startTime,
                                 CALL_DURATION_FORMAT
@@ -375,11 +400,21 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                         // change drawable background to enabled or not
                         binding.microphoneButton.isSelected = !isEnabled
                         //SteveJosephh21
-                        if(binding.microphoneButton.isSelected){
-                            binding.microphoneButton.setColorFilter(ContextCompat.getColor(this@WebRtcCallActivity,R.color.green))
-                        }else{
-                            binding.microphoneButton.setColorFilter(ContextCompat.getColor(this@WebRtcCallActivity,R.color.text))
-                        }
+                            /*if (binding.microphoneButton.isSelected) {
+                                binding.microphoneButton.setColorFilter(
+                                    ContextCompat.getColor(
+                                        this@WebRtcCallActivity,
+                                        R.color.green
+                                    )
+                                )
+                            } else {
+                                binding.microphoneButton.setColorFilter(
+                                    ContextCompat.getColor(
+                                        this@WebRtcCallActivity,
+                                        R.color.text
+                                    )
+                                )
+                            }*/
                     }
                 }
 

@@ -21,13 +21,9 @@ import com.thoughtcrimes.securesms.permissions.Permissions;
 import com.thoughtcrimes.securesms.service.KeyCachingService;
 
 import com.beldex.libbchat.utilities.TextSecurePreferences;
-import com.thoughtcrimes.securesms.ApplicationContext;
-import com.thoughtcrimes.securesms.components.SwitchPreferenceCompat;
-import com.thoughtcrimes.securesms.service.KeyCachingService;
 import com.thoughtcrimes.securesms.util.CallNotificationBuilder;
 import com.thoughtcrimes.securesms.util.IntentUtils;
 
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import io.beldex.bchat.BuildConfig;

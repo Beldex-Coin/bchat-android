@@ -18,7 +18,6 @@ import android.view.ViewGroup;
 import com.thoughtcrimes.securesms.components.CustomDefaultPreference;
 
 import io.beldex.bchat.R;
-import com.thoughtcrimes.securesms.components.CustomDefaultPreference;
 import com.thoughtcrimes.securesms.preferences.widgets.ColorPickerPreference;
 import com.thoughtcrimes.securesms.preferences.widgets.ColorPickerPreferenceDialogFragmentCompat;
 

@@ -42,7 +42,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_medium"
-                    android:text="Call Missed"
+                    android:text="Call Permission required"
                     android:textColor="@color/white"
                     android:textSize="20sp"
                     tools:ignore="HardcodedText,RtlHardcoded,SpUsage"/>
@@ -59,7 +59,7 @@
                     android:layout_marginEnd="20dp"
                     android:layout_marginStart="20dp"
                     android:fontFamily="@font/poppins_medium"
-                    android:text="@string/ConversationActivity_call_prompt"
+                    android:text="You can enable the ‘Voice and video calls' permission in the privacy Settings"
                     android:textAlignment="center"
                     android:gravity="center"
                     android:textColor="@color/text"

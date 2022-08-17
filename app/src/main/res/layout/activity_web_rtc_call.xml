@@ -29,6 +29,18 @@
             android:layout_gravity="center"/>
     </FrameLayout>
     <ImageView
+        android:id="@+id/remote_recipient_blur_image"
+        android:layout_width="390dp"
+        android:layout_height="390dp"
+        app:layout_constraintStart_toStartOf="@id/remote_parent"
+        app:layout_constraintEnd_toEndOf="@id/remote_parent"
+        app:layout_constraintTop_toTopOf="@id/remote_parent"
+        app:layout_constraintBottom_toBottomOf="@id/remote_parent"
+        app:layout_constraintVertical_bias="0.4"
+        android:scaleType="fitXY"
+        android:alpha="0.1"
+        android:src="@drawable/ic_bchat_logo"/>
+    <ImageView
         android:id="@+id/remote_recipient"
         app:layout_constraintStart_toStartOf="@id/remote_parent"
         app:layout_constraintEnd_toEndOf="@id/remote_parent"

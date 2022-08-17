@@ -10,6 +10,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -34,6 +35,12 @@ import com.thoughtcrimes.securesms.util.ConfigurationMessageUtilities
 import com.thoughtcrimes.securesms.util.State
 import com.thoughtcrimes.securesms.util.push
 import java.util.*
+import android.text.Editable
+
+import android.text.TextWatcher
+
+
+
 
 class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
     private lateinit var binding: ActivityJoinPublicChatNewBinding
@@ -47,7 +54,80 @@ class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
         supportActionBar!!.title = resources.getString(R.string.join_group)
 
         binding.chatURLEditText.imeOptions = binding.chatURLEditText.imeOptions or 16777216 // Always use incognito keyboard
-        binding.joinPublicChatButton.setOnClickListener { joinPublicChatIfPossible() }
+        binding.joinPublicChatButton.setOnClickListener {
+            if (binding.joinPublicChatButton.isEnabled) {
+                joinPublicChatIfPossible()
+            }
+        }
+
+
+        //SteveJosephh21
+        binding.joinPublicChatButton.setTextColor(ContextCompat.getColor(this, R.color.disable_button_text_color))
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            binding.joinPublicChatButton.setBackgroundDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.prominent_filled_button_medium_background_disable
+                )
+            );
+        } else {
+            binding.joinPublicChatButton.background =
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.prominent_filled_button_medium_background_disable
+                );
+        }
+        binding.joinPublicChatButton.isEnabled = binding.chatURLEditText.text.isNotEmpty()
+        binding.chatURLEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {}
+            override fun beforeTextChanged(
+                s: CharSequence, start: Int,
+                count: Int, after: Int
+            ) {
+            }
+
+            override fun onTextChanged(
+                s: CharSequence, start: Int,
+                before: Int, count: Int
+            ) {
+                if (s.length == 0){
+                    binding.joinPublicChatButton.isEnabled = false
+                    binding.joinPublicChatButton.setTextColor(ContextCompat.getColor(this@JoinPublicChatNewActivity, R.color.disable_button_text_color))
+                    if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                        binding.joinPublicChatButton.setBackgroundDrawable(
+                            ContextCompat.getDrawable(
+                                this@JoinPublicChatNewActivity,
+                                R.drawable.prominent_filled_button_medium_background_disable
+                            )
+                        );
+                    } else {
+                        binding.joinPublicChatButton.background =
+                            ContextCompat.getDrawable(
+                                this@JoinPublicChatNewActivity,
+                                R.drawable.prominent_filled_button_medium_background_disable
+                            );
+                    }
+                }else{
+                    binding.joinPublicChatButton.isEnabled = true
+                    binding.joinPublicChatButton.setTextColor(ContextCompat.getColor(
+                        this@JoinPublicChatNewActivity, R.color.white))
+                    if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                        binding.joinPublicChatButton.setBackgroundDrawable(
+                            ContextCompat.getDrawable(
+                                this@JoinPublicChatNewActivity,
+                                R.drawable.prominent_filled_button_medium_background
+                            )
+                        );
+                    } else {
+                        binding.joinPublicChatButton.background =
+                            ContextCompat.getDrawable(
+                                this@JoinPublicChatNewActivity,
+                                R.drawable.prominent_filled_button_medium_background
+                            );
+                    }
+                }
+            }
+        })
 
         viewModel.defaultRooms.observe(this) { state ->
             binding.defaultRoomsContainer.isVisible = state is State.Success

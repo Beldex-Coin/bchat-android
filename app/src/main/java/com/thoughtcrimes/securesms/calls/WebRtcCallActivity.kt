@@ -7,13 +7,11 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.*
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.core.view.marginBottom
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.beldex.libbchat.avatars.ProfileContactPhoto
@@ -28,7 +26,6 @@ import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.util.AvatarPlaceholderGenerator
 import com.thoughtcrimes.securesms.webrtc.AudioManagerCommand
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
-import com.thoughtcrimes.securesms.webrtc.audio.SignalAudioManager
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityWebRtcCallBinding
 import kotlinx.coroutines.Job
@@ -45,7 +42,7 @@ import com.thoughtcrimes.securesms.webrtc.CallViewModel.State.CALL_RECONNECTING
 import com.thoughtcrimes.securesms.webrtc.audio.SignalAudioManager.AudioDevice.EARPIECE
 import com.thoughtcrimes.securesms.webrtc.audio.SignalAudioManager.AudioDevice.SPEAKER_PHONE
 import dagger.hilt.android.AndroidEntryPoint
-import android.widget.LinearLayout
+
 
 @AndroidEntryPoint
 class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
@@ -63,6 +60,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
 
         private val viewModel by viewModels<CallViewModel>()
         private val glide by lazy { GlideApp.with(this) }
+        private val glide1 by lazy { GlideApp.with(this) }
         private lateinit var binding: ActivityWebRtcCallBinding
         private var uiJob: Job? = null
         private var wantsToAnswer = false
@@ -348,6 +346,20 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                                         )
                                     )
                                     .into(binding.remoteRecipient)
+                                //SteveJosephh21
+                                glide1.clear(binding.remoteRecipientBlurImage)
+                                glide1.load(signalProfilePicture).circleCrop()
+                                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                                    .error(
+                                        AvatarPlaceholderGenerator.generate(
+                                            this@WebRtcCallActivity,
+                                            sizeInPX,
+                                            publicKey,
+                                            displayName
+                                        )
+                                    )
+                                    .override(60, 60)
+                                    .into(binding.remoteRecipientBlurImage)
                             } else {
                                 glide.clear(binding.remoteRecipient)
                                 glide.load(
@@ -360,9 +372,25 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                                 )
                                     .diskCacheStrategy(DiskCacheStrategy.ALL).circleCrop()
                                     .into(binding.remoteRecipient)
+
+                                //SteveJosephh21
+                                glide1.clear(binding.remoteRecipientBlurImage)
+                                glide1.load(
+                                    AvatarPlaceholderGenerator.generate(
+                                        this@WebRtcCallActivity,
+                                        sizeInPX,
+                                        publicKey,
+                                        displayName
+                                    )
+                                ).circleCrop()
+                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                    .override(60, 60)
+                                    .into(binding.remoteRecipientBlurImage)
                             }
                         } else {
                             glide.clear(binding.remoteRecipient)
+                            //SteveJosephh21
+                            glide1.clear(binding.remoteRecipientBlurImage)
                         }
                     }
                 }
@@ -453,6 +481,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                         binding.remoteRecipient.isVisible = !isEnabled
 
                         //SteveJosephh21
+                        binding.remoteRecipientBlurImage.isVisible = !isEnabled
                         binding.remoteRecipientName.isVisible = !isEnabled
                         if(!binding.remoteRecipientName.isVisible){
                             binding.statusView.text=binding.remoteRecipientName.text.toString()

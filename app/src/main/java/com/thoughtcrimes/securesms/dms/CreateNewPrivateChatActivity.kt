@@ -7,12 +7,15 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
 import android.text.InputType
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityCreateNewPrivateChatBinding
@@ -84,6 +87,75 @@ class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
                 push(intent)
                 finish()
             }
+
+            //SteveJosephh21
+            createPrivateChatButton.setTextColor(ContextCompat.getColor(this@CreateNewPrivateChatActivity, R.color.disable_button_text_color))
+            if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                createPrivateChatButton.setBackgroundDrawable(
+                    ContextCompat.getDrawable(
+                        this@CreateNewPrivateChatActivity,
+                        R.drawable.prominent_filled_button_medium_background_disable
+                    )
+                );
+            } else {
+                createPrivateChatButton.background =
+                    ContextCompat.getDrawable(
+                        this@CreateNewPrivateChatActivity,
+                        R.drawable.prominent_filled_button_medium_background_disable
+                    );
+            }
+            createPrivateChatButton.isEnabled = publicKeyEditText.text.isNotEmpty()
+            publicKeyEditText.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable) {}
+                override fun beforeTextChanged(
+                    s: CharSequence, start: Int,
+                    count: Int, after: Int
+                ) {
+                }
+
+                override fun onTextChanged(
+                    s: CharSequence, start: Int,
+                    before: Int, count: Int
+                ) {
+                    if (s.length == 0){
+                        createPrivateChatButton.isEnabled = false
+                        createPrivateChatButton.setTextColor(ContextCompat.getColor(this@CreateNewPrivateChatActivity, R.color.disable_button_text_color))
+                        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                            createPrivateChatButton.setBackgroundDrawable(
+                                ContextCompat.getDrawable(
+                                    this@CreateNewPrivateChatActivity,
+                                    R.drawable.prominent_filled_button_medium_background_disable
+                                )
+                            );
+                        } else {
+                            createPrivateChatButton.background =
+                                ContextCompat.getDrawable(
+                                    this@CreateNewPrivateChatActivity,
+                                    R.drawable.prominent_filled_button_medium_background_disable
+                                );
+                        }
+                    }else{
+                        createPrivateChatButton.isEnabled = true
+                        createPrivateChatButton.setTextColor(
+                            ContextCompat.getColor(
+                            this@CreateNewPrivateChatActivity, R.color.white))
+                        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                            createPrivateChatButton.setBackgroundDrawable(
+                                ContextCompat.getDrawable(
+                                    this@CreateNewPrivateChatActivity,
+                                    R.drawable.prominent_filled_button_medium_background
+                                )
+                            );
+                        } else {
+                            createPrivateChatButton.background =
+                                ContextCompat.getDrawable(
+                                    this@CreateNewPrivateChatActivity,
+                                    R.drawable.prominent_filled_button_medium_background
+                                );
+                        }
+                    }
+                }
+            })
         }
 
     }

@@ -25,7 +25,10 @@ import com.thoughtcrimes.securesms.permissions.Permissions
 import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.util.AvatarPlaceholderGenerator
 import com.thoughtcrimes.securesms.webrtc.AudioManagerCommand
+import com.thoughtcrimes.securesms.webrtc.CallManager
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
+import com.thoughtcrimes.securesms.webrtc.CallViewModel.State.*
+import com.thoughtcrimes.securesms.webrtc.HangUpRtcOnPstnCallAnsweredListener
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityWebRtcCallBinding
 import kotlinx.coroutines.Job
@@ -33,15 +36,16 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.time.DurationFormatUtils
-import com.thoughtcrimes.securesms.webrtc.CallViewModel.State.CALL_CONNECTED
-import com.thoughtcrimes.securesms.webrtc.CallViewModel.State.CALL_PRE_INIT
-import com.thoughtcrimes.securesms.webrtc.CallViewModel.State.CALL_OUTGOING
-import com.thoughtcrimes.securesms.webrtc.CallViewModel.State.CALL_INCOMING
-import com.thoughtcrimes.securesms.webrtc.CallViewModel.State.CALL_RINGING
-import com.thoughtcrimes.securesms.webrtc.CallViewModel.State.CALL_RECONNECTING
 import com.thoughtcrimes.securesms.webrtc.audio.SignalAudioManager.AudioDevice.EARPIECE
 import com.thoughtcrimes.securesms.webrtc.audio.SignalAudioManager.AudioDevice.SPEAKER_PHONE
+import com.thoughtcrimes.securesms.webrtc.data.State
+import com.thoughtcrimes.securesms.webrtc.data.StateProcessor
+import com.thoughtcrimes.securesms.webrtc.locks.LockManager
 import dagger.hilt.android.AndroidEntryPoint
+import org.webrtc.DataChannel
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledFuture
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -74,7 +78,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
         private var flipCamera:Boolean =true
         private var microPhoneEnable = false
 
-        private val rotationListener by lazy {
+        /*private val rotationListener by lazy {
             object : OrientationEventListener(this) {
                 override fun onOrientationChanged(orientation: Int) {
                     if ((orientation + 15) % 90 < 30) {
@@ -83,7 +87,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                     }
                 }
             }
-        }
+        }*/
 
         override fun onOptionsItemSelected(item: MenuItem): Boolean {
             if (item.itemId == android.R.id.home) {
@@ -103,7 +107,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
 
         override fun onCreate(savedInstanceState: Bundle?, ready: Boolean) {
             super.onCreate(savedInstanceState, ready)
-            rotationListener.enable()
+            //rotationListener.disable()
             binding = ActivityWebRtcCallBinding.inflate(layoutInflater)
             setContentView(binding.root)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
@@ -216,7 +220,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
             hangupReceiver?.let { receiver ->
                 LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
             }
-            rotationListener.disable()
+           // rotationListener.disable()
         }
 
         private fun answerCall() {
@@ -245,6 +249,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                         incomingControlGroup.isVisible = false
                     }
                 } else {
+                    Log.d("Beldex-Call", "current state $state")
                     controlGroup.isVisible = state in listOf(
                         CALL_CONNECTED,
                         CALL_OUTGOING,
@@ -259,27 +264,29 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                             CALL_PRE_INIT
                         ) && !wantsToAnswer
                     reconnectingText.isVisible = state == CALL_RECONNECTING
-                    endCallButton.isVisible = endCallButton.isVisible || state == CALL_RECONNECTING
+                    endCallButton.isVisible =
+                        endCallButton.isVisible || state == CALL_RECONNECTING
                     when {
                         incomingControlGroup.isVisible -> {
                             statusView.text = getString(R.string.incoming_call)
                         }
                     }
+
                     //SteveJosephh21
-                    if(state == CALL_OUTGOING){
-                        binding.statusView.text=getString(R.string.outgoing_call)
+                    if (state == CALL_OUTGOING) {
+                        binding.statusView.text = getString(R.string.outgoing_call)
+                    } else if (state == CALL_INCOMING) {
+                        binding.statusView.text = getString(R.string.incoming_call)
                     }
-                    else if(state == CALL_INCOMING){
-                        binding.statusView.text=getString(R.string.incoming_call)
-                    }
-                    if(reconnectingText.isVisible) {
+                    if (reconnectingText.isVisible) {
                         statusView.text = getString(R.string.end_to_end_encrypted)
                     }
                 }
             }
         }
 
-        override fun onStart() {
+
+    override fun onStart() {
             super.onStart()
 
             uiJob = lifecycleScope.launch {

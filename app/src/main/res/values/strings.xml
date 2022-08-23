@@ -1051,5 +1051,6 @@
     <string name="call_duration" translatable="false">00:10:10</string>
     <string name="hang_up" translatable="false">Hangup</string>
     <string name="back_to_call" translatable="false">Back to call</string>
+    <string name="call_in_progress" translatable="false">Call in progress</string>
 
 </resources>

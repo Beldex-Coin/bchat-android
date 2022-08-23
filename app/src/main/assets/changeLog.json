@@ -74,7 +74,17 @@
           "description":"- Minor Bug Fixes"
         }
       ]
+    },
+    {
+      "title": "1.2.0",
+      "descriptions": [
+        {
+          "description":"- Call Feature Added"
+        },
+        {
+          "description":"- Minor Bug Fixes"
+        }
+      ]
     }
-
   ]
 }

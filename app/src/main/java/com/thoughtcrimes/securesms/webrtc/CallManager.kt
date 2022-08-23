@@ -29,6 +29,7 @@ import java.nio.ByteBuffer
 import java.util.*
 import com.thoughtcrimes.securesms.webrtc.data.State as CallState
 import com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type.ICE_CANDIDATES
+import com.thoughtcrimes.securesms.service.WebRtcCallService
 import nl.komponents.kovenant.functional.bind
 
 class CallManager(context: Context, audioManager: AudioManagerCompat, private val storage: StorageProtocol): PeerConnection.Observer,
@@ -99,6 +100,9 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
     var iceState = PeerConnection.IceConnectionState.CLOSED
 
     private var eglBase: EglBase? = null
+
+    //SteveJosephh21 -
+    private var videoEnabledStatus:Boolean = false
 
     var pendingOffer: String? = null
     var pendingOfferTime: Long = -1
@@ -636,7 +640,30 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
         if (currentConnectionState in arrayOf(CallState.Connecting, CallState.LocalRing)) {
             signalAudioManager.handleCommand(AudioManagerCommand.SilenceIncomingRinger)
         }
+       /* else if(currentConnectionState in arrayOf(CallState.Connected)){
+            Log.d("ACTION_SCREEN_OFF","true 2 ${peerConnection?.isVideoEnabled()}")
+            val connection = peerConnection
+            if(connection?.isVideoEnabled() == true){
+                videoEnabledStatus = true
+                Log.d("ACTION_SCREEN_OFF","true 2 i")
+                val intent = WebRtcCallService.cameraEnabled(context, false)
+                context.startService(intent)
+            }
+        }*/
     }
+
+    /*//SteveJosephh21 -
+    fun handleScreenOnChange(context: Context) {
+        Log.d("ACTION_SCREEN_ON","true 1")
+        if (currentConnectionState in arrayOf(CallState.Connected)) {
+             Log.d("ACTION_SCREEN_ON","true 2")
+            if(videoEnabledStatus){
+                videoEnabledStatus = false
+                val intent = WebRtcCallService.cameraEnabled(context, true)
+                context.startService(intent)
+            }
+         }
+    }*/
 
     fun handleResponseMessage(recipient: Recipient, callId: UUID, answer: SessionDescription) {
         if (recipient != this.recipient || callId != this.callId) {

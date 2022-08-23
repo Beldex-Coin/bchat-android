@@ -9,6 +9,7 @@ import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
 import android.view.*
+import android.view.animation.AnimationUtils
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -27,8 +28,6 @@ import com.thoughtcrimes.securesms.util.AvatarPlaceholderGenerator
 import com.thoughtcrimes.securesms.webrtc.AudioManagerCommand
 import com.thoughtcrimes.securesms.webrtc.CallManager
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
-import com.thoughtcrimes.securesms.webrtc.CallViewModel.State.*
-import com.thoughtcrimes.securesms.webrtc.HangUpRtcOnPstnCallAnsweredListener
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityWebRtcCallBinding
 import kotlinx.coroutines.Job
@@ -36,16 +35,15 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.time.DurationFormatUtils
+import com.thoughtcrimes.securesms.webrtc.CallViewModel.State.CALL_CONNECTED
+import com.thoughtcrimes.securesms.webrtc.CallViewModel.State.CALL_PRE_INIT
+import com.thoughtcrimes.securesms.webrtc.CallViewModel.State.CALL_OUTGOING
+import com.thoughtcrimes.securesms.webrtc.CallViewModel.State.CALL_INCOMING
+import com.thoughtcrimes.securesms.webrtc.CallViewModel.State.CALL_RINGING
+import com.thoughtcrimes.securesms.webrtc.CallViewModel.State.CALL_RECONNECTING
 import com.thoughtcrimes.securesms.webrtc.audio.SignalAudioManager.AudioDevice.EARPIECE
 import com.thoughtcrimes.securesms.webrtc.audio.SignalAudioManager.AudioDevice.SPEAKER_PHONE
-import com.thoughtcrimes.securesms.webrtc.data.State
-import com.thoughtcrimes.securesms.webrtc.data.StateProcessor
-import com.thoughtcrimes.securesms.webrtc.locks.LockManager
 import dagger.hilt.android.AndroidEntryPoint
-import org.webrtc.DataChannel
-import java.util.concurrent.Executors
-import java.util.concurrent.ScheduledFuture
-import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -107,7 +105,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
 
         override fun onCreate(savedInstanceState: Bundle?, ready: Boolean) {
             super.onCreate(savedInstanceState, ready)
-            //rotationListener.disable()
+            //rotationListener.enable()
             binding = ActivityWebRtcCallBinding.inflate(layoutInflater)
             setContentView(binding.root)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
@@ -135,7 +133,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
             }
 
             binding.microphoneButton.setOnClickListener {
-                microPhoneEnable = !microPhoneEnable
+               /* microPhoneEnable = !microPhoneEnable
 
                 if (microPhoneEnable) {
                     binding.microphoneButton.setColorFilter(
@@ -151,7 +149,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                             R.color.text
                         )
                     )
-                }
+                }*/
                 val audioEnabledIntent =
                     WebRtcCallService.microphoneIntent(this, !viewModel.microphoneEnabled)
                 startService(audioEnabledIntent)
@@ -196,8 +194,16 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
             }
 
             binding.switchCameraButton.setOnClickListener {
+                if(binding.enableCameraButton.isSelected) {
+                    binding.switchCameraButton.startAnimation(
+                        AnimationUtils.loadAnimation(
+                            this,
+                            R.anim.flip_camera_anim
+                        )
+                    )
+                }
                 if(flipCamera && binding.enableCameraButton.isSelected){
-                    binding.switchCameraButton.setColorFilter(ContextCompat.getColor(this,R.color.green))
+                    //binding.switchCameraButton.setColorFilter(ContextCompat.getColor(this,R.color.green))
                     flipCamera=false
                 }else{
                     binding.switchCameraButton.setColorFilter(ContextCompat.getColor(this,R.color.text))
@@ -220,7 +226,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
             hangupReceiver?.let { receiver ->
                 LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
             }
-           // rotationListener.disable()
+            //rotationListener.disable()
         }
 
         private fun answerCall() {
@@ -249,7 +255,6 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                         incomingControlGroup.isVisible = false
                     }
                 } else {
-                    Log.d("Beldex-Call", "current state $state")
                     controlGroup.isVisible = state in listOf(
                         CALL_CONNECTED,
                         CALL_OUTGOING,
@@ -264,29 +269,27 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                             CALL_PRE_INIT
                         ) && !wantsToAnswer
                     reconnectingText.isVisible = state == CALL_RECONNECTING
-                    endCallButton.isVisible =
-                        endCallButton.isVisible || state == CALL_RECONNECTING
+                    endCallButton.isVisible = endCallButton.isVisible || state == CALL_RECONNECTING
                     when {
                         incomingControlGroup.isVisible -> {
                             statusView.text = getString(R.string.incoming_call)
                         }
                     }
-
                     //SteveJosephh21
-                    if (state == CALL_OUTGOING) {
-                        binding.statusView.text = getString(R.string.outgoing_call)
-                    } else if (state == CALL_INCOMING) {
-                        binding.statusView.text = getString(R.string.incoming_call)
+                    if(state == CALL_OUTGOING){
+                        binding.statusView.text=getString(R.string.outgoing_call)
                     }
-                    if (reconnectingText.isVisible) {
+                    else if(state == CALL_INCOMING){
+                        binding.statusView.text=getString(R.string.incoming_call)
+                    }
+                    if(reconnectingText.isVisible) {
                         statusView.text = getString(R.string.end_to_end_encrypted)
                     }
                 }
             }
         }
 
-
-    override fun onStart() {
+        override fun onStart() {
             super.onStart()
 
             uiJob = lifecycleScope.launch {
@@ -433,23 +436,23 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                 launch {
                     viewModel.localAudioEnabledState.collect { isEnabled ->
                         // change drawable background to enabled or not
-                        binding.microphoneButton.isSelected = !isEnabled
+                        binding.microphoneButton.isSelected = isEnabled
                         //SteveJosephh21
-                            /*if (binding.microphoneButton.isSelected) {
-                                binding.microphoneButton.setColorFilter(
-                                    ContextCompat.getColor(
-                                        this@WebRtcCallActivity,
-                                        R.color.green
-                                    )
-                                )
-                            } else {
+                            if (binding.microphoneButton.isSelected) {
                                 binding.microphoneButton.setColorFilter(
                                     ContextCompat.getColor(
                                         this@WebRtcCallActivity,
                                         R.color.text
                                     )
                                 )
-                            }*/
+                            } else {
+                                binding.microphoneButton.setColorFilter(
+                                    ContextCompat.getColor(
+                                        this@WebRtcCallActivity,
+                                        R.color.red
+                                    )
+                                )
+                            }
                     }
                 }
 
@@ -467,6 +470,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                         //SteveJosephh21
                         if(isEnabled){
                             binding.enableCameraButton.setColorFilter(ContextCompat.getColor(this@WebRtcCallActivity,R.color.green))
+                            flipCamera =true
                         }
                         else{
                             binding.enableCameraButton.setColorFilter(ContextCompat.getColor(this@WebRtcCallActivity,R.color.text))
@@ -510,4 +514,30 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
             binding.remoteRenderer.removeAllViews()
             binding.localRenderer.removeAllViews()
         }
+
+    /*override fun onPause() {
+        super.onPause()
+        if(binding.enableCameraButton.isSelected){
+            Permissions.with(this)
+                .request(Manifest.permission.CAMERA)
+                .onAllGranted {
+                    val intent = WebRtcCallService.cameraEnabled(this, !viewModel.videoEnabled)
+                    startService(intent)
+                }
+                .execute()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(binding.enableCameraButton.isSelected){
+            Permissions.with(this)
+                .request(Manifest.permission.CAMERA)
+                .onAllGranted {
+                    val intent = WebRtcCallService.cameraEnabled(this, !viewModel.videoEnabled)
+                    startService(intent)
+                }
+                .execute()
+        }
+    }*/
 }

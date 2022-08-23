@@ -45,6 +45,8 @@ import java.io.IOException
 import android.content.*
 import android.view.*
 import io.beldex.bchat.R
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 
 
 object ConversationMenuHelper {
@@ -158,10 +160,40 @@ object ConversationMenuHelper {
             R.id.menu_unmute_notifications -> { unmute(context, thread) }
             R.id.menu_mute_notifications -> { mute(context, thread) }
             R.id.menu_notification_settings -> { setNotifyType(context, thread) }
-            R.id.menu_call -> { call(context, thread) }
+            R.id.menu_call -> {
+                if(isOnline(context))
+                {
+                    call(context, thread)
+                }
+                else
+                {
+                    Toast.makeText(context,"Check your Internet",Toast.LENGTH_SHORT).show()
+                }
+            }
         }
         return true
     }
+
+    fun isOnline(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        if (capabilities != null) {
+            if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
+                return true
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
+                return true
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
+                return true
+            }
+        }
+        return false
+    }
+
+
+
 
     fun showAllMedia(context: Context, thread: Recipient) {
         val intent = Intent(context, MediaOverviewActivity::class.java)

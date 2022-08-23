@@ -387,6 +387,8 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
     }
 
     private fun handleOutgoingCall(intent: Intent) {
+
+
         callManager.postConnectionEvent(Event.SendPreOffer) {
             val recipient = getRemoteRecipient(intent)
             callManager.recipient = recipient

@@ -42,7 +42,8 @@ sealed class State {
                 LocalRing,
                 Connecting,
                 Connected,
-                Reconnecting
+                Reconnecting,
+                PendingReconnect
             )
         val CAN_RECEIVE_ICE_STATES =
             arrayOf(RemoteRing, LocalRing, Connecting, Connected, Reconnecting)

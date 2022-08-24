@@ -31,6 +31,13 @@ class PowerButtonReceiver : BroadcastReceiver() {
                 .setAction(WebRtcCallService.ACTION_SCREEN_OFF)
             context.startService(serviceIntent)
         }
+
+        //SteveJosephh21 -
+        if (Intent.ACTION_USER_PRESENT == intent.action) {
+            val serviceIntent = Intent(context, WebRtcCallService::class.java)
+                .setAction(WebRtcCallService.ACTION_SCREEN_ON)
+            context.startService(serviceIntent)
+        }
     }
 }
 

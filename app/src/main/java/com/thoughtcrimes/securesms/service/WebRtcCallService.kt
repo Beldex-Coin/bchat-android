@@ -57,6 +57,7 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
         const val ACTION_UPDATE_AUDIO = "UPDATE_AUDIO"
         const val ACTION_WIRED_HEADSET_CHANGE = "WIRED_HEADSET_CHANGE"
         const val ACTION_SCREEN_OFF = "SCREEN_OFF"
+        const val ACTION_SCREEN_ON = "SCREEN_ON" //SteveJosephh21 -
         const val ACTION_CHECK_TIMEOUT = "CHECK_TIMEOUT"
         const val ACTION_CHECK_RECONNECT = "CHECK_RECONNECT"
         const val ACTION_CHECK_RECONNECT_TIMEOUT = "CHECK_RECONNECT_TIMEOUT"
@@ -253,6 +254,7 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
                 action == ACTION_FLIP_CAMERA -> handleSetCameraFlip(intent)
                 action == ACTION_WIRED_HEADSET_CHANGE -> handleWiredHeadsetChanged(intent)
                 action == ACTION_SCREEN_OFF -> handleScreenOffChange(intent)
+                action == ACTION_SCREEN_ON -> handleScreenOnChange(intent) //SteveJosephh21 -
                 action == ACTION_RESPONSE_MESSAGE && isSameCall(intent) && callManager.currentConnectionState == CallState.Reconnecting -> handleResponseMessage(intent)
                 action == ACTION_RESPONSE_MESSAGE -> handleResponseMessage(intent)
                 action == ACTION_ICE_MESSAGE -> handleRemoteIceCandidate(intent)
@@ -524,7 +526,11 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
     }
 
     private fun handleScreenOffChange(intent: Intent) {
-        callManager.handleScreenOffChange()
+        callManager.handleScreenOffChange(this)
+    }
+
+    private fun handleScreenOnChange(intent: Intent) {
+        callManager.handleScreenOnChange(this)
     }
 
     private fun handleResponseMessage(intent: Intent) {

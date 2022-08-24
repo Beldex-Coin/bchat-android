@@ -16,6 +16,7 @@ import com.thoughtcrimes.securesms.home.HomeActivity;
 import com.thoughtcrimes.securesms.onboarding.SplashScreenActivity;
 import com.thoughtcrimes.securesms.service.KeyCachingService;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
+import com.thoughtcrimes.securesms.webrtc.PowerButtonReceiver;
 
 import java.util.Locale;
 
@@ -31,6 +32,9 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
   private static final int STATE_WELCOME_SCREEN           = 3;
 
   private BroadcastReceiver          clearKeyReceiver;
+
+  //SteveJosephh21 -
+  private PowerButtonReceiver powerButtonReceiver = null;
 
   @Override
   protected final void onCreate(Bundle savedInstanceState) {
@@ -58,6 +62,24 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
   protected void onPause() {
     Log.i(TAG, "onPause()");
     super.onPause();
+    //SteveJosephh21 -
+    if (powerButtonReceiver == null) {
+      powerButtonReceiver = new PowerButtonReceiver();
+
+      registerReceiver(powerButtonReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
+    }
+  }
+
+  //SteveJosephh21 -
+  @Override
+  protected void onResume() {
+    Log.i(TAG, "onResume()");
+    super.onResume();
+    if (powerButtonReceiver == null) {
+      powerButtonReceiver = new PowerButtonReceiver();
+
+      registerReceiver(powerButtonReceiver, new IntentFilter(Intent.ACTION_USER_PRESENT));
+    }
   }
 
   @Override

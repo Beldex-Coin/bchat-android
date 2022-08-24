@@ -108,7 +108,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
             //rotationListener.enable()
             binding = ActivityWebRtcCallBinding.inflate(layoutInflater)
             setContentView(binding.root)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+           /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
                 setShowWhenLocked(true)
                 setTurnScreenOn(true)
             }
@@ -118,7 +118,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                         or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
                         or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
                         or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
-            )
+            )*/
             volumeControlStream = AudioManager.STREAM_VOICE_CALL
 
             if (intent.action == ACTION_ANSWER) {
@@ -356,20 +356,6 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                                         )
                                     )
                                     .into(binding.remoteRecipient)
-                                //SteveJosephh21
-                                glide1.clear(binding.remoteRecipientBlurImage)
-                                glide1.load(signalProfilePicture).circleCrop()
-                                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                                    .error(
-                                        AvatarPlaceholderGenerator.generate(
-                                            this@WebRtcCallActivity,
-                                            sizeInPX,
-                                            publicKey,
-                                            displayName
-                                        )
-                                    )
-                                    .override(60, 60)
-                                    .into(binding.remoteRecipientBlurImage)
                             } else {
                                 glide.clear(binding.remoteRecipient)
                                 glide.load(
@@ -382,25 +368,9 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                                 )
                                     .diskCacheStrategy(DiskCacheStrategy.ALL).circleCrop()
                                     .into(binding.remoteRecipient)
-
-                                //SteveJosephh21
-                                glide1.clear(binding.remoteRecipientBlurImage)
-                                glide1.load(
-                                    AvatarPlaceholderGenerator.generate(
-                                        this@WebRtcCallActivity,
-                                        sizeInPX,
-                                        publicKey,
-                                        displayName
-                                    )
-                                ).circleCrop()
-                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                    .override(60, 60)
-                                    .into(binding.remoteRecipientBlurImage)
                             }
                         } else {
                             glide.clear(binding.remoteRecipient)
-                            //SteveJosephh21
-                            glide1.clear(binding.remoteRecipientBlurImage)
                         }
                     }
                 }
@@ -492,7 +462,6 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                         binding.remoteRecipient.isVisible = !isEnabled
 
                         //SteveJosephh21
-                        binding.remoteRecipientBlurImage.isVisible = !isEnabled
                         binding.remoteRecipientName.isVisible = !isEnabled
                         if(!binding.remoteRecipientName.isVisible){
                             binding.statusView.text=binding.remoteRecipientName.text.toString()
@@ -514,30 +483,4 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
             binding.remoteRenderer.removeAllViews()
             binding.localRenderer.removeAllViews()
         }
-
-    /*override fun onPause() {
-        super.onPause()
-        if(binding.enableCameraButton.isSelected){
-            Permissions.with(this)
-                .request(Manifest.permission.CAMERA)
-                .onAllGranted {
-                    val intent = WebRtcCallService.cameraEnabled(this, !viewModel.videoEnabled)
-                    startService(intent)
-                }
-                .execute()
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if(binding.enableCameraButton.isSelected){
-            Permissions.with(this)
-                .request(Manifest.permission.CAMERA)
-                .onAllGranted {
-                    val intent = WebRtcCallService.cameraEnabled(this, !viewModel.videoEnabled)
-                    startService(intent)
-                }
-                .execute()
-        }
-    }*/
 }

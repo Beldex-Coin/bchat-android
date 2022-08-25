@@ -294,10 +294,6 @@ class PeerConnectionWrapper(private val context: Context,
         audioTrack.setEnabled(isEnabled)
     }
 
-    fun getAudioEnabled():Boolean{
-        return audioTrack.enabled()
-    }
-
     fun setDeviceRotation(rotation: Int) {
         Log.d("Beldex", "rotation: $rotation")
         rotationVideoSink.rotation = rotation

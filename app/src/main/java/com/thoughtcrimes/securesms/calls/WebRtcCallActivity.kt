@@ -6,12 +6,14 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
-import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.*
 import android.view.animation.AnimationUtils
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
+import androidx.core.os.HandlerCompat.postDelayed
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -26,8 +28,11 @@ import com.thoughtcrimes.securesms.permissions.Permissions
 import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.util.AvatarPlaceholderGenerator
 import com.thoughtcrimes.securesms.webrtc.AudioManagerCommand
-import com.thoughtcrimes.securesms.webrtc.CallManager
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
+import com.thoughtcrimes.securesms.webrtc.CallViewModel.State.*
+import com.thoughtcrimes.securesms.webrtc.audio.SignalAudioManager.AudioDevice.EARPIECE
+import com.thoughtcrimes.securesms.webrtc.audio.SignalAudioManager.AudioDevice.SPEAKER_PHONE
+import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityWebRtcCallBinding
 import kotlinx.coroutines.Job
@@ -35,15 +40,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.time.DurationFormatUtils
-import com.thoughtcrimes.securesms.webrtc.CallViewModel.State.CALL_CONNECTED
-import com.thoughtcrimes.securesms.webrtc.CallViewModel.State.CALL_PRE_INIT
-import com.thoughtcrimes.securesms.webrtc.CallViewModel.State.CALL_OUTGOING
-import com.thoughtcrimes.securesms.webrtc.CallViewModel.State.CALL_INCOMING
-import com.thoughtcrimes.securesms.webrtc.CallViewModel.State.CALL_RINGING
-import com.thoughtcrimes.securesms.webrtc.CallViewModel.State.CALL_RECONNECTING
-import com.thoughtcrimes.securesms.webrtc.audio.SignalAudioManager.AudioDevice.EARPIECE
-import com.thoughtcrimes.securesms.webrtc.audio.SignalAudioManager.AudioDevice.SPEAKER_PHONE
-import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
@@ -176,7 +172,17 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
 
             hangupReceiver = object : BroadcastReceiver() {
                 override fun onReceive(context: Context?, intent: Intent?) {
-                    finish()
+                    if (!binding.callTime.isVisible) {
+                        binding.callDeclinedStatus.visibility = View.VISIBLE
+                        binding.callDeclinedStatus.text=getString(R.string.call_declined)
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            finish()
+                        }, 1000)
+                    }
+                    else{
+                        binding.callDeclinedStatus.visibility = View.GONE
+                        finish()
+                    }
                 }
             }
 
@@ -224,6 +230,8 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
         override fun onDestroy() {
             super.onDestroy()
             hangupReceiver?.let { receiver ->
+
+                Log.d("Declined Call 1","true");
                 LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
             }
             //rotationListener.disable()

@@ -235,13 +235,6 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
         }
     }
 
-    fun getAudioEnabled(): Boolean? {
-        /*currentConnectionState.withState(*CallState.CAN_HANGUP_STATES) {
-            return peerConnection?.getAudioEnabled();
-        }*/
-        return peerConnection?.getAudioEnabled()
-    }
-
     override fun onSignalingChange(newState: PeerConnection.SignalingState) {
         peerConnectionObservers.forEach { listener -> listener.onSignalingChange(newState) }
     }
@@ -396,6 +389,10 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
             _audioEvents.value = StateEvent.AudioEnabled(false)
             _videoEvents.value = StateEvent.VideoEnabled(false)
             _remoteVideoEvents.value = StateEvent.VideoEnabled(false)
+            //SteveJosephh21
+            _remoteAudioEvents.value =StateEvent.AudioEnabled(true)
+            _remoteVideoStatusEvents.value = StateEvent.VideoEnabled(false)
+
             pendingOutgoingIceUpdates.clear()
             pendingIncomingIceUpdates.clear()
         }

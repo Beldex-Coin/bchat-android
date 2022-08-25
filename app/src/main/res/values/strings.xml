@@ -1055,5 +1055,6 @@
     <string name="call_muted" translatable="false">Call Muted</string>
     <string name="video_paused" translatable="false">Video Paused</string>
     <string name="video_paused_and_microphone_off" translatable="false">Video paused and microphone off</string>
+    <string name="call_declined" translatable="false">Call Declined</string>
 
 </resources>

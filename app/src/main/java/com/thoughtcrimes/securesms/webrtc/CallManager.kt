@@ -51,6 +51,11 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
         val VIDEO_DISABLED_JSON by lazy { buildJsonObject { put("video", false) } }
         val VIDEO_ENABLED_JSON by lazy { buildJsonObject { put("video", true) } }
         val HANGUP_JSON by lazy { buildJsonObject { put("hangup", true) } }
+        //SteveJosephh21 --
+        val AUDIO_DISABLED_JSON by lazy { buildJsonObject { put("audio",false) }}
+        val AUDIO_ENABLED_JSON by lazy { buildJsonObject { put("audio",true) }}
+        val VIDEO_STATUS_DISABLED_JSON by lazy { buildJsonObject { put("video_status", false) } }
+        val VIDEO_STATUS_ENABLED_JSON by lazy { buildJsonObject { put("video_status", true) } }
 
         private val TAG = Log.tag(CallManager::class.java)
         private const val DATA_CHANNEL_NAME = "signaling"
@@ -74,6 +79,12 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
     val videoEvents = _videoEvents.asSharedFlow()
     private val _remoteVideoEvents = MutableStateFlow(StateEvent.VideoEnabled(false))
     val remoteVideoEvents = _remoteVideoEvents.asSharedFlow()
+
+    //SteveJosephh21 --
+    private val _remoteAudioEvents = MutableStateFlow(StateEvent.AudioEnabled(true))
+    val remoteAudioEvents = _remoteAudioEvents.asSharedFlow()
+    private val _remoteVideoStatusEvents = MutableStateFlow(StateEvent.VideoEnabled(false))
+    val remoteVideoStatusEvents = _remoteVideoStatusEvents.asSharedFlow()
 
     private val stateProcessor = StateProcessor(CallState.Idle)
 
@@ -224,6 +235,13 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
         }
     }
 
+    fun getAudioEnabled(): Boolean? {
+        /*currentConnectionState.withState(*CallState.CAN_HANGUP_STATES) {
+            return peerConnection?.getAudioEnabled();
+        }*/
+        return peerConnection?.getAudioEnabled()
+    }
+
     override fun onSignalingChange(newState: PeerConnection.SignalingState) {
         peerConnectionObservers.forEach { listener -> listener.onSignalingChange(newState) }
     }
@@ -334,6 +352,15 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
                     StateEvent.VideoEnabled((json["video"] as JsonPrimitive).boolean)
             } else if (json.containsKey("hangup")) {
                 peerConnectionObservers.forEach(WebRtcListener::onHangup)
+            }
+            //SteveJosephh21 --
+            else if (json.containsKey("audio")) {
+                _remoteAudioEvents.value =
+                    StateEvent.AudioEnabled((json["audio"] as JsonPrimitive).boolean)
+            }
+            else if (json.containsKey("video_status")) {
+                _remoteVideoStatusEvents.value =
+                    StateEvent.VideoEnabled((json["video_status"] as JsonPrimitive).boolean)
             }
         } catch (e: Exception) {
             Log.e(TAG, "Failed to deserialize data channel message", e)
@@ -572,6 +599,12 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
     fun handleSetMuteAudio(muted: Boolean) {
         _audioEvents.value = StateEvent.AudioEnabled(!muted)
         peerConnection?.setAudioEnabled(!muted)
+        //SteveJosephh21 --
+        dataChannel?.let { channel ->
+            val toSend = if (muted) AUDIO_DISABLED_JSON else AUDIO_ENABLED_JSON
+            val buffer = DataChannel.Buffer(ByteBuffer.wrap(toSend.toString().encodeToByteArray()), false)
+            channel.send(buffer)
+        }
     }
 
     fun handleSetMuteVideo(muted: Boolean, lockManager: LockManager) {
@@ -644,6 +677,11 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
             val connection = peerConnection
             if(connection?.isVideoEnabled() == true){
                 videoEnabledStatus = true
+                dataChannel?.let { channel ->
+                    val toSend = VIDEO_STATUS_ENABLED_JSON
+                    val buffer = DataChannel.Buffer(ByteBuffer.wrap(toSend.toString().encodeToByteArray()), false)
+                    channel.send(buffer)
+                }
                 val intent = WebRtcCallService.cameraEnabled(context, false)
                 context.startService(intent)
             }
@@ -655,6 +693,11 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
         if (currentConnectionState in arrayOf(CallState.Connected)) {
             if(videoEnabledStatus){
                 videoEnabledStatus = false
+                dataChannel?.let { channel ->
+                    val toSend = VIDEO_STATUS_DISABLED_JSON
+                    val buffer = DataChannel.Buffer(ByteBuffer.wrap(toSend.toString().encodeToByteArray()), false)
+                    channel.send(buffer)
+                }
                 val intent = WebRtcCallService.cameraEnabled(context, true)
                 context.startService(intent)
             }

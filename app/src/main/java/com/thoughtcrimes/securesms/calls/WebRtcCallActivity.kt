@@ -294,6 +294,48 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
 
             uiJob = lifecycleScope.launch {
 
+                //SteveJosephh21 --
+                launch{
+                    viewModel.remoteAudioEnabledState.collect { isEnabled ->
+                        if (!isEnabled) {
+                            binding.callActivityAudioStatus.visibility=View.VISIBLE
+                            if(binding.callActivityVideoStatus.isVisible){
+                                binding.callActivityAudioStatus.text = ""
+                            }else{
+                                binding.callActivityAudioStatus.text = "Call Muted"
+                            }
+                           Log.d("Remote Audio Enabled","false")
+                        }else{
+                            binding.callActivityAudioStatus.visibility=View.GONE
+                            binding.callActivityAudioStatus.text=""
+                            Log.d("Remote Audio Enabled", "true")
+                        }
+                    }
+                }
+
+                //SteveJosephh21 --
+                launch{
+                    viewModel.remoteVideoStatusEnabledState.collect { isEnabled ->
+                        if (isEnabled) {
+                            binding.callActivityVideoStatus.visibility=View.VISIBLE
+                            if(binding.callActivityAudioStatus.isVisible){
+                                binding.callActivityVideoStatus.text = getString(R.string.video_paused_and_microphone_off)
+                                binding.callActivityAudioStatus.text = ""
+                            }else{
+                                binding.callActivityVideoStatus.text = getString(R.string.video_paused)
+                            }
+                           Log.d("Remote Video Enabled","true")
+                        }else{
+                            binding.callActivityVideoStatus.visibility=View.GONE
+                            binding.callActivityVideoStatus.text=""
+                            if(binding.callActivityAudioStatus.isVisible){
+                                binding.callActivityAudioStatus.text = getString(R.string.call_muted)
+                            }
+                            Log.d("Remote Video Enabled", "false")
+                        }
+                    }
+                }
+
                 launch {
                     viewModel.audioDeviceState.collect { state ->
                         val speakerEnabled = state.selectedDevice == SPEAKER_PHONE
@@ -383,6 +425,8 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                             //SteveJosephh21
                             binding.microphoneButton.isClickable =false
                             binding.microphoneButton.alpha=0.1f
+                            //SteveJosephh21 --
+                            binding.callActivityAudioStatus.text = ""
                         } else {
                             binding.callTime.isVisible = true
                             //SteveJosephh21

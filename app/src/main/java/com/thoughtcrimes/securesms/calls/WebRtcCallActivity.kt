@@ -172,6 +172,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
 
             hangupReceiver = object : BroadcastReceiver() {
                 override fun onReceive(context: Context?, intent: Intent?) {
+                    binding.dialingStatus.isVisible = false
                     if (!binding.callTime.isVisible) {
                         binding.callDeclinedStatus.visibility = View.VISIBLE
                         binding.callDeclinedStatus.text=getString(R.string.call_declined)
@@ -230,8 +231,6 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
         override fun onDestroy() {
             super.onDestroy()
             hangupReceiver?.let { receiver ->
-
-                Log.d("Declined Call 1","true");
                 LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
             }
             //rotationListener.disable()
@@ -372,6 +371,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                             CALL_OUTGOING -> {
                                 //SteveJosephh21
                                 binding.statusView.text=getString(R.string.outgoing_call)
+                                binding.dialingStatus.isVisible = true
                             }
                             CALL_CONNECTED -> {
                                 wantsToAnswer = false
@@ -438,6 +438,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                         } else {
                             binding.callTime.isVisible = true
                             //SteveJosephh21
+                            binding.dialingStatus.isVisible = false
                             binding.microphoneButton.isClickable =true
                             binding.microphoneButton.alpha=1.0f
 

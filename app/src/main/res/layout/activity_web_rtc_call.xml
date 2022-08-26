@@ -145,7 +145,21 @@
         tools:text="@tools:sample/date/hhmmss"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/bchatCallText"
+        app:layout_constraintBottom_toTopOf="@id/bchatCallText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:fontFamily="@font/poppins_semi_bold"
+        android:id="@+id/dialingStatus"
+        android:textSize="18sp"
+        android:textColor="@color/text"
+        tools:text="Dialing..."
+        android:text="@string/dialing"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bchatCallText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 

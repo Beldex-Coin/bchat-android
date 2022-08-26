@@ -1056,5 +1056,7 @@
     <string name="video_paused" translatable="false">Video Paused</string>
     <string name="video_paused_and_microphone_off" translatable="false">Video paused and microphone off</string>
     <string name="call_declined" translatable="false">Call Declined</string>
+    If user decline the call show call declined status.
+    <string name="dialing" translatable="false">Dialing…</string>
 
 </resources>

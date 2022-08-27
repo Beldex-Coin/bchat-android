@@ -354,12 +354,16 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
             return
         }
 
-        callManager.onPreOffer(callId, recipient) {
-            setCallInProgressNotification(TYPE_INCOMING_PRE_OFFER, recipient)
-            callManager.postViewModelState(CallViewModel.State.CALL_PRE_INIT)
-            callManager.initializeAudioForCall()
-            callManager.startIncomingRinger()
-            callManager.setAudioEnabled(true)
+        /*Hales63*/
+        if (!isBusy(intent)) {
+
+            callManager.onPreOffer(callId, recipient) {
+                setCallInProgressNotification(TYPE_INCOMING_PRE_OFFER, recipient)
+                callManager.postViewModelState(CallViewModel.State.CALL_PRE_INIT)
+                callManager.initializeAudioForCall()
+                callManager.startIncomingRinger()
+                callManager.setAudioEnabled(true)
+            }
         }
     }
 

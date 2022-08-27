@@ -47,10 +47,12 @@ import android.view.*
 import io.beldex.bchat.R
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.telephony.PhoneStateListener
+import android.telephony.TelephonyManager
 
 
 object ConversationMenuHelper {
-    
+
     fun onPrepareOptionsMenu(menu: Menu, inflater: MenuInflater, thread: Recipient, threadId: Long, context: Context, onOptionsItemSelected: (MenuItem) -> Unit) {
         // Prepare
         menu.clear()
@@ -161,13 +163,38 @@ object ConversationMenuHelper {
             R.id.menu_mute_notifications -> { mute(context, thread) }
             R.id.menu_notification_settings -> { setNotifyType(context, thread) }
             R.id.menu_call -> {
-                if(isOnline(context))
-                {
-                    call(context, thread)
-                }
-                else
-                {
-                    Toast.makeText(context,"Check your Internet",Toast.LENGTH_SHORT).show()
+                /*Hales63*/
+                if (isOnline(context)) {
+                    val tm = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+                    tm.listen(object : PhoneStateListener() {
+                        override fun onCallStateChanged(state: Int, phoneNumber: String?) {
+                            super.onCallStateChanged(state, phoneNumber)
+                            when (state) {
+                                TelephonyManager.CALL_STATE_RINGING -> {
+                                    Toast.makeText(
+                                        context,
+                                        "BChat call won't allow ,Because your phone call ringing",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                                TelephonyManager.CALL_STATE_OFFHOOK -> {
+                                    Toast.makeText(
+                                        context,
+                                        "BChat call won't allow ,Because your phone call is on going",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+
+                                }
+                                TelephonyManager.CALL_STATE_IDLE -> {
+                                    call(context, thread)
+                                }
+                            }
+                        }
+                    }, PhoneStateListener.LISTEN_CALL_STATE)
+
+
+                } else {
+                    Toast.makeText(context, "Check your Internet", Toast.LENGTH_SHORT).show()
                 }
             }
         }

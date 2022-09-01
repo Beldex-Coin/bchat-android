@@ -15,6 +15,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.beldex.libbchat.messaging.calls.CallMessageType
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.FutureTaskListener
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
@@ -224,7 +225,7 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
     override fun onHangup() {
         serviceExecutor.execute {
             callManager.handleRemoteHangup()
-
+            TextSecurePreferences.setRemoteHangup(this,true)
             if (callManager.currentConnectionState in CallState.CAN_DECLINE_STATES) {
                 callManager.recipient?.let { recipient ->
                     insertMissedCall(recipient, true)

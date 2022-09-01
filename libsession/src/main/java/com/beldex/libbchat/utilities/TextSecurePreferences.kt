@@ -175,6 +175,8 @@ interface TextSecurePreferences {
     //New Line
     fun hasShowMessageRequests(): Boolean
     fun setHasShowMessageRequests(status:Boolean)
+    fun setRemoteHangup(status:Boolean)
+    fun isRemoteHangup(): Boolean
 
 
     companion object {
@@ -261,6 +263,7 @@ interface TextSecurePreferences {
         const val SHOWN_CALL_NOTIFICATION = "pref_shown_call_notification" // call notification is a promp to check privacy settings
         const val HAS_HIDDEN_MESSAGE_REQUESTS = "pref_message_requests_hidden"
         const val HAS_SHOW_MESSAGE_REQUESTS = "pref_message_requests_show"
+        const val IS_REMOTE_HANG_UP = "is_remote_hang_up"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -1003,6 +1006,16 @@ interface TextSecurePreferences {
         fun setHasShowMessageRequests(context:Context,status: Boolean) {
             setBooleanPreference(context, HAS_SHOW_MESSAGE_REQUESTS, status)
         }
+        @JvmStatic
+        fun isRemoteHangup(context: Context): Boolean {
+            return getBooleanPreference(context, IS_REMOTE_HANG_UP, false)
+        }
+
+        @JvmStatic
+        fun setRemoteHangup(context:Context,status: Boolean) {
+            setBooleanPreference(context, IS_REMOTE_HANG_UP, status)
+        }
+
     }
 }
 
@@ -1648,4 +1661,15 @@ class AppTextSecurePreferences @Inject constructor(
     override fun setHasShowMessageRequests(status: Boolean) {
         setBooleanPreference(TextSecurePreferences.HAS_SHOW_MESSAGE_REQUESTS, status)
     }
+
+    override fun setRemoteHangup(status: Boolean) {
+        setBooleanPreference(TextSecurePreferences.IS_REMOTE_HANG_UP, status)
+
+    }
+
+    override fun isRemoteHangup(): Boolean {
+       return getBooleanPreference(TextSecurePreferences.IS_REMOTE_HANG_UP, false)
+    }
+
+
 }

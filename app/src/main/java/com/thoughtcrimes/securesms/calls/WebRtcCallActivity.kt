@@ -19,6 +19,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.beldex.libbchat.avatars.ProfileContactPhoto
 import com.beldex.libbchat.messaging.contacts.Contact
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.utilities.Log
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
@@ -174,13 +175,16 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                 override fun onReceive(context: Context?, intent: Intent?) {
                     binding.dialingStatus.isVisible = false
                     if (!binding.callTime.isVisible) {
-                        binding.callDeclinedStatus.visibility = View.VISIBLE
-                        binding.callDeclinedStatus.text=getString(R.string.call_declined)
+
+                        if (TextSecurePreferences.isRemoteHangup(this@WebRtcCallActivity)) {
+                            binding.callDeclinedStatus.visibility = View.VISIBLE
+                            binding.callDeclinedStatus.text = getString(R.string.call_declined)
+                            TextSecurePreferences.setRemoteHangup(this@WebRtcCallActivity, false)
+                        }
                         Handler(Looper.getMainLooper()).postDelayed({
                             finish()
                         }, 1000)
-                    }
-                    else{
+                    } else {
                         binding.callDeclinedStatus.visibility = View.GONE
                         finish()
                     }

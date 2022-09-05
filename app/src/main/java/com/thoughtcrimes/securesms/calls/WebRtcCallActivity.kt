@@ -13,7 +13,6 @@ import android.view.*
 import android.view.animation.AnimationUtils
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
-import androidx.core.os.HandlerCompat.postDelayed
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -175,20 +174,17 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                 override fun onReceive(context: Context?, intent: Intent?) {
                     binding.dialingStatus.isVisible = false
                     if (!binding.callTime.isVisible) {
-
                         if (TextSecurePreferences.isRemoteHangup(this@WebRtcCallActivity)) {
-                            binding.callDeclinedStatus.visibility = View.VISIBLE
-                            binding.callDeclinedStatus.text = getString(R.string.call_declined)
-                            TextSecurePreferences.setRemoteHangup(this@WebRtcCallActivity, false)
-                            Handler(Looper.getMainLooper()).postDelayed({
-                                finish()
-                            }, 1000)
+                            callRemoteFinishActivity(getString(R.string.call_declined))
                         }else{
                             callFinishActivity()
                         }
-
                     } else {
-                        callFinishActivity()
+                        if(TextSecurePreferences.isRemoteCallEnded(this@WebRtcCallActivity)) {
+                           callRemoteFinishActivity(getString(R.string.call_ended));
+                        }else {
+                            callFinishActivity()
+                        }
                     }
                 }
             }
@@ -238,6 +234,15 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
         private fun callFinishActivity(){
             binding.callDeclinedStatus.visibility = View.GONE
             finish()
+        }
+
+        private fun callRemoteFinishActivity(text: String) {
+            binding.callDeclinedStatus.visibility = View.VISIBLE
+            binding.callDeclinedStatus.text = text
+            TextSecurePreferences.setRemoteCallEnded(this@WebRtcCallActivity, false)
+            Handler(Looper.getMainLooper()).postDelayed({
+                finish()
+            }, 1000)
         }
 
         override fun onDestroy() {

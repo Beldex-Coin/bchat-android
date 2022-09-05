@@ -1060,5 +1060,6 @@
     <string name="call_declined" translatable="false">Call Declined</string>
     If user decline the call show call declined status.
     <string name="dialing" translatable="false">Dialing…</string>
+    <string name="call_ended" translatable="false">Call Ended</string>
 
 </resources>

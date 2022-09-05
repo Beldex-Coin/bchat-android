@@ -177,6 +177,8 @@ interface TextSecurePreferences {
     fun setHasShowMessageRequests(status:Boolean)
     fun setRemoteHangup(status:Boolean)
     fun isRemoteHangup(): Boolean
+    fun setRemoteCallEnded(status: Boolean)
+    fun isRemoteCallEnded():Boolean
 
     /*Hales63*/
     fun isUnBlocked(): Boolean
@@ -269,6 +271,7 @@ interface TextSecurePreferences {
         const val HAS_SHOW_MESSAGE_REQUESTS = "pref_message_requests_show"
         const val IS_REMOTE_HANG_UP = "is_remote_hang_up"
         const val UN_BLOCK_STATUS = "un_blocked"
+        const val IS_REMOTE_CALL_ENDED = "is_remote_call_ended"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -1031,6 +1034,16 @@ interface TextSecurePreferences {
             setBooleanPreference(context, UN_BLOCK_STATUS, status)
         }
 
+        @JvmStatic
+        fun isRemoteCallEnded(context: Context): Boolean {
+            return getBooleanPreference(context, IS_REMOTE_CALL_ENDED, false)
+        }
+
+        @JvmStatic
+        fun setRemoteCallEnded(context:Context,status: Boolean) {
+            setBooleanPreference(context, IS_REMOTE_CALL_ENDED, status)
+        }
+
     }
 }
 
@@ -1692,5 +1705,13 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun setUnBlockedStatus(status: Boolean) {
         setBooleanPreference(TextSecurePreferences.UN_BLOCK_STATUS, status)
+    }
+
+    override fun setRemoteCallEnded(status: Boolean) {
+        setBooleanPreference(TextSecurePreferences.IS_REMOTE_CALL_ENDED, status)
+    }
+
+    override fun isRemoteCallEnded(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.IS_REMOTE_CALL_ENDED, false)
     }
 }

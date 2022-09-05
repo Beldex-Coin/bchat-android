@@ -630,6 +630,7 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
 
         if (callId == getCallId(intent) && (callState !in arrayOf(CallState.Connected, CallState.Connecting))) {
             Log.w(TAG, "Timing out call: $callId")
+            TextSecurePreferences.setRemoteHangup(this, false)
             handleLocalHangup(intent)
         }
     }

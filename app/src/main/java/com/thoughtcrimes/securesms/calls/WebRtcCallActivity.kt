@@ -180,13 +180,15 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                             binding.callDeclinedStatus.visibility = View.VISIBLE
                             binding.callDeclinedStatus.text = getString(R.string.call_declined)
                             TextSecurePreferences.setRemoteHangup(this@WebRtcCallActivity, false)
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                finish()
+                            }, 1000)
+                        }else{
+                            callFinishActivity()
                         }
-                        Handler(Looper.getMainLooper()).postDelayed({
-                            finish()
-                        }, 1000)
+
                     } else {
-                        binding.callDeclinedStatus.visibility = View.GONE
-                        finish()
+                        callFinishActivity()
                     }
                 }
             }
@@ -230,6 +232,12 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                 onBackPressed()
             }
 
+        }
+
+        //SteveJosephh21
+        private fun callFinishActivity(){
+            binding.callDeclinedStatus.visibility = View.GONE
+            finish()
         }
 
         override fun onDestroy() {

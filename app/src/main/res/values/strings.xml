@@ -1022,6 +1022,8 @@
     <string name="message_requests_clear" translatable="false">Clear</string>
     <string name="message_requests_accept_message" translatable="false">Are you sure you want to accept this request?</string>
     <string name="message_requests_decline_message" translatable="false">Declining this request will permanently block this user, are you sure?</string>
+    <string name="no_blocked_contact" translatable="false">No blocked contacts yet</string>
+    <string name="blocked_contacts" translatable="false">Blocked Contacts</string>
 
     <string name="CallNotificationBuilder_first_call_title" translatable="false">Call Missed</string>
     <string name="CallNotificationBuilder_first_call_message" translatable="false">You missed a call because you need to enable the \'Voice and video calls\' permission in the Privacy Settings.</string>

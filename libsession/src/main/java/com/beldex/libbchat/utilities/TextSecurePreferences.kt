@@ -178,6 +178,10 @@ interface TextSecurePreferences {
     fun setRemoteHangup(status:Boolean)
     fun isRemoteHangup(): Boolean
 
+    /*Hales63*/
+    fun isUnBlocked(): Boolean
+    fun setUnBlockedStatus(status: Boolean)
+
 
     companion object {
         val TAG = TextSecurePreferences::class.simpleName
@@ -264,6 +268,7 @@ interface TextSecurePreferences {
         const val HAS_HIDDEN_MESSAGE_REQUESTS = "pref_message_requests_hidden"
         const val HAS_SHOW_MESSAGE_REQUESTS = "pref_message_requests_show"
         const val IS_REMOTE_HANG_UP = "is_remote_hang_up"
+        const val UN_BLOCK_STATUS = "un_blocked"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -1016,6 +1021,16 @@ interface TextSecurePreferences {
             setBooleanPreference(context, IS_REMOTE_HANG_UP, status)
         }
 
+        @JvmStatic
+        fun isUnBlocked(context: Context): Boolean {
+            return getBooleanPreference(context, UN_BLOCK_STATUS, false)
+        }
+
+        @JvmStatic
+        fun setUnBlockStatus(context:Context,status: Boolean) {
+            setBooleanPreference(context, UN_BLOCK_STATUS, status)
+        }
+
     }
 }
 
@@ -1671,5 +1686,11 @@ class AppTextSecurePreferences @Inject constructor(
        return getBooleanPreference(TextSecurePreferences.IS_REMOTE_HANG_UP, false)
     }
 
+    override fun isUnBlocked(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.UN_BLOCK_STATUS, false)
+    }
 
+    override fun setUnBlockedStatus(status: Boolean) {
+        setBooleanPreference(TextSecurePreferences.UN_BLOCK_STATUS, status)
+    }
 }

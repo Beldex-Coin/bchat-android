@@ -40,7 +40,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -52,10 +52,12 @@
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.RAISED_THREAD_PRIORITY" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" tools:node="remove" />
-    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission
+        android:name="android.permission.CHANGE_NETWORK_STATE"
+        tools:node="remove" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <queries>
         <intent>
@@ -73,11 +75,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Bchat.DayNight"
         tools:replace="android:allowBackup">
-        <activity android:name="com.thoughtcrimes.securesms.calls.WebRtcCallActivity"
+        <activity
+            android:name="com.thoughtcrimes.securesms.contacts.BlockedContactActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.thoughtcrimes.securesms.calls.WebRtcCallActivity"
             android:launchMode="singleTop"
+            android:parentActivityName="com.thoughtcrimes.securesms.home.HomeActivity"
             android:screenOrientation="portrait"
             android:showForAllUsers="true"
-            android:parentActivityName="com.thoughtcrimes.securesms.home.HomeActivity"
             android:theme="@style/Theme.Bchat.CallActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -426,7 +432,9 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:enabled="true" android:name="com.thoughtcrimes.securesms.service.WebRtcCallService"
+        <service
+            android:name="com.thoughtcrimes.securesms.service.WebRtcCallService"
+            android:enabled="true"
             android:exported="false" />
         <service
             android:name="com.thoughtcrimes.securesms.service.KeyCachingService"

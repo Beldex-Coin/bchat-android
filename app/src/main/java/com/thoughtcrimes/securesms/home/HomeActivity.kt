@@ -742,6 +742,13 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                 ConfigurationMessageUtilities.syncConfigurationIfNeeded(this@HomeActivity)
             }
         }
+
+        /*Hales63*/
+        if(TextSecurePreferences.isUnBlocked(this))
+        {
+            homeAdapter.notifyDataSetChanged()
+            TextSecurePreferences.setUnBlockStatus(this, false)
+        }
     }
 
     override fun onPause() {

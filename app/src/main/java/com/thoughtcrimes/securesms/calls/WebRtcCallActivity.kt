@@ -175,12 +175,14 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                     binding.dialingStatus.isVisible = false
                     if (!binding.callTime.isVisible) {
                         if (TextSecurePreferences.isRemoteHangup(this@WebRtcCallActivity)) {
+                            TextSecurePreferences.setRemoteHangup(this@WebRtcCallActivity, false)
                             callRemoteFinishActivity(getString(R.string.call_declined))
                         }else{
                             callFinishActivity()
                         }
                     } else {
                         if(TextSecurePreferences.isRemoteCallEnded(this@WebRtcCallActivity)) {
+                            TextSecurePreferences.setRemoteCallEnded(this@WebRtcCallActivity, false)
                            callRemoteFinishActivity(getString(R.string.call_ended));
                         }else {
                             callFinishActivity()
@@ -239,7 +241,6 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
         private fun callRemoteFinishActivity(text: String) {
             binding.callDeclinedStatus.visibility = View.VISIBLE
             binding.callDeclinedStatus.text = text
-            TextSecurePreferences.setRemoteCallEnded(this@WebRtcCallActivity, false)
             Handler(Looper.getMainLooper()).postDelayed({
                 finish()
             }, 1000)

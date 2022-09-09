@@ -174,19 +174,20 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                 override fun onReceive(context: Context?, intent: Intent?) {
                     binding.dialingStatus.isVisible = false
                     if (!binding.callTime.isVisible) {
-                        if (TextSecurePreferences.isRemoteHangup(this@WebRtcCallActivity)) {
-                            TextSecurePreferences.setRemoteHangup(this@WebRtcCallActivity, false)
-                            callRemoteFinishActivity(getString(R.string.call_declined))
-                        }else{
-                            callFinishActivity()
-                        }
-                    } else {
                         if(TextSecurePreferences.isRemoteCallEnded(this@WebRtcCallActivity)) {
                             TextSecurePreferences.setRemoteCallEnded(this@WebRtcCallActivity, false)
-                           callRemoteFinishActivity(getString(R.string.call_ended));
-                        }else {
-                            callFinishActivity()
+                            callRemoteFinishActivity(getString(R.string.call_declined))
                         }
+                       else if (TextSecurePreferences.isRemoteHangup(this@WebRtcCallActivity)) {
+                           TextSecurePreferences.setRemoteHangup(this@WebRtcCallActivity, false)
+                           callRemoteFinishActivity(getString(R.string.call_declined))
+                        }else{
+                            TextSecurePreferences.setRemoteCallEnded(this@WebRtcCallActivity, false)
+                            callRemoteFinishActivity(getString(R.string.call_ended))
+                        }
+                    } else {
+                        callRemoteFinishActivity(getString(R.string.call_ended))
+                        TextSecurePreferences.setRemoteCallEnded(this@WebRtcCallActivity, false)
                     }
                 }
             }
@@ -233,11 +234,6 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
         }
 
         //SteveJosephh21
-        private fun callFinishActivity(){
-            binding.callDeclinedStatus.visibility = View.GONE
-            finish()
-        }
-
         private fun callRemoteFinishActivity(text: String) {
             binding.callDeclinedStatus.visibility = View.VISIBLE
             binding.callDeclinedStatus.text = text

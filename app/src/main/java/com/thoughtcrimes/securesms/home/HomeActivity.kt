@@ -100,6 +100,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
 import com.thoughtcrimes.securesms.service.WebRtcCallService
+import com.thoughtcrimes.securesms.wallet.WalletActivity
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
 import io.beldex.bchat.databinding.ViewMessageRequestBannerBinding
 import kotlinx.coroutines.*
@@ -192,6 +193,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
     private var items = arrayListOf(
         NavigationItemModel(R.drawable.ic_my_account, "My Account"),
+        NavigationItemModel(R.drawable.ic_wallet,"My Wallet"),
         NavigationItemModel(R.drawable.ic_notifications, "Notification"),
         NavigationItemModel(R.drawable.ic_message_requests,"Message Requests"),
         NavigationItemModel(R.drawable.ic_privacy, "Privacy"),
@@ -243,21 +245,25 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                         openSettings()
                     }
                     1 -> {
+                        // # My Wallet Activity
+                        openMyWallet()
+                    }
+                    2 -> {
                         //New Line
                         val notification = TextSecurePreferences.isNotificationsEnabled(this@HomeActivity)
                         Log.d("NotificationLog1", notification.toString())
                         // # Notification Activity
                         showNotificationSettings()
                     }
-                    2 -> {
+                    3 -> {
                         // # Message Requests Activity
                         showMessageRequests()
                     }
-                    3 -> {
+                    4 -> {
                         // # Privacy Activity
                         showPrivacySettings()
                     }
-                    4 -> {
+                    5 -> {
                         // # App Permissions Activity
                         val intent = Intent()
                         intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
@@ -265,23 +271,23 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                         intent.data = uri
                         push(intent)
                     }
-                    5 -> {
+                    6 -> {
                         // # Recovery Seed Activity
                         showSeed()
                     }
-                   /* 5 -> {
+                   /* 6 -> {
                         // # Recovery Key Activity
                         showKeys()
                     }*/
-                    6 -> {
+                    7 -> {
                         // # Help Activity
                         help()
                     }
-                    7 -> {
+                    8 -> {
                         // # Invite Activity
                         sendInvitation()
                     }
-                    8 -> {
+                    9 -> {
                         // # About Activity
                         showAbout()
                     }
@@ -1053,6 +1059,11 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
     private fun openSettings() {
         val intent = Intent(this, SettingsActivity::class.java)
+        show(intent, isForResult = true)
+    }
+
+    private fun openMyWallet() {
+        val intent = Intent(this, WalletActivity::class.java)
         show(intent, isForResult = true)
     }
 

@@ -76,6 +76,9 @@
         android:theme="@style/Theme.Bchat.DayNight"
         tools:replace="android:allowBackup">
         <activity
+            android:name="com.thoughtcrimes.securesms.wallet.send.SendActivity"
+            android:exported="false" />
+        <activity
             android:name="com.thoughtcrimes.securesms.wallet.WalletActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />

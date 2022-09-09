@@ -1061,5 +1061,8 @@
     If user decline the call show call declined status.
     <string name="dialing" translatable="false">Dialing…</string>
     <string name="call_ended" translatable="false">Call Ended</string>
-
+    <string name="estimated_fee_description" translatable="false">Flash priority is set as the default fee.\nGo to setting to change the transaction priority.</string>
+    <string name="hint" translatable="false">0.000000000</string>
+    <string name="beldex" translatable="false">Beldex</string>
+    <string name="send" translatable="false">Send</string>
 </resources>

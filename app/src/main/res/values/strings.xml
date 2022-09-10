@@ -1061,5 +1061,18 @@
     If user decline the call show call declined status.
     <string name="dialing" translatable="false">Dialing…</string>
     <string name="call_ended" translatable="false">Call Ended</string>
+    <string name="activity_receive_page_title" translatable="false">Receive</string>
+    <string name="activity_rescan_page_title" translatable="false">Rescan</string>
+    <string name="enter_amount" translatable="false">Enter amount</string>
+    <string name="current_blockheight" translatable="false">Current Blockheight:</string>
+    <string name="restore_from_height" translatable="false">Restore from height</string>
+    <string name="restore_from_date" translatable="false"> Restore from date</string>
+    <string name="activity_new_node_page_title" translatable="false">New Node</string>
+    <string name="node_address" translatable="false">Node address</string>
+    <string name="node_port" translatable="false">Node port</string>
+    <string name="node_login" translatable="false">Login</string>
+    <string name="node_password" translatable="false">Password</string>
+    <string name="clear">Clear</string>
+
 
 </resources>

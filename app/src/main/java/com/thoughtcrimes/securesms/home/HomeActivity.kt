@@ -101,6 +101,7 @@ import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
 import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.wallet.WalletActivity
+import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
 import io.beldex.bchat.databinding.ViewMessageRequestBannerBinding
 import kotlinx.coroutines.*
@@ -1063,7 +1064,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     }
 
     private fun openMyWallet() {
-        val intent = Intent(this, WalletActivity::class.java)
+        val intent = Intent(this, AddressBookActivity::class.java)
         show(intent, isForResult = true)
     }
 

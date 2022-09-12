@@ -1073,6 +1073,8 @@
     <string name="node_login" translatable="false">Login</string>
     <string name="node_password" translatable="false">Password</string>
     <string name="clear">Clear</string>
+    <string name="activity_node_page_title" translatable="false">Node</string>
+    <string name="activity_address_book_page_title" translatable="false">Address Book</string>
 
 
 </resources>

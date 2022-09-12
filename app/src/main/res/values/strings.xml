@@ -1065,4 +1065,26 @@
     <string name="hint" translatable="false">0.000000000</string>
     <string name="beldex" translatable="false">Beldex</string>
     <string name="send" translatable="false">Send</string>
+
+
+    <string name="button1_large_text">1</string>
+    <string name="button2_large_text">2</string>
+    <string name="button3_large_text">3</string>
+    <string name="button4_large_text">4</string>
+    <string name="button5_large_text">5</string>
+    <string name="button6_large_text">6</string>
+    <string name="button7_large_text">7</string>
+    <string name="button8_large_text">8</string>
+    <string name="button9_large_text">9</string>
+    <string name="button11_large_text">0</string>
+    <string name="pin_code_forgot_text">Forgot?</string>
+    <string name="pin_code_step_disable">Disable %d-digit Pincode</string>
+    <string name="pin_code_step_create">Create Pin</string>
+    <string name="pin_code_step_change">Enter your current %d-digit Pincode</string>
+    <string name="pin_code_step_unlock">Enter Pin</string>
+    <string name="pin_code_step_enable_confirm">Re-Enter Pin</string>
+
+    <string name="pin_code_fingerprint_text">Fingerprint</string>
+    <string name="pin_code_fingerprint_success">Fingerprint recognized</string>
+    <string name="pin_code_fingerprint_not_recognized">Fingerprint not recognized. Try again</string>
 </resources>

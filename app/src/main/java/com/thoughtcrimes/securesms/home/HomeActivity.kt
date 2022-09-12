@@ -101,6 +101,10 @@ import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
 import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.wallet.WalletActivity
+import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
+import com.thoughtcrimes.securesms.wallet.utils.pincodeview.PinActivity
+import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
+import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
 import io.beldex.bchat.databinding.ViewMessageRequestBannerBinding
 import kotlinx.coroutines.*
@@ -1063,8 +1067,11 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     }
 
     private fun openMyWallet() {
-        val intent = Intent(this, WalletActivity::class.java)
-        show(intent, isForResult = true)
+        val lockManager: LockManager<CustomPinActivity> = LockManager.getInstance() as LockManager<CustomPinActivity>
+        lockManager.enableAppLock(this, CustomPinActivity::class.java)
+        val intent = Intent(this, CustomPinActivity::class.java)
+        intent.putExtra(AppLock.EXTRA_TYPE, AppLock.ENABLE_PINLOCK);
+        push(intent)
     }
 
     private fun showNotificationSettings() {

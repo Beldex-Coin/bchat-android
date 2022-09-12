@@ -76,20 +76,17 @@
         android:theme="@style/Theme.Bchat.DayNight"
         tools:replace="android:allowBackup">
         <activity
-            android:name="com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLockActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"/>
-        <activity android:name="com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"/>
+            android:name="com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity"
+            android:exported="false" />
         <activity
-            android:name="com.thoughtcrimes.securesms.wallet.password.CreateWalletPassword"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"/>
+            android:name="com.thoughtcrimes.securesms.wallet.node.AddNodeActivity"
+            android:exported="false" />
         <activity
-            android:name="com.thoughtcrimes.securesms.wallet.send.SendActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
+            android:name="com.thoughtcrimes.securesms.wallet.rescan.ReScanActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.thoughtcrimes.securesms.wallet.receive.ReceiveActivity"
+            android:exported="false" />
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.WalletActivity"
             android:screenOrientation="portrait"

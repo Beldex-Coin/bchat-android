@@ -152,4 +152,10 @@
     <color name="remote_parent_background">#00000000</color>
     <color name="dialog_header_background">#FC3B3B</color>
     <color name="call_toolbar_background">#128D15</color>
+
+    <color name="light_gray">#f0f6f9</color>
+    <color name="dark_gray">#9baab2</color>
+    <color name="light_blue_500">#03a9f4</color>
+    <color name="dark_grey_color">#4a636f</color>
+    <color name="light_gray_bar">#eaf2f5</color>
 </resources>

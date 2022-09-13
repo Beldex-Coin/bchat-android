@@ -81,27 +81,17 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import com.google.android.play.core.install.model.UpdateAvailability
-
 import com.google.android.play.core.install.model.AppUpdateType
-
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.tasks.Task
-import android.content.IntentSender
 import android.content.IntentSender.SendIntentException
-import com.thoughtcrimes.securesms.lottie.LottieDialog
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.graphics.Typeface
-import android.widget.Button
 import android.widget.TextView
-
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
 import com.thoughtcrimes.securesms.service.WebRtcCallService
-import com.thoughtcrimes.securesms.wallet.WalletActivity
-import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity
+import com.thoughtcrimes.securesms.wallet.receive.ReceiveActivity
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
 import io.beldex.bchat.databinding.ViewMessageRequestBannerBinding
 import kotlinx.coroutines.*
@@ -1064,7 +1054,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     }
 
     private fun openMyWallet() {
-        val intent = Intent(this, AddressBookActivity::class.java)
+        val intent = Intent(this, ReceiveActivity::class.java)
         show(intent, isForResult = true)
     }
 

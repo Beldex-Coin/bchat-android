@@ -1,5 +1,7 @@
 package com.thoughtcrimes.securesms.util;
 
+import android.util.Log;
+
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.HttpUrl;
@@ -35,6 +37,13 @@ public class OkHttpHelper {
                             .readTimeout(HTTP_TIMEOUT, TimeUnit.MILLISECONDS)
                             .build();
                 }
+                /*if (EagerSingleton == null) {
+                    EagerSingleton = new OkHttpClient.Builder()
+                            .connectTimeout(30, TimeUnit.SECONDS)
+                            .writeTimeout(30, TimeUnit.SECONDS)
+                            .readTimeout(30, TimeUnit.SECONDS)
+                            .build();
+                }*/
             }
         }
         return EagerSingleton;

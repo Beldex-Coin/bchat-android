@@ -1102,4 +1102,30 @@
     <string name="pin_code_fingerprint_success">Fingerprint recognized</string>
     <string name="pin_code_fingerprint_not_recognized">Fingerprint not recognized. Try again</string>
 
+    <string name="node_test_error" translatable="false">CONNECTION ERROR %1$d</string>
+    <string name="node_general_error" translatable="false">CONNECTION ERROR</string>
+    <string name="node_auth_error" translatable="false">AUTHENTICATION FAILED</string>
+    <string name="node_updated_now" translatable="false">Last Block: %1$d seconds ago</string>
+    <string name="node_updated_mins" translatable="false">Last Block: %1$d minutes ago</string>
+    <string name="node_updated_hours" translatable="false">Last Block: %1$d hours ago</string>
+    <string name="node_updated_days" translatable="false">Last Block: %1$d days ago</string>
+    <string name="prompt_changepw" translatable="false">New Passphrase for %1$s</string>
+    <string name="prompt_changepwB" translatable="false">Repeat Passphrase for %1$s</string>
+    <string name="prompt_password" translatable="false">Password for %1$s</string>
+    <string name="prompt_fingerprint_auth" translatable="false">You can also open wallet using fingerprint.\nPlease touch sensor.</string>
+    <string name="prompt_open_wallet" translatable="false">Opening the wallet&#8230;</string>
+    <string name="bad_fingerprint" translatable="false">Fingerprint not recognized. Try again.</string>
+    <string name="bad_password" translatable="false">Incorrect password!</string>
+    <string name="bad_saved_password" translatable="false">Saved password is incorrect.\nPlease enter password manually.</string>
+    <string name="bad_wallet" translatable="false">Wallet does not exist!</string>
+    <string name="prompt_daemon_missing" translatable="false">Node must be set!</string>
+    <string name="prompt_wrong_net" translatable="false">Wallet does not match selected net</string>
+    <string name="node_testing">Testing IP: %1$s &#8230;</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="node_result">Height: %1$s (v%2$d), Ping: %3$.0fms, IP: %4$s</string>
+    <string name="info_xmrto_enabled">Non-BDX payments enabled, tap for more info.</string>
+    <string name="info_ledger_enabled">Ledger enabled, tap for more info.</string>
+
+
 </resources>

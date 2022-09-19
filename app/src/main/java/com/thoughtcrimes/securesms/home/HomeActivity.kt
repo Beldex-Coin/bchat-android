@@ -56,7 +56,6 @@ import java.io.IOException
 import javax.inject.Inject
 import android.widget.CompoundButton
 import androidx.core.view.isVisible
-import com.beldex.libbchat.messaging.jobs.AttachmentDownloadJob
 import com.beldex.libbchat.mnode.OnionRequestAPI
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
@@ -89,8 +88,12 @@ import android.graphics.Typeface
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
+import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
 import com.thoughtcrimes.securesms.service.WebRtcCallService
+import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity
+import com.thoughtcrimes.securesms.wallet.node.*
+import com.thoughtcrimes.securesms.wallet.node.activity.NodeActivity
 import com.thoughtcrimes.securesms.wallet.receive.ReceiveActivity
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
 import io.beldex.bchat.databinding.ViewMessageRequestBannerBinding
@@ -116,6 +119,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
     @Inject
     lateinit var threadDb: ThreadDatabase
+
     @Inject
     lateinit var mmsSmsDatabase: MmsSmsDatabase
     @Inject
@@ -134,6 +138,13 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     private val homeAdapter: HomeAdapter by lazy {
         HomeAdapter(context = this, cursor = threadDb.approvedConversationList, listener = this)
     }
+
+    private val toolbar: Toolbar? = null
+
+
+    private var node1: NodeInfo? = null
+
+    private val favouriteNodeslist = mutableSetOf<NodeInfo>()
 
     private val globalSearchAdapter = GlobalSearchAdapter { model ->
         when (model) {
@@ -184,9 +195,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
     private var items = arrayListOf(
         NavigationItemModel(R.drawable.ic_my_account, "My Account"),
-        NavigationItemModel(R.drawable.ic_wallet,"My Wallet"),
+        NavigationItemModel(R.drawable.ic_wallet, "My Wallet"),
         NavigationItemModel(R.drawable.ic_notifications, "Notification"),
-        NavigationItemModel(R.drawable.ic_message_requests,"Message Requests"),
+        NavigationItemModel(R.drawable.ic_message_requests, "Message Requests"),
         NavigationItemModel(R.drawable.ic_privacy, "Privacy"),
         NavigationItemModel(R.drawable.ic_app_permissions, "App Permissions"),
         NavigationItemModel(R.drawable.ic_recovery_seed, "Recovery Seed"),
@@ -194,6 +205,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         NavigationItemModel(R.drawable.ic_invite, "Invite"),
         NavigationItemModel(R.drawable.ic_about, "About")
     )
+
     // NavigationItemModel(R.drawable.ic_recovery_key, "Recovery Key"),
     private val hexEncodedPublicKey: String
         get() {
@@ -241,7 +253,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                     }
                     2 -> {
                         //New Line
-                        val notification = TextSecurePreferences.isNotificationsEnabled(this@HomeActivity)
+                        val notification =
+                            TextSecurePreferences.isNotificationsEnabled(this@HomeActivity)
                         Log.d("NotificationLog1", notification.toString())
                         // # Notification Activity
                         showNotificationSettings()
@@ -266,10 +279,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                         // # Recovery Seed Activity
                         showSeed()
                     }
-                   /* 6 -> {
-                        // # Recovery Key Activity
-                        showKeys()
-                    }*/
+                    /* 6 -> {
+                         // # Recovery Key Activity
+                         showKeys()
+                     }*/
                     7 -> {
                         // # Help Activity
                         help()
@@ -299,7 +312,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         }
         binding.drawerCloseIcon.setOnClickListener { binding.drawerLayout.closeDrawer(GravityCompat.END) }
         val activeUiMode = UiModeUtilities.getUserSelectedUiMode(this)
-        Log.d("beldex","activeUiMode $activeUiMode")
+        Log.d("beldex", "activeUiMode $activeUiMode")
         binding.drawerAppearanceToggleButton.isChecked = activeUiMode == UiMode.NIGHT
 
         binding.drawerAppearanceToggleButton.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener() { compoundButton: CompoundButton, b: Boolean ->
@@ -319,7 +332,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
             }, 200)
         }
         binding.drawerProfileIcon.glide = glide
-        binding.drawerProfileId.text="ID: $hexEncodedPublicKey"
+        binding.drawerProfileId.text = "ID: $hexEncodedPublicKey"
 
 
 
@@ -479,10 +492,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     private fun setupCallActionBar() {
 
         val startTimeNew = viewModel.callStartTime
-        if(startTimeNew==-1L) {
+        if (startTimeNew == -1L) {
             binding.toolbarCall.isVisible = false
-        }
-        else {
+        } else {
             binding.toolbarCall.isVisible = true
             uiJob = lifecycleScope.launch {
                 launch {
@@ -508,7 +520,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
             binding.toolbarCall.isVisible = false
             Toast.makeText(this, "Call ended", Toast.LENGTH_SHORT).show()
         }
-        binding.toolbarCall.setOnClickListener{
+        binding.toolbarCall.setOnClickListener {
             val intent = Intent(this, WebRtcCallActivity::class.java)
             push(intent)
         }
@@ -559,6 +571,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
             }
         }
     }
+
     private fun startUpdateFlow(appUpdateInfo: AppUpdateInfo) {
         try {
             appUpdateManager!!.startUpdateFlowForResult(
@@ -610,7 +623,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
     private fun setSearchShown(isShown: Boolean) {
         //New Line
-        binding.searchBarLayout.isVisible =isShown
+        binding.searchBarLayout.isVisible = isShown
         binding.searchBarLayout.setOnClickListener {
             onBackPressed()
         }
@@ -651,9 +664,12 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                     threadDb.latestUnapprovedConversationTimestamp
                 )
                 root.setOnClickListener { showMessageRequests() }
-                expandMessageRequest.setOnClickListener{ showMessageRequests() }
+                expandMessageRequest.setOnClickListener { showMessageRequests() }
                 root.setOnLongClickListener { hideMessageRequests(); true }
-                root.layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
+                root.layoutParams = RecyclerView.LayoutParams(
+                    RecyclerView.LayoutParams.MATCH_PARENT,
+                    RecyclerView.LayoutParams.WRAP_CONTENT
+                )
                 homeAdapter.headerView = root
                 homeAdapter.notifyItemChanged(0)
             }
@@ -708,11 +724,14 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     override fun onLoaderReset(cursor: Loader<Cursor>) {
         homeAdapter.changeCursor(null)
     }
-    private fun checkInternetConnectivity(){
+
+    private fun checkInternetConnectivity() {
         if (OnionRequestAPI.paths.isEmpty()) {
-            Toast.makeText(this,"Please check your internet connection",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please check your internet connection", Toast.LENGTH_SHORT)
+                .show();
         }
     }
+
     override fun onResume() {
         super.onResume()
         setupCallActionBar()
@@ -741,8 +760,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         }
 
         /*Hales63*/
-        if(TextSecurePreferences.isUnBlocked(this))
-        {
+        if (TextSecurePreferences.isUnBlocked(this)) {
             homeAdapter.notifyDataSetChanged()
             TextSecurePreferences.setUnBlockStatus(this, false)
         }
@@ -762,12 +780,22 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         //New Line App Update
         if (requestCode == IMMEDIATE_APP_UPDATE_REQ_CODE) {
             if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(applicationContext,
-                    "Update canceled by user! Result Code: $resultCode", Toast.LENGTH_LONG).show();
+                Toast.makeText(
+                    applicationContext,
+                    "Update canceled by user! Result Code: $resultCode", Toast.LENGTH_LONG
+                ).show();
             } else if (resultCode == RESULT_OK) {
-                Toast.makeText(applicationContext, "Update success! Result Code: $resultCode", Toast.LENGTH_LONG).show();
+                Toast.makeText(
+                    applicationContext,
+                    "Update success! Result Code: $resultCode",
+                    Toast.LENGTH_LONG
+                ).show();
             } else {
-                Toast.makeText(applicationContext, "Update Failed! Result Code: $resultCode", Toast.LENGTH_LONG).show();
+                Toast.makeText(
+                    applicationContext,
+                    "Update Failed! Result Code: $resultCode",
+                    Toast.LENGTH_LONG
+                ).show();
                 checkUpdate();
             }
         }
@@ -894,7 +922,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     }
 
     private fun blockConversation(thread: ThreadRecord) {
-        val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog)
+        val dialog = AlertDialog.Builder(this, R.style.BChatAlertDialog)
             .setTitle(R.string.RecipientPreferenceActivity_block_this_contact_question)
             .setMessage(R.string.RecipientPreferenceActivity_you_will_no_longer_receive_messages_and_calls_from_this_contact)
             .setNegativeButton(android.R.string.cancel, null)
@@ -908,13 +936,13 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                 }
             }.show()
         //New Line
-        val textView:TextView = dialog.findViewById(android.R.id.message)
-        val face:Typeface =Typeface.createFromAsset(assets,"fonts/poppins_medium.ttf")
+        val textView: TextView = dialog.findViewById(android.R.id.message)
+        val face: Typeface = Typeface.createFromAsset(assets, "fonts/poppins_medium.ttf")
         textView.typeface = face
     }
 
     private fun unblockConversation(thread: ThreadRecord) {
-        val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog)
+        val dialog = AlertDialog.Builder(this, R.style.BChatAlertDialog)
             .setTitle(R.string.RecipientPreferenceActivity_unblock_this_contact_question)
             .setMessage(R.string.RecipientPreferenceActivity_you_will_once_again_be_able_to_receive_messages_and_calls_from_this_contact)
             .setNegativeButton(android.R.string.cancel, null)
@@ -929,8 +957,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
             }.show()
 
         //New Line
-        val textView:TextView = dialog.findViewById(android.R.id.message)
-        val face:Typeface =Typeface.createFromAsset(assets,"fonts/poppins_medium.ttf")
+        val textView: TextView = dialog.findViewById(android.R.id.message)
+        val face: Typeface = Typeface.createFromAsset(assets, "fonts/poppins_medium.ttf")
         textView.typeface = face
     }
 
@@ -993,7 +1021,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         } else {
             resources.getString(R.string.activity_home_delete_conversation_dialog_message)
         }
-        val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog)
+        val dialog = AlertDialog.Builder(this, R.style.BChatAlertDialog)
             .setMessage(message)
             .setPositiveButton(R.string.yes) { _, _ ->
                 lifecycleScope.launch(Dispatchers.Main) {
@@ -1008,8 +1036,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                         var isClosedGroup: Boolean
                         var groupPublicKey: String?
                         try {
-                            groupPublicKey = GroupUtil.doubleDecodeGroupID(recipient.address.toString())
-                                .toHexString()
+                            groupPublicKey =
+                                GroupUtil.doubleDecodeGroupID(recipient.address.toString())
+                                    .toHexString()
                             isClosedGroup = DatabaseComponent.get(context).beldexAPIDatabase()
                                 .isClosedGroup(groupPublicKey)
                         } catch (e: IOException) {
@@ -1021,17 +1050,24 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                         }
                     }
                     // Delete the conversation
-                    val v2OpenGroup = DatabaseComponent.get(this@HomeActivity).beldexThreadDatabase()
-                        .getOpenGroupChat(threadID)
+                    val v2OpenGroup =
+                        DatabaseComponent.get(this@HomeActivity).beldexThreadDatabase()
+                            .getOpenGroupChat(threadID)
                     if (v2OpenGroup != null) {
-                        OpenGroupManager.delete(v2OpenGroup.server, v2OpenGroup.room, this@HomeActivity)
+                        OpenGroupManager.delete(
+                            v2OpenGroup.server,
+                            v2OpenGroup.room,
+                            this@HomeActivity
+                        )
                     } else {
                         lifecycleScope.launch(Dispatchers.IO) {
                             threadDb.deleteConversation(threadID)
                         }
                     }
                     // Update the badge count
-                    ApplicationContext.getInstance(context).messageNotifier.updateNotification(context)
+                    ApplicationContext.getInstance(context).messageNotifier.updateNotification(
+                        context
+                    )
                     // Notify the user
                     val toastMessage =
                         if (recipient.isGroupRecipient) R.string.MessageRecord_left_group else R.string.activity_home_conversation_deleted_message
@@ -1044,7 +1080,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
         //New Line
         val textView: TextView? = dialog.findViewById(android.R.id.message)
-        val face: Typeface = Typeface.createFromAsset(assets,"fonts/poppins_medium.ttf")
+        val face: Typeface = Typeface.createFromAsset(assets, "fonts/poppins_medium.ttf")
         textView!!.typeface = face
     }
 
@@ -1053,9 +1089,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         show(intent, isForResult = true)
     }
 
+
     private fun openMyWallet() {
-        val intent = Intent(this, ReceiveActivity::class.java)
-        show(intent, isForResult = true)
+         val intent = Intent(this, NodeActivity::class.java)
+         show(intent, isForResult = true)
     }
 
     private fun showNotificationSettings() {
@@ -1081,7 +1118,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     }
 
     //New Line
-    private fun help(){
+    private fun help() {
         val intent = Intent(Intent.ACTION_SENDTO)
         intent.data = Uri.parse("mailto:") // only email apps should handle this
         intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("support@beldex.io"))
@@ -1128,14 +1165,15 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         val intent = Intent(this, JoinPublicChatNewActivity::class.java)
         show(intent)
     }
+
     /*Hales63*/
     private fun showMessageRequests() {
         val intent = Intent(this, MessageRequestsActivity::class.java)
         push(intent)
     }
 
-    private fun hideMessageRequests() { 
-        val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog_New)
+    private fun hideMessageRequests() {
+        val dialog = AlertDialog.Builder(this, R.style.BChatAlertDialog_New)
             .setTitle("Hide message requests?")
             .setMessage("Once they are hidden, you can access them from Settings > Message Requests")
             .setPositiveButton(R.string.yes) { _, _ ->
@@ -1152,8 +1190,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
         //SteveJosephh21
 
-        val message:TextView = dialog.findViewById(android.R.id.message)
-        val messageFace:Typeface =Typeface.createFromAsset(assets,"fonts/poppins_medium.ttf")
+        val message: TextView = dialog.findViewById(android.R.id.message)
+        val messageFace: Typeface = Typeface.createFromAsset(assets, "fonts/poppins_medium.ttf")
         message.typeface = messageFace
     }
     // endregion

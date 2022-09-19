@@ -71,21 +71,28 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:networkSecurityConfig="@xml/network_security_configuration"
         android:supportsRtl="true"
         android:theme="@style/Theme.Bchat.DayNight"
-        tools:replace="android:allowBackup">
+        tools:replace="android:allowBackup"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name="com.thoughtcrimes.securesms.wallet.node.NodeListView"
+            android:exported="false" />
+        <activity
+            android:name="com.thoughtcrimes.securesms.wallet.node.NodeListActivity"
+            android:exported="false" />
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLockActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"/>
-        <activity android:name="com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity"
+            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
+        <activity
+            android:name="com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"/>
+            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.password.CreateWalletPassword"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"/>
+            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.send.SendActivity"
             android:screenOrientation="portrait"
@@ -297,6 +304,10 @@
             android:name="com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity"
             android:exported="false"
             android:label="@string/activity_message_requests_title"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.thoughtcrimes.securesms.wallet.node.activity.NodeActivity"
+            android:label="@string/activity_node_page_title"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.thoughtcrimes.securesms.preferences.SettingsActivity"

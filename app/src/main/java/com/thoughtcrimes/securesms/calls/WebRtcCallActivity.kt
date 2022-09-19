@@ -176,7 +176,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                     if (!binding.callTime.isVisible) {
                         if (TextSecurePreferences.isRemoteHangup(this@WebRtcCallActivity)) {
                             TextSecurePreferences.setRemoteHangup(this@WebRtcCallActivity, false)
-                            callRemoteFinishActivity(getString(R.string.call_declined))
+                            callRemoteFinishActivity(getString(R.string.call_ended))
                         }else{
                             callFinishActivity()
                         }

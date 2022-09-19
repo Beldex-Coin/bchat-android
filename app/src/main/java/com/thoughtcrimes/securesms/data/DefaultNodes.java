@@ -20,4 +20,8 @@ public enum DefaultNodes {
     DefaultNodes(String s) {
         this.uri = s;
     }
+
+    public String getUri() {
+        return uri;
+    }
 }

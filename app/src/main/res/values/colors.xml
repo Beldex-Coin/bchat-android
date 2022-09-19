@@ -158,4 +158,20 @@
     <color name="light_blue_500">#03a9f4</color>
     <color name="dark_grey_color">#4a636f</color>
     <color name="light_gray_bar">#eaf2f5</color>
+    <color name="wallet_card_color">#333343</color>
+    <color name="wallet_send_button">#FC2727</color>
+    <color name="wallet_receive_button">#128D15</color>
+    <color name="wallet_page_background">#1C1C26</color>
+    <color name="wallet_card_transaction_card_background">#24242F</color>
+    <color name="wallet_scan_qr_button_background">#333343</color>
+    <color name="wallet_transaction_list_item_card_background">#343441</color>
+
+    <color name="wallet_primary_variant">#CCC3BD</color>
+    <color name="green_color">#2EA021</color>
+    <color name="orange_color">#FA5544</color>
+    <color name="tx_failed">@color/wallet_primary_variant</color>
+    <color name="tx_pending">@color/wallet_primary_variant</color>
+    <color name="tx_plus">@color/green_color</color>
+    <color name="tx_minus">@color/orange_color</color>
+    <color name="wallet_settings_card_background">#353543</color>
 </resources>

@@ -26,6 +26,7 @@ import android.view.inputmethod.InputMethodManager;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 
+import com.thoughtcrimes.securesms.data.Crypto;
 import com.thoughtcrimes.securesms.model.WalletManager;
 
 import java.io.File;
@@ -46,8 +47,7 @@ import timber.log.Timber;
 public class Helper {
     static public final String NOCRAZYPASS_FLAGFILE = ".nocrazypass";
 
-    //Important
-    //static public final String BASE_CRYPTO = Crypto.XMR.getSymbol();
+    static public final String BASE_CRYPTO = Crypto.XMR.getSymbol();
     static public final int XMR_DECIMALS = 9;
     static public final long ONE_XMR = Math.round(Math.pow(10, Helper.XMR_DECIMALS));
 

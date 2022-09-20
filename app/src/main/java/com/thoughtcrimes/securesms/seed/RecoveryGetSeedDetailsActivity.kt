@@ -450,6 +450,8 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
                 intent.putExtras(b)
                 recoveryGetSeedDetailsActivity.push(intent)*/
                 TextSecurePreferences.setWalletName(recoveryGetSeedDetailsActivity,walletName)
+                //SteveJosephh21
+                TextSecurePreferences.setWalletPassword(recoveryGetSeedDetailsActivity,walletPassword)
                 recoveryGetSeedDetailsActivity.updateKeyPair()
             } else {
                 //walletGenerateError()

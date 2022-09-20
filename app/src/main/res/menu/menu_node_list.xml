@@ -4,8 +4,7 @@
 
     <item
         android:id="@+id/action_reset_node"
-        android:icon="@drawable/ic_add_white_original_24dp"
-        android:orderInCategory="500"
+        android:icon="@drawable/ic_reset_node"
         android:title="Reset"
         app:showAsAction="ifRoom" />
 

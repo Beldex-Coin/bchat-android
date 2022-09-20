@@ -3,7 +3,6 @@ package com.thoughtcrimes.securesms.wallet.node;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,7 +11,6 @@ import android.view.LayoutInflater;
 
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -197,30 +195,32 @@ public class NodeFragment extends Fragment
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        final int id = item.getItemId();
-        return super.onOptionsItemSelected(item);
-    }
 
 
     // Callbacks from NodeInfoAdapter
     @Override
     public void onInteraction(final View view, final NodeInfo nodeItem) {
-        Timber.d("onInteraction");
-        if (!nodeItem.isFavourite()) {
-            nodeItem.setFavourite(true);
-            activityCallback.setFavouriteNodes(nodeList);
-        }
-        AsyncTask.execute(() -> {
-            activityCallback.setNode(nodeItem); // this marks it as selected & saves it as well
-           nodeItem.setSelecting(false);
-            try {
-                requireActivity().runOnUiThread(() -> nodesAdapter.allowClick(true));
-            } catch (NullPointerException ex) {
-                // it's ok
-            }
-        });
+
+        new android.app.AlertDialog.Builder(getContext(), R.style.BChatAlertDialog_Wallet)
+                .setTitle(R.string.switch_node_alert)
+                .setPositiveButton(R.string.yes, (dialog, which) -> {
+                    Timber.d("onInteraction");
+                    if (!nodeItem.isFavourite()) {
+                        nodeItem.setFavourite(true);
+                        activityCallback.setFavouriteNodes(nodeList);
+                    }
+                    AsyncTask.execute(() -> {
+                        activityCallback.setNode(nodeItem); // this marks it as selected & saves it as well
+                        nodeItem.setSelecting(false);
+                        try {
+                            requireActivity().runOnUiThread(() -> nodesAdapter.allowClick(true));
+                        } catch (NullPointerException ignored) {
+                        }
+                    });
+
+                }).setNegativeButton(android.R.string.cancel, null)
+                .show();
+
     }
 
     // open up edit dialog
@@ -603,13 +603,13 @@ public class NodeFragment extends Fragment
         }
     }
 
-    void restoreDefaultNodes() {
+    public void restoreDefaultNodes() {
         if (WalletManager.getInstance().getNetworkType() == NetworkType.NetworkType_Mainnet) {
             if (!refresh(AsyncFindNodes.RESTORE_DEFAULTS)) {
-                Toast.makeText(getActivity(), "Restoring already in progress..", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.toast_default_nodes, Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(getActivity(), "Node scan only in Mainnet!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), R.string.node_wrong_net, Toast.LENGTH_LONG).show();
         }
     }
 }

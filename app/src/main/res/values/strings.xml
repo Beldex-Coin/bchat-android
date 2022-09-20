@@ -1126,6 +1126,9 @@
     <string name="node_result">Height: %1$s (v%2$d), Ping: %3$.0fms, IP: %4$s</string>
     <string name="info_xmrto_enabled">Non-BDX payments enabled, tap for more info.</string>
     <string name="info_ledger_enabled">Ledger enabled, tap for more info.</string>
+    <string name="toast_default_nodes" translatable="false">Restoring already in progress…</string>
+    <string name="node_wrong_net" translatable="false">Node scanning only for mainnet!</string>
+    <string name="switch_node_alert" translatable="false"> Are you sure you want to Switch to another node? </string>
 
 
 </resources>

@@ -3,6 +3,7 @@ package com.thoughtcrimes.securesms.wallet.node;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +11,14 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.thoughtcrimes.securesms.components.CircleColorImageView;
 import com.thoughtcrimes.securesms.data.NodeInfo;
 import com.thoughtcrimes.securesms.util.Helper;
 import com.thoughtcrimes.securesms.util.ThemeHelper;
@@ -27,6 +32,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.TimeZone;
 
+import cn.carbswang.android.numberpickerview.library.NumberPickerView;
 import io.beldex.bchat.R;
 import timber.log.Timber;
 
@@ -127,23 +133,25 @@ public class NodeInfoAdapter extends RecyclerView.Adapter<NodeInfoAdapter.ViewHo
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
-        final ImageButton ibBookmark;
+        final CircleColorImageView nodeStatusView_Connect;
+        final CircleColorImageView nodeStatusView_Error;
         final View pbBookmark;
-        final TextView tvName;
-        final TextView tvIp;
+        final TextView nodeName;
+        final TextView nodeAddress;
         final ImageView ivPing;
         NodeInfo nodeItem;
         RelativeLayout itemNodeRelativeLayout;
 
         ViewHolder(View itemView) {
             super(itemView);
-            ibBookmark = itemView.findViewById(R.id.ibBookmark);
+            nodeStatusView_Connect = itemView.findViewById(R.id.nodeStatusView_connect);
+            nodeStatusView_Error = itemView.findViewById(R.id.nodeStatusView_error);
             pbBookmark = itemView.findViewById(R.id.pbBookmark);
-            tvName = itemView.findViewById(R.id.nodeNameTextView);
-            tvIp = itemView.findViewById(R.id.tvAddress);
+            nodeName = itemView.findViewById(R.id.nodeNameTextView);
+            nodeAddress = itemView.findViewById(R.id.nodeAddressTextView);
             ivPing = itemView.findViewById(R.id.ivPing);
             itemNodeRelativeLayout = itemView.findViewById(R.id.itemNodeRelativeLayout);
-            ibBookmark.setOnClickListener(v -> {
+            nodeStatusView_Connect.setOnClickListener(v -> {
                 nodeItem.toggleFavourite();
                 //showStar();
                 if (!nodeItem.isFavourite()) {
@@ -157,38 +165,39 @@ public class NodeInfoAdapter extends RecyclerView.Adapter<NodeInfoAdapter.ViewHo
 
         private void showStar() {
             if (nodeItem.isFavourite()) {
-                ibBookmark.setImageResource(R.drawable.ic_circle);
+                nodeStatusView_Connect.setImageResource(R.drawable.ic_circle);
             } else {
-                ibBookmark.setImageResource(R.drawable.ic_circle);
+                nodeStatusView_Connect.setImageResource(R.drawable.ic_circle);
             }
         }
 
         void bind(int position) {
             nodeItem = nodeItems.get(position);
-            tvName.setText(nodeItem.getName());
-            Timber.d("tvName%s", tvName.getText().toString());
-            Timber.d("tvName value of node getname %s", nodeItem.getName());
+            nodeName.setText(nodeItem.getName());
             ivPing.setImageResource(getPingIcon(nodeItem));
             if (nodeItem.isTested()) {
                 if (nodeItem.isValid()) {
-                    Helper.showTimeDifference(tvIp, nodeItem.getTimestamp());
-                    ibBookmark.setImageDrawable(null);
-                    Log.d("Beldex","isValid() if");
+                    Helper.showTimeDifference(nodeAddress, nodeItem.getTimestamp());
+                    nodeStatusView_Connect.setVisibility(View.VISIBLE);
+                    nodeStatusView_Error.setVisibility(View.INVISIBLE);
                 } else {
-                    Log.d("Beldex","isValid() else");
-                    tvIp.setText(getResponseErrorText(context, nodeItem.getResponseCode()));
-                    tvIp.setTextColor(ThemeHelper.getThemedColor(context, R.attr.colorError));
-                    ibBookmark.setImageResource(R.drawable.ic_circle);
+                    nodeAddress.setText(getResponseErrorText(context, nodeItem.getResponseCode()));
+                    nodeAddress.setTextColor(ThemeHelper.getThemedColor(context, R.attr.colorError));
+                    nodeStatusView_Error.setVisibility(View.VISIBLE);
+                    nodeStatusView_Connect.setVisibility(View.VISIBLE);
                 }
             } else {
-                tvIp.setText(context.getResources().getString(R.string.node_testing, nodeItem.getHostAddress()));
+                nodeAddress.setText(context.getResources().getString(R.string.node_testing, nodeItem.getHostAddress()));
             }
             itemView.setSelected(nodeItem.isSelected());
             itemView.setClickable(itemsClickable);
             itemView.setEnabled(itemsClickable);
-            ibBookmark.setClickable(itemsClickable);
+            nodeStatusView_Connect.setClickable(itemsClickable);
+           //by Hales
+/*
             pbBookmark.setVisibility(nodeItem.isSelecting() ? View.VISIBLE : View.INVISIBLE);
-            itemNodeRelativeLayout.setBackgroundColor(nodeItem.isSelected() ? context.getResources().getColor(R.color.green):context.getResources().getColor(R.color.card_color));
+*/
+            itemNodeRelativeLayout.setBackgroundColor(nodeItem.isSelected() ? context.getResources().getColor(R.color.selected_node):context.getResources().getColor(R.color.unselected_node));
             //showStar();
         }
 

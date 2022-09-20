@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:tools="http://schemas.android.com/tools"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginStart="8dp"
-    android:layout_marginEnd="8dp"
     android:layout_marginTop="8dp"
-    app:cardCornerRadius="15dp"
-    app:cardElevation="5dp"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_marginEnd="8dp"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="5dp">
+
     <RelativeLayout
         android:id="@+id/itemNodeRelativeLayout"
         android:layout_width="fill_parent"
@@ -22,35 +23,46 @@
             android:layout_alignParentEnd="true"
             android:layout_centerInParent="true">
 
-            <ImageButton
-                android:id="@+id/ibBookmark"
+            <com.thoughtcrimes.securesms.components.CircleColorImageView
+                android:id="@+id/nodeStatusView_connect"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:gravity="center"
-                android:padding="12dp" />
+                android:layout_gravity="center"
+                android:padding="5dp"
+                app:circleColor="@color/node_status"
+                android:textAlignment="center"
+                 />
+            <com.thoughtcrimes.securesms.components.CircleColorImageView
+                android:id="@+id/nodeStatusView_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="5dp"
+                android:visibility="gone"
+                app:circleColor="@color/red"
+                android:textAlignment="center"
+                />
+
             <ProgressBar
                 android:id="@+id/pbBookmark"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="invisible" />
 
-
         </FrameLayout>
+
 
         <LinearLayout
             android:id="@+id/llNode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
             android:layout_centerInParent="true"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:layout_toStartOf="@id/flBookmark"
+            android:layout_toEndOf="@+id/ivPing"
             android:gravity="start"
             android:orientation="vertical">
 
@@ -61,11 +73,13 @@
                 tools:text="publicnode:rpcnode:stream" />
 
             <TextView
-                android:id="@+id/tvAddress"
+                android:id="@+id/nodeAddressTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="128.130.233.151:18089" />
+                tools:text="13.215.3.159:29095" />
         </LinearLayout>
+
+
         <ImageView
             android:id="@+id/ivPing"
             android:layout_width="wrap_content"
@@ -73,7 +87,8 @@
             android:layout_alignParentEnd="true"
             android:layout_centerInParent="true"
             android:layout_marginEnd="8dp"
-            android:visibility="gone"
-            android:src="@drawable/ic_camera" />
+            android:src="@drawable/ic_camera"
+            android:visibility="gone" />
+
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

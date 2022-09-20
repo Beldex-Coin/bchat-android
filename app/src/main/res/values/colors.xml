@@ -158,4 +158,7 @@
     <color name="light_blue_500">#03a9f4</color>
     <color name="dark_grey_color">#4a636f</color>
     <color name="light_gray_bar">#eaf2f5</color>
+    <color name="node_status">#1EC622</color>
+    <color name="selected_node">#136EF8</color>
+    <color name="unselected_node">#353543</color>
 </resources>

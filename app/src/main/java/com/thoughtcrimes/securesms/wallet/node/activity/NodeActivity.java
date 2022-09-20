@@ -4,17 +4,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 
 import com.thoughtcrimes.securesms.data.DefaultNodes;
 import com.thoughtcrimes.securesms.data.Node;
 import com.thoughtcrimes.securesms.data.NodeInfo;
+import com.thoughtcrimes.securesms.model.NetworkType;
 import com.thoughtcrimes.securesms.model.WalletManager;
+import com.thoughtcrimes.securesms.service.KeyCachingService;
 import com.thoughtcrimes.securesms.util.Helper;
 import com.thoughtcrimes.securesms.util.NodePinger;
+import com.thoughtcrimes.securesms.wallet.node.AddNodeActivity;
 import com.thoughtcrimes.securesms.wallet.node.NodeFragment;
 import com.thoughtcrimes.securesms.wallet.node.Toolbar;
 
@@ -30,7 +35,7 @@ import java.util.Set;
 import io.beldex.bchat.R;
 import timber.log.Timber;
 
-public class NodeActivity extends AppCompatActivity implements NodeFragment.Listener,NodeListFragment.NodeListInterface {
+public class NodeActivity extends AppCompatActivity implements NodeFragment.Listener, NodeListFragment.NodeListInterface {
 
     private Toolbar toolbar;
     Set<NodeInfo> favouriteNodes = new HashSet<>();
@@ -39,6 +44,7 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
     public NodeInfo getNode() {
         return node;
     }
+
     private static final String NODES_PREFS_NAME = "nodes";
     private static final String SELECTED_NODE_PREFS_NAME = "selected_node";
     private static final String PREF_DAEMON_TESTNET = "daemon_testnet";
@@ -56,8 +62,26 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.nodeList_frame, walletFragment, NodeFragment.class.getName()).commit();
         Timber.d("fragment added");
-
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        final int id = item.getItemId();
+        if (id == R.id.action_add_node) {
+            startActivity(new Intent(NodeActivity.this, AddNodeActivity.class));
+            return true;
+        }
+        if (id == R.id.action_reset_node) {
+            Fragment f = getSupportFragmentManager().findFragmentById(R.id.nodeList_frame);
+            if ((WalletManager.getInstance().getNetworkType() == NetworkType.NetworkType_Mainnet) &&
+                    (f instanceof NodeFragment)) {
+                ((NodeFragment) f).restoreDefaultNodes();
+            }
+        }
+            return super.onOptionsItemSelected(item);
+        }
+
+
 
     private void loadFavouritesWithNetwork() {
         Helper.runWithNetwork(() -> {
@@ -237,7 +261,7 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
 
     @Override
     public Set<NodeInfo> getFavouriteNodes() {
-        Log.d("Beldex","Node list %s"+ favouriteNodes);
+        Log.d("Beldex", "Node list %s" + favouriteNodes);
         return favouriteNodes;
     }
 
@@ -251,7 +275,7 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
                     favouriteNodes.add(nodeInfo);
                 }
             }
-           saveFavourites();
+            saveFavourites();
         }
         return favouriteNodes;
     }
@@ -306,6 +330,7 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
         return getSharedPreferences(SELECTED_NODE_PREFS_NAME, Context.MODE_PRIVATE)
                 .getString("0", null);
     }
+
     private void saveSelectedNode() { // save only if changed
         final NodeInfo nodeInfo = getNode();
         final String selectedNodeId = getSelectedNodeId();
@@ -317,6 +342,7 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
                 saveSelectedNode(null);
         }
     }
+
     private void saveSelectedNode(NodeInfo nodeInfo) {
         SharedPreferences.Editor editor = getSharedPreferences(SELECTED_NODE_PREFS_NAME, Context.MODE_PRIVATE).edit();
         if (nodeInfo == null) {

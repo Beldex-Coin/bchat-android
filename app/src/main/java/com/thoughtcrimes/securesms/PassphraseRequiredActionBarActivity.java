@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.beldex.libsignal.utilities.Log;
+import com.thoughtcrimes.securesms.data.BarcodeData;
 import com.thoughtcrimes.securesms.home.HomeActivity;
 import com.thoughtcrimes.securesms.onboarding.SplashScreenActivity;
 import com.thoughtcrimes.securesms.service.KeyCachingService;
@@ -211,5 +212,9 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
       context.unregisterReceiver(clearKeyReceiver);
       clearKeyReceiver = null;
     }
+  }
+
+  public void onUriScanned(@org.jetbrains.annotations.Nullable BarcodeData barcodeData) {
+
   }
 }

@@ -96,6 +96,7 @@ import com.thoughtcrimes.securesms.wallet.node.*
 import com.thoughtcrimes.securesms.wallet.node.activity.NodeActivity
 import com.thoughtcrimes.securesms.wallet.receive.ReceiveActivity
 import com.thoughtcrimes.securesms.wallet.rescan.ReScanActivity
+import com.thoughtcrimes.securesms.wallet.send.SendActivity
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
 import io.beldex.bchat.databinding.ViewMessageRequestBannerBinding
 import kotlinx.coroutines.*
@@ -1169,7 +1170,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
     /*Hales63*/
     private fun showMessageRequests() {
-        val intent = Intent(this, ReScanActivity::class.java)
+        val intent = Intent(this, SendActivity::class.java)
         push(intent)
     }
 

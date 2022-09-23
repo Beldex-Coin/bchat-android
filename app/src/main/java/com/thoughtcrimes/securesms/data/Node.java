@@ -229,6 +229,40 @@ public class Node {
         return hostAddress.getHostAddress();
     }
 
+
+    public String getName(){
+        return name;
+    }
+    public String getHost()
+    {
+        return host;
+    }
+
+
+    public int getRpcPort()
+    {
+        return rpcPort;
+    }
+
+
+
+    public Boolean isFavourite()
+    {
+        return favourite;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setRpcPort(int rpcPort) {
+        this.rpcPort = rpcPort;
+    }
+
     public void setHost(String host) throws UnknownHostException {
         if ((host == null) || (host.isEmpty()))
             throw new UnknownHostException("loopback not supported (yet?)");

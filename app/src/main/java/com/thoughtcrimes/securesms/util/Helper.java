@@ -14,19 +14,30 @@ import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
+import android.hardware.fingerprint.FingerprintManager;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.os.CancellationSignal;
 import android.os.StrictMode;
 import android.system.ErrnoException;
 import android.system.Os;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 
-import com.thoughtcrimes.securesms.data.Crypto;
+import com.google.android.material.textfield.TextInputLayout;
 import com.thoughtcrimes.securesms.model.WalletManager;
 
 import java.io.File;
@@ -37,17 +48,21 @@ import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.net.ssl.HttpsURLConnection;
 
 import io.beldex.bchat.BuildConfig;
+import io.beldex.bchat.R;
 import timber.log.Timber;
 
 public class Helper {
     static public final String NOCRAZYPASS_FLAGFILE = ".nocrazypass";
 
-    static public final String BASE_CRYPTO = Crypto.XMR.getSymbol();
+    //Important
+    //static public final String BASE_CRYPTO = Crypto.XMR.getSymbol();
     static public final int XMR_DECIMALS = 9;
     static public final long ONE_XMR = Math.round(Math.pow(10, Helper.XMR_DECIMALS));
 
@@ -249,7 +264,7 @@ public class Helper {
     static private Animation ShakeAnimation;
 
     //Important
-   /* static public Animation getShakeAnimation(Context context) {
+   static public Animation getShakeAnimation(Context context) {
         if (ShakeAnimation == null) {
             synchronized (Helper.class) {
                 if (ShakeAnimation == null) {
@@ -258,7 +273,7 @@ public class Helper {
             }
         }
         return ShakeAnimation;
-    }*/
+    }
 
     private final static char[] HexArray = "0123456789ABCDEF".toCharArray();
 
@@ -447,8 +462,8 @@ public class Helper {
         // set dialog message
         alertDialogBuilder
                 .setCancelable(false)
-                .setPositiveButton(context.getString(R.string.label_ok), null)
-                .setNegativeButton(context.getString(R.string.label_cancel),
+                .setPositiveButton(context.getString(R.string.ok), null)
+                .setNegativeButton(context.getString(R.string.cancel),
                         (dialog, id) -> {
                             action.fail(wallet);
                             Helper.hideKeyboardAlways((Activity) context);
@@ -581,7 +596,7 @@ public class Helper {
     static public final int STALE_NODE_HOURS = 2;
 
     //Important
-    /*static public void showTimeDifference(TextView view, long timeInSeconds) {
+    static public void showTimeDifference(TextView view, long timeInSeconds) {
         final Context ctx = view.getContext();
         final long now = Calendar.getInstance().getTimeInMillis() / 1000;
         final long secs = (now - timeInSeconds);
@@ -603,5 +618,5 @@ public class Helper {
             view.setTextColor(ThemeHelper.getThemedColor(view.getContext(), R.attr.colorError));
         else
             view.setTextColor(ThemeHelper.getThemedColor(view.getContext(), android.R.attr.textColorPrimary));
-    }*/
+    }
 }

@@ -4,6 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 
+import com.thoughtcrimes.securesms.model.Wallet;
+import com.thoughtcrimes.securesms.util.validator.BitcoinAddressType;
+import com.thoughtcrimes.securesms.util.validator.BitcoinAddressValidator;
+import com.thoughtcrimes.securesms.util.validator.EthAddressValidator;
+
+
 import io.beldex.bchat.R;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -12,26 +18,26 @@ import timber.log.Timber;
 @RequiredArgsConstructor
 public enum Crypto {
     //by hales
-    /*XMR("XMR", true, "Beldex:tx_amount:recipient_name:tx_description", R.id.ibXMR, R.drawable.ic_monero, R.drawable.ic_monero_bw, Wallet::isAddressValid),
-    BTC("BTC", true, "bitcoin:amount:label:message", R.id.ibBTC, R.drawable.ic_xmrto_btc, R.drawable.ic_xmrto_btc_off, address -> {
+    XMR("XMR", true, "Beldex:tx_amount:recipient_name:tx_description", R.id.ibBDX, R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_foreground, Wallet::isAddressValid),
+    BTC("BTC", true, "bitcoin:amount:label:message", R.id.ibBDX, R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_foreground, address -> {
         Timber.d("BTC ->%s", address);
         return BitcoinAddressValidator.validate(address, BitcoinAddressType.BTC);
     }),
-    DASH("DASH", true, "dash:amount:label:message", R.id.ibDASH, R.drawable.ic_xmrto_dash, R.drawable.ic_xmrto_dash_off, address -> {
+    DASH("DASH", true, "dash:amount:label:message", R.id.ibBDX, R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_foreground, address -> {
         return BitcoinAddressValidator.validate(address, BitcoinAddressType.DASH);
     }),
-    DOGE("DOGE", true, "dogecoin:amount:label:message", R.id.ibDOGE, R.drawable.ic_xmrto_doge, R.drawable.ic_xmrto_doge_off, address -> {
+    DOGE("DOGE", true, "dogecoin:amount:label:message", R.id.ibBDX, R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_foreground, address -> {
         return BitcoinAddressValidator.validate(address, BitcoinAddressType.DOGE);
     }),
-    ETH("ETH", false, "ethereum:amount:label:message", R.id.ibETH, R.drawable.ic_xmrto_eth, R.drawable.ic_xmrto_eth_off, EthAddressValidator::validate),
-    LTC("LTC", true, "litecoin:amount:label:message", R.id.ibLTC, R.drawable.ic_xmrto_ltc, R.drawable.ic_xmrto_ltc_off, address -> {
+    ETH("ETH", false, "ethereum:amount:label:message", R.id.ibBDX, R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_foreground, EthAddressValidator::validate),
+    LTC("LTC", true, "litecoin:amount:label:message", R.id.ibBDX, R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_foreground, address -> {
         return BitcoinAddressValidator.validate(address, BitcoinAddressType.LTC);
-    });*/
+    });
     ;
 
-   /* @Getter
+    @Getter
     @NonNull
-    private final String symbol;*/
+    private final String symbol;
     @Getter
     private final boolean casefull;
     @NonNull
@@ -46,13 +52,18 @@ public enum Crypto {
     private final Validator validator;
 
     Crypto(@NonNull String symbol, boolean casefull, @NonNull String uriSpec, int buttonId, int iconEnabledId, int iconDisabledId, @NonNull Validator validator) {
-        /*this.symbol = symbol;*/
+        this.symbol = symbol;
         this.casefull = casefull;
         this.uriSpec = uriSpec;
         this.buttonId = buttonId;
         this.iconEnabledId = iconEnabledId;
         this.iconDisabledId = iconDisabledId;
         this.validator = validator;
+    }
+
+    @NonNull
+    public String getSymbol() {
+        return symbol;
     }
 
     @Nullable

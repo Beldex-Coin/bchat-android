@@ -3,9 +3,10 @@
 #include <string.h>
 #include <jni.h>
 #include "app.h"
-#include "src/main/classes/beldex_api.cpp"
+/*#include "src/main/classes/Wallet_api.cpp"*/
 #include <string_view>
 #include <string>
+#include <wallet2_api.h>
 
 #ifdef __cplusplus
 extern "C"
@@ -84,7 +85,7 @@ void detachJVM(JNIEnv *jenv, int envStat) {
     }
 }
 
-struct MyWalletListener : Beldex::WalletListener {
+struct MyWalletListener : Wallet::WalletListener {
     jobject jlistener;
 
     MyWalletListener(JNIEnv *env, jobject aListener) {
@@ -196,13 +197,13 @@ struct MyWalletListener : Beldex::WalletListener {
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getSeed(JNIEnv *env, jobject instance) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     return env->NewStringUTF(wallet->seed().c_str());
 }
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getSeedLanguage(JNIEnv *env, jobject instance) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     return env->NewStringUTF(wallet->getSeedLanguage().c_str());
 }
 extern "C"
@@ -210,7 +211,7 @@ JNIEXPORT void JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_setSeedLanguage(JNIEnv *env, jobject instance,
                                                              jstring language) {
     const char *_language = env->GetStringUTFChars(language, nullptr);
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     wallet->setSeedLanguage(std::string(_language));
     env->ReleaseStringUTFChars(language, _language);
 }
@@ -228,7 +229,7 @@ jobject newWalletStatusInstance(JNIEnv *env, int status, const std::string &erro
 extern "C"
 JNIEXPORT jobject JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_statusWithErrorString(JNIEnv *env, jobject instance) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
 
   /*  int status;
     std::string errorString;
@@ -239,7 +240,7 @@ Java_com_thoughtcrimes_securesms_model_Wallet_statusWithErrorString(JNIEnv *env,
 
     auto& [status, errorString] = stat;
 
-    if (status != Beldex::Wallet::Status_Ok)
+    if (status != Wallet::Wallet::Status_Ok)
     {
         //error = strdup(errorString.c_str());
         return newWalletStatusInstance(env, status, errorString);
@@ -252,7 +253,7 @@ JNIEXPORT jboolean JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_setPassword(JNIEnv *env, jobject instance,
                                                          jstring password) {
     const char *_password = env->GetStringUTFChars(password, nullptr);
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     bool success = wallet->setPassword(std::string(_password));
     env->ReleaseStringUTFChars(password, _password);
     return static_cast<jboolean>(success);
@@ -261,7 +262,7 @@ extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getAddressJ(JNIEnv *env, jobject instance,
                                                          jint account_index, jint address_index) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     return env->NewStringUTF(
             wallet->address((uint32_t) account_index, (uint32_t) address_index).c_str());
 }
@@ -269,7 +270,7 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_thoughtcrimes_securesms_model_WalletManager_setLogLevel(JNIEnv *env, jclass clazz,
                                                                 jint level) {
-    Beldex::WalletManagerFactory::setLogLevel(level);
+    Wallet::WalletManagerFactory::setLogLevel(level);
 }
 extern "C"
 JNIEXPORT void JNICALL
@@ -278,7 +279,7 @@ Java_com_thoughtcrimes_securesms_model_WalletManager_logDebug(JNIEnv *env, jclas
     const char *_category = env->GetStringUTFChars(category, nullptr);
     const char *_message = env->GetStringUTFChars(message, nullptr);
 
-    Beldex::Wallet::debug(_category, _message);
+    Wallet::Wallet::debug(_category, _message);
 
     env->ReleaseStringUTFChars(category, _category);
     env->ReleaseStringUTFChars(message, _message);
@@ -290,7 +291,7 @@ Java_com_thoughtcrimes_securesms_model_WalletManager_logInfo(JNIEnv *env, jclass
     const char *_category = env->GetStringUTFChars(category, nullptr);
     const char *_message = env->GetStringUTFChars(message, nullptr);
 
-    Beldex::Wallet::info(_category, _message);
+    Wallet::Wallet::info(_category, _message);
 
     env->ReleaseStringUTFChars(category, _category);
     env->ReleaseStringUTFChars(message, _message);
@@ -302,7 +303,7 @@ Java_com_thoughtcrimes_securesms_model_WalletManager_logWarning(JNIEnv *env, jcl
     const char *_category = env->GetStringUTFChars(category, nullptr);
     const char *_message = env->GetStringUTFChars(message, nullptr);
 
-    Beldex::Wallet::warning(_category, _message);
+    Wallet::Wallet::warning(_category, _message);
 
     env->ReleaseStringUTFChars(category, _category);
     env->ReleaseStringUTFChars(message, _message);
@@ -314,7 +315,7 @@ Java_com_thoughtcrimes_securesms_model_WalletManager_logError(JNIEnv *env, jclas
     const char *_category = env->GetStringUTFChars(category, nullptr);
     const char *_message = env->GetStringUTFChars(message, nullptr);
 
-    Beldex::Wallet::error(_category, _message);
+    Wallet::Wallet::error(_category, _message);
 
     env->ReleaseStringUTFChars(category, _category);
     env->ReleaseStringUTFChars(message, _message);
@@ -327,7 +328,7 @@ Java_com_thoughtcrimes_securesms_model_WalletManager_initLogger(JNIEnv *env, jcl
     const char *_argv0 = env->GetStringUTFChars(argv0, nullptr);
     const char *_default_log_base_name = env->GetStringUTFChars(default_log_base_name, nullptr);
 
-    Beldex::Wallet::init(_argv0, _default_log_base_name);
+    Wallet::Wallet::init(_argv0, _default_log_base_name);
 
     env->ReleaseStringUTFChars(argv0, _argv0);
     env->ReleaseStringUTFChars(default_log_base_name, _default_log_base_name);
@@ -340,7 +341,7 @@ Java_com_thoughtcrimes_securesms_model_WalletManager_resolveOpenAlias(JNIEnv *en
     const char *_address = env->GetStringUTFChars(address, nullptr);
     bool _dnssec_valid = (bool) dnssec_valid;
     std::string resolvedAlias =
-            Beldex::WalletManagerFactory::getWalletManager()->resolveOpenAlias(
+            Wallet::WalletManagerFactory::getWalletManager()->resolveOpenAlias(
                     std::string(_address),
                     _dnssec_valid);
     env->ReleaseStringUTFChars(address, _address);
@@ -349,7 +350,7 @@ Java_com_thoughtcrimes_securesms_model_WalletManager_resolveOpenAlias(JNIEnv *en
 /*extern "C"
 JNIEXPORT jboolean JNICALL
 Java_com_thoughtcrimes_securesms_model_WalletManager_stopMining(JNIEnv *env, jobject thiz) {
-    return static_cast<jboolean>(Beldex::WalletManagerFactory::getWalletManager()->stopMining());
+    return static_cast<jboolean>(Wallet::WalletManagerFactory::getWalletManager()->stopMining());
 }*/
 /*extern "C"
 JNIEXPORT jboolean JNICALL
@@ -359,7 +360,7 @@ Java_com_thoughtcrimes_securesms_model_WalletManager_startMining(JNIEnv *env, jo
                                                                 jboolean ignore_battery) {
     const char *_address = env->GetStringUTFChars(address, nullptr);
     bool success =
-            Beldex::WalletManagerFactory::getWalletManager()->startMining(std::string(_address),
+            Wallet::WalletManagerFactory::getWalletManager()->startMining(std::string(_address),
                                                                              background_mining,
                                                                              ignore_battery);
     env->ReleaseStringUTFChars(address, _address);
@@ -368,41 +369,41 @@ Java_com_thoughtcrimes_securesms_model_WalletManager_startMining(JNIEnv *env, jo
 /*extern "C"
 JNIEXPORT jboolean JNICALL
 Java_com_thoughtcrimes_securesms_model_WalletManager_isMining(JNIEnv *env, jobject thiz) {
-    return static_cast<jboolean>(Beldex::WalletManagerFactory::getWalletManager()->isMining());
+    return static_cast<jboolean>(Wallet::WalletManagerFactory::getWalletManager()->isMining());
 }*/
 extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_thoughtcrimes_securesms_model_WalletManager_getBlockTarget(JNIEnv *env, jobject thiz) {
-    return Beldex::WalletManagerFactory::getWalletManager()->blockTarget();
+    return Wallet::WalletManagerFactory::getWalletManager()->blockTarget();
 }
 /*extern "C"
 JNIEXPORT jdouble JNICALL
 Java_com_thoughtcrimes_securesms_model_WalletManager_getMiningHashRate(JNIEnv *env, jobject thiz) {
-    return Beldex::WalletManagerFactory::getWalletManager()->miningHashRate();
+    return Wallet::WalletManagerFactory::getWalletManager()->miningHashRate();
 }*/
 /*extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_thoughtcrimes_securesms_model_WalletManager_getNetworkDifficulty(JNIEnv *env,
                                                                          jobject thiz) {
-    return Beldex::WalletManagerFactory::getWalletManager()->networkDifficulty();
+    return Wallet::WalletManagerFactory::getWalletManager()->networkDifficulty();
 }*/
 extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_thoughtcrimes_securesms_model_WalletManager_getBlockchainTargetHeight(JNIEnv *env,
                                                                               jobject thiz) {
-    return Beldex::WalletManagerFactory::getWalletManager()->blockchainTargetHeight();
+    return Wallet::WalletManagerFactory::getWalletManager()->blockchainTargetHeight();
 }
 extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_thoughtcrimes_securesms_model_WalletManager_getBlockchainHeight(JNIEnv *env, jobject thiz) {
-    return Beldex::WalletManagerFactory::getWalletManager()->blockchainHeight();
+    return Wallet::WalletManagerFactory::getWalletManager()->blockchainHeight();
 }
 extern "C"
 JNIEXPORT jint JNICALL
 Java_com_thoughtcrimes_securesms_model_WalletManager_getDaemonVersion(JNIEnv *env, jobject thiz) {
     uint32_t version;
     bool isConnected =
-            Beldex::WalletManagerFactory::getWalletManager()->connected(&version);
+            Wallet::WalletManagerFactory::getWalletManager()->connected(&version);
     if (!isConnected) version = 0;
     return version;
 }
@@ -411,7 +412,7 @@ JNIEXPORT void JNICALL
 Java_com_thoughtcrimes_securesms_model_WalletManager_setDaemonAddressJ(JNIEnv *env, jobject thiz,
                                                                       jstring address) {
     const char *_address = env->GetStringUTFChars(address, nullptr);
-    Beldex::WalletManagerFactory::getWalletManager()->setDaemonAddress(std::string(_address));
+    Wallet::WalletManagerFactory::getWalletManager()->setDaemonAddress(std::string(_address));
     env->ReleaseStringUTFChars(address, _address);
 }
 extern "C"
@@ -421,8 +422,8 @@ Java_com_thoughtcrimes_securesms_model_WalletManager_queryWalletDeviceJ(JNIEnv *
                                                                        jstring password) {
     const char *_keys_file_name = env->GetStringUTFChars(keys_file_name, nullptr);
     const char *_password = env->GetStringUTFChars(password, nullptr);
-    Beldex::Wallet::Device device_type;
-    bool ok = Beldex::WalletManagerFactory::getWalletManager()->
+    Wallet::Wallet::Device device_type;
+    bool ok = Wallet::WalletManagerFactory::getWalletManager()->
             queryWalletDevice(device_type, std::string(_keys_file_name), std::string(_password));
     env->ReleaseStringUTFChars(keys_file_name, _keys_file_name);
     env->ReleaseStringUTFChars(password, _password);
@@ -440,7 +441,7 @@ Java_com_thoughtcrimes_securesms_model_WalletManager_verifyWalletPassword(JNIEnv
     const char *_keys_file_name = env->GetStringUTFChars(keys_file_name, nullptr);
     const char *_password = env->GetStringUTFChars(password, nullptr);
     bool passwordOk =
-            Beldex::WalletManagerFactory::getWalletManager()->verifyWalletPassword(
+            Wallet::WalletManagerFactory::getWalletManager()->verifyWalletPassword(
                     std::string(_keys_file_name), std::string(_password), watch_only);
     env->ReleaseStringUTFChars(keys_file_name, _keys_file_name);
     env->ReleaseStringUTFChars(password, _password);
@@ -452,7 +453,7 @@ Java_com_thoughtcrimes_securesms_model_WalletManager_walletExists(JNIEnv *env, j
                                                                  jstring path) {
     const char *_path = env->GetStringUTFChars(path, nullptr);
     bool exists =
-            Beldex::WalletManagerFactory::getWalletManager()->walletExists(std::string(_path));
+            Wallet::WalletManagerFactory::getWalletManager()->walletExists(std::string(_path));
     env->ReleaseStringUTFChars(path, _path);
     return static_cast<jboolean>(exists);
 }
@@ -460,8 +461,8 @@ extern "C"
 JNIEXPORT jboolean JNICALL
 Java_com_thoughtcrimes_securesms_model_WalletManager_closeJ(JNIEnv *env, jobject instance,
                                                            jobject walletInstance) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, walletInstance);
-    bool closeSuccess = Beldex::WalletManagerFactory::getWalletManager()->closeWallet(wallet,
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, walletInstance);
+    bool closeSuccess = Wallet::WalletManagerFactory::getWalletManager()->closeWallet(wallet,
                                                                                          false);
     if (closeSuccess) {
         MyWalletListener *walletListener = getHandle<MyWalletListener>(env, walletInstance,
@@ -486,12 +487,12 @@ Java_com_thoughtcrimes_securesms_model_WalletManager_createWalletFromDeviceJ(JNI
                                                                             jstring subaddress_lookahead) {
     const char *_path = env->GetStringUTFChars(path, nullptr);
     const char *_password = env->GetStringUTFChars(password, nullptr);
-    Beldex::NetworkType _networkType = static_cast<Beldex::NetworkType>(network_type);
+    Wallet::NetworkType _networkType = static_cast<Wallet::NetworkType>(network_type);
     const char *_deviceName = env->GetStringUTFChars(device_name, nullptr);
     const char *_subaddressLookahead = env->GetStringUTFChars(subaddress_lookahead, nullptr);
 
-    Beldex::Wallet *wallet =
-            Beldex::WalletManagerFactory::getWalletManager()->createWalletFromDevice(
+    Wallet::Wallet *wallet =
+            Wallet::WalletManagerFactory::getWalletManager()->createWalletFromDevice(
                     std::string(_path),
                     std::string(_password),
                     _networkType,
@@ -519,13 +520,13 @@ Java_com_thoughtcrimes_securesms_model_WalletManager_createWalletFromKeysJ(JNIEn
     const char *_path = env->GetStringUTFChars(path, nullptr);
     const char *_password = env->GetStringUTFChars(password, nullptr);
     const char *_language = env->GetStringUTFChars(language, nullptr);
-    Beldex::NetworkType _networkType = static_cast<Beldex::NetworkType>(network_type);
+    Wallet::NetworkType _networkType = static_cast<Wallet::NetworkType>(network_type);
     const char *_addressString = env->GetStringUTFChars(address_string, nullptr);
     const char *_viewKeyString = env->GetStringUTFChars(view_key_string, nullptr);
     const char *_spendKeyString = env->GetStringUTFChars(spend_key_string, nullptr);
 
-    Beldex::Wallet *wallet =
-            Beldex::WalletManagerFactory::getWalletManager()->createWalletFromKeys(
+    Wallet::Wallet *wallet =
+            Wallet::WalletManagerFactory::getWalletManager()->createWalletFromKeys(
                     std::string(_path),
                     std::string(_password),
                     std::string(_language),
@@ -553,10 +554,10 @@ Java_com_thoughtcrimes_securesms_model_WalletManager_recoveryWalletJ(JNIEnv *env
     const char *_path = env->GetStringUTFChars(path, nullptr);
     const char *_password = env->GetStringUTFChars(password, nullptr);
     const char *_mnemonic = env->GetStringUTFChars(mnemonic, nullptr);
-    Beldex::NetworkType _networkType = static_cast<Beldex::NetworkType>(network_type);
+    Wallet::NetworkType _networkType = static_cast<Wallet::NetworkType>(network_type);
 
-    Beldex::Wallet *wallet =
-            Beldex::WalletManagerFactory::getWalletManager()->recoveryWallet(
+    Wallet::Wallet *wallet =
+            Wallet::WalletManagerFactory::getWalletManager()->recoveryWallet(
                     std::string(_path),
                     std::string(_password),
                     std::string(_mnemonic),
@@ -575,10 +576,10 @@ Java_com_thoughtcrimes_securesms_model_WalletManager_openWalletJ(JNIEnv *env, jo
                                                                 jint network_type) {
     const char *_path = env->GetStringUTFChars(path, nullptr);
     const char *_password = env->GetStringUTFChars(password, nullptr);
-    Beldex::NetworkType _networkType = static_cast<Beldex::NetworkType>(network_type);
+    Wallet::NetworkType _networkType = static_cast<Wallet::NetworkType>(network_type);
 
-    Beldex::Wallet *wallet =
-            Beldex::WalletManagerFactory::getWalletManager()->openWallet(
+    Wallet::Wallet *wallet =
+            Wallet::WalletManagerFactory::getWalletManager()->openWallet(
                     std::string(_path),
                     std::string(_password),
                     _networkType);
@@ -596,10 +597,10 @@ Java_com_thoughtcrimes_securesms_model_WalletManager_createWalletJ(JNIEnv *env, 
     const char *_path = env->GetStringUTFChars(path, nullptr);
     const char *_password = env->GetStringUTFChars(password, nullptr);
     const char *_language = env->GetStringUTFChars(language, nullptr);
-    Beldex::NetworkType _networkType = static_cast<Beldex::NetworkType>(network_type);
+    Wallet::NetworkType _networkType = static_cast<Wallet::NetworkType>(network_type);
 
-    Beldex::Wallet *wallet =
-            Beldex::WalletManagerFactory::getWalletManager()->createWallet(
+    Wallet::Wallet *wallet =
+            Wallet::WalletManagerFactory::getWalletManager()->createWallet(
                     std::string(_path),
                     std::string(_password),
                     std::string(_language),
@@ -613,7 +614,7 @@ Java_com_thoughtcrimes_securesms_model_WalletManager_createWalletJ(JNIEnv *env, 
 extern "C"
 JNIEXPORT jint JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_nettype(JNIEnv *env, jobject instance) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     return wallet->nettype();
 }
 extern "C"
@@ -621,7 +622,7 @@ JNIEXPORT jstring JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getIntegratedAddress(JNIEnv *env, jobject instance,
                                                                   jstring payment_id) {
     const char *_payment_id = env->GetStringUTFChars(payment_id, nullptr);
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     std::string address = wallet->integratedAddress(_payment_id);
     env->ReleaseStringUTFChars(payment_id, _payment_id);
     return env->NewStringUTF(address.c_str());
@@ -629,28 +630,28 @@ Java_com_thoughtcrimes_securesms_model_Wallet_getIntegratedAddress(JNIEnv *env, 
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getPublicViewKey(JNIEnv *env, jobject instance) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     return env->NewStringUTF(wallet->publicViewKey().c_str());
 }
 
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getSecretViewKey(JNIEnv *env, jobject instance) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     return env->NewStringUTF(wallet->secretViewKey().c_str());
 }
 
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getPublicSpendKey(JNIEnv *env, jobject instance) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     return env->NewStringUTF(wallet->publicSpendKey().c_str());
 }
 
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getSecretSpendKey(JNIEnv *env, jobject instance) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     return env->NewStringUTF(wallet->secretSpendKey().c_str());
 }
 
@@ -658,7 +659,7 @@ extern "C"
 JNIEXPORT jboolean JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_store(JNIEnv *env, jobject instance, jstring path) {
     const char *_path = env->GetStringUTFChars(path, nullptr);
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     bool success = wallet->store(std::string(_path));
     if (!success) {
         LOGE("store() %s", "wallet->errorString().c_str()");
@@ -669,7 +670,7 @@ Java_com_thoughtcrimes_securesms_model_Wallet_store(JNIEnv *env, jobject instanc
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getFilename(JNIEnv *env, jobject instance) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     return env->NewStringUTF(wallet->filename().c_str());
 }
 extern "C"
@@ -682,7 +683,7 @@ Java_com_thoughtcrimes_securesms_model_Wallet_initJ(JNIEnv *env, jobject instanc
     const char *_daemon_address = env->GetStringUTFChars(daemon_address, nullptr);
     const char *_daemon_username = env->GetStringUTFChars(daemon_username, nullptr);
     const char *_daemon_password = env->GetStringUTFChars(daemon_password, nullptr);
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     bool status = wallet->init(_daemon_address, (uint64_t) upper_transaction_size_limit,
                                _daemon_username,
                                _daemon_password);
@@ -695,91 +696,91 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_setRestoreHeight(JNIEnv *env, jobject instance,
                                                               jlong height) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     wallet->setRefreshFromBlockHeight((uint64_t) height);
 }
 extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getRestoreHeight(JNIEnv *env, jobject instance) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     return wallet->getRefreshFromBlockHeight();
 }
 extern "C"
 JNIEXPORT jint JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getConnectionStatusJ(JNIEnv *env, jobject instance) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     return wallet->connected();
 }
 extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getBalance(JNIEnv *env, jobject instance,
                                                         jint account_index) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     return wallet->balance((uint32_t) account_index);
 }
 extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getBalanceAll(JNIEnv *env, jobject instance) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     return wallet->balanceAll();
 }
 extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getUnlockedBalanceAll(JNIEnv *env, jobject instance) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     return wallet->unlockedBalanceAll();
 }
 extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getUnlockedBalance(JNIEnv *env, jobject instance,
                                                                 jint account_index) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     return wallet->unlockedBalance((uint32_t) account_index);
 }
 extern "C"
 JNIEXPORT jboolean JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_isWatchOnly(JNIEnv *env, jobject instance) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     return static_cast<jboolean>(wallet->watchOnly());
 }
 extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getBlockChainHeight(JNIEnv *env, jobject instance) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     return wallet->blockChainHeight();
 }
 extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getApproximateBlockChainHeight(JNIEnv *env,
                                                                             jobject instance) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     return wallet->approximateBlockChainHeight();
 }
 extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getDaemonBlockChainHeight(JNIEnv *env, jobject instance) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     return wallet->daemonBlockChainHeight();
 }
 extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getDaemonBlockChainTargetHeight(JNIEnv *env,
                                                                              jobject instance) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     return wallet->daemonBlockChainTargetHeight();
 }
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getDisplayAmount(JNIEnv *env, jclass clazz,
                                                               jlong amount) {
-    return env->NewStringUTF(Beldex::Wallet::displayAmount(amount).c_str());
+    return env->NewStringUTF(Wallet::Wallet::displayAmount(amount).c_str());
 }
 extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getAmountFromString(JNIEnv *env, jclass clazz,
                                                                  jstring amount) {
     const char *_amount = env->GetStringUTFChars(amount, nullptr);
-    uint64_t x = Beldex::Wallet::amountFromString(_amount);
+    uint64_t x = Wallet::Wallet::amountFromString(_amount);
     env->ReleaseStringUTFChars(amount, _amount);
     return x;
 }
@@ -787,19 +788,19 @@ extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getAmountFromDouble(JNIEnv *env, jclass clazz,
                                                                  jdouble amount) {
-    return Beldex::Wallet::amountFromDouble(amount);
+    return Wallet::Wallet::amountFromDouble(amount);
 }
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_generatePaymentId(JNIEnv *env, jclass clazz) {
-    return env->NewStringUTF(Beldex::Wallet::genPaymentId().c_str());
+    return env->NewStringUTF(Wallet::Wallet::genPaymentId().c_str());
 }
 extern "C"
 JNIEXPORT jboolean JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_isPaymentIdValid(JNIEnv *env, jclass clazz,
                                                               jstring payment_id) {
     const char *_payment_id = env->GetStringUTFChars(payment_id, nullptr);
-    bool isValid = Beldex::Wallet::paymentIdValid(_payment_id);
+    bool isValid = Wallet::Wallet::paymentIdValid(_payment_id);
     env->ReleaseStringUTFChars(payment_id, _payment_id);
     return static_cast<jboolean>(isValid);
 }
@@ -808,8 +809,8 @@ JNIEXPORT jboolean JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_isAddressValid(JNIEnv *env, jclass clazz,
                                                             jstring address, jint network_type) {
     const char *_address = env->GetStringUTFChars(address, nullptr);
-    Beldex::NetworkType _networkType = static_cast<Beldex::NetworkType>(network_type);
-    bool isValid = Beldex::Wallet::addressValid(_address, _networkType);
+    Wallet::NetworkType _networkType = static_cast<Wallet::NetworkType>(network_type);
+    bool isValid = Wallet::Wallet::addressValid(_address, _networkType);
     env->ReleaseStringUTFChars(address, _address);
     return static_cast<jboolean>(isValid);
 }
@@ -818,45 +819,45 @@ JNIEXPORT jstring JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getPaymentIdFromAddress(JNIEnv *env, jclass clazz,
                                                                      jstring address,
                                                                      jint network_type) {
-    Beldex::NetworkType _networkType = static_cast<Beldex::NetworkType>(network_type);
+    Wallet::NetworkType _networkType = static_cast<Wallet::NetworkType>(network_type);
     const char *_address = env->GetStringUTFChars(address, nullptr);
-    std::string payment_id = Beldex::Wallet::paymentIdFromAddress(_address, _networkType);
+    std::string payment_id = Wallet::Wallet::paymentIdFromAddress(_address, _networkType);
     env->ReleaseStringUTFChars(address, _address);
     return env->NewStringUTF(payment_id.c_str());
 }
 extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getMaximumAllowedAmount(JNIEnv *env, jclass clazz) {
-    return Beldex::Wallet::maximumAllowedAmount();
+    return Wallet::Wallet::maximumAllowedAmount();
 }
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_startRefresh(JNIEnv *env, jobject instance) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     wallet->startRefresh();
 }
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_pauseRefresh(JNIEnv *env, jobject instance) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     wallet->pauseRefresh();
 }
 extern "C"
 JNIEXPORT jboolean JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_refresh(JNIEnv *env, jobject instance) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     return static_cast<jboolean>(wallet->refresh());
 }
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_refreshAsync(JNIEnv *env, jobject instance) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     wallet->refreshAsync();
 }
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_rescanBlockchainAsyncJ(JNIEnv *env, jobject instance) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     wallet->rescanBlockchainAsync();
 }
 extern "C"
@@ -870,9 +871,9 @@ Java_com_thoughtcrimes_securesms_model_Wallet_createTransactionJ(JNIEnv *env, jo
     const char *_payment_id = env->GetStringUTFChars(payment_id, nullptr);
     *//* Bitmonero::PendingTransaction::Priority _priority =
              static_cast<Bitmonero::PendingTransaction::Priority>(priority);*//*
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
 
-    Beldex::PendingTransaction *tx = wallet->createTransaction(_dst_addr, _payment_id,
+    Wallet::PendingTransaction *tx = wallet->createTransaction(_dst_addr, _payment_id,
                                                                   amount, (uint32_t) mixin_count,
                                                                   priority,
                                                                   (uint32_t) account_index);
@@ -892,11 +893,11 @@ Java_com_thoughtcrimes_securesms_model_Wallet_createSweepTransaction(JNIEnv *env
     const char *_payment_id = env->GetStringUTFChars(payment_id, nullptr);
     *//*Bitmonero::PendingTransaction::Priority _priority =
             static_cast<Bitmonero::PendingTransaction::Priority>(priority);*//*
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
 
-    Beldex::optional<uint64_t> empty;
+    Wallet::optional<uint64_t> empty;
 
-    Beldex::PendingTransaction *tx = wallet->createTransaction(_dst_addr, _payment_id,
+    Wallet::PendingTransaction *tx = wallet->createTransaction(_dst_addr, _payment_id,
                                                                   empty, (uint32_t) mixin_count,
                                                                   priority,
                                                                   (uint32_t) account_index);
@@ -909,30 +910,30 @@ extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_createSweepUnmixableTransactionJ(JNIEnv *env,
                                                                               jobject instance) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
-    Beldex::PendingTransaction *tx = wallet->createSweepUnmixableTransaction();
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
+    Wallet::PendingTransaction *tx = wallet->createSweepUnmixableTransaction();
     return reinterpret_cast<jlong>(tx);
 }
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_disposeTransaction(JNIEnv *env, jobject instance,
                                                                 jobject pending_transaction) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
-    Beldex::PendingTransaction *_pendingTransaction =
-            getHandle<Beldex::PendingTransaction>(env, pending_transaction);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
+    Wallet::PendingTransaction *_pendingTransaction =
+            getHandle<Wallet::PendingTransaction>(env, pending_transaction);
     wallet->disposeTransaction(_pendingTransaction);
 }
 extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getHistoryJ(JNIEnv *env, jobject instance) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     return reinterpret_cast<jlong>(wallet->history());
 }
 extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_setListenerJ(JNIEnv *env, jobject instance,
                                                           jobject javaListener) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     wallet->setListener(nullptr); // clear old listener
     // delete old listener
     MyWalletListener *oldListener = getHandle<MyWalletListener>(env, instance,
@@ -968,7 +969,7 @@ Java_com_thoughtcrimes_securesms_model_Wallet_setUserNote(JNIEnv *env, jobject i
     const char *_txid = env->GetStringUTFChars(txid, nullptr);
     const char *_note = env->GetStringUTFChars(note, nullptr);
 
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
 
     bool success = wallet->setUserNote(_txid, _note);
 
@@ -982,7 +983,7 @@ JNIEXPORT jstring JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getUserNote(JNIEnv *env, jobject instance, jstring txid) {
     const char *_txid = env->GetStringUTFChars(txid, nullptr);
 
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
 
     std::string note = wallet->getUserNote(_txid);
 
@@ -994,7 +995,7 @@ JNIEXPORT jstring JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getTxKey(JNIEnv *env, jobject instance, jstring txid) {
     const char *_txid = env->GetStringUTFChars(txid, nullptr);
 
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
 
     std::string txKey = wallet->getTxKey(_txid);
 
@@ -1006,7 +1007,7 @@ JNIEXPORT void JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_addAccount(JNIEnv *env, jobject instance, jstring label) {
     const char *_label = env->GetStringUTFChars(label, nullptr);
 
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     wallet->addSubaddressAccount(_label);
 
     env->ReleaseStringUTFChars(label, _label);
@@ -1016,7 +1017,7 @@ JNIEXPORT jstring JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getSubaddressLabel(JNIEnv *env, jobject instance,
                                                                 jint account_index,
                                                                 jint address_index) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
 
     std::string label = wallet->getSubaddressLabel((uint32_t) account_index,
                                                    (uint32_t) address_index);
@@ -1030,7 +1031,7 @@ Java_com_thoughtcrimes_securesms_model_Wallet_setSubaddressLabel(JNIEnv *env, jo
                                                                 jint address_index, jstring label) {
     const char *_label = env->GetStringUTFChars(label, nullptr);
 
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     wallet->setSubaddressLabel(account_index, address_index, _label);
 
     env->ReleaseStringUTFChars(label, _label);
@@ -1038,14 +1039,14 @@ Java_com_thoughtcrimes_securesms_model_Wallet_setSubaddressLabel(JNIEnv *env, jo
 extern "C"
 JNIEXPORT jint JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getNumAccounts(JNIEnv *env, jobject instance) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     return static_cast<jint>(wallet->numSubaddressAccounts());
 }
 extern "C"
 JNIEXPORT jint JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getNumSubaddresses(JNIEnv *env, jobject instance,
                                                                 jint account_index) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     return static_cast<jint>(wallet->numSubaddresses(account_index));
 }
 extern "C"
@@ -1053,21 +1054,21 @@ JNIEXPORT void JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_addSubaddress(JNIEnv *env, jobject instance,
                                                            jint account_index, jstring label) {
     const char *_label = env->GetStringUTFChars(label, nullptr);
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     wallet->addSubaddress(account_index, _label);
     env->ReleaseStringUTFChars(label, _label);
 }
 extern "C"
 JNIEXPORT jint JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getDeviceTypeJ(JNIEnv *env, jobject instance) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
-    Beldex::Wallet::Device device_type = wallet->getDeviceType();
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
+    Wallet::Wallet::Device device_type = wallet->getDeviceType();
     return static_cast<jint>(device_type);
 }
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_getPath(JNIEnv *env, jobject instance) {
-    Beldex::Wallet *wallet = getHandle<Beldex::Wallet>(env, instance);
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     return env->NewStringUTF(wallet->path().c_str());
 }
 extern "C"
@@ -1108,7 +1109,7 @@ Java_com_thoughtcrimes_securesms_model_WalletManager_getViewKeyAndSpendKey(JNIEn
     std::basic_string_view<char> add = _address;
     std::uint64_t _networkType =(uint64_t) netWorkType;
 
-    Beldex::GetKey *wallet = getHandle<Beldex::GetKey>(env, instance);
+    Wallet::GetKey *wallet = getHandle<Wallet::GetKey>(env, instance);
     bool result = wallet->get_keys_from_address(add,_networkType,viewKey,spendKey);
     LOGD("--> R get_keys_from_address %d",result);
     LOGD("--> R view key %s",viewKey.c_str());
@@ -1123,7 +1124,7 @@ Java_com_thoughtcrimes_securesms_model_WalletManager_getViewKeyAndSpendKey(JNIEn
 //    const char *_address = env->GetStringUTFChars(s, nullptr);
 //    //uint64_t _networkType =0;
 //
-//    Beldex::GetKey *wallet = getHandle<Beldex::GetKey>(env,instance);
+//    Wallet::GetKey *wallet = getHandle<Wallet::GetKey>(env,instance);
 //    auto stat = wallet->get_keys_from_address(_address,0);
 //    auto [viewKey, spendKey] = stat;
 //
@@ -1140,7 +1141,7 @@ Java_com_thoughtcrimes_securesms_model_Wallet_getViewKeyAndSpendKey(JNIEnv *env,
 //    const char *_address = env->GetStringUTFChars(s, nullptr);
 //    //uint64_t _networkType =0;
 //
-//    Beldex::GetKey *wallet = getHandle<Beldex::GetKey>(env,instance);
+//    Wallet::GetKey *wallet = getHandle<Wallet::GetKey>(env,instance);
 //    auto stat = wallet->get_keys_from_address(_address,0);
 //    auto [viewKey, spendKey] = stat;
 //

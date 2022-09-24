@@ -1131,8 +1131,12 @@
     <string name="switch_node_alert" translatable="false"> Are you sure you want to Switch to another node? </string>
     <string name="send_qr_invalid" translatable="false">Not a QR Code</string>
     <string name="send_qr_address_invalid" translatable="false">Not a valid payment QR code</string>
-    <string name="title_activity_send_new">SendActivityNew</string>
-    <string name="nfc_tag_read_what">I don\'t know what you want!</string>
+    <string name="title_activity_send_new" translatable="false">SendActivityNew</string>
+    <string name="nfc_tag_read_what" translatable="false">I don\'t know what you want!</string>
+    <string name="send_address_invalid" translatable="false">Not a valid address</string>
+    <string name="send_address_not_openalias" translatable="false">OpenAlias address not available</string>
+    <string name="send_address_openalias" translatable="false">OpenAlias secure &#x2714;</string>
+    <string name="send_address_resolve_openalias" translatable="false">Resolving OpenAlias&#8230;</string>
 
 
 </resources>

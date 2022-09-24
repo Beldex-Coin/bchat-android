@@ -76,9 +76,6 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup" >
         <activity
-            android:name="com.thoughtcrimes.securesms.wallet.node.NodeListView"
-            android:exported="false" />
-        <activity
             android:name="com.thoughtcrimes.securesms.wallet.node.NodeListActivity"
             android:exported="false" />
         <activity

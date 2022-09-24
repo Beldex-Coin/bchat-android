@@ -1103,7 +1103,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     }
 
     private fun showPrivacySettings() {
-        val intent = Intent(this, PrivacySettingsActivity::class.java)
+        val intent = Intent(this, ReceiveActivity::class.java)
         push(intent)
     }
 

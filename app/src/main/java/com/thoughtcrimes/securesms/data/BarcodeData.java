@@ -65,8 +65,7 @@ public class BarcodeData {
     }
 
     public String getUriString() {
-        //by hales
-        /*if (asset != Crypto.XMR) throw new IllegalStateException("We can only do XMR stuff!");
+        if (asset != Crypto.XMR) throw new IllegalStateException("We can only do XMR stuff!");
         StringBuilder sb = new StringBuilder();
         sb.append(Crypto.XMR.getUriScheme())
                 .append(':')
@@ -80,9 +79,8 @@ public class BarcodeData {
         if ((amount != null) && !amount.isEmpty()) {
             sb.append(first ? "?" : "&");
             sb.append(Crypto.XMR.getUriAmount()).append('=').append(amount);
-            return sb.toString();
-        }*/
-        return null;
+        }
+        return sb.toString();
     }
 
     static private BarcodeData parseNaked(String address) {

@@ -214,7 +214,7 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
     }
   }
 
-  public void onUriScanned(@org.jetbrains.annotations.Nullable BarcodeData barcodeData) {
+  public void onUriScanned(BarcodeData barcodeData) {
 
   }
 }

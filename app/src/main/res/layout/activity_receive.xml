@@ -68,7 +68,8 @@
                 android:inputType="numberDecimal"
                 android:padding="20dp"
                 android:textColor="@color/text"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                />
         </androidx.cardview.widget.CardView>
 
         <Button

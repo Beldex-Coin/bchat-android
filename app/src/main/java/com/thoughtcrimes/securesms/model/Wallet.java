@@ -4,9 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.thoughtcrimes.securesms.data.Subaddress;
-import com.thoughtcrimes.securesms.data.Txdata;
-import com.thoughtcrimes.securesms.data.Subaddress;
-import com.thoughtcrimes.securesms.data.Txdata;
+import com.thoughtcrimes.securesms.data.TxData;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -370,7 +368,7 @@ public class Wallet {
         }
     }
 
-    public PendingTransaction createTransaction(Txdata txData) {
+    public PendingTransaction createTransaction(TxData txData) {
         return createTransaction(
                 txData.getDestinationAddress(),
                 txData.getAmount(),

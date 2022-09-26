@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/action_reset_node"
-        android:icon="@drawable/ic_reset_node"
+        android:icon="@drawable/ic_reset"
         android:title="Reset"
         app:showAsAction="ifRoom" />
 

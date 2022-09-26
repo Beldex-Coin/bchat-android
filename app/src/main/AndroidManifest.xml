@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="io.beldex.bchat">
+    package="io.beldex.bchat" >
 
     <uses-sdk tools:overrideLibrary="com.amulyakhare.textdrawable,com.astuetz.pagerslidingtabstrip,pl.tajchert.waitingdots,com.h6ah4i.android.multiselectlistpreferencecompat,android.support.v13,com.davemorrissey.labs.subscaleview,com.tomergoldst.tooltips,com.klinker.android.send_message,com.takisoft.colorpicker,android.support.v14.preference" />
 
@@ -73,8 +73,8 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/Theme.Bchat.DayNight"
-        tools:replace="android:allowBackup"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        tools:replace="android:allowBackup" >
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.node.NodeListActivity"
             android:exported="false" />
@@ -118,7 +118,7 @@
             android:parentActivityName="com.thoughtcrimes.securesms.home.HomeActivity"
             android:screenOrientation="portrait"
             android:showForAllUsers="true"
-            android:theme="@style/Theme.Bchat.CallActivity">
+            android:theme="@style/Theme.Bchat.CallActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.thoughtcrimes.securesms.home.HomeActivity" />
@@ -280,7 +280,7 @@
         <activity-alias
             android:name=".RoutingActivity"
             android:exported="true"
-            android:targetActivity="com.thoughtcrimes.securesms.home.HomeActivity">
+            android:targetActivity="com.thoughtcrimes.securesms.home.HomeActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -354,7 +354,7 @@
             android:screenOrientation="portrait"
             android:taskAffinity=""
             android:theme="@style/Theme.TextSecure.DayNight.NoActionBar"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateHidden" >
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
 
@@ -378,7 +378,7 @@
             android:parentActivityName="com.thoughtcrimes.securesms.home.HomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.thoughtcrimes.securesms.home.HomeActivity"
@@ -461,7 +461,7 @@
         <service
             android:name="com.thoughtcrimes.securesms.notifications.PushNotificationService"
             android:enabled="true"
-            android:exported="false">
+            android:exported="false" >
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -476,7 +476,7 @@
             android:exported="false" />
         <service
             android:name="com.thoughtcrimes.securesms.service.DirectShareService"
-            android:permission="android.permission.BIND_CHOOSER_TARGET_SERVICE">
+            android:permission="android.permission.BIND_CHOOSER_TARGET_SERVICE" >
             <intent-filter>
                 <action android:name="android.service.chooser.ChooserTargetService" />
             </intent-filter>
@@ -486,7 +486,7 @@
         <receiver
             android:name="com.thoughtcrimes.securesms.notifications.MarkReadReceiver"
             android:enabled="true"
-            android:exported="false">
+            android:exported="false" >
             <intent-filter>
                 <action android:name="io.beldex.securesms.notifications.CLEAR" />
             </intent-filter>
@@ -494,21 +494,21 @@
         <receiver
             android:name="com.thoughtcrimes.securesms.notifications.RemoteReplyReceiver"
             android:enabled="true"
-            android:exported="false">
+            android:exported="false" >
             <intent-filter>
                 <action android:name="io.beldex.securesms.notifications.WEAR_REPLY" />
             </intent-filter>
         </receiver>
         <receiver
             android:name="com.thoughtcrimes.securesms.notifications.AndroidAutoHeardReceiver"
-            android:exported="false">
+            android:exported="false" >
             <intent-filter>
                 <action android:name="io.beldex.securesms.notifications.ANDROID_AUTO_HEARD" />
             </intent-filter>
         </receiver>
         <receiver
             android:name="com.thoughtcrimes.securesms.notifications.AndroidAutoReplyReceiver"
-            android:exported="false">
+            android:exported="false" >
             <intent-filter>
                 <action android:name="io.beldex.securesms.notifications.ANDROID_AUTO_REPLY" />
             </intent-filter>
@@ -524,7 +524,7 @@
             android:name="androidx.core.content.FileProvider"
             android:authorities="io.beldex.securesms.fileprovider"
             android:exported="false"
-            android:grantUriPermissions="true">
+            android:grantUriPermissions="true" >
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_provider_paths" />
@@ -550,42 +550,42 @@
             android:authorities="io.beldex.securesms.database.stickerpack"
             android:exported="false" />
 
-        <receiver android:name="com.thoughtcrimes.securesms.service.BootReceiver">
+        <receiver android:name="com.thoughtcrimes.securesms.service.BootReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="io.beldex.securesms.RESTART" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.thoughtcrimes.securesms.service.LocalBackupListener">
+        <receiver android:name="com.thoughtcrimes.securesms.service.LocalBackupListener" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.thoughtcrimes.securesms.service.PersistentConnectionBootListener">
+        <receiver android:name="com.thoughtcrimes.securesms.service.PersistentConnectionBootListener" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.thoughtcrimes.securesms.notifications.LocaleChangedReceiver">
+        <receiver android:name="com.thoughtcrimes.securesms.notifications.LocaleChangedReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.LOCALE_CHANGED" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.thoughtcrimes.securesms.notifications.DeleteNotificationReceiver">
+        <receiver android:name="com.thoughtcrimes.securesms.notifications.DeleteNotificationReceiver" >
             <intent-filter>
                 <action android:name="io.beldex.securesms.DELETE_NOTIFICATION" />
             </intent-filter>
         </receiver>
         <receiver
             android:name="com.thoughtcrimes.securesms.service.PanicResponderListener"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="info.guardianproject.panic.action.TRIGGER" />
             </intent-filter>
         </receiver>
         <receiver
             android:name="com.thoughtcrimes.securesms.notifications.BackgroundPollWorker$BootBroadcastReceiver"
-            android:enabled="true">
+            android:enabled="true" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>

@@ -166,6 +166,7 @@ public class NodeFragment extends Fragment
 
 
         ViewGroup llNotice = view.findViewById(R.id.llNotice);
+        //by Hales63
        // Notice.showAll(llNotice, ".*_nodes");
 
         refresh(AsyncFindNodes.PING); // start connection tests

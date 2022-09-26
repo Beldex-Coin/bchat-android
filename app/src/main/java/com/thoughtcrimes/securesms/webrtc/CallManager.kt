@@ -146,17 +146,21 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
     }
 
     fun initializeAudioForCall() {
+        Log.d("Beldex","signalAudioManager.handleCommand 1")
         signalAudioManager.handleCommand(AudioManagerCommand.Initialize)
     }
 
     fun startOutgoingRinger(ringerType: OutgoingRinger.Type) {
         if (ringerType == OutgoingRinger.Type.RINGING) {
+            Log.d("Beldex","signalAudioManager.handleCommand 2")
             signalAudioManager.handleCommand(AudioManagerCommand.UpdateAudioDeviceState)
         }
+        Log.d("Beldex","signalAudioManager.handleCommand 3")
         signalAudioManager.handleCommand(AudioManagerCommand.StartOutgoingRinger(ringerType))
     }
 
     fun silenceIncomingRinger() {
+        Log.d("Beldex","signalAudioManager.handleCommand 4")
         signalAudioManager.handleCommand(AudioManagerCommand.SilenceIncomingRinger)
     }
 
@@ -367,6 +371,7 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
     fun stop() {
         val isOutgoing = currentConnectionState in CallState.OUTGOING_STATES
         stateProcessor.processEvent(Event.Cleanup) {
+            Log.d("Beldex","signalAudioManager.handleCommand 5")
             signalAudioManager.handleCommand(AudioManagerCommand.Stop(isOutgoing))
             peerConnection?.dispose()
             peerConnection = null
@@ -447,6 +452,7 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
             this.recipient = recipient
             this.pendingOffer = offer
             this.pendingOfferTime = callTime
+            Log.d("Beldex","signalAudioManager.handleCommand 1(3)")
             initializeAudioForCall()
             startIncomingRinger()
             onSuccess()
@@ -624,6 +630,7 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
             && !signalAudioManager.isBluetoothScoOn()
             && !signalAudioManager.isWiredHeadsetOn()
         ) {
+            Log.d("Beldex","signalAudioManager.handleCommand 6")
             signalAudioManager.handleCommand(AudioManagerCommand.SetUserDevice(SignalAudioManager.AudioDevice.SPEAKER_PHONE))
         }
     }
@@ -657,9 +664,11 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
                 CallState.LocalRing,
                 CallState.RemoteRing)) {
             if (present && signalAudioManager.isSpeakerphoneOn()) {
+                Log.d("Beldex","signalAudioManager.handleCommand 7")
                 signalAudioManager.handleCommand(AudioManagerCommand.SetUserDevice(
                     SignalAudioManager.AudioDevice.WIRED_HEADSET))
             } else if (!present && !signalAudioManager.isSpeakerphoneOn() && !signalAudioManager.isBluetoothScoOn() && localCameraState.enabled) {
+                Log.d("Beldex","signalAudioManager.handleCommand 8")
                 signalAudioManager.handleCommand(AudioManagerCommand.SetUserDevice(
                     SignalAudioManager.AudioDevice.SPEAKER_PHONE))
             }
@@ -668,6 +677,7 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
 
     fun handleScreenOffChange(context: Context) {
         if (currentConnectionState in arrayOf(CallState.Connecting, CallState.LocalRing)) {
+            Log.d("Beldex","signalAudioManager.handleCommand 9")
             signalAudioManager.handleCommand(AudioManagerCommand.SilenceIncomingRinger)
         }
         if(currentConnectionState in arrayOf(CallState.Connected)){
@@ -737,10 +747,12 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
     }
 
     fun startIncomingRinger() {
+        Log.d("Beldex","signalAudioManager.handleCommand 10")
         signalAudioManager.handleCommand(AudioManagerCommand.StartIncomingRinger(true))
     }
 
     fun startCommunication(lockManager: LockManager) {
+        Log.d("Beldex","signalAudioManager.handleCommand 11")
         signalAudioManager.handleCommand(AudioManagerCommand.Start)
         val connection = peerConnection ?: return
         if (connection.isVideoEnabled()) lockManager.updatePhoneState(LockManager.PhoneState.IN_VIDEO)
@@ -755,6 +767,7 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
     }
 
     fun handleAudioCommand(audioCommand: AudioManagerCommand) {
+        Log.d("Beldex","signalAudioManager.handleCommand 12")
         signalAudioManager.handleCommand(audioCommand)
     }
 

@@ -261,6 +261,7 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     tools:itemCount="10"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     android:nestedScrollingEnabled="false"
                     tools:listitem="@layout/transaction_list_item" />
 

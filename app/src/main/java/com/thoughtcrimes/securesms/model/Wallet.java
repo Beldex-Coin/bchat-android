@@ -1,5 +1,7 @@
 package com.thoughtcrimes.securesms.model;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -425,7 +427,9 @@ public class Wallet {
     public TransactionHistory getHistory() {
         if (history == null) {
             history = new TransactionHistory(getHistoryJ(), accountIndex);
+            Log.d("Beldex","newBlock() - history if "+history.getAll().toArray());
         }
+        Log.d("Beldex","newBlock() - history "+history.getAll().toArray());
         return history;
     }
 

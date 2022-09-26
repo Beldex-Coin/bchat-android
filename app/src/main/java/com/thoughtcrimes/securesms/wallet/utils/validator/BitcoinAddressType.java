@@ -13,6 +13,14 @@ public enum BitcoinAddressType {
     @Getter
     private final byte[] testnet;
 
+    public byte[] getTestnet() {
+        return testnet;
+    }
+
+    public byte[] getProduction() {
+        return production;
+    }
+
     @Getter
     private final String productionBech32Prefix;
     @Getter

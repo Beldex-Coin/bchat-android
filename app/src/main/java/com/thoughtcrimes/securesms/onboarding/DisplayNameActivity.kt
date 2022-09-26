@@ -403,6 +403,8 @@ class DisplayNameActivity : BaseActionBarActivity() {
                     Log.d("Wallet","OK")
                 //displayNameActivity._getKeys("bxdqxWtcatDFte41zYeWGjBzRgQkFB8AA5gMA3yXLA41RTbrEVoN3976RT2CNHp7PLAR2MsQG1BhMXuLi6HEWWcj2smC3Vfgw");
                 TextSecurePreferences.setWalletName(displayNameActivity,walletName)
+                //SteveJosephh21
+                TextSecurePreferences.setWalletPassword(displayNameActivity,walletPassword)
                 val intent = Intent(displayNameActivity, RegisterActivity::class.java)
                 val b = Bundle()
                 b.putString("type","accept")

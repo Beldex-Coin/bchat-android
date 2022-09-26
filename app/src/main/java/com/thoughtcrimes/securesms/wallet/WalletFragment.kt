@@ -1,6 +1,8 @@
 package com.thoughtcrimes.securesms.wallet
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
@@ -9,10 +11,11 @@ import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import com.github.brnunes.swipeablerecyclerview.SwipeableRecyclerViewTouchListener
 import com.google.android.material.transition.MaterialElevationScale
 import com.thoughtcrimes.securesms.data.NodeInfo
-import com.thoughtcrimes.securesms.model.NetworkType
+import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
 import com.thoughtcrimes.securesms.model.TransactionInfo
 import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.util.Helper
+import com.thoughtcrimes.securesms.util.NodePinger
 import com.thoughtcrimes.securesms.wallet.service.exchange.ExchangeApi
 import com.thoughtcrimes.securesms.wallet.service.exchange.ExchangeRate
 import com.thoughtcrimes.securesms.wallet.utils.helper.ServiceHelper
@@ -20,8 +23,10 @@ import com.thoughtcrimes.securesms.wallet.widget.Toolbar
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.FragmentWalletBinding
 import timber.log.Timber
+import java.lang.ClassCastException
+import java.lang.IllegalStateException
 import java.text.NumberFormat
-import java.util.ArrayList
+import java.util.*
 
 class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener {
 
@@ -87,6 +92,18 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
     private var walletTitle: String? = null
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is Listener) {
+            activityCallback = context
+        } else {
+            throw ClassCastException(
+                context.toString()
+                        + " must implement Listener"
+            )
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         exitTransition = null
@@ -101,6 +118,111 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         setProgress(syncText)
         showReceive()
         //if (activityCallback!!.isSynced) enableAccountsList(true)
+
+        //SteveJosephh21 Log
+        pingSelectedNode()
+    }
+
+    fun pingSelectedNode() {
+
+        val PING_SELECTED = 0
+        val FIND_BEST = 1
+        AsyncFindBestNode(PING_SELECTED,FIND_BEST).execute<Int>(PING_SELECTED)
+    }
+
+    inner class AsyncFindBestNode(val PING_SELECTED: Int, val FIND_BEST: Int) :
+        AsyncTaskCoroutine<Int?, NodeInfo?>() {
+        override fun onPreExecute() {
+            super.onPreExecute()
+            //pbNode.setVisibility(View.VISIBLE)
+              //showProgressDialogWithTitle("Connecting to Remote Node");
+            //llNode.setVisibility(View.INVISIBLE)
+        }
+
+        override fun doInBackground(vararg params: Int?): NodeInfo? {
+            val favourites: Set<NodeInfo?> = activityCallback!!.getOrPopulateFavourites()
+            var selectedNode: NodeInfo?
+            if (params[0] == FIND_BEST) {
+                selectedNode = autoselect(favourites)
+            } else if (params[0] == PING_SELECTED) {
+                selectedNode = activityCallback!!.getNode()
+                if (!activityCallback!!.getFavouriteNodes().contains(selectedNode))
+                    selectedNode = null // it's not in the favourites (any longer)
+                if (selectedNode == null)
+                    for (node in favourites) {
+                    if (node!!.isSelected) {
+                        selectedNode = node
+                        break
+                    }
+                }
+                if (selectedNode == null) { // autoselect
+                    selectedNode = autoselect(favourites)
+                } else
+                    selectedNode.testRpcService()
+            } else throw IllegalStateException()
+            return if (selectedNode != null && selectedNode.isValid) {
+                Log.d("Testing-->12","true")
+                activityCallback!!.setNode(selectedNode)
+                selectedNode
+            } else {
+                Log.d("Testing-->13","true")
+                activityCallback!!.setNode(null)
+                null
+            }
+        }
+
+        override fun onPostExecute(result: NodeInfo?) {
+            //if (!isAdded()) return
+            //pbNode.setVisibility(View.INVISIBLE)
+               //hideProgressDialogWithTitle();
+            //llNode.setVisibility(View.VISIBLE)
+            if (result != null) {
+                Log.d("WalletFragment","AsyncFindBestNode Success")
+                //Important
+                /*d("found a good node %s", result.toString())
+                val ctx: Context = tvNodeAddress.getContext()
+                val now = Calendar.getInstance().timeInMillis / 1000
+                val secs: Long = now - result.getTimestamp()
+                val mins = secs / 60 // in minutes
+                val hours = mins / 60
+                val days = hours / 24
+                val msg: String
+                msg = if (mins < 2) {
+                    ctx.getString(R.string.node_updated_now, secs)
+                } else if (hours < 2) {
+                    ctx.getString(R.string.node_updated_mins, mins)
+                } else if (days < 2) {
+                    ctx.getString(R.string.node_updated_hours, hours)
+                } else {
+                    ctx.getString(R.string.node_updated_days, days)
+                }
+                Toast.makeText(
+                    context,
+                    result.getName().toString() + " connected\n" + msg,
+                    Toast.LENGTH_SHORT
+                ).show()
+                showNode(result)*/
+            } else {
+                Log.d("WalletFragment","AsyncFindBestNode Fail")
+                //Important
+               /* tvNodeName.setText(getResources().getText(R.string.node_create_hint))
+                tvNodeName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+                tvNodeAddress.setText(null)
+                tvNodeAddress.setVisibility(View.GONE)*/
+            }
+        }
+
+       /* override fun onCancelled(result: NodeInfo?) { //TODO: cancel this on exit from fragment
+            Log.d("cancelled with %s", result)
+        }*/
+    }
+
+    fun autoselect(nodes: Set<NodeInfo?>): NodeInfo? {
+        if (nodes.isEmpty()) return null
+        NodePinger.execute(nodes, null)
+        val nodeList: ArrayList<NodeInfo?> = ArrayList<NodeInfo?>(nodes)
+        Collections.sort(nodeList, NodeInfo.BestNodeComparator)
+        return nodeList[0]
     }
 
     interface DrawerLocker {
@@ -213,6 +335,15 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         Log.d("TAG", "hidden: ")
     }*/
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        postponeEnterTransition()
+        view.viewTreeObserver.addOnPreDrawListener {
+            startPostponedEnterTransition()
+            true
+        }
+    }
+
     private fun setActivityTitle(wallet: Wallet?) {
         if (wallet == null) return
         walletTitle = wallet.name
@@ -234,11 +365,12 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
     private fun updateStatus(wallet: Wallet) {
         if (!isAdded) return
-        Timber.d("updateStatus()")
+        Log.d(" sync updateStatus()","true")
         if (walletTitle == null || accountIdx != wallet.accountIndex) {
             accountIdx = wallet.accountIndex
             setActivityTitle(wallet)
         }
+        Log.d("Beldex : sync updateStatus() wallet balance ",wallet.balance.toString())
         balance = wallet.balance
         unlockedBalance = wallet.unlockedBalance
         refreshBalance()
@@ -288,6 +420,10 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         showUnconfirmed(unconfirmedBdx)
 
         val amountBdx: Double = Helper.getDecimalAmount(unlockedBalance).toDouble()
+
+        Log.d("Beldex","value of amountxmr" +amountBdx);
+        Log.d("Beldex","value of helper amountxmr" +Helper.getFormattedAmount(amountBdx, true));
+        Log.d("sync refreshBalance()",amountBdx.toString())
         showBalance(Helper.getFormattedAmount(amountBdx, true))
     }
 
@@ -351,6 +487,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         } else { // XMR
             Helper.getFormattedAmount(amountA, true)
         }
+        Log.d("sync updateBalance()","true")
         showBalance(displayB)
     }
 
@@ -411,18 +548,21 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
     fun onRefreshed(wallet: Wallet, full: Boolean) {
         var full = full
-        Timber.d("onRefreshed(%b)", full)
+        Log.d("sync onRefreshed(%b)", full.toString())
+        Log.d("Beldex","onRefreshed(%b) "+full+", "+wallet.getBalance(0))
         if (adapter!!.needsTransactionUpdateOnNewBlock()) {
             wallet.refreshHistory()
             full = true
+            Log.d("Beldex","onRefreshed(%b) if "+full);
         }
         if (full) {
             val list: MutableList<TransactionInfo> = ArrayList()
             val streetHeight: Long = activityCallback!!.streetModeHeight
-            Timber.d("StreetHeight=%d", streetHeight)
+            Log.d(" sync StreetHeight=%d", streetHeight.toString())
             wallet.refreshHistory()
             for (info in wallet.history.all) {
-                Timber.d("TxHeight=%d, Label=%s", info.blockheight, info.subaddressLabel)
+                //Log.d("TxHeight=%d, Label=%s", info.blockheight.toString(), info.subaddressLabel)
+                Log.d("sync TxHeight=%d, Label=%s", "${info.blockheight.toString()}, ${info.subaddressLabel}")
                 if ((info.isPending || info.blockheight >= streetHeight)
                     && !dismissedTransactions.contains(info.hash)
                 ) list.add(info)

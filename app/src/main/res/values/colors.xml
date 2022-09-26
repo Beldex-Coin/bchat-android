@@ -174,4 +174,7 @@
     <color name="tx_plus">@color/green_color</color>
     <color name="tx_minus">@color/orange_color</color>
     <color name="wallet_settings_card_background">#353543</color>
+    <color name="node_status">#1EC622</color>
+    <color name="selected_node">#136EF8</color>
+    <color name="unselected_node">#353543</color>
 </resources>

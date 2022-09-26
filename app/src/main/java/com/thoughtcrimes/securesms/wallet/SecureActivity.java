@@ -16,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.thoughtcrimes.securesms.data.BarcodeData;
 import com.thoughtcrimes.securesms.util.Helper;
 import com.thoughtcrimes.securesms.wallet.utils.dialog.ProgressDialog;
-import com.thoughtcrimes.securesms.wallet.utils.dialog.ledger.LedgerProgressDialog;
 
 import io.beldex.bchat.R;
 import timber.log.Timber;

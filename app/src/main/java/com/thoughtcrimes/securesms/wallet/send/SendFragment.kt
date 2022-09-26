@@ -3,25 +3,19 @@ package com.thoughtcrimes.securesms.wallet.send
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.thoughtcrimes.securesms.data.BarcodeData
-import com.thoughtcrimes.securesms.data.PendingTx
-import com.thoughtcrimes.securesms.data.TxData
-import com.thoughtcrimes.securesms.data.UserNotes
+import com.thoughtcrimes.securesms.data.*
 import com.thoughtcrimes.securesms.model.PendingTransaction
 import com.thoughtcrimes.securesms.wallet.WalletActivity
 import com.thoughtcrimes.securesms.wallet.listener.OnUriScannedListener
-import com.thoughtcrimes.securesms.wallet.receive.ARG_PARAM1
-import com.thoughtcrimes.securesms.wallet.receive.ARG_PARAM2
-import com.thoughtcrimes.securesms.wallet.receive.ReceiveFragment
 import com.thoughtcrimes.securesms.wallet.send.interfaces.SendConfirm
 import com.thoughtcrimes.securesms.wallet.widget.Toolbar
 import io.beldex.bchat.R
 import timber.log.Timber
+import java.lang.IllegalArgumentException
 
 class SendFragment : Fragment() {
 
@@ -54,7 +48,7 @@ class SendFragment : Fragment() {
 
         fun commitTransaction()
         fun disposeTransaction()
-        val mode: SendFragment.Mode?
+        //val mode: Mode?
     }
 
     var sendAddressListener: SendAddressListener? = null
@@ -63,7 +57,8 @@ class SendFragment : Fragment() {
         var barcodeData: BarcodeData?
 
         fun popBarcodeData(): BarcodeData?
-        fun setMode(mode: SendFragment.Mode?)
+        //Important
+        //fun setMode(mode: SendFragment.Mode?)
         val txData: TxData?
     }
 
@@ -105,7 +100,7 @@ class SendFragment : Fragment() {
         }
     }
 
-    override fun disposeTransaction() {
+    fun disposeTransaction() {
         pendingTx = null
         activityCallback!!.onDisposeRequest()
     }
@@ -155,7 +150,37 @@ class SendFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_send, container, false)
+        val view = inflater.inflate(R.layout.fragment_send,container,false)
+        return view
+    }
+
+
+    fun getTxData(): TxData? {
+        return txData
+    }
+
+    private var txData = TxData()
+    enum class Mode {
+        XMR, BTC
+    }
+
+    private var mode:Mode = Mode.XMR
+
+    fun setMode(aMode: Mode) {
+        if (mode != aMode) {
+            mode = aMode
+            when (aMode) {
+                Mode.XMR -> txData = TxData()
+                Mode.BTC -> txData = TxDataBtc()
+                else -> throw IllegalArgumentException("Mode " + aMode.toString() + " unknown!")
+            }
+            //Important
+            //view!!.post { pagerAdapter.notifyDataSetChanged() }
+            Timber.d("New Mode = %s", mode.toString())
+        }
+    }
+
+    fun getMode(): Mode{
+        return mode
     }
 }

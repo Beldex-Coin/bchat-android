@@ -176,11 +176,11 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                     if (!binding.callTime.isVisible) {
                         if(TextSecurePreferences.isRemoteCallEnded(this@WebRtcCallActivity)) {
                             TextSecurePreferences.setRemoteCallEnded(this@WebRtcCallActivity, false)
-                            callRemoteFinishActivity(getString(R.string.call_declined))
+                            callRemoteFinishActivity(getString(R.string.call_ended))
                         }
                        else if (TextSecurePreferences.isRemoteHangup(this@WebRtcCallActivity)) {
                            TextSecurePreferences.setRemoteHangup(this@WebRtcCallActivity, false)
-                           callRemoteFinishActivity(getString(R.string.call_declined))
+                           callRemoteFinishActivity(getString(R.string.call_ended))
                         }else{
                             TextSecurePreferences.setRemoteCallEnded(this@WebRtcCallActivity, false)
                             callRemoteFinishActivity(getString(R.string.call_ended))

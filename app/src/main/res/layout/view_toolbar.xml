@@ -43,18 +43,18 @@
                 android:gravity="center"
                 android:paddingTop="12dp"
                 android:paddingBottom="12dp"
-                android:textColor="@color/textColor"
+                android:textColor="@color/text"
                 android:visibility="invisible"
-                tools:text="monerujo" />
+                tools:text="BChat" />
 
             <TextView
                 android:id="@+id/toolbarSubtitle"
-                style="@style/MoneroLabel.Subtitle"
+                style="@style/BChatLabel.Subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:visibility="invisible"
-                tools:text="monerujo" />
+                tools:text="BChat" />
         </LinearLayout>
     </FrameLayout>
 </merge>

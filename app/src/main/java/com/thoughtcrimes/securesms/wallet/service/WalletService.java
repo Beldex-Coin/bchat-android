@@ -15,6 +15,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -106,18 +107,26 @@ public class WalletService extends Service {
                 if (observer != null) {
                     boolean fullRefresh = false;
                     updateDaemonState(wallet, wallet.isSynchronized() ? height : 0);
+                    Log.d("Beldex","newBlock() "+wallet.isSynchronized());
                     if (!wallet.isSynchronized()) {
                         updated = true;
                         // we want to see our transactions as they come in
                         wallet.refreshHistory();
+                        Log.d("Beldex","newBeldex() height "+height + ", "+wallet.getDaemonBlockChainHeight());
+                        Log.d("Beldex","newBlock() getHistory() "+wallet.getHistory().getAll().toString());
                         int txCount = wallet.getHistory().getCount();
+                        Log.d("Beldex","newBlock() seed "+wallet.getSeed());
+                        Log.d("Beldex","newBlock() key "+wallet.getAddress());
+                        Log.d("Beldex","newBlock() txCount "+txCount);
                         if (txCount > lastTxCount) {
                             // update the transaction list only if we have more than before
                             lastTxCount = txCount;
                             fullRefresh = true;
+                            Log.d("Beldex","newBlock() fullRefresh  "+fullRefresh);
                         }
                     }
                     if (observer != null)
+                        Log.d("Beldex","newBlock()");
                         observer.onRefreshed(wallet, fullRefresh);
                 }
             }
@@ -517,7 +526,7 @@ public class WalletService extends Service {
     private Wallet loadWallet(String walletName, String walletPassword) {
         Wallet wallet = openWallet(walletName, walletPassword);
         if (wallet != null) {
-            Timber.d("Using daemon %s", WalletManager.getInstance().getDaemonAddress());
+            //Log.d("Using daemon %s", WalletManager.getInstance().getDaemonAddress());
             showProgress(55);
             wallet.init(0);
             showProgress(90);

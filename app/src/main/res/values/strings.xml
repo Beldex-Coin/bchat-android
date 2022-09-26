@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE resources [<!ENTITY nbsp "&#160;">]>
 <resources>
     <string name="app_name" translatable="false">BChat Messenger</string>
     <string name="yes" translatable="false">Yes</string>
@@ -1101,6 +1101,37 @@
     <string name="pin_code_fingerprint_text">Fingerprint</string>
     <string name="pin_code_fingerprint_success">Fingerprint recognized</string>
     <string name="pin_code_fingerprint_not_recognized">Fingerprint not recognized. Try again</string>
+
+    <string name="tx_item_transition_name" translatable="false">tx_transition_%1$s</string>
+    <string name="tx_list_amount_negative" translatable="false">- %1$s</string>
+    <string name="tx_list_amount_positive" translatable="false">+ %1$s</string>
+    <string name="tx_list_fee" translatable="false">- Fee %1$s</string>
+    <string name="tx_list_amount_failed" translatable="false">(%1$s)</string>
+    <string name="tx_list_failed_text" translatable="false">failed</string>
+    <string name="tx_details_notes" translatable="false">&lt;span style=\"background-color: #%1$s; color: #%2$s;\"&gt;&nbsp;%3$s&nbsp;&lt;/span&gt;%4$s</string>
+    <string name="service_description" translatable="false">BChat Wallet Service</string>
+    <string name="status_wallet_loading" translatable="false">Loading Wallet &#8230;</string>
+    <string name="status_wallet_connecting" translatable="false">Connecting &#8230;</string>
+    <string name="status_wallet_disconnected" translatable="false">Disconnected</string>
+
+    <string name="receive_transition_name" translatable="false">receive_transition</string>
+    <string name="send_transition_name" translatable="false">send_transition</string>
+    <string name="nfc_tag_read_what" translatable="false">I don\'t know what you want!</string>
+    <string name="message_camera_not_permitted" translatable="false">No camera = No QR scanning!</string>
+    <string name="send_qr_address_invalid" translatable="false">Not a valid payment QR code</string>
+    <string name="send_qr_invalid" translatable="false">Not a QR Code</string>
+    <string name="status_wallet_unloaded" translatable="false">Wallet saved</string>
+    <string name="status_wallet_unload_failed" translatable="false">Wallet save failed!</string>
+    <string name="status_transaction_failed" translatable="false">Transaction failed: %1$s</string>
+    <string name="status_wallet_connect_failed" translatable="false">Node connection failed!\nCheck username/password</string>
+    <string name="status_wallet_connect_wrong_version" translatable="false">Node version incompatible - please upgrade!</string>
+    <string name="status_syncing" translatable="false">Scanning:</string>
+    <string name="bdx_unconfirmed_amount" translatable="false">+ %1$s BDX Ledger balance</string>
+    <string name="status_remaining" translatable="false">Blocks remaining</string>
+    <string name="status_synced" translatable="false">Synced:</string>
+    <string name="menu_rescan" translatable="false">Rescan</string>
+    <string name="service_busy" translatable="false">I am still busy with your last wallet &#8230;</string>
+    <string name="service_progress" translatable="false">Wallets are loading &#8230;\nPlease wait...</string>
 
     <string name="node_test_error" translatable="false">CONNECTION ERROR %1$d</string>
     <string name="node_general_error" translatable="false">CONNECTION ERROR</string>

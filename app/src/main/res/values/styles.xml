@@ -518,4 +518,12 @@
         <item name="colorControlNormal">@color/text</item>
     </style>
 
+    <style name="BChatLabel" parent="@android:style/TextAppearance.DeviceDefault.Medium">
+    </style>
+
+    <style name="BChatLabel.Subtitle">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/text</item>
+    </style>
+
 </resources>

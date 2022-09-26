@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.IBinder
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -19,6 +20,7 @@ import com.thoughtcrimes.securesms.wallet.receive.ReceiveFragment
 import com.thoughtcrimes.securesms.wallet.scanner.ScannerFragment
 import com.thoughtcrimes.securesms.wallet.send.SendFragment
 import com.thoughtcrimes.securesms.wallet.service.WalletService
+import com.thoughtcrimes.securesms.wallet.utils.LegacyStorageHelper
 import com.thoughtcrimes.securesms.wallet.utils.ThemeHelper
 import com.thoughtcrimes.securesms.wallet.widget.Toolbar
 import io.beldex.bchat.R
@@ -58,6 +60,8 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         //Node Connection
         loadFavouritesWithNetwork()
 
+        LegacyStorageHelper.migrateWallets(this)
+
         setSupportActionBar(binding.toolbar)
         supportActionBar!!.setDisplayShowTitleEnabled(false)
         window.statusBarColor = ContextCompat.getColor(this, R.color.wallet_page_background)
@@ -91,8 +95,8 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     }
 
-    fun showNet(networkType: NetworkType) {
-        when (WalletManager.getInstance().networkType) {
+    private fun showNet(networkType: NetworkType) {
+        when (networkType) {
             NetworkType.NetworkType_Mainnet -> binding.toolbar.setBackgroundResource(R.drawable.card_gradiant_background)
             NetworkType.NetworkType_Stagenet ->{
 
@@ -752,7 +756,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             require(!(node != null && node.networkType !== WalletManager.getInstance().networkType)) { "network type does not match" }
             this.node = node
             for (nodeInfo in favouriteNodes) {
-                Timber.d("Testing-->14")
+                Timber.d("Testing-->14 ${node.toString()}")
                 nodeInfo.isSelected = nodeInfo === node
             }
             WalletManager.getInstance().setDaemon(node)
@@ -789,8 +793,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         return getSharedPreferences(
             SELECTED_NODE_PREFS_NAME,
             MODE_PRIVATE
-        )
-            .getString("0", null)
+        ).getString("0", null)
     }
 
     private fun saveFavourites() {
@@ -853,11 +856,9 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     private fun loadFavourites() {
         Timber.d("loadFavourites")
         favouriteNodes.clear()
-        val selectedNodeId: String = getSelectedNodeId()!!
-        val storedNodes = getSharedPreferences(
-            NODES_PREFS_NAME,
-            MODE_PRIVATE
-        ).all
+        val selectedNodeId = getSelectedNodeId()
+        val storedNodes = getSharedPreferences(NODES_PREFS_NAME, MODE_PRIVATE).all
+
         for (nodeEntry in storedNodes.entries) {
             if (nodeEntry != null) { // just in case, ignore possible future errors
                 val nodeId = nodeEntry.value as String
@@ -931,7 +932,27 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         //Important
         //unregisterDetachReceiver()
         //Ledger.disconnect()
+
+        if (mBoundService != null && getWallet() != null) {
+            saveWallet()
+        }
+        stopWalletService()
         super.onDestroy()
+    }
+
+    private fun stopWalletService() {
+        disconnectWalletService()
+        releaseWakeLock()
+    }
+
+    fun disconnectWalletService() {
+        if (mIsBound) {
+            // Detach our existing connection.
+            mBoundService!!.setObserver(null)
+            unbindService(mConnection)
+            mIsBound = false
+            Timber.d("UNBOUND")
+        }
     }
 
     var detachReceiver: BroadcastReceiver? = null

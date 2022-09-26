@@ -1,5 +1,7 @@
 package com.thoughtcrimes.securesms.model;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -49,10 +51,9 @@ public class TransactionHistory {
         refresh();
         loadNotes(wallet);
     }
-
     private void refresh() {
         List<TransactionInfo> transactionInfos = refreshJ();
-        Timber.d("refresh size=%d", transactionInfos.size());
+        Log.d("refresh size=%d", ""+transactionInfos.size());
         for (Iterator<TransactionInfo> iterator = transactionInfos.iterator(); iterator.hasNext(); ) {
             TransactionInfo info = iterator.next();
             if (info.accountIndex != accountIndex) {

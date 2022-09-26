@@ -1,6 +1,8 @@
 package com.thoughtcrimes.securesms.conversation.v2
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.database.Cursor
 import android.view.MotionEvent
 import android.view.ViewGroup
@@ -13,6 +15,8 @@ import com.thoughtcrimes.securesms.database.CursorRecyclerViewAdapter
 import com.thoughtcrimes.securesms.database.model.MessageRecord
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.mms.GlideRequests
+import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
+import io.beldex.bchat.R
 
 class ConversationAdapter(context: Context, cursor: Cursor, private val onItemPress: (MessageRecord, Int, VisibleMessageView, MotionEvent) -> Unit,
                           private val onItemSwipeToReply: (MessageRecord, Int) -> Unit, private val onItemLongPress: (MessageRecord, Int) -> Unit,
@@ -80,7 +84,26 @@ class ConversationAdapter(context: Context, cursor: Cursor, private val onItemPr
                 }
                 view.contentViewDelegate = visibleMessageContentViewDelegate
             }
-            is ControlMessageViewHolder -> viewHolder.view.bind(message, messageBefore)
+            is ControlMessageViewHolder -> {
+                viewHolder.view.bind(message, messageBefore)
+                if (message.isCallLog && message.isFirstMissedCall) {
+                    viewHolder.view.setOnClickListener {
+                        AlertDialog.Builder(context)
+                            .setTitle(R.string.CallNotificationBuilder_first_call_title)
+                            .setMessage(R.string.CallNotificationBuilder_first_call_message)
+                            .setPositiveButton(R.string.activity_settings_title) { _, _ ->
+                                val intent = Intent(context, PrivacySettingsActivity::class.java)
+                                context.startActivity(intent)
+                            }
+                            .setNeutralButton(R.string.cancel) { d, _ ->
+                                d.dismiss()
+                            }
+                            .show()
+                    }
+                } else {
+                    viewHolder.view.setOnClickListener(null)
+                }
+            }
         }
     }
 

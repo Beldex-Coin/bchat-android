@@ -1,18 +1,11 @@
 package com.thoughtcrimes.securesms.conversation.v2.menus
 
 import android.annotation.SuppressLint
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.Typeface
 import android.os.AsyncTask
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -24,10 +17,10 @@ import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
-import io.beldex.bchat.R
 import com.beldex.libbchat.messaging.messages.control.ExpirationTimerUpdate
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.messaging.sending_receiving.leave
+import com.beldex.libbchat.utilities.Contact
 import com.beldex.libbchat.utilities.ExpirationUtil
 import com.beldex.libbchat.utilities.GroupUtil.doubleDecodeGroupID
 import com.beldex.libbchat.utilities.TextSecurePreferences
@@ -36,18 +29,30 @@ import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.guava.Optional
 import com.beldex.libsignal.utilities.toHexString
 import com.thoughtcrimes.securesms.*
+import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
+import com.thoughtcrimes.securesms.contacts.ContactSelectionListItem
 import com.thoughtcrimes.securesms.contacts.SelectContactsActivity
 import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
 import com.thoughtcrimes.securesms.conversation.v2.utilities.NotificationUtils
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.groups.EditClosedGroupActivity
 import com.thoughtcrimes.securesms.groups.EditClosedGroupActivity.Companion.groupIDKey
+import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
+import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.util.BitmapUtil
 import com.thoughtcrimes.securesms.util.getColorWithID
 import java.io.IOException
+import android.content.*
+import android.view.*
+import io.beldex.bchat.R
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.telephony.PhoneStateListener
+import android.telephony.TelephonyManager
+
 
 object ConversationMenuHelper {
-    
+
     fun onPrepareOptionsMenu(menu: Menu, inflater: MenuInflater, thread: Recipient, threadId: Long, context: Context, onOptionsItemSelected: (MenuItem) -> Unit) {
         // Prepare
         menu.clear()
@@ -96,6 +101,11 @@ object ConversationMenuHelper {
 
         if (thread.isGroupRecipient && !thread.isMuted) {
             inflater.inflate(R.menu.menu_conversation_notification_settings, menu)
+        }
+
+        //SteveJosephh21
+        if (!thread.isGroupRecipient && thread.hasApprovedMe()) {
+            inflater.inflate(R.menu.menu_conversation_call, menu)
         }
 
         // Search
@@ -152,9 +162,65 @@ object ConversationMenuHelper {
             R.id.menu_unmute_notifications -> { unmute(context, thread) }
             R.id.menu_mute_notifications -> { mute(context, thread) }
             R.id.menu_notification_settings -> { setNotifyType(context, thread) }
+            R.id.menu_call -> {
+                /*Hales63*/
+                if (isOnline(context)) {
+                    val tm = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+                    tm.listen(object : PhoneStateListener() {
+                        override fun onCallStateChanged(state: Int, phoneNumber: String?) {
+                            super.onCallStateChanged(state, phoneNumber)
+                            when (state) {
+                                TelephonyManager.CALL_STATE_RINGING -> {
+                                    Toast.makeText(
+                                        context,
+                                        "BChat call won't allow ,Because your phone call ringing",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                                TelephonyManager.CALL_STATE_OFFHOOK -> {
+                                    Toast.makeText(
+                                        context,
+                                        "BChat call won't allow ,Because your phone call is on going",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+
+                                }
+                                TelephonyManager.CALL_STATE_IDLE -> {
+                                    call(context, thread)
+                                }
+                            }
+                        }
+                    }, PhoneStateListener.LISTEN_CALL_STATE)
+
+
+                } else {
+                    Toast.makeText(context, "Check your Internet", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
         return true
     }
+
+    fun isOnline(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        if (capabilities != null) {
+            if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
+                return true
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
+                return true
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
+                return true
+            }
+        }
+        return false
+    }
+
+
+
 
     fun showAllMedia(context: Context, thread: Recipient) {
         val intent = Intent(context, MediaOverviewActivity::class.java)
@@ -166,6 +232,48 @@ object ConversationMenuHelper {
     private fun search(context: Context) {
         val searchViewModel = (context as ConversationActivityV2).searchViewModel
         searchViewModel.onSearchOpened()
+    }
+
+    //New Line
+    private fun call(context: Context, thread: Recipient) {
+
+        if (!TextSecurePreferences.isCallNotificationsEnabled(context)) {
+           /* AlertDialog.Builder(context)
+                .setTitle(R.string.ConversationActivity_call_title)
+                .setMessage(R.string.ConversationActivity_call_prompt)
+                .setPositiveButton(R.string.activity_settings_title) { _, _ ->
+                    val intent = Intent(context, PrivacySettingsActivity::class.java)
+                    context.startActivity(intent)
+                }
+                .setNeutralButton(R.string.cancel) { d, _ ->
+                    d.dismiss()
+                }.show()*/
+            //SteveJosephh22
+            val factory = LayoutInflater.from(context)
+            val callPermissionDialogView: View = factory.inflate(R.layout.call_permissions_dialog_box, null)
+            val callPermissionDialog = AlertDialog.Builder(context).create()
+            callPermissionDialog.setView(callPermissionDialogView)
+            callPermissionDialogView.findViewById<TextView>(R.id.settingsDialogBoxButton).setOnClickListener{
+                val intent = Intent(context, PrivacySettingsActivity::class.java)
+                context.startActivity(intent)
+                callPermissionDialog.dismiss()
+            }
+            callPermissionDialogView.findViewById<TextView>(R.id.cancelDialogBoxButton).setOnClickListener{
+                    callPermissionDialog.dismiss()
+            }
+            callPermissionDialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+            callPermissionDialog.show()
+            return
+        }
+
+        val service = WebRtcCallService.createCall(context, thread)
+        context.startService(service)
+
+        val activity = Intent(context, WebRtcCallActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        context.startActivity(activity)
+
     }
 
     @SuppressLint("StaticFieldLeak")

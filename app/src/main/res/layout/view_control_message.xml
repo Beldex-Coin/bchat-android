@@ -6,8 +6,8 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="vertical"
-    android:paddingHorizontal="@dimen/massive_spacing"
     android:paddingVertical="@dimen/medium_spacing">
+    <!--android:paddingHorizontal="@dimen/massive_spacing"-->
 
     <TextView
         android:fontFamily="@font/poppins_regular"
@@ -38,5 +38,99 @@
         android:textSize="@dimen/very_small_font_size"
         android:textStyle="bold"
         tools:text="@string/MessageRecord_you_disabled_disappearing_messages" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/receiverStatusIconCardView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius ="10dp"
+        android:elevation="5dp"
+        android:layout_marginEnd="20dp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:layout_gravity="start"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="5dp"
+        app:cardBackgroundColor="@color/card_color">
+        <LinearLayout
+            android:id="@+id/receiverStatusIconLinearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:paddingTop="15dp"
+            android:paddingStart="13dp"
+            android:paddingEnd="13dp"
+            android:paddingBottom="15dp">
+            <ImageView
+                android:id="@+id/receiverStatusIconImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:src="@drawable/ic_timer"
+                android:layout_marginEnd="10dp"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:fontFamily="@font/poppins_regular"
+                android:id="@+id/receiverStatusIconTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:layout_gravity="center"
+                android:textColor="@color/text"
+                android:textSize="@dimen/very_small_font_size"
+                android:textStyle="bold"
+                tools:text="@string/MessageRecord_you_disabled_disappearing_messages" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+    <androidx.cardview.widget.CardView
+        android:id="@+id/senderStatusIconCardView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius ="10dp"
+        android:layout_marginStart="20dp"
+        android:elevation="5dp"
+        android:layout_gravity="end"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:layout_marginEnd="20dp"
+        app:cardBackgroundColor="@color/send_message_background">
+        <LinearLayout
+            android:id="@+id/senderStatusIconLinearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:paddingTop="15dp"
+            android:paddingStart="13dp"
+            android:paddingEnd="13dp"
+            android:paddingBottom="15dp">
+            <TextView
+                android:fontFamily="@font/poppins_regular"
+                android:id="@+id/senderStatusIconTextView"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:layout_gravity="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/very_small_font_size"
+                android:textStyle="bold"
+                tools:text="@string/MessageRecord_you_disabled_disappearing_messages" />
+            <ImageView
+                android:id="@+id/senderStatusIconImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:src="@drawable/ic_timer"
+                android:layout_marginStart="10dp"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
 </LinearLayout>

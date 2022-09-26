@@ -127,5 +127,6 @@
     <dimen name="text_size">16sp</dimen>
     <dimen name="normal_padding">16dp</dimen>
     <dimen name="action_item_height">56dp</dimen>
+    <dimen name="extra_large_profile_picture_size">128dp</dimen>
 
 </resources>

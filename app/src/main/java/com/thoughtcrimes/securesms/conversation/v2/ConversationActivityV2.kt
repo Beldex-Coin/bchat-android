@@ -114,6 +114,7 @@ import com.thoughtcrimes.securesms.permissions.Permissions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import nl.komponents.kovenant.ui.successUi
+import kotlin.concurrent.thread
 
 
 // Some things that seemingly belong to the input bar (e.g. the voice message recording UI) are actually
@@ -697,22 +698,33 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
             TextSecurePreferences.setPlayerStatus(this,false)
             val contactDB = DatabaseComponent.get(this).bchatContactDatabase()
             val contact = contactDB.getContactWithBchatID(viewModel.recipient.address.toString())
-            if (contact?.isTrusted != null) {
-                if (contact.isTrusted) {
-                    val actionMode = this.actionMode
-                    if (actionMode == null) {
-                        if (selectedEvent != null && selectedView != null) {
-                            selectedEvent?.let { selectedView?.onContentClick(it) }
-                            if (selectedMessageRecord?.isOutgoing != null) {
-                                Log.d("First-->1", "${selectedMessageRecord?.isOutgoing}")
-                                if (selectedMessageRecord?.isOutgoing!!) {
-                                    selectedEvent?.let { selectedView?.onContentClick(it) }
+            Log.d("Beldex", "Contact Trust Value ${contact?.isTrusted}")
+            if (contact?.isTrusted != null ) {
+                    if (contact.isTrusted == true) {
+                        val actionMode = this.actionMode
+                        if (actionMode == null) {
+                            if (selectedEvent != null && selectedView != null) {
+                                selectedEvent?.let { selectedView?.onContentClick(it) }
+                                if (selectedMessageRecord?.isOutgoing != null) {
+                                    Log.d("Beldex", "selectedMessageRecord?.isOutgoing value 1 ${selectedMessageRecord?.isOutgoing}")
+                                    if (selectedMessageRecord?.isOutgoing!!) {
+                                        selectedEvent?.let { selectedView?.onContentClick(it) }
+                                    }
                                 }
                             }
                         }
                     }
+
+            }
+            else  if (contact?.isTrusted == null && selectedMessageRecord?.isOutgoing == false)
+            {
+                val actionMode = this.actionMode
+                if (actionMode == null) {
+                    if (selectedEvent != null && selectedView != null) {
+                        selectedEvent?.let { selectedView?.onContentClick(it) }
+                    }
                 }
-            }// New Line Social Group Receiver Voice Message
+            } // New Line Social Group Receiver Voice Message
             else  if (contact?.isTrusted == null && selectedMessageRecord?.isOutgoing == false)
             {
                 val actionMode = this.actionMode
@@ -724,7 +736,7 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
 
             }
             if (selectedMessageRecord?.isOutgoing != null) {
-                Log.d("First-->1", "${selectedMessageRecord?.isOutgoing}")
+                Log.d("Beldex", "selectedMessageRecord?.isOutgoing value 2 ${selectedMessageRecord?.isOutgoing}")
                 if (selectedMessageRecord?.isOutgoing!!) {
                     val actionMode = this.actionMode
                     if (actionMode == null) {
@@ -735,6 +747,7 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
                         }
                     }
                 }
+
             }
         }
         super.onDestroy()

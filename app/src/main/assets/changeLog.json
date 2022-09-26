@@ -74,7 +74,28 @@
           "description":"- Minor Bug Fixes"
         }
       ]
-    }
+    },
+    {
+      "title": "1.2.0",
+      "descriptions": [
+        {
+          "description":"- Introduced one to one voice call functionality"
+        },
+        {
+          "description":"- Introduced one to one video call functionality"
+        },
+        {
+          "description":"- Blocked contacts list feature added"
+        },
+        {
+          "description":"- Faster message response"
+        },
+        {
+          "description":"- Minor bug fixes"
+        }
 
+
+      ]
+    }
   ]
 }

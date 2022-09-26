@@ -671,6 +671,23 @@
 
                 <TextView
                     android:fontFamily="@font/poppins_medium"
+                    android:id="@+id/blockedcontactbutton"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/setting_button_height"
+                    android:background="@drawable/setting_button_background"
+                    android:gravity="center"
+                    android:text="@string/blocked_contacts"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/medium_font_size"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/drawer_divider_color" />
+
+                <TextView
+                    android:fontFamily="@font/poppins_medium"
                     android:id="@+id/seedButton"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/setting_button_height"

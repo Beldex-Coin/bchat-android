@@ -39,7 +39,7 @@
             app:iconSpaceReserved="false"
             android:title="@string/preferences_notifications_strategy_category_fast_mode_title"
             android:summary="@string/preferences_notifications_strategy_category_fast_mode_summary"
-            android:defaultValue="false"
+            android:defaultValue="true"
             app:layout="@layout/preference_layout"/>
 
     </PreferenceCategory>

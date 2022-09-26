@@ -300,4 +300,12 @@
         <item name="android:windowNoTitle">true</item>
     </style>
 
+
+    <style name="Theme.Bchat.CallActivity" parent="Theme.Bchat.ForceDark">
+        <!-- in case we want to add customisation like no title -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:statusBarColor">@color/black</item>
+    </style>
+
 </resources>

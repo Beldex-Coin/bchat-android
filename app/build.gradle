@@ -17,6 +17,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'witness'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlinx-serialization'
 apply plugin: 'dagger.hilt.android.plugin'
@@ -54,7 +55,8 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.9.1'
     implementation 'org.conscrypt:conscrypt-android:2.0.0'
     implementation 'org.signal:aesgcmprovider:0.0.3'
-    implementation 'org.whispersystems:webrtc-android:M74'
+    implementation 'org.webrtc:google-webrtc:1.0.32006'
+    //implementation 'org.whispersystems:webrtc-android:M74'
     implementation "me.leolin:ShortcutBadger:1.1.16"
     implementation 'se.emilsjolander:stickylistheaders:2.7.0'
     implementation 'com.jpardogo.materialtabstrip:library:1.0.9'
@@ -168,8 +170,8 @@ dependencies {
     implementation 'com.google.android.play:core:1.8.3'
 }
 
-def canonicalVersionCode = 21
-def canonicalVersionName = "1.1.1"
+def canonicalVersionCode = 22
+def canonicalVersionName = "1.2.0"
 
 //First Release Date 17-06-2022
 //Version Code 15 Version Name 1.0.0
@@ -191,6 +193,9 @@ def canonicalVersionName = "1.1.1"
 
 //Seventh Internal Test Release Date 27-07-2022
 //Version Code 21 Version Name 1.1.1
+
+//Eighth Release Data 26-09-2022
+//Version Code 22 Version Name 1.2.0
 
 
 

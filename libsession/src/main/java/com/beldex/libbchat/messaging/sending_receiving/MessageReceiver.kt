@@ -103,6 +103,7 @@ object MessageReceiver {
         ExpirationTimerUpdate.fromProto(proto) ?:
         ConfigurationMessage.fromProto(proto) ?:
         UnsendRequest.fromProto(proto) ?:
+        CallMessage.fromProto(proto)?:
         /*Hales63*/
         MessageRequestResponse.fromProto(proto) ?:
         VisibleMessage.fromProto(proto,address!!) ?: throw Error.UnknownMessage

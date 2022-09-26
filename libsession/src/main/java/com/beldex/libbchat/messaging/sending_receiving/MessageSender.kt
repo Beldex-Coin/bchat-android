@@ -9,10 +9,7 @@ import com.beldex.libbchat.messaging.jobs.MessageSendJob
 import com.beldex.libbchat.messaging.jobs.NotifyPNServerJob
 import com.beldex.libbchat.messaging.messages.Destination
 import com.beldex.libbchat.messaging.messages.Message
-import com.beldex.libbchat.messaging.messages.control.ClosedGroupControlMessage
-import com.beldex.libbchat.messaging.messages.control.ConfigurationMessage
-import com.beldex.libbchat.messaging.messages.control.ExpirationTimerUpdate
-import com.beldex.libbchat.messaging.messages.control.UnsendRequest
+import com.beldex.libbchat.messaging.messages.control.*
 import com.beldex.libbchat.messaging.messages.visible.*
 import com.beldex.libbchat.messaging.open_groups.*
 import com.beldex.libbchat.messaging.utilities.MessageWrapper
@@ -174,7 +171,7 @@ object MessageSender {
                         val hash = it["hash"] as? String
                         message.serverHash = hash
                         handleSuccessfulMessageSend(message, destination, isSyncMessage)
-                        var shouldNotify = ((message is VisibleMessage || message is UnsendRequest) && !isSyncMessage)
+                        var shouldNotify = ((message is VisibleMessage || message is UnsendRequest || message is CallMessage) && !isSyncMessage)
                         /*
                         if (message is ClosedGroupControlMessage && message.kind is ClosedGroupControlMessage.Kind.New) {
                             shouldNotify = true

@@ -138,7 +138,7 @@ class VoiceMessageView : LinearLayout, AudioSlidePlayer.Listener {
     fun togglePlayback() {
         val player = this.player ?: return
         isPlaying = !isPlaying
-        Log.d("player status",isPlaying.toString())
+        Log.d("Beldex","player status,${isPlaying.toString()}")
         if (isPlaying) {
             TextSecurePreferences.setPlayerStatus(context,true)
             player.play(progress)

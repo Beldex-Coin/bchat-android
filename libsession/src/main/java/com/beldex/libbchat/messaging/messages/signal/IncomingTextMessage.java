@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import androidx.annotation.Nullable;
 
+import com.beldex.libbchat.messaging.calls.CallMessageType;
 import com.beldex.libsignal.messages.SignalServiceGroup;
 import com.beldex.libsignal.utilities.guava.Optional;
 
@@ -42,12 +43,26 @@ public class IncomingTextMessage implements Parcelable {
   private final int     subscriptionId;
   private final long    expiresInMillis;
   private final boolean unidentified;
+  private final int     callType;
 
   private boolean isOpenGroupInvitation = false;
 
+  //New Line
   public IncomingTextMessage(Address sender, int senderDeviceId, long sentTimestampMillis,
                              String encodedBody, Optional<SignalServiceGroup> group,
-                             long expiresInMillis, boolean unidentified)
+                             long expiresInMillis, boolean unidentified) {
+    this(sender, senderDeviceId, sentTimestampMillis, encodedBody, group, expiresInMillis, unidentified, -1);
+  }
+
+  public IncomingTextMessage(Address sender, int senderDeviceId, long sentTimestampMillis,
+                             String encodedBody, Optional<SignalServiceGroup> group,
+                             long expiresInMillis, boolean unidentified, int callType) {
+    this(sender, senderDeviceId, sentTimestampMillis, encodedBody, group, expiresInMillis, unidentified, callType, true);
+  }
+
+  public IncomingTextMessage(Address sender, int senderDeviceId, long sentTimestampMillis,
+                             String encodedBody, Optional<SignalServiceGroup> group,
+                             long expiresInMillis, boolean unidentified,int callType, boolean isPush)
   {
     this.message              = encodedBody;
     this.sender               = sender;
@@ -57,10 +72,11 @@ public class IncomingTextMessage implements Parcelable {
     this.replyPathPresent     = true;
     this.pseudoSubject        = "";
     this.sentTimestampMillis  = sentTimestampMillis;
-    this.push                 = true;
+    this.push                 = isPush;
     this.subscriptionId       = -1;
     this.expiresInMillis      = expiresInMillis;
     this.unidentified         = unidentified;
+    this.callType             = callType;
 
     if (group.isPresent()) {
       this.groupId = Address.fromSerialized(GroupUtil.getEncodedId(group.get()));
@@ -83,6 +99,7 @@ public class IncomingTextMessage implements Parcelable {
     this.subscriptionId       = in.readInt();
     this.expiresInMillis      = in.readLong();
     this.unidentified         = in.readInt() == 1;
+    this.callType              = in.readInt();
   }
 
   public IncomingTextMessage(IncomingTextMessage base, String newBody) {
@@ -100,6 +117,7 @@ public class IncomingTextMessage implements Parcelable {
     this.expiresInMillis      = base.getExpiresIn();
     this.unidentified         = base.isUnidentified();
     this.isOpenGroupInvitation= base.isOpenGroupInvitation();
+    this.callType              = base.callType;
   }
 
   public static IncomingTextMessage from(VisibleMessage message,
@@ -120,6 +138,14 @@ public class IncomingTextMessage implements Parcelable {
     IncomingTextMessage incomingTextMessage = new IncomingTextMessage(sender, 1, sentTimestamp, body, Optional.absent(), 0, false);
     incomingTextMessage.isOpenGroupInvitation = true;
     return incomingTextMessage;
+  }
+
+  //New Line
+  public static IncomingTextMessage fromCallInfo(CallMessageType callMessageType,
+                                                 Address sender,
+                                                 Optional<SignalServiceGroup> group,
+                                                 long sentTimestamp) {
+    return new IncomingTextMessage(sender, 1, sentTimestamp, null, group, 0, false, callMessageType.ordinal(), false);
   }
 
   public int getSubscriptionId() {
@@ -184,6 +210,18 @@ public class IncomingTextMessage implements Parcelable {
 
   public boolean isOpenGroupInvitation() { return isOpenGroupInvitation; }
 
+  public boolean isCallInfo() {
+    int callMessageTypeLength = CallMessageType.values().length;
+    return callType >= 0 && callType < callMessageTypeLength;
+  }
+
+  @Nullable
+  public CallMessageType getCallType() {
+    int callTypeLength = CallMessageType.values().length;
+    if (callType < 0 || callType >= callTypeLength) return null;
+    return CallMessageType.values()[callType];
+  }
+
   @Override
   public int describeContents() {
     return 0;
@@ -203,5 +241,7 @@ public class IncomingTextMessage implements Parcelable {
     out.writeInt(push ? 1 : 0);
     out.writeInt(subscriptionId);
     out.writeInt(unidentified ? 1 : 0);
+    out.writeInt(isOpenGroupInvitation ? 1 : 0);
+    out.writeInt(callType);
   }
 }

@@ -18,6 +18,71 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_Call"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:background="@color/call_toolbar_background"
+            app:contentInsetStart="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/bchat_toolbar_Call"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    >
+
+                    <TextView
+                        android:id="@+id/callInProgress_Call"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="10dp"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/poppins_bold"
+                        android:text="@string/call_in_progress"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        />
+
+
+                    <TextView
+                        android:id="@+id/callDuration_Call"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="20dp"
+                        android:textColor="@color/white"
+                        android:layout_toEndOf="@id/callInProgress_Call"
+                        android:fontFamily="@font/poppins_bold"
+                        tools:text="@tools:sample/date/hhmmss"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+
+                    <ImageView
+                        android:id="@+id/hanUp_Call"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:src="@drawable/ic_hangup"
+                        />
+
+                </RelativeLayout>
+            </LinearLayout>
+        </androidx.appcompat.widget.Toolbar>
+
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -45,11 +110,11 @@
                     <ImageView
                         android:layout_width="14dp"
                         android:layout_height="14dp"
+                        android:layout_alignStart="@+id/profileButton"
+                        android:layout_alignBottom="@+id/profileButton"
                         android:layout_marginStart="-1dp"
                         android:layout_marginBottom="-1dp"
-                        android:background="@drawable/circle_white"
-                        android:layout_alignStart="@+id/profileButton"
-                        android:layout_alignBottom="@+id/profileButton" />
+                        android:background="@drawable/circle_white" />
 
                     <com.thoughtcrimes.securesms.home.PathStatusView
                         android:id="@+id/pathStatusView"
@@ -100,29 +165,32 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true" />
                 </RelativeLayout>
+
                 <RelativeLayout
                     android:id="@+id/searchBarLayout"
                     android:layout_width="match_parent"
                     android:layout_height="?actionBarSize"
                     android:layout_marginHorizontal="@dimen/medium_spacing"
                     android:visibility="gone">
+
                     <ImageView
                         android:id="@+id/searchBarBackButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:src="@drawable/ic_back"/>
+                        android:src="@drawable/ic_back" />
+
                     <TextView
-                        android:fontFamily="@font/poppins_bold"
                         android:id="@+id/searchBarTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="@id/searchBarBackButton"
-                        android:layout_marginStart="55dp"
-                        android:textSize="25sp"
-                        android:textStyle="bold"
                         android:layout_centerVertical="true"
-                        android:text="Search"/>
+                        android:layout_marginStart="55dp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:text="Search"
+                        android:textSize="25sp"
+                        android:textStyle="bold" />
                 </RelativeLayout>
 
                 <View
@@ -135,12 +203,12 @@
                     android:id="@+id/seedReminderView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
             </LinearLayout>
 
         </androidx.appcompat.widget.Toolbar>
-       <!-- <com.airbnb.lottie.LottieAnimationView
+        <!--<com.airbnb.lottie.LottieAnimationView
             android:id="@+id/airdropIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -151,7 +219,6 @@
             app:lottie_loop="true"
             app:lottie_speed="1"
             app:lottie_autoPlay="true"
-            android:visibility="gone"
             app:lottie_enableMergePathsForKitKatAndAbove="true"
             tools:ignore="ContentDescription"/>-->
 
@@ -191,12 +258,12 @@
                     android:layout_height="@dimen/small_profile_picture_size">
 
                     <TextView
-                        android:fontFamily="@font/poppins_medium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
-                        android:textColor="@color/home_search_icon_and_hint"
-                        android:text="Search people and groups" />
+                        android:fontFamily="@font/poppins_medium"
+                        android:text="Search people and groups"
+                        android:textColor="@color/home_search_icon_and_hint" />
                 </RelativeLayout>
             </LinearLayout>
 
@@ -228,22 +295,23 @@
                 android:id="@+id/globalSearchRecycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="65dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentBottom="true"
+                android:layout_marginTop="65dp"
                 android:scrollbars="vertical"
                 android:visibility="gone"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:itemCount="6"
                 tools:listitem="@layout/view_global_search_result" />
+
             <RelativeLayout
                 android:id="@+id/search_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
-                android:layout_marginHorizontal="@dimen/medium_spacing"
                 android:layout_alignParentTop="true"
-                android:background="@color/cell_background"
+                android:layout_marginHorizontal="@dimen/medium_spacing"
                 android:layout_marginTop="10dp"
+                android:background="@color/cell_background"
                 android:visibility="gone">
 
                 <com.thoughtcrimes.securesms.home.search.GlobalSearchInputLayout
@@ -267,21 +335,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="0dp"
-                    android:visibility="visible"
-                    android:scaleType="fitXY"/>
+                    android:scaleType="fitXY"
+                    android:visibility="visible" />
 
                 <TextView
-                    android:fontFamily="@font/poppins_medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:alpha="0.2"
+                    android:fontFamily="@font/poppins_medium"
                     android:gravity="center"
                     android:text="Much empty. Such wow.\nGo get some friends to BChat!"
                     android:textColor="@color/text"
                     android:textSize="@dimen/medium_font_size"
-                    android:visibility="gone"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:visibility="gone" />
                 <!-- android:text="@string/activity_home_empty_state_message"-->
 
                 <Button
@@ -296,30 +364,30 @@
             </LinearLayout>
 
             <TextView
-                android:fontFamily="@font/poppins_medium"
                 android:id="@+id/emptyStateContainerText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="170dp"
+                android:fontFamily="@font/poppins_medium"
                 android:gravity="center"
                 android:text="Much empty. Such wow.\nGo get some friends to BChat!"
                 android:textColor="@color/empty_state_container_text"
                 android:textSize="@dimen/medium_font_size"
-                android:visibility="gone"
-                android:layout_marginBottom="170dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <com.thoughtcrimes.securesms.home.NewConversationButtonSetView
                 android:id="@+id/newConversationButtonSet"
                 android:layout_width="190dp"
                 android:layout_height="236dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginBottom="-30dp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true"
                 android:layout_alignParentStart="false"
-                android:layout_centerHorizontal="true" />
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginEnd="30dp"
+                android:layout_marginBottom="-30dp" />
             <!-- <com.thoughtcrime.securesms.home.NewConversationButtonSetView
                  android:id="@+id/newConversationButtonSet"
                  android:layout_width="276dp"
@@ -483,12 +551,12 @@
             android:layout_marginBottom="40dp">
             <TextView
                 android:fontFamily="@font/poppins_medium"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Dark Mode"
-            android:textAlignment="viewEnd"
-            android:textColor="@color/appearance_text"
-            android:textStyle="normal" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Dark Mode"
+                android:textAlignment="viewEnd"
+                android:textColor="@color/appearance_text"
+                android:textStyle="normal" />
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/drawer_appearance_toggle_button"
                 android:layout_width="wrap_content"
@@ -497,48 +565,48 @@
                 android:gravity="end"/>
         </LinearLayout>
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="12dp"
-    android:orientation="horizontal">
-    <TextView
-        android:fontFamily="@font/poppins_medium"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="BChat V1.1.1"
-        android:textAlignment="viewEnd"
-        android:textColor="@color/bchat_version"
-        android:textStyle="normal" />
-   <!-- <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="from"
-        android:textAlignment="viewStart"
-        android:textColor="@color/bchat_version"
-        android:textStyle="normal" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="1"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Beldex"
-            android:textAlignment="viewStart"
-            android:textColor="@color/drawer_beldex_text"
-            android:textStyle="normal" />
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:text="BChat V1.0"
-            android:textAlignment="viewEnd"
-            android:textColor="@color/bchat_version"
-            android:textStyle="normal" />
-    </LinearLayout>-->
-</LinearLayout>
+            android:layout_margin="12dp"
+            android:orientation="horizontal">
+            <TextView
+                android:fontFamily="@font/poppins_medium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="BChat V1.2.0"
+                android:textAlignment="viewEnd"
+                android:textColor="@color/bchat_version"
+                android:textStyle="normal" />
+            <!-- <TextView
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:text="from"
+                 android:textAlignment="viewStart"
+                 android:textColor="@color/bchat_version"
+                 android:textStyle="normal" />
+             <LinearLayout
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:orientation="horizontal">
+                 <TextView
+                     android:layout_width="0dp"
+                     android:layout_weight="1"
+                     android:layout_height="wrap_content"
+                     android:text="Beldex"
+                     android:textAlignment="viewStart"
+                     android:textColor="@color/drawer_beldex_text"
+                     android:textStyle="normal" />
+                 <TextView
+                     android:layout_width="0dp"
+                     android:layout_weight="1"
+                     android:layout_height="wrap_content"
+                     android:text="BChat V1.0"
+                     android:textAlignment="viewEnd"
+                     android:textColor="@color/bchat_version"
+                     android:textStyle="normal" />
+             </LinearLayout>-->
+        </LinearLayout>
 
     </LinearLayout>
     <!-- Custom Navigation Drawer End -->

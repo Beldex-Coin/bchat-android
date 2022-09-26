@@ -14,6 +14,7 @@ import com.beldex.libbchat.messaging.sending_receiving.link_preview.LinkPreview
 import com.beldex.libbchat.messaging.sending_receiving.notifications.PushNotificationAPI
 import com.beldex.libbchat.messaging.sending_receiving.pollers.ClosedGroupPollerV2
 import com.beldex.libbchat.messaging.sending_receiving.quotes.QuoteModel
+import com.beldex.libbchat.messaging.utilities.WebRtcUtils
 import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.*
 import com.beldex.libbchat.utilities.recipients.Recipient
@@ -49,9 +50,12 @@ fun MessageReceiver.handle(message: Message, proto: SignalServiceProtos.Content,
         is DataExtractionNotification -> handleDataExtractionNotification(message)
         is ConfigurationMessage -> handleConfigurationMessage(message)
         is UnsendRequest -> handleUnsendRequest(message)
+        is VisibleMessage -> handleVisibleMessage(message, proto, openGroupID, runIncrement = true, runThreadUpdate = true)
+
+        //New Line
+        is CallMessage -> handleCallMessage(message)
         /*Hales63*/
         is MessageRequestResponse -> handleMessageRequestResponse(message)
-        is VisibleMessage -> handleVisibleMessage(message, proto, openGroupID)
     }
 }
 
@@ -63,6 +67,11 @@ fun handleMessageRequestResponse(message: MessageRequestResponse) {
 private fun MessageReceiver.handleReadReceipt(message: ReadReceipt) {
     val context = MessagingModuleConfiguration.shared.context
     SSKEnvironment.shared.readReceiptManager.processReadReceipts(context, message.sender!!, message.timestamps!!, message.receivedTimestamp!!)
+}
+
+private fun MessageReceiver.handleCallMessage(message: CallMessage) {
+    // TODO: refactor this out to persistence, just to help debug the flow and send/receive in synchronous testing
+    WebRtcUtils.SIGNAL_QUEUE.trySend(message)
 }
 
 private fun MessageReceiver.handleTypingIndicator(message: TypingIndicator) {
@@ -190,7 +199,7 @@ fun MessageReceiver.handleUnsendRequest(message: UnsendRequest) {
 //endregion
 
 // region Visible Messages
-fun MessageReceiver.handleVisibleMessage(message: VisibleMessage, proto: SignalServiceProtos.Content, openGroupID: String?) {
+fun MessageReceiver.handleVisibleMessage(message: VisibleMessage, proto: SignalServiceProtos.Content, openGroupID: String?,runIncrement:Boolean,runThreadUpdate:Boolean) {
     val storage = MessagingModuleConfiguration.shared.storage
     val context = MessagingModuleConfiguration.shared.context
     val userPublicKey = storage.getUserPublicKey()
@@ -267,7 +276,7 @@ fun MessageReceiver.handleVisibleMessage(message: VisibleMessage, proto: SignalS
     }
     // Persist the message
     message.threadID = threadID
-    val messageID = storage.persist(message, quoteModel, linkPreviews, message.groupPublicKey, openGroupID, attachments) ?: throw MessageReceiver.Error.DuplicateMessage
+    val messageID = storage.persist(message, quoteModel, linkPreviews, message.groupPublicKey, openGroupID, attachments,runIncrement,runThreadUpdate) ?: throw MessageReceiver.Error.DuplicateMessage
     // Parse & persist attachments
     // Start attachment downloads if needed
     storage.getAttachmentsForMessage(messageID).iterator().forEach { attachment ->

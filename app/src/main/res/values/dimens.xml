@@ -132,4 +132,6 @@
     <dimen name="conversation_item_quote_width">120dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
+    <dimen name="large_button_height">54dp</dimen>
+
 </resources>

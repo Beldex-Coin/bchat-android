@@ -3,6 +3,7 @@ package com.beldex.libbchat.messaging.utilities
 import android.content.Context
 import com.beldex.libbchat.R
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
+import com.beldex.libbchat.messaging.calls.CallMessageType
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.messaging.sending_receiving.data_extraction.DataExtractionNotificationInfoMessage
 import com.beldex.libbchat.utilities.ExpirationUtil
@@ -100,6 +101,22 @@ object UpdateMessageBuilder {
                 context.getString(R.string.MessageRecord_s_took_a_screenshot, senderName)
             DataExtractionNotificationInfoMessage.Kind.MEDIA_SAVED ->
                 context.getString(R.string.MessageRecord_media_saved_by_s, senderName)
+        }
+    }
+
+    //New Line
+    fun buildCallMessage(context: Context, type: CallMessageType, sender: String): String {
+        val storage = MessagingModuleConfiguration.shared.storage
+        val senderName = storage.getContactWithBchatID(sender)?.displayName(Contact.ContactContext.REGULAR) ?: sender
+        return when (type) {
+            CallMessageType.CALL_MISSED ->
+                context.getString(R.string.MessageRecord_missed_call_from, senderName)
+            CallMessageType.CALL_INCOMING ->
+                context.getString(R.string.MessageRecord_received_call_from, senderName)
+            CallMessageType.CALL_OUTGOING ->
+                context.getString(R.string.MessageRecord_called_s, senderName)
+            CallMessageType.CALL_FIRST_MISSED ->
+                context.getString(R.string.MessageRecord_missed_call_from, senderName)
         }
     }
 }

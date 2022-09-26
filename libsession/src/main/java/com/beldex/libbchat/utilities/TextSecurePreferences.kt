@@ -12,6 +12,9 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import com.beldex.libbchat.R
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.CALL_NOTIFICATIONS_ENABLED
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.SHOWN_CALL_NOTIFICATION
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.SHOWN_CALL_WARNING
 import com.beldex.libsignal.utilities.Log
 import java.io.IOException
 import java.util.Arrays
@@ -159,16 +162,29 @@ interface TextSecurePreferences {
     fun clearAll()
     fun setWalletName(name: String?)
     fun getWalletName(): String?
+    fun setWalletPassword(name: String?)
+    fun getWalletPassword(): String?
     fun setAirdropAnimationStatus(status:Boolean)
     fun getAirdropAnimationStatus(): Boolean
     fun setPlayerStatus(status:Boolean)
     fun getPlayerStatus(): Boolean
+    fun isCallNotificationsEnabled(): Boolean
+    fun setShownCallWarning(): Boolean
+    fun setShownCallNotification(): Boolean
     /*Hales63*/
     fun hasHiddenMessageRequests(): Boolean
     fun setHasHiddenMessageRequests()
     //New Line
     fun hasShowMessageRequests(): Boolean
     fun setHasShowMessageRequests(status:Boolean)
+    fun setRemoteHangup(status:Boolean)
+    fun isRemoteHangup(): Boolean
+    fun setRemoteCallEnded(status: Boolean)
+    fun isRemoteCallEnded():Boolean
+
+    /*Hales63*/
+    fun isUnBlocked(): Boolean
+    fun setUnBlockedStatus(status: Boolean)
 
 
     companion object {
@@ -213,6 +229,7 @@ interface TextSecurePreferences {
         const val PROFILE_KEY_PREF = "pref_profile_key"
         const val PROFILE_NAME_PREF = "pref_profile_name"
         const val WALLET_NAME_PREF = "pref_wallet_name"
+        const val WALLET_PASSWORD_PREF = "pref_wallet_password"
         const val PROFILE_AVATAR_ID_PREF = "pref_profile_avatar_id"
         const val PROFILE_AVATAR_URL_PREF = "pref_profile_avatar_url"
         const val READ_RECEIPTS_PREF = "pref_read_receipts"
@@ -250,8 +267,14 @@ interface TextSecurePreferences {
         const val MY_ADDRESS = "my_address"
         const val AIRDROP_STATUS = "airdrop_status"
         const val PLAYER_STATUS = "player_status"
+        const val CALL_NOTIFICATIONS_ENABLED = "pref_call_notifications_enabled"
+        const val SHOWN_CALL_WARNING = "pref_shown_call_warning" // call warning is user-facing warning of enabling calls
+        const val SHOWN_CALL_NOTIFICATION = "pref_shown_call_notification" // call notification is a promp to check privacy settings
         const val HAS_HIDDEN_MESSAGE_REQUESTS = "pref_message_requests_hidden"
         const val HAS_SHOW_MESSAGE_REQUESTS = "pref_message_requests_show"
+        const val IS_REMOTE_HANG_UP = "is_remote_hang_up"
+        const val UN_BLOCK_STATUS = "un_blocked"
+        const val IS_REMOTE_CALL_ENDED = "is_remote_call_ended"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -276,7 +299,7 @@ interface TextSecurePreferences {
 
         @JvmStatic
         fun isUsingFCM(context: Context): Boolean {
-            return getBooleanPreference(context, IS_USING_FCM, false)
+            return getBooleanPreference(context, IS_USING_FCM, true)
         }
 
         @JvmStatic
@@ -499,6 +522,18 @@ interface TextSecurePreferences {
         @JvmStatic
         fun getWalletName(context: Context): String? {
             return getStringPreference(context, WALLET_NAME_PREF, null)
+        }
+
+        @JvmStatic
+        fun getWalletPassword(context: Context): String? {
+            return getStringPreference(context, WALLET_PASSWORD_PREF, null)
+        }
+
+
+        @JvmStatic
+        fun setWalletPassword(context: Context, name: String?) {
+            setStringPreference(context, WALLET_PASSWORD_PREF, name)
+            _events.tryEmit(WALLET_PASSWORD_PREF)
         }
 
 
@@ -961,6 +996,21 @@ interface TextSecurePreferences {
         }
 
         @JvmStatic
+        fun isCallNotificationsEnabled(context: Context): Boolean {
+            return getBooleanPreference(context, CALL_NOTIFICATIONS_ENABLED, false)
+        }
+
+        @JvmStatic
+        fun setShownCallWarning(context: Context): Boolean {
+            val previousValue = getBooleanPreference(context, SHOWN_CALL_WARNING, false)
+            if (previousValue) {
+                return false
+            }
+            val setValue = true
+            setBooleanPreference(context, SHOWN_CALL_WARNING, setValue)
+            return previousValue != setValue
+        }
+        @JvmStatic
         fun hasHiddenMessageRequests(context: Context): Boolean {
             return getBooleanPreference(context, HAS_HIDDEN_MESSAGE_REQUESTS, false)
         }
@@ -979,6 +1029,36 @@ interface TextSecurePreferences {
         fun setHasShowMessageRequests(context:Context,status: Boolean) {
             setBooleanPreference(context, HAS_SHOW_MESSAGE_REQUESTS, status)
         }
+        @JvmStatic
+        fun isRemoteHangup(context: Context): Boolean {
+            return getBooleanPreference(context, IS_REMOTE_HANG_UP, false)
+        }
+
+        @JvmStatic
+        fun setRemoteHangup(context:Context,status: Boolean) {
+            setBooleanPreference(context, IS_REMOTE_HANG_UP, status)
+        }
+
+        @JvmStatic
+        fun isUnBlocked(context: Context): Boolean {
+            return getBooleanPreference(context, UN_BLOCK_STATUS, false)
+        }
+
+        @JvmStatic
+        fun setUnBlockStatus(context:Context,status: Boolean) {
+            setBooleanPreference(context, UN_BLOCK_STATUS, status)
+        }
+
+        @JvmStatic
+        fun isRemoteCallEnded(context: Context): Boolean {
+            return getBooleanPreference(context, IS_REMOTE_CALL_ENDED, false)
+        }
+
+        @JvmStatic
+        fun setRemoteCallEnded(context:Context,status: Boolean) {
+            setBooleanPreference(context, IS_REMOTE_CALL_ENDED, status)
+        }
+
     }
 }
 
@@ -1187,6 +1267,15 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun getWalletName(): String? {
         return getStringPreference(TextSecurePreferences.WALLET_NAME_PREF, null)
+    }
+
+    override fun setWalletPassword(name: String?) {
+        setStringPreference(TextSecurePreferences.WALLET_PASSWORD_PREF, name)
+        TextSecurePreferences._events.tryEmit(TextSecurePreferences.WALLET_PASSWORD_PREF)
+    }
+
+    override fun getWalletPassword():String?{
+        return getStringPreference(TextSecurePreferences.WALLET_PASSWORD_PREF, null)
     }
 
     override fun setAirdropAnimationStatus(status: Boolean) {
@@ -1583,6 +1672,32 @@ class AppTextSecurePreferences @Inject constructor(
     override fun clearAll() {
         getDefaultSharedPreferences(context).edit().clear().commit()
     }
+
+    override fun isCallNotificationsEnabled(): Boolean {
+        return getBooleanPreference(CALL_NOTIFICATIONS_ENABLED, false)
+    }
+
+    /**
+     * Set the SHOWN_CALL_WARNING preference to `true`
+     * Return `true` if the value did update (it was previously unset)
+     */
+    override fun setShownCallWarning() : Boolean {
+        val previousValue = getBooleanPreference(SHOWN_CALL_WARNING, false)
+        if (previousValue) {
+            return false
+        }
+        val setValue = true
+        setBooleanPreference(SHOWN_CALL_WARNING, setValue)
+        return previousValue != setValue
+    }
+
+    override fun setShownCallNotification(): Boolean {
+        val previousValue = getBooleanPreference(SHOWN_CALL_NOTIFICATION, false)
+        if (previousValue) return false
+        val setValue = true
+        setBooleanPreference(SHOWN_CALL_NOTIFICATION, setValue)
+        return previousValue != setValue
+    }
     override fun hasHiddenMessageRequests(): Boolean {
         return getBooleanPreference(TextSecurePreferences.HAS_HIDDEN_MESSAGE_REQUESTS, false)
     }
@@ -1597,5 +1712,30 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun setHasShowMessageRequests(status: Boolean) {
         setBooleanPreference(TextSecurePreferences.HAS_SHOW_MESSAGE_REQUESTS, status)
+    }
+
+    override fun setRemoteHangup(status: Boolean) {
+        setBooleanPreference(TextSecurePreferences.IS_REMOTE_HANG_UP, status)
+
+    }
+
+    override fun isRemoteHangup(): Boolean {
+       return getBooleanPreference(TextSecurePreferences.IS_REMOTE_HANG_UP, false)
+    }
+
+    override fun isUnBlocked(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.UN_BLOCK_STATUS, false)
+    }
+
+    override fun setUnBlockedStatus(status: Boolean) {
+        setBooleanPreference(TextSecurePreferences.UN_BLOCK_STATUS, status)
+    }
+
+    override fun setRemoteCallEnded(status: Boolean) {
+        setBooleanPreference(TextSecurePreferences.IS_REMOTE_CALL_ENDED, status)
+    }
+
+    override fun isRemoteCallEnded(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.IS_REMOTE_CALL_ENDED, false)
     }
 }

@@ -37,6 +37,11 @@ object OpenGroupAPIV2 {
         val now = System.currentTimeMillis()
         now - lastOpenDate
     }
+    //http://3.110.218.201:9999/aaaa?public_key=01d5d2697273975ce5056dfb5331e8926f4ea4322a8023e245235eef0fefd67f
+    /* Beldex default group */
+    /*private const val defaultServerPublicKey = "efcaecf00aebf5b75e62cf1fd550c6052842e1415a9339406e256c8b27cd2039"
+    const val defaultServer = "http://13.233.251.36:8081"*/
+
     private const val defaultServerPublicKey = "0cfdbcc8bba5989a6787019c6635c08415c103174609360f9c3e4e764ef48073"
     const val defaultServer = "http://social.beldex.io"
 

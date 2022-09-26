@@ -200,7 +200,6 @@ class PasswordActivity : BaseActionBarActivity() {
         handleAuthenticated()
         val intent = Intent(this, HomeActivity::class.java)
         push(intent)
-
     }
 
     //Important

@@ -12,7 +12,7 @@ import static org.whispersystems.curve25519.Curve25519.BEST;
 
 public class Curve {
   public static final int DJB_TYPE   = 	189;
-  //public static final String DJB_TYPE   = "bx";
+  //public static final String DJB_TYPE   = "bd";
 
   public static ECKeyPair generateKeyPair() {
     Curve25519KeyPair keyPair = Curve25519.getInstance(BEST).generateKeyPair();

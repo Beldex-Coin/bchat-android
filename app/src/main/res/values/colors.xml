@@ -142,4 +142,14 @@
     <color name="chat_user_name_color">#29FD2E</color>
     <color name="disable_button_text_color">#686774</color>
     <color name="animation_popup_background">#1C1C26</color>
+
+    <color name="call_action_button">#DD353535</color>
+    <color name="call_action_button_highlighted">#FFFFFF</color>
+    <color name="call_action_foreground">#D8D8D8</color>
+    <color name="call_action_foreground_highlighted">#171717</color>
+    <color name="call_background">#171717</color>
+    <color name="color_action_icon_background">#353545</color>
+    <color name="remote_parent_background">#00000000</color>
+    <color name="dialog_header_background">#FC3B3B</color>
+    <color name="call_toolbar_background">#128D15</color>
 </resources>

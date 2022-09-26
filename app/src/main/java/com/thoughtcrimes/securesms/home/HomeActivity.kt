@@ -97,8 +97,13 @@ import android.widget.TextView
 
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
+import com.thoughtcrimes.securesms.service.WebRtcCallService
+import com.thoughtcrimes.securesms.webrtc.CallViewModel
 import io.beldex.bchat.databinding.ViewMessageRequestBannerBinding
+import kotlinx.coroutines.*
+import org.apache.commons.lang3.time.DurationFormatUtils
 import java.util.*
 
 
@@ -113,6 +118,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     private lateinit var binding: ActivityHomeBinding
     private lateinit var glide: GlideRequests
     private var broadcastReceiver: BroadcastReceiver? = null
+    private var uiJob: Job? = null
+    private val viewModel by viewModels<CallViewModel>()
+    private val CALLDURATIONFORMAT = "HH:mm:ss"
 
     @Inject
     lateinit var threadDb: ThreadDatabase
@@ -469,6 +477,47 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
             launchSuccessLottieDialog()
         }*/
     }
+
+
+    private fun setupCallActionBar() {
+
+        val startTimeNew = viewModel.callStartTime
+        if(startTimeNew==-1L) {
+            binding.toolbarCall.isVisible = false
+        }
+        else {
+            binding.toolbarCall.isVisible = true
+            uiJob = lifecycleScope.launch {
+                launch {
+                    while (isActive) {
+                        val startTime = viewModel.callStartTime
+                        if (startTime == -1L) {
+                            binding.toolbarCall.isVisible = false
+                        } else {
+                            binding.toolbarCall.isVisible = true
+                            binding.callDurationCall.text = DurationFormatUtils.formatDuration(
+                                System.currentTimeMillis() - startTime,
+                                CALLDURATIONFORMAT
+                            )
+                        }
+
+                        delay(1_000)
+                    }
+                }
+            }
+        }
+        binding.hanUpCall.setOnClickListener {
+            startService(WebRtcCallService.hangupIntent(this))
+            binding.toolbarCall.isVisible = false
+            Toast.makeText(this, "Call ended", Toast.LENGTH_SHORT).show()
+        }
+        binding.toolbarCall.setOnClickListener{
+            val intent = Intent(this, WebRtcCallActivity::class.java)
+            push(intent)
+        }
+    }
+
+
     //New Line
     /*private fun launchSuccessLottieDialog() {
         val button = Button(this)
@@ -669,6 +718,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     }
     override fun onResume() {
         super.onResume()
+        setupCallActionBar()
         ApplicationContext.getInstance(this).messageNotifier.setHomeScreenVisible(true)
         if (TextSecurePreferences.getLocalNumber(this) == null) {
             return; } // This can be the case after a secondary device is auto-cleared
@@ -691,6 +741,13 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
             lifecycleScope.launch(Dispatchers.IO) {
                 ConfigurationMessageUtilities.syncConfigurationIfNeeded(this@HomeActivity)
             }
+        }
+
+        /*Hales63*/
+        if(TextSecurePreferences.isUnBlocked(this))
+        {
+            homeAdapter.notifyDataSetChanged()
+            TextSecurePreferences.setUnBlockStatus(this, false)
         }
     }
 
@@ -940,53 +997,53 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
             resources.getString(R.string.activity_home_delete_conversation_dialog_message)
         }
         val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog)
-        .setMessage(message)
-        .setPositiveButton(R.string.yes) { _, _ ->
-            lifecycleScope.launch(Dispatchers.Main) {
-                val context = this@HomeActivity as Context
-                // Cancel any outstanding jobs
-                DatabaseComponent.get(context).bchatJobDatabase()
-                    .cancelPendingMessageSendJobs(threadID)
-                // Send a leave group message if this is an active secret group
-                if (recipient.address.isClosedGroup && DatabaseComponent.get(context)
-                        .groupDatabase().isActive(recipient.address.toGroupString())
-                ) {
-                    var isClosedGroup: Boolean
-                    var groupPublicKey: String?
-                    try {
-                        groupPublicKey = GroupUtil.doubleDecodeGroupID(recipient.address.toString())
-                            .toHexString()
-                        isClosedGroup = DatabaseComponent.get(context).beldexAPIDatabase()
-                            .isClosedGroup(groupPublicKey)
-                    } catch (e: IOException) {
-                        groupPublicKey = null
-                        isClosedGroup = false
+            .setMessage(message)
+            .setPositiveButton(R.string.yes) { _, _ ->
+                lifecycleScope.launch(Dispatchers.Main) {
+                    val context = this@HomeActivity as Context
+                    // Cancel any outstanding jobs
+                    DatabaseComponent.get(context).bchatJobDatabase()
+                        .cancelPendingMessageSendJobs(threadID)
+                    // Send a leave group message if this is an active closed group
+                    if (recipient.address.isClosedGroup && DatabaseComponent.get(context)
+                            .groupDatabase().isActive(recipient.address.toGroupString())
+                    ) {
+                        var isClosedGroup: Boolean
+                        var groupPublicKey: String?
+                        try {
+                            groupPublicKey = GroupUtil.doubleDecodeGroupID(recipient.address.toString())
+                                .toHexString()
+                            isClosedGroup = DatabaseComponent.get(context).beldexAPIDatabase()
+                                .isClosedGroup(groupPublicKey)
+                        } catch (e: IOException) {
+                            groupPublicKey = null
+                            isClosedGroup = false
+                        }
+                        if (isClosedGroup) {
+                            MessageSender.explicitLeave(groupPublicKey!!, false)
+                        }
                     }
-                    if (isClosedGroup) {
-                        MessageSender.explicitLeave(groupPublicKey!!, false)
+                    // Delete the conversation
+                    val v2OpenGroup = DatabaseComponent.get(this@HomeActivity).beldexThreadDatabase()
+                        .getOpenGroupChat(threadID)
+                    if (v2OpenGroup != null) {
+                        OpenGroupManager.delete(v2OpenGroup.server, v2OpenGroup.room, this@HomeActivity)
+                    } else {
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            threadDb.deleteConversation(threadID)
+                        }
                     }
+                    // Update the badge count
+                    ApplicationContext.getInstance(context).messageNotifier.updateNotification(context)
+                    // Notify the user
+                    val toastMessage =
+                        if (recipient.isGroupRecipient) R.string.MessageRecord_left_group else R.string.activity_home_conversation_deleted_message
+                    Toast.makeText(context, toastMessage, Toast.LENGTH_LONG).show()
                 }
-                // Delete the conversation
-                val v2OpenGroup = DatabaseComponent.get(this@HomeActivity).beldexThreadDatabase()
-                    .getOpenGroupChat(threadID)
-                if (v2OpenGroup != null) {
-                    OpenGroupManager.delete(v2OpenGroup.server, v2OpenGroup.room, this@HomeActivity)
-                } else {
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        threadDb.deleteConversation(threadID)
-                    }
-                }
-                // Update the badge count
-                ApplicationContext.getInstance(context).messageNotifier.updateNotification(context)
-                // Notify the user
-                val toastMessage =
-                    if (recipient.isGroupRecipient) R.string.MessageRecord_left_group else R.string.activity_home_conversation_deleted_message
-                Toast.makeText(context, toastMessage, Toast.LENGTH_LONG).show()
             }
-        }
-        .setNegativeButton(R.string.no) { _, _ ->
-            // Do nothing
-        }.show()
+            .setNegativeButton(R.string.no) { _, _ ->
+                // Do nothing
+            }.show()
 
         //New Line
         val textView: TextView? = dialog.findViewById(android.R.id.message)

@@ -122,8 +122,13 @@ public abstract class DisplayRecord {
   public boolean isMessageRequestResponse() { return  MmsSmsColumns.Types.isMessageRequestResponse(type); }
 
 
+  //New Line
+  public boolean isFirstMissedCall() {
+    return SmsDatabase.Types.isFirstMissedCall(type);
+  }
+
   public boolean isControlMessage() {
     return isGroupUpdateMessage() || isExpirationTimerUpdate() || isDataExtractionNotification()
-            || isMessageRequestResponse();
+            || isMessageRequestResponse() || isCallLog();
   }
 }

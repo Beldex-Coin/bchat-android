@@ -1022,5 +1022,44 @@
     <string name="message_requests_clear" translatable="false">Clear</string>
     <string name="message_requests_accept_message" translatable="false">Are you sure you want to accept this request?</string>
     <string name="message_requests_decline_message" translatable="false">Declining this request will permanently block this user, are you sure?</string>
+    <string name="no_blocked_contact" translatable="false">No blocked contacts yet</string>
+    <string name="blocked_contacts" translatable="false">Blocked Contacts</string>
+
+    <string name="CallNotificationBuilder_first_call_title" translatable="false">Call Missed</string>
+    <string name="CallNotificationBuilder_first_call_message" translatable="false">You missed a call because you need to enable the \'Voice and video calls\' permission in the Privacy Settings.</string>
+    <string name="CallNotificationBuilder_connecting" translatable="false">Connecting…</string>
+    <string name="NotificationBarManager__incoming_signal_call" translatable="false">Incoming call</string>
+    <string name="NotificationBarManager__deny_call" translatable="false">Deny call</string>
+    <string name="NotificationBarManager__answer_call" translatable="false">Answer call</string>
+    <string name="NotificationBarManager__establishing_signal_call" translatable="false">Establishing call</string>
+    <string name="NotificationBarManager__cancel_call" translatable="false">Cancel call</string>
+    <string name="NotificationBarManager_call_in_progress" translatable="false">Call in progress</string>
+    <string name="NotificationBarManager__end_call" translatable="false">End call</string>
+    <string name="WebRtcCallActivity_Bchat_Call" translatable="false">Bchat Call</string>
+    <string name="WebRtcCallActivity_Reconnecting" translatable="false">Reconnecting…</string>
+    <string name="conversation_context__menu_call" translatable="false">Call</string>
+    <string name="ConversationActivity_call_title" translatable="false">Call Permissions Required</string>
+    <string name="ConversationActivity_call_prompt" translatable="false">You missed a call because you need to enable the \'Voice and video calls\' permission in the privacy Settings.</string>
+    <string name="dialog_voice_video_title" translatable="false">Voice / video calls</string>
+    <string name="dialog_voice_video_message" translatable="false">The current implementation of voice / video calls will expose your IP address to the Beldex servers and the calling / called user</string>
+    <string name="CallNotificationBuilder_system_notification_title" translatable="false">Notifications</string>
+    <string name="CallNotificationBuilder_system_notification_message" translatable="false">Having notifications disabled will prevent you from receiving calls, go to Bchat notification settings?</string>
+    <string name="dismiss" translatable="false">Dismiss</string>
+    <string name="preferences__voice_video_calls" translatable="false">Voice and video calls</string>
+    <string name="preferences__allow_access_voice_video" translatable="false">Allow access to accept voice and video calls from other users</string>
+    <string name="incoming_call" translatable="false">Incoming Call</string>
+    <string name="outgoing_call" translatable="false">Outgoing Call</string>
+    <string name="end_to_end_encrypted" translatable="false">End to End Encrypted</string>
+    <string name="call_duration" translatable="false">00:10:10</string>
+    <string name="hang_up" translatable="false">Hangup</string>
+    <string name="back_to_call" translatable="false">Back to call</string>
+    <string name="call_in_progress" translatable="false">Call in progress</string>
+    <string name="call_muted" translatable="false">Call Muted</string>
+    <string name="video_paused" translatable="false">Video Paused</string>
+    <string name="video_paused_and_microphone_off" translatable="false">Video paused and microphone off</string>
+    <string name="call_declined" translatable="false">Call Declined</string>
+    If user decline the call show call declined status.
+    <string name="dialing" translatable="false">Dialing…</string>
+    <string name="call_ended" translatable="false">Call Ended</string>
 
 </resources>

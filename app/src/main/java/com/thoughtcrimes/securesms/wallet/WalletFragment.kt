@@ -572,6 +572,15 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 accountIndex = wallet.accountIndex
                 binding.transactionList.scrollToPosition(0)
             }
+
+            //SteveJosephh21
+            if(adapter!!.itemCount>0){
+                binding.transactionLayoutCardView.visibility=View.VISIBLE
+                binding.emptyContainerLayout.visibility = View.GONE
+            }else{
+                binding.transactionLayoutCardView.visibility=View.GONE
+                binding.emptyContainerLayout.visibility = View.VISIBLE
+            }
         }
         updateStatus(wallet)
     }

@@ -179,4 +179,7 @@
     <color name="unselected_node">#353543</color>
     <color name="green">#46AF4A</color>
     <color name="red">#F6402C</color>
+    <color name="no_transaction_image_border1">#292938</color>
+    <color name="no_transaction_image_border2">#65656e</color>
+    <color name="no_transaction_image_border3">#24242f</color>
 </resources>

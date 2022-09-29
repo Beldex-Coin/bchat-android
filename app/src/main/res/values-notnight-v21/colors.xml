@@ -107,4 +107,7 @@
     <color name="tx_plus">@color/green_color</color>
     <color name="tx_minus">@color/orange_color</color>
     <color name="wallet_settings_card_background">#F4F4F4</color>
+    <color name="no_transaction_image_border1">#e6e6e6</color>
+    <color name="no_transaction_image_border2">#a3a3b2</color>
+    <color name="no_transaction_image_border3">#eaeaea</color>
 </resources>

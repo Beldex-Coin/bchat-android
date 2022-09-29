@@ -222,6 +222,7 @@
             android:id="@+id/transactionLayoutCardView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:visibility="visible"
             app:layout_constraintTop_toBottomOf="@id/buttonsLayout"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -261,9 +262,43 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     tools:itemCount="10"
+                    android:visibility="gone"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     android:nestedScrollingEnabled="false"
                     tools:listitem="@layout/transaction_list_item" />
+                <LinearLayout
+                    android:id="@+id/emptyContainerLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:visibility="visible"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_weight="1">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_no_transactions"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:textAlignment="center"
+                        android:fontFamily="@font/poppins_medium"
+                        android:layout_marginTop="20dp"
+                        android:textSize="16sp"
+                        android:text="No Transactions yet!"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:textAlignment="center"
+                        android:fontFamily="@font/poppins_medium"
+                        android:layout_marginTop="20dp"
+                        android:textSize="16sp"
+                        android:textColor="@color/grey"
+                        android:text="After your first transaction,\nyou will be able to view it here."/>
+
+                </LinearLayout>
 
             </LinearLayout>
 

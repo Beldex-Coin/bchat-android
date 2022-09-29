@@ -361,6 +361,7 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
             callManager.onPreOffer(callId, recipient) {
                 setCallInProgressNotification(TYPE_INCOMING_PRE_OFFER, recipient)
                 callManager.postViewModelState(CallViewModel.State.CALL_PRE_INIT)
+                Log.d("Beldex","signalAudioManager.handleCommand 1(0)")
                 callManager.initializeAudioForCall()
                 callManager.startIncomingRinger()
                 callManager.setAudioEnabled(true)
@@ -406,6 +407,7 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
 
             callManager.postViewModelState(CallViewModel.State.CALL_OUTGOING)
             lockManager.updatePhoneState(LockManager.PhoneState.IN_CALL)
+            Log.d("Beldex","signalAudioManager.handleCommand 1(1)")
             callManager.initializeAudioForCall()
             callManager.startOutgoingRinger(OutgoingRinger.Type.RINGING)
             setCallInProgressNotification(TYPE_OUTGOING_RINGING, callManager.recipient)
@@ -467,7 +469,7 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
             callManager.postViewModelState(CallViewModel.State.CALL_INCOMING)
 
             scheduledTimeout = timeoutExecutor.schedule(TimeoutRunnable(callId, this), TIMEOUT_SECONDS, TimeUnit.SECONDS)
-
+            Log.d("Beldex","signalAudioManager.handleCommand 1(2)")
             callManager.initializeAudioForCall()
             callManager.initializeVideo(this)
 

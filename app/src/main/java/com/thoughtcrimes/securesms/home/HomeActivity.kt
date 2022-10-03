@@ -112,7 +112,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     ConversationClickListener,
     SeedReminderViewDelegate,
     NewConversationButtonSetViewDelegate,
-    LoaderManager.LoaderCallbacks<Cursor>,
     GlobalSearchInputLayout.GlobalSearchInputLayoutListener {
 
     private lateinit var binding: ActivityHomeBinding
@@ -135,12 +134,14 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
     private val globalSearchViewModel by viewModels<GlobalSearchViewModel>()
 
+    private val homeViewModel by viewModels<HomeViewModel>()
+
     private val publicKey: String
         get() = TextSecurePreferences.getLocalNumber(this)!!
 
     /*Hales63*/
-    private val homeAdapter: HomeAdapter by lazy {
-        HomeAdapter(context = this, cursor = threadDb.approvedConversationList, listener = this)
+    private val homeAdapter: NewHomeAdapter by lazy {
+        NewHomeAdapter(context = this, listener = this)
     }
 
     private val globalSearchAdapter = GlobalSearchAdapter { model ->
@@ -359,7 +360,21 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         binding.createNewPrivateChatButton.setOnClickListener { createNewPrivateChat() }
         IP2Country.configureIfNeeded(this@HomeActivity)
         // This is a workaround for the fact that CursorRecyclerViewAdapter doesn't actually auto-update (even though it says it will)
-        LoaderManager.getInstance(this).restartLoader(0, null, this)
+        //LoaderManager.getInstance(this).restartLoader(0, null, this)
+        homeViewModel.getObservable(this).observe(this) { newData ->
+            val manager = binding.recyclerView.layoutManager as LinearLayoutManager
+            val firstPos = manager.findFirstCompletelyVisibleItemPosition()
+            val offsetTop = if(firstPos >= 0) {
+                manager.findViewByPosition(firstPos)?.let { view ->
+                    manager.getDecoratedTop(view) - manager.getTopDecorationHeight(view)
+                } ?: 0
+            } else 0
+            homeAdapter.data = newData
+            if(firstPos >= 0) { manager.scrollToPositionWithOffset(firstPos, offsetTop) }
+            setupMessageRequestsBanner()
+            updateEmptyState()
+        }
+        homeViewModel.tryUpdateChannel()
         // Set up new conversation button set
         binding.newConversationButtonSet.delegate = this
         // Observe blocked contacts changed events
@@ -376,20 +391,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                 // Double check that the long poller is up
                 (applicationContext as ApplicationContext).startPollingIfNeeded()
                 // update things based on TextSecurePrefs (profile info etc)
-                // Set up typing observer
-                withContext(Dispatchers.Main) {
-                    ApplicationContext.getInstance(this@HomeActivity).typingStatusRepository.typingThreads.observe(
-                        this@HomeActivity,
-                        Observer<Set<Long>> { threadIDs ->
-                            val adapter = binding.recyclerView.adapter as HomeAdapter
-                            adapter.typingThreadIDs = threadIDs ?: setOf()
-                        })
-                    updateProfileButton()
-                    TextSecurePreferences.events.filter { it == TextSecurePreferences.PROFILE_NAME_PREF }
-                        .collect {
-                            updateProfileButton()
-                        }
-                }
                 // Set up remaining components if needed
                 val application = ApplicationContext.getInstance(this@HomeActivity)
                 application.registerForFCMIfNeeded(false)
@@ -397,6 +398,20 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                 if (userPublicKey != null) {
                     OpenGroupManager.startPolling()
                     JobQueue.shared.resumePendingJobs()
+                }
+                // Set up typing observer
+                withContext(Dispatchers.Main) {
+                    ApplicationContext.getInstance(this@HomeActivity).typingStatusRepository.typingThreads.observe(
+                        this@HomeActivity,
+                        Observer<Set<Long>> { threadIDs ->
+                            val adapter = binding.recyclerView.adapter as NewHomeAdapter
+                            adapter.typingThreadIDs = threadIDs ?: setOf()
+                        })
+                    updateProfileButton()
+                    TextSecurePreferences.events.filter { it == TextSecurePreferences.PROFILE_NAME_PREF }
+                        .collect {
+                            updateProfileButton()
+                        }
                 }
             }
             // monitor the global search VM query
@@ -623,9 +638,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         binding.bchatToolbar.isVisible = !isShown
         binding.recyclerView.isVisible = !isShown
         binding.emptyStateContainer.isVisible =
-            (binding.recyclerView.adapter as HomeAdapter).itemCount == 0 && binding.recyclerView.isVisible
+            (binding.recyclerView.adapter as NewHomeAdapter).itemCount == 0 && binding.recyclerView.isVisible
         binding.emptyStateContainerText.isVisible =
-            (binding.recyclerView.adapter as HomeAdapter).itemCount == 0 && binding.recyclerView.isVisible
+            (binding.recyclerView.adapter as NewHomeAdapter).itemCount == 0 && binding.recyclerView.isVisible
         val isDayUiMode = UiModeUtilities.isDayUiMode(this)
         (if (isDayUiMode) R.drawable.ic_doodle_3_2 else R.drawable.ic_doodle_3_1).also {
             binding.emptyStateImageView.setImageResource(
@@ -657,11 +672,20 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                 expandMessageRequest.setOnClickListener{ showMessageRequests() }
                 root.setOnLongClickListener { hideMessageRequests(); true }
                 root.layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
-                homeAdapter.headerView = root
-                homeAdapter.notifyItemChanged(0)
+                /*homeAdapter.headerView = root
+                homeAdapter.notifyItemChanged(0)*/
+                val hadHeader = homeAdapter.hasHeaderView()
+                homeAdapter.header = root
+                if (hadHeader) homeAdapter.notifyItemChanged(0)
+                else homeAdapter.notifyItemInserted(0)
             }
         } else {
-            homeAdapter.headerView = null
+            //homeAdapter.headerView = null
+            val hadHeader = homeAdapter.hasHeaderView()
+            homeAdapter.header = null
+            if (hadHeader) {
+                homeAdapter.notifyItemRemoved(0)
+            }
         }
     }
 
@@ -698,7 +722,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     }*/
 
 
-    override fun onCreateLoader(id: Int, bundle: Bundle?): Loader<Cursor> {
+    /*override fun onCreateLoader(id: Int, bundle: Bundle?): Loader<Cursor> {
         return HomeLoader(this@HomeActivity)
     }
 
@@ -710,7 +734,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
     override fun onLoaderReset(cursor: Loader<Cursor>) {
         homeAdapter.changeCursor(null)
-    }
+    }*/
+
     private fun checkInternetConnectivity(){
         if (OnionRequestAPI.paths.isEmpty()) {
             Toast.makeText(this,"Please check your internet connection",Toast.LENGTH_SHORT).show();
@@ -788,7 +813,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
     // region Updating
     private fun updateEmptyState() {
-        val threadCount = (binding.recyclerView.adapter as HomeAdapter).itemCount
+        val threadCount = (binding.recyclerView.adapter)!!.itemCount
         binding.emptyStateContainer.isVisible = threadCount == 0 && binding.recyclerView.isVisible
         binding.emptyStateContainerText.isVisible =
             threadCount == 0 && binding.recyclerView.isVisible
@@ -804,6 +829,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     fun onUpdateProfileEvent(event: ProfilePictureModifiedEvent) {
         if (event.recipient.isLocalNumber) {
             updateProfileButton()
+        } else {
+            homeViewModel.tryUpdateChannel()
         }
     }
 
@@ -969,10 +996,11 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     private fun setConversationPinned(threadId: Long, pinned: Boolean) {
         lifecycleScope.launch(Dispatchers.IO) {
             threadDb.setPinned(threadId, pinned)
-            withContext(Dispatchers.Main) {
+            /*withContext(Dispatchers.Main) {
                 LoaderManager.getInstance(this@HomeActivity)
                     .restartLoader(0, null, this@HomeActivity)
-            }
+            }*/
+            homeViewModel.tryUpdateChannel()
         }
     }
 
@@ -1107,10 +1135,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         show(intent)
     }
 
-    private fun showPath() {
+   /* private fun showPath() {
         val intent = Intent(this, PathActivity::class.java)
         show(intent)
-    }
+    }*/
 
     override fun createNewPrivateChat() {
         val intent = Intent(this, CreateNewPrivateChatActivity::class.java)
@@ -1142,7 +1170,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                 textSecurePreferences.setHasShowMessageRequests(false)*/
 
                 setupMessageRequestsBanner()
-                LoaderManager.getInstance(this).restartLoader(0, null, this)
+                //LoaderManager.getInstance(this).restartLoader(0, null, this)
+                homeViewModel.tryUpdateChannel()
             }
             .setNegativeButton(R.string.no) { _, _ ->
                 // Do nothing

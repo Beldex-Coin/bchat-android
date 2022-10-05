@@ -251,6 +251,7 @@
                         android:textSize="18sp"
                         android:textStyle="bold"/>
                     <ImageView
+                        android:id="@+id/filter_transactions_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_filter"/>

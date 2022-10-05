@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/filter_by"
+        android:title="@string/filter_by"
+        android:textStyle="bold"/>
+    <item
+        android:id="@+id/incoming"
+        android:checkable="true"
+        android:title="@string/incoming" />
+    <item
+        android:id="@+id/outgoing"
+        android:checkable="true"
+        android:title="@string/outgoing" />
+    <item
+        android:id="@+id/transactionsByDate"
+        android:title="@string/transactions_by_date"
+        android:checkable="true"/>
+</menu>

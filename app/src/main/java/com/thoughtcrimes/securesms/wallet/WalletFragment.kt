@@ -4,8 +4,11 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
+import androidx.core.view.get
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import com.github.brnunes.swipeablerecyclerview.SwipeableRecyclerViewTouchListener
@@ -326,8 +329,31 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         }
 
         activityCallback!!.forceUpdate()
+
+        //SteveJosephh21
+        /*binding.filterTransactionsIcon.setOnClickListener {
+            val popupMenu = PopupMenu(activity?.applicationContext, it)
+            popupMenu.inflate(R.menu.filter_transactions_popup_menu)
+            *//*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                popupMenu.setForceShowIcon(true)
+            }*//*
+            popupMenu.setHe
+            popupMenu.menu[0].isEnabled =false
+            popupMenu.menu[1].isChecked = popupMenu.menu[1].isChecked
+            popupMenu.menu[2].isChecked = popupMenu.menu[2].isChecked
+            popupMenu.menu[3].isChecked = popupMenu.menu[3].isChecked
+            popupMenu.setOnMenuItemClickListener { item ->
+                Toast.makeText(activity, item.title, Toast.LENGTH_SHORT).show()
+                if (item.title == "Incoming") {
+                    item.isChecked = !item.isChecked
+                }
+                false
+            }
+            popupMenu.show()
+        }*/
         return binding.root
     }
+
 
 
    /* fun onViewCreated(@NonNull view: View?, @Nullable savedInstanceState: Bundle?) {

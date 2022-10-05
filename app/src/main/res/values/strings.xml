@@ -1160,10 +1160,10 @@
     <string name="toast_default_nodes" translatable="false">Restoring already in progress…</string>
     <string name="node_wrong_net" translatable="false">Node scanning only for mainnet!</string>
     <string name="switch_node_alert" translatable="false"> Are you sure you want to Switch to another node? </string>
-    <string name="send_qr_invalid" translatable="false">Not a QR Code</string>
-    <string name="send_qr_address_invalid" translatable="false">Not a valid payment QR code</string>
-    <string name="title_activity_send_new">SendActivityNew</string>
-    <string name="nfc_tag_read_what">I don\'t know what you want!</string>
+    <string name="title_activity_send_new" translatable="false">SendActivityNew</string>
 
-
+    <string name="filter_by" translatable="false">Filter By</string>
+    <string name="incoming" translatable="false">Incoming</string>
+    <string name="outgoing" translatable="false">Outgoing</string>
+    <string name="transactions_by_date" translatable="false">Transactions by Date</string>
 </resources>

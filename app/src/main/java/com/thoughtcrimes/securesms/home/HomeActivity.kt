@@ -91,16 +91,17 @@ import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
 import com.thoughtcrimes.securesms.service.WebRtcCallService
+import com.thoughtcrimes.securesms.wallet.WalletActivity
 import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity
 import com.thoughtcrimes.securesms.wallet.node.*
 import com.thoughtcrimes.securesms.wallet.node.activity.NodeActivity
 import com.thoughtcrimes.securesms.wallet.receive.ReceiveActivity
 import com.thoughtcrimes.securesms.wallet.rescan.ReScanActivity
-import com.thoughtcrimes.securesms.wallet.send.SendActivity
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
 import io.beldex.bchat.databinding.ViewMessageRequestBannerBinding
 import kotlinx.coroutines.*
 import org.apache.commons.lang3.time.DurationFormatUtils
+import timber.log.Timber
 import java.util.*
 
 
@@ -1093,8 +1094,39 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
 
     private fun openMyWallet() {
-         val intent = Intent(this, NodeActivity::class.java)
-         show(intent, isForResult = true)
+        val walletName = TextSecurePreferences.getWalletName(this)
+        val walletPassword = TextSecurePreferences.getWalletPassword(this)
+        if (walletName != null && walletPassword !=null) {
+            startWallet(walletName,walletPassword, fingerprintUsed = false, streetmode = false)
+        }
+        /*val lockManager: LockManager<CustomPinActivity> = LockManager.getInstance() as LockManager<CustomPinActivity>
+        lockManager.enableAppLock(this, CustomPinActivity::class.java)
+        val intent = Intent(this, CustomPinActivity::class.java)
+        intent.putExtra(AppLock.EXTRA_TYPE, AppLock.ENABLE_PINLOCK);
+        push(intent)*/
+    }
+
+    private fun startWallet(
+        walletName:String, walletPassword:String,
+        fingerprintUsed:Boolean, streetmode:Boolean) {
+        val REQUEST_ID = "id"
+        val REQUEST_PW = "pw"
+        val REQUEST_FINGERPRINT_USED = "fingerprint"
+        val REQUEST_STREETMODE = "streetmode"
+        val REQUEST_URI = "uri"
+
+        Timber.d("startWallet()");
+        val intent = Intent(this, WalletActivity::class.java)
+        intent.putExtra(REQUEST_ID, walletName)
+        intent.putExtra(REQUEST_PW, walletPassword)
+        intent.putExtra(REQUEST_FINGERPRINT_USED, fingerprintUsed)
+        intent.putExtra(REQUEST_STREETMODE, streetmode)
+        //Important
+        /*if (uri != null) {
+            intent.putExtra(REQUEST_URI, uri)
+            uri = null // use only once
+        }*/
+        startActivity(intent)
     }
 
     private fun showNotificationSettings() {
@@ -1170,7 +1202,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
     /*Hales63*/
     private fun showMessageRequests() {
-        val intent = Intent(this, SendActivity::class.java)
+        val intent = Intent(this, MessageRequestsActivity::class.java)
         push(intent)
     }
 

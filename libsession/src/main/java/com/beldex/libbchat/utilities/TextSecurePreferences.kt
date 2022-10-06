@@ -162,6 +162,8 @@ interface TextSecurePreferences {
     fun clearAll()
     fun setWalletName(name: String?)
     fun getWalletName(): String?
+    fun setWalletPassword(name: String?)
+    fun getWalletPassword(): String?
     fun setAirdropAnimationStatus(status:Boolean)
     fun getAirdropAnimationStatus(): Boolean
     fun setPlayerStatus(status:Boolean)
@@ -227,6 +229,7 @@ interface TextSecurePreferences {
         const val PROFILE_KEY_PREF = "pref_profile_key"
         const val PROFILE_NAME_PREF = "pref_profile_name"
         const val WALLET_NAME_PREF = "pref_wallet_name"
+        const val WALLET_PASSWORD_PREF = "pref_wallet_password"
         const val PROFILE_AVATAR_ID_PREF = "pref_profile_avatar_id"
         const val PROFILE_AVATAR_URL_PREF = "pref_profile_avatar_url"
         const val READ_RECEIPTS_PREF = "pref_read_receipts"
@@ -519,6 +522,18 @@ interface TextSecurePreferences {
         @JvmStatic
         fun getWalletName(context: Context): String? {
             return getStringPreference(context, WALLET_NAME_PREF, null)
+        }
+
+        @JvmStatic
+        fun getWalletPassword(context: Context): String? {
+            return getStringPreference(context, WALLET_PASSWORD_PREF, null)
+        }
+
+
+        @JvmStatic
+        fun setWalletPassword(context: Context, name: String?) {
+            setStringPreference(context, WALLET_PASSWORD_PREF, name)
+            _events.tryEmit(WALLET_PASSWORD_PREF)
         }
 
 
@@ -1252,6 +1267,15 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun getWalletName(): String? {
         return getStringPreference(TextSecurePreferences.WALLET_NAME_PREF, null)
+    }
+
+    override fun setWalletPassword(name: String?) {
+        setStringPreference(TextSecurePreferences.WALLET_PASSWORD_PREF, name)
+        TextSecurePreferences._events.tryEmit(TextSecurePreferences.WALLET_PASSWORD_PREF)
+    }
+
+    override fun getWalletPassword():String?{
+        return getStringPreference(TextSecurePreferences.WALLET_PASSWORD_PREF, null)
     }
 
     override fun setAirdropAnimationStatus(status: Boolean) {

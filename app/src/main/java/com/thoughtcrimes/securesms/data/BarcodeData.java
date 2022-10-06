@@ -2,7 +2,7 @@ package com.thoughtcrimes.securesms.data;
 
 import android.net.Uri;
 
-import com.thoughtcrimes.securesms.util.OpenAliasHelper;
+import com.thoughtcrimes.securesms.wallet.utils.OpenAliasHelper;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import lombok.ToString;
 import timber.log.Timber;
 
@@ -204,7 +205,7 @@ public class BarcodeData {
             }
         }
 
-        Security sec = dnssec ? Security.OA_DNSSEC : Security.OA_NO_DNSSEC;
+        Security sec = dnssec ? BarcodeData.Security.OA_DNSSEC : BarcodeData.Security.OA_NO_DNSSEC;
 
         return new BarcodeData(crypto, address, addressName, description, amount, sec);
     }

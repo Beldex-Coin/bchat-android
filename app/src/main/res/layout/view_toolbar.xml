@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <ImageButton
-        android:id="@+id/bCredits"
+        android:id="@+id/exit_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
@@ -45,15 +45,16 @@
                 android:paddingBottom="12dp"
                 android:textColor="@color/text"
                 android:visibility="invisible"
-                tools:text="monerujo" />
+                tools:text="BChat" />
 
             <TextView
                 android:id="@+id/toolbarSubtitle"
+                style="@style/BChatLabel.Subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:visibility="invisible"
-                tools:text="monerujo" />
+                tools:text="BChat" />
         </LinearLayout>
     </FrameLayout>
 </merge>

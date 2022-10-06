@@ -523,4 +523,20 @@
         <item name="android:popupBackground">@drawable/alert_dialog_shape</item>
     </style>
 
+    <style name="WalletToolbar" parent="Widget.MaterialComponents.Toolbar">
+        <item name="materialThemeOverlay">@style/WalletToolbarOverlay</item>
+    </style>
+
+    <style name="WalletToolbarOverlay">
+        <item name="colorControlNormal">@color/text</item>
+    </style>
+
+    <style name="BChatLabel" parent="@android:style/TextAppearance.DeviceDefault.Medium">
+    </style>
+
+    <style name="BChatLabel.Subtitle">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/text</item>
+    </style>
+
 </resources>

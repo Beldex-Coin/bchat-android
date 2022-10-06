@@ -71,7 +71,7 @@ public class Toolbar extends MaterialToolbar {
 
         toolbarTitle = findViewById(R.id.toolbarTitle);
         toolbarSubtitle = findViewById(R.id.toolbarSubtitle);
-        bCredits = findViewById(R.id.bCredits);
+        bCredits = findViewById(R.id.exit_button);
         bCredits.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 if (onButtonListener != null) {

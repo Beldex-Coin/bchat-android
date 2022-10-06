@@ -312,15 +312,13 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
 
     private fun setNode(node: NodeInfo?, save: Boolean) {
         if (node !== this.node) {
-            require(
-                !(node != null && node !== WalletManager.getInstance()
-                    .getNetworkType())
+            require(!(node != null && node !== WalletManager.getInstance().networkType)
             ) { "network type does not match" }
             this.node = node
             for (nodeInfo in favouriteNodes) {
-                Timber.d("Testing-->14")
+                Timber.d("Testing-->14 ${node.toString()}")
                 //Important
-                nodeInfo.setSelected(nodeInfo === node)
+                nodeInfo.isSelected = nodeInfo === node
             }
             WalletManager.getInstance().setDaemon(node)
             if (save) saveSelectedNode()
@@ -450,6 +448,8 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
                 intent.putExtras(b)
                 recoveryGetSeedDetailsActivity.push(intent)*/
                 TextSecurePreferences.setWalletName(recoveryGetSeedDetailsActivity,walletName)
+                //SteveJosephh21
+                TextSecurePreferences.setWalletPassword(recoveryGetSeedDetailsActivity,walletPassword)
                 recoveryGetSeedDetailsActivity.updateKeyPair()
             } else {
                 //walletGenerateError()

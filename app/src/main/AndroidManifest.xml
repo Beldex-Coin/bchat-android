@@ -83,15 +83,14 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
+            android:name="com.thoughtcrimes.securesms.wallet.settings.WalletSettings"
+            android:exported="false" />
+        <activity
             android:name="com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.password.CreateWalletPassword"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
-        <activity
-            android:name="com.thoughtcrimes.securesms.wallet.send.SendActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
@@ -109,7 +108,7 @@
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.WalletActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
         <activity
             android:name="com.thoughtcrimes.securesms.contacts.BlockedContactActivity"
             android:exported="false" />
@@ -301,10 +300,6 @@
             android:name="com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity"
             android:exported="false"
             android:label="@string/activity_message_requests_title"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.thoughtcrimes.securesms.wallet.node.activity.NodeActivity"
-            android:label="@string/activity_node_page_title"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.thoughtcrimes.securesms.preferences.SettingsActivity"
@@ -627,6 +622,12 @@
         <meta-data
             android:name="com.sec.android.multiwindow.MINIMUM_SIZE_H"
             android:value="598.0dip" />
+
+        <service
+            android:name="com.thoughtcrimes.securesms.wallet.service.WalletService"
+            android:description="@string/service_description"
+            android:exported="false"
+            android:label="BChat Wallet Service" />
     </application>
 
 </manifest>

@@ -2,6 +2,7 @@ package com.thoughtcrimes.securesms.wallet.addressbook
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -55,13 +56,16 @@ class AddressBookView : LinearLayout {
         val address = recipient.address.serialize()
 
 
+        if(getBeldexAddress(address) != null || getBeldexAddress(address)?.isNotEmpty() == true)
+        {
         binding.nameTextView.text =
             if (recipient.isGroupRecipient) recipient.name else getUserDisplayName(address)
 
         binding.addressTextView.text = getBeldexAddress(address)
+        }
 
     }
-     fun getBeldexAddress(publicKey: String): String {
+     fun getBeldexAddress(publicKey: String): String? {
         val contact = DatabaseComponent.get(context).bchatContactDatabase()
             .getContactWithBchatID(publicKey)
         return contact?.displayBeldexAddress(Contact.ContactContext.REGULAR) ?: publicKey

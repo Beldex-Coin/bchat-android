@@ -250,6 +250,19 @@
         <item name="android:textAlignment">viewStart</item>
         <item name="android:maxLines">1</item>
     </style>
+   <style name="BchatAddressEditText">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:background">@drawable/bchat_id_text_view_background</item>
+        <item name="android:paddingLeft">@dimen/medium_spacing</item>
+        <item name="android:paddingTop">@dimen/medium_spacing</item>
+        <item name="android:paddingRight">@dimen/medium_spacing</item>
+        <item name="android:paddingBottom">@dimen/medium_spacing</item>
+        <item name="android:textSize">@dimen/small_font_size</item>
+        <item name="android:textColor">@color/text</item>
+        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor</item>
+        <item name="android:textAlignment">viewStart</item>
+
+    </style>
 
     <style name="SmallBChatEditText">
         <item name="android:fontFamily">@font/poppins_medium</item>

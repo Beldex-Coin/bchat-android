@@ -173,6 +173,7 @@ dependencies {
     implementation 'me.dm7.barcodescanner:zxing:1.9.8'
     implementation 'dnsjava:dnsjava:3.4.2'
     implementation 'org.jitsi:dnssecjava:2.0.0'
+    implementation 'me.dm7.barcodescanner:zxing:1.9.8'
 }
 
 def canonicalVersionCode = 22

@@ -68,15 +68,16 @@ class SendActivity : PassphraseRequiredActionBarActivity(),
 
         override fun onScanned(qrCode: String?): Boolean {
             // #gurke
-            val bcData: BarcodeData = BarcodeData.fromString(qrCode)
-            return if (bcData != null) {
+            val bcData: BarcodeData? = BarcodeData.fromString(qrCode)
+            if(bcData!=null)
+            {
                 popFragmentStack(null)
                 Timber.d("AAA")
                 onUriScanned(bcData)
-                true
-            } else {
-                false
+                return true
             }
+           return false
+
         }
     private fun popFragmentStack(name: String?) {
         if (name == null) {

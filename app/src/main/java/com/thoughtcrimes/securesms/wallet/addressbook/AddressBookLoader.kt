@@ -1,6 +1,7 @@
 package com.thoughtcrimes.securesms.wallet.addressbook
 
 import android.content.Context
+import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.util.AsyncLoader
 import com.thoughtcrimes.securesms.util.ContactUtilities
 
@@ -9,11 +10,11 @@ class AddressBookLoader(context: Context, private val usersToExclude: Set<String
 
     /*Hales63*/
     override fun loadInBackground(): List<String> {
-        val contacts = ContactUtilities.getAllContacts(context)
+        val contacts = DatabaseComponent.get(context).bchatContactDatabase().getAllContacts()
         return contacts.filter {
-            !it.isGroupRecipient && !usersToExclude.contains(it.address.toString())
+            it.beldexAddress != null
         }.map {
-            it.address.toString()
+            it.bchatID
         }
     }
 }

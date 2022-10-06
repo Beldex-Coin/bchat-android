@@ -115,16 +115,16 @@ public class SendFragmentMain extends Fragment  implements SendFragmentSub.Liste
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Fragment childFragment = new SendFragmentSub();
+      /*  Fragment childFragment = new SendFragmentSub();
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.replace(R.id.sendFragment_Main, childFragment).commit();
+        transaction.replace(R.id.sendFragment_Main, childFragment).commit();*/
 
         final View view = inflater.inflate(R.layout.fragment_send_main, container, false);
 
         spendViewPager = view.findViewById(R.id.pager);
-        /*pagerAdapter = new SpendPagerAdapter(getChildFragmentManager());
+        pagerAdapter = new SpendPagerAdapter(getChildFragmentManager());
         spendViewPager.setOffscreenPageLimit(pagerAdapter.getCount()); // load & keep all pages in cache
-        spendViewPager.setAdapter(pagerAdapter);*/
+        spendViewPager.setAdapter(pagerAdapter);
 
         spendViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             private int fallbackPosition = MAX_FALLBACK;
@@ -193,13 +193,27 @@ public class SendFragmentMain extends Fragment  implements SendFragmentSub.Liste
     }
     @Override
     public boolean onUriScanned(BarcodeData barcodeData) {
-        Log.d("Beldex","onUriScanned fun");
+        if (spendViewPager.getCurrentItem() == SpendPagerAdapter.POS_ADDRESS) {
+            final SendWizardFragment fragment = pagerAdapter.getFragment(SpendPagerAdapter.POS_ADDRESS);
+            if (fragment instanceof SendFragmentSub) {
+                ((SendFragmentSub) fragment).processScannedData(barcodeData);
+                return true;
+            }
+        }
+        return false;
+       /* Log.d("Beldex","onUriScanned fun");
         if (spendViewPager.getCurrentItem() == SpendPagerAdapter.POS_ADDRESS) {
             final SendFragmentSub fragment = SendFragmentSub.newInstance(SendFragmentMain.this);
             fragment.processScannedData(barcodeData);
             return true;
         }
-        return false;
+        return false;*/
+    }
+
+    @Override
+    public void onDetach() {
+        activityCallback.setOnUriScannedListener(null);
+        super.onDetach();
     }
 
 
@@ -323,7 +337,7 @@ public class SendFragmentMain extends Fragment  implements SendFragmentSub.Liste
 
     @Override
     public TxData getTxData() {
-        return getTxData();
+        return txData;
     }
 
     void disableNavigation() {

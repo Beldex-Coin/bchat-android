@@ -35,15 +35,14 @@
 
                 <EditText
                     android:id="@+id/beldexAddressEditTxt"
-                    style="@style/SmallBchatEditText"
+                    style="@style/BchatAddressEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:hint="@string/beldex_address"
                     android:imeOptions="actionNext"
-                    android:inputType="text"
-                    android:maxLength="4"
-                    android:nextFocusDown="@id/beldexAmountEditTxt" />
+                    android:inputType="textMultiLine"
+                    android:nextFocusDown="@id/beldexAmountEditTxt"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <ImageView
@@ -108,7 +107,6 @@
                     android:hint="@string/hint"
                     android:imeOptions="actionNext"
                     android:inputType="number"
-                    android:maxLength="4"
                     android:nextFocusDown="@id/currencyEditTxt" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>

@@ -8,10 +8,7 @@
     <com.thoughtcrimes.securesms.wallet.send.SpendViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/llNavBar"
-        android:layout_below="@id/llNotice"
-        android:padding="8dp" />
+        android:layout_height="match_parent" />
 
 
 </FrameLayout>

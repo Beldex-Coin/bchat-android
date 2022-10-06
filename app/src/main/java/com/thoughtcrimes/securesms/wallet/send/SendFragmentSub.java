@@ -1,6 +1,7 @@
 package com.thoughtcrimes.securesms.wallet.send;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,18 +12,17 @@ import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
+
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.thoughtcrimes.securesms.data.BarcodeData;
 import com.thoughtcrimes.securesms.data.Crypto;
 import com.thoughtcrimes.securesms.data.TxData;
-import com.thoughtcrimes.securesms.data.UserNotes;
 import com.thoughtcrimes.securesms.model.PendingTransaction;
-import com.thoughtcrimes.securesms.util.Helper;
 import com.thoughtcrimes.securesms.util.OpenAliasHelper;
 import com.thoughtcrimes.securesms.util.ServiceHelper;
+import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -46,13 +46,16 @@ public class SendFragmentSub extends SendWizardFragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private EditText beldexAddressField;
-    private ImageView scanQRCode;
-    private TextInputLayout beldexAddressTxtLayout;
+    ImageView scanQRCode;
+    ImageView addressBook;
+    TextInputLayout beldexAddressTxtLayout;
+    TextInputLayout beldexAmountTxtLayout;
     private boolean resolvingOA = false;
     final private Set<Crypto> possibleCryptos = new HashSet<>();
     private Crypto selectedCrypto = null;
     final static public int MIXIN = 0;
+    public String sendAddress;
+
 
     public static SendFragmentSub newInstance(Listener listener) {
         SendFragmentSub instance = new SendFragmentSub();
@@ -112,12 +115,25 @@ public class SendFragmentSub extends SendWizardFragment {
 
         View view = inflater.inflate(R.layout.fragment_send_new, container, false);
 
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            sendAddress = bundle.getString("send_address", null);
+        }
+        Log.d("Beldex","sendAddress value "+ sendAddress);
         scanQRCode = view.findViewById(R.id.scanQrCode);
-        beldexAddressField = view.findViewById(R.id.beldexAddressEditTxt);
+        addressBook = view.findViewById(R.id.addressBook);
         beldexAddressTxtLayout = view.findViewById(R.id.beldexAddressEditTxtLayout);
+        beldexAmountTxtLayout = view.findViewById(R.id.beldexAmountEditTxtLayout);
         scanQRCode.setOnClickListener(view1 -> {
             onScanListener.onScan();
         });
+        addressBook.setOnClickListener(view1 -> {
+            Intent intent = new Intent(getContext(), AddressBookActivity.class);
+            startActivity(intent);
+        });
+
+
+
         beldexAddressTxtLayout.getEditText().setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
                 String enteredAddress = beldexAddressTxtLayout.getEditText().getText().toString().trim();
@@ -146,36 +162,37 @@ public class SendFragmentSub extends SendWizardFragment {
     @Override
     public void onResume() {
         super.onResume();
-        Timber.d("onResume");
-        //processScannedData();
+        processScannedData();
     }
 
     public void processScannedData(BarcodeData barcodeData) {
-        Log.d("Beldex","ProcessScannedData called");
         sendListener.setBarcodeData(barcodeData);
+        //by hales important
         if (isResumed())
             processScannedData();
     }
     @Override
     public void onResumeFragment() {
         super.onResumeFragment();
-        Timber.d("onResumeFragment()");
        /* etDummy.requestFocus();*/
     }
 
     public void processScannedData() {
         BarcodeData barcodeData = sendListener.getBarcodeData();
         if (barcodeData != null) {
-            Timber.d("GOT DATA");
+            Log.d("Beldex","ProcessScannedData GOT DATA");
             // by hales
-              if (!Helper.ALLOW_SHIFT && (barcodeData.asset != Crypto.XMR)) {
+            /*  if (!Helper.ALLOW_SHIFT && (barcodeData.asset != Crypto.XMR)) {
             if (!Helper.ALLOW_SHIFT) {
-                Timber.d("BUT ONLY XMR SUPPORTED");
+                Log.d("Beldex","ProcessScannedData BUT ONLY XMR SUPPORTED");
                 barcodeData = null;
                 sendListener.setBarcodeData(barcodeData);
-            }
+            }*/
             if (barcodeData.address != null) {
+                Log.d("Beldex","barcodeData "+ barcodeData.address);
+              /*  Toast.makeText(getContext(),barcodeData.address,Toast.LENGTH_SHORT).show();*/
                 beldexAddressTxtLayout.getEditText().setText(barcodeData.address);
+                beldexAmountTxtLayout.getEditText().setText(barcodeData.amount);
                 // by hales
                 possibleCryptos.clear();
                 selectedCrypto = null;
@@ -216,8 +233,9 @@ public class SendFragmentSub extends SendWizardFragment {
                 /*etNotes.getEditText().getText().clear();
                 etNotes.setError(null);*/
             }
-        } else
-            Timber.d("barcodeData=null");
+        //by hales
+        /*} else
+            Log.d("Beldex","ProcessScannedData barcodeData=null");*/
     }
     private boolean checkAddressNoError() {
         return selectedCrypto != null;

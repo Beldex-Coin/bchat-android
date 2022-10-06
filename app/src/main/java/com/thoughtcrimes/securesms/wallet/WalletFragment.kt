@@ -1,13 +1,18 @@
 package com.thoughtcrimes.securesms.wallet
 
 import android.content.Context
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.util.Log
 import android.view.*
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.get
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
@@ -331,13 +336,18 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         activityCallback!!.forceUpdate()
 
         //SteveJosephh21
-        /*binding.filterTransactionsIcon.setOnClickListener {
+        binding.filterTransactionsIcon.setOnClickListener {
             val popupMenu = PopupMenu(activity?.applicationContext, it)
             popupMenu.inflate(R.menu.filter_transactions_popup_menu)
-            *//*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 popupMenu.setForceShowIcon(true)
-            }*//*
-            popupMenu.setHe
+            }*/
+            val spanString = SpannableString(popupMenu.menu[0].title.toString())
+            spanString.setSpan(StyleSpan(Typeface.BOLD), 0, spanString.length, 0)
+            spanString.setSpan( ForegroundColorSpan(ResourcesCompat
+                .getColor(resources, R.color.text, null)),
+                0, spanString.length, 0)
+            popupMenu.menu[0].title = spanString
             popupMenu.menu[0].isEnabled =false
             popupMenu.menu[1].isChecked = popupMenu.menu[1].isChecked
             popupMenu.menu[2].isChecked = popupMenu.menu[2].isChecked
@@ -350,7 +360,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 false
             }
             popupMenu.show()
-        }*/
+        }
         return binding.root
     }
 
@@ -600,11 +610,12 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             }
 
             //SteveJosephh21
+            Log.d("adapter!!.itemCount","${adapter!!.itemCount}")
             if(adapter!!.itemCount>0){
-                binding.transactionLayoutCardView.visibility=View.VISIBLE
+                binding.transactionList.visibility=View.VISIBLE
                 binding.emptyContainerLayout.visibility = View.GONE
             }else{
-                binding.transactionLayoutCardView.visibility=View.GONE
+                binding.transactionList.visibility=View.GONE
                 binding.emptyContainerLayout.visibility = View.VISIBLE
             }
         }

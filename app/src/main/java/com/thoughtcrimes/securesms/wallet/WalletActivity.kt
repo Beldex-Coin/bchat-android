@@ -90,7 +90,8 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             .add(R.id.fragment_container, walletFragment, WalletFragment::class.java.name).commit()
         Timber.d("fragment added")
 
-        startWalletService()
+        //Important
+        //startWalletService()
         Timber.d("onCreate() done.")
 
     }
@@ -761,6 +762,9 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             }
             WalletManager.getInstance().setDaemon(node)
             if (save) saveSelectedNode()
+
+            //SteveJosephh21
+            startWalletService()
         }
     }
 

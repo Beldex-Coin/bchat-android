@@ -1,6 +1,7 @@
 package com.thoughtcrimes.securesms.wallet
 
 import android.content.Context
+import android.provider.Settings.Global.getString
 import android.text.Html
 import android.text.Spanned
 import android.view.LayoutInflater
@@ -128,6 +129,9 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
         //var ivTxType: ImageView
         private var tvAmount: TextView = itemView.findViewById(R.id.transaction_amount)
         private var tvFee: TextView = itemView.findViewById(R.id.transaction_fee)
+        private var tvAddress: TextView = itemView.findViewById(R.id.transaction_recipient_address)
+        private var txId: TextView = itemView.findViewById(R.id.transaction_id)
+        private var tvTxBlockheight: TextView = itemView.findViewById(R.id.transaction_height)
 
         //var tvPaymentId: TextView
         private var tvDateTime: TextView = itemView.findViewById(R.id.transaction_date_and_time)
@@ -165,6 +169,17 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
             } else {
                 tvAmount.text = context!!.getString(R.string.tx_list_amount_positive, displayAmount)
             }
+
+            tvAddress.text = infoItem!!.address
+            txId.text = infoItem!!.hash
+            if (infoItem!!.isFailed) {
+                tvTxBlockheight.text = context!!.getString(R.string.tx_failed)
+            } else if (infoItem!!.isPending) {
+                tvTxBlockheight.text = context!!.getString(R.string.tx_pending)
+            } else {
+                tvTxBlockheight.text = "" + infoItem!!.blockheight
+            }
+
             if (infoItem!!.fee > 0) {
                 val fee: String = Helper.getDisplayAmount(infoItem!!.fee, Helper.DISPLAY_DIGITS_INFO)
                 tvFee.text = context!!.getString(R.string.tx_list_fee, fee)

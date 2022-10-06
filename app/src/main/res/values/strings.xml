@@ -1166,4 +1166,6 @@
     <string name="incoming" translatable="false">Incoming</string>
     <string name="outgoing" translatable="false">Outgoing</string>
     <string name="transactions_by_date" translatable="false">Transactions by Date</string>
+    <string name="tx_failed" translatable="false">Failed</string>
+    <string name="tx_pending" translatable="false">Pending</string>
 </resources>

@@ -3,8 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/filter_by"
-        android:title="@string/filter_by"
-        android:textStyle="bold"/>
+        android:title="@string/filter_by"/>
     <item
         android:id="@+id/incoming"
         android:checkable="true"

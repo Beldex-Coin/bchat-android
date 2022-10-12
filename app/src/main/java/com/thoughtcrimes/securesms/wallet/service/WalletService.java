@@ -113,6 +113,7 @@ public class WalletService extends Service {
                         // we want to see our transactions as they come in
                         wallet.refreshHistory();
                         Log.d("Beldex","newBeldex() height "+height + ", "+wallet.getDaemonBlockChainHeight());
+                        Log.d("Beldex","newBlock() Value of getHistory "+ wallet.getHistory().getAll().toArray());
                         Log.d("Beldex","newBlock() getHistory() "+wallet.getHistory().getAll().toString());
                         int txCount = wallet.getHistory().getCount();
                         Log.d("Beldex","newBlock() seed "+wallet.getSeed());
@@ -407,13 +408,58 @@ public class WalletService extends Service {
         BchatHandlerThread thread = new BchatHandlerThread("WalletService",
                 Process.THREAD_PRIORITY_BACKGROUND);
         thread.start();
+        /*Task task =new Task(Process.THREAD_PRIORITY_BACKGROUND);
+        ThreadUtils.queue(task);*/
 
         // Get the HandlerThread's Looper and use it for our Handler
         final Looper serviceLooper = thread.getLooper();
+
         mServiceHandler = new WalletService.ServiceHandler(serviceLooper);
 
         Timber.d("Service created");
     }
+
+    /*static class Task implements Runnable {
+        static public final long THREAD_STACK_SIZE = 5 * 1024 * 1024;
+        private int mPriority;
+        private int mTid = -1;
+        private Looper mLooper;
+
+        public Task(int threadPriorityBackground) {
+            this.mPriority = threadPriorityBackground;
+        }
+
+        Looper getLooper() {
+           *//* if (!isAlive()) {
+                return null;
+            }*//*
+
+            // If the thread has been started, wait until the looper has been created.
+            synchronized (this) {
+                while (mLooper == null) {
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+                    }
+                }
+            }
+            return mLooper;
+        }
+
+        public void run() {
+
+            mTid = Process.myTid();
+            Looper.prepare();
+            synchronized (this) {
+                mLooper = Looper.myLooper();
+                notifyAll();
+            }
+            Process.setThreadPriority(mPriority);
+            //onLooperPrepared();
+            Looper.loop();
+            mTid = -1;
+        }
+    }*/
 
     @Override
     public void onDestroy() {

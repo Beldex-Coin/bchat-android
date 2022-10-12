@@ -1168,4 +1168,6 @@
     <string name="transactions_by_date" translatable="false">Transactions by Date</string>
     <string name="tx_failed" translatable="false">Failed</string>
     <string name="tx_pending" translatable="false">Pending</string>
+    <string name="tx_status_sent" translatable="false">Sent</string>
+    <string name="tx_status_received" translatable="false">Received</string>
 </resources>

@@ -401,13 +401,13 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
     private fun updateStatus(wallet: Wallet) {
         if (!isAdded) return
-        Log.d(" sync updateStatus()","true")
+        Log.d("Beldex", "updateStatus()")
         if (walletTitle == null || accountIdx != wallet.accountIndex) {
             accountIdx = wallet.accountIndex
             setActivityTitle(wallet)
         }
-        Log.d("Beldex : sync updateStatus() wallet balance ",wallet.balance.toString())
         balance = wallet.balance
+        Log.d("Beldex", "value of balance $balance")
         unlockedBalance = wallet.unlockedBalance
         refreshBalance()
         val sync: String
@@ -456,10 +456,11 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         showUnconfirmed(unconfirmedBdx)
 
         val amountBdx: Double = Helper.getDecimalAmount(unlockedBalance).toDouble()
-
-        Log.d("Beldex","value of amountxmr" +amountBdx);
+        Log.d("Beldex", "value of amountxmr$amountBdx")
+        Log.d("Beldex", "value of helper amountxmr" + Helper.getFormattedAmount(amountBdx, true))
+        /*Log.d("Beldex","value of amountxmr" +amountBdx);
         Log.d("Beldex","value of helper amountxmr" +Helper.getFormattedAmount(amountBdx, true));
-        Log.d("sync refreshBalance()",amountBdx.toString())
+        Log.d("sync refreshBalance()",amountBdx.toString())*/
         showBalance(Helper.getFormattedAmount(amountBdx, true))
     }
 
@@ -584,12 +585,15 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
     fun onRefreshed(wallet: Wallet, full: Boolean) {
         var full = full
+        /*var full = full
         Log.d("sync onRefreshed(%b)", full.toString())
-        Log.d("Beldex","onRefreshed(%b) "+full+", "+wallet.getBalance(0))
+        Log.d("Beldex","onRefreshed(%b) "+full+", "+wallet.getBalance(0))*/
+        Log.d("Beldex", "onRefreshed(%b) " + full + ", " + wallet.accountIndex)
         if (adapter!!.needsTransactionUpdateOnNewBlock()) {
             wallet.refreshHistory()
             full = true
-            Log.d("Beldex","onRefreshed(%b) if "+full);
+            /*Log.d("Beldex","onRefreshed(%b) if "+full);*/
+            Log.d("Beldex", "onRefreshed(%b) if " + full + ", " + wallet.accountIndex)
         }
         if (full) {
             val list: MutableList<TransactionInfo> = ArrayList()

@@ -1115,6 +1115,8 @@
     <string name="status_wallet_disconnected" translatable="false">Disconnected</string>
 
     <string name="receive_transition_name" translatable="false">receive_transition</string>
+    <string name="send_btn_transition_name" translatable="false">send_btn_transition</string>
+    <string name="receive_btn_transition_name" translatable="false">receive_btn_transition</string>
     <string name="send_transition_name" translatable="false">send_transition</string>
     <string name="nfc_tag_read_what" translatable="false">I don\'t know what you want!</string>
     <string name="message_camera_not_permitted" translatable="false">No camera = No QR scanning!</string>

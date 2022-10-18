@@ -28,7 +28,7 @@
         android:textStyle="bold"
         android:textSize="25sp"
         android:textColor="@color/text"
-        android:visibility="visible"
+        android:visibility="invisible"
         tools:text="@string/my_wallet" />
     <LinearLayout
         android:layout_width="0dp"

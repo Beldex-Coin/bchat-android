@@ -24,6 +24,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"/>
         <androidx.cardview.widget.CardView
+            android:id="@+id/currentNodeCardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardBackgroundColor="@color/wallet_card_color"
@@ -33,16 +34,19 @@
             android:layout_marginEnd="20dp"
             android:elevation="5dp">
             <LinearLayout
+                android:id="@+id/currentNodeLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:padding="15dp">
                 <TextView
+                    android:id="@+id/currentNodeTextView"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:text="Current Node"/>
                 <ImageView
+                    android:id="@+id/currentNodeImageView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_arrow_forward"/>
@@ -216,6 +220,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <LinearLayout
+                    android:id="@+id/addressBookLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -231,6 +236,7 @@
                         android:src="@drawable/ic_arrow_forward"/>
                 </LinearLayout>
                 <LinearLayout
+                    android:id="@+id/changePinLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"

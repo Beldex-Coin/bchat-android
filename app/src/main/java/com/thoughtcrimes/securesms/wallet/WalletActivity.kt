@@ -2,21 +2,17 @@ package com.thoughtcrimes.securesms.wallet
 
 import android.content.*
 import android.content.pm.PackageManager
-import android.os.AsyncTask
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.thoughtcrimes.securesms.data.*
 import com.thoughtcrimes.securesms.model.*
-import com.thoughtcrimes.securesms.preferences.SettingsActivity
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.push
-import com.thoughtcrimes.securesms.util.show
 import com.thoughtcrimes.securesms.wallet.listener.OnBlockUpdateListener
 import com.thoughtcrimes.securesms.wallet.listener.OnUriScannedListener
 import com.thoughtcrimes.securesms.wallet.receive.ReceiveFragment
@@ -25,7 +21,6 @@ import com.thoughtcrimes.securesms.wallet.send.SendFragment
 import com.thoughtcrimes.securesms.wallet.service.WalletService
 import com.thoughtcrimes.securesms.wallet.settings.WalletSettings
 import com.thoughtcrimes.securesms.wallet.utils.LegacyStorageHelper
-import com.thoughtcrimes.securesms.wallet.utils.ThemeHelper
 import com.thoughtcrimes.securesms.wallet.widget.Toolbar
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityWalletBinding
@@ -466,6 +461,8 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         if (newFragment is ReceiveFragment) transition =
             R.string.receive_transition_name else if (newFragment is SendFragment) transition =
             R.string.send_transition_name else throw IllegalStateException("expecting known transition")
+
+        Log.d("Transition Name ","${getString(transition)}")
         supportFragmentManager.beginTransaction()
             .addSharedElement(view!!, getString(transition))
             .replace(R.id.fragment_container, newFragment)

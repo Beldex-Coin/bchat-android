@@ -153,6 +153,7 @@
                 android:layout_marginStart="25dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
+                android:transitionName="@string/send_btn_transition_name"
                 app:cardBackgroundColor="@color/wallet_card_color"
                 android:layout_height="match_parent">
 
@@ -185,6 +186,7 @@
                 app:cardCornerRadius="10dp"
                 android:elevation="10dp"
                 android:layout_margin="10dp"
+                android:transitionName="@string/receive_btn_transition_name"
                 app:cardBackgroundColor="@color/wallet_card_color"
                 android:layout_height="match_parent">
 

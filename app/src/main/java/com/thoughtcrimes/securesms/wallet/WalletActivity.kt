@@ -64,7 +64,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
         setSupportActionBar(binding.toolbar)
         supportActionBar!!.setDisplayShowTitleEnabled(false)
-        window.statusBarColor = ContextCompat.getColor(this, R.color.wallet_page_background)
+        //window.statusBarColor = ContextCompat.getColor(this, R.color.wallet_page_background)
 
         binding.toolbar.setOnButtonListener { type ->
             when (type) {
@@ -146,7 +146,9 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
                 val walletId = extras.getString(REQUEST_ID)
                 if (walletId != null) {
                     //setTitle(walletId, getString(R.string.status_wallet_connecting));
-                    setTitle(getString(R.string.status_wallet_connecting), "")
+                    //Important
+                    //setTitle(getString(R.string.status_wallet_connecting), "")
+                    setTitle(getString(R.string.my_wallet), "")
                 }
             }
             updateProgress()
@@ -160,8 +162,10 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             // see this happen.
             mBoundService = null
             //setTitle(getString(R.string.wallet_activity_name), getString(R.string.status_wallet_disconnected));
-            setTitle(getString(R.string.status_wallet_disconnected), "")
-            Timber.d("DISCONNECTED")
+            //Important
+            //setTitle(getString(R.string.status_wallet_disconnected), "")
+            setTitle(getString(R.string.my_wallet), "")
+            Log.d("DISCONNECTED","")
         }
     }
 

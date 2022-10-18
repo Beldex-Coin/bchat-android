@@ -117,8 +117,8 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         exitTransition = null
         reenterTransition = null
         Timber.d("onResume()")
-        activityCallback!!.setTitle(walletTitle, "")
-        activityCallback!!.setToolbarButton(Toolbar.BUTTON_NONE)
+        //activityCallback!!.setTitle(walletTitle, "")
+        activityCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
         binding.walletName.text = walletTitle
         //Important
         //tvWalletAccountStatus.setText(walletSubtitle)
@@ -256,8 +256,8 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        if (activityCallback!!.hasWallet())
-            inflater.inflate(R.menu.wallet_menu, menu)
+        /*if (activityCallback!!.hasWallet())
+            inflater.inflate(R.menu.wallet_menu, menu)*/
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -390,7 +390,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         binding.transactionLayoutCardView.visibility = View.VISIBLE
         //Important
         //tvWalletAccountStatus.setText(walletSubtitle)
-        activityCallback!!.setTitle(walletTitle, "")
+        activityCallback!!.setTitle(getString(R.string.my_wallet), "")
         Timber.d("wallet title is %s", walletTitle)
     }
 

@@ -9,7 +9,6 @@
 
     <com.thoughtcrimes.securesms.wallet.widget.Toolbar
         android:id="@+id/toolbar"
-        style="@style/WalletToolbar"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
         android:background="@color/wallet_page_background"

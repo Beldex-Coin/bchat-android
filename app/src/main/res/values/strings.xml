@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE resources [<!ENTITY nbsp "&#160;">]>
 <resources>
     <string name="app_name" translatable="false">BChat Messenger</string>
     <string name="yes" translatable="false">Yes</string>
@@ -1102,6 +1102,37 @@
     <string name="pin_code_fingerprint_success">Fingerprint recognized</string>
     <string name="pin_code_fingerprint_not_recognized">Fingerprint not recognized. Try again</string>
 
+    <string name="tx_item_transition_name" translatable="false">tx_transition_%1$s</string>
+    <string name="tx_list_amount_negative" translatable="false">- %1$s</string>
+    <string name="tx_list_amount_positive" translatable="false">+ %1$s</string>
+    <string name="tx_list_fee" translatable="false">- Fee %1$s</string>
+    <string name="tx_list_amount_failed" translatable="false">(%1$s)</string>
+    <string name="tx_list_failed_text" translatable="false">failed</string>
+    <string name="tx_details_notes" translatable="false">&lt;span style=\"background-color: #%1$s; color: #%2$s;\"&gt;&nbsp;%3$s&nbsp;&lt;/span&gt;%4$s</string>
+    <string name="service_description" translatable="false">BChat Wallet Service</string>
+    <string name="status_wallet_loading" translatable="false">Loading Wallet &#8230;</string>
+    <string name="status_wallet_connecting" translatable="false">Connecting &#8230;</string>
+    <string name="status_wallet_disconnected" translatable="false">Disconnected</string>
+
+    <string name="receive_transition_name" translatable="false">receive_transition</string>
+    <string name="send_transition_name" translatable="false">send_transition</string>
+    <string name="nfc_tag_read_what" translatable="false">I don\'t know what you want!</string>
+    <string name="message_camera_not_permitted" translatable="false">No camera = No QR scanning!</string>
+    <string name="send_qr_address_invalid" translatable="false">Not a valid payment QR code</string>
+    <string name="send_qr_invalid" translatable="false">Not a QR Code</string>
+    <string name="status_wallet_unloaded" translatable="false">Wallet saved</string>
+    <string name="status_wallet_unload_failed" translatable="false">Wallet save failed!</string>
+    <string name="status_transaction_failed" translatable="false">Transaction failed: %1$s</string>
+    <string name="status_wallet_connect_failed" translatable="false">Node connection failed!\nCheck username/password</string>
+    <string name="status_wallet_connect_wrong_version" translatable="false">Node version incompatible - please upgrade!</string>
+    <string name="status_syncing" translatable="false">Scanning:</string>
+    <string name="bdx_unconfirmed_amount" translatable="false">+ %1$s BDX Ledger balance</string>
+    <string name="status_remaining" translatable="false">Blocks remaining</string>
+    <string name="status_synced" translatable="false">Synced:</string>
+    <string name="menu_rescan" translatable="false">Rescan</string>
+    <string name="service_busy" translatable="false">I am still busy with your last wallet &#8230;</string>
+    <string name="service_progress" translatable="false">Wallets are loading &#8230;\nPlease wait...</string>
+
     <string name="node_test_error" translatable="false">CONNECTION ERROR %1$d</string>
     <string name="node_general_error" translatable="false">CONNECTION ERROR</string>
     <string name="node_auth_error" translatable="false">AUTHENTICATION FAILED</string>
@@ -1129,14 +1160,14 @@
     <string name="toast_default_nodes" translatable="false">Restoring already in progress…</string>
     <string name="node_wrong_net" translatable="false">Node scanning only for mainnet!</string>
     <string name="switch_node_alert" translatable="false"> Are you sure you want to Switch to another node? </string>
-    <string name="send_qr_invalid" translatable="false">Not a QR Code</string>
-    <string name="send_qr_address_invalid" translatable="false">Not a valid payment QR code</string>
     <string name="title_activity_send_new" translatable="false">SendActivityNew</string>
-    <string name="nfc_tag_read_what" translatable="false">I don\'t know what you want!</string>
-    <string name="send_address_invalid" translatable="false">Not a valid address</string>
-    <string name="send_address_not_openalias" translatable="false">OpenAlias address not available</string>
-    <string name="send_address_openalias" translatable="false">OpenAlias secure &#x2714;</string>
-    <string name="send_address_resolve_openalias" translatable="false">Resolving OpenAlias&#8230;</string>
 
-
+    <string name="filter_by" translatable="false">Filter By</string>
+    <string name="incoming" translatable="false">Incoming</string>
+    <string name="outgoing" translatable="false">Outgoing</string>
+    <string name="transactions_by_date" translatable="false">Transactions by Date</string>
+    <string name="tx_failed" translatable="false">Failed</string>
+    <string name="tx_pending" translatable="false">Pending</string>
+    <string name="tx_status_sent" translatable="false">Sent</string>
+    <string name="tx_status_received" translatable="false">Received</string>
 </resources>

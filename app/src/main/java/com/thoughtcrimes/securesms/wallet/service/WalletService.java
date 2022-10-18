@@ -107,7 +107,6 @@ public class WalletService extends Service {
                 if (observer != null) {
                     boolean fullRefresh = false;
                     updateDaemonState(wallet, wallet.isSynchronized() ? height : 0);
-                    Log.d("Beldex","newBlock() "+wallet.isSynchronized());
                     if (!wallet.isSynchronized()) {
                         updated = true;
                         // we want to see our transactions as they come in
@@ -115,8 +114,6 @@ public class WalletService extends Service {
                         Log.d("Beldex","newBeldex() height "+height + ", "+wallet.getDaemonBlockChainHeight());
                         Log.d("Beldex","newBlock() getHistory() "+wallet.getHistory().getAll().toString());
                         int txCount = wallet.getHistory().getCount();
-                        Log.d("Beldex","newBlock() seed "+wallet.getSeed());
-                        Log.d("Beldex","newBlock() key "+wallet.getAddress());
                         Log.d("Beldex","newBlock() txCount "+txCount);
                         if (txCount > lastTxCount) {
                             // update the transaction list only if we have more than before
@@ -126,7 +123,6 @@ public class WalletService extends Service {
                         }
                     }
                     if (observer != null)
-                        Log.d("Beldex","newBlock()");
                         observer.onRefreshed(wallet, fullRefresh);
                 }
             }
@@ -407,13 +403,58 @@ public class WalletService extends Service {
         BchatHandlerThread thread = new BchatHandlerThread("WalletService",
                 Process.THREAD_PRIORITY_BACKGROUND);
         thread.start();
+        /*Task task =new Task(Process.THREAD_PRIORITY_BACKGROUND);
+        ThreadUtils.queue(task);*/
 
         // Get the HandlerThread's Looper and use it for our Handler
         final Looper serviceLooper = thread.getLooper();
+
         mServiceHandler = new WalletService.ServiceHandler(serviceLooper);
 
         Timber.d("Service created");
     }
+
+    /*static class Task implements Runnable {
+        static public final long THREAD_STACK_SIZE = 5 * 1024 * 1024;
+        private int mPriority;
+        private int mTid = -1;
+        private Looper mLooper;
+
+        public Task(int threadPriorityBackground) {
+            this.mPriority = threadPriorityBackground;
+        }
+
+        Looper getLooper() {
+           *//* if (!isAlive()) {
+                return null;
+            }*//*
+
+            // If the thread has been started, wait until the looper has been created.
+            synchronized (this) {
+                while (mLooper == null) {
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+                    }
+                }
+            }
+            return mLooper;
+        }
+
+        public void run() {
+
+            mTid = Process.myTid();
+            Looper.prepare();
+            synchronized (this) {
+                mLooper = Looper.myLooper();
+                notifyAll();
+            }
+            Process.setThreadPriority(mPriority);
+            //onLooperPrepared();
+            Looper.loop();
+            mTid = -1;
+        }
+    }*/
 
     @Override
     public void onDestroy() {
@@ -525,10 +566,13 @@ public class WalletService extends Service {
 
     private Wallet loadWallet(String walletName, String walletPassword) {
         Wallet wallet = openWallet(walletName, walletPassword);
+        long walletRestoreHeight = wallet.getRestoreHeight();
         if (wallet != null) {
             //Log.d("Using daemon %s", WalletManager.getInstance().getDaemonAddress());
             showProgress(55);
             wallet.init(0);
+            Log.d("Beldex","init value of wallet restoreheight loadwallet 4 "+ wallet.getRestoreHeight());
+            wallet.setRestoreHeight(walletRestoreHeight);
             showProgress(90);
         }
         return wallet;

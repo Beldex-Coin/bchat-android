@@ -686,7 +686,7 @@ Java_com_thoughtcrimes_securesms_model_Wallet_initJ(JNIEnv *env, jobject instanc
     Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     bool status = wallet->init(_daemon_address, (uint64_t) upper_transaction_size_limit,
                                _daemon_username,
-                               _daemon_password);
+                               _daemon_password,false);
     env->ReleaseStringUTFChars(daemon_address, _daemon_address);
     env->ReleaseStringUTFChars(daemon_username, _daemon_username);
     env->ReleaseStringUTFChars(daemon_password, _daemon_password);

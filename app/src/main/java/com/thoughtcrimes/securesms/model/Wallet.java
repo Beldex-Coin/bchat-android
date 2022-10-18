@@ -427,15 +427,16 @@ public class Wallet {
     public TransactionHistory getHistory() {
         if (history == null) {
             history = new TransactionHistory(getHistoryJ(), accountIndex);
-            Log.d("Beldex","newBlock() - history if "+history.getAll().toArray());
+            Log.d("Beldex","value of history"+ history.getAll().toArray());
         }
-        Log.d("Beldex","newBlock() - history "+history.getAll().toArray());
+        Log.d("Beldex","value of history 1"+ history.getAll().toArray());
         return history;
     }
 
     private native long getHistoryJ();
 
     public void refreshHistory() {
+        Log.d("Beldex","refresh size in Wallet class"+this.getAddress().toString());
         getHistory().refreshWithNotes(this);
     }
 

@@ -4,6 +4,7 @@ import android.content.Context
 import android.provider.Settings.Global.getString
 import android.text.Html
 import android.text.Spanned
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -131,7 +132,10 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
         private var tvFee: TextView = itemView.findViewById(R.id.transaction_fee)
         private var tvAddress: TextView = itemView.findViewById(R.id.transaction_recipient_address)
         private var txId: TextView = itemView.findViewById(R.id.transaction_id)
-        private var tvTxBlockheight: TextView = itemView.findViewById(R.id.transaction_height)
+        private var tvTxBlockHeight: TextView = itemView.findViewById(R.id.transaction_height)
+        private var tvTxStatus: TextView = itemView.findViewById(R.id.transaction_status)
+        private var tvTxStatusIcon: ImageView = itemView.findViewById(R.id.transaction_status_icon)
+        private var tvDateTimeHead: TextView = itemView.findViewById(R.id.transaction_date_and_time_head)
 
         //var tvPaymentId: TextView
         private var tvDateTime: TextView = itemView.findViewById(R.id.transaction_date_and_time)
@@ -162,23 +166,28 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
             } else {
                 //ivTxType.visibility = View.GONE
             }
-            val displayAmount: String =
-                Helper.getDisplayAmount(infoItem!!.amount, Helper.DISPLAY_DIGITS_INFO)
+            val displayAmount: String = Helper.getDisplayAmount(infoItem!!.amount, Helper.DISPLAY_DIGITS_INFO)
+            Log.d("infoItem!!.direction","${infoItem!!.direction}")
             if (infoItem!!.direction === TransactionInfo.Direction.Direction_Out) {
+                tvTxStatus.text = context!!.getString(R.string.tx_status_sent)
+                tvTxStatusIcon.setImageResource(R.drawable.ic_wallet_send_button)
                 tvAmount.text = context!!.getString(R.string.tx_list_amount_negative, displayAmount)
             } else {
+                tvTxStatus.text = context!!.getString(R.string.tx_status_received)
+                tvTxStatusIcon.setImageResource(R.drawable.ic_wallet_receive_button)
                 tvAmount.text = context!!.getString(R.string.tx_list_amount_positive, displayAmount)
             }
 
             tvAddress.text = infoItem!!.address
             txId.text = infoItem!!.hash
             if (infoItem!!.isFailed) {
-                tvTxBlockheight.text = context!!.getString(R.string.tx_failed)
+                tvTxBlockHeight.text = context!!.getString(R.string.tx_failed)
             } else if (infoItem!!.isPending) {
-                tvTxBlockheight.text = context!!.getString(R.string.tx_pending)
+                tvTxBlockHeight.text = context!!.getString(R.string.tx_pending)
             } else {
-                tvTxBlockheight.text = "" + infoItem!!.blockheight
+                tvTxBlockHeight.text = "" + infoItem!!.blockheight
             }
+            tvDateTimeHead.text = getDateTime(infoItem!!.timestamp)
 
             if (infoItem!!.fee > 0) {
                 val fee: String = Helper.getDisplayAmount(infoItem!!.fee, Helper.DISPLAY_DIGITS_INFO)

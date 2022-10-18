@@ -401,13 +401,13 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
     private fun updateStatus(wallet: Wallet) {
         if (!isAdded) return
-        Log.d(" sync updateStatus()","true")
+        Log.d("Beldex", "updateStatus()")
         if (walletTitle == null || accountIdx != wallet.accountIndex) {
             accountIdx = wallet.accountIndex
             setActivityTitle(wallet)
         }
-        Log.d("Beldex : sync updateStatus() wallet balance ",wallet.balance.toString())
         balance = wallet.balance
+        Log.d("Beldex", "value of balance $balance")
         unlockedBalance = wallet.unlockedBalance
         refreshBalance()
         val sync: String
@@ -456,10 +456,11 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         showUnconfirmed(unconfirmedBdx)
 
         val amountBdx: Double = Helper.getDecimalAmount(unlockedBalance).toDouble()
-
-        Log.d("Beldex","value of amountxmr" +amountBdx);
+        Log.d("Beldex", "value of amountxmr$amountBdx")
+        Log.d("Beldex", "value of helper amountxmr" + Helper.getFormattedAmount(amountBdx, true))
+        /*Log.d("Beldex","value of amountxmr" +amountBdx);
         Log.d("Beldex","value of helper amountxmr" +Helper.getFormattedAmount(amountBdx, true));
-        Log.d("sync refreshBalance()",amountBdx.toString())
+        Log.d("sync refreshBalance()",amountBdx.toString())*/
         showBalance(Helper.getFormattedAmount(amountBdx, true))
     }
 
@@ -584,21 +585,16 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
     fun onRefreshed(wallet: Wallet, full: Boolean) {
         var full = full
-        Log.d("sync onRefreshed(%b)", full.toString())
-        Log.d("Beldex","onRefreshed(%b) "+full+", "+wallet.getBalance(0))
         if (adapter!!.needsTransactionUpdateOnNewBlock()) {
             wallet.refreshHistory()
             full = true
-            Log.d("Beldex","onRefreshed(%b) if "+full);
         }
         if (full) {
             val list: MutableList<TransactionInfo> = ArrayList()
             val streetHeight: Long = activityCallback!!.streetModeHeight
-            Log.d(" sync StreetHeight=%d", streetHeight.toString())
             wallet.refreshHistory()
             for (info in wallet.history.all) {
                 //Log.d("TxHeight=%d, Label=%s", info.blockheight.toString(), info.subaddressLabel)
-                Log.d("sync TxHeight=%d, Label=%s", "${info.blockheight.toString()}, ${info.subaddressLabel}")
                 if ((info.isPending || info.blockheight >= streetHeight)
                     && !dismissedTransactions.contains(info.hash)
                 ) list.add(info)
@@ -610,7 +606,6 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             }
 
             //SteveJosephh21
-            Log.d("adapter!!.itemCount","${adapter!!.itemCount}")
             if(adapter!!.itemCount>0){
                 binding.transactionList.visibility=View.VISIBLE
                 binding.emptyContainerLayout.visibility = View.GONE

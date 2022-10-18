@@ -84,7 +84,7 @@
                         android:layout_weight="2"
                         android:gravity="center|start"
                         android:layout_height="match_parent"
-                        android:text="Current Node"/>
+                        android:text="Display Balance As"/>
                     <TextView
                         android:layout_width="0dp"
                         android:layout_weight="1"

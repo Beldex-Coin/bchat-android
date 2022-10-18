@@ -1129,6 +1129,7 @@
     <string name="bdx_unconfirmed_amount" translatable="false">+ %1$s BDX Ledger balance</string>
     <string name="status_remaining" translatable="false">Blocks remaining</string>
     <string name="status_synced" translatable="false">Synced:</string>
+    <string name="status_synchronized" translatable="false">Synchronized</string>
     <string name="menu_rescan" translatable="false">Rescan</string>
     <string name="service_busy" translatable="false">I am still busy with your last wallet &#8230;</string>
     <string name="service_progress" translatable="false">Wallets are loading &#8230;\nPlease wait...</string>

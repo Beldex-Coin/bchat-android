@@ -28,8 +28,8 @@ public class Toolbar extends MaterialToolbar {
     TextView toolbarTitle;
     //TextView toolbarSubtitle;
     ImageButton exitButton;
-    ImageView toolBarRescan;
-    ImageView toolBarSettings;
+    public ImageView toolBarRescan;
+    public ImageView toolBarSettings;
 
     public Toolbar(Context context) {
         super(context);

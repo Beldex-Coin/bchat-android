@@ -107,17 +107,13 @@ public class WalletService extends Service {
                 if (observer != null) {
                     boolean fullRefresh = false;
                     updateDaemonState(wallet, wallet.isSynchronized() ? height : 0);
-                    Log.d("Beldex","newBlock() "+wallet.isSynchronized());
                     if (!wallet.isSynchronized()) {
                         updated = true;
                         // we want to see our transactions as they come in
                         wallet.refreshHistory();
                         Log.d("Beldex","newBeldex() height "+height + ", "+wallet.getDaemonBlockChainHeight());
-                        Log.d("Beldex","newBlock() Value of getHistory "+ wallet.getHistory().getAll().toArray());
                         Log.d("Beldex","newBlock() getHistory() "+wallet.getHistory().getAll().toString());
                         int txCount = wallet.getHistory().getCount();
-                        Log.d("Beldex","newBlock() seed "+wallet.getSeed());
-                        Log.d("Beldex","newBlock() key "+wallet.getAddress());
                         Log.d("Beldex","newBlock() txCount "+txCount);
                         if (txCount > lastTxCount) {
                             // update the transaction list only if we have more than before
@@ -127,7 +123,6 @@ public class WalletService extends Service {
                         }
                     }
                     if (observer != null)
-                        Log.d("Beldex","newBlock()");
                         observer.onRefreshed(wallet, fullRefresh);
                 }
             }
@@ -571,10 +566,13 @@ public class WalletService extends Service {
 
     private Wallet loadWallet(String walletName, String walletPassword) {
         Wallet wallet = openWallet(walletName, walletPassword);
+        long walletRestoreHeight = wallet.getRestoreHeight();
         if (wallet != null) {
             //Log.d("Using daemon %s", WalletManager.getInstance().getDaemonAddress());
             showProgress(55);
             wallet.init(0);
+            Log.d("Beldex","init value of wallet restoreheight loadwallet 4 "+ wallet.getRestoreHeight());
+            wallet.setRestoreHeight(walletRestoreHeight);
             showProgress(90);
         }
         return wallet;

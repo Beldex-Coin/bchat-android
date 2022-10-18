@@ -585,24 +585,16 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
     fun onRefreshed(wallet: Wallet, full: Boolean) {
         var full = full
-        /*var full = full
-        Log.d("sync onRefreshed(%b)", full.toString())
-        Log.d("Beldex","onRefreshed(%b) "+full+", "+wallet.getBalance(0))*/
-        Log.d("Beldex", "onRefreshed(%b) " + full + ", " + wallet.accountIndex)
         if (adapter!!.needsTransactionUpdateOnNewBlock()) {
             wallet.refreshHistory()
             full = true
-            /*Log.d("Beldex","onRefreshed(%b) if "+full);*/
-            Log.d("Beldex", "onRefreshed(%b) if " + full + ", " + wallet.accountIndex)
         }
         if (full) {
             val list: MutableList<TransactionInfo> = ArrayList()
             val streetHeight: Long = activityCallback!!.streetModeHeight
-            Log.d(" sync StreetHeight=%d", streetHeight.toString())
             wallet.refreshHistory()
             for (info in wallet.history.all) {
                 //Log.d("TxHeight=%d, Label=%s", info.blockheight.toString(), info.subaddressLabel)
-                Log.d("sync TxHeight=%d, Label=%s", "${info.blockheight.toString()}, ${info.subaddressLabel}")
                 if ((info.isPending || info.blockheight >= streetHeight)
                     && !dismissedTransactions.contains(info.hash)
                 ) list.add(info)
@@ -614,7 +606,6 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             }
 
             //SteveJosephh21
-            Log.d("adapter!!.itemCount","${adapter!!.itemCount}")
             if(adapter!!.itemCount>0){
                 binding.transactionList.visibility=View.VISIBLE
                 binding.emptyContainerLayout.visibility = View.GONE

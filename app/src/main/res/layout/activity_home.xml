@@ -574,7 +574,7 @@
                 android:fontFamily="@font/poppins_medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="BChat V1.2.0"
+                android:text="BChat V1.2.1"
                 android:textAlignment="viewEnd"
                 android:textColor="@color/bchat_version"
                 android:textStyle="normal" />

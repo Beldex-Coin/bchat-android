@@ -96,6 +96,17 @@
 
 
       ]
+    },
+    {
+      "title": "1.2.1",
+      "descriptions": [
+        {
+          "description":"- Fix crash issue on first incoming call"
+        },
+        {
+          "description":"- Minor bug fixes"
+        }
+      ]
     }
   ]
 }

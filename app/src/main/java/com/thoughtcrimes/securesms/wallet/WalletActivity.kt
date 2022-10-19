@@ -230,6 +230,8 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         get() = mBoundService!!.daemonHeight
 
     override fun onSendRequest(view: View?) {
+        binding.toolbar.toolBarRescan.visibility=View.VISIBLE
+        binding.toolbar.toolBarSettings.visibility=View.VISIBLE
         SendFragmentSub.newInstance(uri)
             ?.let { replaceFragmentWithTransition(view, it, null, null) }
         uri = null // only use uri once
@@ -257,6 +259,8 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     override fun onWalletReceive(view: View?) {
+        binding.toolbar.toolBarRescan.visibility=View.GONE
+        binding.toolbar.toolBarSettings.visibility=View.GONE
         val address = getWallet().address
         Timber.d("startReceive()")
         val b = Bundle()
@@ -288,6 +292,8 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     override fun setTitle(title: String?, subtitle: String?) {
+        binding.toolbar.toolBarRescan.visibility=View.VISIBLE
+        binding.toolbar.toolBarSettings.visibility=View.VISIBLE
         binding.toolbar.setTitle(title, subtitle)
     }
 

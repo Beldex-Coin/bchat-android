@@ -1,5 +1,6 @@
 package com.thoughtcrimes.securesms.wallet.receive
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -29,6 +30,7 @@ import com.thoughtcrimes.securesms.util.FileProviderUtil
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.wallet.OnBackPressedListener
 import com.thoughtcrimes.securesms.wallet.utils.ThemeHelper
+import com.thoughtcrimes.securesms.wallet.widget.Toolbar
 import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityReceiveBinding
@@ -36,6 +38,7 @@ import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.lang.ClassCastException
 import java.util.HashMap
 
 // TODO: Rename parameter arguments, choose names that match
@@ -82,6 +85,34 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
         fun setTitle(title: String?)
         fun setSubtitle(subtitle: String?)
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        listenerCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
+        listenerCallback!!.setTitle(getString(R.string.activity_receive_page_title))
+    }
+
+    /*override fun onDetach() {
+        Timber.d("onDetach()")
+        if (wallet != null && isMyWallet) {
+            wallet.close()
+            wallet = null
+            isMyWallet = false
+        }
+        super.onDetach()
+    }*/
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is Listener) {
+            listenerCallback = context
+        } else {
+            throw ClassCastException(
+                context.toString()
+                        + " must implement Listener"
+            )
+        }
     }
 
     override fun onCreateView(

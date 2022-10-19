@@ -126,7 +126,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         exitTransition = null
         reenterTransition = null
         Timber.d("onResume()")
-        //activityCallback!!.setTitle(walletTitle, "")
+        activityCallback!!.setTitle(getString(R.string.my_wallet),"")
         activityCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
         binding.walletName.text = walletTitle
         //Important
@@ -429,10 +429,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 val daemonHeight: Long = activityCallback!!.daemonHeight
                 val walletHeight = wallet.blockChainHeight
                 val n = daemonHeight - walletHeight
-                sync =
-                    getString(R.string.status_syncing) + " " + formatter.format(n) + " " + getString(
-                        R.string.status_remaining
-                    )
+                sync = formatter.format(n) + " " + getString(R.string.status_remaining)
                 if (firstBlock == 0L) {
                     firstBlock = walletHeight
                 }
@@ -456,7 +453,6 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             //anchorBehavior.setHideable(true)
         }
         setProgress(sync)
-        // TODO show connected status somewhere
     }
 
     var balanceCurrency = Helper.BASE_CRYPTO
@@ -620,9 +616,11 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
             //SteveJosephh21
             if(adapter!!.itemCount>0){
+                binding.filterTransactionsIcon.visibility=View.VISIBLE
                 binding.transactionList.visibility=View.VISIBLE
                 binding.emptyContainerLayout.visibility = View.GONE
             }else{
+                binding.filterTransactionsIcon.visibility=View.GONE
                 binding.transactionList.visibility=View.GONE
                 binding.emptyContainerLayout.visibility = View.VISIBLE
             }

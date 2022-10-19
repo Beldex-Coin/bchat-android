@@ -117,6 +117,10 @@ class SendActivity : PassphraseRequiredActionBarActivity(),
         return txData
     }
 
+    override fun setOnUriScannedListener(onUriScannedListener: com.thoughtcrimes.securesms.wallet.listener.OnUriScannedListener?) {
+        TODO("Not yet implemented")
+    }
+
     override fun getPrefs(): SharedPreferences {
         return getPreferences(MODE_PRIVATE)
     }

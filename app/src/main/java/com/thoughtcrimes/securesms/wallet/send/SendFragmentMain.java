@@ -340,6 +340,11 @@ public class SendFragmentMain extends Fragment  implements SendFragmentSub.Liste
         return txData;
     }
 
+    @Override
+    public void setOnUriScannedListener(com.thoughtcrimes.securesms.wallet.listener.OnUriScannedListener onUriScannedListener) {
+
+    }
+
     void disableNavigation() {
         spendViewPager.allowSwipe(false);
     }

@@ -1115,6 +1115,8 @@
     <string name="status_wallet_disconnected" translatable="false">Disconnected</string>
 
     <string name="receive_transition_name" translatable="false">receive_transition</string>
+    <string name="send_btn_transition_name" translatable="false">send_btn_transition</string>
+    <string name="receive_btn_transition_name" translatable="false">receive_btn_transition</string>
     <string name="send_transition_name" translatable="false">send_transition</string>
     <string name="nfc_tag_read_what" translatable="false">I don\'t know what you want!</string>
     <string name="message_camera_not_permitted" translatable="false">No camera = No QR scanning!</string>
@@ -1129,6 +1131,7 @@
     <string name="bdx_unconfirmed_amount" translatable="false">+ %1$s BDX Ledger balance</string>
     <string name="status_remaining" translatable="false">Blocks remaining</string>
     <string name="status_synced" translatable="false">Synced:</string>
+    <string name="status_synchronized" translatable="false">Synchronized</string>
     <string name="menu_rescan" translatable="false">Rescan</string>
     <string name="service_busy" translatable="false">I am still busy with your last wallet &#8230;</string>
     <string name="service_progress" translatable="false">Wallets are loading &#8230;\nPlease wait...</string>
@@ -1188,4 +1191,5 @@
     <string name="send_success_title">Done</string>
     <string name="accounts_balance" translatable="false">%1$s BDX</string>
     <string name="xmr_unconfirmed_amount">+ %1$s BDX Ledger balance</string>
+    <string name="my_wallet" translatable="false">My Wallet</string>
 </resources>

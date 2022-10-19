@@ -167,7 +167,8 @@ public class SendFragmentSub extends SendWizardFragment {
         super.onAttach(context);
         if (context instanceof Listener) {
             activityCallback = (Listener) context;
-            activityCallback.setOnUriScannedListener(this);
+            //Important
+            //activityCallback.setOnUriScannedListener(this);
         } else {
             throw new ClassCastException(context.toString()
                     + " must implement ScanListener");

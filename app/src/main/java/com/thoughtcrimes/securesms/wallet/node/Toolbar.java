@@ -61,7 +61,7 @@ public class Toolbar extends MaterialToolbar {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        toolbarImage = findViewById(R.id.toolbarImage);
+        //toolbarImage = findViewById(R.id.toolbarImage);
         /*
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             // the vector image does not work well for androis < Nougat
@@ -70,7 +70,7 @@ public class Toolbar extends MaterialToolbar {
         }*/
 
         toolbarTitle = findViewById(R.id.toolbarTitle);
-        toolbarSubtitle = findViewById(R.id.toolbarSubtitle);
+        //toolbarSubtitle = findViewById(R.id.toolbarSubtitle);
         bCredits = findViewById(R.id.exit_button);
         bCredits.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
@@ -90,11 +90,11 @@ public class Toolbar extends MaterialToolbar {
         toolbarTitle.setText(title);
         if (title != null) {
             Timber.d("Set Title if");
-            toolbarImage.setVisibility(View.INVISIBLE);
+            //toolbarImage.setVisibility(View.INVISIBLE);
             toolbarTitle.setVisibility(View.VISIBLE);
         } else {
             Timber.d("Set Title else");
-            toolbarImage.setVisibility(View.VISIBLE);
+            //toolbarImage.setVisibility(View.VISIBLE);
             toolbarTitle.setVisibility(View.INVISIBLE);
         }
     }
@@ -138,11 +138,11 @@ public class Toolbar extends MaterialToolbar {
     }
 
     public void setSubtitle(String subtitle) {
-        toolbarSubtitle.setText(subtitle);
+        //toolbarSubtitle.setText(subtitle);
         if (subtitle != null) {
-            toolbarSubtitle.setVisibility(View.VISIBLE);
+            //toolbarSubtitle.setVisibility(View.VISIBLE);
         } else {
-            toolbarSubtitle.setVisibility(View.INVISIBLE);
+            //toolbarSubtitle.setVisibility(View.INVISIBLE);
         }
     }
 }

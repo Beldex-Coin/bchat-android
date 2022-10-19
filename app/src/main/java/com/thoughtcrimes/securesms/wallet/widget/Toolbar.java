@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.material.appbar.MaterialToolbar;
@@ -23,10 +24,12 @@ public class Toolbar extends MaterialToolbar {
         onButtonListener = listener;
     }
 
-    TextView toolbarImage;
+    //TextView toolbarImage;
     TextView toolbarTitle;
-    TextView toolbarSubtitle;
+    //TextView toolbarSubtitle;
     ImageButton exitButton;
+    public ImageView toolBarRescan;
+    public ImageView toolBarSettings;
 
     public Toolbar(Context context) {
         super(context);
@@ -59,11 +62,13 @@ public class Toolbar extends MaterialToolbar {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        toolbarImage = findViewById(R.id.toolbarImage);
+        //toolbarImage = findViewById(R.id.toolbarImage);
 
         toolbarTitle = findViewById(R.id.toolbarTitle);
-        toolbarSubtitle = findViewById(R.id.toolbarSubtitle);
+        //toolbarSubtitle = findViewById(R.id.toolbarSubtitle);
         exitButton = findViewById(R.id.exit_button);
+        toolBarRescan = findViewById(R.id.toolBarRescan);
+        toolBarSettings = findViewById(R.id.toolBarSettings);
         exitButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (onButtonListener != null) {
@@ -82,11 +87,11 @@ public class Toolbar extends MaterialToolbar {
         toolbarTitle.setText(title);
         if (title != null) {
             Timber.d("Set Title if");
-            toolbarImage.setVisibility(View.INVISIBLE);
+            //toolbarImage.setVisibility(View.INVISIBLE);
             toolbarTitle.setVisibility(View.VISIBLE);
         } else {
             Timber.d("Set Title else");
-            toolbarImage.setVisibility(View.VISIBLE);
+            //toolbarImage.setVisibility(View.VISIBLE);
             toolbarTitle.setVisibility(View.INVISIBLE);
         }
     }
@@ -124,11 +129,11 @@ public class Toolbar extends MaterialToolbar {
     }
 
     public void setSubtitle(String subtitle) {
-        toolbarSubtitle.setText(subtitle);
+        //toolbarSubtitle.setText(subtitle);
         if (subtitle != null) {
-            toolbarSubtitle.setVisibility(View.VISIBLE);
+            //toolbarSubtitle.setVisibility(View.VISIBLE);
         } else {
-            toolbarSubtitle.setVisibility(View.INVISIBLE);
+            //toolbarSubtitle.setVisibility(View.INVISIBLE);
         }
     }
 }

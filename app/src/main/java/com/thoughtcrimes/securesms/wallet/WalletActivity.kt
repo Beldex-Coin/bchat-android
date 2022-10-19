@@ -2,26 +2,25 @@ package com.thoughtcrimes.securesms.wallet
 
 import android.content.*
 import android.content.pm.PackageManager
-import android.os.AsyncTask
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.thoughtcrimes.securesms.data.*
 import com.thoughtcrimes.securesms.model.*
 import com.thoughtcrimes.securesms.util.Helper
+import com.thoughtcrimes.securesms.util.push
 import com.thoughtcrimes.securesms.wallet.listener.OnBlockUpdateListener
 import com.thoughtcrimes.securesms.wallet.listener.OnUriScannedListener
 import com.thoughtcrimes.securesms.wallet.receive.ReceiveFragment
 import com.thoughtcrimes.securesms.wallet.scanner.ScannerFragment
 import com.thoughtcrimes.securesms.wallet.send.SendFragment
 import com.thoughtcrimes.securesms.wallet.service.WalletService
+import com.thoughtcrimes.securesms.wallet.settings.WalletSettings
 import com.thoughtcrimes.securesms.wallet.utils.LegacyStorageHelper
-import com.thoughtcrimes.securesms.wallet.utils.ThemeHelper
 import com.thoughtcrimes.securesms.wallet.widget.Toolbar
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityWalletBinding
@@ -64,7 +63,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
         setSupportActionBar(binding.toolbar)
         supportActionBar!!.setDisplayShowTitleEnabled(false)
-        window.statusBarColor = ContextCompat.getColor(this, R.color.wallet_page_background)
+        //window.statusBarColor = ContextCompat.getColor(this, R.color.wallet_page_background)
 
         binding.toolbar.setOnButtonListener { type ->
             when (type) {
@@ -83,7 +82,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             }
         }
 
-        showNet(WalletManager.getInstance().networkType)
+        //showNet(WalletManager.getInstance().networkType)
 
         val walletFragment: Fragment = WalletFragment()
         supportFragmentManager.beginTransaction()
@@ -94,9 +93,35 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         //startWalletService()
         Timber.d("onCreate() done.")
 
+        binding.toolbar.toolBarRescan.setOnClickListener {
+            onWalletRescan()
+        }
+
+        binding.toolbar.toolBarSettings.setOnClickListener {
+            openWalletSettings()
+        }
+
     }
 
-    private fun showNet(networkType: NetworkType) {
+    private fun openWalletSettings(){
+        val intent = Intent(this, WalletSettings::class.java)
+        push(intent)
+    }
+
+    private fun onWalletRescan() {
+        try {
+            val walletFragment = getWalletFragment()
+            getWallet().rescanBlockchainAsync()
+            synced = false
+            walletFragment.unsync()
+            invalidateOptionsMenu()
+        } catch (ex: java.lang.ClassCastException) {
+            Timber.d(ex.localizedMessage)
+            // keep calm and carry on
+        }
+    }
+
+    /*private fun showNet(networkType: NetworkType) {
         when (networkType) {
             NetworkType.NetworkType_Mainnet -> binding.toolbar.setBackgroundResource(R.drawable.card_gradiant_background)
             NetworkType.NetworkType_Stagenet ->{
@@ -112,7 +137,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
                 "Unsupported Network: " + WalletManager.getInstance().networkType
             )
         }
-    }
+    }*/
 
     private fun startWalletService() {
         val extras = intent.extras
@@ -146,7 +171,9 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
                 val walletId = extras.getString(REQUEST_ID)
                 if (walletId != null) {
                     //setTitle(walletId, getString(R.string.status_wallet_connecting));
-                    setTitle(getString(R.string.status_wallet_connecting), "")
+                    //Important
+                    //setTitle(getString(R.string.status_wallet_connecting), "")
+                    setTitle(getString(R.string.my_wallet), "")
                 }
             }
             updateProgress()
@@ -160,8 +187,10 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             // see this happen.
             mBoundService = null
             //setTitle(getString(R.string.wallet_activity_name), getString(R.string.status_wallet_disconnected));
-            setTitle(getString(R.string.status_wallet_disconnected), "")
-            Timber.d("DISCONNECTED")
+            //Important
+            //setTitle(getString(R.string.status_wallet_disconnected), "")
+            setTitle(getString(R.string.my_wallet), "")
+            Log.d("DISCONNECTED","")
         }
     }
 
@@ -432,6 +461,8 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         if (newFragment is ReceiveFragment) transition =
             R.string.receive_transition_name else if (newFragment is SendFragment) transition =
             R.string.send_transition_name else throw IllegalStateException("expecting known transition")
+
+        Log.d("Transition Name ","${getString(transition)}")
         supportFragmentManager.beginTransaction()
             .addSharedElement(view!!, getString(transition))
             .replace(R.id.fragment_container, newFragment)
@@ -719,9 +750,9 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     ////////////////////////////////////////
     ////////////////////////////////////////
-    override fun showNet() {
-        showNet(WalletManager.getInstance().networkType)
-    }
+    /*override fun showNet() {
+        //showNet(WalletManager.getInstance().networkType)
+    }*/
 
     private fun checkServiceRunning(): Boolean {
         return if (WalletService.Running) {
@@ -921,11 +952,12 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
         Timber.d("onResume()-->")
         // wait for WalletService to finish
-        if (WalletService.Running && progressDialog == null) {
+        //Important
+        /*if (WalletService.Running && progressDialog == null) {
             // and show a progress dialog, but only if there isn't one already
             //AsyncWaitForService().execute()
              AsyncWaitForService(this).execute<Int>()
-        }
+        }*/
         //Important
         //if (!Ledger.isConnected()) attachLedger()
     }

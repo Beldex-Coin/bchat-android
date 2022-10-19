@@ -98,6 +98,15 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         //if (isVisible) enableAccountsList(true) //otherwise it is enabled in onResume()
     }
 
+    fun unsync() {
+        if (!activityCallback!!.isWatchOnly) {
+            binding.sendCardViewButton.isEnabled = false
+            //binding.progressBar.show()
+        }
+        //if (isVisible) enableAccountsList(false) //otherwise it is enabled in onResume()
+        firstBlock = 0
+    }
+
     private var walletTitle: String? = null
 
     override fun onAttach(context: Context) {
@@ -117,8 +126,8 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         exitTransition = null
         reenterTransition = null
         Timber.d("onResume()")
-        activityCallback!!.setTitle(walletTitle, "")
-        activityCallback!!.setToolbarButton(Toolbar.BUTTON_NONE)
+        //activityCallback!!.setTitle(walletTitle, "")
+        activityCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
         binding.walletName.text = walletTitle
         //Important
         //tvWalletAccountStatus.setText(walletSubtitle)
@@ -256,8 +265,8 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        if (activityCallback!!.hasWallet())
-            inflater.inflate(R.menu.wallet_menu, menu)
+        /*if (activityCallback!!.hasWallet())
+            inflater.inflate(R.menu.wallet_menu, menu)*/
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -390,7 +399,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         binding.transactionLayoutCardView.visibility = View.VISIBLE
         //Important
         //tvWalletAccountStatus.setText(walletSubtitle)
-        activityCallback!!.setTitle(walletTitle, "")
+        activityCallback!!.setTitle(getString(R.string.my_wallet), "")
         Timber.d("wallet title is %s", walletTitle)
     }
 
@@ -430,7 +439,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 setProgress(x)
 //                ivSynced.setVisibility(View.GONE);
             } else {
-                sync = getString(R.string.status_synced) + " " + formatter.format(wallet.blockChainHeight)
+                sync = getString(R.string.status_synchronized)//getString(R.string.status_synced) + " " + formatter.format(wallet.blockChainHeight)
                 //binding.syncStatus.setTextColor(resources.getColor(R.color.green_color))
                 binding.syncStatus.setTextColor(ContextCompat.getColor(requireActivity().applicationContext,R.color.green_color))
 //                ivSynced.setVisibility(View.VISIBLE);
@@ -575,7 +584,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         fun getOrPopulateFavourites(): MutableSet<NodeInfo>
         fun getNode(): NodeInfo?
         fun setNode(node: NodeInfo?)
-        fun showNet()
+        //fun showNet()
         fun onNodePrefs()
     }
 

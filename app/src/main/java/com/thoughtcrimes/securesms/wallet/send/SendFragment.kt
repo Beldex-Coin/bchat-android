@@ -7,11 +7,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.material.transition.MaterialContainerTransform
 import com.thoughtcrimes.securesms.data.*
 import com.thoughtcrimes.securesms.model.PendingTransaction
 import com.thoughtcrimes.securesms.wallet.WalletActivity
 import com.thoughtcrimes.securesms.wallet.listener.OnUriScannedListener
 import com.thoughtcrimes.securesms.wallet.send.interfaces.SendConfirm
+import com.thoughtcrimes.securesms.wallet.utils.ThemeHelper
 import com.thoughtcrimes.securesms.wallet.widget.Toolbar
 import io.beldex.bchat.R
 import timber.log.Timber
@@ -132,6 +134,17 @@ class SendFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val transform = MaterialContainerTransform()
+        transform.drawingViewId = R.id.fragment_container
+        transform.duration = resources.getInteger(R.integer.tx_item_transition_duration).toLong()
+        transform.setAllContainerColors(
+            ThemeHelper.getThemedColor(
+                context,
+                android.R.attr.colorBackground
+            )
+        )
+        sharedElementEnterTransition = transform
 
     }
 

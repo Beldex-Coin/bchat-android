@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.material.transition.MaterialContainerTransform
+import com.thoughtcrimes.securesms.wallet.utils.ThemeHelper
 import io.beldex.bchat.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -24,10 +26,16 @@ class ReceiveFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
+       /* arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
-        }
+        }*/
+
+        setHasOptionsMenu(true)
+        val transform = MaterialContainerTransform()
+        transform.drawingViewId = R.id.fragment_container
+        transform.duration = resources.getInteger(R.integer.tx_item_transition_duration).toLong()
+        sharedElementEnterTransition = transform
     }
 
     override fun onCreateView(
@@ -35,7 +43,8 @@ class ReceiveFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_receive, container, false)
+        val view = inflater.inflate(R.layout.fragment_receive, container, false)
+        return view
     }
 
     companion object {
@@ -51,10 +60,10 @@ class ReceiveFragment : Fragment() {
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             ReceiveFragment().apply {
-                arguments = Bundle().apply {
+               /* arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
-                }
+                }*/
             }
     }
 }

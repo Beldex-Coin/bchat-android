@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
 
     <ImageButton
         android:id="@+id/exit_button"
@@ -8,53 +11,45 @@
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         android:padding="4dp"
-        android:src="@drawable/ic_close" />
+        android:layout_marginEnd="31dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_back" />
 
-    <FrameLayout
+    <TextView
+        android:id="@+id/toolbarTitle"
+        android:layout_width="0dp"
+        android:layout_weight="2"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/poppins_medium"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/my_wallet"
+        android:textStyle="bold"
+        android:textSize="25sp"
+        android:textColor="@color/text"
+        android:visibility="invisible"
+        tools:text="@string/my_wallet" />
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="0.6"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_gravity="center">
+
+    <ImageView
+        android:id="@+id/toolBarRescan"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:layout_marginTop="4dp">
-
-        <TextView
-            android:id="@+id/toolbarImage"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:paddingTop="12dp"
-            android:paddingBottom="12dp"
-            android:text="Beldex Wallet"
-            android:textFontWeight="600"
-            android:textColor="#ffffff"
-            android:visibility="visible" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/toolbarTitle"
-                android:textFontWeight="600"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:paddingTop="12dp"
-                android:paddingBottom="12dp"
-                android:textColor="@color/text"
-                android:visibility="invisible"
-                tools:text="BChat" />
-
-            <TextView
-                android:id="@+id/toolbarSubtitle"
-                style="@style/BChatLabel.Subtitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:visibility="invisible"
-                tools:text="BChat" />
-        </LinearLayout>
-    </FrameLayout>
-</merge>
+        android:layout_marginEnd="15dp"
+        android:src="@drawable/ic_resync"
+        android:layout_gravity="center"/>
+    <ImageView
+        android:id="@+id/toolBarSettings"
+        android:layout_width="wrap_content"
+        android:layout_marginEnd="15dp"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_settings"
+        android:layout_gravity="center"/>
+    </LinearLayout>
+</LinearLayout>

@@ -3,7 +3,6 @@ package com.thoughtcrimes.securesms.wallet.addressbook
 import android.content.Context
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.util.AsyncLoader
-import com.thoughtcrimes.securesms.util.ContactUtilities
 
 class AddressBookLoader(context: Context, private val usersToExclude: Set<String>) :
     AsyncLoader<List<String>>(context) {

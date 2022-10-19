@@ -7,14 +7,19 @@ import android.content.Intent
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.thoughtcrimes.securesms.database.RecipientDatabase
 import com.thoughtcrimes.securesms.mms.GlideRequests
-import com.thoughtcrimes.securesms.preferences.SettingsActivity
+import com.thoughtcrimes.securesms.wallet.send.SendFragmentSub
 import io.beldex.bchat.R
 import javax.inject.Inject
+import androidx.core.content.ContextCompat.startActivity
+
+
+
 
 class AddressBookAdapter(
     private val context: Context,

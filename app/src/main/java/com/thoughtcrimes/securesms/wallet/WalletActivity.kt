@@ -18,6 +18,7 @@ import com.thoughtcrimes.securesms.wallet.listener.OnUriScannedListener
 import com.thoughtcrimes.securesms.wallet.receive.ReceiveFragment
 import com.thoughtcrimes.securesms.wallet.scanner.ScannerFragment
 import com.thoughtcrimes.securesms.wallet.send.SendFragment
+import com.thoughtcrimes.securesms.wallet.send.SendFragmentSub
 import com.thoughtcrimes.securesms.wallet.service.WalletService
 import com.thoughtcrimes.securesms.wallet.settings.WalletSettings
 import com.thoughtcrimes.securesms.wallet.utils.LegacyStorageHelper
@@ -28,14 +29,10 @@ import kotlinx.coroutines.NonCancellable.isCancelled
 import timber.log.Timber
 import java.util.*
 
-class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.Observer,SendFragment.Listener,ScannerFragment.OnScannedListener,SendFragment.OnScanListener{
+class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.Observer,SendFragment.Listener,ScannerFragment.OnScannedListener,SendFragment.OnScanListener, ReceiveFragment.Listener{
     lateinit var binding: ActivityWalletBinding
 
-    val REQUEST_ID = "id"
-    val REQUEST_PW = "pw"
-    val REQUEST_FINGERPRINT_USED = "fingerprint"
-    val REQUEST_STREETMODE = "streetmode"
-    val REQUEST_URI = "uri"
+
 
     private var requestStreetMode = false
 
@@ -233,7 +230,8 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         get() = mBoundService!!.daemonHeight
 
     override fun onSendRequest(view: View?) {
-        replaceFragmentWithTransition(view, SendFragment.newInstance(uri), null, null)
+        SendFragmentSub.newInstance(uri)
+            ?.let { replaceFragmentWithTransition(view, it, null, null) }
         uri = null // only use uri once
     }
 
@@ -444,11 +442,12 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         stackName: String?,
         extras: Bundle?
     ) {
+        Log.d("Beldex", "extras value $extras")
         if (extras != null) {
+            Log.d("Beldex", "extras value $extras")
             newFragment.arguments = extras
         }
-        val transition: Int
-       /* if (newFragment is TxFragment) transition =
+        /* if (newFragment is TxFragment) transition =
             R.string.tx_details_transition_name else if (newFragment is ReceiveFragment) transition =
             R.string.receive_transition_name else if (newFragment is SendFragment) transition =
             R.string.send_transition_name else if (newFragment is SubaddressInfoFragment) transition =
@@ -458,13 +457,17 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             .replace(R.id.fragment_container, newFragment)
             .addToBackStack(stackName)
             .commit()*/
-        if (newFragment is ReceiveFragment) transition =
-            R.string.receive_transition_name else if (newFragment is SendFragment) transition =
-            R.string.send_transition_name else throw IllegalStateException("expecting known transition")
+
+        val transition: Int = if (newFragment is ReceiveFragment)
+            R.string.receive_transition_name
+        else if (newFragment is SendFragmentSub)
+            R.string.send_transition_name
+        else throw IllegalStateException("expecting known transition")
+        Log.d("Beldex", "extras value transition $transition")
 
         Log.d("Transition Name ","${getString(transition)}")
         supportFragmentManager.beginTransaction()
-            .addSharedElement(view!!, getString(transition))
+            /*.addSharedElement(view!!, getString(transition))*/
             .replace(R.id.fragment_container, newFragment)
             .addToBackStack(stackName)
             .commit()
@@ -1029,5 +1032,14 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             }
             return null
         }
+    }
+
+    companion object {
+
+        var REQUEST_URI = "uri"
+        var REQUEST_ID = "id"
+        var REQUEST_PW = "pw"
+        var REQUEST_FINGERPRINT_USED = "fingerprint"
+        var REQUEST_STREETMODE = "streetmode"
     }
 }

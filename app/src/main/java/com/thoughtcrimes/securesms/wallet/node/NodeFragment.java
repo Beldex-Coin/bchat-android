@@ -114,7 +114,8 @@ public class NodeFragment extends Fragment
     public void onResume() {
         super.onResume();
         Timber.d("onResume()");
-        activityCallback.setTitle(R.string.activity_node_page_title);
+        //activityCallback.setToolbarButton(Toolbar.BUTTON_BACK);
+        activityCallback.setTitle(R.string.send_title);
         updateRefreshElements();
     }
 

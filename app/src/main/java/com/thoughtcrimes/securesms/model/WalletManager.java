@@ -267,9 +267,11 @@ public class WalletManager {
     }
 
     public String getDaemonAddress() {
+
         if (daemonAddress == null) {
             throw new IllegalStateException("use setDaemon() to initialise daemon and net first!");
         }
+        Log.d("Daemon Address getDaemonAddress() ",""+daemonAddress);
         return this.daemonAddress;
     }
 

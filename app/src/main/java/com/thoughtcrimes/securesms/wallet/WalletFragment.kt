@@ -346,7 +346,9 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
         //SteveJosephh21
         binding.filterTransactionsIcon.setOnClickListener {
-            val popupMenu = PopupMenu(activity?.applicationContext, it)
+            val wrapper: Context = ContextThemeWrapper(requireActivity(), R.style.custom_PopupMenu)
+            val popupMenu = PopupMenu(wrapper, it)
+            //val popupMenu = PopupMenu(activity?.applicationContext, it)
             popupMenu.inflate(R.menu.filter_transactions_popup_menu)
             /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 popupMenu.setForceShowIcon(true)
@@ -438,11 +440,13 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 if (x == 0) x = 101 // indeterminate
                 setProgress(x)
 //                ivSynced.setVisibility(View.GONE);
+                binding.filterTransactionsIcon.isClickable=false
             } else {
                 sync = getString(R.string.status_synchronized)//getString(R.string.status_synced) + " " + formatter.format(wallet.blockChainHeight)
                 //binding.syncStatus.setTextColor(resources.getColor(R.color.green_color))
                 binding.syncStatus.setTextColor(ContextCompat.getColor(requireActivity().applicationContext,R.color.green_color))
 //                ivSynced.setVisibility(View.VISIBLE);
+                binding.filterTransactionsIcon.isClickable=true
             }
         } else {
             sync = getString(R.string.status_wallet_connecting)

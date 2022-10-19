@@ -607,11 +607,12 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     override fun onWalletStored(success: Boolean) {
         runOnUiThread {
             if (success) {
-                Toast.makeText(
+                /*Toast.makeText(
                     this@WalletActivity,
                     getString(R.string.status_wallet_unloaded),
                     Toast.LENGTH_SHORT
-                ).show()
+                ).show()*/
+                Log.d("Beldex","${getString(R.string.status_wallet_unloaded)}")
             } else {
                 Toast.makeText(
                     this@WalletActivity,

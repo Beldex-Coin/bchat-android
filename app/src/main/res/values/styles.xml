@@ -518,4 +518,9 @@
         <item name="android:textColor">@color/text</item>
     </style>
 
+    <style name="custom.PopupMenu" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:textColor">@color/text</item>
+        <item name="android:itemBackground">@color/page_background</item>
+    </style>
+
 </resources>

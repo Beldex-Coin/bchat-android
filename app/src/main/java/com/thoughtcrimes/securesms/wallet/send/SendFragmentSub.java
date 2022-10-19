@@ -22,7 +22,11 @@ import com.thoughtcrimes.securesms.data.TxData;
 import com.thoughtcrimes.securesms.model.PendingTransaction;
 import com.thoughtcrimes.securesms.util.OpenAliasHelper;
 import com.thoughtcrimes.securesms.util.ServiceHelper;
+import com.thoughtcrimes.securesms.wallet.WalletActivity;
 import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity;
+import com.thoughtcrimes.securesms.wallet.listener.OnUriScannedListener;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -55,6 +59,7 @@ public class SendFragmentSub extends SendWizardFragment {
     private Crypto selectedCrypto = null;
     final static public int MIXIN = 0;
     public String sendAddress;
+    private Listener activityCallback;
 
 
     public static SendFragmentSub newInstance(Listener listener) {
@@ -71,6 +76,15 @@ public class SendFragmentSub extends SendWizardFragment {
 
     OnScanListener onScanListener;
 
+    @Nullable
+    public static SendFragmentSub newInstance(@Nullable String uri) {
+        SendFragmentSub f = new SendFragmentSub();
+        Bundle args = new Bundle();
+        args.putString(WalletActivity.Companion.getREQUEST_URI(), uri);
+        f.setArguments(args);
+        return f;
+    }
+
     public interface OnScanListener {
         void onScan();
     }
@@ -86,6 +100,7 @@ public class SendFragmentSub extends SendWizardFragment {
         /* void setMode(SendFragment.Mode mode);*/
 
         TxData getTxData();
+        void setOnUriScannedListener(OnUriScannedListener onUriScannedListener);
     }
 
 
@@ -150,8 +165,9 @@ public class SendFragmentSub extends SendWizardFragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof OnScanListener) {
-            onScanListener = (OnScanListener) context;
+        if (context instanceof Listener) {
+            activityCallback = (Listener) context;
+            activityCallback.setOnUriScannedListener(this);
         } else {
             throw new ClassCastException(context.toString()
                     + " must implement ScanListener");

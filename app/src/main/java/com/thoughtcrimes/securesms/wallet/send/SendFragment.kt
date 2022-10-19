@@ -153,7 +153,7 @@ class SendFragment : Fragment() {
         fun newInstance(uri: String?): SendFragment {
             val f = SendFragment()
             val args = Bundle()
-            args.putString(WalletActivity().REQUEST_URI, uri)
+            args.putString(WalletActivity.REQUEST_URI, uri)
             f.arguments = args
             return f
         }
@@ -163,8 +163,7 @@ class SendFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_send,container,false)
-        return view
+        return inflater.inflate(R.layout.fragment_send, container, false)
     }
 
 

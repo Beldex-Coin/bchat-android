@@ -56,7 +56,6 @@ import java.io.IOException
 import javax.inject.Inject
 import android.widget.CompoundButton
 import androidx.core.view.isVisible
-import com.beldex.libbchat.messaging.jobs.AttachmentDownloadJob
 import com.beldex.libbchat.mnode.OnionRequestAPI
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
@@ -81,26 +80,24 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import com.google.android.play.core.install.model.UpdateAvailability
-
 import com.google.android.play.core.install.model.AppUpdateType
-
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.tasks.Task
-import android.content.IntentSender
 import android.content.IntentSender.SendIntentException
-import com.thoughtcrimes.securesms.lottie.LottieDialog
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.graphics.Typeface
-import android.widget.Button
 import android.widget.TextView
-
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
+import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
 import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.wallet.WalletActivity
+import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity
+import com.thoughtcrimes.securesms.wallet.node.*
+import com.thoughtcrimes.securesms.wallet.node.activity.NodeActivity
+import com.thoughtcrimes.securesms.wallet.receive.ReceiveActivity
+import com.thoughtcrimes.securesms.wallet.receive.ReceiveFragment
+import com.thoughtcrimes.securesms.wallet.rescan.ReScanActivity
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
 import io.beldex.bchat.databinding.ViewMessageRequestBannerBinding
 import kotlinx.coroutines.*
@@ -114,6 +111,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     ConversationClickListener,
     SeedReminderViewDelegate,
     NewConversationButtonSetViewDelegate,
+    LoaderManager.LoaderCallbacks<Cursor>,
     GlobalSearchInputLayout.GlobalSearchInputLayoutListener {
 
     private lateinit var binding: ActivityHomeBinding
@@ -125,6 +123,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
     @Inject
     lateinit var threadDb: ThreadDatabase
+
     @Inject
     lateinit var mmsSmsDatabase: MmsSmsDatabase
     @Inject
@@ -136,15 +135,20 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
     private val globalSearchViewModel by viewModels<GlobalSearchViewModel>()
 
-    private val homeViewModel by viewModels<HomeViewModel>()
-
     private val publicKey: String
         get() = TextSecurePreferences.getLocalNumber(this)!!
 
     /*Hales63*/
-    private val homeAdapter: NewHomeAdapter by lazy {
-        NewHomeAdapter(context = this, listener = this)
+    private val homeAdapter: HomeAdapter by lazy {
+        HomeAdapter(context = this, cursor = threadDb.approvedConversationList, listener = this)
     }
+
+    private val toolbar: Toolbar? = null
+
+
+    private var node1: NodeInfo? = null
+
+    private val favouriteNodeslist = mutableSetOf<NodeInfo>()
 
     private val globalSearchAdapter = GlobalSearchAdapter { model ->
         when (model) {
@@ -312,7 +316,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         }
         binding.drawerCloseIcon.setOnClickListener { binding.drawerLayout.closeDrawer(GravityCompat.END) }
         val activeUiMode = UiModeUtilities.getUserSelectedUiMode(this)
-        Log.d("beldex","activeUiMode $activeUiMode")
+        Log.d("beldex", "activeUiMode $activeUiMode")
         binding.drawerAppearanceToggleButton.isChecked = activeUiMode == UiMode.NIGHT
 
         binding.drawerAppearanceToggleButton.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener() { compoundButton: CompoundButton, b: Boolean ->
@@ -369,21 +373,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         binding.createNewPrivateChatButton.setOnClickListener { createNewPrivateChat() }
         IP2Country.configureIfNeeded(this@HomeActivity)
         // This is a workaround for the fact that CursorRecyclerViewAdapter doesn't actually auto-update (even though it says it will)
-        //LoaderManager.getInstance(this).restartLoader(0, null, this)
-        homeViewModel.getObservable(this).observe(this) { newData ->
-            val manager = binding.recyclerView.layoutManager as LinearLayoutManager
-            val firstPos = manager.findFirstCompletelyVisibleItemPosition()
-            val offsetTop = if(firstPos >= 0) {
-                manager.findViewByPosition(firstPos)?.let { view ->
-                    manager.getDecoratedTop(view) - manager.getTopDecorationHeight(view)
-                } ?: 0
-            } else 0
-            homeAdapter.data = newData
-            if(firstPos >= 0) { manager.scrollToPositionWithOffset(firstPos, offsetTop) }
-            setupMessageRequestsBanner()
-            updateEmptyState()
-        }
-        homeViewModel.tryUpdateChannel()
+        LoaderManager.getInstance(this).restartLoader(0, null, this)
         // Set up new conversation button set
         binding.newConversationButtonSet.delegate = this
         // Observe blocked contacts changed events
@@ -400,20 +390,12 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                 // Double check that the long poller is up
                 (applicationContext as ApplicationContext).startPollingIfNeeded()
                 // update things based on TextSecurePrefs (profile info etc)
-                // Set up remaining components if needed
-                val application = ApplicationContext.getInstance(this@HomeActivity)
-                application.registerForFCMIfNeeded(false)
-                val userPublicKey = TextSecurePreferences.getLocalNumber(this@HomeActivity)
-                if (userPublicKey != null) {
-                    OpenGroupManager.startPolling()
-                    JobQueue.shared.resumePendingJobs()
-                }
                 // Set up typing observer
                 withContext(Dispatchers.Main) {
                     ApplicationContext.getInstance(this@HomeActivity).typingStatusRepository.typingThreads.observe(
                         this@HomeActivity,
                         Observer<Set<Long>> { threadIDs ->
-                            val adapter = binding.recyclerView.adapter as NewHomeAdapter
+                            val adapter = binding.recyclerView.adapter as HomeAdapter
                             adapter.typingThreadIDs = threadIDs ?: setOf()
                         })
                     updateProfileButton()
@@ -421,6 +403,14 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                         .collect {
                             updateProfileButton()
                         }
+                }
+                // Set up remaining components if needed
+                val application = ApplicationContext.getInstance(this@HomeActivity)
+                application.registerForFCMIfNeeded(false)
+                val userPublicKey = TextSecurePreferences.getLocalNumber(this@HomeActivity)
+                if (userPublicKey != null) {
+                    OpenGroupManager.startPolling()
+                    JobQueue.shared.resumePendingJobs()
                 }
             }
             // monitor the global search VM query
@@ -647,9 +637,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         binding.bchatToolbar.isVisible = !isShown
         binding.recyclerView.isVisible = !isShown
         binding.emptyStateContainer.isVisible =
-            (binding.recyclerView.adapter as NewHomeAdapter).itemCount == 0 && binding.recyclerView.isVisible
+            (binding.recyclerView.adapter as HomeAdapter).itemCount == 0 && binding.recyclerView.isVisible
         binding.emptyStateContainerText.isVisible =
-            (binding.recyclerView.adapter as NewHomeAdapter).itemCount == 0 && binding.recyclerView.isVisible
+            (binding.recyclerView.adapter as HomeAdapter).itemCount == 0 && binding.recyclerView.isVisible
         val isDayUiMode = UiModeUtilities.isDayUiMode(this)
         (if (isDayUiMode) R.drawable.ic_doodle_3_2 else R.drawable.ic_doodle_3_1).also {
             binding.emptyStateImageView.setImageResource(
@@ -678,23 +668,17 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                     threadDb.latestUnapprovedConversationTimestamp
                 )
                 root.setOnClickListener { showMessageRequests() }
-                expandMessageRequest.setOnClickListener{ showMessageRequests() }
+                expandMessageRequest.setOnClickListener { showMessageRequests() }
                 root.setOnLongClickListener { hideMessageRequests(); true }
-                root.layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
-                /*homeAdapter.headerView = root
-                homeAdapter.notifyItemChanged(0)*/
-                val hadHeader = homeAdapter.hasHeaderView()
-                homeAdapter.header = root
-                if (hadHeader) homeAdapter.notifyItemChanged(0)
-                else homeAdapter.notifyItemInserted(0)
+                root.layoutParams = RecyclerView.LayoutParams(
+                    RecyclerView.LayoutParams.MATCH_PARENT,
+                    RecyclerView.LayoutParams.WRAP_CONTENT
+                )
+                homeAdapter.headerView = root
+                homeAdapter.notifyItemChanged(0)
             }
         } else {
-            //homeAdapter.headerView = null
-            val hadHeader = homeAdapter.hasHeaderView()
-            homeAdapter.header = null
-            if (hadHeader) {
-                homeAdapter.notifyItemRemoved(0)
-            }
+            homeAdapter.headerView = null
         }
     }
 
@@ -731,7 +715,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     }*/
 
 
-    /*override fun onCreateLoader(id: Int, bundle: Bundle?): Loader<Cursor> {
+    override fun onCreateLoader(id: Int, bundle: Bundle?): Loader<Cursor> {
         return HomeLoader(this@HomeActivity)
     }
 
@@ -743,13 +727,15 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
     override fun onLoaderReset(cursor: Loader<Cursor>) {
         homeAdapter.changeCursor(null)
-    }*/
+    }
 
-    private fun checkInternetConnectivity(){
+    private fun checkInternetConnectivity() {
         if (OnionRequestAPI.paths.isEmpty()) {
-            Toast.makeText(this,"Please check your internet connection",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please check your internet connection", Toast.LENGTH_SHORT)
+                .show();
         }
     }
+
     override fun onResume() {
         super.onResume()
         setupCallActionBar()
@@ -778,8 +764,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         }
 
         /*Hales63*/
-        if(TextSecurePreferences.isUnBlocked(this))
-        {
+        if (TextSecurePreferences.isUnBlocked(this)) {
             homeAdapter.notifyDataSetChanged()
             TextSecurePreferences.setUnBlockStatus(this, false)
         }
@@ -799,12 +784,22 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         //New Line App Update
         if (requestCode == IMMEDIATE_APP_UPDATE_REQ_CODE) {
             if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(applicationContext,
-                    "Update canceled by user! Result Code: $resultCode", Toast.LENGTH_LONG).show();
+                Toast.makeText(
+                    applicationContext,
+                    "Update canceled by user! Result Code: $resultCode", Toast.LENGTH_LONG
+                ).show();
             } else if (resultCode == RESULT_OK) {
-                Toast.makeText(applicationContext, "Update success! Result Code: $resultCode", Toast.LENGTH_LONG).show();
+                Toast.makeText(
+                    applicationContext,
+                    "Update success! Result Code: $resultCode",
+                    Toast.LENGTH_LONG
+                ).show();
             } else {
-                Toast.makeText(applicationContext, "Update Failed! Result Code: $resultCode", Toast.LENGTH_LONG).show();
+                Toast.makeText(
+                    applicationContext,
+                    "Update Failed! Result Code: $resultCode",
+                    Toast.LENGTH_LONG
+                ).show();
                 checkUpdate();
             }
         }
@@ -822,7 +817,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
     // region Updating
     private fun updateEmptyState() {
-        val threadCount = (binding.recyclerView.adapter)!!.itemCount
+        val threadCount = (binding.recyclerView.adapter as HomeAdapter).itemCount
         binding.emptyStateContainer.isVisible = threadCount == 0 && binding.recyclerView.isVisible
         binding.emptyStateContainerText.isVisible =
             threadCount == 0 && binding.recyclerView.isVisible
@@ -838,8 +833,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     fun onUpdateProfileEvent(event: ProfilePictureModifiedEvent) {
         if (event.recipient.isLocalNumber) {
             updateProfileButton()
-        } else {
-            homeViewModel.tryUpdateChannel()
         }
     }
 
@@ -948,7 +941,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
             }.show()
         //New Line
         val textView: TextView = dialog.findViewById(android.R.id.message)
-        val face: Typeface = Typeface.createFromAsset(assets,"fonts/poppins_medium.ttf")
+        val face: Typeface = Typeface.createFromAsset(assets, "fonts/poppins_medium.ttf")
         textView.typeface = face
     }
 
@@ -969,7 +962,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
         //New Line
         val textView: TextView = dialog.findViewById(android.R.id.message)
-        val face: Typeface = Typeface.createFromAsset(assets,"fonts/poppins_medium.ttf")
+        val face: Typeface = Typeface.createFromAsset(assets, "fonts/poppins_medium.ttf")
         textView.typeface = face
     }
 
@@ -1005,11 +998,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     private fun setConversationPinned(threadId: Long, pinned: Boolean) {
         lifecycleScope.launch(Dispatchers.IO) {
             threadDb.setPinned(threadId, pinned)
-            /*withContext(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 LoaderManager.getInstance(this@HomeActivity)
                     .restartLoader(0, null, this@HomeActivity)
-            }*/
-            homeViewModel.tryUpdateChannel()
+            }
         }
     }
 
@@ -1066,14 +1058,20 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                         DatabaseComponent.get(this@HomeActivity).beldexThreadDatabase()
                             .getOpenGroupChat(threadID)
                     if (v2OpenGroup != null) {
-                        OpenGroupManager.delete( v2OpenGroup.server, v2OpenGroup.room, this@HomeActivity)
+                        OpenGroupManager.delete(
+                            v2OpenGroup.server,
+                            v2OpenGroup.room,
+                            this@HomeActivity
+                        )
                     } else {
                         lifecycleScope.launch(Dispatchers.IO) {
                             threadDb.deleteConversation(threadID)
                         }
                     }
                     // Update the badge count
-                    ApplicationContext.getInstance(context).messageNotifier.updateNotification(context)
+                    ApplicationContext.getInstance(context).messageNotifier.updateNotification(
+                        context
+                    )
                     // Notify the user
                     val toastMessage =
                         if (recipient.isGroupRecipient) R.string.MessageRecord_left_group else R.string.activity_home_conversation_deleted_message
@@ -1183,10 +1181,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         show(intent)
     }
 
-   /* private fun showPath() {
+    private fun showPath() {
         val intent = Intent(this, PathActivity::class.java)
         show(intent)
-    }*/
+    }
 
     override fun createNewPrivateChat() {
         val intent = Intent(this, CreateNewPrivateChatActivity::class.java)
@@ -1219,8 +1217,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                 textSecurePreferences.setHasShowMessageRequests(false)*/
 
                 setupMessageRequestsBanner()
-                //LoaderManager.getInstance(this).restartLoader(0, null, this)
-                homeViewModel.tryUpdateChannel()
+                LoaderManager.getInstance(this).restartLoader(0, null, this)
             }
             .setNegativeButton(R.string.no) { _, _ ->
                 // Do nothing

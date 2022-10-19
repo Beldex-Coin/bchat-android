@@ -83,6 +83,10 @@ public enum Crypto {
         return null;
     }
 
+    public boolean isCasefull() {
+        return casefull;
+    }
+
     interface Validator {
         boolean validate(String address);
     }

@@ -1,6 +1,7 @@
 package com.thoughtcrimes.securesms.wallet.send
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -10,20 +11,41 @@ import android.view.ViewGroup
 import com.google.android.material.transition.MaterialContainerTransform
 import com.thoughtcrimes.securesms.data.*
 import com.thoughtcrimes.securesms.model.PendingTransaction
+import com.thoughtcrimes.securesms.wallet.OnUriScannedListener
 import com.thoughtcrimes.securesms.wallet.WalletActivity
-import com.thoughtcrimes.securesms.wallet.listener.OnUriScannedListener
 import com.thoughtcrimes.securesms.wallet.send.interfaces.SendConfirm
 import com.thoughtcrimes.securesms.wallet.utils.ThemeHelper
 import com.thoughtcrimes.securesms.wallet.widget.Toolbar
 import io.beldex.bchat.R
 import timber.log.Timber
-import java.lang.IllegalArgumentException
+import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity
 
-class SendFragment : Fragment() {
+import android.content.Intent
+import com.thoughtcrimes.securesms.util.Helper
+import io.beldex.bchat.databinding.ActivityWalletBinding
+import io.beldex.bchat.databinding.FragmentSendBinding
+import io.beldex.bchat.databinding.FragmentWalletBinding
+import java.lang.ClassCastException
+
+
+class SendFragment : Fragment(), OnUriScannedListener {
 
     val MIXIN = 0
 
-    private val activityCallback: Listener? = null
+    private var activityCallback: Listener? = null
+    private var barcodeData: BarcodeData? = null
+    lateinit var binding: FragmentSendBinding
+
+
+    fun newInstance(listener: Listener): SendFragment? {
+        val instance: SendFragment = SendFragment()
+        instance.setSendListener(listener)
+        return instance
+    }
+
+    private fun setSendListener(listener: Listener) {
+        this.activityCallback = listener
+    }
 
     interface Listener {
         val prefs: SharedPreferences?
@@ -40,6 +62,15 @@ class SendFragment : Fragment() {
         fun setTitle(title: String?)
         fun setSubtitle(subtitle: String?)
         fun setOnUriScannedListener(onUriScannedListener: OnUriScannedListener?)
+        fun setBarcodeData(data: BarcodeData?)
+
+        fun getBarcodeData(): BarcodeData?
+
+        fun popBarcodeData(): BarcodeData?
+
+        fun setMode(mode: WalletActivity.Mode?)
+
+        fun getTxData(): TxData?
     }
 
     var sendConfirmListener: SendConfirmListener? = null
@@ -59,6 +90,7 @@ class SendFragment : Fragment() {
         var barcodeData: BarcodeData?
 
         fun popBarcodeData(): BarcodeData?
+
         //Important
         //fun setMode(mode: SendFragment.Mode?)
         val txData: TxData?
@@ -157,26 +189,112 @@ class SendFragment : Fragment() {
             f.arguments = args
             return f
         }
+
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_send, container, false)
+        binding = FragmentSendBinding.inflate(inflater, container, false)
+
+
+        binding.scanQrCode.setOnClickListener {
+            onScanListener?.onScan()
+        }
+        binding.addressBook.setOnClickListener {
+            val intent = Intent(context, AddressBookActivity::class.java)
+            startActivity(intent)
+        }
+        return binding.root
+
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        activityCallback = context as Listener
+        activityCallback!!.setOnUriScannedListener(this)
+        onScanListener = if (context is OnScanListener) {
+            context
+        } else {
+            throw ClassCastException(
+                context.toString()
+                        + " must implement ScanListener"
+            )
+        }
+    }
+
+    // QR Scan Stuff
+    override fun onResume() {
+        super.onResume()
+        Timber.d("onResume")
+        processScannedData()
+    }
+
+    fun processScannedData(barcodeData: BarcodeData?) {
+        activityCallback?.setBarcodeData(barcodeData)
+        if (isResumed) processScannedData()
+    }
+
+    private fun processScannedData() {
+        var barcodeData: BarcodeData? = activityCallback?.getBarcodeData()
+        if (barcodeData != null) {
+            Timber.d("GOT DATA")
+            if (!Helper.ALLOW_SHIFT && barcodeData.asset !== Crypto.XMR) {
+                Timber.d("BUT ONLY XMR SUPPORTED")
+                barcodeData = null
+                activityCallback?.setBarcodeData(barcodeData)
+            }
+            if (barcodeData!!.address != null) {
+                binding.beldexAddressEditTxtLayout.editText?.setText(barcodeData.address)
+                binding.beldexAmountEditTxtLayout.editText?.setText(barcodeData.amount)
+                /* possibleCryptos.clear()*/
+                /* selectedCrypto = null*/
+                /*if (barcodeData.isAmbiguous) {
+                    possibleCryptos.addAll(barcodeData.ambiguousAssets)
+                } else {
+                    possibleCryptos.add(barcodeData.asset)
+                    selectedCrypto = barcodeData.asset
+                }*/
+                /*if (Helper.ALLOW_SHIFT) updateCryptoButtons(false)
+                if (checkAddress()) {
+                    if (barcodeData.security === BarcodeData.Security.OA_NO_DNSSEC) etAddress.setError(
+                        getString(R.string.send_address_no_dnssec)
+                    ) else if (barcodeData.security === BarcodeData.Security.OA_DNSSEC) etAddress.setError(
+                        getString(R.string.send_address_openalias)
+                    )
+                }*/
+            } else {
+                binding.beldexAddressEditTxtLayout.getEditText()?.getText()?.clear()
+                binding.beldexAmountEditTxtLayout.getEditText()?.getText()?.clear()
+            }
+            //by hales
+            /*var scannedNotes = barcodeData.addressName
+            if (scannedNotes == null) {
+                scannedNotes = barcodeData.description
+            } else if (barcodeData.description != null) {
+                scannedNotes = scannedNotes + ": " + barcodeData.description
+            }*/
+            /*if (scannedNotes != null) {
+                etNotes.getEditText().setText(scannedNotes)
+            } else {
+                etNotes.getEditText().getText().clear()
+                etNotes.setError(null)
+            }*/
+        } else Timber.d("barcodeData=null")
+    }
 
     fun getTxData(): TxData? {
         return txData
     }
 
     private var txData = TxData()
+
     enum class Mode {
         XMR, BTC
     }
 
-    private var mode:Mode = Mode.XMR
+    private var mode: Mode = Mode.XMR
 
     fun setMode(aMode: Mode) {
         if (mode != aMode) {
@@ -192,7 +310,12 @@ class SendFragment : Fragment() {
         }
     }
 
-    fun getMode(): Mode{
+    fun getMode(): Mode {
         return mode
+    }
+
+    override fun onUriScanned(barcodeData: BarcodeData?): Boolean {
+        processScannedData(barcodeData)
+        return true
     }
 }

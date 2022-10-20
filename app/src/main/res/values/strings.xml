@@ -1188,4 +1188,9 @@
     <string name="send_success_title">Done</string>
     <string name="accounts_balance" translatable="false">%1$s BDX</string>
     <string name="xmr_unconfirmed_amount">+ %1$s BDX Ledger balance</string>
+    <string name="my_wallet" translatable="false">My Wallet</string>
+    <string name="status_synchronized" translatable="false">Synchronized</string>
+    <string name="send_btn_transition_name" translatable="false">send_btn_transition</string>
+    <string name="receive_btn_transition_name" translatable="false">receive_btn_transition</string>
+
 </resources>

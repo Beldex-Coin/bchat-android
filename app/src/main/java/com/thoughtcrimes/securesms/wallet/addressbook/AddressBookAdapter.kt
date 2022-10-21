@@ -13,10 +13,8 @@ import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.thoughtcrimes.securesms.database.RecipientDatabase
 import com.thoughtcrimes.securesms.mms.GlideRequests
-import com.thoughtcrimes.securesms.wallet.send.SendFragmentSub
 import io.beldex.bchat.R
 import javax.inject.Inject
-import androidx.core.content.ContextCompat.startActivity
 
 
 

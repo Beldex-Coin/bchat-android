@@ -1,5 +1,5 @@
 
-package com.thoughtcrimes.securesms.wallet.scan;
+package com.thoughtcrimes.securesms.wallet;
 
 
 import com.thoughtcrimes.securesms.data.BarcodeData;

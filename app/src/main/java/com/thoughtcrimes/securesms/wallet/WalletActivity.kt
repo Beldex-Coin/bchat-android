@@ -9,8 +9,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.beldex.libbchat.utilities.TextSecurePreferences
-import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.changeDaemon
 import com.thoughtcrimes.securesms.data.*
 import com.thoughtcrimes.securesms.model.*
 import com.thoughtcrimes.securesms.util.Helper
@@ -232,8 +230,6 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         get() = mBoundService!!.daemonHeight
 
     override fun onSendRequest(view: View?) {
-        binding.toolbar.toolBarRescan.visibility=View.VISIBLE
-        binding.toolbar.toolBarSettings.visibility=View.VISIBLE
         SendFragmentSub.newInstance(uri)
             ?.let { replaceFragmentWithTransition(view, it, null, null) }
         uri = null // only use uri once
@@ -261,8 +257,6 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     override fun onWalletReceive(view: View?) {
-        binding.toolbar.toolBarRescan.visibility=View.GONE
-        binding.toolbar.toolBarSettings.visibility=View.GONE
         val address = getWallet().address
         Timber.d("startReceive()")
         val b = Bundle()
@@ -294,8 +288,6 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     override fun setTitle(title: String?, subtitle: String?) {
-        binding.toolbar.toolBarRescan.visibility=View.VISIBLE
-        binding.toolbar.toolBarSettings.visibility=View.VISIBLE
         binding.toolbar.setTitle(title, subtitle)
     }
 
@@ -618,12 +610,11 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     override fun onWalletStored(success: Boolean) {
         runOnUiThread {
             if (success) {
-                /*Toast.makeText(
+                Toast.makeText(
                     this@WalletActivity,
                     getString(R.string.status_wallet_unloaded),
                     Toast.LENGTH_SHORT
-                ).show()*/
-                Log.d("Beldex","${getString(R.string.status_wallet_unloaded)}")
+                ).show()
             } else {
                 Toast.makeText(
                     this@WalletActivity,
@@ -961,11 +952,6 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     override fun onResume() {
         super.onResume()
-
-        if(TextSecurePreferences.getDaemon(this)){
-            onWalletRescan()
-            changeDaemon(this,false)
-        }
 
         Timber.d("onResume()-->")
         // wait for WalletService to finish

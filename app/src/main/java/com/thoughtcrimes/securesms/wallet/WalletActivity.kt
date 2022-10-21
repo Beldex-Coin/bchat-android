@@ -14,11 +14,9 @@ import com.thoughtcrimes.securesms.model.*
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.push
 import com.thoughtcrimes.securesms.wallet.listener.OnBlockUpdateListener
-import com.thoughtcrimes.securesms.wallet.listener.OnUriScannedListener
 import com.thoughtcrimes.securesms.wallet.receive.ReceiveFragment
 import com.thoughtcrimes.securesms.wallet.scanner.ScannerFragment
 import com.thoughtcrimes.securesms.wallet.send.SendFragment
-import com.thoughtcrimes.securesms.wallet.send.SendFragmentSub
 import com.thoughtcrimes.securesms.wallet.service.WalletService
 import com.thoughtcrimes.securesms.wallet.settings.WalletSettings
 import com.thoughtcrimes.securesms.wallet.utils.LegacyStorageHelper
@@ -41,6 +39,8 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     private var uri: String? = null
 
     private var streetMode: Long = 0
+    private var onUriScannedListener: OnUriScannedListener? = null
+    private var barcodeData: BarcodeData? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -230,7 +230,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         get() = mBoundService!!.daemonHeight
 
     override fun onSendRequest(view: View?) {
-        SendFragmentSub.newInstance(uri)
+        SendFragment.newInstance(uri)
             ?.let { replaceFragmentWithTransition(view, it, null, null) }
         uri = null // only use uri once
     }
@@ -369,6 +369,51 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         this.onUriScannedListeners = onUriScannedListener
     }
 
+    override fun setBarcodeData(data: BarcodeData?) {
+        barcodeData = data
+    }
+
+    override fun getBarcodeData(): BarcodeData? {
+        return barcodeData
+    }
+
+    override fun popBarcodeData(): BarcodeData? {
+        Timber.d("POPPED")
+        val data = barcodeData!!
+        barcodeData = null
+        return data
+    }
+
+    override fun setMode(mode: Mode?) {
+        if (this.mode != mode) {
+            this.mode = mode!!
+            when (mode) {
+                Mode.XMR -> txData = TxData()
+                Mode.BTC -> txData = TxDataBtc()
+                else -> throw IllegalArgumentException("Mode " + mode.toString() + " unknown!")
+            }
+            //Important
+            //view!!.post { pagerAdapter.notifyDataSetChanged() }
+            Timber.d("New Mode = %s", this.mode.toString())
+        }
+    }
+
+    private var mode: Mode = Mode.XMR
+
+    fun getMode(): Mode {
+        return mode
+    }
+
+    private var txData = TxData()
+
+    enum class Mode {
+        XMR, BTC
+    }
+
+    override fun getTxData(): TxData? {
+        TODO("Not yet implemented")
+    }
+
     override fun onUriScanned(barcodeData: BarcodeData?) {
         super.onUriScanned(barcodeData)
         var processed = false
@@ -460,14 +505,14 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
         val transition: Int = if (newFragment is ReceiveFragment)
             R.string.receive_transition_name
-        else if (newFragment is SendFragmentSub)
+        else if (newFragment is SendFragment)
             R.string.send_transition_name
         else throw IllegalStateException("expecting known transition")
         Log.d("Beldex", "extras value transition $transition")
 
         Log.d("Transition Name ","${getString(transition)}")
         supportFragmentManager.beginTransaction()
-            /*.addSharedElement(view!!, getString(transition))*/
+            .addSharedElement(view!!, getString(transition))
             .replace(R.id.fragment_container, newFragment)
             .addToBackStack(stackName)
             .commit()

@@ -571,7 +571,8 @@ public class WalletService extends Service {
             //Log.d("Using daemon %s", WalletManager.getInstance().getDaemonAddress());
             showProgress(55);
             wallet.init(0);
-            Log.d("Beldex","init value of wallet restoreheight loadwallet 4 "+ wallet.getRestoreHeight());
+            Log.d("Beldex","init value of wallet restoreHeight loadWallet 1 "+ walletRestoreHeight);
+            Log.d("Beldex","init value of wallet restoreHeight loadWallet 2 "+ wallet.getRestoreHeight());
             wallet.setRestoreHeight(walletRestoreHeight);
             showProgress(90);
         }

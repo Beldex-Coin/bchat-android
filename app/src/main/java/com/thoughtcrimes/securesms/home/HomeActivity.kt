@@ -93,6 +93,7 @@ import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
 import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.wallet.WalletActivity
 import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity
+import com.thoughtcrimes.securesms.wallet.info.WalletInfoActivity
 import com.thoughtcrimes.securesms.wallet.node.*
 import com.thoughtcrimes.securesms.wallet.node.activity.NodeActivity
 import com.thoughtcrimes.securesms.wallet.receive.ReceiveActivity
@@ -1099,6 +1100,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         val walletPassword = TextSecurePreferences.getWalletPassword(this)
         if (walletName != null && walletPassword !=null) {
             startWallet(walletName,walletPassword, fingerprintUsed = false, streetmode = false)
+        }else{
+            val intent = Intent(this, WalletInfoActivity::class.java)
+            push(intent)
         }
         /*val lockManager: LockManager<CustomPinActivity> = LockManager.getInstance() as LockManager<CustomPinActivity>
         lockManager.enableAppLock(this, CustomPinActivity::class.java)

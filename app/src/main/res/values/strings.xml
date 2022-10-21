@@ -992,8 +992,12 @@
     <string name="check_password_description_content_keys" translatable="false">Enter your password to view your restore key. Write it down on paper.</string>
     <string name="closed_group_screen_description_content" translatable="false">Uh oh, you don\'t have any contacts yet.\nAdd some contacts first to start a secret group.</string>
     <string name="join_social_group_description_content" translatable="false">Social groups are similar to public groups, however, you need an invite link to join. Join a social group using the group\'s URL.</string>
+<!--
     <string name="if_you_don_t_know_the_restore_blockheight_you_can_skip_it" translatable="false">If you don\'t know the restore blockheight, you can skip it.</string>
+-->
+<!--
     <string name="if_you_don_t_know_the_restore_date_you_can_skip_it" translatable="false">If you don\'t know the restore date, you can skip it.</string>
+-->
     <string name="changelog" translatable="false">Changelog</string>
     <string name="enter_your_password" translatable="false">Enter your password</string>
     <string name="navigate_to_voice_message" translatable="false">Navigate to voice message </string>
@@ -1192,4 +1196,20 @@
     <string name="accounts_balance" translatable="false">%1$s BDX</string>
     <string name="xmr_unconfirmed_amount">+ %1$s BDX Ledger balance</string>
     <string name="my_wallet" translatable="false">My Wallet</string>
+
+    <string name="wallet_info_important_subTitle" translatable="false">Info about <font color='#128D15'>Wallet Password</font> generation</string>
+    <string name="wallet_info_important_description" translatable="false">To access your wallet, you will first need to generate a wallet password.
+Your wallet password can be used to access your wallet within BChat and authenticate your transactions.</string>
+    <string name="wallet_info_important_descriptions" translatable="false">You can generate a wallet password only by restoring your account.</string>
+    <string name="wallet_info_important_confirmTitle" translatable="false">If you wish to continue, click “proceed.”</string>
+    <string name="wallet_info_important_confirmButton" translatable="false">Proceed</string>
+
+    <string name="wallet_info_seed_screen_description_content" translatable="false"><font color='#FF0000'>Note: </font> Copy your Recovery Seed and save it. You will need the Recovery Seed to restore your account and generate a wallet password. \nIf you lose your seed, you will permanently lose access to your account.</string>
+    <string name="confirmation_alert_dialog_box_message" translatable="false">Do you wish to continue to sign-in and restore your account?</string>
+    <string name="checkPasswordDescriptionsTextView" translatable="false">This is the PIN you set to your <font color='#128D15'>BChat account.</font></string>
+    <string name="checkPasswordDescriptionTextView" translatable="false">Enter your PIN to verify</string>
+    <string name="activity_restore_from_height_missing_error" translatable="false">Please pick a restore height or restore from date</string>
+    <string name="please_pick_a_restore_height" translatable="false">Please pick a restore height</string>
+    <string name="please_pick_a_restore_from_date" translatable="false">Please pick a restore from date</string>
+
 </resources>

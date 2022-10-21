@@ -1,6 +1,7 @@
 package com.thoughtcrimes.securesms.onboarding
 
 import android.content.Intent
+import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -20,6 +21,7 @@ import com.thoughtcrimes.securesms.keys.ShowKeysActivity
 import com.thoughtcrimes.securesms.seed.ShowSeedActivity
 import com.thoughtcrimes.securesms.util.push
 import com.thoughtcrimes.securesms.util.setUpActionBarBchatLogo
+import com.thoughtcrimes.securesms.wallet.info.WalletInfoSeedActivity
 
 class CheckPasswordActivity : BaseActionBarActivity() {
 
@@ -41,6 +43,13 @@ class CheckPasswordActivity : BaseActionBarActivity() {
             if (page == 1) {
                 checkPasswordDescriptionTextView.text =
                     resources.getString(R.string.check_password_description_content_seed)
+                checkPasswordDescriptionsTextView.typeface= Typeface.DEFAULT_BOLD
+            }
+            else if (page == 2) {
+                checkPasswordDescriptionTextView.text =
+                    resources.getString(R.string.checkPasswordDescriptionTextView)
+                checkPasswordDescriptionsTextView.typeface= Typeface.DEFAULT_BOLD
+                checkPasswordDescriptionsTextView.visibility=View.VISIBLE
             } else {
                 checkPasswordDescriptionTextView.text =
                     resources.getString(R.string.check_password_description_content_keys)
@@ -128,7 +137,12 @@ class CheckPasswordActivity : BaseActionBarActivity() {
             val intent = Intent(this, ShowSeedActivity::class.java)
             push(intent)
             finish()
-        } else {
+        }
+        else if (page == 2) {
+            val intent = Intent(this, WalletInfoSeedActivity::class.java)
+            push(intent)
+            finish()
+        }else {
             val intent = Intent(this, ShowKeysActivity::class.java)
             push(intent)
             finish()

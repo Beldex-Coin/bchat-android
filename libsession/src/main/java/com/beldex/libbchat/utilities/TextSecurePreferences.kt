@@ -186,6 +186,10 @@ interface TextSecurePreferences {
     fun isUnBlocked(): Boolean
     fun setUnBlockedStatus(status: Boolean)
 
+    //SteveJosephh21
+    fun setDaemon(status: Boolean)
+    fun getDaemon():Boolean
+
 
     companion object {
         val TAG = TextSecurePreferences::class.simpleName
@@ -275,6 +279,7 @@ interface TextSecurePreferences {
         const val IS_REMOTE_HANG_UP = "is_remote_hang_up"
         const val UN_BLOCK_STATUS = "un_blocked"
         const val IS_REMOTE_CALL_ENDED = "is_remote_call_ended"
+        const val CHANGE_DAEMON_STATUS ="change_daemon_status"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -1059,6 +1064,16 @@ interface TextSecurePreferences {
             setBooleanPreference(context, IS_REMOTE_CALL_ENDED, status)
         }
 
+        @JvmStatic
+        fun changeDaemon(context: Context, enabled: Boolean) {
+            setBooleanPreference(context, CHANGE_DAEMON_STATUS, enabled)
+        }
+
+        @JvmStatic
+        fun getDaemon(context: Context): Boolean {
+            return getBooleanPreference(context, CHANGE_DAEMON_STATUS, false)
+        }
+
     }
 }
 
@@ -1737,5 +1752,13 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun isRemoteCallEnded(): Boolean {
         return getBooleanPreference(TextSecurePreferences.IS_REMOTE_CALL_ENDED, false)
+    }
+
+    override fun getDaemon(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.CHANGE_DAEMON_STATUS, false)
+    }
+
+    override fun setDaemon(status: Boolean) {
+        setBooleanPreference(TextSecurePreferences.CHANGE_DAEMON_STATUS, status)
     }
 }

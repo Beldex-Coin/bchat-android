@@ -73,7 +73,7 @@
         android:layout_marginTop="30dp"
         android:textColor="@color/chat_id_description_text"
         app:layout_constraintTop_toBottomOf="@id/restoreSeedLine"
-        android:text="@string/if_you_don_t_know_the_restore_blockheight_you_can_skip_it"/>
+        android:text="@string/please_pick_a_restore_height"/>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/restoreSeedWalletRestoreHeightCard"
@@ -135,7 +135,7 @@
         android:layout_marginTop="30dp"
         android:textColor="@color/chat_id_description_text"
         app:layout_constraintTop_toBottomOf="@id/restoreSeedOrText"
-        android:text="@string/if_you_don_t_know_the_restore_date_you_can_skip_it"/>
+        android:text="@string/please_pick_a_restore_from_date"/>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/restoreSeedWalletRestoreDateCard"

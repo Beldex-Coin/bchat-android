@@ -443,7 +443,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 //binding.syncStatus.setTextColor(resources.getColor(R.color.green_color))
                 binding.syncStatus.setTextColor(ContextCompat.getColor(requireActivity().applicationContext,R.color.green_color))
 //                ivSynced.setVisibility(View.VISIBLE);
-                binding.filterTransactionsIcon.isClickable=true
+                binding.filterTransactionsIcon.isClickable = adapter!!.itemCount>0
             }
         } else {
             sync = getString(R.string.status_wallet_connecting)
@@ -616,11 +616,10 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
             //SteveJosephh21
             if(adapter!!.itemCount>0){
-                binding.filterTransactionsIcon.visibility=View.VISIBLE
                 binding.transactionList.visibility=View.VISIBLE
                 binding.emptyContainerLayout.visibility = View.GONE
             }else{
-                binding.filterTransactionsIcon.visibility=View.GONE
+                binding.filterTransactionsIcon.isClickable=false
                 binding.transactionList.visibility=View.GONE
                 binding.emptyContainerLayout.visibility = View.VISIBLE
             }

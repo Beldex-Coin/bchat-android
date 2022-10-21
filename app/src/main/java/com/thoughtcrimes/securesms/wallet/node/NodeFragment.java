@@ -25,6 +25,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.google.android.material.textfield.TextInputLayout;
 import com.thoughtcrimes.securesms.data.DefaultNodes;
 import com.thoughtcrimes.securesms.data.Node;
@@ -214,6 +215,7 @@ public class NodeFragment extends Fragment
                     AsyncTask.execute(() -> {
                         activityCallback.setNode(nodeItem); // this marks it as selected & saves it as well
                         nodeItem.setSelecting(false);
+                        TextSecurePreferences.changeDaemon(requireContext(),true);
                         try {
                             requireActivity().runOnUiThread(() -> nodesAdapter.allowClick(true));
                         } catch (NullPointerException ignored) {

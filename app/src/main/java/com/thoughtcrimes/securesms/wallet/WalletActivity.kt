@@ -9,6 +9,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.changeDaemon
 import com.thoughtcrimes.securesms.data.*
 import com.thoughtcrimes.securesms.model.*
 import com.thoughtcrimes.securesms.util.Helper
@@ -959,6 +961,11 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     override fun onResume() {
         super.onResume()
+
+        if(TextSecurePreferences.getDaemon(this)){
+            onWalletRescan()
+            changeDaemon(this,false)
+        }
 
         Timber.d("onResume()-->")
         // wait for WalletService to finish

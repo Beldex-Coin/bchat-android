@@ -76,6 +76,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <LinearLayout
+                    android:id="@+id/displayBalanceAsLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -84,12 +85,14 @@
                     android:paddingEnd="15dp"
                     android:paddingBottom="20dp">
                     <TextView
+                        android:id="@+id/displayBalanceAsTitle"
                         android:layout_width="0dp"
                         android:layout_weight="2"
                         android:gravity="center|start"
                         android:layout_height="match_parent"
                         android:text="Display Balance As"/>
                     <TextView
+                        android:id="@+id/displayBalanceAsDescription"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="match_parent"
@@ -97,6 +100,7 @@
                         android:text="Beldex Available Balance" />
                 </LinearLayout>
                 <LinearLayout
+                    android:id="@+id/decimalsLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -104,12 +108,14 @@
                     android:paddingEnd="15dp"
                     android:paddingBottom="20dp">
                     <TextView
+                        android:id="@+id/decimalsTitle"
                         android:layout_width="0dp"
                         android:layout_weight="2"
                         android:gravity="center|start"
                         android:layout_height="match_parent"
                         android:text="Decimals"/>
                     <TextView
+                        android:id="@+id/decimalsDescription"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="match_parent"
@@ -117,6 +123,7 @@
                         android:text="9-Ultra" />
                 </LinearLayout>
                 <LinearLayout
+                    android:id="@+id/enableFiatCurrencyConversionLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -124,18 +131,21 @@
                     android:paddingEnd="15dp"
                     android:paddingBottom="20dp">
                     <TextView
+                        android:id="@+id/enableFiatCurrencyConversionTitle"
                         android:layout_width="0dp"
                         android:layout_weight="2"
                         android:gravity="center|start"
                         android:layout_height="match_parent"
                         android:text="Enable Fiat Currency Conversion"/>
                     <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/enableFiatCurrencyConversionSwitchCompat"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
                         android:gravity="end"/>
                 </LinearLayout>
                 <LinearLayout
+                    android:id="@+id/currencyLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -143,12 +153,14 @@
                     android:paddingEnd="15dp"
                     android:paddingBottom="20dp">
                     <TextView
+                        android:id="@+id/currencyTitle"
                         android:layout_width="0dp"
                         android:layout_weight="2"
                         android:gravity="center|start"
                         android:layout_height="match_parent"
                         android:text="Currency"/>
                     <TextView
+                        android:id="@+id/currencyDescription"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="match_parent"
@@ -156,6 +168,7 @@
                         android:text="USD" />
                 </LinearLayout>
                 <LinearLayout
+                    android:id="@+id/feePriorityLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -163,12 +176,14 @@
                     android:paddingEnd="15dp"
                     android:paddingBottom="20dp">
                     <TextView
+                        android:id="@+id/feePriorityTitle"
                         android:layout_width="0dp"
                         android:layout_weight="2"
                         android:gravity="center|start"
                         android:layout_height="match_parent"
                         android:text="Fee Priority"/>
                     <TextView
+                        android:id="@+id/feePriorityDescription"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="match_parent"
@@ -176,6 +191,7 @@
                         android:text="Flash" />
                 </LinearLayout>
                 <LinearLayout
+                    android:id="@+id/saveRecipientAddressLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -183,12 +199,14 @@
                     android:paddingEnd="15dp"
                     android:paddingBottom="20dp">
                     <TextView
+                        android:id="@+id/saveRecipeintAddressTitle"
                         android:layout_width="0dp"
                         android:layout_weight="2"
                         android:gravity="center|start"
                         android:layout_height="match_parent"
                         android:text="Save Recipient Address"/>
                     <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/saveRecipientAddressSwitchCompat"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"

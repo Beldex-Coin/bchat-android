@@ -190,6 +190,15 @@ interface TextSecurePreferences {
     fun setDaemon(status: Boolean)
     fun getDaemon():Boolean
 
+    fun setDisplayBalanceAs(position:Int)
+    fun getDisplayBalanceAs():Int
+    fun setFeePriority(position:Int)
+    fun getFeePriority():Int
+    fun setDecimals(position: String?)
+    fun getDecimals():String?
+    fun setCurrency(position: String?)
+    fun getCurrency():String?
+
 
     companion object {
         val TAG = TextSecurePreferences::class.simpleName
@@ -280,6 +289,10 @@ interface TextSecurePreferences {
         const val UN_BLOCK_STATUS = "un_blocked"
         const val IS_REMOTE_CALL_ENDED = "is_remote_call_ended"
         const val CHANGE_DAEMON_STATUS ="change_daemon_status"
+        const val DISPLAY_BALANCE_AS = "display_balance_as"
+        const val FEE_PRIORITY = "fee_priority"
+        const val DECIMALS = "decimals"
+        const val CURRENCY = "currency"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -1074,6 +1087,46 @@ interface TextSecurePreferences {
             return getBooleanPreference(context, CHANGE_DAEMON_STATUS, false)
         }
 
+        @JvmStatic
+        fun setDisplayBalanceAs(context: Context, position: Int) {
+            setIntegerPreference(context, DISPLAY_BALANCE_AS, position)
+        }
+
+        @JvmStatic
+        fun getDisplayBalanceAs(context: Context): Int {
+            return getIntegerPreference(context, DISPLAY_BALANCE_AS, 1)
+        }
+
+        @JvmStatic
+        fun setFeePriority(context: Context, position: Int) {
+            setIntegerPreference(context, FEE_PRIORITY, position)
+        }
+
+        @JvmStatic
+        fun getFeePriority(context: Context): Int {
+            return getIntegerPreference(context, FEE_PRIORITY, 1)
+        }
+
+        @JvmStatic
+        fun setDecimals(context: Context, position: String?) {
+            setStringPreference(context, DECIMALS, position)
+        }
+
+        @JvmStatic
+        fun getDecimals(context: Context): String? {
+            return getStringPreference(context, DECIMALS, "9 - Ultra")
+        }
+
+        @JvmStatic
+        fun setCurrency(context: Context, position: String?) {
+            setStringPreference(context, CURRENCY, position)
+        }
+
+        @JvmStatic
+        fun getCurrency(context: Context): String? {
+            return getStringPreference(context, CURRENCY, "USD")
+        }
+
     }
 }
 
@@ -1760,5 +1813,37 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun setDaemon(status: Boolean) {
         setBooleanPreference(TextSecurePreferences.CHANGE_DAEMON_STATUS, status)
+    }
+
+    override fun setDisplayBalanceAs(position: Int) {
+        setIntegerPreference(TextSecurePreferences.DISPLAY_BALANCE_AS, position)
+    }
+
+    override fun getDisplayBalanceAs():Int {
+        return getIntegerPreference(TextSecurePreferences.DISPLAY_BALANCE_AS,1)
+    }
+
+    override fun setFeePriority(position: Int) {
+        setIntegerPreference(TextSecurePreferences.FEE_PRIORITY, position)
+    }
+
+    override fun getFeePriority():Int {
+        return getIntegerPreference(TextSecurePreferences.FEE_PRIORITY,1)
+    }
+
+    override fun setDecimals(position: String?) {
+        setStringPreference(TextSecurePreferences.DECIMALS, position)
+    }
+
+    override fun getDecimals(): String? {
+        return getStringPreference(TextSecurePreferences.DECIMALS,"9 - Ultra")
+    }
+
+    override fun setCurrency(position: String?) {
+        setStringPreference(TextSecurePreferences.CURRENCY, position)
+    }
+
+    override fun getCurrency(): String? {
+        return getStringPreference(TextSecurePreferences.CURRENCY,"USD")
     }
 }

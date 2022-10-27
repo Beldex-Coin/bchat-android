@@ -99,6 +99,7 @@ import com.thoughtcrimes.securesms.wallet.node.activity.NodeActivity
 import com.thoughtcrimes.securesms.wallet.receive.ReceiveActivity
 import com.thoughtcrimes.securesms.wallet.receive.ReceiveFragment
 import com.thoughtcrimes.securesms.wallet.rescan.ReScanActivity
+import com.thoughtcrimes.securesms.wallet.settings.WalletSettings
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
 import io.beldex.bchat.databinding.ViewMessageRequestBannerBinding
 import kotlinx.coroutines.*

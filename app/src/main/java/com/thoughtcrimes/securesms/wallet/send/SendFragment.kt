@@ -228,6 +228,8 @@ class SendFragment : Fragment(), OnUriScannedListener {
     override fun onResume() {
         super.onResume()
         Timber.d("onResume")
+        activityCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
+        activityCallback!!.setTitle(getString(R.string.send))
         processScannedData()
     }
 

@@ -376,6 +376,11 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
                 Toast.makeText(activity, item.title, Toast.LENGTH_SHORT).show()
                 if (item.title == "Incoming") {
                     item.isChecked = !item.isChecked
+                    for(i in 0..adapter!!.infoItems!!.size){
+                        if(adapter!!.infoItems?.get(i)!!.direction === TransactionInfo.Direction.Direction_In){
+                            Log.d("Beldex","Incoming item position $i")
+                        }
+                    }
                 }
                 false
             }

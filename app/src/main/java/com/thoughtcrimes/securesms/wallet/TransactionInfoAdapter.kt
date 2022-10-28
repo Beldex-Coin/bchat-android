@@ -9,8 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.get
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.thoughtcrimes.securesms.data.Crypto
@@ -36,7 +38,7 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
         fun onInteraction(view: View?, item: TransactionInfo?)
     }
 
-    private var infoItems: ArrayList<TransactionInfo>? = null
+    public var infoItems: ArrayList<TransactionInfo>? = null
     private var listener: OnInteractionListener? = null
 
     private var context: Context? = null
@@ -140,6 +142,8 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
         //var tvPaymentId: TextView
         private var tvDateTime: TextView = itemView.findViewById(R.id.transaction_date_and_time)
 
+        private var transactionDetailsLayout: LinearLayout = itemView.findViewById(R.id.transaction_details_layout)
+
         //val pbConfirmations: CircularProgressIndicator
         //var tvConfirmations: TextView
         private var infoItem: TransactionInfo? = null
@@ -152,7 +156,7 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
         }
 
         fun bind(position: Int) {
-            infoItem = infoItems!!.get(position)
+            infoItem = infoItems!![position]
             itemView.transitionName = context!!.getString(R.string.tx_item_transition_name, infoItem!!.hash)
             val userNotes = UserNotes(infoItem!!.notes)
             if (userNotes.xmrtoKey != null) {
@@ -273,7 +277,13 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
             if (listener != null) {
                 val position = adapterPosition // gets item position
                 if (position != RecyclerView.NO_POSITION) { // Check if an item was deleted, but the user clicked it before the UI removed it
-                    listener!!.onInteraction(view, infoItems!!.get(position))
+                    if(transactionDetailsLayout.visibility==View.VISIBLE) {
+                        transactionDetailsLayout.visibility = View.GONE
+                    }else{
+                        transactionDetailsLayout.visibility = View.VISIBLE
+                    }
+                    //Important
+                    //listener!!.onInteraction(view, infoItems!!.get(position))
                 }
             }
         }

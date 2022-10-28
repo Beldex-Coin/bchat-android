@@ -83,7 +83,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
-            android:name="com.thoughtcrimes.securesms.wallet.node.NodeListActivity"
+            android:name="com.thoughtcrimes.securesms.wallet.node.activity.NodeActivity"
             android:exported="false" />
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLockActivity"

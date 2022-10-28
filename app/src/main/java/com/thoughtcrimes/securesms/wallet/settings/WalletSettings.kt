@@ -14,8 +14,6 @@ import com.thoughtcrimes.securesms.wallet.node.activity.NodeActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivitySettingsBinding
 import io.beldex.bchat.databinding.ActivityWalletSettingsBinding
 
 class WalletSettings : BaseActionBarActivity() {

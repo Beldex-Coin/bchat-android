@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.MenuItem;
 
@@ -68,7 +69,9 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
     public boolean onOptionsItemSelected(MenuItem item) {
         final int id = item.getItemId();
         if (id == R.id.action_add_node) {
-            startActivity(new Intent(NodeActivity.this, AddNodeActivity.class));
+            Intent intent = new Intent(this, AddNodeActivity.class);
+            intent.putExtra("nodeInfo", (CharSequence) node);
+            startActivity(intent);
             return true;
         }
         if (id == R.id.action_reset_node) {

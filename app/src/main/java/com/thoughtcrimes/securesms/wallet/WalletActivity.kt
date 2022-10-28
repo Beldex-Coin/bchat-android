@@ -25,11 +25,13 @@ import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityWalletBinding
 import kotlinx.coroutines.NonCancellable.isCancelled
 import timber.log.Timber
+import java.lang.IllegalArgumentException
 import java.util.*
 
-class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.Observer,SendFragment.Listener,ScannerFragment.OnScannedListener,SendFragment.OnScanListener, ReceiveFragment.Listener{
+class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.Observer,
+    ScannerFragment.OnScannedListener, SendFragment.OnScanListener, SendFragment.Listener,
+    ReceiveFragment.Listener,WalletFragment.OnScanListener {
     lateinit var binding: ActivityWalletBinding
-
 
 
     private var requestStreetMode = false
@@ -41,6 +43,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     private var streetMode: Long = 0
     private var onUriScannedListener: OnUriScannedListener? = null
     private var barcodeData: BarcodeData? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +57,8 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         setContentView(binding.root)
 
         //Node Connection
-        loadFavouritesWithNetwork()
+        //by hales
+       /* loadFavouritesWithNetwork()*/
 
         LegacyStorageHelper.migrateWallets(this)
 
@@ -100,7 +104,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     }
 
-    private fun openWalletSettings(){
+    private fun openWalletSettings() {
         val intent = Intent(this, WalletSettings::class.java)
         push(intent)
     }
@@ -187,7 +191,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             //Important
             //setTitle(getString(R.string.status_wallet_disconnected), "")
             setTitle(getString(R.string.my_wallet), "")
-            Log.d("DISCONNECTED","")
+            Log.d("DISCONNECTED", "")
         }
     }
 
@@ -231,7 +235,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     override fun onSendRequest(view: View?) {
         SendFragment.newInstance(uri)
-            ?.let { replaceFragmentWithTransition(view, it, null, null) }
+            .let { replaceFragmentWithTransition(view, it, null, null) }
         uri = null // only use uri once
     }
 
@@ -243,6 +247,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     private var synced = false
+    private var streetmode = false
 
     override val isSynced: Boolean
         get() = synced
@@ -295,6 +300,67 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         binding.toolbar.setSubtitle(subtitle)
     }
 
+
+    override fun setBarcodeData(data: BarcodeData?) {
+        barcodeData = data
+    }
+
+    override fun getBarcodeData(): BarcodeData? {
+        return barcodeData
+    }
+
+    override fun popBarcodeData(): BarcodeData {
+        Timber.d("POPPED")
+        val data = barcodeData!!
+        barcodeData = null
+        return data
+    }
+
+    override fun setMode(mode: Mode?) {
+        if (this.mode != mode) {
+            this.mode = mode!!
+            when (mode) {
+                Mode.XMR -> txData = TxData()
+                Mode.BTC -> txData = TxDataBtc()
+                else -> throw IllegalArgumentException("Mode " + mode.toString() + " unknown!")
+            }
+            //Important
+            //view!!.post { pagerAdapter.notifyDataSetChanged() }
+            Timber.d("New Mode = %s", this.mode.toString())
+        }
+    }
+
+
+    override fun getTxData(): TxData? {
+        TODO("Not yet implemented")
+    }
+
+    private var mode: Mode = Mode.XMR
+
+    /*  override fun setMode(aMode: Mode) {
+          if (mode != aMode) {
+              mode = aMode
+              when (aMode) {
+                  Mode.XMR -> txData = TxData()
+                  Mode.BTC -> txData = TxDataBtc()
+                  else -> throw IllegalArgumentException("Mode " + aMode.toString() + " unknown!")
+              }
+              //Important
+              //view!!.post { pagerAdapter.notifyDataSetChanged() }
+              Timber.d("New Mode = %s", mode.toString())
+          }
+      }*/
+
+    fun getMode(): Mode {
+        return mode
+    }
+
+    private var txData = TxData()
+
+    enum class Mode {
+        XMR, BTC
+    }
+
     private fun getWalletFragment(): WalletFragment {
         return supportFragmentManager.findFragmentByTag(WalletFragment::class.java.name) as WalletFragment
     }
@@ -314,6 +380,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         get() = getWallet().unlockedBalance
     override val isStreetMode: Boolean
         get() = streetMode > 0
+
 
     override fun onPrepareSend(tag: String?, txData: TxData?) {
         if (mIsBound) { // no point in talking to unbound service
@@ -363,66 +430,21 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         }
     }
 
-    var onUriScannedListeners: OnUriScannedListener? = null
 
     override fun setOnUriScannedListener(onUriScannedListener: OnUriScannedListener?) {
-        this.onUriScannedListeners = onUriScannedListener
-    }
-
-    override fun setBarcodeData(data: BarcodeData?) {
-        barcodeData = data
-    }
-
-    override fun getBarcodeData(): BarcodeData? {
-        return barcodeData
-    }
-
-    override fun popBarcodeData(): BarcodeData? {
-        Timber.d("POPPED")
-        val data = barcodeData!!
-        barcodeData = null
-        return data
-    }
-
-    override fun setMode(mode: Mode?) {
-        if (this.mode != mode) {
-            this.mode = mode!!
-            when (mode) {
-                Mode.XMR -> txData = TxData()
-                Mode.BTC -> txData = TxDataBtc()
-                else -> throw IllegalArgumentException("Mode " + mode.toString() + " unknown!")
-            }
-            //Important
-            //view!!.post { pagerAdapter.notifyDataSetChanged() }
-            Timber.d("New Mode = %s", this.mode.toString())
-        }
-    }
-
-    private var mode: Mode = Mode.XMR
-
-    fun getMode(): Mode {
-        return mode
-    }
-
-    private var txData = TxData()
-
-    enum class Mode {
-        XMR, BTC
-    }
-
-    override fun getTxData(): TxData? {
-        TODO("Not yet implemented")
+        this.onUriScannedListener = onUriScannedListener
     }
 
     override fun onUriScanned(barcodeData: BarcodeData?) {
         super.onUriScanned(barcodeData)
         var processed = false
-        if (onUriScannedListeners != null) {
-            processed = onUriScannedListeners!!.onUriScanned(barcodeData)
+        if (onUriScannedListener != null) {
+            processed = onUriScannedListener!!.onUriScanned(barcodeData)
         }
-        if (!processed || onUriScannedListeners == null) {
+        if (!processed || onUriScannedListener == null) {
             Toast.makeText(this, getString(R.string.nfc_tag_read_what), Toast.LENGTH_LONG).show()
         }
+
     }
 
     private var startScanFragment = false
@@ -510,9 +532,9 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         else throw IllegalStateException("expecting known transition")
         Log.d("Beldex", "extras value transition $transition")
 
-        Log.d("Transition Name ","${getString(transition)}")
+        Log.d("Transition Name ", "${getString(transition)}")
         supportFragmentManager.beginTransaction()
-            .addSharedElement(view!!, getString(transition))
+            /*.addSharedElement(view!!, getString(transition))*/
             .replace(R.id.fragment_container, newFragment)
             .addToBackStack(stackName)
             .commit()
@@ -779,7 +801,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     override fun onWalletOpen(device: Wallet.Device?) {
-       //Important
+        //Important
         /*if (device === Wallet.Device.Device_Ledger) {
             runOnUiThread { showLedgerProgressDialog(LedgerProgressDialog.TYPE_RESTORE) }
         }*/

@@ -52,7 +52,7 @@ public class NodeFragment extends Fragment
 
     static private int NODES_TO_FIND = 10;
 
-    static private NumberFormat FORMATTER = NumberFormat.getInstance();
+    static public NumberFormat FORMATTER = NumberFormat.getInstance();
 
     private SwipeRefreshLayout pullToRefresh;
     private TextView tvPull;
@@ -116,7 +116,7 @@ public class NodeFragment extends Fragment
         super.onResume();
         Timber.d("onResume()");
         //activityCallback.setToolbarButton(Toolbar.BUTTON_BACK);
-        activityCallback.setTitle(R.string.send_title);
+        activityCallback.setTitle(R.string.label_nodes);
         updateRefreshElements();
     }
 

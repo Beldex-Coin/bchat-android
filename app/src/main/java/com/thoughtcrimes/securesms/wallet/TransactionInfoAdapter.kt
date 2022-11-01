@@ -129,8 +129,8 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         View.OnClickListener {
-        //var ivTxType: ImageView
         private var tvAmount: TextView = itemView.findViewById(R.id.transaction_amount)
+        private var tvFeeTitle:TextView = itemView.findViewById(R.id.transaction_fee_title)
         private var tvFee: TextView = itemView.findViewById(R.id.transaction_fee)
         private var tvAddress: TextView = itemView.findViewById(R.id.transaction_recipient_address)
         private var txId: TextView = itemView.findViewById(R.id.transaction_id)
@@ -197,14 +197,17 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
                 val fee: String = Helper.getDisplayAmount(infoItem!!.fee, Helper.DISPLAY_DIGITS_INFO)
                 tvFee.text = context!!.getString(R.string.tx_list_fee, fee)
                 tvFee.visibility = View.VISIBLE
+                tvFeeTitle.visibility = View.VISIBLE
             } else {
                 tvFee.text = ""
                 tvFee.visibility = View.GONE
+                tvFeeTitle.visibility = View.GONE
             }
             if (infoItem!!.isFailed) {
                 tvAmount.setText(context!!.getString(R.string.tx_list_amount_failed, displayAmount))
                 tvFee.setText(context!!.getString(R.string.tx_list_failed_text))
                 tvFee.visibility = View.VISIBLE
+                tvFeeTitle.visibility = View.VISIBLE
                 setTxColour(failedColour)
                 //pbConfirmations.setVisibility(View.GONE)
                 //tvConfirmations.visibility = View.GONE
@@ -295,5 +298,14 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
             //pbConfirmations.setMax(TransactionInfo.CONFIRMATION)
             //tvConfirmations = itemView.findViewById(R.id.tvConfirmations)
         }
+    }
+
+    fun updateList(list: ArrayList<TransactionInfo>) {
+        infoItems = list
+        notifyDataSetChanged()
+    }
+
+    fun updateList(){
+        notifyDataSetChanged()
     }
 }

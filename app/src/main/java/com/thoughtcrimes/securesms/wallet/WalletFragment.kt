@@ -16,7 +16,9 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.get
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.github.brnunes.swipeablerecyclerview.SwipeableRecyclerViewTouchListener
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.transition.MaterialElevationScale
 import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
@@ -35,6 +37,9 @@ import java.lang.ClassCastException
 import java.lang.IllegalStateException
 import java.text.NumberFormat
 import java.util.*
+import kotlin.collections.ArrayList
+import java.text.SimpleDateFormat
+
 
 class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener {
 
@@ -42,6 +47,8 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
     private val formatter = NumberFormat.getInstance()
 
     private var syncText: String? = null
+
+    private var adapterItems: ArrayList<TransactionInfo> = ArrayList()
 
     fun setProgress(text: String?) {
         syncText = text
@@ -126,7 +133,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         exitTransition = null
         reenterTransition = null
         Timber.d("onResume()")
-        activityCallback!!.setTitle(getString(R.string.my_wallet),"")
+        activityCallback!!.setTitle(getString(R.string.my_wallet), "")
         activityCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
         binding.walletName.text = walletTitle
         //Important
@@ -144,7 +151,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
         val PING_SELECTED = 0
         val FIND_BEST = 1
-        AsyncFindBestNode(PING_SELECTED,FIND_BEST).execute<Int>(PING_SELECTED)
+        AsyncFindBestNode(PING_SELECTED, FIND_BEST).execute<Int>(PING_SELECTED)
     }
 
     inner class AsyncFindBestNode(val PING_SELECTED: Int, val FIND_BEST: Int) :
@@ -152,7 +159,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         override fun onPreExecute() {
             super.onPreExecute()
             //pbNode.setVisibility(View.VISIBLE)
-              //showProgressDialogWithTitle("Connecting to Remote Node");
+            //showProgressDialogWithTitle("Connecting to Remote Node");
             //llNode.setVisibility(View.INVISIBLE)
         }
 
@@ -167,22 +174,22 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                     selectedNode = null // it's not in the favourites (any longer)
                 if (selectedNode == null)
                     for (node in favourites) {
-                    if (node!!.isSelected) {
-                        selectedNode = node
-                        break
+                        if (node!!.isSelected) {
+                            selectedNode = node
+                            break
+                        }
                     }
-                }
                 if (selectedNode == null) { // autoselect
                     selectedNode = autoselect(favourites)
                 } else
                     selectedNode.testRpcService()
             } else throw IllegalStateException()
             return if (selectedNode != null && selectedNode.isValid) {
-                Log.d("Testing-->12","true")
+                Log.d("Testing-->12", "true")
                 activityCallback!!.setNode(selectedNode)
                 selectedNode
             } else {
-                Log.d("Testing-->13","true")
+                Log.d("Testing-->13", "true")
                 activityCallback!!.setNode(null)
                 null
             }
@@ -191,10 +198,10 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         override fun onPostExecute(result: NodeInfo?) {
             //if (!isAdded()) return
             //pbNode.setVisibility(View.INVISIBLE)
-               //hideProgressDialogWithTitle();
+            //hideProgressDialogWithTitle();
             //llNode.setVisibility(View.VISIBLE)
             if (result != null) {
-                Log.d("WalletFragment","AsyncFindBestNode Success")
+                Log.d("WalletFragment", "AsyncFindBestNode Success")
                 //Important
                 /*d("found a good node %s", result.toString())
                 val ctx: Context = tvNodeAddress.getContext()
@@ -220,18 +227,18 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 ).show()
                 showNode(result)*/
             } else {
-                Log.d("WalletFragment","AsyncFindBestNode Fail")
+                Log.d("WalletFragment", "AsyncFindBestNode Fail")
                 //Important
-               /* tvNodeName.setText(getResources().getText(R.string.node_create_hint))
-                tvNodeName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-                tvNodeAddress.setText(null)
-                tvNodeAddress.setVisibility(View.GONE)*/
+                /* tvNodeName.setText(getResources().getText(R.string.node_create_hint))
+                 tvNodeName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+                 tvNodeAddress.setText(null)
+                 tvNodeAddress.setVisibility(View.GONE)*/
             }
         }
 
-       /* override fun onCancelled(result: NodeInfo?) { //TODO: cancel this on exit from fragment
-            Log.d("cancelled with %s", result)
-        }*/
+        /* override fun onCancelled(result: NodeInfo?) { //TODO: cancel this on exit from fragment
+             Log.d("cancelled with %s", result)
+         }*/
     }
 
     fun autoselect(nodes: Set<NodeInfo?>): NodeInfo? {
@@ -331,12 +338,12 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 })
         )
 
-        binding.sendCardViewButton.setOnClickListener(View.OnClickListener { v: View? ->
+        binding.sendCardViewButton.setOnClickListener{ v: View? ->
             activityCallback!!.onSendRequest(v)
-        })
-        binding.receiveCardViewButton.setOnClickListener(View.OnClickListener { v: View? ->
+        }
+        binding.receiveCardViewButton.setOnClickListener{ v: View? ->
             activityCallback!!.onWalletReceive(v)
-        })
+        }
 
         if (activityCallback!!.isSynced) {
             onSynced()
@@ -355,23 +362,128 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             }*/
             val spanString = SpannableString(popupMenu.menu[0].title.toString())
             spanString.setSpan(StyleSpan(Typeface.BOLD), 0, spanString.length, 0)
-            spanString.setSpan( ForegroundColorSpan(ResourcesCompat
-                .getColor(resources, R.color.text, null)),
-                0, spanString.length, 0)
+            spanString.setSpan(
+                ForegroundColorSpan(
+                    ResourcesCompat
+                        .getColor(resources, R.color.text, null)
+                ),
+                0, spanString.length, 0
+            )
+           /* if (TextSecurePreferences.getIncomingTransactionStatus(requireActivity())) {
+                filter(TransactionInfo.Direction.Direction_In, adapter!!.infoItems!!)
+            }*/
             popupMenu.menu[0].title = spanString
-            popupMenu.menu[0].isEnabled =false
-            popupMenu.menu[1].isChecked = popupMenu.menu[1].isChecked
-            popupMenu.menu[2].isChecked = popupMenu.menu[2].isChecked
-            popupMenu.menu[3].isChecked = popupMenu.menu[3].isChecked
+            popupMenu.menu[0].isEnabled = false
+            popupMenu.menu[1].isChecked =
+                TextSecurePreferences.getIncomingTransactionStatus(requireActivity())
+            popupMenu.menu[2].isChecked = TextSecurePreferences.getOutgoingTransactionStatus(requireActivity())
+            //popupMenu.menu[3].isChecked = TextSecurePreferences.getTransactionsByDateStatus(requireActivity())
             popupMenu.setOnMenuItemClickListener { item ->
                 Toast.makeText(activity, item.title, Toast.LENGTH_SHORT).show()
+                val emptyList: ArrayList<TransactionInfo> = ArrayList()
                 if (item.title == "Incoming") {
                     item.isChecked = !item.isChecked
-                    for(i in 0..adapter!!.infoItems!!.size){
-                        if(adapter!!.infoItems?.get(i)!!.direction === TransactionInfo.Direction.Direction_In){
-                            Log.d("Beldex","Incoming item position $i")
+                    if(popupMenu.menu[2].isChecked && item.isChecked){
+                        TextSecurePreferences.setIncomingTransactionStatus(requireActivity(), true)
+                        adapter!!.updateList(adapterItems)
+                    }else {
+                        if (item.isChecked) {
+                            TextSecurePreferences.setIncomingTransactionStatus(
+                                requireActivity(),
+                                true
+                            )
+                            filter(TransactionInfo.Direction.Direction_In, adapterItems)
+                        } else {
+                            TextSecurePreferences.setIncomingTransactionStatus(
+                                requireActivity(),
+                                false
+                            )
+                            if(popupMenu.menu[2].isChecked){
+                                filter(TransactionInfo.Direction.Direction_Out, adapterItems)
+                            }else {
+                                //adapter!!.updateList(adapterItems)
+                                filter(TransactionInfo.Direction.Direction_In, emptyList)
+                            }
                         }
                     }
+                } else if (item.title == "Outgoing") {
+                    item.isChecked = !item.isChecked
+                    if(popupMenu.menu[1].isChecked && item.isChecked){
+                        TextSecurePreferences.setOutgoingTransactionStatus(requireActivity(), true)
+                        adapter!!.updateList(adapterItems)
+                    }else {
+                        if (item.isChecked) {
+                            TextSecurePreferences.setOutgoingTransactionStatus(
+                                requireActivity(),
+                                true
+                            )
+                            filter(TransactionInfo.Direction.Direction_Out, adapterItems)
+                        } else {
+                            TextSecurePreferences.setOutgoingTransactionStatus(
+                                requireActivity(),
+                                false
+                            )
+                            if(popupMenu.menu[1].isChecked){
+                                filter(TransactionInfo.Direction.Direction_In, adapterItems)
+                            }else {
+                                //adapter!!.updateList(adapterItems)
+                                filter(TransactionInfo.Direction.Direction_Out, emptyList)
+                            }
+                        }
+                    }
+                }else{
+                    val datePicker = MaterialDatePicker.Builder.dateRangePicker()
+                        .setTheme(R.style.MaterialCalendarTheme)
+                        .build()
+                    datePicker.show(requireActivity().supportFragmentManager, "DatePicker")
+
+                    // Setting up the event for when ok is clicked
+                    datePicker.addOnPositiveButtonClickListener {
+                        Toast.makeText(requireActivity(), "${datePicker.headerText} ${datePicker.selection!!.first}, ${datePicker.selection!!.second} ${Date(datePicker.selection!!.first!!)}, ${Date(datePicker.selection!!.second!!)}is selected", Toast.LENGTH_LONG).show()
+                        if(popupMenu.menu[1].isChecked && popupMenu.menu[2].isChecked){
+                            filterTransactionsByDate(getDaysBetweenDates(Date(datePicker.selection!!.first!!),Date(datePicker.selection!!.second!!)),adapterItems)
+                        }else if(popupMenu.menu[1].isChecked){
+                            filterTransactionsByDate(getDaysBetweenDates(Date(datePicker.selection!!.first!!),Date(datePicker.selection!!.second!!)),filterTempList(TransactionInfo.Direction.Direction_In, adapterItems))
+                        }else if(popupMenu.menu[2].isChecked){
+                            filterTransactionsByDate(getDaysBetweenDates(Date(datePicker.selection!!.first!!),Date(datePicker.selection!!.second!!)),filterTempList(TransactionInfo.Direction.Direction_Out, adapterItems))
+                        }else{
+
+                            filterTransactionsByDate(getDaysBetweenDates(Date(datePicker.selection!!.first!!),Date(datePicker.selection!!.second!!)),emptyList)
+                        }
+                    }
+
+                    // Setting up the event for when cancelled is clicked
+                    datePicker.addOnNegativeButtonClickListener {
+                        Toast.makeText(requireActivity(), "${datePicker.headerText} ${datePicker.selection!!.first}, ${datePicker.selection!!.second} is cancelled", Toast.LENGTH_LONG).show()
+                    }
+
+                    // Setting up the event for when back button is pressed
+                    datePicker.addOnCancelListener {
+                        Toast.makeText(requireActivity(), "Date Picker Cancelled", Toast.LENGTH_LONG).show()
+                    }
+                    /*val callback = RangeDaysPickCallback {startDate,endDate->
+                        Toast.makeText(requireActivity(),"${startDate.longDateString}, ${endDate.longDateString}",Toast.LENGTH_SHORT).show()
+                        if(popupMenu.menu[1].isChecked && popupMenu.menu[2].isChecked){
+                            filterTransactionsByDate(getDaysBetweenDates(startDate.getTime(),endDate.getTime()),adapterItems)
+                        }else if(popupMenu.menu[1].isChecked){
+                            filterTransactionsByDate(getDaysBetweenDates(startDate.getTime(),endDate.getTime()),filterTempList(TransactionInfo.Direction.Direction_In, adapterItems))
+                        }else if(popupMenu.menu[2].isChecked){
+                            filterTransactionsByDate(getDaysBetweenDates(startDate.getTime(),endDate.getTime()),filterTempList(TransactionInfo.Direction.Direction_Out, adapterItems))
+                        }else{
+
+                            filterTransactionsByDate(getDaysBetweenDates(startDate.getTime(),endDate.getTime()),emptyList)
+                        }
+                    }
+                    val today: PrimeCalendar = CivilCalendar(locale = Locale.ENGLISH).also { civilCalendar->
+                        civilCalendar.year = 2022                       // determines starting year
+                        civilCalendar.month = 9                         // determines starting month
+                        civilCalendar.firstDayOfWeek = Calendar.MONDAY  // sets first day of week to Monday
+                    }
+
+                    val datePicker = dialogWith(today)
+                        .pickRangeDays(callback)
+                        .build()
+                    datePicker.show(requireActivity().supportFragmentManager, "SOME_TAG")*/
                 }
                 false
             }
@@ -379,13 +491,77 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         }
         return binding.root
     }
+    private val DATETIME_FORMATTER = SimpleDateFormat("dd-MM-yyyy")
+
+    private fun getDateTime(time: Long): String {
+        return DATETIME_FORMATTER.format(Date(time * 1000))
+    }
+
+    fun filter(text: TransactionInfo.Direction, arrayList: ArrayList<TransactionInfo>) {
+        val temp: ArrayList<TransactionInfo> = ArrayList()
+        for (d in arrayList) {
+            if (d.direction == text) {
+                temp.add(d)
+            }
+        }
+        callIfTransactionListEmpty(temp.size)
+        //update recyclerview
+        adapter!!.updateList(temp)
+    }
+
+    private fun filterTempList(text: TransactionInfo.Direction, arrayList: ArrayList<TransactionInfo>):ArrayList<TransactionInfo> {
+        val temp: ArrayList<TransactionInfo> = ArrayList()
+        for (d in arrayList) {
+            if (d.direction == text) {
+                temp.add(d)
+            }
+        }
+        return temp
+    }
+
+    private fun filterTransactionsByDate(dates:List<Date>, arrayList: ArrayList<TransactionInfo>) {
+        val temp: ArrayList<TransactionInfo> = ArrayList()
+        for(datesItem in dates) {
+            for (d in arrayList) {
+                Log.d("Transaction Date -> ${getDateTime(d.timestamp)} ","Selected Dates -> ${DATETIME_FORMATTER.format(datesItem)}")
+                if (getDateTime(d.timestamp) == DATETIME_FORMATTER.format(datesItem)) {
+                    temp.add(d)
+                }
+            }
+        }
+        callIfTransactionListEmpty(temp.size)
+        //update recyclerview
+        adapter!!.updateList(temp)
+    }
+
+    private fun callIfTransactionListEmpty(size: Int) {
+        if (size > 0) {
+            binding.transactionList.visibility = View.VISIBLE
+            binding.emptyContainerLayout.visibility = View.GONE
+        } else {
+            binding.filterTransactionsIcon.isClickable = true
+            binding.transactionList.visibility = View.GONE
+            binding.emptyContainerLayout.visibility = View.VISIBLE
+        }
+    }
+
+    private fun getDaysBetweenDates(startDate: Date, endDate: Date): List<Date> {
+        val dates: MutableList<Date> = ArrayList()
+        val calendar: Calendar = GregorianCalendar()
+        calendar.time = startDate
+        while (calendar.time.before(endDate)) {
+            val result = calendar.time
+            dates.add(result)
+            calendar.add(Calendar.DATE, 1)
+        }
+        return dates
+    }
 
 
-
-   /* fun onViewCreated(@NonNull view: View?, @Nullable savedInstanceState: Bundle?) {
-        binding.notesRecyclerView.setVisibility(View.VISIBLE) //this hide/show recyclerview visibility
-        Log.d("TAG", "hidden: ")
-    }*/
+    /* fun onViewCreated(@NonNull view: View?, @Nullable savedInstanceState: Bundle?) {
+         binding.notesRecyclerView.setVisibility(View.VISIBLE) //this hide/show recyclerview visibility
+         Log.d("TAG", "hidden: ")
+     }*/
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -442,13 +618,19 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 if (x == 0) x = 101 // indeterminate
                 setProgress(x)
 //                ivSynced.setVisibility(View.GONE);
-                binding.filterTransactionsIcon.isClickable=false
+                binding.filterTransactionsIcon.isClickable = false
             } else {
-                sync = getString(R.string.status_synchronized)//getString(R.string.status_synced) + " " + formatter.format(wallet.blockChainHeight)
+                sync =
+                    getString(R.string.status_synchronized)//getString(R.string.status_synced) + " " + formatter.format(wallet.blockChainHeight)
                 //binding.syncStatus.setTextColor(resources.getColor(R.color.green_color))
-                binding.syncStatus.setTextColor(ContextCompat.getColor(requireActivity().applicationContext,R.color.green_color))
+                binding.syncStatus.setTextColor(
+                    ContextCompat.getColor(
+                        requireActivity().applicationContext,
+                        R.color.green_color
+                    )
+                )
 //                ivSynced.setVisibility(View.VISIBLE);
-                binding.filterTransactionsIcon.isClickable = adapter!!.itemCount>0
+                binding.filterTransactionsIcon.isClickable = true //default = adapter!!.itemCount > 0
             }
         } else {
             sync = getString(R.string.status_wallet_connecting)
@@ -470,57 +652,54 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         showUnconfirmed(unconfirmedBdx)
 
         val amountBdx: Double = Helper.getDecimalAmount(unlockedBalance).toDouble()
-        Log.d("Beldex", "value of amountxmr$amountBdx")
-        Log.d("Beldex", "value of helper amountxmr" + Helper.getFormattedAmount(amountBdx, true))
-        /*Log.d("Beldex","value of amountxmr" +amountBdx);
-        Log.d("Beldex","value of helper amountxmr" +Helper.getFormattedAmount(amountBdx, true));
-        Log.d("sync refreshBalance()",amountBdx.toString())*/
+        Log.d("Beldex", "value of amountBdx$amountBdx")
+        Log.d("Beldex", "value of helper amountBdx" + Helper.getFormattedAmount(amountBdx, true))
         showBalance(Helper.getFormattedAmount(amountBdx, true))
     }
 
     //Important
-   /* private fun refreshBalance() {
-        val unconfirmedBdx: Double = Helper.getDecimalAmount(balance - unlockedBalance).toDouble()
-        showUnconfirmed(unconfirmedBdx)
-        if (sCurrency.getSelectedItemPosition() == 0) { // XMR
-            val amountBdx: Double = Helper.getDecimalAmount(unlockedBalance).toDouble()
-            showBalance(Helper.getFormattedAmount(amountBdx, true))
-        } else { // not BDX
-            val currency = sCurrency.getSelectedItem() as String
-            Timber.d(currency)
-            if (currency != balanceCurrency || balanceRate <= 0) {
-                showExchanging()
-                exchangeApi.queryExchangeRate(Helper.BASE_CRYPTO, currency,
-                    object : ExchangeCallback {
-                        override fun onSuccess(exchangeRate: ExchangeRate?) {
-                            if (isAdded) Handler(Looper.getMainLooper()).post {
-                                exchange(
-                                    exchangeRate!!
-                                )
-                            }
-                        }
+    /* private fun refreshBalance() {
+         val unconfirmedBdx: Double = Helper.getDecimalAmount(balance - unlockedBalance).toDouble()
+         showUnconfirmed(unconfirmedBdx)
+         if (sCurrency.getSelectedItemPosition() == 0) { // XMR
+             val amountBdx: Double = Helper.getDecimalAmount(unlockedBalance).toDouble()
+             showBalance(Helper.getFormattedAmount(amountBdx, true))
+         } else { // not BDX
+             val currency = sCurrency.getSelectedItem() as String
+             Timber.d(currency)
+             if (currency != balanceCurrency || balanceRate <= 0) {
+                 showExchanging()
+                 exchangeApi.queryExchangeRate(Helper.BASE_CRYPTO, currency,
+                     object : ExchangeCallback {
+                         override fun onSuccess(exchangeRate: ExchangeRate?) {
+                             if (isAdded) Handler(Looper.getMainLooper()).post {
+                                 exchange(
+                                     exchangeRate!!
+                                 )
+                             }
+                         }
 
-                        override fun onError(e: Exception) {
-                            Timber.e(e.localizedMessage)
-                            if (isAdded) Handler(Looper.getMainLooper()).post { exchangeFailed() }
-                        }
-                    })
-            } else {
-                updateBalance()
-            }
-        }
-    }*/
+                         override fun onError(e: Exception) {
+                             Timber.e(e.localizedMessage)
+                             if (isAdded) Handler(Looper.getMainLooper()).post { exchangeFailed() }
+                         }
+                     })
+             } else {
+                 updateBalance()
+             }
+         }
+     }*/
 
     private fun showUnconfirmed(unconfirmedAmount: Double) {
         if (!activityCallback!!.isStreetMode) {
             val unconfirmed = Helper.getFormattedAmount(unconfirmedAmount, true)
             //Important
-           /* tvUnconfirmedAmount.setText(
-                resources.getString(
-                    R.string.bdx_unconfirmed_amount,
-                    unconfirmed
-                )
-            )*/
+            /* tvUnconfirmedAmount.setText(
+                 resources.getString(
+                     R.string.bdx_unconfirmed_amount,
+                     unconfirmed
+                 )
+             )*/
         } else {
             //Important
             //tvUnconfirmedAmount.setText(null)
@@ -538,7 +717,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         } else { // XMR
             Helper.getFormattedAmount(amountA, true)
         }
-        Log.d("sync updateBalance()","true")
+        Log.d("sync updateBalance()", "true")
         showBalance(displayB)
     }
 
@@ -589,6 +768,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         fun getOrPopulateFavourites(): MutableSet<NodeInfo>
         fun getNode(): NodeInfo?
         fun setNode(node: NodeInfo?)
+
         //fun showNet()
         fun onNodePrefs()
     }
@@ -614,18 +794,19 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 ) list.add(info)
             }
             adapter!!.setInfos(list)
+            adapterItems.addAll(adapter!!.infoItems!!)
             if (accountIndex != wallet.accountIndex) {
                 accountIndex = wallet.accountIndex
                 binding.transactionList.scrollToPosition(0)
             }
 
             //SteveJosephh21
-            if(adapter!!.itemCount>0){
-                binding.transactionList.visibility=View.VISIBLE
+            if (adapter!!.itemCount > 0) {
+                binding.transactionList.visibility = View.VISIBLE
                 binding.emptyContainerLayout.visibility = View.GONE
-            }else{
-                binding.filterTransactionsIcon.isClickable=false
-                binding.transactionList.visibility=View.GONE
+            } else {
+                binding.filterTransactionsIcon.isClickable = true // default = false
+                binding.transactionList.visibility = View.GONE
                 binding.emptyContainerLayout.visibility = View.VISIBLE
             }
         }

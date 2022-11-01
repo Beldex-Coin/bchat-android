@@ -14,6 +14,5 @@
         android:title="@string/outgoing" />
     <item
         android:id="@+id/transactionsByDate"
-        android:title="@string/transactions_by_date"
-        android:checkable="true"/>
+        android:title="@string/transactions_by_date" />
 </menu>

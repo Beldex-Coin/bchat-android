@@ -2,7 +2,7 @@
 <resources>
 
     <!-- The base theme is dark and the light one is implemented using "notnight" resources. -->
-    <style name="Base.Theme.Bchat" parent="@style/Theme.AppCompat.DayNight.DarkActionBar">
+    <style name="Base.Theme.Bchat" parent="@style/Theme.MaterialComponents.DayNight.DarkActionBar.Bridge">
         <item name="android:itemTextAppearance">@style/menuTextAppearance</item>
         <item name="colorPrimary">@color/action_bar_background</item>
         <item name="colorPrimaryDark">@color/action_bar_background</item>
@@ -107,6 +107,10 @@
         <item name="conversation_pinned_background_color">@color/conversation_pinned_background
         </item>
         <item name="conversation_pinned_icon_color">@color/conversation_pinned_icon</item>
+
+        <item name="materialCalendarStyle">@style/Widget.MaterialComponents.MaterialCalendar</item>
+        <item name="materialCalendarFullscreenTheme">@style/ThemeOverlay.MaterialComponents.MaterialCalendar.Fullscreen</item>
+        <item name="materialCalendarTheme">@style/ThemeOverlay.MaterialComponents.MaterialCalendar</item>
     </style>
 
     <!-- This should be the default theme for the application. -->

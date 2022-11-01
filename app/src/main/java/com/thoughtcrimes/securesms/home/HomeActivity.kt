@@ -100,6 +100,9 @@ import com.thoughtcrimes.securesms.wallet.receive.ReceiveActivity
 import com.thoughtcrimes.securesms.wallet.receive.ReceiveFragment
 import com.thoughtcrimes.securesms.wallet.rescan.ReScanActivity
 import com.thoughtcrimes.securesms.wallet.settings.WalletSettings
+import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
+import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
+import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
 import io.beldex.bchat.databinding.ViewMessageRequestBannerBinding
 import kotlinx.coroutines.*
@@ -1100,19 +1103,26 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         val walletName = TextSecurePreferences.getWalletName(this)
         val walletPassword = TextSecurePreferences.getWalletPassword(this)
         if (walletName != null && walletPassword !=null) {
-            startWallet(walletName,walletPassword, fingerprintUsed = false, streetmode = false)
+            //startWallet(walletName, walletPassword, fingerprintUsed = false, streetmode = false)
+            val lockManager: LockManager<CustomPinActivity> = LockManager.getInstance() as LockManager<CustomPinActivity>
+            lockManager.enableAppLock(this, CustomPinActivity::class.java)
+            val intent = Intent(this, CustomPinActivity::class.java)
+            if(TextSecurePreferences.getWalletEntryPassword(this)!=null) {
+                intent.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN)
+                intent.putExtra("change_pin",false)
+                push(intent)
+            }else{
+                intent.putExtra(AppLock.EXTRA_TYPE, AppLock.ENABLE_PINLOCK)
+                intent.putExtra("change_pin",false)
+                push(intent)
+            }
         }else{
             val intent = Intent(this, WalletInfoActivity::class.java)
             push(intent)
         }
-        /*val lockManager: LockManager<CustomPinActivity> = LockManager.getInstance() as LockManager<CustomPinActivity>
-        lockManager.enableAppLock(this, CustomPinActivity::class.java)
-        val intent = Intent(this, CustomPinActivity::class.java)
-        intent.putExtra(AppLock.EXTRA_TYPE, AppLock.ENABLE_PINLOCK);
-        push(intent)*/
     }
 
-    private fun startWallet(
+    /*private fun startWallet(
         walletName:String, walletPassword:String,
         fingerprintUsed:Boolean, streetmode:Boolean) {
         val REQUEST_ID = "id"
@@ -1122,18 +1132,21 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         val REQUEST_URI = "uri"
 
         Timber.d("startWallet()");
+        TextSecurePreferences.setIncomingTransactionStatus(this, true)
+        TextSecurePreferences.setOutgoingTransactionStatus(this, true)
+        TextSecurePreferences.setTransactionsByDateStatus(this,false)
         val intent = Intent(this, WalletActivity::class.java)
         intent.putExtra(REQUEST_ID, walletName)
         intent.putExtra(REQUEST_PW, walletPassword)
         intent.putExtra(REQUEST_FINGERPRINT_USED, fingerprintUsed)
         intent.putExtra(REQUEST_STREETMODE, streetmode)
         //Important
-        /*if (uri != null) {
+        *//*if (uri != null) {
             intent.putExtra(REQUEST_URI, uri)
             uri = null // use only once
-        }*/
+        }*//*
         startActivity(intent)
-    }
+    }*/
 
     private fun showNotificationSettings() {
         val intent = Intent(this, NotificationSettingsActivity::class.java)

@@ -8,9 +8,12 @@ import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.thoughtcrimes.securesms.wallet.WalletActivity;
 import com.thoughtcrimes.securesms.wallet.utils.keyboardview.enums.KeyboardButtonEnum;
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLockActivity;
+
+import lombok.val;
 
 
 public class CustomPinActivity extends AppLockActivity {
@@ -67,10 +70,42 @@ public class CustomPinActivity extends AppLockActivity {
     }
 
     @Override
-    public void onPinSuccess(int attempts) {
-        Intent i = new Intent(getApplicationContext(), WalletActivity.class);
-        startActivity(i);
+    public void onPinSuccess(int attempts,int pinLockStatus) {
+        if(pinLockStatus==3 || pinLockStatus==4) {
+            String walletName = TextSecurePreferences.getWalletName(this);
+            String walletPassword = TextSecurePreferences.getWalletPassword(this);
+            if (walletName != null && walletPassword !=null) {
+                startWallet(walletName, walletPassword,  false,  false);
+            }
+        }
+
         Log.d(TAG,"onPinSuccess "+attempts);
+    }
+
+    private void startWallet(
+            String walletName, String walletPassword,
+            Boolean fingerprintUsed, Boolean streetmode) {
+        String REQUEST_ID = "id";
+        String REQUEST_PW = "pw";
+        String REQUEST_FINGERPRINT_USED = "fingerprint";
+        String REQUEST_STREETMODE = "streetmode";
+        String REQUEST_URI = "uri";
+
+        Log.d("startWallet()","");
+        TextSecurePreferences.setIncomingTransactionStatus(this, true);
+        TextSecurePreferences.setOutgoingTransactionStatus(this, true);
+        TextSecurePreferences.setTransactionsByDateStatus(this,false);
+        Intent intent =new Intent(this, WalletActivity.class);
+        intent.putExtra(REQUEST_ID, walletName);
+        intent.putExtra(REQUEST_PW, walletPassword);
+        intent.putExtra(REQUEST_FINGERPRINT_USED, fingerprintUsed);
+        intent.putExtra(REQUEST_STREETMODE, streetmode);
+        //Important
+        /*if (uri != null) {
+            intent.putExtra(REQUEST_URI, uri)
+            uri = null // use only once
+        }*/
+        startActivity(intent);
     }
 
     @Override

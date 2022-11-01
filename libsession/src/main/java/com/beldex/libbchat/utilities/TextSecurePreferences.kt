@@ -199,6 +199,18 @@ interface TextSecurePreferences {
     fun setCurrency(position: String?)
     fun getCurrency():String?
 
+    fun setIncomingTransactionStatus(status:Boolean)
+    fun getIncomingTransactionStatus():Boolean
+
+    fun setOutgoingTransactionStatus(status:Boolean)
+    fun getOutgoingTransactionStatus():Boolean
+
+    fun setTransactionsByDateStatus(status: Boolean)
+    fun getTransactionsByDateStatus():Boolean
+
+    fun setWalletEntryPassword(name: String?)
+    fun getWalletEntryPassword(): String?
+
 
     companion object {
         val TAG = TextSecurePreferences::class.simpleName
@@ -243,6 +255,7 @@ interface TextSecurePreferences {
         const val PROFILE_NAME_PREF = "pref_profile_name"
         const val WALLET_NAME_PREF = "pref_wallet_name"
         const val WALLET_PASSWORD_PREF = "pref_wallet_password"
+        const val WALLET_ENTRY_PASSWORD_PREF = "pref_wallet_entry_password"
         const val PROFILE_AVATAR_ID_PREF = "pref_profile_avatar_id"
         const val PROFILE_AVATAR_URL_PREF = "pref_profile_avatar_url"
         const val READ_RECEIPTS_PREF = "pref_read_receipts"
@@ -293,6 +306,9 @@ interface TextSecurePreferences {
         const val FEE_PRIORITY = "fee_priority"
         const val DECIMALS = "decimals"
         const val CURRENCY = "currency"
+        const val INCOMING_TRANSACTION_STATUS = "incoming_transaction_status"
+        const val OUTGOING_TRANSACTION_STATUS = "outgoing_transaction_status"
+        const val TRANSACTIONS_BY_DATE = "transactions_by_date"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -1127,6 +1143,49 @@ interface TextSecurePreferences {
             return getStringPreference(context, CURRENCY, "USD")
         }
 
+        @JvmStatic
+        fun setIncomingTransactionStatus(context: Context, status: Boolean) {
+            setBooleanPreference(context, INCOMING_TRANSACTION_STATUS, status)
+        }
+
+        @JvmStatic
+        fun getIncomingTransactionStatus(context: Context): Boolean {
+            return getBooleanPreference(context, INCOMING_TRANSACTION_STATUS, true)
+        }
+
+        @JvmStatic
+        fun setOutgoingTransactionStatus(context: Context, status: Boolean) {
+            setBooleanPreference(context, OUTGOING_TRANSACTION_STATUS, status)
+        }
+
+        @JvmStatic
+        fun getOutgoingTransactionStatus(context: Context): Boolean {
+            return getBooleanPreference(context, OUTGOING_TRANSACTION_STATUS, true)
+        }
+
+
+        @JvmStatic
+        fun setTransactionsByDateStatus(context: Context, status: Boolean) {
+            setBooleanPreference(context, TRANSACTIONS_BY_DATE, status)
+        }
+
+        @JvmStatic
+        fun getTransactionsByDateStatus(context: Context): Boolean {
+            return getBooleanPreference(context, TRANSACTIONS_BY_DATE, false)
+        }
+
+        @JvmStatic
+        fun getWalletEntryPassword(context: Context): String? {
+            return getStringPreference(context, WALLET_ENTRY_PASSWORD_PREF, null)
+        }
+
+
+        @JvmStatic
+        fun setWalletEntryPassword(context: Context, name: String?) {
+            setStringPreference(context, WALLET_ENTRY_PASSWORD_PREF, name)
+            _events.tryEmit(WALLET_ENTRY_PASSWORD_PREF)
+        }
+
     }
 }
 
@@ -1845,5 +1904,38 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun getCurrency(): String? {
         return getStringPreference(TextSecurePreferences.CURRENCY,"USD")
+    }
+
+    override fun setIncomingTransactionStatus(status: Boolean) {
+        setBooleanPreference(TextSecurePreferences.INCOMING_TRANSACTION_STATUS, status)
+    }
+
+    override fun getIncomingTransactionStatus(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.INCOMING_TRANSACTION_STATUS,true)
+    }
+
+    override fun setOutgoingTransactionStatus(status: Boolean) {
+        setBooleanPreference(TextSecurePreferences.OUTGOING_TRANSACTION_STATUS, status)
+    }
+
+    override fun getOutgoingTransactionStatus(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.OUTGOING_TRANSACTION_STATUS,true)
+    }
+
+    override fun setTransactionsByDateStatus(status: Boolean) {
+        setBooleanPreference(TextSecurePreferences.TRANSACTIONS_BY_DATE, status)
+    }
+
+    override fun getTransactionsByDateStatus(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.TRANSACTIONS_BY_DATE,false)
+    }
+
+    override fun setWalletEntryPassword(name: String?) {
+        setStringPreference(TextSecurePreferences.WALLET_ENTRY_PASSWORD_PREF, name)
+        TextSecurePreferences._events.tryEmit(TextSecurePreferences.WALLET_ENTRY_PASSWORD_PREF)
+    }
+
+    override fun getWalletEntryPassword():String?{
+        return getStringPreference(TextSecurePreferences.WALLET_ENTRY_PASSWORD_PREF, null)
     }
 }

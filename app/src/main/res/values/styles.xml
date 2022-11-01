@@ -536,4 +536,70 @@
         <item name="android:itemBackground">@color/page_background</item>
     </style>
 
+
+    <style name="MaterialCalendarTheme" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
+        <item name="colorPrimary">@color/button_green</item>
+        <item name="colorOnPrimary">@color/text</item>
+        <!-- Header panel -->
+        <item name="materialCalendarHeaderLayout">@style/MaterialCalendar.HeaderLayout1</item>
+        <item name="materialCalendarHeaderToggleButton">@style/customToggleButton</item>
+        <!-- Header title -->
+        <item name="materialCalendarHeaderTitle">@style/customHeaderTitle</item>
+        <item name="materialAlertDialogTitleIconStyle">@style/icon</item>
+        <!-- Header selection title -->
+        <item name="materialCalendarHeaderSelection">@style/CustomHeaderSelection</item>
+        <!-- Buttons -->
+        <item name="buttonBarPositiveButtonStyle">@style/TextButton.Dialog1</item>
+        <item name="buttonBarNegativeButtonStyle">@style/TextButton.Dialog1</item>
+        <item name="materialCalendarStyle">@style/myMaterialCalendar</item>
+<!--        <item name="android:background">@color/yellow</item>-->
+    </style>
+
+    <style name="myMaterialCalendar" parent="Widget.MaterialComponents.MaterialCalendar">
+        <item name="rangeFillColor">@color/clear_all_data_chat_id</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="dayTodayStyle">@style/materialCalendarDayTodayStyle</item>
+    </style>
+
+
+    <style name="materialCalendarDayTodayStyle" parent="Widget.MaterialComponents.MaterialCalendar">
+        <item name="itemFillColor">@color/button_green</item>
+        <item name="itemTextColor">@color/default_background_start</item>
+        <item name="itemStrokeWidth">2dp</item>
+        <item name="itemShapeAppearance">
+            @style/Test.ShapeAppearanceOverlay.MaterialComponents.MaterialCalendar.Day
+        </item>
+    </style>
+
+
+    <style name="customHeaderTitle" parent="@style/Widget.MaterialComponents.MaterialCalendar.HeaderTitle">
+        <item name="android:textColor">@color/text</item>
+        <item name="android:textAppearance">@style/customTextAppearance</item>
+    </style>
+
+    <style name="icon" parent="@style/Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/text</item>
+    </style>
+
+    <style name="customToggleButton" parent="@style/Widget.MaterialComponents.Button">
+        <item name="android:textColor">@color/text</item>
+    </style>
+
+    <style name="customTextAppearance" parent="@style/TextAppearance.MaterialComponents.Overline">
+        <item name="android:textColor">@color/text</item>
+    </style>
+
+    <style name="MaterialCalendar.HeaderLayout1" parent="Widget.MaterialComponents.MaterialCalendar.HeaderLayout">
+        <!--<item name="android:background">?attr/colorPrimary</item>-->
+        <item name="android:background">@color/button_green</item>
+    </style>
+    <style name="TextButton.Dialog1" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/text</item>
+        <item name="backgroundTint">@color/accent</item>
+    </style>
+
+    <style name="CustomHeaderSelection" parent="Widget.MaterialComponents.MaterialCalendar.HeaderSelection">
+        <item name="android:textColor">@color/text</item>
+    </style>
+
 </resources>

@@ -126,6 +126,7 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
                 lockManager.enableAppLock(this@WalletSettings, CustomPinActivity::class.java)
                 val intent = Intent(this@WalletSettings, CustomPinActivity::class.java)
                 intent.putExtra(AppLock.EXTRA_TYPE, AppLock.CHANGE_PIN)
+                intent.putExtra("change_pin",true)
                 push(intent)
             }
 

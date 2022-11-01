@@ -190,6 +190,7 @@ class SendFragment : Fragment(), OnUriScannedListener {
             return f
         }
 
+
     }
 
     override fun onCreateView(

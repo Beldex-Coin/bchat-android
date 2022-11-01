@@ -86,6 +86,14 @@
         <item name="android:textColor">@color/text</item>
         <item name="android:drawableTint" tools:ignore="NewApi">?android:textColorPrimary</item>
     </style>
+
+    <style name="Widget.Bchat.Button.Common.ProminentFilled_Blue">
+        <item name="android:fontFamily">@font/poppins_semi_bold</item>
+        <item name="android:background">@drawable/prominent_filled_button_medium_background_blue</item>
+        <item name="android:textColor">@color/text</item>
+        <item name="android:drawableTint" tools:ignore="NewApi">?android:textColorPrimary</item>
+    </style>
+
     <!--New Line -->
     <style name="Widget.Bchat.Button.Common.ProminentFilled_ClearData">
         <item name="android:fontFamily">@font/poppins_semi_bold</item>

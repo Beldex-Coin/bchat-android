@@ -20,12 +20,14 @@ import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.github.brnunes.swipeablerecyclerview.SwipeableRecyclerViewTouchListener
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.transition.MaterialElevationScale
+import com.thoughtcrimes.securesms.data.BarcodeData
 import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
 import com.thoughtcrimes.securesms.model.TransactionInfo
 import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.NodePinger
+import com.thoughtcrimes.securesms.wallet.send.SendFragment
 import com.thoughtcrimes.securesms.wallet.service.exchange.ExchangeApi
 import com.thoughtcrimes.securesms.wallet.service.exchange.ExchangeRate
 import com.thoughtcrimes.securesms.wallet.utils.helper.ServiceHelper
@@ -41,7 +43,7 @@ import kotlin.collections.ArrayList
 import java.text.SimpleDateFormat
 
 
-class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener {
+class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener, OnUriScannedListener {
 
     private var adapter: TransactionInfoAdapter? = null
     private val formatter = NumberFormat.getInstance()
@@ -53,6 +55,11 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
     fun setProgress(text: String?) {
         syncText = text
         binding.syncStatus.text = text
+    }
+    var onScanListener: OnScanListener? = null
+
+    interface OnScanListener {
+        fun onScan()
     }
 
     private var syncProgress = -1
@@ -120,6 +127,8 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         super.onAttach(context)
         if (context is Listener) {
             activityCallback = context
+            onScanListener =
+                context as OnScanListener
         } else {
             throw ClassCastException(
                 context.toString()
@@ -488,6 +497,9 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 false
             }
             popupMenu.show()
+        }
+        binding.scanQrCodeImg.setOnClickListener {
+            onScanListener?.onScan()
         }
         return binding.root
     }
@@ -882,5 +894,10 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 ContextCompat.getDrawable(requireContext(), R.drawable.ic_gunther_streetmode)
             ivStreetGunther.setImageDrawable(streetGunther)
         } else ivStreetGunther.setImageDrawable(null)*/
+    }
+
+    override fun onUriScanned(barcodeData: BarcodeData?): Boolean {
+      /* SendFragment.processScannedData(barcodeData)*/
+        return true
     }
 }

@@ -1,5 +1,7 @@
 package com.thoughtcrimes.securesms.data;
 
+import android.util.Log;
+
 import com.thoughtcrimes.securesms.model.NetworkType;
 import com.thoughtcrimes.securesms.model.WalletManager;
 
@@ -226,6 +228,7 @@ public class Node {
     }
 
     public String getHostAddress() {
+        Log.d("Beldex","node list getHostAddress " + hostAddress.getHostAddress());
         return hostAddress.getHostAddress();
     }
 
@@ -264,8 +267,11 @@ public class Node {
     }
 
     public void setHost(String host) throws UnknownHostException {
-        if ((host == null) || (host.isEmpty()))
+        if ((host == null) || (host.isEmpty())) {
+            Log.d("Beldex","node class host value 1 " + host);
             throw new UnknownHostException("loopback not supported (yet?)");
+        }
+        Log.d("Beldex","node class host value 2 " + host);
         this.host = host;
         this.hostAddress = InetAddress.getByName(host);
     }

@@ -992,12 +992,8 @@
     <string name="check_password_description_content_keys" translatable="false">Enter your password to view your restore key. Write it down on paper.</string>
     <string name="closed_group_screen_description_content" translatable="false">Uh oh, you don\'t have any contacts yet.\nAdd some contacts first to start a secret group.</string>
     <string name="join_social_group_description_content" translatable="false">Social groups are similar to public groups, however, you need an invite link to join. Join a social group using the group\'s URL.</string>
-<!--
     <string name="if_you_don_t_know_the_restore_blockheight_you_can_skip_it" translatable="false">If you don\'t know the restore blockheight, you can skip it.</string>
--->
-<!--
     <string name="if_you_don_t_know_the_restore_date_you_can_skip_it" translatable="false">If you don\'t know the restore date, you can skip it.</string>
--->
     <string name="changelog" translatable="false">Changelog</string>
     <string name="enter_your_password" translatable="false">Enter your password</string>
     <string name="navigate_to_voice_message" translatable="false">Navigate to voice message </string>
@@ -1119,8 +1115,6 @@
     <string name="status_wallet_disconnected" translatable="false">Disconnected</string>
 
     <string name="receive_transition_name" translatable="false">receive_transition</string>
-    <string name="send_btn_transition_name" translatable="false">send_btn_transition</string>
-    <string name="receive_btn_transition_name" translatable="false">receive_btn_transition</string>
     <string name="send_transition_name" translatable="false">send_transition</string>
     <string name="nfc_tag_read_what" translatable="false">I don\'t know what you want!</string>
     <string name="message_camera_not_permitted" translatable="false">No camera = No QR scanning!</string>
@@ -1135,7 +1129,6 @@
     <string name="bdx_unconfirmed_amount" translatable="false">+ %1$s BDX Ledger balance</string>
     <string name="status_remaining" translatable="false">Blocks remaining</string>
     <string name="status_synced" translatable="false">Synced:</string>
-    <string name="status_synchronized" translatable="false">Synchronized</string>
     <string name="menu_rescan" translatable="false">Rescan</string>
     <string name="service_busy" translatable="false">I am still busy with your last wallet &#8230;</string>
     <string name="service_progress" translatable="false">Wallets are loading &#8230;\nPlease wait...</string>
@@ -1196,7 +1189,34 @@
     <string name="accounts_balance" translatable="false">%1$s BDX</string>
     <string name="xmr_unconfirmed_amount">+ %1$s BDX Ledger balance</string>
     <string name="my_wallet" translatable="false">My Wallet</string>
+    <string name="status_synchronized" translatable="false">Synchronized</string>
+    <string name="send_btn_transition_name" translatable="false">send_btn_transition</string>
+    <string name="receive_btn_transition_name" translatable="false">receive_btn_transition</string>
+    <string name="test" translatable="false">Test</string>
+    <string name="test_result_title" translatable="false">Test result:</string>
+    <string name="test_result"  translatable="false">Height 1,500,500 (V17),Ping: 500ms, IP: 15.222.187.192</string>
 
+    <string name="info_nodes_enabled">Node-o-matiC enabled, tap for more info.</string>
+    <string name="node_height">Last block updated: %1$s</string>
+    <string name="label_nodes">Nodes</string>
+    <string name="node_name_hint">Node Name (Optional)</string>
+    <string name="node_address_hint">Hostname</string>
+    <string name="node_port_hint">Port</string>
+    <string name="node_user_hint">Username (Optional)</string>
+    <string name="node_pass_hint">Password (Optional)</string>
+    <string name="node_host_unresolved">Cannot resolve host</string>
+    <string name="node_host_empty">We need this!</string>
+    <string name="node_port_numeric">Must be numeric</string>
+    <string name="node_port_range">Must be 1&#8211;65535</string>
+    <string name="node_fab_add">Add Node</string>
+    <string name="node_refresh_hint">Touch to refresh!</string>
+    <string name="node_result_label">Test Result:</string>
+    <string name="node_refresh_wait">Please wait for scan to finish</string>
+    <string name="node_create_hint">Touch to select or add nodes</string>
+    <string name="node_pull_hint">Add nodes manually or pull down to scan</string>
+    <string name="node_scanning">Scanning network&#8230;</string>
+    <string name="node_nobookmark">Automatically bookmarked best %1$d nodes</string>
+    <string name="label_test">Test</string><!--note: as in "Test a network connection"-->
     <string name="wallet_info_important_subTitle" translatable="false">Info about <font color='#128D15'>Wallet Password</font> generation</string>
     <string name="wallet_info_important_description" translatable="false">To access your wallet, you will first need to generate a wallet password.
 Your wallet password can be used to access your wallet within BChat and authenticate your transactions.</string>
@@ -1211,5 +1231,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="activity_restore_from_height_missing_error" translatable="false">Please pick a restore height or restore from date</string>
     <string name="please_pick_a_restore_height" translatable="false">Please pick a restore height</string>
     <string name="please_pick_a_restore_from_date" translatable="false">Please pick a restore from date</string>
+
 
 </resources>

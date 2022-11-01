@@ -54,6 +54,7 @@ public class  NodeInfo extends Node {
     private boolean selecting = false;
 
     public void clear() {
+        Log.d("Beldex","node clear called");
         height = 0;
         majorVersion = 0;
         responseTime = Double.MAX_VALUE;
@@ -230,6 +231,7 @@ public class  NodeInfo extends Node {
     public boolean testRpcService() {
         Timber.d("Testing-->8");
         Log.d("Beldex","Node list majorversion3 "+ majorVersion);
+        Log.d("Beldex","Node list rpcPort "+ rpcPort);
 
         return testRpcService(rpcPort);
     }

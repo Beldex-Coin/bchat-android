@@ -1221,7 +1221,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
     /*Hales63*/
     private fun showMessageRequests() {
-        val intent = Intent(this, MessageRequestsActivity::class.java)
+        val intent = Intent(this, NodeActivity::class.java)
         push(intent)
     }
 

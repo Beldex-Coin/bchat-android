@@ -17,7 +17,10 @@ import com.thoughtcrimes.securesms.home.HomeActivity;
 import com.thoughtcrimes.securesms.onboarding.SplashScreenActivity;
 import com.thoughtcrimes.securesms.service.KeyCachingService;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
+import com.thoughtcrimes.securesms.wallet.node.AddNodeActivity;
 import com.thoughtcrimes.securesms.webrtc.PowerButtonReceiver;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 

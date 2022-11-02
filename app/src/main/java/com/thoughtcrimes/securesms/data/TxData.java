@@ -39,7 +39,7 @@ public class TxData implements Parcelable {
     }
 
     public double getAmountAsDouble() {
-        return 1.0 * amount / Helper.ONE_XMR;
+        return 1.0 * amount / Helper.ONE_BDX;
     }
 
     public int getMixin() {

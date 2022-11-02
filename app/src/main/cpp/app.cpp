@@ -881,6 +881,29 @@ Java_com_thoughtcrimes_securesms_model_Wallet_createTransactionJ(JNIEnv *env, jo
     env->ReleaseStringUTFChars(dst_addr, _dst_addr);
     env->ReleaseStringUTFChars(payment_id, _payment_id);
     return reinterpret_cast<jlong>(tx);*/
+
+    const char *_dst_addr = env->GetStringUTFChars(dst_addr, nullptr);
+    const char *_payment_id = env->GetStringUTFChars(payment_id, nullptr);
+    /* Wallet::PendingTransaction::Priority _priority =
+             static_cast<Wallet::PendingTransaction::Priority>(priority);*/
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
+    uint32_t subaddr_account = account_index;
+    std::set<uint32_t> subaddr_indices = {};
+    LOGD("Java_com_thoughtcrimes_securesms_model_Wallet_createTransactionJ before createTransaction");
+    LOGD("Java_com_thoughtcrimes_securesms_model_Wallet_createTransactionJ amount %d subaddr_account %d",amount,subaddr_account);
+
+    Wallet::PendingTransaction *tx = wallet->createTransaction(_dst_addr,
+                                                               amount,
+                                                               priority,
+                                                               subaddr_account,
+                                                               subaddr_indices);
+    LOGD("Java_com_thoughtcrimes_securesms_model_Wallet_createTransactionJ after createTransaction pointer %d", reinterpret_cast<jlong>(tx));
+    if (!tx){
+        LOGD("No TX pointer found");
+    }
+    env->ReleaseStringUTFChars(dst_addr, _dst_addr);
+    env->ReleaseStringUTFChars(payment_id, _payment_id);
+    return reinterpret_cast<jlong>(tx);
 }
 extern "C"
 JNIEXPORT jlong JNICALL
@@ -905,6 +928,26 @@ Java_com_thoughtcrimes_securesms_model_Wallet_createSweepTransaction(JNIEnv *env
     env->ReleaseStringUTFChars(dst_addr, _dst_addr);
     env->ReleaseStringUTFChars(payment_id, _payment_id);
     return reinterpret_cast<jlong>(tx);*/
+
+    const char *_dst_addr = env->GetStringUTFChars(dst_addr, nullptr);
+    const char *_payment_id = env->GetStringUTFChars(payment_id, nullptr);
+    /*Wallet::PendingTransaction::Priority _priority =
+            static_cast<Wallet::PendingTransaction::Priority>(priority);*/
+    Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
+
+    std::optional<uint64_t> empty;
+    uint32_t subaddr_account = account_index;
+    std::set<uint32_t> subaddr_indices = {};
+    Wallet::PendingTransaction *tx = wallet->createTransaction(_dst_addr,
+                                                               empty,
+                                                               priority,
+                                                               subaddr_account,
+                                                               subaddr_indices);
+    //TODO: something like this transaction->m_pending_tx = m_wallet->create_unmixable_sweep_transactions();
+
+    env->ReleaseStringUTFChars(dst_addr, _dst_addr);
+    env->ReleaseStringUTFChars(payment_id, _payment_id);
+    return reinterpret_cast<jlong>(tx);
 }
 extern "C"
 JNIEXPORT jlong JNICALL
@@ -1249,4 +1292,98 @@ Java_com_thoughtcrimes_securesms_model_TransactionHistory_getCount(JNIEnv *env, 
     LOGD("--> R_view key 3 %d",100);
     LOGD("--> R_view key 4 %d",history->count());
     return history->count();
+}
+extern "C"
+JNIEXPORT jint JNICALL
+Java_com_thoughtcrimes_securesms_model_PendingTransaction_getStatusJ(JNIEnv *env, jobject instance) {
+    Wallet::PendingTransaction *tx = getHandle<Wallet::PendingTransaction>(env, instance);
+    auto stat = tx->status();
+    auto& [status, errorString] = stat;
+    LOGD("Java_com_thoughtcrimes_securesms_model_PendingTransaction_getStatusJ status:%d %s",status, errorString.c_str());
+    return status;
+}
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_thoughtcrimes_securesms_model_PendingTransaction_getErrorStringJ(JNIEnv *env,
+                                                                         jobject instance) {
+    /*Wallet::PendingTransaction *tx = getHandle<Wallet::PendingTransaction>(env, instance);
+    jstring result;
+    LOGD("Java_com_thoughtcrimes_securesms_model_PendingTransaction_getErrorString result:%s",result);
+    if (tx){
+        result = env->NewStringUTF(tx->status().second.c_str());
+        LOGD("Java_com_thoughtcrimes_securesms_model_PendingTransaction_getErrorString result:%s",result);
+    }
+    else {
+        result = (jstring) "Java_com_thoughtcrimes_securesms_model_PendingTransaction_getErrorString no TX";
+    }
+    LOGD("end Java_com_thoughtcrimes_securesms_model_PendingTransaction_getErrorString");
+    return result;*/
+    LOGD("Java_com_thoughtcrimes_securesms_model_PendingTransaction_getErrorStringJ");
+    Wallet::PendingTransaction *tx = getHandle<Wallet::PendingTransaction>(env, instance);
+    auto stat = tx->status();
+    auto& [status, errorString] = stat;
+    return env->NewStringUTF(errorString.c_str());
+}
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_com_thoughtcrimes_securesms_model_PendingTransaction_commit(JNIEnv *env, jobject instance,
+                                                                 jstring filename,
+                                                                 jboolean overwrite) {
+    const char *_filename = env->GetStringUTFChars(filename, nullptr);
+
+    Wallet::PendingTransaction *tx = getHandle<Wallet::PendingTransaction>(env, instance);
+    bool success = tx->commit(_filename, overwrite);
+    if (success) {
+        LOGD("TX commit success");
+    }else{
+        LOGD("TX commit failed");
+    };
+    LOGD("TX commit success==%d",success);
+    env->ReleaseStringUTFChars(filename, _filename);
+    return static_cast<jboolean>(success);
+}
+extern "C"
+JNIEXPORT jlong JNICALL
+Java_com_thoughtcrimes_securesms_model_PendingTransaction_getAmount(JNIEnv *env, jobject thiz) {
+    LOGD("before Java_com_thoughtcrimes_securesms_model_PendingTransaction_getAmount()");
+    auto *tx = getHandle<Wallet::PendingTransaction>(env, thiz);
+    LOGD("PendingTransaction pointer:%d",reinterpret_cast<jlong>(tx));
+    if(!tx){LOGE("No PendingTransaction");}
+    LOGD("PendingTransaction getstatus-doublecheck");
+    auto stat = tx->status();
+    LOGD("PendingTransaction amount");
+    auto amount = tx->amount();
+
+    LOGD("after Java_com_thoughtcrimes_securesms_model_PendingTransaction_getAmount()");
+    return amount;
+}
+extern "C"
+JNIEXPORT jlong JNICALL
+Java_com_thoughtcrimes_securesms_model_PendingTransaction_getDust(JNIEnv *env, jobject instance) {
+    Wallet::PendingTransaction *tx = getHandle<Wallet::PendingTransaction>(env, instance);
+    return tx->dust();
+}
+extern "C"
+JNIEXPORT jlong JNICALL
+Java_com_thoughtcrimes_securesms_model_PendingTransaction_getFee(JNIEnv *env, jobject instance) {
+    Wallet::PendingTransaction *tx = getHandle<Wallet::PendingTransaction>(env, instance);
+    //long value = 3400000;
+    //return value;
+    return tx->fee();
+}
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_thoughtcrimes_securesms_model_PendingTransaction_getFirstTxIdJ(JNIEnv *env, jobject instance) {
+    Wallet::PendingTransaction *tx = getHandle<Wallet::PendingTransaction>(env, instance);
+    std::vector<std::string> txids = tx->txid();
+    if (!txids.empty())
+        return env->NewStringUTF(txids.front().c_str());
+    else
+        return nullptr;
+}
+extern "C"
+JNIEXPORT jlong JNICALL
+Java_com_thoughtcrimes_securesms_model_PendingTransaction_getTxCount(JNIEnv *env, jobject instance) {
+    Wallet::PendingTransaction *tx = getHandle<Wallet::PendingTransaction>(env, instance);
+    return tx->txCount();
 }

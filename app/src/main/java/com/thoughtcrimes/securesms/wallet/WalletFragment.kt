@@ -673,7 +673,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
     /* private fun refreshBalance() {
          val unconfirmedBdx: Double = Helper.getDecimalAmount(balance - unlockedBalance).toDouble()
          showUnconfirmed(unconfirmedBdx)
-         if (sCurrency.getSelectedItemPosition() == 0) { // XMR
+         if (sCurrency.getSelectedItemPosition() == 0) { // BDX
              val amountBdx: Double = Helper.getDecimalAmount(unlockedBalance).toDouble()
              showBalance(Helper.getFormattedAmount(amountBdx, true))
          } else { // not BDX
@@ -720,13 +720,13 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
 
     private fun updateBalance() {
         if (isExchanging) return  // wait for exchange to finbalanceCurrencyish - it will fire this itself then.
-        // at this point selection is XMR in case of error
+        // at this point selection is BDX in case of error
         val displayB: String
         val amountA: Double = Helper.getDecimalAmount(unlockedBalance).toDouble()
-        displayB = if (!Helper.BASE_CRYPTO.equals(balanceCurrency)) { // not XMR
+        displayB = if (!Helper.BASE_CRYPTO.equals(balanceCurrency)) { // not BDX
             val amountB: Double = amountA * balanceRate
             Helper.getFormattedAmount(amountB, false)
-        } else { // XMR
+        } else { // BDX
             Helper.getFormattedAmount(amountA, true)
         }
         Log.d("sync updateBalance()", "true")

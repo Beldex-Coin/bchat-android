@@ -301,7 +301,7 @@ class RegisterActivity : BaseActionBarActivity() {
                  bCopyAddress.setEnabled(true)
                  activityCallback.setTitle(name + " " + getString(R.string.details_title), "")
                  activityCallback.setToolbarButton(
-                     if (com.m2049r.xmrwallet.GenerateReviewFragment.VIEW_TYPE_ACCEPT == type) Toolbar.BUTTON_NONE else Toolbar.BUTTON_BACK
+                     if (VIEW_TYPE_ACCEPT == type) Toolbar.BUTTON_NONE else Toolbar.BUTTON_BACK
                  )*/
             } else {
                 /*tvWalletAddress.setText(walletStatus.toString())

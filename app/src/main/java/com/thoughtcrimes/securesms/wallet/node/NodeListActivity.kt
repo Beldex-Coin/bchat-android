@@ -124,11 +124,11 @@ class NodeListActivity : PassphraseRequiredActionBarActivity(),
                 Timber.d("seed %d", seedList.size)
                 var d = Dispatcher { info -> publishProgress(info) }
                 d.seedPeers(seedList)
-                d.awaitTermination(com.m2049r.xmrwallet.NodeFragment.NODES_TO_FIND)
+                d.awaitTermination(NODES_TO_FIND)
 
                 // we didn't find enough because we didn't ask around enough? ask more!
-                if (d.getRpcNodes().size() < com.m2049r.xmrwallet.NodeFragment.NODES_TO_FIND &&
-                    d.getPeerCount() < com.m2049r.xmrwallet.NodeFragment.NODES_TO_FIND + seedList.size
+                if (d.getRpcNodes().size() < NODES_TO_FIND &&
+                    d.getPeerCount() < NODES_TO_FIND + seedList.size
                 ) {
                     // try again
                     publishProgress(*null as Array<NodeInfo?>?)
@@ -148,7 +148,7 @@ class NodeListActivity : PassphraseRequiredActionBarActivity(),
                     seedList.add(NodeInfo(InetSocketAddress("212.83.172.165", 18080)))
                     seedList.add(NodeInfo(InetSocketAddress("192.110.160.146", 18080)))
                     d.seedPeers(seedList)
-                    d.awaitTermination(com.m2049r.xmrwallet.NodeFragment.NODES_TO_FIND)
+                    d.awaitTermination(NODES_TO_FIND)
                 }
                 // final (filtered) result
                 nodeList.addAll(d.getRpcNodes())
@@ -290,7 +290,7 @@ class NodeListActivity : PassphraseRequiredActionBarActivity(),
                 tvResult.setText(
                     getString(
                         R.string.node_result,
-                        com.m2049r.xmrwallet.NodeFragment.FORMATTER.format(nodeInfo.getHeight()),
+                        FORMATTER.format(nodeInfo.getHeight()),
                         nodeInfo.getMajorVersion(),
                         nodeInfo.getResponseTime(),
                         nodeInfo.getHostAddress()

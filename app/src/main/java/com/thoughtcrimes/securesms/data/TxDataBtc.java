@@ -10,10 +10,10 @@ import lombok.Setter;
 public class TxDataBtc extends TxData {
     @Getter
     @Setter
-    private String btcSymbol; // the actual non-XMR thing we're sending
+    private String btcSymbol; // the actual non-BDX thing we're sending
     @Getter
     @Setter
-    private String xmrtoOrderId; // shown in success screen
+    private String bdxtoOrderId; // shown in success screen
     @Getter
     @Setter
     private String btcAddress;
@@ -33,7 +33,7 @@ public class TxDataBtc extends TxData {
     public void writeToParcel(Parcel out, int flags) {
         super.writeToParcel(out, flags);
         out.writeString(btcSymbol);
-        out.writeString(xmrtoOrderId);
+        out.writeString(bdxtoOrderId);
         out.writeString(btcAddress);
         out.writeDouble(btcAmount);
     }
@@ -52,7 +52,7 @@ public class TxDataBtc extends TxData {
     protected TxDataBtc(Parcel in) {
         super(in);
         btcSymbol = in.readString();
-        xmrtoOrderId = in.readString();
+        bdxtoOrderId = in.readString();
         btcAddress = in.readString();
         btcAmount = in.readDouble();
     }
@@ -61,8 +61,8 @@ public class TxDataBtc extends TxData {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("xmrtoOrderId:");
-        sb.append(xmrtoOrderId);
+        sb.append("bdxtoOrderId:");
+        sb.append(bdxtoOrderId);
         sb.append(",btcSymbol:");
         sb.append(btcSymbol);
         sb.append(",btcAddress:");

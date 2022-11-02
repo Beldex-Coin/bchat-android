@@ -200,14 +200,14 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
         Timber.d("A-> GENQR")
         val address: String = binding.walletAddressReceive.text.toString()
         val notes: String = ""
-        val xmrAmount: String = binding.amountEditTextReceive.text.toString()
-        Log.d("beldex", "generateQR value of  $xmrAmount, $notes, $address")
-        //        if ((xmrAmount == null) || !Wallet.isAddressValid(address)) {
+        val bdxAmount: String = binding.amountEditTextReceive.text.toString()
+        Log.d("beldex", "generateQR value of  $bdxAmount, $notes, $address")
+        //        if ((bdxAmount == null) || !Wallet.isAddressValid(address)) {
 //            clearQR();
 //            Timber.d("CLEARQR");
 //            return;
 //        }
-        bcData = BarcodeData(Crypto.XMR, address, notes, xmrAmount)
+        bcData = BarcodeData(Crypto.BDX, address, notes, bdxAmount)
 
         val size: Int = Math.max(200, 200)
         val qr = generate(bcData!!.uriString, size, size)
@@ -256,15 +256,15 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
         Timber.d("B->GENQR")
         val address: String = binding.walletAddressReceive.text.toString()
         val notes: String = ""
-        val xmrAmount: String = binding.amountEditTextReceive.text.toString()
-        Timber.d("%s/%s/%s", xmrAmount, notes, address)
+        val bdxAmount: String = binding.amountEditTextReceive.text.toString()
+        Timber.d("%s/%s/%s", bdxAmount, notes, address)
         if (!Wallet.isAddressValid(address)) {
 
             clearQR()
             Timber.d("B-> CLEARQR")
             return
         }
-        bcData = BarcodeData(Crypto.XMR, address, notes, xmrAmount)
+        bcData = BarcodeData(Crypto.BDX, address, notes, bdxAmount)
         val size: Int = Math.max(binding.qrCodeReceive.width, binding.qrCodeReceive.height)
         val qr = generate(bcData!!.uriString, size, size)
         Timber.d("QR COde -> %s", qr)

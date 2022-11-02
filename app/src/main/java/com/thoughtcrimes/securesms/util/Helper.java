@@ -63,9 +63,9 @@ public class Helper {
     static public final String NOCRAZYPASS_FLAGFILE = ".nocrazypass";
 
     //Important
-    static public final String BASE_CRYPTO = Crypto.XMR.getSymbol();
-    static public final int XMR_DECIMALS = 9;
-    static public final long ONE_XMR = Math.round(Math.pow(10, Helper.XMR_DECIMALS));
+    static public final String BASE_CRYPTO = Crypto.BDX.getSymbol();
+    static public final int BDX_DECIMALS = 9;
+    static public final long ONE_BDX = Math.round(Math.pow(10, Helper.BDX_DECIMALS));
 
     static public final boolean SHOW_EXCHANGERATES = true;
     static public final boolean ALLOW_SHIFT = true;
@@ -145,11 +145,11 @@ public class Helper {
     }
 
     static public BigDecimal getDecimalAmount(long amount) {
-        return new BigDecimal(amount).scaleByPowerOfTen(-XMR_DECIMALS);
+        return new BigDecimal(amount).scaleByPowerOfTen(-BDX_DECIMALS);
     }
 
     static public String getDisplayAmount(long amount) {
-        return getDisplayAmount(amount, XMR_DECIMALS);
+        return getDisplayAmount(amount, BDX_DECIMALS);
     }
 
     static public String getDisplayAmount(long amount, int maxDecimals) {
@@ -164,7 +164,7 @@ public class Helper {
     }
 
     static public String getFormattedAmount(double amount, boolean isCrypto) {
-        // at this point selection is XMR in case of error
+        // at this point selection is BDX in case of error
         String displayB;
         if (isCrypto) {
             if ((amount >= 0) || (amount == 0)) {
@@ -181,7 +181,7 @@ public class Helper {
     static public String getDisplayAmount(double amount) {
         // a Java bug does not strip zeros properly if the value is 0
         BigDecimal d = new BigDecimal(amount)
-                .setScale(XMR_DECIMALS, BigDecimal.ROUND_HALF_UP)
+                .setScale(BDX_DECIMALS, BigDecimal.ROUND_HALF_UP)
                 .stripTrailingZeros();
         if (d.scale() < 1)
             d = d.setScale(1, BigDecimal.ROUND_UNNECESSARY);

@@ -320,7 +320,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         if (this.mode != mode) {
             this.mode = mode!!
             when (mode) {
-                Mode.XMR -> txData = TxData()
+                Mode.BDX -> txData = TxData()
                 Mode.BTC -> txData = TxDataBtc()
                 else -> throw IllegalArgumentException("Mode " + mode.toString() + " unknown!")
             }
@@ -335,13 +335,13 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         TODO("Not yet implemented")
     }
 
-    private var mode: Mode = Mode.XMR
+    private var mode: Mode = Mode.BDX
 
     /*  override fun setMode(aMode: Mode) {
           if (mode != aMode) {
               mode = aMode
               when (aMode) {
-                  Mode.XMR -> txData = TxData()
+                  Mode.BDX -> txData = TxData()
                   Mode.BTC -> txData = TxDataBtc()
                   else -> throw IllegalArgumentException("Mode " + aMode.toString() + " unknown!")
               }
@@ -358,7 +358,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     private var txData = TxData()
 
     enum class Mode {
-        XMR, BTC
+        BDX, BTC
     }
 
     private fun getWalletFragment(): WalletFragment {
@@ -692,18 +692,26 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         }
     }
 
-    override fun onTransactionCreated(txTag: String?, pendingTransaction: PendingTransaction?) {
+    override fun onTransactionCreated(
+        txTag: String,
+        pendingTransaction: PendingTransaction
+    ) {
         try {
             val sendFragment = getCurrentFragment() as SendFragment?
             runOnUiThread {
-                dismissProgressDialog()
-                val status = pendingTransaction!!.status
+                //dismissProgressDialog()
+                val status = pendingTransaction.status
+                Log.d("onTransactionCreated:","$status")
+                Log.d("transaction status 1 i %s", status.toString())
                 if (status !== PendingTransaction.Status.Status_Ok) {
+                    Log.d("onTransactionCreated not Status_Ok","-")
                     val errorText = pendingTransaction!!.errorString
                     getWallet().disposePendingTransaction()
                     sendFragment!!.onCreateTransactionFailed(errorText)
                 } else {
-                    sendFragment!!.onTransactionCreated(txTag, pendingTransaction)
+                    Log.d("transaction status 1 ii %s", status.toString())
+                    Log.d("onTransactionCreated Status_Ok","-")
+                    sendFragment!!.onTransactionCreated("txTag", pendingTransaction)
                 }
             }
         } catch (ex: ClassCastException) {

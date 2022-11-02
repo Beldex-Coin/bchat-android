@@ -2,6 +2,7 @@ package com.thoughtcrimes.securesms.wallet.send
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -21,20 +22,26 @@ import timber.log.Timber
 import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity
 
 import android.content.Intent
+import android.util.Log
+import android.view.Gravity
+import androidx.appcompat.app.AlertDialog
+import cn.carbswang.android.numberpickerview.library.NumberPickerView
+import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.util.Helper
-import io.beldex.bchat.databinding.ActivityWalletBinding
+import com.thoughtcrimes.securesms.wallet.utils.helper.ServiceHelper
 import io.beldex.bchat.databinding.FragmentSendBinding
-import io.beldex.bchat.databinding.FragmentWalletBinding
 import java.lang.ClassCastException
 
 
-class SendFragment : Fragment(), OnUriScannedListener {
+class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
 
     val MIXIN = 0
 
     private var activityCallback: Listener? = null
     private var barcodeData: BarcodeData? = null
     lateinit var binding: FragmentSendBinding
+
+    private var isResume:Boolean = false
 
 
     fun newInstance(listener: Listener): SendFragment? {
@@ -103,10 +110,12 @@ class SendFragment : Fragment(), OnUriScannedListener {
     }
 
     fun onCreateTransactionFailed(errorText: String?) {
-        val confirm: SendConfirm? = getSendConfirm()
+        //Important
+        /*val confirm: SendConfirm? = getSendConfirm()
         if (confirm != null) {
             confirm.createTransactionFailed(errorText)
-        }
+        }*/
+        createTransactionFailed(errorText)
     }
 
     fun getSendConfirm(): SendConfirm? {
@@ -124,14 +133,19 @@ class SendFragment : Fragment(), OnUriScannedListener {
 
     // callbacks from send service
     fun onTransactionCreated(txTag: String?, pendingTransaction: PendingTransaction?) {
-        val confirm = getSendConfirm()
+        //Important
+       /* val confirm = getSendConfirm()
         if (confirm != null) {
             pendingTx = PendingTx(pendingTransaction)
             confirm.transactionCreated(txTag, pendingTransaction)
         } else {
             // not in confirm fragment => dispose & move on
             disposeTransaction()
-        }
+        }*/
+        Log.d("onTransactionCreated Status_Ok","--")
+        pendingTx = PendingTx(pendingTransaction)
+        Log.d("onTransactionCreated Status_Ok","---")
+        transactionCreated(txTag, pendingTransaction)
     }
 
     fun disposeTransaction() {
@@ -139,12 +153,24 @@ class SendFragment : Fragment(), OnUriScannedListener {
         activityCallback!!.onDisposeRequest()
     }
 
+    //If Transaction successfully completed after call this function
     fun onTransactionSent(txId: String?) {
+        hideProgress()
         //Important
         Timber.d("txid=%s", txId)
         //pagerAdapter.addSuccess()
         //Log.d("numPages=%d", spendViewPager.getAdapter().getCount())
-        activityCallback!!.setToolbarButton(Toolbar.BUTTON_NONE)
+        activityCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
+        Log.d("Beldex","Transaction Completed")
+        val builder = AlertDialog.Builder(
+            requireContext(), R.style.BChatAlertDialog
+        )
+        builder.setTitle(requireContext().getString(R.string.transaction_completed))
+        builder.setPositiveButton(android.R.string.ok) { dialog: DialogInterface?, _: Int ->
+            dialog!!.dismiss()
+        }
+        builder.setNegativeButton(android.R.string.cancel, null)
+        builder.show()
         //spendViewPager.setCurrentItem(SendFragment.SpendPagerAdapter.POS_SUCCESS)
     }
 
@@ -207,9 +233,100 @@ class SendFragment : Fragment(), OnUriScannedListener {
             val intent = Intent(context, AddressBookActivity::class.java)
             startActivity(intent)
         }
+
+        binding.sendButton.setOnClickListener {
+            val txData: TxData = getTxData()
+           /* if (txData is TxDataBtc) {
+                txData.setBtcAddress(etAddress.getEditText().getText().toString())
+                txData.setBtcSymbol(selectedCrypto.getSymbol())
+                txData.setDestinationAddress(null)
+                ServiceHelper.ASSET = selectedCrypto.getSymbol().toLowerCase()
+            } else {*/
+                txData.destinationAddress = binding.beldexAddressEditTxtLayout.editText?.text.toString()
+                ServiceHelper.ASSET = null
+            //}
+
+            /* String bdx = etAmount.getNativeAmount();
+                Timber.d("BDX Total Amount -> "+Wallet.getAmountFromString(bdx));
+                if (bdx != null) {
+                    sendListener.getTxData().setAmount(Wallet.getAmountFromString(bdx));
+                } else {
+                    sendListener.getTxData().setAmount(0L);
+                }*/
+          /*  if (binding.beldexAmountEditTxt.getNativeAmount()
+                .equals(Wallet.getDisplayAmount(activityCallback!!.totalFunds))
+        ) {
+            val amount = (activityCallback!!.totalFunds - 10485760)
+            val bdx: String = etAmount.getNativeAmount()
+            Timber.d(
+                "If BDX Total Amount -> " + Wallet.getAmountFromString(bdx)
+                    .toString() + " " + bdx + "" + amount
+            )
+            if (bdx != null) {
+                txData.amount = amount
+            } else {
+                txData.setAmount(0L)
+            }
+        } else {
+            val bdx: String = etAmount.getNativeAmount()
+            Timber.d("Else BDX Total Amount -> " + Wallet.getAmountFromString(bdx).toString() + " " + bdx)
+            if (bdx != null) {
+                txData.amount = Wallet.getAmountFromString(bdx)
+            } else {
+                txData.amount = 1L
+            }
+        }*/
+            txData.amount = 1L
+            txData.userNotes = UserNotes("Test")//etNotes.getEditText().getText().toString()
+            txData.priority = PendingTransaction.Priority.Priority_Default
+            txData.mixin = MIXIN
+            onResumeFragment()
+        }
         return binding.root
 
     }
+
+    var inProgress = false
+
+    private fun hideProgress() {
+        binding.progressBar.visibility = View.GONE
+        inProgress = false
+    }
+
+    private fun showProgress() {
+        binding.progressBar.visibility = View.VISIBLE
+        inProgress = true
+    }
+
+    private fun onResumeFragment(){
+        Timber.d("onResumeFragment()")
+        Helper.hideKeyboard(activity)
+        isResume = true
+
+        val txData: TxData = getTxData()
+        //tvTxAddress.setText(txData.destinationAddress)
+        //val notes: UserNotes = getTxData().userNotes
+        /*if (notes != null && notes.note.isNotEmpty()) {
+            //tvTxNotes.setText(notes.note)
+            //fragmentSendConfirmNotesLinearLayout.setVisibility(View.VISIBLE)
+        } else {
+            //fragmentSendConfirmNotesLinearLayout.setVisibility(View.GONE)
+        }*/
+        refreshTransactionDetails()
+        if (pendingTransaction == null && !inProgress) {
+            showProgress()
+            prepareSend(txData)
+        }
+    }
+
+    // creates a pending transaction and calls us back with transactionCreated()
+    // or createTransactionFailed()
+    private fun prepareSend(txData: TxData?) {
+        activityCallback!!.onPrepareSend(null, txData)
+    }
+
+
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -225,7 +342,6 @@ class SendFragment : Fragment(), OnUriScannedListener {
         }
     }
 
-    // QR Scan Stuff
     override fun onResume() {
         super.onResume()
         Timber.d("onResume")
@@ -234,17 +350,18 @@ class SendFragment : Fragment(), OnUriScannedListener {
         processScannedData()
     }
 
+    // QR Scan Stuff
     fun processScannedData(barcodeData: BarcodeData?) {
         activityCallback?.setBarcodeData(barcodeData)
-        if (isResumed) processScannedData()
+        if (isResume) processScannedData()
     }
 
     private fun processScannedData() {
         var barcodeData: BarcodeData? = activityCallback?.getBarcodeData()
         if (barcodeData != null) {
             Timber.d("GOT DATA")
-            if (!Helper.ALLOW_SHIFT && barcodeData.asset !== Crypto.XMR) {
-                Timber.d("BUT ONLY XMR SUPPORTED")
+            if (!Helper.ALLOW_SHIFT && barcodeData.asset !== Crypto.BDX) {
+                Timber.d("BUT ONLY BDX SUPPORTED")
                 barcodeData = null
                 activityCallback?.setBarcodeData(barcodeData)
             }
@@ -268,8 +385,8 @@ class SendFragment : Fragment(), OnUriScannedListener {
                     )
                 }*/
             } else {
-                binding.beldexAddressEditTxtLayout.getEditText()?.getText()?.clear()
-                binding.beldexAmountEditTxtLayout.getEditText()?.getText()?.clear()
+                binding.beldexAddressEditTxtLayout.editText?.text?.clear()
+                binding.beldexAmountEditTxtLayout.editText?.text?.clear()
             }
             //by hales
             /*var scannedNotes = barcodeData.addressName
@@ -287,23 +404,23 @@ class SendFragment : Fragment(), OnUriScannedListener {
         } else Timber.d("barcodeData=null")
     }
 
-    fun getTxData(): TxData? {
+    private fun getTxData(): TxData {
         return txData
     }
 
     private var txData = TxData()
 
     enum class Mode {
-        XMR, BTC
+        BDX, BTC
     }
 
-    private var mode: Mode = Mode.XMR
+    private var mode: Mode = Mode.BDX
 
     fun setMode(aMode: Mode) {
         if (mode != aMode) {
             mode = aMode
             when (aMode) {
-                Mode.XMR -> txData = TxData()
+                Mode.BDX -> txData = TxData()
                 Mode.BTC -> txData = TxDataBtc()
                 else -> throw IllegalArgumentException("Mode " + aMode.toString() + " unknown!")
             }
@@ -320,5 +437,82 @@ class SendFragment : Fragment(), OnUriScannedListener {
     override fun onUriScanned(barcodeData: BarcodeData?): Boolean {
         processScannedData(barcodeData)
         return true
+    }
+
+    override fun sendFailed(errorText: String?) {
+        binding.progressBar.visibility = View.INVISIBLE
+        showAlert(getString(R.string.send_create_tx_error_title), errorText!!)
+    }
+
+    private fun showAlert(title: String, message: String) {
+        //AlertDialog.Builder builder = new MaterialAlertDialogBuilder(getActivity());
+        val builder = AlertDialog.Builder(
+            requireActivity(), R.style.backgroundColor
+        )
+        builder.setCancelable(true).setTitle(title).setMessage(message).create().show()
+    }
+
+    override fun createTransactionFailed(errorText: String?) {
+        hideProgress()
+        showAlert(getString(R.string.send_create_tx_error_title), errorText!!)
+    }
+
+    override fun transactionCreated(txTag: String?, pendingTransaction: PendingTransaction?) {
+        // ignore txTag - the app flow ensures this is the correct tx
+        Log.d("onTransactionCreated Status_Ok","----")
+        hideProgress()
+        if (isResume) {
+            this.pendingTransaction = pendingTransaction
+            refreshTransactionDetails()
+        } else {
+            this.disposeTransaction()
+        }
+    }
+
+    var pendingTransaction: PendingTransaction? = null
+
+    private fun refreshTransactionDetails() {
+        Timber.d("refreshTransactionDetails()")
+        if (pendingTransaction != null) {
+            val txData: TxData? = getTxData()
+            SendConfirmDialog(pendingTransaction!!,txData, this).show(requireActivity().supportFragmentManager,"")
+           /* tvTxAddress.setText(txData.destinationAddress)
+            llConfirmSend.setVisibility(View.VISIBLE)
+            bSend.setEnabled(true)
+            Timber.d("getFee() SendConfirmWizardFragment ->%s", pendingTransaction!!.getAmount())
+            Timber.d("getFee() SendConfirmWizardFragment ->%s", Wallet.getDisplayAmount(pendingTransaction!!.getAmount()))
+            Timber.d("getFee() SendConfirmWizardFragment ->%s", Wallet.getDisplayAmount(pendingTransaction!!.getFee()))
+            Timber.d("getFee() FEE PendingSendConfirmWizardFragment ->%s", pendingTransaction!!.getFee())
+            tvTxFee.setText(Wallet.getDisplayAmount(pendingTransaction!!.getFee()))
+            if (getActivityCallback().isStreetMode()
+                && sendListener.getTxData().getAmount() === Wallet.SWEEP_ALL
+            ) {
+                tvTxAmount.setText(getString(R.string.street_sweep_amount))
+                tvTxTotal.setText(getString(R.string.street_sweep_amount))
+            } else {
+                tvTxAmount.setText(Wallet.getDisplayAmount(pendingTransaction!!.getAmount()))
+                tvTxTotal.setText(
+                    Wallet.getDisplayAmount(
+                        pendingTransaction!!.getFee() + pendingTransaction!!.getAmount()
+                    )
+                )
+            }*/
+        } else {
+            //llConfirmSend.setVisibility(View.GONE)
+            //bSend.setEnabled(false)
+        }
+    }
+
+    fun send() {
+       /* SendConfirmDialog(pendingTransaction!!,getTxData(), this).dismiss()*/
+        commitTransaction()
+        requireActivity().runOnUiThread { binding.progressBar.visibility = View.VISIBLE }
+    }
+
+    private fun commitTransaction() {
+        Timber.d("REALLY SEND")
+        //disableNavigation() // committed - disable all navigation
+        activityCallback!!.onSend(txData.userNotes)
+        committedTx = pendingTx
     }
 }

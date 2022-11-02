@@ -10,7 +10,7 @@ import okhttp3.HttpUrl;
 public class ServiceHelper {
     public static String ASSET = null;
 
-    static public HttpUrl getXmrToBaseUrl() {
+    static public HttpUrl getBdxToBaseUrl() {
         if ((WalletManager.getInstance() == null)
                 || (WalletManager.getInstance().getNetworkType() != NetworkType.NetworkType_Mainnet)) {
             throw new IllegalStateException("Only mainnet not supported");
@@ -18,9 +18,4 @@ public class ServiceHelper {
             return HttpUrl.parse("https://sideshift.ai/api/v1/");
         }
     }
-
-    //by hales
-   /* static public ExchangeApi getExchangeApi() {
-        return new com.m2049r.xmrwallet.service.exchange.krakenEcb.ExchangeApiImpl(OkHttpHelper.getOkHttpClient());
-    }*/
 }

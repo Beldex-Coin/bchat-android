@@ -27,7 +27,6 @@ import com.thoughtcrimes.securesms.model.Wallet;
 import com.thoughtcrimes.securesms.model.WalletListener;
 import com.thoughtcrimes.securesms.model.WalletManager;
 import com.thoughtcrimes.securesms.util.Helper;
-import com.thoughtcrimes.securesms.data.TxData;
 import com.thoughtcrimes.securesms.util.LocalHelper;
 import com.thoughtcrimes.securesms.wallet.WalletActivity;
 
@@ -303,20 +302,22 @@ public class WalletService extends Service {
                         case REQUEST_CMD_TX: {
                             Wallet myWallet = getWallet();
                             if (myWallet == null) break;
-                            Timber.d("CREATE TX for wallet: %s", myWallet.getName());
+                            Log.d("CREATE TX for wallet: %s", myWallet.getName());
                             myWallet.disposePendingTransaction(); // remove any old pending tx
 
                             TxData txData = extras.getParcelable(REQUEST_CMD_TX_DATA);
                             String txTag = extras.getString(REQUEST_CMD_TX_TAG);
                             PendingTransaction pendingTransaction = myWallet.createTransaction(txData);
                             PendingTransaction.Status status = pendingTransaction.getStatus();
-                            Timber.d("transaction status %s", status);
+                            Log.d("transaction status %s", status.toString());
                             if (status != PendingTransaction.Status.Status_Ok) {
-                                Timber.w("Create Transaction failed: %s", pendingTransaction.getErrorString());
+                                Log.w("Create Transaction failed: %s", pendingTransaction.getErrorString());
                             }
                             if (observer != null) {
-                                observer.onTransactionCreated(txTag, pendingTransaction);
+                                Log.d("transaction status 1 %s", status.toString());
+                                observer.onTransactionCreated("txTag", pendingTransaction);
                             } else {
+                                Log.d("transaction status 2 %s", status.toString());
                                 myWallet.disposePendingTransaction();
                             }
                             break;

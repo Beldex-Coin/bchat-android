@@ -1155,7 +1155,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="node_result">Height: %1$s (v%2$d), Ping: %3$.0fms, IP: %4$s</string>
-    <string name="info_xmrto_enabled">Non-BDX payments enabled, tap for more info.</string>
+    <string name="info_bdxto_enabled">Non-BDX payments enabled, tap for more info.</string>
     <string name="info_ledger_enabled">Ledger enabled, tap for more info.</string>
     <string name="toast_default_nodes" translatable="false">Restoring already in progress…</string>
     <string name="node_wrong_net" translatable="false">Node scanning only for mainnet!</string>
@@ -1187,14 +1187,13 @@
     <string name="send_confirm_title">Confirm</string>
     <string name="send_success_title">Done</string>
     <string name="accounts_balance" translatable="false">%1$s BDX</string>
-    <string name="xmr_unconfirmed_amount">+ %1$s BDX Ledger balance</string>
     <string name="my_wallet" translatable="false">My Wallet</string>
     <string name="status_synchronized" translatable="false">Synchronized</string>
     <string name="send_btn_transition_name" translatable="false">send_btn_transition</string>
     <string name="receive_btn_transition_name" translatable="false">receive_btn_transition</string>
     <string name="test" translatable="false">Test</string>
     <string name="test_result_title" translatable="false">Test result:</string>
-    <string name="test_result"  translatable="false">Height 1,500,500 (V17),Ping: 500ms, IP: 15.222.187.192</string>
+    <string name="test_result" translatable="false">Height 1,500,500 (V17),Ping: 500ms, IP: 15.222.187.192</string>
 
     <string name="info_nodes_enabled">Node-o-matiC enabled, tap for more info.</string>
     <string name="node_height">Last block updated: %1$s</string>
@@ -1232,5 +1231,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="please_pick_a_restore_height" translatable="false">Please pick a restore height</string>
     <string name="please_pick_a_restore_from_date" translatable="false">Please pick a restore from date</string>
 
-
+    <string name="send_create_tx_error_title" translatable="false">Create Transaction Error</string>
+    <string name="transaction_completed" translatable="false">Transaction Completed</string>
 </resources>

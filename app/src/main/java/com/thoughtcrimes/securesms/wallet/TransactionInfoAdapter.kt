@@ -159,8 +159,8 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
             infoItem = infoItems!![position]
             itemView.transitionName = context!!.getString(R.string.tx_item_transition_name, infoItem!!.hash)
             val userNotes = UserNotes(infoItem!!.notes)
-            if (userNotes.xmrtoKey != null) {
-                val crypto: Crypto? = Crypto.withSymbol(userNotes.xmrtoCurrency)
+            if (userNotes.bdxtoKey != null) {
+                val crypto: Crypto? = Crypto.withSymbol(userNotes.bdxtoCurrency)
                 if (crypto != null) {
                     //ivTxType.setImageResource(crypto.getIconEnabledId())
                     //ivTxType.visibility = View.VISIBLE

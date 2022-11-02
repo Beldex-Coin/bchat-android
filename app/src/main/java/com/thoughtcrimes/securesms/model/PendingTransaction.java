@@ -1,5 +1,7 @@
 package com.thoughtcrimes.securesms.model;
 
+import android.util.Log;
+
 public class PendingTransaction {
     static {
         System.loadLibrary("app");
@@ -51,13 +53,26 @@ public class PendingTransaction {
 
     }
 
-    public Status getStatus() {
+   /* public Status getStatus() {
         return Status.values()[getStatusJ()];
-    }
+    }*/
+   public Status getStatus() {
+       int status = getStatusJ();
+       if (status == 0) return Status.Status_Ok;
+       if (status == 1) return Status.Status_Error;
+       return Status.Status_Critical;
+   }
 
     public native int getStatusJ();
 
-    public native String getErrorString();
+    public String getErrorString() {
+        Log.d("PendingTransaction before getErrorStringJ","");
+        String error = getErrorStringJ();
+        Log.d("PendingTransaction getErrorString:" , error);
+        return error;
+    }
+
+    public native String getErrorStringJ();
 
     // commit transaction or save to file if filename is provided.
     public native boolean commit(String filename, boolean overwrite);

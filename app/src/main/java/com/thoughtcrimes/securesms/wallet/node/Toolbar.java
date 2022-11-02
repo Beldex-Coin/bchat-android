@@ -66,7 +66,7 @@ public class Toolbar extends MaterialToolbar {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             // the vector image does not work well for androis < Nougat
             toolbarImage.getLayoutParams().width = (int) getResources().getDimension(R.dimen.logo_width);
-            toolbarImage.setImageResource(R.drawable.logo_horizontol_xmrujo);
+            toolbarImage.setImageResource(R.drawable.logo);
         }*/
 
         toolbarTitle = findViewById(R.id.toolbarTitle);

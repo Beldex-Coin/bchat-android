@@ -66,20 +66,20 @@ public class BarcodeData {
     }
 
     public String getUriString() {
-        if (asset != Crypto.XMR) throw new IllegalStateException("We can only do XMR stuff!");
+        if (asset != Crypto.BDX) throw new IllegalStateException("We can only do BDX stuff!");
         StringBuilder sb = new StringBuilder();
-        sb.append(Crypto.XMR.getUriScheme())
+        sb.append(Crypto.BDX.getUriScheme())
                 .append(':')
                 .append(address);
         boolean first = true;
         if ((description != null) && !description.isEmpty()) {
             sb.append(first ? "?" : "&");
             first = false;
-            sb.append(Crypto.XMR.getUriMessage()).append('=').append(Uri.encode(description));
+            sb.append(Crypto.BDX.getUriMessage()).append('=').append(Uri.encode(description));
         }
         if ((amount != null) && !amount.isEmpty()) {
             sb.append(first ? "?" : "&");
-            sb.append(Crypto.XMR.getUriAmount()).append('=').append(amount);
+            sb.append(Crypto.BDX.getUriAmount()).append('=').append(amount);
         }
         return sb.toString();
     }

@@ -3,7 +3,7 @@ package com.thoughtcrimes.securesms.data;
 import com.thoughtcrimes.securesms.model.PendingTransaction;
 
 public class PendingTx {
-    final public PendingTransaction.Status status;
+    public PendingTransaction.Status status;
     final public String error;
     final public long amount;
     final public long dust;

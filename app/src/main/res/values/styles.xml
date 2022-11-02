@@ -610,4 +610,23 @@
         <item name="android:textColor">@color/text</item>
     </style>
 
+    <style name="backgroundColor" parent="Theme.AppCompat.DayNight.Dialog.Alert">
+        <item name="android:background">@color/action_bar_background</item>
+        <item name="colorOnSurface">@color/green_color</item>
+        <item name="android:colorPrimary">@color/green_color</item>
+        <item name="android:colorAccent">@color/green_color</item>
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+        <item name="android:textColor">@color/text</item>
+        <item name="android:textColorPrimary">#8F8E8E</item>
+    </style>
+
+    <style name="NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/green_color</item>
+    </style>
+
+    <style name="PositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/green_color</item>
+    </style>
+
 </resources>

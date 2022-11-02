@@ -18,7 +18,7 @@ import timber.log.Timber;
 @RequiredArgsConstructor
 public enum Crypto {
     //by hales
-    XMR("XMR", true, "Beldex:tx_amount:recipient_name:tx_description", R.id.ibBDX, R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_foreground, Wallet::isAddressValid),
+    BDX("BDX", true, "Beldex:tx_amount:recipient_name:tx_description", R.id.ibBDX, R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_foreground, Wallet::isAddressValid),
     BTC("BTC", true, "bitcoin:amount:label:message", R.id.ibBDX, R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_foreground, address -> {
         Timber.d("BTC ->%s", address);
         return BitcoinAddressValidator.validate(address, BitcoinAddressType.BTC);

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/default_dialog_background_inset"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:elevation="4dp"
+    tools:context="com.thoughtcrimes.securesms.wallet.send.SendConfirmDialog">
+
+    <TextView
+        android:fontFamily="@font/poppins_bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Confirm Sending"
+        android:textColor="@color/text"
+        android:textStyle="bold"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:textSize="@dimen/medium_font_size" />
+
+    <TextView
+        android:fontFamily="@font/poppins_medium"
+        android:id="@+id/dialogReceiverAddressTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/large_spacing"
+        android:text="Address :"
+        android:textColor="#77778B"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:textSize="@dimen/medium_font_size"/>
+
+    <TextView
+        android:fontFamily="@font/poppins_medium"
+        android:id="@+id/dialogReceiverAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="bxdCE36Hq9dZv3biveXck8FHiqbNmsLdyRDhgYPB8zhgRsGRSXnRiq9AmuuCGALMUjeV16PXuir4JHGNgtPKCWK22fzYJN3Ah"
+        android:textColor="@color/text"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:textSize="@dimen/small_font_size"/>
+
+    <TextView
+        android:fontFamily="@font/poppins_medium"
+        android:id="@+id/dialogCommitTransaction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Commit Transaction"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/green_color"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:textSize="@dimen/small_font_size"/>
+
+    <TextView
+        android:fontFamily="@font/poppins_medium"
+        android:id="@+id/dialogTransactionAmount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Amount: "
+        android:layout_marginTop="5dp"
+        android:textColor="@color/text"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:textSize="@dimen/small_font_size"/>
+    <TextView
+        android:fontFamily="@font/poppins_medium"
+        android:id="@+id/dialogTransactionFee"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Fee: "
+        android:layout_marginTop="5dp"
+        android:textColor="@color/text"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:textSize="@dimen/small_font_size"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="27dp"
+        android:layout_marginEnd="27dp"
+        android:layout_marginTop="@dimen/small_spacing"
+        android:orientation="horizontal">
+
+        <Button
+            style="@style/Widget.Bchat.Button.Dialog.Unimportant.New"
+            android:id="@+id/cancelButton"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/medium_button_height"
+            android:layout_weight="1"
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:text="@string/cancel" />
+
+        <Button
+            style="@style/Widget.Bchat.Button.Common.ProminentFilled"
+            android:id="@+id/okButton"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/medium_button_height"
+            android:layout_weight="1"
+            android:layout_marginStart="@dimen/medium_spacing"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:text="@string/ok" />
+
+    </LinearLayout>
+
+</LinearLayout>

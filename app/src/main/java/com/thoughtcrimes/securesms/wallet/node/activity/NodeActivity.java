@@ -20,7 +20,6 @@ import com.thoughtcrimes.securesms.model.WalletManager;
 import com.thoughtcrimes.securesms.service.KeyCachingService;
 import com.thoughtcrimes.securesms.util.Helper;
 import com.thoughtcrimes.securesms.util.NodePinger;
-import com.thoughtcrimes.securesms.wallet.node.AddNodeActivity;
 import com.thoughtcrimes.securesms.wallet.node.NodeFragment;
 import com.thoughtcrimes.securesms.wallet.node.Toolbar;
 
@@ -69,10 +68,8 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
     public boolean onOptionsItemSelected(MenuItem item) {
         final int id = item.getItemId();
         if (id == R.id.action_add_node) {
-            Intent intent = new Intent(this, AddNodeActivity.class);
-            intent.putExtra("nodeInfo", (CharSequence) node);
-            startActivity(intent);
-            return true;
+            NodeFragment fragment = (NodeFragment) getSupportFragmentManager().findFragmentById(R.id.nodeList_frame);
+            fragment.callDialog();
         }
         if (id == R.id.action_reset_node) {
             Fragment f = getSupportFragmentManager().findFragmentById(R.id.nodeList_frame);

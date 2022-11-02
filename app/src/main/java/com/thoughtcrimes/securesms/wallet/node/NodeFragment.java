@@ -502,16 +502,16 @@ public class NodeFragment extends Fragment
 
         EditDialog(final NodeInfo nodeInfo) {
             //AlertDialog.Builder alertDialogBuilder = new MaterialAlertDialogBuilder(getActivity());
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(),R.style.BChatAlertDialog_AddNode);
             LayoutInflater li = LayoutInflater.from(alertDialogBuilder.getContext());
             View promptsView = li.inflate(R.layout.prompt_editnode, null);
             alertDialogBuilder.setView(promptsView);
 
-            etNodeName = promptsView.findViewById(R.id.etNodeName);
-            etNodeHost = promptsView.findViewById(R.id.etNodeHost);
-            etNodePort = promptsView.findViewById(R.id.etNodePort);
-            etNodeUser = promptsView.findViewById(R.id.etNodeUser);
-            etNodePass = promptsView.findViewById(R.id.etNodePass);
+            etNodeName = promptsView.findViewById(R.id.nodeNameEditTxtLayout);
+            etNodeHost = promptsView.findViewById(R.id.nodeAddressEditTxtLayout);
+            etNodePort = promptsView.findViewById(R.id.nodePortEditTxtLayout);
+            etNodeUser = promptsView.findViewById(R.id.nodeUsernameEditTxtLayout);
+            etNodePass = promptsView.findViewById(R.id.nodePasswordEditTxtLayout);
             tvResult = promptsView.findViewById(R.id.tvResult);
 
             if (nodeInfo != null) {
@@ -532,7 +532,7 @@ public class NodeFragment extends Fragment
             alertDialogBuilder
                     .setCancelable(false)
                     .setPositiveButton("OK", null)
-                    .setNeutralButton("Text", null)
+                    .setNeutralButton("TEST", null)
                     .setNegativeButton(getString(R.string.cancel),
                             (dialog, id) -> {
                                 closeDialog();

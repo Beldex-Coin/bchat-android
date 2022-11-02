@@ -104,12 +104,6 @@
             android:name="com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity"
             android:exported="false" />
         <activity
-            android:name="com.thoughtcrimes.securesms.wallet.node.AddNodeActivity"
-            android:exported="false" />
-        <activity
-            android:name="com.thoughtcrimes.securesms.wallet.node.activity.NodeActivity"
-            android:exported="false" />
-        <activity
             android:name="com.thoughtcrimes.securesms.wallet.rescan.ReScanActivity"
             android:exported="false" />
         <activity

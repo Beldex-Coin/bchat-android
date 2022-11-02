@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
+    android:background="@color/page_background"
     android:layout_height="wrap_content">
 
     <LinearLayout
@@ -20,111 +21,180 @@
             android:orientation="vertical"
             android:weightSum="10">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/etNodeHost"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:errorEnabled="true">
+                android:layout_marginLeft="@dimen/large_spacing"
+                android:layout_marginTop="@dimen/large_spacing"
+                android:layout_marginRight="@dimen/large_spacing"
+                app:cardBackgroundColor="@color/card_color"
+                app:cardCornerRadius="10dp">
 
-                <com.google.android.material.textfield.TextInputEditText
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/nodeAddressEditTxtLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingStart="0dp"
-                    android:hint="publicnode:rpcnode:stream"
-                    android:imeOptions="actionNext"
-                    android:inputType="text"
-                    android:maxLines="1"
-                    android:textAlignment="textStart"
-                    tools:text="node.supportbdx.com" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    app:errorTextColor="@color/red"
+                    app:hintEnabled="false"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/etNodePort"
+                    <EditText
+                        android:id="@+id/nodeAddressEditText"
+                        style="@style/SmallBchatEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="54dp"
+                        android:fontFamily="@font/poppins_medium"
+                        android:gravity="center_vertical"
+                        android:hint="@string/node_address"
+                        />
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:errorEnabled="true">
+                android:layout_marginLeft="@dimen/large_spacing"
+                android:layout_marginTop="@dimen/large_spacing"
+                android:layout_marginRight="@dimen/large_spacing"
+                app:cardBackgroundColor="@color/card_color"
+                app:cardCornerRadius="10dp">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/nodePortEditTxtLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingStart="0dp"
-                    android:hint="29096"
-                    android:imeOptions="actionNext"
-                    android:inputType="text"
-                    android:maxLines="1"
-                    android:textAlignment="textStart"
-                    tools:text="18089" />
-            </com.google.android.material.textfield.TextInputLayout>
-        </LinearLayout>
+                    app:errorTextColor="@color/red"
+                    app:hintEnabled="false"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/nodeAddressEditTxtLayout"
+                    app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/etNodeName"
+                    <EditText
+                        android:id="@+id/nodePortEditText"
+                        style="@style/SmallBchatEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="54dp"
+                        android:fontFamily="@font/poppins_medium"
+                        android:gravity="center_vertical"
+                        android:hint="@string/node_port"
+                        android:inputType="number"
+                        android:paddingTop="0dp"
+                        android:paddingBottom="0dp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/large_spacing"
+                android:layout_marginTop="@dimen/large_spacing"
+                android:layout_marginRight="@dimen/large_spacing"
+                app:cardBackgroundColor="@color/card_color"
+                app:cardCornerRadius="10dp">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/nodeNameEditTxtLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:errorTextColor="@color/red"
+                    app:hintEnabled="false"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/nodePortEditTxtLayout"
+                    app:layout_constraintTop_toTopOf="parent">
+
+
+                    <EditText
+                        android:id="@+id/nodenameEditText"
+                        style="@style/SmallBchatEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="54dp"
+                        android:fontFamily="@font/poppins_medium"
+                        android:gravity="center_vertical"
+                        android:hint="@string/node_name"
+                        android:paddingTop="0dp"
+                        android:paddingBottom="0dp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+            </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp">
+            android:layout_marginLeft="@dimen/large_spacing"
+            android:layout_marginTop="@dimen/large_spacing"
+            android:layout_marginRight="@dimen/large_spacing"
+            app:cardBackgroundColor="@color/card_color"
+            app:cardCornerRadius="10dp">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/nodeUsernameEditTxtLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="0dp"
-                android:hint="node name"
-                android:imeOptions="actionNext"
-                android:inputType="text"
-                android:maxLines="1"
-                android:textAlignment="textStart"
-                tools:text="supportbdx" />
-        </com.google.android.material.textfield.TextInputLayout>
+                app:errorTextColor="@color/red"
+                app:hintEnabled="false"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/nodePortEditTxtLayout"
+                app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+
+                <EditText
+                    android:id="@+id/usernameEditText"
+                    style="@style/SmallBchatEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:gravity="center_vertical"
+                    android:hint="@string/node_login"
+                    android:paddingTop="0dp"
+                    android:paddingBottom="0dp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
+            android:layout_marginLeft="@dimen/large_spacing"
+            android:layout_marginTop="@dimen/large_spacing"
+            android:layout_marginRight="@dimen/large_spacing"
+            app:cardBackgroundColor="@color/card_color"
+            app:cardCornerRadius="10dp">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/etNodeUser"
-                android:layout_width="0dp"
+                android:id="@+id/nodePasswordEditTxtLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingEnd="5dp">
+                app:errorTextColor="@color/red"
+                app:hintEnabled="false"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/nodeUsernameEditTxtLayout"
+                app:layout_constraintTop_toTopOf="parent">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <EditText
+                    android:id="@+id/passwordEditText"
+                    style="@style/SmallBchatEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="user name"
-                    android:paddingStart="0dp"
-                    android:imeOptions="actionNext"
-                    android:inputType="text"
-                    android:maxLines="1"
-                    android:textAlignment="textStart"
-                    tools:text="userxyz" />
+                    android:layout_height="54dp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:gravity="center_vertical"
+                    android:hint="@string/node_password"
+                    android:paddingTop="0dp"
+                    android:paddingBottom="0dp" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/etNodePass"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingStart="5dp">
+        </androidx.cardview.widget.CardView>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="password"
-                    android:paddingStart="0dp"
-                    android:imeOptions="actionDone"
-                    android:inputType="text"
-                    android:maxLines="1"
-                    android:textAlignment="textStart"
-                    tools:text="secret" />
-            </com.google.android.material.textfield.TextInputLayout>
-        </LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp">
+            android:layout_marginTop="15dp">
 
             <TextView
                 android:id="@+id/tvResultLabel"
@@ -134,7 +204,9 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="0dp"
                 android:layout_marginEnd="4dp"
-                android:text="result"
+                android:text="Test result"
+                android:textColor="@color/button_green"
+                android:textStyle="bold"
                 android:textAlignment="textStart" />
 
             <TextView
@@ -145,8 +217,10 @@
                 android:layout_marginStart="4dp"
                 android:layout_toEndOf="@+id/tvResultLabel"
                 android:textAlignment="textStart"
-                tools:text="Blockheight: 1710998 (v9), Ping: 187ms" />
+                tools:text="Blockheight: 1710998 (v9), Ping: 187ms"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"/>
         </RelativeLayout>
-
+        </LinearLayout>
     </LinearLayout>
 </FrameLayout>

@@ -1070,8 +1070,9 @@
     <string name="activity_new_node_page_title" translatable="false">New Node</string>
     <string name="node_address" translatable="false">Node address</string>
     <string name="node_port" translatable="false">Node port</string>
-    <string name="node_login" translatable="false">Login</string>
-    <string name="node_password" translatable="false">Password</string>
+    <string name="node_login" translatable="false">Username (Optional)</string>
+    <string name="node_name" translatable="false">Node name (Optional)</string>
+    <string name="node_password" translatable="false">Password (Optional)</string>
     <string name="clear">Clear</string>
     <string name="activity_node_page_title" translatable="false">Node</string>
     <string name="activity_address_book_page_title" translatable="false">Address Book</string>

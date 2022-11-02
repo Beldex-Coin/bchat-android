@@ -400,6 +400,13 @@
         <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
     </style>
 
+    <style name="BChatAlertDialog_AddNode" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
+    </style>
+
     <style name="Widget.BChat.AlertDialog.NegativeButtonStyle_Wallet" parent="Widget.AppCompat.Button">
         <item name="android:textColor">@color/text</item>
         <item name="background">@style/Widget.Bchat.Button.Common.UnimportantFilled.New</item>

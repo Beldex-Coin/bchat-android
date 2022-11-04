@@ -6,9 +6,6 @@ import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import com.google.android.material.transition.MaterialContainerTransform
 import com.thoughtcrimes.securesms.data.*
 import com.thoughtcrimes.securesms.model.PendingTransaction
@@ -18,19 +15,31 @@ import com.thoughtcrimes.securesms.wallet.send.interfaces.SendConfirm
 import com.thoughtcrimes.securesms.wallet.utils.ThemeHelper
 import com.thoughtcrimes.securesms.wallet.widget.Toolbar
 import io.beldex.bchat.R
-import timber.log.Timber
 import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity
 
 import android.content.Intent
+import android.text.Editable
+import android.text.InputType
+import android.text.TextWatcher
 import android.util.Log
-import android.view.Gravity
+import android.util.Patterns
+import android.view.*
+import android.view.View.OnFocusChangeListener
+import android.widget.TextView.OnEditorActionListener
 import androidx.appcompat.app.AlertDialog
 import cn.carbswang.android.numberpickerview.library.NumberPickerView
 import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.util.Helper
+import com.thoughtcrimes.securesms.wallet.utils.OpenAliasHelper
 import com.thoughtcrimes.securesms.wallet.utils.helper.ServiceHelper
 import io.beldex.bchat.databinding.FragmentSendBinding
 import java.lang.ClassCastException
+import java.lang.NumberFormatException
+import java.util.*
+import timber.log.Timber
+
+
+
 
 
 class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
@@ -42,6 +51,11 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
     lateinit var binding: FragmentSendBinding
 
     private var isResume:Boolean = false
+
+    private val possibleCryptos: MutableSet<Crypto> = HashSet()
+    private var selectedCrypto: Crypto? = null
+    val INTEGRATED_ADDRESS_LENGTH = 106
+    private var resolvingOA = false
 
 
     fun newInstance(listener: Listener): SendFragment? {
@@ -167,6 +181,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
         )
         builder.setTitle(requireContext().getString(R.string.transaction_completed))
         builder.setPositiveButton(android.R.string.ok) { dialog: DialogInterface?, _: Int ->
+            sendButtonEnabled()
             dialog!!.dismiss()
         }
         builder.setNegativeButton(android.R.string.cancel, null)
@@ -234,56 +249,210 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
             startActivity(intent)
         }
 
-        binding.sendButton.setOnClickListener {
-            val txData: TxData = getTxData()
-           /* if (txData is TxDataBtc) {
-                txData.setBtcAddress(etAddress.getEditText().getText().toString())
-                txData.setBtcSymbol(selectedCrypto.getSymbol())
-                txData.setDestinationAddress(null)
-                ServiceHelper.ASSET = selectedCrypto.getSymbol().toLowerCase()
-            } else {*/
-                txData.destinationAddress = binding.beldexAddressEditTxtLayout.editText?.text.toString()
-                ServiceHelper.ASSET = null
-            //}
-
-            /* String bdx = etAmount.getNativeAmount();
-                Timber.d("BDX Total Amount -> "+Wallet.getAmountFromString(bdx));
-                if (bdx != null) {
-                    sendListener.getTxData().setAmount(Wallet.getAmountFromString(bdx));
-                } else {
-                    sendListener.getTxData().setAmount(0L);
+        //Validate beldex address
+        binding.beldexAddressEditTxtLayout.editText?.setRawInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS)
+        binding.beldexAddressEditTxtLayout.editText?.setOnEditorActionListener(OnEditorActionListener { v, actionId, event -> // ignore ENTER
+                event != null && event.keyCode == KeyEvent.KEYCODE_ENTER
+            })
+        binding.beldexAddressEditTxtLayout.editText?.onFocusChangeListener =
+            OnFocusChangeListener { v: View?, hasFocus: Boolean ->
+                if (!hasFocus) {
+                    val enteredAddress: String = binding.beldexAddressEditTxtLayout.editText?.text.toString().trim()
+                    val dnsOA = dnsFromOpenAlias(enteredAddress)
+                    Timber.d("OpenAlias is %s", dnsOA)
+                    if (dnsOA != null) {
+                        processOpenAlias(dnsOA)
+                    }
+                }
+            }
+        binding.beldexAddressEditTxtLayout.editText?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(editable: Editable) {
+                Timber.d("AFTER: %s", editable.toString())
+                binding.beldexAddressEditTxtLayout.error = null
+                possibleCryptos.clear()
+                selectedCrypto = null
+                val address: String = binding.beldexAddressEditTxtLayout.editText?.text.toString()
+                if (isIntegratedAddress(address)) {
+                    Timber.d("isIntegratedAddress")
+                    possibleCryptos.add(Crypto.BDX)
+                    selectedCrypto = Crypto.BDX
+                    binding.beldexAddressEditTxtLayout.error = getString(R.string.info_paymentid_integrated)
+                    setMode(Mode.BDX)
+                } else if (isStandardAddress(address)) {
+                    Timber.d("isStandardAddress")
+                    possibleCryptos.add(Crypto.BDX)
+                    selectedCrypto = Crypto.BDX
+                    setMode(Mode.BDX)
+                }
+               /* else{
+                    binding.beldexAddressEditTxtLayout.error = getString(R.string.send_address_invalid)
                 }*/
-          /*  if (binding.beldexAmountEditTxt.getNativeAmount()
-                .equals(Wallet.getDisplayAmount(activityCallback!!.totalFunds))
-        ) {
-            val amount = (activityCallback!!.totalFunds - 10485760)
-            val bdx: String = etAmount.getNativeAmount()
-            Timber.d(
-                "If BDX Total Amount -> " + Wallet.getAmountFromString(bdx)
-                    .toString() + " " + bdx + "" + amount
-            )
-            if (bdx != null) {
-                txData.amount = amount
-            } else {
-                txData.setAmount(0L)
+                if (possibleCryptos.isEmpty()) {
+                    Timber.d("other")
+                    setMode(Mode.BDX)
+                }
+                /*if (!Helper.ALLOW_SHIFT) return
+                if (possibleCryptos.isEmpty()) {
+                    Timber.d("isBitcoinAddress")
+                    for (type in BitcoinAddressType.values()) {
+                        if (BitcoinAddressValidator.validate(address, type)) {
+                            possibleCryptos.add(Crypto.valueOf(type.name()))
+                        }
+                    }
+                    if (!possibleCryptos.isEmpty()) // found something in need of shifting!
+                        sendListener.setMode(Mode.BTC)
+                    if (possibleCryptos.size == 1) {
+                        selectedCrypto = possibleCryptos.toTypedArray().get(0) as Crypto
+                    }
+                }
+                if (possibleCryptos.isEmpty()) {
+                    Timber.d("other")
+                    tvXmrTo.setVisibility(View.INVISIBLE)
+                    setMode(Mode.BDX)
+                }
+                updateCryptoButtons(address.isEmpty())*/
             }
-        } else {
-            val bdx: String = etAmount.getNativeAmount()
-            Timber.d("Else BDX Total Amount -> " + Wallet.getAmountFromString(bdx).toString() + " " + bdx)
-            if (bdx != null) {
-                txData.amount = Wallet.getAmountFromString(bdx)
-            } else {
-                txData.amount = 1L
+
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+        })
+
+        binding.beldexAmountEditTxtLayout.editText?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(editable: Editable) {
+                binding.beldexAmountEditTxtLayout.error = null
+
             }
-        }*/
-            txData.amount = 1L
-            txData.userNotes = UserNotes("Test")//etNotes.getEditText().getText().toString()
-            txData.priority = PendingTransaction.Priority.Priority_Default
-            txData.mixin = MIXIN
-            onResumeFragment()
+
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+        })
+
+        binding.sendButton.setOnClickListener {
+            if (!checkAddressNoError()) {
+                shakeAddress()
+                val enteredAddress: String = binding.beldexAddressEditTxtLayout.editText?.text.toString().trim()
+                val dnsOA = dnsFromOpenAlias(enteredAddress)
+                if (dnsOA != null) {
+                    Log.d("OpenAlias is %s", dnsOA)
+                }
+                dnsOA?.let { processOpenAlias(it) }
+            }else {
+                if (binding.beldexAddressEditTxtLayout.editText?.text!!.isNotEmpty() && binding.beldexAmountEditTxtLayout.editText?.text!!.isNotEmpty()) {
+                    val txData: TxData = getTxData()
+                    txData.destinationAddress =
+                        binding.beldexAddressEditTxtLayout.editText?.text.toString()
+                    ServiceHelper.ASSET = null
+
+                    if (getCleanAmountString(binding.beldexAmountEditTxtLayout.editText?.text.toString()).equals(
+                            Wallet.getDisplayAmount(activityCallback!!.totalFunds)
+                        )
+                    ) {
+                        val amount =
+                            (activityCallback!!.totalFunds - 10485760)// 10485760 == 050000000
+                        val bdx = getCleanAmountString(binding.beldexAmountEditTxtLayout.editText?.text.toString())
+                        Log.d("If BDX Total Amount -> " + Wallet.getAmountFromString(bdx).toString() + " " + bdx + "" + amount,"true")
+                        if (bdx != null) {
+                            txData.amount = amount
+                        } else {
+                            txData.amount = 0L
+                        }
+                    } else {
+                        val bdx = getCleanAmountString(binding.beldexAmountEditTxtLayout.editText?.text.toString())
+                        Log.d("Else BDX Total Amount -> " + Wallet.getAmountFromString(bdx).toString() + " " + bdx,"true")
+                        if (bdx != null) {
+                            txData.amount = Wallet.getAmountFromString(bdx)
+                        } else {
+                            txData.amount = 0L
+                        }
+                    }
+                    txData.userNotes = UserNotes("-")//etNotes.getEditText().getText().toString()
+                    txData.priority = PendingTransaction.Priority.Priority_Flash
+                    txData.mixin = MIXIN
+                    onResumeFragment()
+                } else if (binding.beldexAddressEditTxtLayout.editText?.text!!.isEmpty()) {
+                    Log.d("Beldex","beldexAddressEditTxtLayout isEmpty()")
+                    binding.beldexAddressEditTxtLayout.error = getString(R.string.beldex_address_error_message)
+                } else {
+                    Log.d("Beldex","beldexAmountEditTxtLayout isEmpty()")
+                    binding.beldexAmountEditTxtLayout.error = getString(R.string.beldex_amount_error_message)
+                }
+            }
         }
         return binding.root
 
+    }
+
+    private val CLEAN_FORMAT = "%." + Helper.BDX_DECIMALS.toString() + "f"
+
+    private fun getCleanAmountString(enteredAmount: String): String? {
+        return try {
+            val amount = enteredAmount.toDouble()
+            if (amount >= 0) {
+                String.format(Locale.US, CLEAN_FORMAT, amount)
+            } else {
+                null
+            }
+        } catch (ex: NumberFormatException) {
+            null
+        }
+    }
+
+    private fun checkAddressNoError(): Boolean {
+        return selectedCrypto != null
+    }
+
+    private fun checkAddress(): Boolean {
+        val ok = checkAddressNoError()
+        if (possibleCryptos.isEmpty()) {
+            binding.beldexAddressEditTxtLayout.error = getString(R.string.send_address_invalid)
+        } else {
+            binding.beldexAddressEditTxtLayout.error = null
+        }
+        return ok
+    }
+
+    private fun isStandardAddress(address: String): Boolean {
+        return Wallet.isAddressValid(address)
+    }
+
+    private fun isIntegratedAddress(address: String): Boolean {
+        return (address.length == INTEGRATED_ADDRESS_LENGTH
+                && Wallet.isAddressValid(address))
+    }
+
+    private fun shakeAddress() {
+        //if(possibleCryptos.size==1)
+            binding.beldexAddressEditTxtLayout.startAnimation(Helper.getShakeAnimation(context))
+            binding.beldexAddressEditTxtLayout.error = getString(R.string.send_address_invalid)
+    }
+
+    private fun processOpenAlias(dnsOA: String?) {
+        if (resolvingOA) return  // already resolving - just wait
+        activityCallback!!.popBarcodeData()
+        if (dnsOA != null) {
+            resolvingOA = true
+            binding.beldexAddressEditTxtLayout.error = getString(R.string.send_address_resolve_openalias)
+            OpenAliasHelper.resolve(dnsOA, object : OpenAliasHelper.OnResolvedListener {
+                override fun onResolved(dataMap: Map<Crypto?, BarcodeData?>) {
+                    resolvingOA = false
+                    var barcodeData = dataMap[Crypto.BDX]
+                    if (barcodeData == null) barcodeData = dataMap[Crypto.BTC]
+                    if (barcodeData != null) {
+                        Timber.d("Security=%s, %s", barcodeData.security.toString(), barcodeData.address)
+                        processScannedData(barcodeData)
+                    } else {
+                        binding.beldexAddressEditTxtLayout.error = getString(R.string.send_address_not_openalias)
+                        Timber.d("NO BDX OPENALIAS TXT FOUND")
+                    }
+                }
+
+                override fun onFailure() {
+                    resolvingOA = false
+                    binding.beldexAddressEditTxtLayout.error = getString(R.string.send_address_not_openalias)
+                    Timber.e("OA FAILED")
+                }
+            })
+        } // else ignore
     }
 
     var inProgress = false
@@ -303,7 +472,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
         Helper.hideKeyboard(activity)
         isResume = true
 
-        val txData: TxData = getTxData()
+        //val txData: TxData = getTxData()
         //tvTxAddress.setText(txData.destinationAddress)
         //val notes: UserNotes = getTxData().userNotes
         /*if (notes != null && notes.note.isNotEmpty()) {
@@ -314,6 +483,8 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
         }*/
         refreshTransactionDetails()
         if (pendingTransaction == null && !inProgress) {
+            binding.sendButton.isEnabled=false
+            binding.sendButton.isClickable=false
             showProgress()
             prepareSend(txData)
         }
@@ -324,9 +495,6 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
     private fun prepareSend(txData: TxData?) {
         activityCallback!!.onPrepareSend(null, txData)
     }
-
-
-
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -348,6 +516,16 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
         activityCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
         activityCallback!!.setTitle(getString(R.string.send))
         processScannedData()
+
+      /*  if(txData.priority.value != null) {
+            if (txData.priority.value == 1) {
+                binding.estimatedFeeDescriptionTextView.text =
+                    "Slow priority is set as the default fee.\\nGo to setting to change the transaction priority."
+            } else {
+                binding.estimatedFeeDescriptionTextView.text =
+                    "Flash priority is set as the default fee.\\nGo to setting to change the transaction priority."
+            }
+        }*/
     }
 
     // QR Scan Stuff
@@ -368,22 +546,23 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
             if (barcodeData!!.address != null) {
                 binding.beldexAddressEditTxtLayout.editText?.setText(barcodeData.address)
                 binding.beldexAmountEditTxtLayout.editText?.setText(barcodeData.amount)
-                /* possibleCryptos.clear()*/
-                /* selectedCrypto = null*/
-                /*if (barcodeData.isAmbiguous) {
+
+                //---------------------------------------------------------------------------
+                possibleCryptos.clear()
+                selectedCrypto = null
+                if (barcodeData.isAmbiguous) {
                     possibleCryptos.addAll(barcodeData.ambiguousAssets)
                 } else {
                     possibleCryptos.add(barcodeData.asset)
                     selectedCrypto = barcodeData.asset
-                }*/
-                /*if (Helper.ALLOW_SHIFT) updateCryptoButtons(false)
+                }
+                //if (Helper.ALLOW_SHIFT) updateCryptoButtons(false)
                 if (checkAddress()) {
-                    if (barcodeData.security === BarcodeData.Security.OA_NO_DNSSEC) etAddress.setError(
-                        getString(R.string.send_address_no_dnssec)
-                    ) else if (barcodeData.security === BarcodeData.Security.OA_DNSSEC) etAddress.setError(
+                    if (barcodeData.security === BarcodeData.Security.OA_NO_DNSSEC) binding.beldexAddressEditTxtLayout.error =
+                        getString(R.string.send_address_no_dnssec) else if (barcodeData.security === BarcodeData.Security.OA_DNSSEC) binding.beldexAddressEditTxtLayout.error =
                         getString(R.string.send_address_openalias)
-                    )
-                }*/
+                }
+                //-------------------------------------------------------------------------//
             } else {
                 binding.beldexAddressEditTxtLayout.editText?.text?.clear()
                 binding.beldexAmountEditTxtLayout.editText?.text?.clear()
@@ -441,6 +620,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
 
     override fun sendFailed(errorText: String?) {
         binding.progressBar.visibility = View.INVISIBLE
+        sendButtonEnabled()
         showAlert(getString(R.string.send_create_tx_error_title), errorText!!)
     }
 
@@ -454,6 +634,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
 
     override fun createTransactionFailed(errorText: String?) {
         hideProgress()
+        sendButtonEnabled()
         showAlert(getString(R.string.send_create_tx_error_title), errorText!!)
     }
 
@@ -474,37 +655,17 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
     private fun refreshTransactionDetails() {
         Timber.d("refreshTransactionDetails()")
         if (pendingTransaction != null) {
-            val txData: TxData? = getTxData()
+            val txData: TxData = getTxData()
             SendConfirmDialog(pendingTransaction!!,txData, this).show(requireActivity().supportFragmentManager,"")
-           /* tvTxAddress.setText(txData.destinationAddress)
-            llConfirmSend.setVisibility(View.VISIBLE)
-            bSend.setEnabled(true)
-            Timber.d("getFee() SendConfirmWizardFragment ->%s", pendingTransaction!!.getAmount())
-            Timber.d("getFee() SendConfirmWizardFragment ->%s", Wallet.getDisplayAmount(pendingTransaction!!.getAmount()))
-            Timber.d("getFee() SendConfirmWizardFragment ->%s", Wallet.getDisplayAmount(pendingTransaction!!.getFee()))
-            Timber.d("getFee() FEE PendingSendConfirmWizardFragment ->%s", pendingTransaction!!.getFee())
-            tvTxFee.setText(Wallet.getDisplayAmount(pendingTransaction!!.getFee()))
-            if (getActivityCallback().isStreetMode()
-                && sendListener.getTxData().getAmount() === Wallet.SWEEP_ALL
-            ) {
-                tvTxAmount.setText(getString(R.string.street_sweep_amount))
-                tvTxTotal.setText(getString(R.string.street_sweep_amount))
-            } else {
-                tvTxAmount.setText(Wallet.getDisplayAmount(pendingTransaction!!.getAmount()))
-                tvTxTotal.setText(
-                    Wallet.getDisplayAmount(
-                        pendingTransaction!!.getFee() + pendingTransaction!!.getAmount()
-                    )
-                )
-            }*/
-        } else {
-            //llConfirmSend.setVisibility(View.GONE)
-            //bSend.setEnabled(false)
         }
     }
 
+    fun sendButtonEnabled(){
+        binding.sendButton.isEnabled=true
+        binding.sendButton.isClickable=true
+    }
+
     fun send() {
-       /* SendConfirmDialog(pendingTransaction!!,getTxData(), this).dismiss()*/
         commitTransaction()
         requireActivity().runOnUiThread { binding.progressBar.visibility = View.VISIBLE }
     }
@@ -514,5 +675,16 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
         //disableNavigation() // committed - disable all navigation
         activityCallback!!.onSend(txData.userNotes)
         committedTx = pendingTx
+    }
+
+    private fun dnsFromOpenAlias(openalias: String): String? {
+        var openalias = openalias
+        Timber.d("checking openalias candidate %s", openalias)
+        if (Patterns.DOMAIN_NAME.matcher(openalias).matches()) return openalias
+        if (Patterns.EMAIL_ADDRESS.matcher(openalias).matches()) {
+            openalias = openalias.replaceFirst("@".toRegex(), ".")
+            if (Patterns.DOMAIN_NAME.matcher(openalias).matches()) return openalias
+        }
+        return null // not an openalias
     }
 }

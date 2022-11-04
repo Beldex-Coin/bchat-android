@@ -110,4 +110,5 @@
     <color name="no_transaction_image_border1">#e6e6e6</color>
     <color name="no_transaction_image_border2">#a3a3b2</color>
     <color name="no_transaction_image_border3">#eaeaea</color>
+    <color name="dialog_title_color">#77778B</color>
 </resources>

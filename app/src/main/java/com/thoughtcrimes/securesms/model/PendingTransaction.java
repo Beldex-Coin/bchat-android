@@ -21,21 +21,26 @@ public class PendingTransaction {
 
     public enum Priority {
         Priority_Default(0),
-        Priority_Low(1),
+        Priority_Slow(1),
         Priority_Medium(2),
         Priority_High(3),
-        Priority_Last(4);
+        Priority_Last(4),
+        Priority_Flash(5);
 
         public static Priority fromInteger(int n) {
             switch (n) {
                 case 0:
                     return Priority_Default;
                 case 1:
-                    return Priority_Low;
+                    return Priority_Slow;
                 case 2:
                     return Priority_Medium;
                 case 3:
                     return Priority_High;
+                case 4:
+                    return Priority_Last;
+                case 5:
+                    return Priority_Flash;
             }
             return null;
         }

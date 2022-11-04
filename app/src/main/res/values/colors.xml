@@ -184,4 +184,5 @@
     <color name="no_transaction_image_border3">#24242f</color>
     <color name="wallet_sub_options_list_item_color">#77778B</color>
     <color name="wallet_sub_options_selected_list_item_color">@color/card_color</color>
+    <color name="dialog_title_color">#77778B</color>
 </resources>

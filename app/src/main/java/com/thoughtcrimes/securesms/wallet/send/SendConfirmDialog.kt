@@ -6,6 +6,7 @@ import com.thoughtcrimes.securesms.conversation.v2.utilities.BaseDialog
 import com.thoughtcrimes.securesms.data.TxData
 import com.thoughtcrimes.securesms.model.PendingTransaction
 import com.thoughtcrimes.securesms.model.Wallet
+import io.beldex.bchat.R
 import io.beldex.bchat.databinding.DialogSendConfirmBinding
 
 class SendConfirmDialog(
@@ -26,7 +27,10 @@ class SendConfirmDialog(
             dialogTransactionFee.text = Wallet.getDisplayAmount(pendingTransaction.fee)
             dialogTransactionAmount.text = Wallet.getDisplayAmount(pendingTransaction.amount)
 
-            cancelButton.setOnClickListener { dismiss() }
+            cancelButton.setOnClickListener {
+                context.sendButtonEnabled()
+                dismiss()
+            }
             okButton.setOnClickListener {
                 context.send()
                 dismiss()

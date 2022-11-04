@@ -108,6 +108,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
         if (!activityCallback?.isWatchOnly!!) {
             binding.sendCardViewButton.visibility = View.VISIBLE
             binding.sendCardViewButton.isEnabled = true
+            binding.scanQrCodeImg.isEnabled = true
         }
         //if (isVisible) enableAccountsList(true) //otherwise it is enabled in onResume()
     }
@@ -115,6 +116,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
     fun unsync() {
         if (!activityCallback!!.isWatchOnly) {
             binding.sendCardViewButton.isEnabled = false
+            binding.scanQrCodeImg.isEnabled = false
             //binding.progressBar.show()
         }
         //if (isVisible) enableAccountsList(false) //otherwise it is enabled in onResume()
@@ -294,6 +296,9 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentWalletBinding.inflate(inflater, container, false)
+
+        binding.sendCardViewButton.isEnabled = false
+        binding.scanQrCodeImg.isEnabled = false
 
         binding.walletName.text = walletTitle
         //Important

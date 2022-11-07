@@ -11,7 +11,7 @@ class AddressBookLoader(context: Context, private val usersToExclude: Set<String
     override fun loadInBackground(): List<String> {
         val contacts = DatabaseComponent.get(context).bchatContactDatabase().getAllContacts()
         return contacts.filter {
-            it.beldexAddress != null
+            it.beldexAddress != null && it.beldexAddress!!.isNotEmpty() && it.beldexAddress != ""
         }.map {
             it.bchatID
         }

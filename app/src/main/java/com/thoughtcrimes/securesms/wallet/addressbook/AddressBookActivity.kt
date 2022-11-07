@@ -1,6 +1,8 @@
 package com.thoughtcrimes.securesms.wallet.addressbook
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
@@ -9,9 +11,12 @@ import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
 import com.thoughtcrimes.securesms.mms.GlideApp
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityAddressBookBinding
-import timber.log.Timber
 
-class AddressBookActivity : PassphraseRequiredActionBarActivity(),AddressBookClickListener,
+
+
+
+class AddressBookActivity(
+) : PassphraseRequiredActionBarActivity(),AddressBookClickListener,
     LoaderManager.LoaderCallbacks<List<String>> {
     private lateinit var binding: ActivityAddressBookBinding
     private var members = listOf<String>()
@@ -19,7 +24,6 @@ class AddressBookActivity : PassphraseRequiredActionBarActivity(),AddressBookCli
             field = value; addressbooktadapter.members = value
         }
     private lateinit var usersToExclude: Set<String>
-
     private val addressbooktadapter by lazy {
         AddressBookAdapter(this, GlideApp.with(this), this)
     }
@@ -68,10 +72,16 @@ class AddressBookActivity : PassphraseRequiredActionBarActivity(),AddressBookCli
         invalidateOptionsMenu()
     }
 
-    override fun onAddressBookClick(position: Int) {
-        Timber.d("Address book position $position")
-        LoaderManager.getInstance(this).restartLoader(0, null, this)
+    override fun onAddressBookClick(position: Int,address: String) {
+        Log.d("Beldex","beldex address value $address")
+        val returnIntent = Intent()
+        returnIntent.putExtra("address_value", address)
+        setResult(RESULT_OK, returnIntent)
+        finish()
     }
+
+
+
 
 }
 // endregion

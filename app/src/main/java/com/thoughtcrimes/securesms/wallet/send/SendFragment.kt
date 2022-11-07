@@ -152,6 +152,23 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
         }*//*
         return null
     }*/
+   private fun openSomeActivityForResult() {
+       val intent = Intent(context, AddressBookActivity::class.java)
+       resultLauncher.launch(intent)
+   }
+
+    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // There are no request codes
+            val data: Intent? = result.data
+            val add = data?.getStringExtra("address_value")
+            Log.d("beldex","value of add $add")
+            if(add != null)
+            {
+                binding.beldexAddressEditTxtLayout.editText!!.setText(add.toString())
+            }
+        }
+    }
 
     var pendingTx: PendingTx? = null
 
@@ -238,7 +255,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
 
     }
 
-    private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    private val resultLaunchers = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             /* // There are no request codes
              val data: Intent? = result.data*/
@@ -257,8 +274,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
             onScanListener?.onScan()
         }
         binding.addressBook.setOnClickListener {
-            val intent = Intent(context, AddressBookActivity::class.java)
-            startActivity(intent)
+            openSomeActivityForResult()
         }
 
         //Validate beldex address
@@ -389,7 +405,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
                         intent.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN)
                         intent.putExtra("change_pin",false)
                         intent.putExtra("send_authentication",true)
-                    resultLauncher.launch(intent)
+                    resultLaunchers.launch(intent)
                 } else if (binding.beldexAddressEditTxtLayout.editText?.text!!.isEmpty()) {
                     Log.d("Beldex","beldexAddressEditTxtLayout isEmpty()")
                     binding.beldexAddressEditTxtLayout.error = getString(R.string.beldex_address_error_message)

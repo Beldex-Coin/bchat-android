@@ -155,6 +155,10 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         }
     }
 
+    override fun onBackPressedFun() {
+        onBackPressed()
+    }
+
     private var mBoundService: WalletService? = null
     private var mIsBound = false
 
@@ -534,7 +538,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
         Log.d("Transition Name ", "${getString(transition)}")
         supportFragmentManager.beginTransaction()
-            /*.addSharedElement(view!!, getString(transition))*/
+            .addSharedElement(view!!, getString(transition))
             .replace(R.id.fragment_container, newFragment)
             .addToBackStack(stackName)
             .commit()
@@ -845,6 +849,10 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         Timber.d("node prefs")
         if (checkServiceRunning()) return
         startNodeFragment()
+    }
+
+    override fun hiddenRescan(status: Boolean) {
+        binding.toolbar.hiddenRescan(status)
     }
 
     private fun startNodeFragment() {

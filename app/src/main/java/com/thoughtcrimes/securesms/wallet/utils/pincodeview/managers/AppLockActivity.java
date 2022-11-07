@@ -61,6 +61,7 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
     protected String mOldPinCode;
 
     protected boolean changePin = false;
+    protected boolean sendAuthentication = false;
 
     /**
      * First creation
@@ -141,6 +142,7 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
         if (extras != null) {
             mType = extras.getInt(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN);
             changePin = extras.getBoolean("change_pin",false);
+            sendAuthentication = extras.getBoolean("send_authentication",false);
         }
 
         mLockManager = LockManager.getInstance();
@@ -358,7 +360,11 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
             case AppLock.UNLOCK_PIN:
                 if (mLockManager.getAppLock().checkPasscode(mPinCode)) {
                     setResult(RESULT_OK);
-                    onPinCodeSuccess(4);
+                    if(sendAuthentication){
+                        onPinCodeSuccess(6);
+                    }else {
+                        onPinCodeSuccess(4);
+                    }
                     finish();
                 } else {
                     onPinCodeError();
@@ -432,7 +438,7 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
     }
 
     protected void onPinCodeSuccess(int pinLockStatus) {
-        //ENABLE_PINLOCK = 0 DISABLE_PINLOCK = 1 CHANGE_PIN = 2 CONFIRM_PIN = 3, UNLOCK_PIN = 4, FINGERPRINT_UNLOCK = 5
+        //ENABLE_PINLOCK = 0 DISABLE_PINLOCK = 1 CHANGE_PIN = 2 CONFIRM_PIN = 3, UNLOCK_PIN = 4, FINGERPRINT_UNLOCK = 5 SEND_AUTHENTICATION = 6
         onPinSuccess(mAttempts,pinLockStatus);
         mAttempts = 1;
     }

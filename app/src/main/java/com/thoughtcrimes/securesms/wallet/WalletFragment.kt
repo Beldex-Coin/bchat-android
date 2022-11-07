@@ -636,6 +636,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
                 setProgress(x)
 //                ivSynced.setVisibility(View.GONE);
                 binding.filterTransactionsIcon.isClickable = false
+                activityCallback!!.hiddenRescan(false)
             } else {
                 sync =
                     getString(R.string.status_synchronized)//getString(R.string.status_synced) + " " + formatter.format(wallet.blockChainHeight)
@@ -648,6 +649,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
                 )
 //                ivSynced.setVisibility(View.VISIBLE);
                 binding.filterTransactionsIcon.isClickable = true //default = adapter!!.itemCount > 0
+                activityCallback!!.hiddenRescan(true)
             }
         } else {
             sync = getString(R.string.status_wallet_connecting)
@@ -788,6 +790,8 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
 
         //fun showNet()
         fun onNodePrefs()
+
+        fun hiddenRescan(status:Boolean)
     }
 
     // called from activity

@@ -43,6 +43,7 @@
         android:layout_height="match_parent"
         android:layout_marginEnd="15dp"
         android:src="@drawable/ic_resync"
+        android:visibility="gone"
         android:layout_gravity="center"/>
     <ImageView
         android:id="@+id/toolBarSettings"

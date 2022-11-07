@@ -440,6 +440,21 @@ public class Wallet {
         getHistory().refreshWithNotes(this);
     }
 
+    public double belDexAmountToDouble(int amount){
+        Log.d("amount-->"," "+amount);
+      return (double) amount / 1000000000;
+    }
+
+    public double estimateTransactionFee(int priority){
+        return belDexAmountToDouble(estimateTransactionFee(priority,1));
+    }
+
+    public int estimateTransactionFee(int priority,int recipients){
+        return estimateTransactionFeeJ(priority,recipients);
+    }
+
+    private native int estimateTransactionFeeJ(int priorityRaw, int recipients);//int recipients = 1
+
 //virtual AddressBook * addressBook() const = 0;
 //virtual void setListener(WalletListener *) = 0;
 

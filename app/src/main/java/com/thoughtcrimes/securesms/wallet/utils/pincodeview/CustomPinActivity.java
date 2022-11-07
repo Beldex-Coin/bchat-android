@@ -1,5 +1,6 @@
 package com.thoughtcrimes.securesms.wallet.utils.pincodeview;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -77,6 +78,10 @@ public class CustomPinActivity extends AppLockActivity {
             if (walletName != null && walletPassword !=null) {
                 startWallet(walletName, walletPassword,  false,  false);
             }
+        }
+        else if(pinLockStatus==6){
+            Intent returnIntent = new Intent();
+            setResult(Activity.RESULT_OK,returnIntent);
         }
 
         Log.d(TAG,"onPinSuccess "+attempts);

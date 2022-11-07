@@ -1387,3 +1387,11 @@ Java_com_thoughtcrimes_securesms_model_PendingTransaction_getTxCount(JNIEnv *env
     Wallet::PendingTransaction *tx = getHandle<Wallet::PendingTransaction>(env, instance);
     return tx->txCount();
 }
+extern "C"
+JNIEXPORT jint JNICALL
+Java_com_thoughtcrimes_securesms_model_Wallet_estimateTransactionFeeJ(JNIEnv *env, jobject instance,
+                                                                      jint priority_raw,
+                                                                      jint recipients) {
+    Wallet::Wallet *tx = getHandle<Wallet::Wallet>(env,instance);
+    return static_cast<jint>(tx->estimateTransactionFee(priority_raw,recipients));
+}

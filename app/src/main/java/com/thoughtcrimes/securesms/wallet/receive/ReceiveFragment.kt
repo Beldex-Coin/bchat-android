@@ -23,6 +23,7 @@ import com.google.zxing.WriterException
 import com.google.zxing.qrcode.QRCodeWriter
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import com.jakewharton.rxbinding3.view.visibility
+import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
 import com.thoughtcrimes.securesms.data.BarcodeData
 import com.thoughtcrimes.securesms.data.Crypto
 import com.thoughtcrimes.securesms.model.Wallet
@@ -120,9 +121,8 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
         savedInstanceState: Bundle?
     ): View? {
         binding = ActivityReceiveBinding.inflate(layoutInflater,container,false)
-        // Inflate the layout for this fragment
 
-        //val  view: View = inflater.inflate(R.layout.fragment_receive, container, false)
+        binding.walletAddressReceive.text = IdentityKeyUtil.retrieve(requireActivity(),IdentityKeyUtil.IDENTITY_W_ADDRESS_PREF)
         generateQr()
 
         binding.amountEditTextReceive.addTextChangedListener(object : TextWatcher {

@@ -41,7 +41,7 @@
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="10dp"
             android:fontFamily="@font/poppins_medium"
-            android:text="bxdVkBJ6xavi236YikWv1gKZM79NpJCng6KmC1JrjJxagUpbiniGm8PBRdeEEJRd5N9oG5vitx6gpNJsK7CidTVo1uLuaZNr3"
+            android:text=""
             android:textAlignment="center"
             android:textSize="16sp" />
 

@@ -156,14 +156,14 @@
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
-        <TextView
+         <TextView
             android:id="@+id/estimatedFeeTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginTop="25dp"
             android:layout_marginEnd="20dp"
-            android:text="Estimated Fee:0.123456789"
+            android:text="@string/estimated_fee"
             android:textAlignment="textEnd"
             android:textStyle="bold" />
 

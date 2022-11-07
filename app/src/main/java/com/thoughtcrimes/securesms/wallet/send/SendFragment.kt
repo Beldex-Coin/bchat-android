@@ -1,6 +1,7 @@
 package com.thoughtcrimes.securesms.wallet.send
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.content.SharedPreferences
@@ -26,12 +27,19 @@ import android.util.Patterns
 import android.view.*
 import android.view.View.OnFocusChangeListener
 import android.widget.TextView.OnEditorActionListener
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import cn.carbswang.android.numberpickerview.library.NumberPickerView
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.model.Wallet
+import com.thoughtcrimes.securesms.model.WalletManager
 import com.thoughtcrimes.securesms.util.Helper
+import com.thoughtcrimes.securesms.util.push
 import com.thoughtcrimes.securesms.wallet.utils.OpenAliasHelper
 import com.thoughtcrimes.securesms.wallet.utils.helper.ServiceHelper
+import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
+import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
+import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
 import io.beldex.bchat.databinding.FragmentSendBinding
 import java.lang.ClassCastException
 import java.lang.NumberFormatException
@@ -92,6 +100,8 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
         fun setMode(mode: WalletActivity.Mode?)
 
         fun getTxData(): TxData?
+
+        fun onBackPressedFun()
     }
 
     var sendConfirmListener: SendConfirmListener? = null
@@ -132,16 +142,16 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
         createTransactionFailed(errorText)
     }
 
-    fun getSendConfirm(): SendConfirm? {
+   /* fun getSendConfirm(): SendConfirm? {
         //Important
-        /*val fragment: SendWizardFragment = pagerAdapter.getFragment(SendFragment.SpendPagerAdapter.POS_CONFIRM)
+        *//*val fragment: SendWizardFragment = pagerAdapter.getFragment(SendFragment.SpendPagerAdapter.POS_CONFIRM)
         return if (fragment is SendConfirm) {
             fragment!!
         } else {
             null
-        }*/
+        }*//*
         return null
-    }
+    }*/
 
     var pendingTx: PendingTx? = null
 
@@ -172,11 +182,10 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
         hideProgress()
         //Important
         Timber.d("txid=%s", txId)
-        //pagerAdapter.addSuccess()
-        //Log.d("numPages=%d", spendViewPager.getAdapter().getCount())
         activityCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
         Log.d("Beldex","Transaction Completed")
-        val builder = AlertDialog.Builder(
+        SendSuccessDialog(this).show(requireActivity().supportFragmentManager,"")
+       /* val builder = AlertDialog.Builder(
             requireContext(), R.style.BChatAlertDialog
         )
         builder.setTitle(requireContext().getString(R.string.transaction_completed))
@@ -185,8 +194,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
             dialog!!.dismiss()
         }
         builder.setNegativeButton(android.R.string.cancel, null)
-        builder.show()
-        //spendViewPager.setCurrentItem(SendFragment.SpendPagerAdapter.POS_SUCCESS)
+        builder.show()*/
     }
 
     var committedTx: PendingTx? = null
@@ -195,14 +203,10 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
     fun onSendTransactionFailed(error: String?) {
         Timber.d("error=%s", error)
         committedTx = null
-        val confirm = getSendConfirm()
+        /*val confirm = getSendConfirm()
         confirm?.sendFailed(getString(R.string.status_transaction_failed, error))
-        enableNavigation()
-    }
-
-    fun enableNavigation() {
-        //Important
-        //spendViewPager.allowSwipe(true)
+        enableNavigation()*/
+        sendFailed(getString(R.string.status_transaction_failed, error))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -232,6 +236,14 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
         }
 
 
+    }
+
+    private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            /* // There are no request codes
+             val data: Intent? = result.data*/
+            onResumeFragment()
+        }
     }
 
     override fun onCreateView(
@@ -368,7 +380,16 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
                     txData.userNotes = UserNotes("-")//etNotes.getEditText().getText().toString()
                     txData.priority = PendingTransaction.Priority.Priority_Flash
                     txData.mixin = MIXIN
-                    onResumeFragment()
+                    binding.beldexAddressEditTxtLayout.editText?.text?.clear()
+                    binding.beldexAmountEditTxtLayout.editText?.text?.clear()
+
+                    val lockManager: LockManager<CustomPinActivity> = LockManager.getInstance() as LockManager<CustomPinActivity>
+                    lockManager.enableAppLock(requireActivity(), CustomPinActivity::class.java)
+                    val intent = Intent(requireActivity(), CustomPinActivity::class.java)
+                        intent.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN)
+                        intent.putExtra("change_pin",false)
+                        intent.putExtra("send_authentication",true)
+                    resultLauncher.launch(intent)
                 } else if (binding.beldexAddressEditTxtLayout.editText?.text!!.isEmpty()) {
                     Log.d("Beldex","beldexAddressEditTxtLayout isEmpty()")
                     binding.beldexAddressEditTxtLayout.error = getString(R.string.beldex_address_error_message)
@@ -378,8 +399,21 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
                 }
             }
         }
+        if(TextSecurePreferences.getFeePriority(requireActivity())==0){
+            binding.estimatedFeeTextView.text = getString(R.string.estimated_fee,calculateEstimatedFee(1).toString())
+            binding.estimatedFeeDescriptionTextView.text =getString(R.string.estimated_fee_description,"Slow")
+        }else{
+            binding.estimatedFeeTextView.text = getString(R.string.estimated_fee,calculateEstimatedFee(5).toString())
+            binding.estimatedFeeDescriptionTextView.text =getString(R.string.estimated_fee_description,"Flash")
+        }
+
         return binding.root
 
+    }
+
+    private fun calculateEstimatedFee(priority:Int): Double {
+        val wallet: Wallet = WalletManager.getInstance().wallet
+        return wallet.estimateTransactionFee(priority)
     }
 
     private val CLEAN_FORMAT = "%." + Helper.BDX_DECIMALS.toString() + "f"
@@ -625,7 +659,6 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
     }
 
     private fun showAlert(title: String, message: String) {
-        //AlertDialog.Builder builder = new MaterialAlertDialogBuilder(getActivity());
         val builder = AlertDialog.Builder(
             requireActivity(), R.style.backgroundColor
         )
@@ -668,6 +701,11 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
     fun send() {
         commitTransaction()
         requireActivity().runOnUiThread { binding.progressBar.visibility = View.VISIBLE }
+    }
+
+    fun transactionFinished(){
+        sendButtonEnabled()
+        activityCallback!!.onBackPressedFun()
     }
 
     private fun commitTransaction() {

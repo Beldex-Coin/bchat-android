@@ -1110,10 +1110,12 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
             if(TextSecurePreferences.getWalletEntryPassword(this)!=null) {
                 intent.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN)
                 intent.putExtra("change_pin",false)
+                intent.putExtra("send_authentication",false)
                 push(intent)
             }else{
                 intent.putExtra(AppLock.EXTRA_TYPE, AppLock.ENABLE_PINLOCK)
                 intent.putExtra("change_pin",false)
+                intent.putExtra("send_authentication",false)
                 push(intent)
             }
         }else{

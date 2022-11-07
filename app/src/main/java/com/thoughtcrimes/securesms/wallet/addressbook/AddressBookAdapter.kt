@@ -4,6 +4,8 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
+import android.util.Log
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
@@ -13,6 +15,7 @@ import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.thoughtcrimes.securesms.database.RecipientDatabase
 import com.thoughtcrimes.securesms.mms.GlideRequests
+import com.thoughtcrimes.securesms.wallet.send.SendFragment
 import io.beldex.bchat.R
 import javax.inject.Inject
 
@@ -48,6 +51,7 @@ class AddressBookAdapter(
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val member = members[position]
         val beldexAddress = viewHolder.view.getBeldexAddress(member)
+        Log.d("Beldex","beldexaddress $beldexAddress")
 
         viewHolder.view.bind(
             Recipient.from(
@@ -68,9 +72,17 @@ class AddressBookAdapter(
 
         viewHolder.view.sendAction().setOnClickListener {
 
+            if (beldexAddress != null) {
+                listener.onAddressBookClick(position,beldexAddress)
+            }
             Toast.makeText(context, "Send Action", Toast.LENGTH_SHORT).show()
-            /*val intent = Intent(viewHolder.view.context, SendActivity::class.java)
-                intent.putExtra(SendActivity.SEND_ADDRESS,beldexAddress)
+           /* val mBundle = Bundle()
+            mBundle.putString("send_address",beldexAddress)
+            mFragment.arguments = mBundle
+            mFragmentTransaction.add(R.id.frameLayout, mFragment).commit()*/
+
+           /* val intent = Intent(viewHolder.view.context, SendFragment::class.java)
+                intent.putExtra(SendFragment.SEND_ADDRESS,beldexAddress)
                 viewHolder.view.context.startActivity(intent)*/
         }
     }
@@ -78,6 +90,6 @@ class AddressBookAdapter(
 
 
 interface AddressBookClickListener {
-    fun onAddressBookClick(position: Int)
+    fun onAddressBookClick(position: Int, address: String)
 }
 // endregion

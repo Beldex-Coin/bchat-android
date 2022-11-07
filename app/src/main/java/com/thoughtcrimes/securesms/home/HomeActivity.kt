@@ -91,15 +91,8 @@ import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
 import com.thoughtcrimes.securesms.service.WebRtcCallService
-import com.thoughtcrimes.securesms.wallet.WalletActivity
-import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity
 import com.thoughtcrimes.securesms.wallet.info.WalletInfoActivity
 import com.thoughtcrimes.securesms.wallet.node.*
-import com.thoughtcrimes.securesms.wallet.node.activity.NodeActivity
-import com.thoughtcrimes.securesms.wallet.receive.ReceiveActivity
-import com.thoughtcrimes.securesms.wallet.receive.ReceiveFragment
-import com.thoughtcrimes.securesms.wallet.rescan.ReScanActivity
-import com.thoughtcrimes.securesms.wallet.settings.WalletSettings
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
@@ -107,7 +100,6 @@ import com.thoughtcrimes.securesms.webrtc.CallViewModel
 import io.beldex.bchat.databinding.ViewMessageRequestBannerBinding
 import kotlinx.coroutines.*
 import org.apache.commons.lang3.time.DurationFormatUtils
-import timber.log.Timber
 import java.util.*
 
 
@@ -1154,7 +1146,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     }
 
     private fun showPrivacySettings() {
-        val intent = Intent(this, ReceiveActivity::class.java)
+        val intent = Intent(this, PrivacySettingsActivity::class.java)
         push(intent)
     }
 
@@ -1221,7 +1213,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
     /*Hales63*/
     private fun showMessageRequests() {
-        val intent = Intent(this, NodeActivity::class.java)
+        val intent = Intent(this, MessageRequestsActivity::class.java)
         push(intent)
     }
 

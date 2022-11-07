@@ -107,9 +107,6 @@
             android:name="com.thoughtcrimes.securesms.wallet.rescan.ReScanActivity"
             android:exported="false" />
         <activity
-            android:name="com.thoughtcrimes.securesms.wallet.receive.ReceiveActivity"
-            android:exported="false" />
-        <activity
             android:name="com.thoughtcrimes.securesms.wallet.WalletActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />

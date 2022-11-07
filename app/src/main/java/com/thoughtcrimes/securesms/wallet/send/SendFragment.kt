@@ -1,8 +1,10 @@
 package com.thoughtcrimes.securesms.wallet.send
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -17,7 +19,6 @@ import com.thoughtcrimes.securesms.wallet.widget.Toolbar
 import io.beldex.bchat.R
 import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity
 
-import android.content.Intent
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
@@ -26,6 +27,7 @@ import android.util.Patterns
 import android.view.*
 import android.view.View.OnFocusChangeListener
 import android.widget.TextView.OnEditorActionListener
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import cn.carbswang.android.numberpickerview.library.NumberPickerView
 import com.thoughtcrimes.securesms.model.Wallet
@@ -142,6 +144,23 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
         }*/
         return null
     }
+    private fun openSomeActivityForResult() {
+        val intent = Intent(context, AddressBookActivity::class.java)
+        resultLauncher.launch(intent)
+    }
+
+    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // There are no request codes
+            val data: Intent? = result.data
+            val add = data?.getStringExtra("address_value")
+            Log.d("beldex","value of add $add")
+            if(add != null)
+            {
+                binding.beldexAddressEditTxtLayout.editText!!.setText(add.toString())
+            }
+        }
+    }
 
     var pendingTx: PendingTx? = null
 
@@ -245,8 +264,8 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
             onScanListener?.onScan()
         }
         binding.addressBook.setOnClickListener {
-            val intent = Intent(context, AddressBookActivity::class.java)
-            startActivity(intent)
+            openSomeActivityForResult()
+
         }
 
         //Validate beldex address

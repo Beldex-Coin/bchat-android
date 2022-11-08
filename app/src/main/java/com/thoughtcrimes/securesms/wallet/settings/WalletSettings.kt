@@ -116,6 +116,7 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
                 push(intent)
             }
             addressBookLayout.setOnClickListener {
+                TextSecurePreferences.setSendAddressDisable(this@WalletSettings,true)
                 val intent = Intent(this@WalletSettings, AddressBookActivity::class.java)
                 push(intent)
                /* intent.putExtra(AppLock.EXTRA_TYPE, AppLock.ENABLE_PINLOCK)

@@ -153,6 +153,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
         return null
     }*/
    private fun openSomeActivityForResult() {
+       TextSecurePreferences.setSendAddressDisable(requireContext(),false)
        val intent = Intent(context, AddressBookActivity::class.java)
        resultLauncher.launch(intent)
    }

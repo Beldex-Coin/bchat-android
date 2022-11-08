@@ -211,6 +211,9 @@ interface TextSecurePreferences {
     fun setWalletEntryPassword(name: String?)
     fun getWalletEntryPassword(): String?
 
+    fun setSendAddressDisable(status: Boolean)
+    fun getSendAddress(): Boolean
+
 
     companion object {
         val TAG = TextSecurePreferences::class.simpleName
@@ -309,6 +312,7 @@ interface TextSecurePreferences {
         const val INCOMING_TRANSACTION_STATUS = "incoming_transaction_status"
         const val OUTGOING_TRANSACTION_STATUS = "outgoing_transaction_status"
         const val TRANSACTIONS_BY_DATE = "transactions_by_date"
+        const val SEND_ADDRESS = "send_address"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -1185,6 +1189,15 @@ interface TextSecurePreferences {
             setStringPreference(context, WALLET_ENTRY_PASSWORD_PREF, name)
             _events.tryEmit(WALLET_ENTRY_PASSWORD_PREF)
         }
+        @JvmStatic
+        fun setSendAddressDisable(context: Context, status: Boolean) {
+            setBooleanPreference(context, SEND_ADDRESS, status)
+        }
+
+        @JvmStatic
+        fun getSendAddress(context: Context): Boolean {
+            return getBooleanPreference(context, SEND_ADDRESS, false)
+        }
 
     }
 }
@@ -1847,7 +1860,7 @@ class AppTextSecurePreferences @Inject constructor(
     }
 
     override fun isRemoteHangup(): Boolean {
-       return getBooleanPreference(TextSecurePreferences.IS_REMOTE_HANG_UP, false)
+        return getBooleanPreference(TextSecurePreferences.IS_REMOTE_HANG_UP, false)
     }
 
     override fun isUnBlocked(): Boolean {
@@ -1937,5 +1950,13 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun getWalletEntryPassword():String?{
         return getStringPreference(TextSecurePreferences.WALLET_ENTRY_PASSWORD_PREF, null)
+    }
+
+    override fun setSendAddressDisable(status: Boolean) {
+        setBooleanPreference(TextSecurePreferences.SEND_ADDRESS,status)
+    }
+
+    override fun getSendAddress(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.SEND_ADDRESS,false)
     }
 }

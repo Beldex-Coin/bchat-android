@@ -129,6 +129,7 @@
                     android:orientation="horizontal"
                     android:paddingStart="15dp"
                     android:paddingEnd="15dp"
+                    android:visibility="gone"
                     android:paddingBottom="20dp">
                     <TextView
                         android:id="@+id/enableFiatCurrencyConversionTitle"

@@ -176,6 +176,7 @@ dependencies {
     implementation 'com.github.brnunes:swipeablerecyclerview:1.0.2'
 
     implementation 'app.cash.copper:copper-flow:1.0.0'
+    implementation 'com.google.code.gson:gson:2.8.7'
 }
 
 def canonicalVersionCode = 23

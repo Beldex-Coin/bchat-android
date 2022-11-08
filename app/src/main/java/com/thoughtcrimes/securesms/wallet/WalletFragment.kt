@@ -20,6 +20,7 @@ import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.github.brnunes.swipeablerecyclerview.SwipeableRecyclerViewTouchListener
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.transition.MaterialElevationScale
+import com.google.gson.GsonBuilder
 import com.thoughtcrimes.securesms.data.BarcodeData
 import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
@@ -30,13 +31,20 @@ import com.thoughtcrimes.securesms.util.NodePinger
 import com.thoughtcrimes.securesms.wallet.send.SendFragment
 import com.thoughtcrimes.securesms.wallet.service.exchange.ExchangeApi
 import com.thoughtcrimes.securesms.wallet.service.exchange.ExchangeRate
+import com.thoughtcrimes.securesms.wallet.utils.common.FiatCurrencyPrice
+import com.thoughtcrimes.securesms.wallet.utils.common.fetchPriceFor
 import com.thoughtcrimes.securesms.wallet.utils.helper.ServiceHelper
 import com.thoughtcrimes.securesms.wallet.widget.Toolbar
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.FragmentWalletBinding
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.Response
 import timber.log.Timber
+import java.io.IOException
 import java.lang.ClassCastException
 import java.lang.IllegalStateException
+import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -291,11 +299,74 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
 
     private lateinit var binding: FragmentWalletBinding
 
+    var price =0.00
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentWalletBinding.inflate(inflater, container, false)
+        //Get Selected Fiat Currency Price
+        //if(TextSecurePreferences.getFiatCurrencyCheckedStatus(requireActivity())) {
+            val currency = TextSecurePreferences.getCurrency(requireActivity()).toString().lowercase()
+            fetchPriceFor(
+                TextSecurePreferences.getCurrency(requireActivity()).toString(),
+                object : Callback {
+                    override fun onFailure(call: Call, e: IOException) {
+                        price = 0.00
+                    }
+
+                    override fun onResponse(call: Call, response: Response) {
+                        Log.d("Beldex", "Fiat ${response.isSuccessful}")
+                        if (response.isSuccessful) {
+                            val body = response.body?.string()
+                            val gson = GsonBuilder().create()
+                            when (currency) {
+                                "aud" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).aud
+                                "bgn" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).bgn
+                                "brl" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).brl
+                                "cad" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).cad
+                                "chf" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).chf
+                                "cny" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).cny
+                                "czk" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).czk
+                                "eur" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).eur
+                                "dkk" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).dkk
+                                "gbp" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).gbp
+                                "hkd" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).hkd
+                                "hrk" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).hrk
+                                "huf" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).huf
+                                "idr" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).idr
+                                "ils" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).ils
+                                "inr" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).inr
+                                "isk" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).isk
+                                "jpy" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).jpy
+                                "krw" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).krw
+                                "mxn" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).mxn
+                                "myr" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).myr
+                                "nok" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).nok
+                                "nzd" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).nzd
+                                "php" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).php
+                                "pln" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).pln
+                                "ron" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).ron
+                                "rub" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).rub
+                                "sek" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).sek
+                                "sgd" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).sgd
+                                "thb" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).thb
+                                "usd" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).usd
+                                "vef" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).vef
+                                else -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).zar
+                            }
+                            Log.d("Beldex", "Fiat -- ${price}")
+                        } else {
+                            price = 0.00
+                        }
+                    }
+                }
+            )
+        /*}else{
+            binding.tvFiatCurrency.text = "--"
+        }*/
+
 
         binding.sendCardViewButton.isEnabled = false
         binding.scanQrCodeImg.isEnabled = false
@@ -742,6 +813,17 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
 
     private fun showBalance(balance: String?) {
         binding.tvBalance.text = balance
+        //Update Fiat Currency
+        //Get Selected Fiat Currency Price
+        //if(TextSecurePreferences.getFiatCurrencyCheckedStatus(requireActivity()) && balance!!.isNotEmpty()) {
+        if(balance!!.isNotEmpty()) {
+            Log.d("Beldex", "WalletFragment Price -> $price")
+            val amount: BigDecimal = BigDecimal(balance.toDouble()).multiply(BigDecimal(price))
+            binding.tvFiatCurrency.text = getString(R.string.fiat_currency,amount.toDouble(),TextSecurePreferences.getCurrency(requireActivity()).toString())//"$price ${TextSecurePreferences.getCurrency(requireActivity()).toString()}"
+        }/*else{
+            binding.tvFiatCurrency.text = "--"
+        }*/
+
         val streetMode: Boolean = activityCallback!!.isStreetMode
         if (!streetMode) {
             binding.llBalance.visibility = View.VISIBLE

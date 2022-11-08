@@ -146,6 +146,17 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
             currencyLayout.setOnClickListener {
                 openCurrencyDialogBox()
             }
+
+            /*enableFiatCurrencyConversionSwitchCompat.setOnClickListener {
+                if(TextSecurePreferences.getFiatCurrencyCheckedStatus(this@WalletSettings)){
+                    TextSecurePreferences.setFiatCurrencyCheckedStatus(this@WalletSettings,false)
+                    enableFiatCurrencyConversionSwitchCompat.isChecked = TextSecurePreferences.getFiatCurrencyCheckedStatus(this@WalletSettings)
+                }else{
+                    TextSecurePreferences.setFiatCurrencyCheckedStatus(this@WalletSettings,true)
+                    enableFiatCurrencyConversionSwitchCompat.isChecked = TextSecurePreferences.getFiatCurrencyCheckedStatus(this@WalletSettings)
+                }
+            }
+            enableFiatCurrencyConversionSwitchCompat.isChecked = TextSecurePreferences.getFiatCurrencyCheckedStatus(this@WalletSettings)*/
         }
     }
 

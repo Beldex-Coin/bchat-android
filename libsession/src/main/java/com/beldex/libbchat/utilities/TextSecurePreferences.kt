@@ -211,6 +211,9 @@ interface TextSecurePreferences {
     fun setWalletEntryPassword(name: String?)
     fun getWalletEntryPassword(): String?
 
+    /*fun setFiatCurrencyCheckedStatus(status: Boolean)
+    fun getFiatCurrencyCheckedStatus():Boolean*/
+
 
     companion object {
         val TAG = TextSecurePreferences::class.simpleName
@@ -309,6 +312,7 @@ interface TextSecurePreferences {
         const val INCOMING_TRANSACTION_STATUS = "incoming_transaction_status"
         const val OUTGOING_TRANSACTION_STATUS = "outgoing_transaction_status"
         const val TRANSACTIONS_BY_DATE = "transactions_by_date"
+        //const val FIAT_CURRENCY_STATUS = "fiat_currency_status"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -1186,6 +1190,16 @@ interface TextSecurePreferences {
             _events.tryEmit(WALLET_ENTRY_PASSWORD_PREF)
         }
 
+      /*  @JvmStatic
+        fun setFiatCurrencyCheckedStatus(context: Context, status: Boolean) {
+            setBooleanPreference(context, FIAT_CURRENCY_STATUS, status)
+        }
+
+        @JvmStatic
+        fun getFiatCurrencyCheckedStatus(context: Context): Boolean {
+            return getBooleanPreference(context, FIAT_CURRENCY_STATUS, false)
+        }*/
+
     }
 }
 
@@ -1938,4 +1952,12 @@ class AppTextSecurePreferences @Inject constructor(
     override fun getWalletEntryPassword():String?{
         return getStringPreference(TextSecurePreferences.WALLET_ENTRY_PASSWORD_PREF, null)
     }
+
+   /* override fun setFiatCurrencyCheckedStatus(status: Boolean) {
+        setBooleanPreference(TextSecurePreferences.FIAT_CURRENCY_STATUS, status)
+    }
+
+    override fun getFiatCurrencyCheckedStatus(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.FIAT_CURRENCY_STATUS,false)
+    }*/
 }

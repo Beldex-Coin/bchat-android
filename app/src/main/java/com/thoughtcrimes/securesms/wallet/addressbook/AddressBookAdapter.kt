@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.beldex.libbchat.utilities.Address
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.thoughtcrimes.securesms.database.RecipientDatabase
 import com.thoughtcrimes.securesms.mms.GlideRequests
@@ -69,21 +70,20 @@ class AddressBookAdapter(
             clipboard.setPrimaryClip(clip)
             Toast.makeText(context, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
         }
+        val sendButtonDisable = TextSecurePreferences.getSendAddress(context)
+        Log.d("Beldex","value of sendbuttondisable value $sendButtonDisable")
 
-        viewHolder.view.sendAction().setOnClickListener {
+        if(sendButtonDisable)
+        {
+            viewHolder.view.sendAction().isEnabled = false
+        }
+        else {
+            viewHolder.view.sendAction().setOnClickListener {
 
-            if (beldexAddress != null) {
-                listener.onAddressBookClick(position,beldexAddress)
+                if (beldexAddress != null) {
+                    listener.onAddressBookClick(position, beldexAddress)
+                }
             }
-            Toast.makeText(context, "Send Action", Toast.LENGTH_SHORT).show()
-           /* val mBundle = Bundle()
-            mBundle.putString("send_address",beldexAddress)
-            mFragment.arguments = mBundle
-            mFragmentTransaction.add(R.id.frameLayout, mFragment).commit()*/
-
-           /* val intent = Intent(viewHolder.view.context, SendFragment::class.java)
-                intent.putExtra(SendFragment.SEND_ADDRESS,beldexAddress)
-                viewHolder.view.context.startActivity(intent)*/
         }
     }
 }

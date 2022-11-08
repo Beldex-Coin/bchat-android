@@ -161,13 +161,13 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
         return null
     }*/
    private fun openSomeActivityForResult() {
+       TextSecurePreferences.setSendAddressDisable(requireContext(),false)
        val intent = Intent(context, AddressBookActivity::class.java)
        resultLauncher.launch(intent)
    }
 
-    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            // There are no request codes
             val data: Intent? = result.data
             val add = data?.getStringExtra("address_value")
             Log.d("beldex","value of add $add")

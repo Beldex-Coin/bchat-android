@@ -30,7 +30,7 @@ import java.util.*
 
 class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.Observer,
     ScannerFragment.OnScannedListener, SendFragment.OnScanListener, SendFragment.Listener,
-    ReceiveFragment.Listener,WalletFragment.OnScanListener {
+    ReceiveFragment.Listener,WalletFragment.OnScanListener,ScannerFragment.Listener {
     lateinit var binding: ActivityWalletBinding
 
 
@@ -43,6 +43,10 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     private var streetMode: Long = 0
     private var onUriScannedListener: OnUriScannedListener? = null
     private var barcodeData: BarcodeData? = null
+
+    private val sendFragment: SendFragment? = null
+
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -436,18 +440,28 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
 
     override fun setOnUriScannedListener(onUriScannedListener: OnUriScannedListener?) {
+        Log.d("Beldex","Value of barcode 5 onUriScannedListener called")
+        this.onUriScannedListener = onUriScannedListener
+    }
+
+    override fun setOnBarcodeScannedListener(onUriScannedListener: OnUriScannedListener?) {
+        Log.d("Beldex","Value of barcode 6 onUriScannedListener called")
         this.onUriScannedListener = onUriScannedListener
     }
 
     override fun onUriScanned(barcodeData: BarcodeData?) {
         super.onUriScanned(barcodeData)
+        Log.d("Beldex","Value of barcode 2 $onUriScannedListener")
+
         var processed = false
         if (onUriScannedListener != null) {
+
             processed = onUriScannedListener!!.onUriScanned(barcodeData)
         }
         if (!processed || onUriScannedListener == null) {
             Toast.makeText(this, getString(R.string.nfc_tag_read_what), Toast.LENGTH_LONG).show()
         }
+
 
     }
 
@@ -478,6 +492,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     override fun onScanned(qrCode: String?): Boolean {
         // #gurke
         val bcData = BarcodeData.fromString(qrCode)
+        Log.d("Beldex","Value of barcode 1 $bcData")
         return if (bcData != null) {
             popFragmentStack(null)
             Timber.d("AAA")
@@ -533,6 +548,8 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             R.string.receive_transition_name
         else if (newFragment is SendFragment)
             R.string.send_transition_name
+        else if (newFragment is ScannerFragment)
+            R.string.scan_transition_name
         else throw IllegalStateException("expecting known transition")
         Log.d("Beldex", "extras value transition $transition")
 

@@ -43,7 +43,7 @@ import kotlin.collections.ArrayList
 import java.text.SimpleDateFormat
 
 
-class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener, OnUriScannedListener {
+class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener {
 
     private var adapter: TransactionInfoAdapter? = null
     private val formatter = NumberFormat.getInstance()
@@ -905,8 +905,4 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
         } else ivStreetGunther.setImageDrawable(null)*/
     }
 
-    override fun onUriScanned(barcodeData: BarcodeData?): Boolean {
-      /* SendFragment.processScannedData(barcodeData)*/
-        return true
-    }
 }

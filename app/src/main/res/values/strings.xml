@@ -1117,6 +1117,7 @@
 
     <string name="receive_transition_name" translatable="false">receive_transition</string>
     <string name="send_transition_name" translatable="false">send_transition</string>
+    <string name="scan_transition_name" translatable="false">scan_transition</string>
     <string name="nfc_tag_read_what" translatable="false">I don\'t know what you want!</string>
     <string name="message_camera_not_permitted" translatable="false">No camera = No QR scanning!</string>
     <string name="send_qr_address_invalid" translatable="false">Not a valid payment QR code</string>

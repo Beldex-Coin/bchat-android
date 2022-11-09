@@ -91,6 +91,7 @@ import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
 import com.thoughtcrimes.securesms.service.WebRtcCallService
+import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity
 import com.thoughtcrimes.securesms.wallet.info.WalletInfoActivity
 import com.thoughtcrimes.securesms.wallet.node.*
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
@@ -1143,7 +1144,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     }*/
 
     private fun showNotificationSettings() {
-        val intent = Intent(this, NotificationSettingsActivity::class.java)
+        val intent = Intent(this, AddressBookActivity::class.java)
         push(intent)
     }
 

@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.cardview.widget.CardView
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.thoughtcrimes.securesms.conversation.v2.utilities.MentionManagerUtilities
@@ -77,11 +78,11 @@ class AddressBookView : LinearLayout {
     }
 
 
-    fun copyAction(): ImageView {
-        return binding.copyImg
+    fun copyAction(): CardView {
+        return binding.copyActionCardView
     }
-    fun sendAction(): ImageView {
-        return binding.sendImg
+    fun sendAction(): CardView {
+        return binding.sendActionCardView
     }
 }
 // endregion

@@ -3,20 +3,17 @@ package com.thoughtcrimes.securesms.wallet.addressbook
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.content.Intent
-import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.thoughtcrimes.securesms.database.RecipientDatabase
 import com.thoughtcrimes.securesms.mms.GlideRequests
-import com.thoughtcrimes.securesms.wallet.send.SendFragment
 import io.beldex.bchat.R
 import javax.inject.Inject
 
@@ -33,6 +30,8 @@ class AddressBookAdapter(
             field = value; this.notifyDataSetChanged()
         }
 
+     val list = mutableListOf<AddressBookAdapter>()
+
     lateinit var button: Button
 
     class ViewHolder(val view: AddressBookView) : RecyclerView.ViewHolder(view)
@@ -43,6 +42,8 @@ class AddressBookAdapter(
     override fun getItemCount(): Int {
         return members.size
     }
+
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = AddressBookView(context)
@@ -75,9 +76,12 @@ class AddressBookAdapter(
 
         if(sendButtonDisable)
         {
-            viewHolder.view.sendAction().isEnabled = false
+            viewHolder.view.sendAction().visibility = View.GONE
+            viewHolder.view.copyAction().visibility = View.VISIBLE
         }
         else {
+            viewHolder.view.copyAction().visibility = View.GONE
+            viewHolder.view.sendAction().visibility = View.VISIBLE
             viewHolder.view.sendAction().setOnClickListener {
 
                 if (beldexAddress != null) {
@@ -86,6 +90,47 @@ class AddressBookAdapter(
             }
         }
     }
+
+/*    override fun getFilter(): Filter {
+        Log.d("Beldex","search")
+        return customFilter
+
+    }
+    private val customFilter = object : Filter() {
+        override fun performFiltering(constraint: CharSequence?): FilterResults {
+            Log.d("Beldex","search 1")
+            val filteredList = mutableListOf<String>()
+            if (constraint == null || constraint.isEmpty()) {
+                Log.d("Beldex","search 2")
+                filteredList.addAll(members)
+            } else {
+                Log.d("Beldex","search 3")
+                for (item in members) {
+                    if (item.lowercase().startsWith(constraint.toString().lowercase())) {
+                        filteredList.add(item)
+                    }
+                }
+            }
+            val results = FilterResults()
+            results.values = filteredList
+            return results
+        }
+
+        override fun publishResults(constraint: CharSequence?, filterResults: FilterResults?) {
+            Log.d("Beldex","search 4")
+            list.clear()
+            list.addAll(filterResults?.values as MutableList<AddressBookAdapter>)
+            notifyDataSetChanged()
+        }
+
+    }*/
+
+    fun updateList(list: List<String>) {
+        members = list
+        notifyDataSetChanged()
+    }
+
+
 }
 
 

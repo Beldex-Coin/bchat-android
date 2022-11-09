@@ -65,11 +65,13 @@
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/copyAction_CardView"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
+                        android:layout_marginEnd="20dp"
                         android:contextClickable="true"
                         app:cardBackgroundColor="@color/page_background"
                         app:cardCornerRadius="10dp">
@@ -98,6 +100,8 @@
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
+                        android:visibility="gone"
+                        android:id="@+id/sendAction_CardView"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"

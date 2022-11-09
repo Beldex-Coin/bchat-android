@@ -3,11 +3,17 @@ package com.thoughtcrimes.securesms.wallet.addressbook
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.widget.SearchView
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.beldex.libbchat.messaging.contacts.Contact
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
+import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.mms.GlideApp
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityAddressBookBinding
@@ -79,9 +85,51 @@ class AddressBookActivity(
         setResult(RESULT_OK, returnIntent)
         finish()
     }
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.search_menu, menu)
+        val searchItem: MenuItem = menu.findItem(R.id.actionSearch)
+        val searchView: SearchView = searchItem.actionView as SearchView
 
+        // below line is to call set on query text listener method.
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
+            android.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+              /*  filter(p0!!.lowercase(), members as ArrayList<String>)*/
+                return false
+            }
 
+            override fun onQueryTextChange(msg: String): Boolean {
+                filter(msg.lowercase(), members as ArrayList<String>)
+                return false
+            }
+        })
+        return true
+    }
 
+    fun filter(text: String?, arrayList: ArrayList<String>) {
+        val temp: MutableList<String> = ArrayList()
 
+        for (d in arrayList) {
+            fun getUserDisplayName(publicKey: String): String {
+                val contact = DatabaseComponent.get(this).bchatContactDatabase()
+                    .getContactWithBchatID(publicKey)
+                return contact?.displayName(Contact.ContactContext.REGULAR) ?: publicKey
+            }
+
+            if (getUserDisplayName(d).lowercase().contains(text!!)) {
+                temp.add(d)
+            }
+            if (temp.count() == 0) {
+                binding.noRecordFoundStateContainer.visibility = View.VISIBLE
+            } else {
+                binding.noRecordFoundStateContainer.visibility = View.GONE
+            }
+
+        }
+        //update recyclerview
+        addressbooktadapter.updateList(temp)
+    }
 }
+
 // endregion

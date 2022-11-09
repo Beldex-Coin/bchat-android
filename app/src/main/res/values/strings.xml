@@ -1244,4 +1244,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="amount" translatable="false">Amount:</string>
     <string name="fee" translatable="false">Fee:</string>
     <string name="estimated_fee" translatable="false">Estimated Fee: %1$s</string>
+    <string name="no_record_found" translatable="false">No record found</string>
 </resources>

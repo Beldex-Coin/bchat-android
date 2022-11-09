@@ -1246,4 +1246,13 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="estimated_fee" translatable="false">Estimated Fee: %1$s BDX</string>
     <string name="fiat_currency" translatable="false">%1$.2f %2$s</string>
     <string name="beldex_amount_valid_error_message" translatable="false">Enter valid amount</string>
+    <string name="display_balance_as" translatable="false">Display Balance As</string>
+    <string name="current_node" translatable="false">Current Node</string>
+    <string name="wallets" translatable="false">Wallets</string>
+    <string name="decimals" translatable="false">Decimals</string>
+    <string name="enable_fiat_currency_conversion" translatable="false">Enable Fiat Currency Conversion</string>
+    <string name="currency" translatable="false">Currency</string>
+    <string name="fee_priority" translatable="false">Fee Priority</string>
+    <string name="save_recipient_address" translatable="false">Save Recipient Address</string>
+    <string name="change_pin" translatable="false">Change Pin</string>
 </resources>

@@ -60,6 +60,8 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
     private var adapterItems: ArrayList<TransactionInfo> = ArrayList()
 
+    private var walletAvailableBalance: String? =null
+
     fun setProgress(text: String?) {
         syncText = text
         binding.syncStatus.text = text
@@ -149,10 +151,15 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
     override fun onResume() {
         super.onResume()
+        if(TextSecurePreferences.getDisplayBalanceAs(requireActivity())==2) {
+            hideDisplayBalance()
+        }else{
+            showSelectedDecimalBalance(walletAvailableBalance!!)
+        }
         exitTransition = null
         reenterTransition = null
         Timber.d("onResume()")
-        activityCallback!!.setTitle(getString(R.string.my_wallet), "")
+        activityCallback!!.setTitle(getString(R.string.my_wallet))
         activityCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
         binding.walletName.text = walletTitle
         //Important
@@ -323,7 +330,6 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                             val gson = GsonBuilder().create()
                             when (currency) {
                                 "aud" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).aud
-                                "bgn" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).bgn
                                 "brl" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).brl
                                 "cad" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).cad
                                 "chf" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).chf
@@ -333,12 +339,10 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                                 "dkk" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).dkk
                                 "gbp" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).gbp
                                 "hkd" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).hkd
-                                "hrk" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).hrk
                                 "huf" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).huf
                                 "idr" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).idr
                                 "ils" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).ils
                                 "inr" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).inr
-                                "isk" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).isk
                                 "jpy" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).jpy
                                 "krw" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).krw
                                 "mxn" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).mxn
@@ -347,7 +351,6 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                                 "nzd" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).nzd
                                 "php" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).php
                                 "pln" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).pln
-                                "ron" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).ron
                                 "rub" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).rub
                                 "sek" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).sek
                                 "sgd" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).sgd
@@ -670,7 +673,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         binding.transactionLayoutCardView.visibility = View.VISIBLE
         //Important
         //tvWalletAccountStatus.setText(walletSubtitle)
-        activityCallback!!.setTitle(getString(R.string.my_wallet), "")
+        activityCallback!!.setTitle(getString(R.string.my_wallet))
         Timber.d("wallet title is %s", walletTitle)
     }
 
@@ -811,18 +814,40 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         showBalance(displayB)
     }
 
-    private fun showBalance(balance: String?) {
-        binding.tvBalance.text = balance
+    private fun hideDisplayBalance(){
+        binding.tvBalance.text ="---"
+        binding.tvFiatCurrency.text="---"
+    }
+
+    private fun showSelectedDecimalBalance(balance:String){
+        when {
+            TextSecurePreferences.getDecimals(requireActivity())=="4 - Detailed" -> {
+                binding.tvBalance.text = String.format("%.4f", balance.toDouble())
+            }
+            TextSecurePreferences.getDecimals(requireActivity())=="2 - Normal" -> {
+                binding.tvBalance.text = String.format("%.2f", balance.toDouble())
+            }
+            TextSecurePreferences.getDecimals(requireActivity())=="0 - None"-> {
+                binding.tvBalance.text = String.format("%.0f", balance.toDouble())
+            }
+            else -> {
+                binding.tvBalance.text = balance
+            }
+        }
         //Update Fiat Currency
-        //Get Selected Fiat Currency Price
-        //if(TextSecurePreferences.getFiatCurrencyCheckedStatus(requireActivity()) && balance!!.isNotEmpty()) {
-        if(balance!!.isNotEmpty()) {
-            Log.d("Beldex", "WalletFragment Price -> $price")
+        if(balance.isNotEmpty()) {
             val amount: BigDecimal = BigDecimal(balance.toDouble()).multiply(BigDecimal(price))
             binding.tvFiatCurrency.text = getString(R.string.fiat_currency,amount.toDouble(),TextSecurePreferences.getCurrency(requireActivity()).toString())//"$price ${TextSecurePreferences.getCurrency(requireActivity()).toString()}"
-        }/*else{
-            binding.tvFiatCurrency.text = "--"
-        }*/
+        }
+    }
+
+    private fun showBalance(balance: String?) {
+        if(TextSecurePreferences.getDisplayBalanceAs(requireActivity())==2) {
+            hideDisplayBalance()
+        }else {
+            walletAvailableBalance = balance
+            showSelectedDecimalBalance(balance!!)
+        }
 
         val streetMode: Boolean = activityCallback!!.isStreetMode
         if (!streetMode) {
@@ -861,6 +886,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         fun getWallet(): Wallet?
 
         fun setToolbarButton(type: Int)
+        fun setTitle(title: String?)
         fun setTitle(title: String?, subtitle: String?)
         fun setSubtitle(subtitle: String?)
 

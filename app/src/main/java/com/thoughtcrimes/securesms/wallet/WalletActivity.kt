@@ -182,7 +182,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
                     //setTitle(walletId, getString(R.string.status_wallet_connecting));
                     //Important
                     //setTitle(getString(R.string.status_wallet_connecting), "")
-                    setTitle(getString(R.string.my_wallet), "")
+                    setTitle(getString(R.string.my_wallet))
                 }
             }
             updateProgress()
@@ -198,7 +198,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             //setTitle(getString(R.string.wallet_activity_name), getString(R.string.status_wallet_disconnected));
             //Important
             //setTitle(getString(R.string.status_wallet_disconnected), "")
-            setTitle(getString(R.string.my_wallet), "")
+            setTitle(getString(R.string.my_wallet))
             Log.d("DISCONNECTED", "")
         }
     }

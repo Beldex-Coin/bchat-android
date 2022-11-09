@@ -19,6 +19,7 @@ import io.beldex.bchat.R
 import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity
 
 import android.content.Intent
+import android.icu.text.CaseMap
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
@@ -27,29 +28,34 @@ import android.util.Patterns
 import android.view.*
 import android.view.View.OnFocusChangeListener
 import android.widget.TextView.OnEditorActionListener
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.addCallback
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.clearFragmentResult
 import cn.carbswang.android.numberpickerview.library.NumberPickerView
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.google.gson.GsonBuilder
 import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.model.WalletManager
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.push
 import com.thoughtcrimes.securesms.wallet.utils.OpenAliasHelper
+import com.thoughtcrimes.securesms.wallet.utils.common.FiatCurrencyPrice
+import com.thoughtcrimes.securesms.wallet.utils.common.fetchPriceFor
 import com.thoughtcrimes.securesms.wallet.utils.helper.ServiceHelper
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
 import io.beldex.bchat.databinding.FragmentSendBinding
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.Response
 import java.lang.ClassCastException
 import java.lang.NumberFormatException
 import java.util.*
 import timber.log.Timber
-
-
-
+import java.io.IOException
+import java.math.BigDecimal
 
 
 class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
@@ -265,11 +271,74 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
         }
     }
 
+    var price =0.0
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentSendBinding.inflate(inflater, container, false)
+
+        //Get Selected Fiat Currency Price
+        //if(TextSecurePreferences.getFiatCurrencyCheckedStatus(requireActivity())) {
+            val currency = TextSecurePreferences.getCurrency(requireActivity()).toString().lowercase()
+            fetchPriceFor(
+                TextSecurePreferences.getCurrency(requireActivity()).toString(),
+                object : Callback {
+                    override fun onFailure(call: Call, e: IOException) {
+                        price = 0.0
+                    }
+
+                    override fun onResponse(call: Call, response: Response) {
+                        Log.d("Beldex", "Fiat ${response.isSuccessful}")
+                        if (response.isSuccessful) {
+                            val body = response.body?.string()
+                            val gson = GsonBuilder().create()
+                            when (currency) {
+                                "aud" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).aud
+                                "bgn" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).bgn
+                                "brl" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).brl
+                                "cad" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).cad
+                                "chf" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).chf
+                                "cny" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).cny
+                                "czk" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).czk
+                                "eur" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).eur
+                                "dkk" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).dkk
+                                "gbp" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).gbp
+                                "hkd" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).hkd
+                                "hrk" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).hrk
+                                "huf" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).huf
+                                "idr" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).idr
+                                "ils" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).ils
+                                "inr" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).inr
+                                "isk" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).isk
+                                "jpy" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).jpy
+                                "krw" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).krw
+                                "mxn" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).mxn
+                                "myr" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).myr
+                                "nok" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).nok
+                                "nzd" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).nzd
+                                "php" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).php
+                                "pln" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).pln
+                                "ron" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).ron
+                                "rub" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).rub
+                                "sek" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).sek
+                                "sgd" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).sgd
+                                "thb" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).thb
+                                "usd" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).usd
+                                "vef" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).vef
+                                else -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).zar
+                            }
+                            Log.d("Beldex", "Fiat -- ${price}")
+                        } else {
+                            price = 0.0
+                        }
+                    }
+                }
+            )
+        //}
+        binding.currencyTextView.text = TextSecurePreferences.getCurrency(requireActivity()).toString()
+        Log.d("Beldex","Fiat ${price}")
 
 
         binding.scanQrCode.setOnClickListener {
@@ -350,11 +419,59 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
         binding.beldexAmountEditTxtLayout.editText?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable) {
                 binding.beldexAmountEditTxtLayout.error = null
-
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if(binding.beldexAmountEditTxtLayout.editText!!.isFocused) {
+                    if (s.isNotEmpty()) {
+                        Log.d("Beldex", "Price -> $price")
+                        val amount: BigDecimal =
+                            BigDecimal(s.toString().toDouble()).multiply(BigDecimal(price))
+                        Log.d(
+                            "Beldex",
+                            "Price ->${
+                                s.toString().toDouble()
+                            }   amount -> $amount   -->" + amount.toString()
+                        )
+                        binding.currencyEditTxtLayout.editText!!.setText(String.format("%.9f", amount))
+                    } else {
+                        binding.currencyEditTxtLayout.editText!!.text.clear()
+                    }
+                }
+            }
+        })
+
+        binding.currencyEditTxtLayout.editText?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(editable: Editable) {
+                binding.currencyEditTxtLayout.error = null
+                if(binding.currencyEditTxtLayout.editText!!.isFocused) {
+                    if (editable.isNotEmpty()) {
+                        val first = BigDecimal(editable.toString().toDouble())
+                        val second = BigDecimal(price)
+                        Log.d(
+                            "Beldex",
+                            "Price ->${
+                                editable.toString().toDouble()
+                            }   first -> $first   -->" + second
+                        )
+                        val amount: BigDecimal = first / second
+                        Log.d(
+                            "Beldex",
+                            "Price ->${
+                                editable.toString().toDouble()
+                            }   amount -> $amount   -->" + amount.toString()
+                        )
+                        binding.beldexAmountEditTxtLayout.editText!!.setText(String.format("%.9f", amount))
+                    } else {
+                        binding.beldexAmountEditTxtLayout.editText!!.text.clear()
+                    }
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+            }
         })
 
         binding.sendButton.setOnClickListener {
@@ -367,7 +484,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
                 }
                 dnsOA?.let { processOpenAlias(it) }
             }else {
-                if (binding.beldexAddressEditTxtLayout.editText?.text!!.isNotEmpty() && binding.beldexAmountEditTxtLayout.editText?.text!!.isNotEmpty()) {
+                if (binding.beldexAddressEditTxtLayout.editText?.text!!.isNotEmpty() && binding.beldexAmountEditTxtLayout.editText?.text!!.isNotEmpty() && binding.beldexAmountEditTxtLayout.editText!!.text.toString().toDouble()>0.00) {
                     val txData: TxData = getTxData()
                     txData.destinationAddress =
                         binding.beldexAddressEditTxtLayout.editText?.text.toString()
@@ -400,7 +517,9 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
                     txData.mixin = MIXIN
                     binding.beldexAddressEditTxtLayout.editText?.text?.clear()
                     binding.beldexAmountEditTxtLayout.editText?.text?.clear()
+                    binding.currencyEditTxtLayout.editText?.text?.clear()
 
+                    //Important
                     val lockManager: LockManager<CustomPinActivity> = LockManager.getInstance() as LockManager<CustomPinActivity>
                     lockManager.enableAppLock(requireActivity(), CustomPinActivity::class.java)
                     val intent = Intent(requireActivity(), CustomPinActivity::class.java)
@@ -408,7 +527,9 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
                         intent.putExtra("change_pin",false)
                         intent.putExtra("send_authentication",true)
                     resultLaunchers.launch(intent)
-                } else if (binding.beldexAddressEditTxtLayout.editText?.text!!.isEmpty()) {
+                } else if(binding.beldexAmountEditTxtLayout.editText!!.text.toString().toDouble()<=0.00){
+                    binding.beldexAmountEditTxtLayout.error = getString(R.string.beldex_amount_valid_error_message)
+                }else if (binding.beldexAddressEditTxtLayout.editText?.text!!.isEmpty()) {
                     Log.d("Beldex","beldexAddressEditTxtLayout isEmpty()")
                     binding.beldexAddressEditTxtLayout.error = getString(R.string.beldex_address_error_message)
                 } else {
@@ -430,8 +551,12 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
     }
 
     private fun calculateEstimatedFee(priority:Int): Double {
-        val wallet: Wallet = WalletManager.getInstance().wallet
-        return wallet.estimateTransactionFee(priority)
+        if(WalletManager.getInstance().wallet!=null) {
+            val wallet: Wallet = WalletManager.getInstance().wallet
+            return wallet.estimateTransactionFee(priority)
+        }else{
+            return 0.00
+        }
     }
 
     private val CLEAN_FORMAT = "%." + Helper.BDX_DECIMALS.toString() + "f"

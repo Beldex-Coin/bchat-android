@@ -1243,6 +1243,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="commit_transaction" translatable="false">Commit Transaction</string>
     <string name="amount" translatable="false">Amount:</string>
     <string name="fee" translatable="false">Fee:</string>
-    <string name="estimated_fee" translatable="false">Estimated Fee: %1$s</string>
-    <string name="no_record_found" translatable="false">No record found</string>
+    <string name="estimated_fee" translatable="false">Estimated Fee: %1$s BDX</string>
+    <string name="fiat_currency" translatable="false">%1$.2f %2$s</string>
+    <string name="beldex_amount_valid_error_message" translatable="false">Enter valid amount</string>
 </resources>

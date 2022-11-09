@@ -110,6 +110,7 @@
                     android:hint="@string/hint"
                     android:imeOptions="actionNext"
                     android:inputType="numberDecimal"
+                    android:maxLength="11"
                     android:nextFocusDown="@id/currencyEditTxt" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
@@ -151,8 +152,8 @@
                     android:gravity="center_vertical"
                     android:hint="@string/hint"
                     android:imeOptions="actionDone"
-                    android:inputType="number"
-                    android:maxLength="4" />
+                    android:inputType="numberDecimal"
+                    android:maxLength="11" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 

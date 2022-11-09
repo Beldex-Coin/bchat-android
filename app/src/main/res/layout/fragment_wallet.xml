@@ -118,14 +118,13 @@
                             android:id="@+id/tvBalance"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="9.89675369"
                             android:textStyle="bold"
                             android:textSize="18sp"
                             android:textColor="@color/text"/>
                         <TextView
+                            android:id="@+id/tvFiatCurrency"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="0.57 USD"
                             android:textSize="10sp"
                             android:textColor="@color/grey"/>
                     </LinearLayout>

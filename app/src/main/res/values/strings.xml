@@ -1255,4 +1255,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="fee_priority" translatable="false">Fee Priority</string>
     <string name="save_recipient_address" translatable="false">Save Recipient Address</string>
     <string name="change_pin" translatable="false">Change Pin</string>
+    <string name="no_record_found" translatable="false">No record found</string>
 </resources>

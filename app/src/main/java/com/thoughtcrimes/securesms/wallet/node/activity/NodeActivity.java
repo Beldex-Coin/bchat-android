@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import io.beldex.bchat.R;
@@ -57,10 +58,12 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_node);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         loadFavouritesWithNetwork();
-        Fragment walletFragment = new NodeFragment();
+        Fragment nodeFragment = new NodeFragment();
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.nodeList_frame, walletFragment, NodeFragment.class.getName()).commit();
+                .add(R.id.nodeList_frame, nodeFragment, NodeFragment.class.getName()).commit();
         Timber.d("fragment added");
     }
 
@@ -71,12 +74,15 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
             NodeFragment fragment = (NodeFragment) getSupportFragmentManager().findFragmentById(R.id.nodeList_frame);
             fragment.callDialog();
         }
-        if (id == R.id.action_reset_node) {
+        else if(id == R.id.action_reset_node) {
             Fragment f = getSupportFragmentManager().findFragmentById(R.id.nodeList_frame);
             if ((WalletManager.getInstance().getNetworkType() == NetworkType.NetworkType_Mainnet) &&
                     (f instanceof NodeFragment)) {
                 ((NodeFragment) f).restoreDefaultNodes();
             }
+        }
+        else if(id == android.R.id.home){
+            onBackPressed();
         }
             return super.onOptionsItemSelected(item);
         }

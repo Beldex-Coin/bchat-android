@@ -555,7 +555,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
         Log.d("Transition Name ", "${getString(transition)}")
         supportFragmentManager.beginTransaction()
-            .addSharedElement(view!!, getString(transition))
+            /*.addSharedElement(view!!, getString(transition))*/
             .replace(R.id.fragment_container, newFragment)
             .addToBackStack(stackName)
             .commit()
@@ -693,6 +693,11 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             onProgress(mBoundService!!.progressText)
             onProgress(mBoundService!!.progressValue)
         }
+        //No internet
+       /* else{
+            onProgress("Failed to node")
+            onProgress(0)
+        }*/
     }
 
     override fun onWalletStored(success: Boolean) {
@@ -899,7 +904,10 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
             //SteveJosephh21
             startWalletService()
-        }
+        }//No Internet
+        /*else{
+
+        }*/
     }
 
     private fun loadFavouritesWithNetwork() {

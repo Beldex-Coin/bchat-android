@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.thoughtcrimes.securesms.data.Crypto
 import com.thoughtcrimes.securesms.data.UserNotes
+import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.model.TransactionInfo
 import com.thoughtcrimes.securesms.util.Helper
 import io.beldex.bchat.R
@@ -101,6 +102,15 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
                 if (holder.itemViewType != RecyclerView.NO_POSITION) { // Check if an item was deleted, but the user clicked it before the UI removed it
                     if(holder.transactionDetailsLayout.visibility==View.GONE) {
                         holder.transactionDetailsLayout.visibility = View.VISIBLE
+                        holder.tvAddressTitle.visibility = View.VISIBLE
+                        if(DatabaseComponent.get(context!!).bchatRecipientAddressDatabase().getRecipientAddress(holder.infoItem!!.hash)!=null) {
+                            holder.tvAddress.text = DatabaseComponent.get(context!!).bchatRecipientAddressDatabase()
+                                .getRecipientAddress(holder.infoItem!!.hash)
+                        }//infoItem!!.addresselse
+                        else{
+                            holder.tvAddressTitle.visibility = View.GONE
+                            holder.tvAddress.text=""
+                        }
                     }else{
                         holder.transactionDetailsLayout.visibility = View.GONE
                     }
@@ -149,7 +159,8 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
         private var tvAmount: TextView = itemView.findViewById(R.id.transaction_amount)
         private var tvFeeTitle:TextView = itemView.findViewById(R.id.transaction_fee_title)
         private var tvFee: TextView = itemView.findViewById(R.id.transaction_fee)
-        private var tvAddress: TextView = itemView.findViewById(R.id.transaction_recipient_address)
+        var tvAddress: TextView = itemView.findViewById(R.id.transaction_recipient_address)
+        var tvAddressTitle:TextView = itemView.findViewById(R.id.transaction_id_title)
         private var txId: TextView = itemView.findViewById(R.id.transaction_id)
         private var tvTxBlockHeight: TextView = itemView.findViewById(R.id.transaction_height)
         private var tvTxStatus: TextView = itemView.findViewById(R.id.transaction_status)
@@ -163,7 +174,7 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
 
         //val pbConfirmations: CircularProgressIndicator
         //var tvConfirmations: TextView
-        private var infoItem: TransactionInfo? = null
+        var infoItem: TransactionInfo? = null
         private fun getDateTime(time: Long): String {
             return DATETIME_FORMATTER.format(Date(time * 1000))
         }
@@ -198,8 +209,6 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
                 tvTxStatusIcon.setImageResource(R.drawable.ic_wallet_receive_button)
                 tvAmount.text = context!!.getString(R.string.tx_list_amount_positive, displayAmount)
             }
-
-            tvAddress.text = infoItem!!.address
             txId.text = infoItem!!.hash
             if (infoItem!!.isFailed) {
                 tvTxBlockHeight.text = context!!.getString(R.string.tx_failed)

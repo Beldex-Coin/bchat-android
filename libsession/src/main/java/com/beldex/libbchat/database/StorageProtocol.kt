@@ -166,4 +166,5 @@ interface StorageProtocol {
     //New Line v32
     fun setRecipientApproved(recipient: Recipient, approved: Boolean)
     fun setRecipientApprovedMe(recipient: Recipient, approvedMe: Boolean)
+    fun insertRecipientAddress(transactionId:String,recipientAddress:String)
 }

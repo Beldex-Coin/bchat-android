@@ -153,4 +153,8 @@ object DatabaseModule {
     @Singleton
     fun provideAttachmentProvider(@ApplicationContext context: Context, openHelper: SQLCipherOpenHelper): MessageDataProvider = DatabaseAttachmentProvider(context, openHelper)
 
+    @Provides
+    @Singleton
+    fun provideBchatRecipientAddressDatabase(@ApplicationContext context: Context, openHelper: SQLCipherOpenHelper) = BchatRecipientAddressDatabase(context,openHelper)
+
 }

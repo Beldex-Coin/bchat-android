@@ -33,8 +33,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.clearFragmentResult
 import cn.carbswang.android.numberpickerview.library.NumberPickerView
+import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.google.gson.GsonBuilder
+import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.model.WalletManager
 import com.thoughtcrimes.securesms.util.Helper
@@ -828,6 +830,9 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
         Timber.d("refreshTransactionDetails()")
         if (pendingTransaction != null) {
             val txData: TxData = getTxData()
+            //New
+            val insertRecipientAddress = DatabaseComponent.get(requireActivity()).bchatRecipientAddressDatabase()
+            insertRecipientAddress.insertRecipientAddress(pendingTransaction!!.firstTxId,txData.destinationAddress)
             SendConfirmDialog(pendingTransaction!!,txData, this).show(requireActivity().supportFragmentManager,"")
         }
     }

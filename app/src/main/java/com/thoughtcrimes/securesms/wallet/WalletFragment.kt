@@ -21,14 +21,12 @@ import com.github.brnunes.swipeablerecyclerview.SwipeableRecyclerViewTouchListen
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.gson.GsonBuilder
-import com.thoughtcrimes.securesms.data.BarcodeData
 import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
 import com.thoughtcrimes.securesms.model.TransactionInfo
 import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.NodePinger
-import com.thoughtcrimes.securesms.wallet.send.SendFragment
 import com.thoughtcrimes.securesms.wallet.service.exchange.ExchangeApi
 import com.thoughtcrimes.securesms.wallet.service.exchange.ExchangeRate
 import com.thoughtcrimes.securesms.wallet.utils.common.FiatCurrencyPrice
@@ -61,6 +59,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
     private var adapterItems: ArrayList<TransactionInfo> = ArrayList()
 
     private var walletAvailableBalance: String? =null
+    private var walletAvailableBdxBalance:Double=0.000000000
 
     fun setProgress(text: String?) {
         syncText = text
@@ -74,7 +73,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
     private var syncProgress = -1
 
-    fun setProgress(n: Int) {
+    fun  setProgress(n: Int) {
         syncProgress = n
         if (n > 100) {
             binding.progressBar.isIndeterminate = true
@@ -154,7 +153,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         if(TextSecurePreferences.getDisplayBalanceAs(requireActivity())==2) {
             hideDisplayBalance()
         }else{
-            showSelectedDecimalBalance(walletAvailableBalance!!)
+            showSelectedDecimalBalance(walletAvailableBalance!!, walletAvailableBdxBalance)
         }
         exitTransition = null
         reenterTransition = null
@@ -377,7 +376,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         binding.walletName.text = walletTitle
         //Important
         //tvWalletAccountStatus.setText(walletSubtitle)
-        showBalance(Helper.getDisplayAmount(0))
+        showBalance(Helper.getDisplayAmount(0), 0.000000000)
         showUnconfirmed(0.0)
 
         adapter = TransactionInfoAdapter(activity, this)
@@ -747,7 +746,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         val amountBdx: Double = Helper.getDecimalAmount(unlockedBalance).toDouble()
         Log.d("Beldex", "value of amountBdx$amountBdx")
         Log.d("Beldex", "value of helper amountBdx" + Helper.getFormattedAmount(amountBdx, true))
-        showBalance(Helper.getFormattedAmount(amountBdx, true))
+        showBalance(Helper.getFormattedAmount(amountBdx, true),amountBdx)
     }
 
     //Important
@@ -811,7 +810,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             Helper.getFormattedAmount(amountA, true)
         }
         Log.d("sync updateBalance()", "true")
-        showBalance(displayB)
+        showBalance(displayB, amountA)
     }
 
     private fun hideDisplayBalance(){
@@ -819,7 +818,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         binding.tvFiatCurrency.text="---"
     }
 
-    private fun showSelectedDecimalBalance(balance:String){
+    private fun showSelectedDecimalBalance(balance: String, amountBdx: Double){
         when {
             TextSecurePreferences.getDecimals(requireActivity())=="4 - Detailed" -> {
                 binding.tvBalance.text = String.format("%.4f", balance.toDouble())
@@ -836,17 +835,18 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         }
         //Update Fiat Currency
         if(balance.isNotEmpty()) {
-            val amount: BigDecimal = BigDecimal(balance.toDouble()).multiply(BigDecimal(price))
+            val amount: BigDecimal = BigDecimal(amountBdx).multiply(BigDecimal(price))
             binding.tvFiatCurrency.text = getString(R.string.fiat_currency,amount.toDouble(),TextSecurePreferences.getCurrency(requireActivity()).toString())//"$price ${TextSecurePreferences.getCurrency(requireActivity()).toString()}"
         }
     }
 
-    private fun showBalance(balance: String?) {
+    private fun showBalance(balance: String?, amountBdx: Double) {
         if(TextSecurePreferences.getDisplayBalanceAs(requireActivity())==2) {
             hideDisplayBalance()
         }else {
             walletAvailableBalance = balance
-            showSelectedDecimalBalance(balance!!)
+            walletAvailableBdxBalance = amountBdx
+            showSelectedDecimalBalance(balance!!,amountBdx)
         }
 
         val streetMode: Boolean = activityCallback!!.isStreetMode
@@ -964,7 +964,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         //Important
         //sCurrency.setSelection(0, true) // default to BDX
         val amountBdx: Double = Helper.getDecimalAmount(unlockedBalance).toDouble()
-        showBalance(Helper.getFormattedAmount(amountBdx, true))
+        showBalance(Helper.getFormattedAmount(amountBdx, true), amountBdx)
         hideExchanging()
     }
 

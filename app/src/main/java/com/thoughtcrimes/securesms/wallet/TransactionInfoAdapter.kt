@@ -95,6 +95,24 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
         position: Int
     ) {
         holder.bind(position)
+        holder.itemView.setOnClickListener{
+            if (listener != null) {
+                Log.d("Beldex","Position -> $position")
+                if (holder.itemViewType != RecyclerView.NO_POSITION) { // Check if an item was deleted, but the user clicked it before the UI removed it
+                    if(holder.transactionDetailsLayout.visibility==View.GONE) {
+                        holder.transactionDetailsLayout.visibility = View.VISIBLE
+                    }else{
+                        holder.transactionDetailsLayout.visibility = View.GONE
+                    }
+                    //Important
+                    //listener!!.onInteraction(view, infoItems!!.get(position))
+                }
+            }
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return position
     }
 
     override fun getItemCount(): Int {
@@ -127,8 +145,7 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
         return infoItems!![position]
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-        View.OnClickListener {
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         private var tvAmount: TextView = itemView.findViewById(R.id.transaction_amount)
         private var tvFeeTitle:TextView = itemView.findViewById(R.id.transaction_fee_title)
         private var tvFee: TextView = itemView.findViewById(R.id.transaction_fee)
@@ -142,7 +159,7 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
         //var tvPaymentId: TextView
         private var tvDateTime: TextView = itemView.findViewById(R.id.transaction_date_and_time)
 
-        private var transactionDetailsLayout: LinearLayout = itemView.findViewById(R.id.transaction_details_layout)
+        var transactionDetailsLayout: LinearLayout = itemView.findViewById(R.id.transaction_details_layout)
 
         //val pbConfirmations: CircularProgressIndicator
         //var tvConfirmations: TextView
@@ -273,22 +290,6 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
                 //tvPaymentId.text = label
             }
             tvDateTime.text = getDateTime(infoItem!!.timestamp)
-            itemView.setOnClickListener(this)
-        }
-
-        override fun onClick(view: View) {
-            if (listener != null) {
-                val position = adapterPosition // gets item position
-                if (position != RecyclerView.NO_POSITION) { // Check if an item was deleted, but the user clicked it before the UI removed it
-                    if(transactionDetailsLayout.visibility==View.VISIBLE) {
-                        transactionDetailsLayout.visibility = View.GONE
-                    }else{
-                        transactionDetailsLayout.visibility = View.VISIBLE
-                    }
-                    //Important
-                    //listener!!.onInteraction(view, infoItems!!.get(position))
-                }
-            }
         }
 
         init{

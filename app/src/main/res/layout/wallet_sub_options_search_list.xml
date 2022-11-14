@@ -35,7 +35,7 @@
                     android:textAlignment="center"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:text="Display balance as"/>
+                    android:text="@string/display_balance_as"/>
                 <ImageView
                     android:id="@+id/closeDialogBox"
                     android:layout_width="wrap_content"

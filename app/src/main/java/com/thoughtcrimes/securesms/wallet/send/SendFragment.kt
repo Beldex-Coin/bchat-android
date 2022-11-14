@@ -297,7 +297,6 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
                             val gson = GsonBuilder().create()
                             when (currency) {
                                 "aud" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).aud
-                                "bgn" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).bgn
                                 "brl" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).brl
                                 "cad" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).cad
                                 "chf" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).chf
@@ -307,12 +306,10 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
                                 "dkk" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).dkk
                                 "gbp" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).gbp
                                 "hkd" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).hkd
-                                "hrk" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).hrk
                                 "huf" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).huf
                                 "idr" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).idr
                                 "ils" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).ils
                                 "inr" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).inr
-                                "isk" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).isk
                                 "jpy" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).jpy
                                 "krw" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).krw
                                 "mxn" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).mxn
@@ -321,7 +318,6 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
                                 "nzd" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).nzd
                                 "php" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).php
                                 "pln" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).pln
-                                "ron" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).ron
                                 "rub" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).rub
                                 "sek" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).sek
                                 "sgd" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).sgd

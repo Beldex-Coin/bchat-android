@@ -57,11 +57,10 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         // data to populate the RecyclerView with
         decimalsList.add("9 - Ultra")
         decimalsList.add("4 - Detailed")
-        decimalsList.add("2- Normal")
+        decimalsList.add("2 - Normal")
         decimalsList.add("0 - None")
 
         currencyList.add("AUD")
-        currencyList.add("BGN")
         currencyList.add("BRL")
         currencyList.add("CAD")
         currencyList.add("CHF")
@@ -71,12 +70,10 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         currencyList.add("DKK")
         currencyList.add("GBP")
         currencyList.add("HKD")
-        currencyList.add("HRK")
         currencyList.add("HUF")
         currencyList.add("IDR")
         currencyList.add("ILS")
         currencyList.add("INR")
-        currencyList.add("ISK")
         currencyList.add("JPY")
         currencyList.add("KRW")
         currencyList.add("MXN")
@@ -85,7 +82,6 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         currencyList.add("NZD")
         currencyList.add("PHP")
         currencyList.add("PLN")
-        currencyList.add("RON")
         currencyList.add("RUB")
         currencyList.add("SEK")
         currencyList.add("SGD")
@@ -169,7 +165,7 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent);
         dialog.window!!.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
         val dialogBoxTitle = dialog.findViewById(R.id.dialogBoxTitle) as TextView
-        dialogBoxTitle.text = "Display Balance As"
+        dialogBoxTitle.text = getString(R.string.display_balance_as)
         val walletSubOptionsList = dialog.findViewById(R.id.walletSubOptionsListRecyclerView) as RecyclerView
         val close = dialog.findViewById(R.id.closeDialogBox) as ImageView
         close.setOnClickListener {

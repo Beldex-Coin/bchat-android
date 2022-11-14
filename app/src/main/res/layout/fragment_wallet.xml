@@ -119,7 +119,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textStyle="bold"
-                            android:textSize="18sp"
+                            android:textSize="17sp"
                             android:textColor="@color/text"/>
                         <TextView
                             android:id="@+id/tvFiatCurrency"
@@ -265,7 +265,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    tools:itemCount="10"
                     android:visibility="gone"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     android:nestedScrollingEnabled="false"

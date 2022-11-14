@@ -39,6 +39,7 @@ import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.model.WalletManager
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.push
+import com.thoughtcrimes.securesms.wallet.CheckOnline
 import com.thoughtcrimes.securesms.wallet.utils.OpenAliasHelper
 import com.thoughtcrimes.securesms.wallet.utils.common.FiatCurrencyPrice
 import com.thoughtcrimes.securesms.wallet.utils.common.fetchPriceFor
@@ -475,67 +476,89 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
         })
 
         binding.sendButton.setOnClickListener {
-            if (!checkAddressNoError()) {
-                shakeAddress()
-                val enteredAddress: String = binding.beldexAddressEditTxtLayout.editText?.text.toString().trim()
-                val dnsOA = dnsFromOpenAlias(enteredAddress)
-                if (dnsOA != null) {
-                    Log.d("OpenAlias is %s", dnsOA)
-                }
-                dnsOA?.let { processOpenAlias(it) }
-            }else {
-                if (binding.beldexAddressEditTxtLayout.editText?.text!!.isNotEmpty() && binding.beldexAmountEditTxtLayout.editText?.text!!.isNotEmpty() && binding.beldexAmountEditTxtLayout.editText!!.text.toString().toDouble()>0.00) {
-                    val txData: TxData = getTxData()
-                    txData.destinationAddress =
-                        binding.beldexAddressEditTxtLayout.editText?.text.toString()
-                    ServiceHelper.ASSET = null
-
-                    if (getCleanAmountString(binding.beldexAmountEditTxtLayout.editText?.text.toString()).equals(
-                            Wallet.getDisplayAmount(activityCallback!!.totalFunds)
-                        )
-                    ) {
-                        val amount =
-                            (activityCallback!!.totalFunds - 10485760)// 10485760 == 050000000
-                        val bdx = getCleanAmountString(binding.beldexAmountEditTxtLayout.editText?.text.toString())
-                        Log.d("If BDX Total Amount -> " + Wallet.getAmountFromString(bdx).toString() + " " + bdx + "" + amount,"true")
-                        if (bdx != null) {
-                            txData.amount = amount
-                        } else {
-                            txData.amount = 0L
-                        }
-                    } else {
-                        val bdx = getCleanAmountString(binding.beldexAmountEditTxtLayout.editText?.text.toString())
-                        Log.d("Else BDX Total Amount -> " + Wallet.getAmountFromString(bdx).toString() + " " + bdx,"true")
-                        if (bdx != null) {
-                            txData.amount = Wallet.getAmountFromString(bdx)
-                        } else {
-                            txData.amount = 0L
-                        }
+            if(CheckOnline.isOnline(requireContext())) {
+                if (!checkAddressNoError()) {
+                    shakeAddress()
+                    val enteredAddress: String =
+                        binding.beldexAddressEditTxtLayout.editText?.text.toString().trim()
+                    val dnsOA = dnsFromOpenAlias(enteredAddress)
+                    if (dnsOA != null) {
+                        Log.d("OpenAlias is %s", dnsOA)
                     }
-                    txData.userNotes = UserNotes("-")//etNotes.getEditText().getText().toString()
-                    txData.priority = PendingTransaction.Priority.Priority_Flash
-                    txData.mixin = MIXIN
-                    binding.beldexAddressEditTxtLayout.editText?.text?.clear()
-                    binding.beldexAmountEditTxtLayout.editText?.text?.clear()
-                    binding.currencyEditTxtLayout.editText?.text?.clear()
-
-                    //Important
-                    val lockManager: LockManager<CustomPinActivity> = LockManager.getInstance() as LockManager<CustomPinActivity>
-                    lockManager.enableAppLock(requireActivity(), CustomPinActivity::class.java)
-                    val intent = Intent(requireActivity(), CustomPinActivity::class.java)
-                        intent.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN)
-                        intent.putExtra("change_pin",false)
-                        intent.putExtra("send_authentication",true)
-                    resultLaunchers.launch(intent)
-                } else if(binding.beldexAmountEditTxtLayout.editText!!.text.toString().toDouble()<=0.00){
-                    binding.beldexAmountEditTxtLayout.error = getString(R.string.beldex_amount_valid_error_message)
-                }else if (binding.beldexAddressEditTxtLayout.editText?.text!!.isEmpty()) {
-                    Log.d("Beldex","beldexAddressEditTxtLayout isEmpty()")
-                    binding.beldexAddressEditTxtLayout.error = getString(R.string.beldex_address_error_message)
+                    dnsOA?.let { processOpenAlias(it) }
                 } else {
-                    Log.d("Beldex","beldexAmountEditTxtLayout isEmpty()")
-                    binding.beldexAmountEditTxtLayout.error = getString(R.string.beldex_amount_error_message)
+                    if (binding.beldexAddressEditTxtLayout.editText?.text!!.isNotEmpty() && binding.beldexAmountEditTxtLayout.editText?.text!!.isNotEmpty() && binding.beldexAmountEditTxtLayout.editText!!.text.toString()
+                            .toDouble() > 0.00
+                    ) {
+                        val txData: TxData = getTxData()
+                        txData.destinationAddress =
+                            binding.beldexAddressEditTxtLayout.editText?.text.toString()
+                        ServiceHelper.ASSET = null
+
+                        if (getCleanAmountString(binding.beldexAmountEditTxtLayout.editText?.text.toString()).equals(
+                                Wallet.getDisplayAmount(activityCallback!!.totalFunds)
+                            )
+                        ) {
+                            val amount =
+                                (activityCallback!!.totalFunds - 10485760)// 10485760 == 050000000
+                            val bdx =
+                                getCleanAmountString(binding.beldexAmountEditTxtLayout.editText?.text.toString())
+                            Log.d(
+                                "If BDX Total Amount -> " + Wallet.getAmountFromString(bdx)
+                                    .toString() + " " + bdx + "" + amount, "true"
+                            )
+                            if (bdx != null) {
+                                txData.amount = amount
+                            } else {
+                                txData.amount = 0L
+                            }
+                        } else {
+                            val bdx =
+                                getCleanAmountString(binding.beldexAmountEditTxtLayout.editText?.text.toString())
+                            Log.d(
+                                "Else BDX Total Amount -> " + Wallet.getAmountFromString(bdx)
+                                    .toString() + " " + bdx, "true"
+                            )
+                            if (bdx != null) {
+                                txData.amount = Wallet.getAmountFromString(bdx)
+                            } else {
+                                txData.amount = 0L
+                            }
+                        }
+                        txData.userNotes =
+                            UserNotes("-")//etNotes.getEditText().getText().toString()
+                        txData.priority = PendingTransaction.Priority.Priority_Flash
+                        txData.mixin = MIXIN
+                        binding.beldexAddressEditTxtLayout.editText?.text?.clear()
+                        binding.beldexAmountEditTxtLayout.editText?.text?.clear()
+                        binding.currencyEditTxtLayout.editText?.text?.clear()
+
+                        //Important
+                        val lockManager: LockManager<CustomPinActivity> =
+                            LockManager.getInstance() as LockManager<CustomPinActivity>
+                        lockManager.enableAppLock(requireActivity(), CustomPinActivity::class.java)
+                        val intent = Intent(requireActivity(), CustomPinActivity::class.java)
+                        intent.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN)
+                        intent.putExtra("change_pin", false)
+                        intent.putExtra("send_authentication", true)
+                        resultLaunchers.launch(intent)
+                    } else if (binding.beldexAmountEditTxtLayout.editText!!.text.toString()
+                            .toDouble() <= 0.00
+                    ) {
+                        binding.beldexAmountEditTxtLayout.error =
+                            getString(R.string.beldex_amount_valid_error_message)
+                    } else if (binding.beldexAddressEditTxtLayout.editText?.text!!.isEmpty()) {
+                        Log.d("Beldex", "beldexAddressEditTxtLayout isEmpty()")
+                        binding.beldexAddressEditTxtLayout.error =
+                            getString(R.string.beldex_address_error_message)
+                    } else {
+                        Log.d("Beldex", "beldexAmountEditTxtLayout isEmpty()")
+                        binding.beldexAmountEditTxtLayout.error =
+                            getString(R.string.beldex_amount_error_message)
+                    }
                 }
+            } else {
+                Toast.makeText(requireContext(), "Check your internet", Toast.LENGTH_SHORT).show()
             }
         }
         if(TextSecurePreferences.getFeePriority(requireActivity())==0){

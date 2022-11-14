@@ -91,39 +91,6 @@ class AddressBookAdapter(
         }
     }
 
-/*    override fun getFilter(): Filter {
-        Log.d("Beldex","search")
-        return customFilter
-
-    }
-    private val customFilter = object : Filter() {
-        override fun performFiltering(constraint: CharSequence?): FilterResults {
-            Log.d("Beldex","search 1")
-            val filteredList = mutableListOf<String>()
-            if (constraint == null || constraint.isEmpty()) {
-                Log.d("Beldex","search 2")
-                filteredList.addAll(members)
-            } else {
-                Log.d("Beldex","search 3")
-                for (item in members) {
-                    if (item.lowercase().startsWith(constraint.toString().lowercase())) {
-                        filteredList.add(item)
-                    }
-                }
-            }
-            val results = FilterResults()
-            results.values = filteredList
-            return results
-        }
-
-        override fun publishResults(constraint: CharSequence?, filterResults: FilterResults?) {
-            Log.d("Beldex","search 4")
-            list.clear()
-            list.addAll(filterResults?.values as MutableList<AddressBookAdapter>)
-            notifyDataSetChanged()
-        }
-
-    }*/
 
     fun updateList(list: List<String>) {
         members = list

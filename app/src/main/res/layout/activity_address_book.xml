@@ -48,7 +48,7 @@
         android:id="@+id/noRecordFoundTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/no_record_found"
+        android:text="@string/no_address_found"
         android:textColor="@color/text"
         android:textSize="@dimen/medium_font_size" />
     </LinearLayout>

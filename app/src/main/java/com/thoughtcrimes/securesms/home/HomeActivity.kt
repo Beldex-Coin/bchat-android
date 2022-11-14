@@ -85,12 +85,16 @@ import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.tasks.Task
 import android.content.IntentSender.SendIntentException
 import android.graphics.Typeface
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.net.NetworkInfo
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
 import com.thoughtcrimes.securesms.service.WebRtcCallService
+import com.thoughtcrimes.securesms.wallet.CheckOnline
 import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity
 import com.thoughtcrimes.securesms.wallet.info.WalletInfoActivity
 import com.thoughtcrimes.securesms.wallet.node.*
@@ -251,7 +255,14 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                     }
                     1 -> {
                         // # My Wallet Activity
-                        openMyWallet()
+                        if(CheckOnline.isOnline(this@HomeActivity)) {
+                            Log.d("Beldex","isOnline value ${CheckOnline.isOnline(this@HomeActivity)}")
+                            openMyWallet()
+                        }
+                        else {
+                            Log.d("Beldex","isOnline value ${CheckOnline.isOnline(this@HomeActivity)}")
+                            Toast.makeText(this@HomeActivity,"Check your internet connection", Toast.LENGTH_SHORT).show()
+                        }
                     }
                     2 -> {
                         //New Line
@@ -1144,7 +1155,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     }*/
 
     private fun showNotificationSettings() {
-        val intent = Intent(this, AddressBookActivity::class.java)
+        val intent = Intent(this, NotificationSettingsActivity::class.java)
         push(intent)
     }
 

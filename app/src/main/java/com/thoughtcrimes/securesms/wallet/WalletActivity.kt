@@ -73,11 +73,15 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         binding.toolbar.setOnButtonListener { type ->
             when (type) {
                 Toolbar.BUTTON_BACK -> {
-                    onDisposeRequest()
+                    if(CheckOnline.isOnline(this)) {
+                        onDisposeRequest()
+                    }
                     onBackPressed()
                 }
                 Toolbar.BUTTON_CANCEL -> {
-                    onDisposeRequest()
+                    if(CheckOnline.isOnline(this)) {
+                        onDisposeRequest()
+                    }
                     Helper.hideKeyboard(this@WalletActivity)
                     super@WalletActivity.onBackPressed()
                 }
@@ -145,18 +149,25 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }*/
 
     private fun startWalletService() {
-        val extras = intent.extras
-        if (extras != null) {
-            acquireWakeLock()
-            val walletId = extras.getString(REQUEST_ID)
-            // we can set the streetmode height AFTER opening the wallet
-            requestStreetMode = extras.getBoolean(REQUEST_STREETMODE)
-            password = extras.getString(REQUEST_PW)
-            uri = extras.getString(REQUEST_URI)
-            connectWalletService(walletId, password)
-        } else {
-            finish()
-        }
+
+            val extras = intent.extras
+            if (extras != null) {
+                acquireWakeLock()
+                val walletId = extras.getString(REQUEST_ID)
+                // we can set the streetmode height AFTER opening the wallet
+                requestStreetMode = extras.getBoolean(REQUEST_STREETMODE)
+                password = extras.getString(REQUEST_PW)
+                uri = extras.getString(REQUEST_URI)
+                if (CheckOnline.isOnline(this)) {
+                    Log.d("Beldex", "isOnline 5 if")
+                    connectWalletService(walletId, password)
+                }
+                else {
+                    Log.d("Beldex","isOnline 5 else")
+                }
+            }else {
+                finish()
+            }
     }
 
     override fun onBackPressedFun() {
@@ -208,14 +219,17 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         // class name because we want a specific service implementation that
         // we know will be running in our own process (and thus won't be
         // supporting component replacement by other applications).
-        val intent = Intent(applicationContext, WalletService::class.java)
-        intent.putExtra(WalletService.REQUEST_WALLET, walletName)
-        intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_LOAD)
-        intent.putExtra(WalletService.REQUEST_CMD_LOAD_PW, walletPassword)
-        startService(intent)
-        bindService(intent, mConnection, BIND_AUTO_CREATE)
-        mIsBound = true
-        Timber.d("BOUND")
+        Log.d("Beldex","isOnline 7 ${CheckOnline.isOnline(this)}")
+        if (CheckOnline.isOnline(this)) {
+            val intent = Intent(applicationContext, WalletService::class.java)
+            intent.putExtra(WalletService.REQUEST_WALLET, walletName)
+            intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_LOAD)
+            intent.putExtra(WalletService.REQUEST_CMD_LOAD_PW, walletPassword)
+            startService(intent)
+            bindService(intent, mConnection, BIND_AUTO_CREATE)
+            mIsBound = true
+            Timber.d("BOUND")
+        }
     }
 
 //////////////////////////////////////////

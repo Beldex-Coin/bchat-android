@@ -1,5 +1,6 @@
 package com.thoughtcrimes.securesms.wallet
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
@@ -307,6 +308,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
     var price =0.00
 
+    @SuppressLint("ResourceAsColor")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -368,7 +370,13 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         /*}else{
             binding.tvFiatCurrency.text = "--"
         }*/
-
+       /* Log.d("Beldex","isOnline 2 ${CheckOnline.isOnline(requireContext())}")
+        if(!CheckOnline.isOnline(requireContext()))
+        {
+            Log.d("Beldex","isOnline 2 ${CheckOnline.isOnline(requireContext())}")
+            setProgress(R.string.no_node_connection)
+            binding.syncStatus.setTextColor(ContextCompat.getColor(requireContext(),R.color.red))
+        }*/
 
         binding.sendCardViewButton.isEnabled = false
         binding.scanQrCodeImg.isEnabled = false
@@ -688,50 +696,66 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             accountIdx = wallet.accountIndex
             setActivityTitle(wallet)
         }
-        balance = wallet.balance
-        Log.d("Beldex", "value of balance $balance")
-        unlockedBalance = wallet.unlockedBalance
-        refreshBalance()
-        val sync: String
-        check(activityCallback!!.hasBoundService()) { "WalletService not bound." }
-        val daemonConnected: Wallet.ConnectionStatus = activityCallback!!.connectionStatus!!
-        if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
-            if (!wallet.isSynchronized) {
-                val daemonHeight: Long = activityCallback!!.daemonHeight
-                val walletHeight = wallet.blockChainHeight
-                val n = daemonHeight - walletHeight
-                sync = formatter.format(n) + " " + getString(R.string.status_remaining)
-                if (firstBlock == 0L) {
-                    firstBlock = walletHeight
-                }
-                var x = (100 - Math.round(100f * n / (1f * daemonHeight - firstBlock))).toInt()
-                if (x == 0) x = 101 // indeterminate
-                setProgress(x)
+        Log.d("Beldex", "isOnline 0  ${CheckOnline.isOnline(requireContext())}")
+        if(CheckOnline.isOnline(requireContext())) {
+            Log.d("Beldex", "isOnline 1  ${CheckOnline.isOnline(requireContext())}")
+            balance = wallet.balance
+            Log.d("Beldex", "value of balance $balance")
+            unlockedBalance = wallet.unlockedBalance
+            refreshBalance()
+            val sync: String
+            check(activityCallback!!.hasBoundService()) { "WalletService not bound." }
+            val daemonConnected: Wallet.ConnectionStatus = activityCallback!!.connectionStatus!!
+            if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
+                if (!wallet.isSynchronized) {
+                    val daemonHeight: Long = activityCallback!!.daemonHeight
+                    val walletHeight = wallet.blockChainHeight
+                    val n = daemonHeight - walletHeight
+                    sync = formatter.format(n) + " " + getString(R.string.status_remaining)
+                    if (firstBlock == 0L) {
+                        firstBlock = walletHeight
+                    }
+                    var x = (100 - Math.round(100f * n / (1f * daemonHeight - firstBlock))).toInt()
+                    if (x == 0) x = 101 // indeterminate
+                    setProgress(x)
 //                ivSynced.setVisibility(View.GONE);
-                binding.filterTransactionsIcon.isClickable = false
-                activityCallback!!.hiddenRescan(false)
-            } else {
-                sync =
-                    getString(R.string.status_synchronized)//getString(R.string.status_synced) + " " + formatter.format(wallet.blockChainHeight)
-                //binding.syncStatus.setTextColor(resources.getColor(R.color.green_color))
-                binding.syncStatus.setTextColor(
-                    ContextCompat.getColor(
-                        requireActivity().applicationContext,
-                        R.color.green_color
+                    binding.filterTransactionsIcon.isClickable = false
+                    activityCallback!!.hiddenRescan(false)
+                } else {
+                    sync =
+                        getString(R.string.status_synchronized)//getString(R.string.status_synced) + " " + formatter.format(wallet.blockChainHeight)
+                    //binding.syncStatus.setTextColor(resources.getColor(R.color.green_color))
+                    binding.syncStatus.setTextColor(
+                        ContextCompat.getColor(
+                            requireActivity().applicationContext,
+                            R.color.green_color
+                        )
                     )
-                )
 //                ivSynced.setVisibility(View.VISIBLE);
-                binding.filterTransactionsIcon.isClickable = true //default = adapter!!.itemCount > 0
-                activityCallback!!.hiddenRescan(true)
+                    binding.filterTransactionsIcon.isClickable =
+                        true //default = adapter!!.itemCount > 0
+                    activityCallback!!.hiddenRescan(true)
+                }
+            } else {
+                sync = getString(R.string.status_wallet_connecting)
+                setProgress(101)
+                binding.transactionTitle.visibility = View.INVISIBLE
+                binding.transactionLayoutCardView.visibility = View.GONE
+                //anchorBehavior.setHideable(true)
             }
-        } else {
-            sync = getString(R.string.status_wallet_connecting)
-            setProgress(101)
-            binding.transactionTitle.visibility = View.INVISIBLE
-            binding.transactionLayoutCardView.visibility = View.GONE
-            //anchorBehavior.setHideable(true)
+            setProgress(sync)
         }
-        setProgress(sync)
+        else
+        {
+            Log.d("Beldex","isOnline else 2")
+            setProgress(getString(R.string.no_node_connection))
+            binding.syncStatus.setTextColor(
+                ContextCompat.getColor(
+                    requireActivity().applicationContext,
+                    R.color.red
+                )
+            )
+        }
     }
 
     var balanceCurrency = Helper.BASE_CRYPTO

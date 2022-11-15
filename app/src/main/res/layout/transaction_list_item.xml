@@ -73,7 +73,7 @@
                     android:id="@+id/transaction_id_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Transaction ID :"
+                    android:text="@string/transaction_id"
                     android:textStyle="bold"
                     android:textColor="@color/text"/>
                 <TextView
@@ -86,7 +86,7 @@
                     android:id="@+id/transaction_date_and_time_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Date &amp; Time :"
+                    android:text="@string/date_amp_time"
                     android:textStyle="bold"
                     android:layout_marginTop="10dp"
                     android:textColor="@color/text"/>
@@ -100,7 +100,7 @@
                     android:id="@+id/transaction_height_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Height :"
+                    android:text="@string/height"
                     android:textStyle="bold"
                     android:layout_marginTop="10dp"
                     android:textColor="@color/text"/>
@@ -114,7 +114,7 @@
                     android:id="@+id/transaction_fee_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Transaction Fee :"
+                    android:text="@string/transaction_fee"
                     android:textStyle="bold"
                     android:layout_marginTop="10dp"
                     android:textColor="@color/text"/>
@@ -128,7 +128,7 @@
                     android:id="@+id/transaction_recipient_address_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Recipient Address :"
+                    android:text="@string/recipient_address"
                     android:textStyle="bold"
                     android:layout_marginTop="10dp"
                     android:textColor="@color/text"/>

@@ -102,13 +102,13 @@ public class Toolbar extends MaterialToolbar {
         }
     }
 
-    public void hiddenRescan(Boolean status){
+    /*public void hiddenRescan(Boolean status){
         if(!status) {
             toolBarRescan.setVisibility(View.GONE);
         }else{
             toolBarRescan.setVisibility(View.VISIBLE);
         }
-    }
+    }*/
 
     public final static int BUTTON_NONE = 0;
     public final static int BUTTON_BACK = 1;

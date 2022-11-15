@@ -98,7 +98,6 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
         holder.bind(position)
         holder.itemView.setOnClickListener{
             if (listener != null) {
-                Log.d("Beldex","Position -> $position")
                 if (holder.itemViewType != RecyclerView.NO_POSITION) { // Check if an item was deleted, but the user clicked it before the UI removed it
                     if(holder.transactionDetailsLayout.visibility==View.GONE) {
                         holder.transactionDetailsLayout.visibility = View.VISIBLE
@@ -106,7 +105,7 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
                         if(DatabaseComponent.get(context!!).bchatRecipientAddressDatabase().getRecipientAddress(holder.infoItem!!.hash)!=null) {
                             holder.tvAddress.text = DatabaseComponent.get(context!!).bchatRecipientAddressDatabase()
                                 .getRecipientAddress(holder.infoItem!!.hash)
-                        }//infoItem!!.addresselse
+                        }//infoItem!!.address
                         else{
                             holder.tvAddressTitle.visibility = View.GONE
                             holder.tvAddress.text=""
@@ -160,7 +159,7 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
         private var tvFeeTitle:TextView = itemView.findViewById(R.id.transaction_fee_title)
         private var tvFee: TextView = itemView.findViewById(R.id.transaction_fee)
         var tvAddress: TextView = itemView.findViewById(R.id.transaction_recipient_address)
-        var tvAddressTitle:TextView = itemView.findViewById(R.id.transaction_id_title)
+        var tvAddressTitle:TextView = itemView.findViewById(R.id.transaction_recipient_address_title)
         private var txId: TextView = itemView.findViewById(R.id.transaction_id)
         private var tvTxBlockHeight: TextView = itemView.findViewById(R.id.transaction_height)
         private var tvTxStatus: TextView = itemView.findViewById(R.id.transaction_status)

@@ -103,7 +103,11 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         Timber.d("onCreate() done.")
 
         binding.toolbar.toolBarRescan.setOnClickListener {
-            onWalletRescan()
+            if(CheckOnline.isOnline(this)) {
+                onWalletRescan()
+            }else{
+                Toast.makeText(this@WalletActivity,getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
+            }
         }
 
         binding.toolbar.toolBarSettings.setOnClickListener {
@@ -887,9 +891,9 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         startNodeFragment()
     }
 
-    override fun hiddenRescan(status: Boolean) {
+    /*override fun hiddenRescan(status: Boolean) {
         binding.toolbar.hiddenRescan(status)
-    }
+    }*/
 
     private fun startNodeFragment() {
         //Important

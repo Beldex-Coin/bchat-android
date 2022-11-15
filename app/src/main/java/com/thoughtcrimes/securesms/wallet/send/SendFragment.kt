@@ -556,7 +556,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
                     }
                 }
             } else {
-                Toast.makeText(requireContext(), "Check your internet", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
             }
         }
         if(TextSecurePreferences.getFeePriority(requireActivity())==0){

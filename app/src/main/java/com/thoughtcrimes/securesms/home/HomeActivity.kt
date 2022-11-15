@@ -261,7 +261,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                         }
                         else {
                             Log.d("Beldex","isOnline value ${CheckOnline.isOnline(this@HomeActivity)}")
-                            Toast.makeText(this@HomeActivity,"Check your internet connection", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@HomeActivity,getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
                         }
                     }
                     2 -> {
@@ -740,7 +740,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
     private fun checkInternetConnectivity() {
         if (OnionRequestAPI.paths.isEmpty()) {
-            Toast.makeText(this, "Please check your internet connection", Toast.LENGTH_SHORT)
+            Toast.makeText(this, getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT)
                 .show();
         }
     }

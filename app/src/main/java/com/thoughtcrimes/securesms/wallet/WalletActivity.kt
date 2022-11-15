@@ -116,6 +116,13 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     }
 
+    override fun callFinishActivity() {
+        if(CheckOnline.isOnline(this)) {
+            onDisposeRequest()
+        }
+        onBackPressed()
+    }
+
     private fun openWalletSettings() {
         val intent = Intent(this, WalletSettings::class.java)
         push(intent)
@@ -1098,8 +1105,10 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         //unregisterDetachReceiver()
         //Ledger.disconnect()
 
-        if (mBoundService != null && getWallet() != null) {
-            saveWallet()
+        if(CheckOnline.isOnline(this)) {
+            if (mBoundService != null && getWallet() != null) {
+                saveWallet()
+            }
         }
         stopWalletService()
         super.onDestroy()

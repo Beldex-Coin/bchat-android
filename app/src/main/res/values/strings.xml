@@ -1064,7 +1064,7 @@
     <string name="activity_receive_page_title" translatable="false">Receive</string>
     <string name="activity_rescan_page_title" translatable="false">Rescan</string>
     <string name="enter_amount" translatable="false">Enter amount</string>
-    <string name="current_blockheight" translatable="false">Current Blockheight:</string>
+    <string name="current_blockheight" translatable="false">Current Blockheight : </string>
     <string name="restore_from_height" translatable="false">Restore from height</string>
     <string name="restore_from_date" translatable="false"> Restore from date</string>
     <string name="activity_new_node_page_title" translatable="false">New Node</string>
@@ -1264,4 +1264,10 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="transaction_fee" translatable="false">Transaction Fee :</string>
     <string name="recipient_address" translatable="false">Recipient Address :</string>
     <string name="please_check_your_internet_connection" translatable="false">Please check your internet connection</string>
+    <string name="or" translatable="false">OR</string>
+    <string name="restore_from_blockheight" translatable="false">Restore from Blockheight</string>
+    <string name="restore_from_date_" translatable="false">Restore from Date</string>
+    <string name="wallet_name" translatable="false">Wallet Name</string>
+    <string name="view_key_private" translatable="false">View Key (private)</string>
+    <string name="spend_key_private" translatable="false">Spend Key (private)</string>
 </resources>

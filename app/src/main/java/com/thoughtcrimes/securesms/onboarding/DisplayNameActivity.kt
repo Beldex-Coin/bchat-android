@@ -323,7 +323,7 @@ class DisplayNameActivity : BaseActionBarActivity() {
                             aFile,
                             password,
                             MNEMONIC_LANGUAGE,
-                            1708098
+                            1723084
                         )
                     return checkAndCloseWallet(newWallet)
                 }

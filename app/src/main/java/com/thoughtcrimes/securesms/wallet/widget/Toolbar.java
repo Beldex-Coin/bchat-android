@@ -89,7 +89,7 @@ public class Toolbar extends MaterialToolbar {
             Timber.d("Set Title if");
             //toolbarImage.setVisibility(View.INVISIBLE);
             toolbarTitle.setVisibility(View.VISIBLE);
-            if(title.equals("Receive")||title.equals("Send")){
+            if(title.equals("Receive")||title.equals("Send")||title.equals("Rescan")){
                 toolBarRescan.setVisibility(View.GONE);
                 toolBarSettings.setVisibility(View.GONE);
             }else{

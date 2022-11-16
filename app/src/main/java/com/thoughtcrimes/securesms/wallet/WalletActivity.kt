@@ -15,6 +15,7 @@ import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.push
 import com.thoughtcrimes.securesms.wallet.listener.OnBlockUpdateListener
 import com.thoughtcrimes.securesms.wallet.receive.ReceiveFragment
+import com.thoughtcrimes.securesms.wallet.rescan.RescanDialog
 import com.thoughtcrimes.securesms.wallet.scanner.ScannerFragment
 import com.thoughtcrimes.securesms.wallet.send.SendFragment
 import com.thoughtcrimes.securesms.wallet.service.WalletService
@@ -104,7 +105,13 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
         binding.toolbar.toolBarRescan.setOnClickListener {
             if(CheckOnline.isOnline(this)) {
-                onWalletRescan()
+                if(getWallet().daemonBlockChainHeight!=null) {
+                    RescanDialog(this, getWallet().daemonBlockChainHeight).show(
+                        supportFragmentManager,
+                        ""
+                    )
+                }
+                //onWalletRescan()
             }else{
                 Toast.makeText(this@WalletActivity,getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
             }
@@ -121,10 +128,14 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         push(intent)
     }
 
-    private fun onWalletRescan() {
+    fun onWalletRescan(restoreHeight: Long) {
         try {
             val walletFragment = getWalletFragment()
+            // The height entered by user
+            getWallet().restoreHeight = restoreHeight
+
             getWallet().rescanBlockchainAsync()
+            Log.d("Beldex","Restore Height 2 ${getWallet().restoreHeight}")
             synced = false
             walletFragment.unsync()
             invalidateOptionsMenu()

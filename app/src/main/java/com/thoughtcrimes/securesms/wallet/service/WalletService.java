@@ -28,6 +28,7 @@ import com.thoughtcrimes.securesms.model.WalletListener;
 import com.thoughtcrimes.securesms.model.WalletManager;
 import com.thoughtcrimes.securesms.util.Helper;
 import com.thoughtcrimes.securesms.util.LocalHelper;
+import com.thoughtcrimes.securesms.wallet.CheckOnline;
 import com.thoughtcrimes.securesms.wallet.WalletActivity;
 
 import io.beldex.bchat.R;
@@ -532,10 +533,16 @@ public class WalletService extends Service {
             Timber.d("start() loadWallet");
             Wallet aWallet = loadWallet(walletName, walletPassword);
             if (aWallet == null) return null;
-            Wallet.Status walletStatus = aWallet.getFullStatus();
-            if (!walletStatus.isOk()) {
+            if(CheckOnline.Companion.isOnline(getApplicationContext())) {
+                Wallet.Status walletStatus = aWallet.getFullStatus();
+                if (!walletStatus.isOk()) {
+                    aWallet.close();
+                    return walletStatus;
+                }
+            }
+            else{
                 aWallet.close();
-                return walletStatus;
+                return null;
             }
             listener = new MyWalletListener();
             listener.start();
@@ -571,11 +578,19 @@ public class WalletService extends Service {
         if (wallet != null) {
             //Log.d("Using daemon %s", WalletManager.getInstance().getDaemonAddress());
             showProgress(55);
-            wallet.init(0);
-            Log.d("Beldex","init value of wallet restoreHeight loadWallet 1 "+ walletRestoreHeight);
-            Log.d("Beldex","init value of wallet restoreHeight loadWallet 2 "+ wallet.getRestoreHeight());
-            wallet.setRestoreHeight(walletRestoreHeight);
-            showProgress(90);
+            Log.d("Beldex","isOnline value in wallet.init " + CheckOnline.Companion.isOnline(getApplicationContext()));
+
+            if(!CheckOnline.Companion.isOnline(getApplicationContext())) {
+                return null;
+            }else {
+
+                wallet.init(0);
+                Log.d("Beldex", "init value of wallet restoreHeight loadWallet 1 " + walletRestoreHeight);
+                Log.d("Beldex", "init value of wallet restoreHeight loadWallet 2 " + wallet.getRestoreHeight());
+                wallet.setRestoreHeight(walletRestoreHeight);
+                showProgress(90);
+            }
+
         }
         return wallet;
     }

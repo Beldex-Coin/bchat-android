@@ -16,11 +16,13 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -487,16 +489,25 @@ public class NodeFragment extends Fragment
         TextInputLayout etNodeUser;
         TextInputLayout etNodePass;
         TextView tvResult;
+        ImageView iVVerified;
+        ImageView iVConnectionError;
 
         void showTestResult() {
             if (nodeInfo.isSuccessful()) {
                 tvResult.setText(getString(R.string.node_result,
                         FORMATTER.format(nodeInfo.getHeight()), nodeInfo.getMajorVersion(),
                         nodeInfo.getResponseTime(), nodeInfo.getHostAddress()));
+                iVVerified.setVisibility(View.VISIBLE);
+                iVConnectionError.setVisibility(View.GONE);
+                tvResult.setTextColor(ContextCompat.getColor(requireContext(), R.color.text));
+
                 Log.d("Beldex","showTestResult in NodeFragment()");
             } else {
                 Log.d("Beldex","showTestResult in NodeFragment()");
                 tvResult.setText(NodeInfoAdapter.getResponseErrorText(getActivity(), nodeInfo.getResponseCode()));
+                tvResult.setTextColor(ContextCompat.getColor(requireContext(), R.color.red));
+                iVVerified.setVisibility(View.GONE);
+                iVConnectionError.setVisibility(View.VISIBLE);
             }
         }
 
@@ -513,6 +524,8 @@ public class NodeFragment extends Fragment
             etNodeUser = promptsView.findViewById(R.id.nodeUsernameEditTxtLayout);
             etNodePass = promptsView.findViewById(R.id.nodePasswordEditTxtLayout);
             tvResult = promptsView.findViewById(R.id.tvResult);
+            iVVerified = promptsView.findViewById(R.id.iVVerified);
+            iVConnectionError = promptsView.findViewById(R.id.iVConnectionError);
 
             if (nodeInfo != null) {
                 this.nodeInfo = nodeInfo;

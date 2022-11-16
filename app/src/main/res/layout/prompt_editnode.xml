@@ -2,7 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:background="@color/page_background"
     android:layout_height="wrap_content">
 
@@ -191,36 +191,48 @@
         </androidx.cardview.widget.CardView>
 
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal"
             android:layout_marginTop="15dp">
 
             <TextView
                 android:id="@+id/tvResultLabel"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
+                android:layout_height="match_parent"
+                android:gravity="center"
                 android:layout_marginStart="0dp"
                 android:layout_marginEnd="4dp"
-                android:text="Test result"
+                android:text="@string/test_result_title"
                 android:textColor="@color/button_green"
                 android:textStyle="bold"
-                android:textAlignment="textStart" />
+                />
 
             <TextView
                 android:id="@+id/tvResult"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/tvResultLabel"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:layout_marginStart="4dp"
-                android:layout_toEndOf="@+id/tvResultLabel"
                 android:textAlignment="textStart"
+                android:layout_marginEnd="5dp"
                 tools:text="Blockheight: 1710998 (v9), Ping: 187ms"
-                android:layout_marginBottom="20dp"
-                android:layout_marginTop="20dp"/>
-        </RelativeLayout>
+                />
+            <ImageView
+                android:id="@+id/iVVerified"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:src="@drawable/ic_baseline_check_circle_24"/>
+            <ImageView
+                android:id="@+id/iVConnectionError"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:src="@drawable/ic_baseline_error_24"/>
+        </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>

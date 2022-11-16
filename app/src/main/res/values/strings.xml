@@ -1246,6 +1246,10 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="estimated_fee" translatable="false">Estimated Fee: %1$s BDX</string>
     <string name="fiat_currency" translatable="false">%1$.2f %2$s</string>
     <string name="beldex_amount_valid_error_message" translatable="false">Enter valid amount</string>
+    <string name="no_node_connection" translatable="false">No node connection, Check your Internet</string>
+    <string name="home_screen_new_chat_title" translatable="false">New Chat</string>
+    <string name="home_screen_secret_groups_title" translatable="false">Secret Group</string>
+    <string name="home_screen_social_groups_title" translatable="false">Social Group</string>
     <string name="display_balance_as" translatable="false">Display Balance As</string>
     <string name="current_node" translatable="false">Current Node</string>
     <string name="wallets" translatable="false">Wallets</string>
@@ -1257,7 +1261,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="change_pin" translatable="false">Change Pin</string>
     <string name="no_record_found" translatable="false">No record found</string>
     <string name="no_address_found" translatable="false">No address found</string>
-    <string name="no_node_connection" translatable="false">No node connected, Check your internet</string>
     <string name="transaction_id" translatable="false">Transaction ID :</string>
     <string name="date_amp_time" translatable="false"><![CDATA[Date & Time :]]></string>
     <string name="height" translatable="false">Height :</string>

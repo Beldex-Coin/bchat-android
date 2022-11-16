@@ -10,8 +10,6 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.transition.MaterialContainerTransform
 import com.thoughtcrimes.securesms.data.*
 import com.thoughtcrimes.securesms.model.PendingTransaction
-import com.thoughtcrimes.securesms.wallet.OnUriScannedListener
-import com.thoughtcrimes.securesms.wallet.WalletActivity
 import com.thoughtcrimes.securesms.wallet.send.interfaces.SendConfirm
 import com.thoughtcrimes.securesms.wallet.utils.ThemeHelper
 import com.thoughtcrimes.securesms.wallet.widget.Toolbar
@@ -41,7 +39,7 @@ import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.model.WalletManager
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.push
-import com.thoughtcrimes.securesms.wallet.CheckOnline
+import com.thoughtcrimes.securesms.wallet.*
 import com.thoughtcrimes.securesms.wallet.utils.OpenAliasHelper
 import com.thoughtcrimes.securesms.wallet.utils.common.FiatCurrencyPrice
 import com.thoughtcrimes.securesms.wallet.utils.common.fetchPriceFor
@@ -61,7 +59,7 @@ import java.io.IOException
 import java.math.BigDecimal
 
 
-class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
+class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletScannedListener {
 
     val MIXIN = 0
 
@@ -102,6 +100,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
         fun setTitle(title: String?)
         fun setSubtitle(subtitle: String?)
         fun setOnUriScannedListener(onUriScannedListener: OnUriScannedListener?)
+        fun setOnUriWalletScannedListener(onUriWalletScannedListener: OnUriWalletScannedListener?)
         fun setBarcodeData(data: BarcodeData?)
 
         fun getBarcodeData(): BarcodeData?
@@ -142,6 +141,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
 
     interface OnScanListener {
         fun onScan()
+
     }
 
     fun onCreateTransactionFailed(errorText: String?) {
@@ -698,6 +698,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
         super.onAttach(context)
         activityCallback = context as Listener
         activityCallback!!.setOnUriScannedListener(this)
+        activityCallback!!.setOnUriWalletScannedListener(this)
         onScanListener = if (context is OnScanListener) {
             context
         } else {
@@ -812,6 +813,10 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
     }
 
     override fun onUriScanned(barcodeData: BarcodeData?): Boolean {
+        processScannedData(barcodeData)
+        return true
+    }
+    override fun onUriWalletScanned(barcodeData: BarcodeData?): Boolean {
         processScannedData(barcodeData)
         return true
     }

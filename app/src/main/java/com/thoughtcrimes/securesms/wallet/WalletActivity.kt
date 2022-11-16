@@ -17,6 +17,7 @@ import com.thoughtcrimes.securesms.wallet.listener.OnBlockUpdateListener
 import com.thoughtcrimes.securesms.wallet.receive.ReceiveFragment
 import com.thoughtcrimes.securesms.wallet.rescan.RescanDialog
 import com.thoughtcrimes.securesms.wallet.scanner.ScannerFragment
+import com.thoughtcrimes.securesms.wallet.scanner.WalletScannerFragment
 import com.thoughtcrimes.securesms.wallet.send.SendFragment
 import com.thoughtcrimes.securesms.wallet.service.WalletService
 import com.thoughtcrimes.securesms.wallet.settings.WalletSettings
@@ -31,7 +32,7 @@ import java.util.*
 
 class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.Observer,
     ScannerFragment.OnScannedListener, SendFragment.OnScanListener, SendFragment.Listener,
-    ReceiveFragment.Listener,WalletFragment.OnScanListener,ScannerFragment.Listener {
+    ReceiveFragment.Listener,WalletFragment.OnScanListener,WalletScannerFragment.OnWalletScannedListener, ScannerFragment.Listener {
     lateinit var binding: ActivityWalletBinding
 
 
@@ -43,6 +44,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     private var streetMode: Long = 0
     private var onUriScannedListener: OnUriScannedListener? = null
+    private var onUriWalletScannedListener: OnUriWalletScannedListener? = null
     private var barcodeData: BarcodeData? = null
 
     private val sendFragment: SendFragment? = null
@@ -480,10 +482,18 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         this.onUriScannedListener = onUriScannedListener
     }
 
+    override fun setOnUriWalletScannedListener(onUriWalletScannedListener: OnUriWalletScannedListener?) {
+        Log.d("Beldex","Value of barcode 6 onUriScannedListener called")
+        this.onUriWalletScannedListener = onUriWalletScannedListener
+    }
+
     override fun setOnBarcodeScannedListener(onUriScannedListener: OnUriScannedListener?) {
         Log.d("Beldex","Value of barcode 6 onUriScannedListener called")
         this.onUriScannedListener = onUriScannedListener
     }
+
+
+
 
     override fun onUriScanned(barcodeData: BarcodeData?) {
         super.onUriScanned(barcodeData)
@@ -501,6 +511,19 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     }
 
+    override fun onUriWalletScanned(barcodeData: BarcodeData?) {
+        super.onUriWalletScanned(barcodeData)
+        var processed = false
+        Log.d("Beldex","value of onUriWalletScannedListener $onUriWalletScannedListener")
+        if (onUriWalletScannedListener != null) {
+
+            processed = onUriWalletScannedListener!!.onUriWalletScanned(barcodeData)
+        }
+        if (!processed || onUriWalletScannedListener == null) {
+            Toast.makeText(this, getString(R.string.nfc_tag_read_what), Toast.LENGTH_LONG).show()
+        }
+    }
+
     private var startScanFragment = false
 
     override fun onResumeFragments() {
@@ -515,14 +538,27 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         val extras = Bundle()
         replaceFragment(ScannerFragment(), null, extras)
     }
+    private fun startWalletScanFragment() {
+        val extras = Bundle()
+        replaceFragment(WalletScannerFragment(), null, extras)
+    }
 
     /// QR scanner callbacks
     override fun onScan() {
+        if (Helper.getCameraPermission(this)) {
+            startWalletScanFragment()
+        } else {
+            Timber.i("Waiting for permissions")
+        }
+    }
+
+    override fun onWalletScan() {
         if (Helper.getCameraPermission(this)) {
             startScanFragment()
         } else {
             Timber.i("Waiting for permissions")
         }
+
     }
 
     override fun onScanned(qrCode: String?): Boolean {
@@ -533,6 +569,20 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             popFragmentStack(null)
             Timber.d("AAA")
             onUriScanned(bcData)
+            true
+        } else {
+            false
+        }
+    }
+
+    override fun onWalletScanned(qrCode: String?): Boolean {
+        // #gurke
+        val bcData = BarcodeData.fromString(qrCode)
+        Log.d("Beldex","Value of barcode 1 onWalletScanned $bcData")
+        return if (bcData != null) {
+            popFragmentStack(null)
+            Timber.d("AAA")
+            onUriWalletScanned(bcData)
             true
         } else {
             false

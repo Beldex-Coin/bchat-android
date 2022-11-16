@@ -104,6 +104,10 @@ public abstract class SecureActivity extends AppCompatActivity {
     void onUriScanned(BarcodeData barcodeData) {
         // do nothing by default yet
     }
+    @CallSuper
+    void onUriWalletScanned(BarcodeData barcodeData) {
+        // do nothing by default yet
+    }
 
     ProgressDialog progressDialog = null;
 

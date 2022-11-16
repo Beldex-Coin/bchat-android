@@ -71,6 +71,8 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
     interface OnScanListener {
         fun onScan()
+        fun onWalletScan()
+
     }
 
     private var syncProgress = -1
@@ -586,7 +588,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             popupMenu.show()
         }
         binding.scanQrCodeImg.setOnClickListener {
-            onScanListener?.onScan()
+            onScanListener?.onWalletScan()
         }
         return binding.root
     }

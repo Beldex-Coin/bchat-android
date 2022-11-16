@@ -433,7 +433,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
                                 s.toString().toDouble()
                             }   amount -> $amount   -->" + amount.toString()
                         )
-                        binding.currencyEditTxtLayout.editText!!.setText(String.format("%.9f", amount))
+                        binding.currencyEditTxtLayout.editText!!.setText(String.format("%.4f", amount))
                     } else {
                         binding.currencyEditTxtLayout.editText!!.text.clear()
                     }
@@ -461,7 +461,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm {
                                 editable.toString().toDouble()
                             }   amount -> $amount   -->" + amount.toString()
                         )
-                        binding.beldexAmountEditTxtLayout.editText!!.setText(String.format("%.9f", amount))
+                        binding.beldexAmountEditTxtLayout.editText!!.setText(String.format("%.4f", amount))
                     } else {
                         binding.beldexAmountEditTxtLayout.editText!!.text.clear()
                     }

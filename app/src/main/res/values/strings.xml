@@ -1077,7 +1077,7 @@
     <string name="activity_node_page_title" translatable="false">Node</string>
     <string name="activity_address_book_page_title" translatable="false">Address Book</string>
     <string name="estimated_fee_description" translatable="false">%1$s priority is set as the default fee.\nGo to setting to change the transaction priority.</string>
-    <string name="hint" translatable="false">0.000000000</string>
+    <string name="hint" translatable="false">0.0000</string>
     <string name="beldex" translatable="false">Beldex</string>
     <string name="send" translatable="false">Send</string>
 

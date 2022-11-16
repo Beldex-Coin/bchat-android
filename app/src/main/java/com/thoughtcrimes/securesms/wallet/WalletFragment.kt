@@ -847,9 +847,6 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             TextSecurePreferences.getDecimals(requireActivity())=="4 - Detailed" -> {
                 binding.tvBalance.text = String.format("%.4f", balance.toDouble())
             }
-            TextSecurePreferences.getDecimals(requireActivity())=="2 - Normal" -> {
-                binding.tvBalance.text = String.format("%.2f", balance.toDouble())
-            }
             TextSecurePreferences.getDecimals(requireActivity())=="0 - None"-> {
                 binding.tvBalance.text = String.format("%.0f", balance.toDouble())
             }

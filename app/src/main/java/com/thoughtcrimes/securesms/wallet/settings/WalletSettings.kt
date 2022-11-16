@@ -55,7 +55,6 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         feePriorityList.add("Flash")
 
         // data to populate the RecyclerView with
-        decimalsList.add("9 - Ultra")
         decimalsList.add("4 - Detailed")
         decimalsList.add("2 - Normal")
         decimalsList.add("0 - None")

@@ -1215,14 +1215,15 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         show(intent)
     }
 
-    override fun createNewClosedGroup() {
+    override fun createNewSecretGroup() {
         val intent = Intent(this, CreateClosedGroupActivity::class.java)
         show(intent, true)
     }
 
-    override fun joinOpenGroup() {
+    override fun joinSocialGroup() {
         val intent = Intent(this, JoinPublicChatNewActivity::class.java)
         show(intent)
+
     }
 
     /*Hales63*/

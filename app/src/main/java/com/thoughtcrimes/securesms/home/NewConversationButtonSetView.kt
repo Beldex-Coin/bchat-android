@@ -7,15 +7,20 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.PointF
+import android.graphics.Typeface
 import android.os.Build
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
+import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
+import androidx.core.content.res.ResourcesCompat
 import io.beldex.bchat.R
 import com.thoughtcrimes.securesms.util.*
 
@@ -28,15 +33,30 @@ class NewConversationButtonSetView : RelativeLayout {
     // region Convenience
     //Important
     /*private val bchatButtonExpandedPosition: PointF get() { return PointF(width.toFloat() / 2 - bchatButton.expandedSize / 2 - bchatButton.shadowMargin, 0.0f) }
-    private val closedGroupButtonExpandedPosition: PointF get() { return PointF(width.toFloat() - closedGroupButton.expandedSize - 2 * closedGroupButton.shadowMargin, height.toFloat() - bottomMargin - closedGroupButton.expandedSize - 2 * closedGroupButton.shadowMargin) }
-    private val openGroupButtonExpandedPosition: PointF get() { return PointF(0.0f, height.toFloat() - bottomMargin - openGroupButton.expandedSize - 2 * openGroupButton.shadowMargin) }
+    private val secretGroupButtonExpandedPosition: PointF get() { return PointF(width.toFloat() - secretGroupButton.expandedSize - 2 * secretGroupButton.shadowMargin, height.toFloat() - bottomMargin - secretGroupButton.expandedSize - 2 * secretGroupButton.shadowMargin) }
+    private val socialGroupButtonExpandedPosition: PointF get() { return PointF(0.0f, height.toFloat() - bottomMargin - socialGroupButton.expandedSize - 2 * socialGroupButton.shadowMargin) }
     private val buttonRestPosition: PointF get() { return PointF(width.toFloat() / 2 - mainButton.expandedSize / 2 - mainButton.shadowMargin, height.toFloat() - bottomMargin - mainButton.expandedSize - 2 * mainButton.shadowMargin) }*/
 
     //New Line
     private val bchatButtonExpandedPosition: PointF get() { return PointF(0.0f, height.toFloat() - bottomMargin - bchatButton.expandedSize - 2 * bchatButton.shadowMargin) }
-    private val closedGroupButtonExpandedPosition: PointF get() { return PointF(50.0f, 001.2f) }
-    private val openGroupButtonExpandedPosition: PointF get() { return PointF(width.toFloat()  - openGroupButton.expandedSize  - openGroupButton.shadowMargin, -70.0f)}
+    private val bchatButtonTitleExpandedPosition:PointF get() {
+        val x = bchatButtonExpandedPosition.x + bchatButton.width / 2 - bchatButtonTitle.width / 2
+        val y = bchatButtonExpandedPosition.y + bchatButton.height - bchatButtonTitle.height / 2
+        return PointF(x, y) }
+    private val secretGroupButtonExpandedPosition: PointF get() { return PointF(50.0f, 001.2f) }
+    private val secretGroupButtonTitleExpandedPosition:PointF get() {
+        val x = secretGroupButtonExpandedPosition.x + secretGroupButton.width / 2 - secretGroupButtonTitle.width / 2
+        val y = secretGroupButtonExpandedPosition.y + secretGroupButton.height - secretGroupButtonTitle.height / 2
+        return PointF(x, y) }
+    private val socialGroupButtonExpandedPosition: PointF get() { return PointF(width.toFloat()  - socialGroupButton.expandedSize  - socialGroupButton.shadowMargin, -70.0f)}
+    private val socialGroupButtonTitleExpandedPosition: PointF get()  {
+        val x = socialGroupButtonExpandedPosition.x + socialGroupButton.width / 2 - socialGroupButtonTitle.width / 2
+        val y = socialGroupButtonExpandedPosition.y + socialGroupButton.height - socialGroupButtonTitle.height / 2
+        return PointF(x, y)}
     private val buttonRestPosition: PointF get() { return PointF(width.toFloat()-mainButton.expandedSize-mainButton.shadowMargin, height.toFloat()-bottomMargin - mainButton.expandedSize-2 *mainButton.shadowMargin) }
+    private fun tooltipRestPosition(viewWidth: Int): PointF {
+        return PointF(width.toFloat() / 2 - viewWidth / 2, height.toFloat() - bottomMargin)
+    }
     // endregion
 
     // region Settings
@@ -47,10 +67,34 @@ class NewConversationButtonSetView : RelativeLayout {
     // endregion
 
     // region Components
-    public val mainButton by lazy { Button(context, true, R.drawable.ic_bchat_plus) }
+    val mainButton by lazy { Button(context, true, R.drawable.ic_bchat_plus) }
     private val bchatButton by lazy { Button(context, false, R.drawable.ic_chat) }
-    private val closedGroupButton by lazy { Button(context, false, R.drawable.ic_closed_group_chat) }
-    private val openGroupButton by lazy { Button(context, false, R.drawable.ic_open_group_chat) }
+    private val bchatButtonTitle by lazy {
+        TextView(context).apply {
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+            typeface = Typeface.DEFAULT_BOLD
+            setText(R.string.home_screen_new_chat_title)
+            isAllCaps = true
+        }
+    }
+    private val secretGroupButton by lazy { Button(context, false, R.drawable.ic_secret_group_chat) }
+    private val secretGroupButtonTitle by lazy {
+        TextView(context).apply {
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+            typeface = ResourcesCompat.getFont(this.context, R.font.poppins_bold)
+            setText(R.string.home_screen_secret_groups_title)
+            isAllCaps = true
+        }
+    }
+    private val socialGroupButton by lazy { Button(context, false, R.drawable.ic_social_group_chat) }
+    private val socialGroupButtonTitle by lazy {
+        TextView(context).apply {
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+            typeface = Typeface.DEFAULT_BOLD
+            setText(R.string.home_screen_social_groups_title)
+            isAllCaps = true
+        }
+    }
     // endregion
 
     // region Button
@@ -174,25 +218,31 @@ class NewConversationButtonSetView : RelativeLayout {
         isHapticFeedbackEnabled = true
         // Set up bchat button
         addView(bchatButton)
+        addView(bchatButtonTitle)
         bchatButton.alpha = 0.0f
+        bchatButtonTitle.alpha = 0.0f
         val bchatButtonLayoutParams = bchatButton.layoutParams as LayoutParams
         bchatButtonLayoutParams.addRule(ALIGN_PARENT_END, TRUE)
         bchatButtonLayoutParams.addRule(ALIGN_PARENT_BOTTOM, TRUE)
         bchatButtonLayoutParams.bottomMargin = bottomMargin.toInt()
         // Set up secret group button
-        addView(closedGroupButton)
-        closedGroupButton.alpha = 0.0f
-        val closedGroupButtonLayoutParams = closedGroupButton.layoutParams as LayoutParams
-        closedGroupButtonLayoutParams.addRule(ALIGN_PARENT_END, TRUE)
-        closedGroupButtonLayoutParams.addRule(ALIGN_PARENT_BOTTOM, TRUE)
-        closedGroupButtonLayoutParams.bottomMargin = bottomMargin.toInt()
+        addView(secretGroupButton)
+        addView(secretGroupButtonTitle)
+        secretGroupButton.alpha = 0.0f
+        secretGroupButtonTitle.alpha = 0.0f
+        val secretGroupButtonLayoutParams = secretGroupButton.layoutParams as LayoutParams
+        secretGroupButtonLayoutParams.addRule(ALIGN_PARENT_END, TRUE)
+        secretGroupButtonLayoutParams.addRule(ALIGN_PARENT_BOTTOM, TRUE)
+        secretGroupButtonLayoutParams.bottomMargin = bottomMargin.toInt()
         // Set up social group button
-        addView(openGroupButton)
-        openGroupButton.alpha = 0.0f
-        val openGroupButtonLayoutParams = openGroupButton.layoutParams as LayoutParams
-        openGroupButtonLayoutParams.addRule(ALIGN_PARENT_END, TRUE)
-        openGroupButtonLayoutParams.addRule(ALIGN_PARENT_BOTTOM, TRUE)
-        openGroupButtonLayoutParams.bottomMargin = bottomMargin.toInt()
+        addView(socialGroupButton)
+        addView(socialGroupButtonTitle)
+        socialGroupButton.alpha = 0.0f
+        socialGroupButtonTitle.alpha = 0.0f
+        val socialGroupButtonLayoutParams = socialGroupButton.layoutParams as LayoutParams
+        socialGroupButtonLayoutParams.addRule(ALIGN_PARENT_END, TRUE)
+        socialGroupButtonLayoutParams.addRule(ALIGN_PARENT_BOTTOM, TRUE)
+        socialGroupButtonLayoutParams.bottomMargin = bottomMargin.toInt()
         // Set up main button
         addView(mainButton)
         val mainButtonLayoutParams = mainButton.layoutParams as LayoutParams
@@ -205,8 +255,8 @@ class NewConversationButtonSetView : RelativeLayout {
     // region Interaction
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val touch = PointF(event.x, event.y)
-        val allButtons = listOf( mainButton, bchatButton, closedGroupButton, openGroupButton )
-        val buttonsExcludingMainButton = listOf( bchatButton, closedGroupButton, openGroupButton )
+        val allButtons = listOf( mainButton, bchatButton, secretGroupButton, socialGroupButton )
+        val buttonsExcludingMainButton = listOf( bchatButton, secretGroupButton, socialGroupButton )
         if (allButtons.none { it.contains(touch) }) { return false }
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
@@ -222,15 +272,15 @@ class NewConversationButtonSetView : RelativeLayout {
                     performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
                 }
             }
-            MotionEvent.ACTION_MOVE -> {
+           /* MotionEvent.ACTION_MOVE -> {
                 mainButton.x = touch.x - mainButton.expandedSize
                 mainButton.y = touch.y - mainButton.expandedSize
                 mainButton.alpha = 1 - (PointF(mainButton.x, mainButton.y).distanceTo(buttonRestPosition) / maxDragDistance)
                 val buttonToExpand = buttonsExcludingMainButton.firstOrNull { button ->
                     var hasUserDraggedBeyondButton = false
-                    if (button == openGroupButton && touch.isAbove(openGroupButton, dragMargin)) { hasUserDraggedBeyondButton = true }
+                    if (button == socialGroupButton && touch.isAbove(socialGroupButton, dragMargin)) { hasUserDraggedBeyondButton = true }
                     if (button == bchatButton && touch.isLeftOf(bchatButton, dragMargin)) { hasUserDraggedBeyondButton = true }
-                    if (button == closedGroupButton) { hasUserDraggedBeyondButton = true }
+                    if (button == secretGroupButton) { hasUserDraggedBeyondButton = true }
                     button.contains(touch) || hasUserDraggedBeyondButton
                 }
                 if (buttonToExpand != null) {
@@ -242,7 +292,7 @@ class NewConversationButtonSetView : RelativeLayout {
                     expandedButton?.collapse()
                     this.expandedButton = null
                 }
-            }
+            }*/
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 val mainButtonCenter = PointF(width.toFloat(), height.toFloat() - bottomMargin - mainButton.expandedSize)
                 val distanceFromMainButtonCenter = touch.distanceTo(mainButtonCenter)
@@ -252,8 +302,8 @@ class NewConversationButtonSetView : RelativeLayout {
                 }
                 if (distanceFromMainButtonCenter > (minDragDistance + mainButton.collapsedSize / 2)) {
                     if (bchatButton.contains(touch) || touch.isLeftOf(bchatButton, dragMargin)) { delegate?.createNewPrivateChat(); collapse() }
-                    else if (closedGroupButton.contains(touch)) { delegate?.createNewClosedGroup(); collapse() }
-                    else if (openGroupButton.contains(touch) || touch.isAbove(openGroupButton, dragMargin)) { delegate?.joinOpenGroup(); collapse() }
+                    else if (secretGroupButton.contains(touch)) { delegate?.createNewSecretGroup(); collapse() }
+                    else if (socialGroupButton.contains(touch) || touch.isAbove(socialGroupButton, dragMargin)) { delegate?.joinSocialGroup(); collapse() }
                     else { collapse() }
                 } else {
                     val currentPosition = PointF(mainButton.x, mainButton.y)
@@ -269,33 +319,62 @@ class NewConversationButtonSetView : RelativeLayout {
         return true
     }
 
-    public fun expand() {
-        val buttonsExcludingMainButton = listOf( bchatButton, closedGroupButton, openGroupButton )
+    fun expand() {
+        val buttonsExcludingMainButton = listOf( bchatButton, secretGroupButton, socialGroupButton )
+        val allTooltips = listOf(bchatButtonTitle, secretGroupButtonTitle, socialGroupButtonTitle)
+
         bchatButton.animatePositionChange(buttonRestPosition, bchatButtonExpandedPosition)
-        closedGroupButton.animatePositionChange(buttonRestPosition, closedGroupButtonExpandedPosition)
-        openGroupButton.animatePositionChange(buttonRestPosition, openGroupButtonExpandedPosition)
+        bchatButtonTitle.animatePositionChange(tooltipRestPosition(bchatButtonTitle.width), bchatButtonTitleExpandedPosition)
+        secretGroupButton.animatePositionChange(buttonRestPosition, secretGroupButtonExpandedPosition)
+        secretGroupButtonTitle.animatePositionChange(tooltipRestPosition(secretGroupButtonTitle.width),secretGroupButtonTitleExpandedPosition)
+        socialGroupButton.animatePositionChange(buttonRestPosition, socialGroupButtonExpandedPosition)
+        socialGroupButtonTitle.animatePositionChange(tooltipRestPosition(socialGroupButtonTitle.width),socialGroupButtonTitleExpandedPosition)
         buttonsExcludingMainButton.forEach { it.animateAlphaChange(0.0f, 1.0f) }
+        allTooltips.forEach { it.animateAlphaChange(0.0f, 1.0f) }
         postDelayed({ isExpanded = true }, Button.animationDuration)
     }
 
-    public fun collapse() {
-        val allButtons = listOf( mainButton, bchatButton, closedGroupButton, openGroupButton )
+     fun collapse() {
+        val allButtons = listOf( mainButton, bchatButton, secretGroupButton, socialGroupButton )
+         val allButtonsTitle = listOf(bchatButtonTitle,secretGroupButtonTitle,socialGroupButtonTitle)
         allButtons.forEach {
             val currentPosition = PointF(it.x, it.y)
             it.animatePositionChange(currentPosition, buttonRestPosition)
             val endAlpha = if (it == mainButton) 1.0f else 0.0f
             it.animateAlphaChange(it.alpha, endAlpha)
         }
+         allButtonsTitle.forEach {
+             it.animateAlphaChange(1.0f, 0.0f)
+             it.animatePositionChange(PointF(it.x, it.y), tooltipRestPosition(it.width))
+         }
         postDelayed({ isExpanded = false }, Button.animationDuration)
     }
     // endregion
 }
+fun View.animatePositionChange(startPosition: PointF, endPosition: PointF) {
+    val animation = ValueAnimator.ofObject(PointFEvaluator(), startPosition, endPosition)
+    animation.duration = NewConversationButtonSetView.Button.animationDuration
+    animation.addUpdateListener { animator ->
+        val point = animator.animatedValue as PointF
+        x = point.x
+        y = point.y
+    }
+    animation.start()
+}
 
+fun View.animateAlphaChange(startAlpha: Float, endAlpha: Float) {
+    val animation = ValueAnimator.ofObject(FloatEvaluator(), startAlpha, endAlpha)
+    animation.duration = NewConversationButtonSetView.Button.animationDuration
+    animation.addUpdateListener { animator ->
+        alpha = animator.animatedValue as Float
+    }
+    animation.start()
+}
 // region Delegate
 interface NewConversationButtonSetViewDelegate {
 
-    fun joinOpenGroup()
+    fun joinSocialGroup()
     fun createNewPrivateChat()
-    fun createNewClosedGroup()
+    fun createNewSecretGroup()
 }
 // endregion

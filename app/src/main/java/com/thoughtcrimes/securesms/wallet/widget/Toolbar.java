@@ -102,7 +102,7 @@ public class Toolbar extends MaterialToolbar {
         }
     }
 
-    /*public void hiddenRescan(Boolean status){
+   /* public void hiddenRescan(Boolean status){
         if(!status) {
             toolBarRescan.setVisibility(View.GONE);
         }else{

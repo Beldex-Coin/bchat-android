@@ -898,7 +898,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         startNodeFragment()
     }
 
-    /*override fun hiddenRescan(status: Boolean) {
+   /* override fun hiddenRescan(status: Boolean) {
         binding.toolbar.hiddenRescan(status)
     }*/
 

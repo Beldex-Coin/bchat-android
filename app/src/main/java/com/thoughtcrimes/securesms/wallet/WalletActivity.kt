@@ -865,16 +865,21 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
                     Toast.LENGTH_LONG
                 ).show()
             } else {
-                if (Wallet.ConnectionStatus.ConnectionStatus_WrongVersion === walletStatus.connectionStatus) Toast.makeText(
+                if (Wallet.ConnectionStatus.ConnectionStatus_WrongVersion === walletStatus.connectionStatus) {
+                    Toast.makeText(
                     this@WalletActivity,
                     getString(R.string.status_wallet_connect_wrong_version),
                     Toast.LENGTH_LONG
-                ).show() else if (!walletStatus.isOk) Timber.d("Not Ok %s", walletStatus.toString())
-                Toast.makeText(
-                    this@WalletActivity,
-                    walletStatus.errorString,
-                    Toast.LENGTH_LONG
-                ).show()
+                ).show() }else if (!walletStatus.isOk) {
+                    Timber.d("Not Ok %s", walletStatus.toString())
+                    if(walletStatus.errorString.isNotEmpty()) {
+                        Toast.makeText(
+                            this@WalletActivity,
+                            walletStatus.errorString,
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
             }
         }
         if (walletStatus == null || Wallet.ConnectionStatus.ConnectionStatus_Connected !== walletStatus.connectionStatus) {

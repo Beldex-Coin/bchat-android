@@ -186,6 +186,34 @@ interface TextSecurePreferences {
     fun isUnBlocked(): Boolean
     fun setUnBlockedStatus(status: Boolean)
 
+    //SteveJosephh21
+    fun setDaemon(status: Boolean)
+    fun getDaemon():Boolean
+
+    fun setDisplayBalanceAs(position:Int)
+    fun getDisplayBalanceAs():Int
+    fun setFeePriority(position:Int)
+    fun getFeePriority():Int
+    fun setDecimals(position: String?)
+    fun getDecimals():String?
+    fun setCurrency(position: String?)
+    fun getCurrency():String?
+
+    fun setIncomingTransactionStatus(status:Boolean)
+    fun getIncomingTransactionStatus():Boolean
+
+    fun setOutgoingTransactionStatus(status:Boolean)
+    fun getOutgoingTransactionStatus():Boolean
+
+    fun setTransactionsByDateStatus(status: Boolean)
+    fun getTransactionsByDateStatus():Boolean
+
+    fun setWalletEntryPassword(name: String?)
+    fun getWalletEntryPassword(): String?
+
+    fun setSendAddressDisable(status: Boolean)
+    fun getSendAddress(): Boolean
+
 
     companion object {
         val TAG = TextSecurePreferences::class.simpleName
@@ -230,6 +258,7 @@ interface TextSecurePreferences {
         const val PROFILE_NAME_PREF = "pref_profile_name"
         const val WALLET_NAME_PREF = "pref_wallet_name"
         const val WALLET_PASSWORD_PREF = "pref_wallet_password"
+        const val WALLET_ENTRY_PASSWORD_PREF = "pref_wallet_entry_password"
         const val PROFILE_AVATAR_ID_PREF = "pref_profile_avatar_id"
         const val PROFILE_AVATAR_URL_PREF = "pref_profile_avatar_url"
         const val READ_RECEIPTS_PREF = "pref_read_receipts"
@@ -275,6 +304,15 @@ interface TextSecurePreferences {
         const val IS_REMOTE_HANG_UP = "is_remote_hang_up"
         const val UN_BLOCK_STATUS = "un_blocked"
         const val IS_REMOTE_CALL_ENDED = "is_remote_call_ended"
+        const val CHANGE_DAEMON_STATUS ="change_daemon_status"
+        const val DISPLAY_BALANCE_AS = "display_balance_as"
+        const val FEE_PRIORITY = "fee_priority"
+        const val DECIMALS = "decimals"
+        const val CURRENCY = "currency"
+        const val INCOMING_TRANSACTION_STATUS = "incoming_transaction_status"
+        const val OUTGOING_TRANSACTION_STATUS = "outgoing_transaction_status"
+        const val TRANSACTIONS_BY_DATE = "transactions_by_date"
+        const val SEND_ADDRESS = "send_address"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -1059,6 +1097,108 @@ interface TextSecurePreferences {
             setBooleanPreference(context, IS_REMOTE_CALL_ENDED, status)
         }
 
+        @JvmStatic
+        fun changeDaemon(context: Context, enabled: Boolean) {
+            setBooleanPreference(context, CHANGE_DAEMON_STATUS, enabled)
+        }
+
+        @JvmStatic
+        fun getDaemon(context: Context): Boolean {
+            return getBooleanPreference(context, CHANGE_DAEMON_STATUS, false)
+        }
+
+        @JvmStatic
+        fun setDisplayBalanceAs(context: Context, position: Int) {
+            setIntegerPreference(context, DISPLAY_BALANCE_AS, position)
+        }
+
+        @JvmStatic
+        fun getDisplayBalanceAs(context: Context): Int {
+            return getIntegerPreference(context, DISPLAY_BALANCE_AS, 1)
+        }
+
+        @JvmStatic
+        fun setFeePriority(context: Context, position: Int) {
+            setIntegerPreference(context, FEE_PRIORITY, position)
+        }
+
+        @JvmStatic
+        fun getFeePriority(context: Context): Int {
+            return getIntegerPreference(context, FEE_PRIORITY, 1)
+        }
+
+        @JvmStatic
+        fun setDecimals(context: Context, position: String?) {
+            setStringPreference(context, DECIMALS, position)
+        }
+
+        @JvmStatic
+        fun getDecimals(context: Context): String? {
+            return getStringPreference(context, DECIMALS, "2 - Normal")
+        }
+
+        @JvmStatic
+        fun setCurrency(context: Context, position: String?) {
+            setStringPreference(context, CURRENCY, position)
+        }
+
+        @JvmStatic
+        fun getCurrency(context: Context): String? {
+            return getStringPreference(context, CURRENCY, "USD")
+        }
+
+        @JvmStatic
+        fun setIncomingTransactionStatus(context: Context, status: Boolean) {
+            setBooleanPreference(context, INCOMING_TRANSACTION_STATUS, status)
+        }
+
+        @JvmStatic
+        fun getIncomingTransactionStatus(context: Context): Boolean {
+            return getBooleanPreference(context, INCOMING_TRANSACTION_STATUS, true)
+        }
+
+        @JvmStatic
+        fun setOutgoingTransactionStatus(context: Context, status: Boolean) {
+            setBooleanPreference(context, OUTGOING_TRANSACTION_STATUS, status)
+        }
+
+        @JvmStatic
+        fun getOutgoingTransactionStatus(context: Context): Boolean {
+            return getBooleanPreference(context, OUTGOING_TRANSACTION_STATUS, true)
+        }
+
+
+        @JvmStatic
+        fun setTransactionsByDateStatus(context: Context, status: Boolean) {
+            setBooleanPreference(context, TRANSACTIONS_BY_DATE, status)
+        }
+
+        @JvmStatic
+        fun getTransactionsByDateStatus(context: Context): Boolean {
+            return getBooleanPreference(context, TRANSACTIONS_BY_DATE, false)
+        }
+
+        @JvmStatic
+        fun getWalletEntryPassword(context: Context): String? {
+            return getStringPreference(context, WALLET_ENTRY_PASSWORD_PREF, null)
+        }
+
+
+        @JvmStatic
+        fun setWalletEntryPassword(context: Context, name: String?) {
+            setStringPreference(context, WALLET_ENTRY_PASSWORD_PREF, name)
+            _events.tryEmit(WALLET_ENTRY_PASSWORD_PREF)
+        }
+        @JvmStatic
+        fun setSendAddressDisable(context: Context, status: Boolean) {
+            setBooleanPreference(context, SEND_ADDRESS, status)
+        }
+
+        @JvmStatic
+        fun getSendAddress(context: Context): Boolean {
+            return getBooleanPreference(context, SEND_ADDRESS, false)
+        }
+
     }
 }
 
@@ -1720,7 +1860,7 @@ class AppTextSecurePreferences @Inject constructor(
     }
 
     override fun isRemoteHangup(): Boolean {
-       return getBooleanPreference(TextSecurePreferences.IS_REMOTE_HANG_UP, false)
+        return getBooleanPreference(TextSecurePreferences.IS_REMOTE_HANG_UP, false)
     }
 
     override fun isUnBlocked(): Boolean {
@@ -1737,5 +1877,86 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun isRemoteCallEnded(): Boolean {
         return getBooleanPreference(TextSecurePreferences.IS_REMOTE_CALL_ENDED, false)
+    }
+
+    override fun getDaemon(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.CHANGE_DAEMON_STATUS, false)
+    }
+
+    override fun setDaemon(status: Boolean) {
+        setBooleanPreference(TextSecurePreferences.CHANGE_DAEMON_STATUS, status)
+    }
+
+    override fun setDisplayBalanceAs(position: Int) {
+        setIntegerPreference(TextSecurePreferences.DISPLAY_BALANCE_AS, position)
+    }
+
+    override fun getDisplayBalanceAs():Int {
+        return getIntegerPreference(TextSecurePreferences.DISPLAY_BALANCE_AS,1)
+    }
+
+    override fun setFeePriority(position: Int) {
+        setIntegerPreference(TextSecurePreferences.FEE_PRIORITY, position)
+    }
+
+    override fun getFeePriority():Int {
+        return getIntegerPreference(TextSecurePreferences.FEE_PRIORITY,1)
+    }
+
+    override fun setDecimals(position: String?) {
+        setStringPreference(TextSecurePreferences.DECIMALS, position)
+    }
+
+    override fun getDecimals(): String? {
+        return getStringPreference(TextSecurePreferences.DECIMALS,"2 - Normal")
+    }
+
+    override fun setCurrency(position: String?) {
+        setStringPreference(TextSecurePreferences.CURRENCY, position)
+    }
+
+    override fun getCurrency(): String? {
+        return getStringPreference(TextSecurePreferences.CURRENCY,"USD")
+    }
+
+    override fun setIncomingTransactionStatus(status: Boolean) {
+        setBooleanPreference(TextSecurePreferences.INCOMING_TRANSACTION_STATUS, status)
+    }
+
+    override fun getIncomingTransactionStatus(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.INCOMING_TRANSACTION_STATUS,true)
+    }
+
+    override fun setOutgoingTransactionStatus(status: Boolean) {
+        setBooleanPreference(TextSecurePreferences.OUTGOING_TRANSACTION_STATUS, status)
+    }
+
+    override fun getOutgoingTransactionStatus(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.OUTGOING_TRANSACTION_STATUS,true)
+    }
+
+    override fun setTransactionsByDateStatus(status: Boolean) {
+        setBooleanPreference(TextSecurePreferences.TRANSACTIONS_BY_DATE, status)
+    }
+
+    override fun getTransactionsByDateStatus(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.TRANSACTIONS_BY_DATE,false)
+    }
+
+    override fun setWalletEntryPassword(name: String?) {
+        setStringPreference(TextSecurePreferences.WALLET_ENTRY_PASSWORD_PREF, name)
+        TextSecurePreferences._events.tryEmit(TextSecurePreferences.WALLET_ENTRY_PASSWORD_PREF)
+    }
+
+    override fun getWalletEntryPassword():String?{
+        return getStringPreference(TextSecurePreferences.WALLET_ENTRY_PASSWORD_PREF, null)
+    }
+
+    override fun setSendAddressDisable(status: Boolean) {
+        setBooleanPreference(TextSecurePreferences.SEND_ADDRESS,status)
+    }
+
+    override fun getSendAddress(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.SEND_ADDRESS,false)
     }
 }

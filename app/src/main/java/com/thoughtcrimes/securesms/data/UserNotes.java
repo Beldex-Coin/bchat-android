@@ -9,11 +9,11 @@ import java.util.regex.Pattern;
 public class UserNotes {
     public String txNotes = "";
     public String note = "";
-    public String xmrtoTag = null;
-    public String xmrtoKey = null;
-    public String xmrtoAmount = null; // could be a double - but we are not doing any calculations
-    public String xmrtoCurrency = null;
-    public String xmrtoDestination = null;
+    public String bdxtoTag = null;
+    public String bdxtoKey = null;
+    public String bdxtoAmount = null; // could be a double - but we are not doing any calculations
+    public String bdxtoCurrency = null;
+    public String bdxtoDestination = null;
 
     public UserNotes(final String txNotes) {
         if (txNotes == null) {
@@ -23,11 +23,11 @@ public class UserNotes {
         Pattern p = Pattern.compile("^\\{([a-z]+)-(\\w{6,}),([0-9.]*)([A-Z]+),(\\w*)\\} ?(.*)");
         Matcher m = p.matcher(txNotes);
         if (m.find()) {
-            xmrtoTag = m.group(1);
-            xmrtoKey = m.group(2);
-            xmrtoAmount = m.group(3);
-            xmrtoCurrency = m.group(4);
-            xmrtoDestination = m.group(5);
+            bdxtoTag = m.group(1);
+            bdxtoKey = m.group(2);
+            bdxtoAmount = m.group(3);
+            bdxtoCurrency = m.group(4);
+            bdxtoDestination = m.group(5);
             note = m.group(6);
         } else {
             note = txNotes;
@@ -43,36 +43,36 @@ public class UserNotes {
         txNotes = buildTxNote();
     }
 
-    public void setXmrtoOrder(CreateOrder order) {
+    public void setBdxtoOrder(CreateOrder order) {
         if (order != null) {
-            xmrtoTag = order.TAG;
-            xmrtoKey = order.getOrderId();
-            xmrtoAmount = Helper.getDisplayAmount(order.getBtcAmount());
-            xmrtoCurrency = order.getBtcCurrency();
-            xmrtoDestination = order.getBtcAddress();
+            bdxtoTag = order.TAG;
+            bdxtoKey = order.getOrderId();
+            bdxtoAmount = Helper.getDisplayAmount(order.getBtcAmount());
+            bdxtoCurrency = order.getBtcCurrency();
+            bdxtoDestination = order.getBtcAddress();
         } else {
-            xmrtoTag = null;
-            xmrtoKey = null;
-            xmrtoAmount = null;
-            xmrtoDestination = null;
+            bdxtoTag = null;
+            bdxtoKey = null;
+            bdxtoAmount = null;
+            bdxtoDestination = null;
         }
         txNotes = buildTxNote();
     }
 
     private String buildTxNote() {
         StringBuilder sb = new StringBuilder();
-        if (xmrtoKey != null) {
-            if ((xmrtoAmount == null) || (xmrtoDestination == null))
+        if (bdxtoKey != null) {
+            if ((bdxtoAmount == null) || (bdxtoDestination == null))
                 throw new IllegalArgumentException("Broken notes");
             sb.append("{");
-            sb.append(xmrtoTag);
+            sb.append(bdxtoTag);
             sb.append("-");
-            sb.append(xmrtoKey);
+            sb.append(bdxtoKey);
             sb.append(",");
-            sb.append(xmrtoAmount);
-            sb.append(xmrtoCurrency);
+            sb.append(bdxtoAmount);
+            sb.append(bdxtoCurrency);
             sb.append(",");
-            sb.append(xmrtoDestination);
+            sb.append(bdxtoDestination);
             sb.append("}");
             if ((note != null) && (!note.isEmpty()))
                 sb.append(" ");
@@ -93,9 +93,9 @@ public class UserNotes {
 
         String getOrderId();
 
-        double getXmrAmount();
+        double getBdxAmount();
 
-        String getXmrAddress();
+        String getBdxAddress();
 
         Date getCreatedAt(); // createdAt
 

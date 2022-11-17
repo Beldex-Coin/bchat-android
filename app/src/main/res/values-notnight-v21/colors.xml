@@ -90,4 +90,25 @@
     <color name="remote_parent_background">#FFFFFF</color>
     <color name="dialog_header_background">#FC3B3B</color>
     <color name="call_toolbar_background">#128D15</color>
+    <color name="wallet_card_color">#FFFFFF</color>
+    <color name="wallet_send_button">#FC2727</color>
+    <color name="wallet_receive_button">#128D15</color>
+    <color name="wallet_page_background">#F2F2F2</color>
+    <color name="wallet_card_transaction_card_background">#EAEAEA</color>
+    <color name="wallet_scan_qr_button_background">#FFFFFF</color>
+    <color name="wallet_transaction_list_item_card_background">#F2F2F2</color>
+
+
+    <color name="wallet_primary_variant">#CCC3BD</color>
+    <color name="green_color">#2EA021</color>
+    <color name="orange_color">#FA5544</color>
+    <color name="tx_failed">@color/wallet_primary_variant</color>
+    <color name="tx_pending">@color/wallet_primary_variant</color>
+    <color name="tx_plus">@color/green_color</color>
+    <color name="tx_minus">@color/orange_color</color>
+    <color name="wallet_settings_card_background">#F4F4F4</color>
+    <color name="no_transaction_image_border1">#e6e6e6</color>
+    <color name="no_transaction_image_border2">#a3a3b2</color>
+    <color name="no_transaction_image_border3">#eaeaea</color>
+    <color name="dialog_title_color">#77778B</color>
 </resources>

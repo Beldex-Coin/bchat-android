@@ -43,4 +43,5 @@ interface DatabaseComponent {
     fun bchatContactDatabase(): BchatContactDatabase
     fun storage(): Storage
     fun attachmentProvider(): MessageDataProvider
+    fun bchatRecipientAddressDatabase():BchatRecipientAddressDatabase
 }

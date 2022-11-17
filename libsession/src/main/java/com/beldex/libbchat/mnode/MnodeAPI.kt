@@ -114,7 +114,7 @@ object MnodeAPI {
         if (mnodePool.count() < minimumMnodePoolCount) {
             val target = seedNodePool.random()
             val url = "$target/json_rpc"
-            Log.d("Beldex", "Populating mnode pool using: $target.")
+            Log.d("Beldex", "Populating mnode pool using: $target")
             val parameters = mapOf(
                 "method" to "get_n_master_nodes",
                 "params" to mapOf(

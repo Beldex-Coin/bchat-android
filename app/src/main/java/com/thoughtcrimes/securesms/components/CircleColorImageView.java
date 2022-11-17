@@ -3,6 +3,7 @@ package com.thoughtcrimes.securesms.components;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import androidx.appcompat.widget.AppCompatImageView;
@@ -20,7 +21,12 @@ public class CircleColorImageView extends AppCompatImageView {
     this(context, attrs, 0);
   }
 
-  public CircleColorImageView(Context context, AttributeSet attrs, int defStyleAttr) {
+    @Override
+    public void setColorFilter(ColorFilter cf) {
+        super.setColorFilter(cf);
+    }
+
+    public CircleColorImageView(Context context, AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
 
     int circleColor = Color.WHITE;

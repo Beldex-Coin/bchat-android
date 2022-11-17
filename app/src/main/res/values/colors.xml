@@ -185,4 +185,5 @@
     <color name="wallet_sub_options_list_item_color">#77778B</color>
     <color name="wallet_sub_options_selected_list_item_color">@color/card_color</color>
     <color name="dialog_title_color">#77778B</color>
+    <color name="wallet_bottom_card_color">#0F0F14</color>
 </resources>

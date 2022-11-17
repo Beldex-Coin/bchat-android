@@ -88,9 +88,9 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             /*if (tvWalletAccountStatus.getText() === "") {
                 tvWalletAccountStatus.setText("--")
             }*/
-            if (binding.walletName.text === "") {
+            /*if (binding.walletName.text === "") {
                 binding.walletName.text = "--"
-            }
+            }*/
             binding.progressBar.visibility = View.VISIBLE
         } else { // <0
             binding.progressBar.visibility = View.GONE
@@ -164,7 +164,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         Timber.d("onResume()")
         activityCallback!!.setTitle(getString(R.string.my_wallet))
         activityCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
-        binding.walletName.text = walletTitle
+        //binding.walletName.text = walletTitle
         //Important
         //tvWalletAccountStatus.setText(walletSubtitle)
         setProgress(syncProgress)
@@ -384,7 +384,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         binding.sendCardViewButton.isEnabled = false
         binding.scanQrCodeImg.isEnabled = false
 
-        binding.walletName.text = walletTitle
+        //binding.walletName.text = walletTitle
         //Important
         //tvWalletAccountStatus.setText(walletSubtitle)
         showBalance(Helper.getDisplayAmount(0))
@@ -678,7 +678,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         walletTitle = wallet.name
         //Important
         //walletSubtitle = wallet.accountLabel
-        binding.walletName.text = walletTitle
+        //binding.walletName.text = walletTitle
         binding.transactionTitle.visibility = View.VISIBLE
         binding.transactionLayoutCardView.visibility = View.VISIBLE
         //Important

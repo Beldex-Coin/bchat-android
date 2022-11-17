@@ -111,4 +111,5 @@
     <color name="no_transaction_image_border2">#a3a3b2</color>
     <color name="no_transaction_image_border3">#eaeaea</color>
     <color name="dialog_title_color">#77778B</color>
+    <color name="wallet_bottom_card_color">@color/white</color>
 </resources>

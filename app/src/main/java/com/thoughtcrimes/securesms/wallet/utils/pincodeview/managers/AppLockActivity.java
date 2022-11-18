@@ -2,6 +2,8 @@ package com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,6 +16,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.beldex.libbchat.utilities.TextSecurePreferences;
@@ -118,7 +121,7 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
     protected void onResume() {
         super.onResume();
         //Init layout for Fingerprint
-        initLayoutForFingerprint();
+        //initLayoutForFingerprint();
     }
 
     @Override
@@ -448,6 +451,10 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
      */
     public void setPinCode(String pinCode) {
         mPinCode = pinCode;
+       /* if (mPinCode.length() == this.getPinLength()) {
+            Log.d("AppLock","step 8 -> "+mPinCode.length()+" getPinLength() -> "+this.getPinLength());
+            onPinCodeInputed();
+        }*/
         mPinCodeRoundView.refresh(mPinCode.length());
     }
 

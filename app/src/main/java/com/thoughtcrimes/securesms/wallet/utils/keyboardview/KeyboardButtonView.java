@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -64,17 +65,28 @@ public class KeyboardButtonView extends RelativeLayout{
             }
 
             mRippleView = (RippleView) view.findViewById(R.id.pin_code_keyboard_button_ripple);
+            mRippleView.setOnClickListener(new View.OnClickListener(){
+
+                @Override
+                public void onClick(View view) {
+                    if (mKeyboardButtonClickedListener != null) {
+                        Log.d("KeyBoard -----","5");
+                        mKeyboardButtonClickedListener.onRippleAnimationEnd();
+                    }
+                }
+            });
             mRippleView.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
 
                 @Override
                 public void onComplete(RippleView rippleView) {
+                    Log.d("KeyBoard -","1");
                     if (rippleView != null) {
+                        Log.d("KeyBoard --","2");
                         if (!rippleEnabled) {
+                            Log.d("KeyBoard ---","3");
                             mRippleView.setVisibility(View.INVISIBLE);
                         }
-                        if (mKeyboardButtonClickedListener != null) {
-                            mKeyboardButtonClickedListener.onRippleAnimationEnd();
-                        }
+                        Log.d("KeyBoard ----","4");
                     }
                 }
 

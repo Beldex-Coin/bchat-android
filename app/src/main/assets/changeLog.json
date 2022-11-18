@@ -107,6 +107,26 @@
           "description":"- Minor bug fixes"
         }
       ]
+    },
+    {
+      "title": "2.0.0",
+      "descriptions": [
+        {
+          "description":"- Wallet Integration"
+        },
+        {
+          "description":"- Info Text added on Floating Action Button (+)"
+        },
+        {
+          "description":"- BChat contacts as Wallet address book"
+        },
+        {
+          "description":"- Search feature in Address Book"
+        },
+        {
+          "description":"- Animation issue fixed in floating action button"
+        }
+      ]
     }
   ]
 }

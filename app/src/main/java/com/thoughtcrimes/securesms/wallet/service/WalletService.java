@@ -526,7 +526,7 @@ public class WalletService extends Service {
     @Nullable
     private Wallet.Status start(String walletName, String walletPassword) {
         Timber.d("start()");
-        startNotification();
+        //startNotification();
         showProgress(getString(R.string.status_wallet_loading));
         showProgress(10);
         if (listener == null) {

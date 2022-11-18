@@ -82,3 +82,4 @@ class WalletScannerFragment: Fragment(), ZXingScannerView.ResultHandler {
         }
     }
 }
+

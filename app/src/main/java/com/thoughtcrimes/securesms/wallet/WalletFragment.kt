@@ -41,6 +41,7 @@ import io.beldex.bchat.databinding.FragmentWalletBinding
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
+import org.w3c.dom.Text
 import timber.log.Timber
 import java.io.IOException
 import java.lang.ClassCastException
@@ -70,7 +71,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
     var onScanListener: OnScanListener? = null
 
     interface OnScanListener {
-        fun onScan()
+        /*fun onScan()*/
         fun onWalletScan()
 
     }
@@ -177,7 +178,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
     }
 
     fun pingSelectedNode() {
-
+        Log.d("Beldex","called pingSelectedNode ")
         val PING_SELECTED = 0
         val FIND_BEST = 1
         AsyncFindBestNode(PING_SELECTED, FIND_BEST).execute<Int>(PING_SELECTED)
@@ -193,12 +194,20 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         }
 
         override fun doInBackground(vararg params: Int?): NodeInfo? {
+            Log.d("Beldex","called AsyncFindBestNode")
+            Log.d("Beldex","called AsyncFindBestNode ${TextSecurePreferences.getDaemon(requireContext())} ")
+
+
             val favourites: Set<NodeInfo?> = activityCallback!!.getOrPopulateFavourites()
             var selectedNode: NodeInfo?
             if (params[0] == FIND_BEST) {
+                Log.d("Beldex","called AsyncFindBestNode 1")
                 selectedNode = autoselect(favourites)
             } else if (params[0] == PING_SELECTED) {
+                Log.d("Beldex","called AsyncFindBestNode 2")
                 selectedNode = activityCallback!!.getNode()
+                Log.d("Beldex","called AsyncFindBestNode 2 ${selectedNode?.host}")
+
                 if (!activityCallback!!.getFavouriteNodes().contains(selectedNode))
                     selectedNode = null // it's not in the favourites (any longer)
                 if (selectedNode == null)
@@ -214,10 +223,12 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                     selectedNode.testRpcService()
             } else throw IllegalStateException()
             return if (selectedNode != null && selectedNode.isValid) {
+                Log.d("Beldex","called AsyncFindBestNode 3")
                 Log.d("Testing-->12", "true")
                 activityCallback!!.setNode(selectedNode)
                 selectedNode
             } else {
+                Log.d("Beldex","called AsyncFindBestNode 4")
                 Log.d("Testing-->13", "true")
                 activityCallback!!.setNode(null)
                 null
@@ -225,6 +236,9 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         }
 
         override fun onPostExecute(result: NodeInfo?) {
+            Log.d("Beldex","Called onPostExecute ${result?.host}")
+            Toast.makeText(context, "${result!!.name}", Toast.LENGTH_SHORT).show()
+
             //if (!isAdded()) return
             //pbNode.setVisibility(View.INVISIBLE)
             //hideProgressDialogWithTitle();
@@ -316,6 +330,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        Log.d("Beldex","Value of current node ")
         binding = FragmentWalletBinding.inflate(inflater, container, false)
         //Get Selected Fiat Currency Price
         //if(TextSecurePreferences.getFiatCurrencyCheckedStatus(requireActivity())) {

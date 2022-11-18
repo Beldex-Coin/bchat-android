@@ -14,6 +14,7 @@ import com.thoughtcrimes.securesms.model.*
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.push
 import com.thoughtcrimes.securesms.wallet.listener.OnBlockUpdateListener
+import com.thoughtcrimes.securesms.wallet.node.NodeFragment
 import com.thoughtcrimes.securesms.wallet.receive.ReceiveFragment
 import com.thoughtcrimes.securesms.wallet.rescan.RescanDialog
 import com.thoughtcrimes.securesms.wallet.scanner.ScannerFragment
@@ -27,12 +28,13 @@ import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityWalletBinding
 import kotlinx.coroutines.NonCancellable.isCancelled
 import timber.log.Timber
+import java.io.File
 import java.lang.IllegalArgumentException
 import java.util.*
 
 class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.Observer,
     ScannerFragment.OnScannedListener, SendFragment.OnScanListener, SendFragment.Listener,
-    ReceiveFragment.Listener,WalletFragment.OnScanListener,WalletScannerFragment.OnWalletScannedListener, ScannerFragment.Listener {
+    ReceiveFragment.Listener,WalletFragment.OnScanListener,WalletScannerFragment.OnWalletScannedListener, ScannerFragment.Listener,NodeFragment.Listener {
     lateinit var binding: ActivityWalletBinding
 
 
@@ -79,6 +81,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
                     if(CheckOnline.isOnline(this)) {
                         onDisposeRequest()
                     }
+                    setBarcodeData(null)
                     onBackPressed()
                 }
                 Toolbar.BUTTON_CANCEL -> {
@@ -195,6 +198,10 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     override fun onBackPressedFun() {
+        if(CheckOnline.isOnline(this)) {
+            onDisposeRequest()
+        }
+        setBarcodeData(null)
         onBackPressed()
     }
 
@@ -327,6 +334,10 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     override fun getWallet(): Wallet {
         checkNotNull(mBoundService) { "WalletService not bound." }
         return mBoundService!!.wallet
+    }
+
+    override fun getStorageRoot(): File {
+        TODO("Not yet implemented")
     }
 
     override fun setToolbarButton(type: Int) {
@@ -979,10 +990,14 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     override fun setNode(node: NodeInfo?) {
+        Log.d("Beldex", "Value of current Setnode called in WalletActivity ${node?.host}")
         setNode(node, true)
     }
 
     private fun setNode(node: NodeInfo?, save: Boolean) {
+        Log.d("Beldex","Value of getNode in WalletActivity ${getNode()?.host}")
+        Log.d("Beldex","Value of current node in WalletActivity ${node?.host}")
+        Log.d("Beldex","Value of current node in WalletActivity 1 ${this.node?.host}")
         if (node !== this.node) {
             require(!(node != null && node.networkType !== WalletManager.getInstance().networkType)) { "network type does not match" }
             this.node = node
@@ -1024,6 +1039,16 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             saveFavourites()
         }
         return favouriteNodes
+    }
+
+    override fun setFavouriteNodes(nodes: MutableCollection<NodeInfo>?) {
+        Timber.d("adding %d nodes", nodes!!.size)
+        favouriteNodes.clear()
+        for (node in nodes) {
+            /*Log.d("adding %s %b", node, node.isFavourite)*/
+            if (node.isFavourite) favouriteNodes.add(node)
+        }
+        saveFavourites()
     }
 
     private fun getSelectedNodeId(): String? {
@@ -1069,6 +1094,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     private fun saveSelectedNode() { // save only if changed
         val nodeInfo = getNode()
+        Log.d("Beldex","Value of getNode ${nodeInfo?.host}")
         val selectedNodeId = getSelectedNodeId()
         if (nodeInfo != null) {
             if (!nodeInfo.toNodeString().equals(selectedNodeId)) saveSelectedNode(nodeInfo)

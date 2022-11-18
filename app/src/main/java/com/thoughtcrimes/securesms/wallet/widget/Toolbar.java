@@ -93,6 +93,7 @@ public class Toolbar extends MaterialToolbar {
                 toolBarRescan.setVisibility(View.GONE);
                 toolBarSettings.setVisibility(View.GONE);
             }else{
+                toolBarRescan.setVisibility(View.VISIBLE);
                 toolBarSettings.setVisibility(View.VISIBLE);
             }
         } else {

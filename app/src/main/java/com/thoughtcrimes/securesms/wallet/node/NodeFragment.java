@@ -36,6 +36,7 @@ import com.thoughtcrimes.securesms.model.NetworkType;
 import com.thoughtcrimes.securesms.model.WalletManager;
 import com.thoughtcrimes.securesms.util.Helper;
 import com.thoughtcrimes.securesms.util.NodePinger;
+import com.thoughtcrimes.securesms.wallet.WalletActivity;
 
 import java.io.File;
 import java.net.InetSocketAddress;
@@ -215,7 +216,9 @@ public class NodeFragment extends Fragment
                         activityCallback.setFavouriteNodes(nodeList);
                     }
                     AsyncTask.execute(() -> {
-                        activityCallback.setNode(nodeItem); // this marks it as selected & saves it as well
+                        Log.d("Beldex","Value of current node 2 " +nodeItem.getHost());
+                        activityCallback.setNode(nodeItem);
+                        // this marks it as selected & saves it as well
                         nodeItem.setSelecting(false);
                         TextSecurePreferences.changeDaemon(requireContext(),true);
                         try {

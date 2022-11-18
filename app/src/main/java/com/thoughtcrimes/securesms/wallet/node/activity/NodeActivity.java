@@ -36,7 +36,7 @@ import java.util.Set;
 import io.beldex.bchat.R;
 import timber.log.Timber;
 
-public class NodeActivity extends AppCompatActivity implements NodeFragment.Listener, NodeListFragment.NodeListInterface {
+public class NodeActivity extends AppCompatActivity implements NodeFragment.Listener {
 
     private Toolbar toolbar;
     Set<NodeInfo> favouriteNodes = new HashSet<>();
@@ -157,14 +157,14 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
         pingSelectedNode();
     }
 
-    @Override
+  /*  @Override
     public void replaceFragment(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.nodeList_frame, fragment)
                 .addToBackStack(null)
                 .commit();
-    }
+    }*/
 
     public void pingSelectedNode() {
         new AsyncFindBestNode().execute(AsyncFindBestNode.PING_SELECTED);
@@ -315,10 +315,12 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
 
     @Override
     public void setNode(NodeInfo node) {
+        Log.d("Beldex","value of current node set node 1 in NodeActivity "+node.getHost());
         setNode(node, true);
 
     }
     private void setNode(NodeInfo node, boolean save) {
+        Log.d("Beldex","value of current node set node 2 in NodeActivity "+node.getHost());
         if (node != this.node) {
             if ((node != null) && (node.getNetworkType() != WalletManager.getInstance().getNetworkType()))
                 throw new IllegalArgumentException("network type does not match");
@@ -339,6 +341,7 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
     }
 
     private void saveSelectedNode() { // save only if changed
+        Log.d("Beldex","Value of getNode NodeActivity "+ getNode());
         final NodeInfo nodeInfo = getNode();
         final String selectedNodeId = getSelectedNodeId();
         if (nodeInfo != null) {

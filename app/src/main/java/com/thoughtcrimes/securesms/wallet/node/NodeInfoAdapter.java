@@ -209,6 +209,7 @@ public class NodeInfoAdapter extends RecyclerView.Adapter<NodeInfoAdapter.ViewHo
                     final NodeInfo node = nodeItems.get(position);
                     node.setSelecting(true);
                     allowClick(false);
+                    Log.d("Beldex","Value of node in NodeInfoAdapter " +node);
                     listener.onInteraction(view, node);
                 }
             }

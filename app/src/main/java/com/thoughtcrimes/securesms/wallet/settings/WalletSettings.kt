@@ -25,7 +25,12 @@ import com.thoughtcrimes.securesms.wallet.settings.adapter.WalletSubOptionsSearc
 import android.text.Editable
 
 import android.text.TextWatcher
+import android.util.Log
 import com.thoughtcrimes.securesms.util.push
+import com.thoughtcrimes.securesms.wallet.CheckOnline
+import com.thoughtcrimes.securesms.wallet.WalletActivity
+import com.thoughtcrimes.securesms.wallet.WalletFragment
+import timber.log.Timber
 
 
 class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemClickListener,WalletSubOptionsSearchListItemAdapter.ItemClickListener {
@@ -316,5 +321,14 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         }
         //update recyclerview
         walletSubOptionsSearchListItemAdapter.updateList(temp)
+    }
+
+    override fun onBackPressed() {
+        if (TextSecurePreferences.getDaemon(this)) {
+            val returnIntent = Intent()
+            setResult(RESULT_OK, returnIntent)
+            finish()
+        }
+        super.onBackPressed()
     }
 }

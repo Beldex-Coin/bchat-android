@@ -1,18 +1,23 @@
 package com.thoughtcrimes.securesms.wallet
 
+import android.app.Activity
 import android.content.*
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Handler
 import android.os.IBinder
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.data.*
 import com.thoughtcrimes.securesms.model.*
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.push
+import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity
 import com.thoughtcrimes.securesms.wallet.listener.OnBlockUpdateListener
 import com.thoughtcrimes.securesms.wallet.node.NodeFragment
 import com.thoughtcrimes.securesms.wallet.receive.ReceiveFragment
@@ -67,7 +72,11 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
         //Node Connection
         //by hales
-       /* loadFavouritesWithNetwork()*/
+        /*if (TextSecurePreferences.getDaemon(this)) {
+            TextSecurePreferences.changeDaemon(this,false)
+            loadFavouritesWithNetwork()
+        }*/
+
 
         LegacyStorageHelper.migrateWallets(this)
 
@@ -117,12 +126,8 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
                     )
                 }
                 //onWalletRescan()
-            } else {
-                Toast.makeText(
-                    this@WalletActivity,
-                    getString(R.string.please_check_your_internet_connection),
-                    Toast.LENGTH_SHORT
-                ).show()
+            }else{
+                Toast.makeText(this@WalletActivity,getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -140,8 +145,10 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     private fun openWalletSettings() {
+        /*val intent = Intent(this, WalletSettings::class.java)
+        push(intent)*/
         val intent = Intent(this, WalletSettings::class.java)
-        push(intent)
+        resultLauncher.launch(intent)
     }
 
     fun onWalletRescan(restoreHeight: Long) {
@@ -151,7 +158,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             getWallet().restoreHeight = restoreHeight
 
             getWallet().rescanBlockchainAsync()
-            Log.d("Beldex", "Restore Height 2 ${getWallet().restoreHeight}")
+            Log.d("Beldex","Restore Height 2 ${getWallet().restoreHeight}")
             synced = false
             walletFragment.unsync()
             invalidateOptionsMenu()
@@ -181,27 +188,28 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     private fun startWalletService() {
 
-        val extras = intent.extras
-        if (extras != null) {
-            acquireWakeLock()
-            val walletId = extras.getString(REQUEST_ID)
-            // we can set the streetmode height AFTER opening the wallet
-            requestStreetMode = extras.getBoolean(REQUEST_STREETMODE)
-            password = extras.getString(REQUEST_PW)
-            uri = extras.getString(REQUEST_URI)
-            if (CheckOnline.isOnline(this)) {
-                Log.d("Beldex", "isOnline 5 if")
-                connectWalletService(walletId, password)
-            } else {
-                Log.d("Beldex", "isOnline 5 else")
+            val extras = intent.extras
+            if (extras != null) {
+                acquireWakeLock()
+                val walletId = extras.getString(REQUEST_ID)
+                // we can set the streetmode height AFTER opening the wallet
+                requestStreetMode = extras.getBoolean(REQUEST_STREETMODE)
+                password = extras.getString(REQUEST_PW)
+                uri = extras.getString(REQUEST_URI)
+                if (CheckOnline.isOnline(this)) {
+                    Log.d("Beldex", "isOnline 5 if")
+                    connectWalletService(walletId, password)
+                }
+                else {
+                    Log.d("Beldex","isOnline 5 else")
+                }
+            }else {
+                finish()
             }
-        } else {
-            finish()
-        }
     }
 
     override fun onBackPressedFun() {
-        if (CheckOnline.isOnline(this)) {
+        if(CheckOnline.isOnline(this)) {
             onDisposeRequest()
         }
         setBarcodeData(null)
@@ -253,7 +261,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         // class name because we want a specific service implementation that
         // we know will be running in our own process (and thus won't be
         // supporting component replacement by other applications).
-        Log.d("Beldex", "isOnline 7 ${CheckOnline.isOnline(this)}")
+        Log.d("Beldex","isOnline 7 ${CheckOnline.isOnline(this)}, $walletName , $walletPassword")
         if (CheckOnline.isOnline(this)) {
             val intent = Intent(applicationContext, WalletService::class.java)
             intent.putExtra(WalletService.REQUEST_WALLET, walletName)
@@ -492,24 +500,26 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
 
     override fun setOnUriScannedListener(onUriScannedListener: OnUriScannedListener?) {
-        Log.d("Beldex", "Value of barcode 5 onUriScannedListener called")
+        Log.d("Beldex","Value of barcode 5 onUriScannedListener called")
         this.onUriScannedListener = onUriScannedListener
     }
 
     override fun setOnUriWalletScannedListener(onUriWalletScannedListener: OnUriWalletScannedListener?) {
-        Log.d("Beldex", "Value of barcode 6 onUriScannedListener called")
+        Log.d("Beldex","Value of barcode 6 onUriScannedListener called")
         this.onUriWalletScannedListener = onUriWalletScannedListener
     }
 
     override fun setOnBarcodeScannedListener(onUriScannedListener: OnUriScannedListener?) {
-        Log.d("Beldex", "Value of barcode 6 onUriScannedListener called")
+        Log.d("Beldex","Value of barcode 6 onUriScannedListener called")
         this.onUriScannedListener = onUriScannedListener
     }
 
 
+
+
     override fun onUriScanned(barcodeData: BarcodeData?) {
         super.onUriScanned(barcodeData)
-        Log.d("Beldex", "Value of barcode 2 $onUriScannedListener")
+        Log.d("Beldex","Value of barcode 2 $onUriScannedListener")
 
         var processed = false
         if (onUriScannedListener != null) {
@@ -526,7 +536,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     override fun onUriWalletScanned(barcodeData: BarcodeData?) {
         super.onUriWalletScanned(barcodeData)
         var processed = false
-        Log.d("Beldex", "value of onUriWalletScannedListener $onUriWalletScannedListener")
+        Log.d("Beldex","value of onUriWalletScannedListener $onUriWalletScannedListener")
         if (onUriWalletScannedListener != null) {
 
             processed = onUriWalletScannedListener!!.onUriWalletScanned(barcodeData)
@@ -576,7 +586,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     override fun onScanned(qrCode: String?): Boolean {
         // #gurke
         val bcData = BarcodeData.fromString(qrCode)
-        Log.d("Beldex", "Value of barcode 1 $bcData")
+        Log.d("Beldex","Value of barcode 1 $bcData")
         return if (bcData != null) {
             popFragmentStack(null)
             Timber.d("AAA")
@@ -590,7 +600,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     override fun onWalletScanned(qrCode: String?): Boolean {
         // #gurke
         val bcData = BarcodeData.fromString(qrCode)
-        Log.d("Beldex", "Value of barcode 1 onWalletScanned $bcData")
+        Log.d("Beldex","Value of barcode 1 onWalletScanned $bcData")
         return if (bcData != null) {
             popFragmentStack(null)
             Timber.d("AAA")
@@ -684,10 +694,13 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             runOnUiThread { this.updateAccountsList() }
         }
         try {
+            Log.d("Beldex","mConnection onRefreshed called ")
             val walletFragment = getWalletFragment()
             if (wallet.isSynchronized) {
+                Log.d("Beldex","mConnection onRefreshed called 1")
                 releaseWakeLock(RELEASE_WAKE_LOCK_DELAY) // the idea is to stay awake until synced
                 if (!synced) { // first sync
+                    Log.d("Beldex","mConnection onRefreshed called 2")
                     onProgress(-1)
                     saveWallet() // save on first sync
                     synced = true
@@ -787,12 +800,15 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     private fun updateProgress() {
+        Log.d("Beldex","mConnection called updateProgress() 1")
         if (hasBoundService()) {
+            Log.d("Beldex","mConnection called updateProgress() 2")
+            Log.d("Beldex","mConnection called updateProgress() 2 1 $mBoundService")
             onProgress(mBoundService!!.progressText)
             onProgress(mBoundService!!.progressValue)
         }
         //No internet
-        /* else{
+       /* else{
             onProgress("Failed to node")
             onProgress(0)
         }*/
@@ -825,16 +841,16 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             runOnUiThread {
                 //dismissProgressDialog()
                 val status = pendingTransaction.status
-                Log.d("onTransactionCreated:", "$status")
+                Log.d("onTransactionCreated:","$status")
                 Log.d("transaction status 1 i %s", status.toString())
                 if (status !== PendingTransaction.Status.Status_Ok) {
-                    Log.d("onTransactionCreated not Status_Ok", "-")
+                    Log.d("onTransactionCreated not Status_Ok","-")
                     val errorText = pendingTransaction!!.errorString
                     getWallet().disposePendingTransaction()
                     sendFragment!!.onCreateTransactionFailed(errorText)
                 } else {
                     Log.d("transaction status 1 ii %s", status.toString())
-                    Log.d("onTransactionCreated Status_Ok", "-")
+                    Log.d("onTransactionCreated Status_Ok","-")
                     sendFragment!!.onTransactionCreated("txTag", pendingTransaction)
                 }
             }
@@ -867,6 +883,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     override fun onWalletStarted(walletStatus: Wallet.Status?) {
+        Log.d("Beldex", "Wallet start called 7 0 ")
         runOnUiThread {
             dismissProgressDialog()
             if (walletStatus == null) {
@@ -879,13 +896,12 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             } else {
                 if (Wallet.ConnectionStatus.ConnectionStatus_WrongVersion === walletStatus.connectionStatus) {
                     Toast.makeText(
-                        this@WalletActivity,
-                        getString(R.string.status_wallet_connect_wrong_version),
-                        Toast.LENGTH_LONG
-                    ).show()
-                } else if (!walletStatus.isOk) {
+                    this@WalletActivity,
+                    getString(R.string.status_wallet_connect_wrong_version),
+                    Toast.LENGTH_LONG
+                ).show() }else if (!walletStatus.isOk) {
                     Timber.d("Not Ok %s", walletStatus.toString())
-                    if (walletStatus.errorString.isNotEmpty()) {
+                    if(walletStatus.errorString.isNotEmpty()) {
                         Toast.makeText(
                             this@WalletActivity,
                             walletStatus.errorString,
@@ -898,13 +914,17 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         if (walletStatus == null || Wallet.ConnectionStatus.ConnectionStatus_Connected !== walletStatus.connectionStatus) {
             finish()
         } else {
+            Log.d("Beldex", "Wallet start called 7 1 ")
             haveWallet = true
             invalidateOptionsMenu()
             if (requestStreetMode) onEnableStreetMode()
+            Log.d("Beldex", "Wallet start called 7 2 ")
             val walletFragment = getWalletFragment()
+            Log.d("Beldex", "Wallet start called 7  $walletFragment")
             runOnUiThread {
                 updateAccountsHeader()
                 if (walletFragment != null) {
+                    Log.d("Beldex", "Wallet start called 8 ")
                     walletFragment.onLoaded()
                 }
             }
@@ -977,7 +997,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         startNodeFragment()
     }
 
-    /* override fun hiddenRescan(status: Boolean) {
+   /* override fun hiddenRescan(status: Boolean) {
         binding.toolbar.hiddenRescan(status)
     }*/
 
@@ -988,7 +1008,14 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     override fun getNode(): NodeInfo? {
-        return node
+        return if(TextSecurePreferences.getDaemon(this)){
+            TextSecurePreferences.changeDaemon(this,false)
+            val selectedNodeId = getSelectedNodeId()
+            val nodeInfo = NodeInfo.fromString(selectedNodeId)
+            nodeInfo
+        }else {
+            node
+        }
     }
 
     override fun setNode(node: NodeInfo?) {
@@ -997,14 +1024,14 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     private fun setNode(node: NodeInfo?, save: Boolean) {
-        Log.d("Beldex", "Value of getNode in WalletActivity ${getNode()?.host}")
-        Log.d("Beldex", "Value of current node in WalletActivity ${node?.host}")
-        Log.d("Beldex", "Value of current node in WalletActivity 1 ${this.node?.host}")
+        Log.d("Beldex","Value of getNode in WalletActivity ${getNode()?.host}")
+        Log.d("Beldex","Value of current node in WalletActivity ${node?.host}")
+        Log.d("Beldex","Value of current node in WalletActivity 1 ${this.node?.host}")
         if (node !== this.node) {
             require(!(node != null && node.networkType !== WalletManager.getInstance().networkType)) { "network type does not match" }
             this.node = node
             for (nodeInfo in favouriteNodes) {
-                Timber.d("Testing-->14 ${node.toString()}")
+                Log.d("Testing-->14 ","${node.toString()}")
                 nodeInfo.isSelected = nodeInfo === node
             }
             WalletManager.getInstance().setDaemon(node)
@@ -1030,6 +1057,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     override fun getOrPopulateFavourites(): MutableSet<NodeInfo> {
+        Log.d("Beldex","getOrPopulateFavourites() fun called")
         if (favouriteNodes.isEmpty()) {
             for (node in DefaultNodes.values()) {
                 val nodeInfo = NodeInfo.fromString(node.uri)
@@ -1042,6 +1070,54 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         }
         return favouriteNodes
     }
+
+    /*override fun getOrPopulateFavourites(): MutableSet<NodeInfo> {
+        Log.d("Beldex","getOrPopulateFavourites() fun called")
+        if(TextSecurePreferences.getDaemon(this)){
+            TextSecurePreferences.changeDaemon(this,false)
+            favouriteNodes.clear()
+            val selectedNodeId = getSelectedNodeId()
+            Log.d("Beldex"," Value of current node selectedNodeID $selectedNodeId")
+            //val storedNodes = getSharedPreferences(NODES_PREFS_NAME, MODE_PRIVATE).all
+            val nodeInfo = NodeInfo.fromString(selectedNodeId)
+            if (nodeInfo != null) {
+                nodeInfo.setFavourite(true)
+                favouriteNodes.add(nodeInfo)
+            }
+            *//*for (nodeEntry in storedNodes.entries) {
+                Log.d("Beldex","Value of current node loadFav called 1")
+                if (nodeEntry != null) { // just in case, ignore possible future errors
+                    Log.d("Beldex","Value of current node loadFav called 2")
+                    val nodeId = nodeEntry.value as String
+                    val nodeInfo = NodeInfo.fromString(selectedNodeId)
+                    if (nodeInfo != null) {
+                        nodeInfo.setFavourite(true)
+                        favouriteNodes.add(nodeInfo)
+                        Log.d("Beldex","Value of current node loadFav called 3 nodeId $nodeId")
+                        Log.d("Beldex","Value of current node loadFav called 3 selectedNodeId $selectedNodeId")
+                        if (nodeId == selectedNodeId) {
+                            Log.d("Beldex","Value of current node loadFav called 3.1 if")
+                            nodeInfo.isSelected = true
+                        }
+                    }
+                }
+            }*//*
+            saveFavourites()
+            return favouriteNodes
+        }else {
+            if (favouriteNodes.isEmpty()) {
+                for (node in DefaultNodes.values()) {
+                    val nodeInfo = NodeInfo.fromString(node.uri)
+                    if (nodeInfo != null) {
+                        nodeInfo.setFavourite(true)
+                        favouriteNodes.add(nodeInfo)
+                    }
+                }
+                saveFavourites()
+            }
+            return favouriteNodes
+        }
+    }*/
 
     override fun setFavouriteNodes(nodes: MutableCollection<NodeInfo>?) {
         Timber.d("adding %d nodes", nodes!!.size)
@@ -1078,11 +1154,14 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     private fun addFavourite(nodeString: String): NodeInfo? {
+        Log.d("Beldex","Value of current node loadFav called AddFav 1")
         val nodeInfo = NodeInfo.fromString(nodeString)
         if (nodeInfo != null) {
+            Log.d("Beldex","Value of current node loadFav called AddFav 2")
             nodeInfo.setFavourite(true)
             favouriteNodes.add(nodeInfo)
         } else Timber.w("nodeString invalid: %s", nodeString)
+        Log.d("Beldex","Value of current node loadFav called AddFav 3")
         return nodeInfo
     }
 
@@ -1096,7 +1175,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     private fun saveSelectedNode() { // save only if changed
         val nodeInfo = getNode()
-        Log.d("Beldex", "Value of getNode ${nodeInfo?.host}")
+        Log.d("Beldex","Value of getNode ${nodeInfo?.host}")
         val selectedNodeId = getSelectedNodeId()
         if (nodeInfo != null) {
             if (!nodeInfo.toNodeString().equals(selectedNodeId)) saveSelectedNode(nodeInfo)
@@ -1120,25 +1199,34 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     private fun loadFavourites() {
         Timber.d("loadFavourites")
+        Log.d("Beldex","Value of current node loadFav called")
         favouriteNodes.clear()
         val selectedNodeId = getSelectedNodeId()
+        Log.d("Beldex"," Value of current node selectedNodeID $selectedNodeId")
         val storedNodes = getSharedPreferences(NODES_PREFS_NAME, MODE_PRIVATE).all
 
         for (nodeEntry in storedNodes.entries) {
+            Log.d("Beldex","Value of current node loadFav called 1")
             if (nodeEntry != null) { // just in case, ignore possible future errors
+                Log.d("Beldex","Value of current node loadFav called 2")
                 val nodeId = nodeEntry.value as String
                 val addedNode: NodeInfo = addFavourite(nodeId)!!
                 if (addedNode != null) {
+                    Log.d("Beldex","Value of current node loadFav called 3 nodeId $nodeId")
+                    Log.d("Beldex","Value of current node loadFav called 3 selectedNodeId $selectedNodeId")
                     if (nodeId == selectedNodeId) {
+                        Log.d("Beldex","Value of current node loadFav called 3.1 if")
                         addedNode.isSelected = true
                     }
                 }
             }
         }
         if (storedNodes.isEmpty()) { // try to load legacy list & remove it (i.e. migrate the data once)
+            Log.d("Beldex","Value of current node loadFav called 4")
             val sharedPref = getPreferences(MODE_PRIVATE)
             when (WalletManager.getInstance().networkType) {
                 NetworkType.NetworkType_Mainnet -> {
+                    Log.d("Beldex","Value of current node loadFav called 5")
                     loadLegacyList(
                         sharedPref.getString(
                             PREF_DAEMON_MAINNET,
@@ -1149,6 +1237,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
                         .apply()
                 }
                 NetworkType.NetworkType_Stagenet -> {
+                    Log.d("Beldex","Value of current node loadFav called 6")
                     loadLegacyList(
                         sharedPref.getString(
                             PREF_DAEMON_STAGENET,
@@ -1159,6 +1248,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
                         .remove(PREF_DAEMON_STAGENET).apply()
                 }
                 NetworkType.NetworkType_Testnet -> {
+                    Log.d("Beldex","Value of current node loadFav called 7")
                     loadLegacyList(
                         sharedPref.getString(
                             PREF_DAEMON_TESTNET,
@@ -1179,6 +1269,23 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     override fun onResume() {
         super.onResume()
+        Log.d("Beldex","Value of change daemon ${TextSecurePreferences.getDaemon(this)}")
+        /*if (TextSecurePreferences.getDaemon(this)) {
+            walletFragmentTag = getCurrentFragment() as WalletFragment
+            TextSecurePreferences.changeDaemon(this, false)
+            dismissProgressDialog()
+            if (CheckOnline.isOnline(this)) {
+                if (mBoundService != null && getWallet() != null) {
+                    saveWallet()
+                }
+            }
+            stopWalletService()
+            mConnection()
+            Log.d("Beldex", "Value of change daemon 1 ${TextSecurePreferences.getDaemon(this)}")
+            loadFavouritesWithNetwork()
+        }*/
+
+
 
         Timber.d("onResume()-->")
         // wait for WalletService to finish
@@ -1199,7 +1306,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         //unregisterDetachReceiver()
         //Ledger.disconnect()
 
-        if (CheckOnline.isOnline(this)) {
+        if(CheckOnline.isOnline(this)) {
             if (mBoundService != null && getWallet() != null) {
                 saveWallet()
             }
@@ -1215,6 +1322,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     fun disconnectWalletService() {
         if (mIsBound) {
+            Log.d("Beldex","mIsBound called if ")
             // Detach our existing connection.
             mBoundService!!.setObserver(null)
             unbindService(mConnection)
@@ -1269,5 +1377,45 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         var REQUEST_PW = "pw"
         var REQUEST_FINGERPRINT_USED = "fingerprint"
         var REQUEST_STREETMODE = "streetmode"
+    }
+
+    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val walletName = TextSecurePreferences.getWalletName(this)
+            val walletPassword = TextSecurePreferences.getWalletPassword(this)
+            if (walletName != null && walletPassword!=null) {
+                startWallet(walletName,walletPassword,
+                    fingerprintUsed = false,
+                    streetmode = false
+                )
+            }
+        }
+    }
+
+    private fun startWallet(
+        walletName:String, walletPassword:String,
+        fingerprintUsed:Boolean, streetmode:Boolean) {
+        val REQUEST_ID = "id"
+        val REQUEST_PW = "pw"
+        val REQUEST_FINGERPRINT_USED = "fingerprint"
+        val REQUEST_STREETMODE = "streetmode"
+        val REQUEST_URI = "uri"
+
+        Timber.d("startWallet()");
+        TextSecurePreferences.setIncomingTransactionStatus(this, true)
+        TextSecurePreferences.setOutgoingTransactionStatus(this, true)
+        TextSecurePreferences.setTransactionsByDateStatus(this,false)
+        val intent = Intent(this, WalletActivity::class.java)
+        intent.putExtra(REQUEST_ID, walletName)
+        intent.putExtra(REQUEST_PW, walletPassword)
+        intent.putExtra(REQUEST_FINGERPRINT_USED, fingerprintUsed)
+        intent.putExtra(REQUEST_STREETMODE, streetmode)
+        //Important
+        /*if (uri != null) {
+            intent.putExtra(REQUEST_URI, uri)
+            uri = null // use only once
+        }*/
+        startActivity(intent)
+        finish()
     }
 }

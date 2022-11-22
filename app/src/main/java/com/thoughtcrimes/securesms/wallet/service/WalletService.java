@@ -196,6 +196,14 @@ public class WalletService extends Service {
         Timber.d("setObserver %s", observer);
     }
 
+    public Boolean getObserver(){
+        if(observer==null){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
     public interface Observer {
         boolean onRefreshed(Wallet wallet, boolean full);
 
@@ -273,14 +281,25 @@ public class WalletService extends Service {
                     String cmd = extras.getString(REQUEST, null);
                     switch (cmd) {
                         case REQUEST_CMD_LOAD:
+
+                            Log.d("Beldex","Request cmd called");
                             String walletId = extras.getString(REQUEST_WALLET, null);
                             String walletPw = extras.getString(REQUEST_CMD_LOAD_PW, null);
                             Timber.d("LOAD wallet %s", walletId);
+                            Log.d("Beldex","Request cmd called walletID " + walletId);
+                            Log.d("Beldex","Request cmd called walletPw " + walletPw);
                             if (walletId != null) {
+                                Log.d("Beldex","Request cmd called 1");
                                 showProgress(getString(R.string.status_wallet_loading));
                                 showProgress(10);
                                 Wallet.Status walletStatus = start(walletId, walletPw);
-                                if (observer != null) observer.onWalletStarted(walletStatus);
+                                if (observer != null) {
+                                    Log.d("Beldex","Value of observer if " + observer);
+                                    observer.onWalletStarted(walletStatus);
+                                }
+                                else {
+                                    Log.d("Beldex","Value of observer else ");
+                                }
                                 if ((walletStatus == null) || !walletStatus.isOk()) {
                                     errorState = true;
                                     stop();
@@ -529,12 +548,17 @@ public class WalletService extends Service {
         //startNotification();
         showProgress(getString(R.string.status_wallet_loading));
         showProgress(10);
+        Log.d("Beldex","Wallet start called");
         if (listener == null) {
+            Log.d("Beldex","Wallet start called 1");
             Timber.d("start() loadWallet");
             Wallet aWallet = loadWallet(walletName, walletPassword);
             if (aWallet == null) return null;
+            Log.d("Beldex","Wallet start called 2");
             if(CheckOnline.Companion.isOnline(getApplicationContext())) {
+                Log.d("Beldex","Wallet start called 3 ");
                 Wallet.Status walletStatus = aWallet.getFullStatus();
+                Log.d("Beldex","Wallet start called  4" + walletStatus);
                 if (!walletStatus.isOk()) {
                     aWallet.close();
                     return walletStatus;
@@ -548,11 +572,13 @@ public class WalletService extends Service {
             listener.start();
             showProgress(100);
         }
-        showProgress(getString(R.string.status_wallet_connecting));
+        Log.d("Beldex","Wallet start called Testing 5");
+        showProgress("Testing...");
         showProgress(101);
         // if we try to refresh the history here we get occasional segfaults!
         // doesnt matter since we update as soon as we get a new block anyway
         Timber.d("start() done");
+        Log.d("Beldex","Wallet start called 6 " + getWallet().getFullStatus());
         return getWallet().getFullStatus();
     }
 

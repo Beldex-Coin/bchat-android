@@ -254,7 +254,7 @@ public class WalletManager {
                 throw new IllegalArgumentException("network type does not match");
             this.daemonUsername = node.getUsername();
             this.daemonPassword = node.getPassword();
-            Timber.d("Testing-->16 %s", daemonAddress);
+            Log.d("Testing-->16 %s", daemonAddress);
             setDaemonAddressJ(daemonAddress);
         } else {
             Timber.d("Testing-->15");

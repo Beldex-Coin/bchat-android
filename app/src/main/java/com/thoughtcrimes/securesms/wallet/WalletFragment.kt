@@ -79,6 +79,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
     private var syncProgress = -1
 
     fun setProgress(n: Int) {
+        Log.d("Beldex","mConnection value of n $n")
         syncProgress = n
         if (n > 100) {
             binding.progressBar.isIndeterminate = true
@@ -178,9 +179,14 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
     }
 
     fun pingSelectedNode() {
-        Log.d("Beldex","called pingSelectedNode ")
+        Log.d("Beldex","Value of current node loadFav pinSelec")
         val PING_SELECTED = 0
         val FIND_BEST = 1
+       /* if(TextSecurePreferences.getDaemon(requireActivity())) {
+            AsyncFindBestNode(PING_SELECTED, FIND_BEST).execute<Int>(FIND_BEST)
+        }else{
+            AsyncFindBestNode(PING_SELECTED, FIND_BEST).execute<Int>(PING_SELECTED)
+        }*/
         AsyncFindBestNode(PING_SELECTED, FIND_BEST).execute<Int>(PING_SELECTED)
     }
 
@@ -200,19 +206,24 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
             val favourites: Set<NodeInfo?> = activityCallback!!.getOrPopulateFavourites()
             var selectedNode: NodeInfo?
+            Log.d("Beldex","selected node 1 $favourites")
             if (params[0] == FIND_BEST) {
                 Log.d("Beldex","called AsyncFindBestNode 1")
                 selectedNode = autoselect(favourites)
+                Log.d("Beldex","selected node 2 $selectedNode")
             } else if (params[0] == PING_SELECTED) {
                 Log.d("Beldex","called AsyncFindBestNode 2")
                 selectedNode = activityCallback!!.getNode()
+                Log.d("Beldex","selected node 3 $selectedNode")
                 Log.d("Beldex","called AsyncFindBestNode 2 ${selectedNode?.host}")
 
                 if (!activityCallback!!.getFavouriteNodes().contains(selectedNode))
                     selectedNode = null // it's not in the favourites (any longer)
                 if (selectedNode == null)
+                    Log.d("Beldex","selected node 4 $selectedNode")
                     for (node in favourites) {
                         if (node!!.isSelected) {
+                            Log.d("Beldex","selected node 5 $node")
                             selectedNode = node
                             break
                         }
@@ -220,15 +231,14 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 if (selectedNode == null) { // autoselect
                     selectedNode = autoselect(favourites)
                 } else
-                    selectedNode.testRpcService()
+                    Log.d("Beldex","selected node 6 $selectedNode")
+                    selectedNode!!.testRpcService()
             } else throw IllegalStateException()
             return if (selectedNode != null && selectedNode.isValid) {
-                Log.d("Beldex","called AsyncFindBestNode 3")
                 Log.d("Testing-->12", "true")
                 activityCallback!!.setNode(selectedNode)
                 selectedNode
             } else {
-                Log.d("Beldex","called AsyncFindBestNode 4")
                 Log.d("Testing-->13", "true")
                 activityCallback!!.setNode(null)
                 null
@@ -724,6 +734,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             val sync: String
             check(activityCallback!!.hasBoundService()) { "WalletService not bound." }
             val daemonConnected: Wallet.ConnectionStatus = activityCallback!!.connectionStatus!!
+            Log.d("Beldex","Value of daemon connection $daemonConnected")
             if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
                 if (!wallet.isSynchronized) {
                     val daemonHeight: Long = activityCallback!!.daemonHeight

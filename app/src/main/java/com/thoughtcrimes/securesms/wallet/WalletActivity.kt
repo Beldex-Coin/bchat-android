@@ -117,8 +117,12 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
                     )
                 }
                 //onWalletRescan()
-            }else{
-                Toast.makeText(this@WalletActivity,getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(
+                    this@WalletActivity,
+                    getString(R.string.please_check_your_internet_connection),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
@@ -147,7 +151,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             getWallet().restoreHeight = restoreHeight
 
             getWallet().rescanBlockchainAsync()
-            Log.d("Beldex","Restore Height 2 ${getWallet().restoreHeight}")
+            Log.d("Beldex", "Restore Height 2 ${getWallet().restoreHeight}")
             synced = false
             walletFragment.unsync()
             invalidateOptionsMenu()
@@ -177,28 +181,27 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     private fun startWalletService() {
 
-            val extras = intent.extras
-            if (extras != null) {
-                acquireWakeLock()
-                val walletId = extras.getString(REQUEST_ID)
-                // we can set the streetmode height AFTER opening the wallet
-                requestStreetMode = extras.getBoolean(REQUEST_STREETMODE)
-                password = extras.getString(REQUEST_PW)
-                uri = extras.getString(REQUEST_URI)
-                if (CheckOnline.isOnline(this)) {
-                    Log.d("Beldex", "isOnline 5 if")
-                    connectWalletService(walletId, password)
-                }
-                else {
-                    Log.d("Beldex","isOnline 5 else")
-                }
-            }else {
-                finish()
+        val extras = intent.extras
+        if (extras != null) {
+            acquireWakeLock()
+            val walletId = extras.getString(REQUEST_ID)
+            // we can set the streetmode height AFTER opening the wallet
+            requestStreetMode = extras.getBoolean(REQUEST_STREETMODE)
+            password = extras.getString(REQUEST_PW)
+            uri = extras.getString(REQUEST_URI)
+            if (CheckOnline.isOnline(this)) {
+                Log.d("Beldex", "isOnline 5 if")
+                connectWalletService(walletId, password)
+            } else {
+                Log.d("Beldex", "isOnline 5 else")
             }
+        } else {
+            finish()
+        }
     }
 
     override fun onBackPressedFun() {
-        if(CheckOnline.isOnline(this)) {
+        if (CheckOnline.isOnline(this)) {
             onDisposeRequest()
         }
         setBarcodeData(null)
@@ -250,7 +253,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         // class name because we want a specific service implementation that
         // we know will be running in our own process (and thus won't be
         // supporting component replacement by other applications).
-        Log.d("Beldex","isOnline 7 ${CheckOnline.isOnline(this)}")
+        Log.d("Beldex", "isOnline 7 ${CheckOnline.isOnline(this)}")
         if (CheckOnline.isOnline(this)) {
             val intent = Intent(applicationContext, WalletService::class.java)
             intent.putExtra(WalletService.REQUEST_WALLET, walletName)
@@ -489,26 +492,24 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
 
     override fun setOnUriScannedListener(onUriScannedListener: OnUriScannedListener?) {
-        Log.d("Beldex","Value of barcode 5 onUriScannedListener called")
+        Log.d("Beldex", "Value of barcode 5 onUriScannedListener called")
         this.onUriScannedListener = onUriScannedListener
     }
 
     override fun setOnUriWalletScannedListener(onUriWalletScannedListener: OnUriWalletScannedListener?) {
-        Log.d("Beldex","Value of barcode 6 onUriScannedListener called")
+        Log.d("Beldex", "Value of barcode 6 onUriScannedListener called")
         this.onUriWalletScannedListener = onUriWalletScannedListener
     }
 
     override fun setOnBarcodeScannedListener(onUriScannedListener: OnUriScannedListener?) {
-        Log.d("Beldex","Value of barcode 6 onUriScannedListener called")
+        Log.d("Beldex", "Value of barcode 6 onUriScannedListener called")
         this.onUriScannedListener = onUriScannedListener
     }
 
 
-
-
     override fun onUriScanned(barcodeData: BarcodeData?) {
         super.onUriScanned(barcodeData)
-        Log.d("Beldex","Value of barcode 2 $onUriScannedListener")
+        Log.d("Beldex", "Value of barcode 2 $onUriScannedListener")
 
         var processed = false
         if (onUriScannedListener != null) {
@@ -525,7 +526,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     override fun onUriWalletScanned(barcodeData: BarcodeData?) {
         super.onUriWalletScanned(barcodeData)
         var processed = false
-        Log.d("Beldex","value of onUriWalletScannedListener $onUriWalletScannedListener")
+        Log.d("Beldex", "value of onUriWalletScannedListener $onUriWalletScannedListener")
         if (onUriWalletScannedListener != null) {
 
             processed = onUriWalletScannedListener!!.onUriWalletScanned(barcodeData)
@@ -575,7 +576,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     override fun onScanned(qrCode: String?): Boolean {
         // #gurke
         val bcData = BarcodeData.fromString(qrCode)
-        Log.d("Beldex","Value of barcode 1 $bcData")
+        Log.d("Beldex", "Value of barcode 1 $bcData")
         return if (bcData != null) {
             popFragmentStack(null)
             Timber.d("AAA")
@@ -589,7 +590,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     override fun onWalletScanned(qrCode: String?): Boolean {
         // #gurke
         val bcData = BarcodeData.fromString(qrCode)
-        Log.d("Beldex","Value of barcode 1 onWalletScanned $bcData")
+        Log.d("Beldex", "Value of barcode 1 onWalletScanned $bcData")
         return if (bcData != null) {
             popFragmentStack(null)
             Timber.d("AAA")
@@ -791,7 +792,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             onProgress(mBoundService!!.progressValue)
         }
         //No internet
-       /* else{
+        /* else{
             onProgress("Failed to node")
             onProgress(0)
         }*/
@@ -824,16 +825,16 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             runOnUiThread {
                 //dismissProgressDialog()
                 val status = pendingTransaction.status
-                Log.d("onTransactionCreated:","$status")
+                Log.d("onTransactionCreated:", "$status")
                 Log.d("transaction status 1 i %s", status.toString())
                 if (status !== PendingTransaction.Status.Status_Ok) {
-                    Log.d("onTransactionCreated not Status_Ok","-")
+                    Log.d("onTransactionCreated not Status_Ok", "-")
                     val errorText = pendingTransaction!!.errorString
                     getWallet().disposePendingTransaction()
                     sendFragment!!.onCreateTransactionFailed(errorText)
                 } else {
                     Log.d("transaction status 1 ii %s", status.toString())
-                    Log.d("onTransactionCreated Status_Ok","-")
+                    Log.d("onTransactionCreated Status_Ok", "-")
                     sendFragment!!.onTransactionCreated("txTag", pendingTransaction)
                 }
             }
@@ -878,12 +879,13 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             } else {
                 if (Wallet.ConnectionStatus.ConnectionStatus_WrongVersion === walletStatus.connectionStatus) {
                     Toast.makeText(
-                    this@WalletActivity,
-                    getString(R.string.status_wallet_connect_wrong_version),
-                    Toast.LENGTH_LONG
-                ).show() }else if (!walletStatus.isOk) {
+                        this@WalletActivity,
+                        getString(R.string.status_wallet_connect_wrong_version),
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else if (!walletStatus.isOk) {
                     Timber.d("Not Ok %s", walletStatus.toString())
-                    if(walletStatus.errorString.isNotEmpty()) {
+                    if (walletStatus.errorString.isNotEmpty()) {
                         Toast.makeText(
                             this@WalletActivity,
                             walletStatus.errorString,
@@ -975,7 +977,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         startNodeFragment()
     }
 
-   /* override fun hiddenRescan(status: Boolean) {
+    /* override fun hiddenRescan(status: Boolean) {
         binding.toolbar.hiddenRescan(status)
     }*/
 
@@ -995,9 +997,9 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     private fun setNode(node: NodeInfo?, save: Boolean) {
-        Log.d("Beldex","Value of getNode in WalletActivity ${getNode()?.host}")
-        Log.d("Beldex","Value of current node in WalletActivity ${node?.host}")
-        Log.d("Beldex","Value of current node in WalletActivity 1 ${this.node?.host}")
+        Log.d("Beldex", "Value of getNode in WalletActivity ${getNode()?.host}")
+        Log.d("Beldex", "Value of current node in WalletActivity ${node?.host}")
+        Log.d("Beldex", "Value of current node in WalletActivity 1 ${this.node?.host}")
         if (node !== this.node) {
             require(!(node != null && node.networkType !== WalletManager.getInstance().networkType)) { "network type does not match" }
             this.node = node
@@ -1094,7 +1096,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     private fun saveSelectedNode() { // save only if changed
         val nodeInfo = getNode()
-        Log.d("Beldex","Value of getNode ${nodeInfo?.host}")
+        Log.d("Beldex", "Value of getNode ${nodeInfo?.host}")
         val selectedNodeId = getSelectedNodeId()
         if (nodeInfo != null) {
             if (!nodeInfo.toNodeString().equals(selectedNodeId)) saveSelectedNode(nodeInfo)
@@ -1197,7 +1199,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         //unregisterDetachReceiver()
         //Ledger.disconnect()
 
-        if(CheckOnline.isOnline(this)) {
+        if (CheckOnline.isOnline(this)) {
             if (mBoundService != null && getWallet() != null) {
                 saveWallet()
             }

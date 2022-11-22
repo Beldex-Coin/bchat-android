@@ -174,6 +174,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
             val data: Intent? = result.data
             val add = data?.getStringExtra("address_value")
             Log.d("beldex","value of add $add")
+            activityCallback?.setBarcodeData(null)
             if(add != null)
             {
                 binding.beldexAddressEditTxtLayout.editText!!.setText(add.toString())

@@ -121,11 +121,13 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
         binding.toolbar.toolBarRescan.setOnClickListener {
             if(CheckOnline.isOnline(this)) {
-                if(getWallet().daemonBlockChainHeight!=null) {
-                    RescanDialog(this, getWallet().daemonBlockChainHeight).show(
-                        supportFragmentManager,
-                        ""
-                    )
+                if(getWallet()!=null) {
+                    if (getWallet().daemonBlockChainHeight != null) {
+                        RescanDialog(this, getWallet().daemonBlockChainHeight).show(
+                            supportFragmentManager,
+                            ""
+                        )
+                    }
                 }
                 //onWalletRescan()
             }else{
@@ -156,10 +158,13 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     fun onWalletRescan(restoreHeight: Long) {
         try {
             val walletFragment = getWalletFragment()
-            // The height entered by user
-            getWallet().restoreHeight = restoreHeight
 
-            getWallet().rescanBlockchainAsync()
+            if(getWallet()!=null) {
+                // The height entered by user
+                getWallet().restoreHeight = restoreHeight
+
+                getWallet().rescanBlockchainAsync()
+            }
             Log.d("Beldex","Restore Height 2 ${getWallet().restoreHeight}")
             synced = false
             walletFragment.unsync()
@@ -300,9 +305,13 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         get() = mBoundService!!.daemonHeight
 
     override fun onSendRequest(view: View?) {
-        SendFragment.newInstance(uri)
-            .let { replaceFragmentWithTransition(view, it, null, null) }
-        uri = null // only use uri once
+        if(CheckOnline.isOnline(this)) {
+            SendFragment.newInstance(uri)
+                .let { replaceFragmentWithTransition(view, it, null, null) }
+            uri = null // only use uri once
+        }else{
+            Toast.makeText(this, getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show();
+        }
     }
 
     override fun onTxDetailsRequest(view: View?, info: TransactionInfo?) {
@@ -328,12 +337,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     override fun onWalletReceive(view: View?) {
-        val address = getWallet().address
-        Timber.d("startReceive()")
-        val b = Bundle()
-        b.putString("address", address)
-        b.putString("name", walletName)
-        replaceFragmentWithTransition(view, ReceiveFragment(), null, b)
+        replaceFragmentWithTransition(view, ReceiveFragment(), null, null)
         Timber.d("ReceiveFragment placed")
     }
 

@@ -125,27 +125,34 @@ class RescanDialog(val context: WalletActivity, private val daemonBlockChainHeig
             }
 
             rescanButton.setOnClickListener {
-                val restoreHeight = binding.restoreSeedWalletRestoreHeight.text.toString()
-                val restoreFromDate = binding.restoreSeedWalletRestoreDate.text.toString()
-                //SteveJosephh21
-                when {
-                    restoreHeight.isNotEmpty() -> {
-                        binding.restoreSeedWalletRestoreDate.text = ""
-                        context.onWalletRescan(restoreHeight.toLong())
-                        //_recoveryWallet(displayName,password,getSeed, restoreHeight.toLong())
-                        dismiss()
+                if(CheckOnline.isOnline(context)) {
+                    val restoreHeight = binding.restoreSeedWalletRestoreHeight.text.toString()
+                    val restoreFromDate = binding.restoreSeedWalletRestoreDate.text.toString()
+                    //SteveJosephh21
+                    when {
+                        restoreHeight.isNotEmpty() -> {
+                            binding.restoreSeedWalletRestoreDate.text = ""
+                            context.onWalletRescan(restoreHeight.toLong())
+                            //_recoveryWallet(displayName,password,getSeed, restoreHeight.toLong())
+                            dismiss()
+                        }
+                        restoreFromDate.isNotEmpty() -> {
+                            binding.restoreSeedWalletRestoreHeight.setText("")
+                            Log.d("Beldex", "Restore Height 1 ${restoreFromDateHeight.toLong()}")
+                            context.onWalletRescan(restoreFromDateHeight.toLong())
+                            //_recoveryWallet(displayName, password, getSeed, restoreFromDateHeight.toLong())
+                            dismiss()
+                        }
+                        else -> {
+                            Toast.makeText(
+                                context,
+                                getString(R.string.activity_restore_from_height_missing_error),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
-                    restoreFromDate.isNotEmpty() -> {
-                        binding.restoreSeedWalletRestoreHeight.setText("")
-                        Log.d("Beldex","Restore Height 1 ${restoreFromDateHeight.toLong()}")
-                        context.onWalletRescan(restoreFromDateHeight.toLong())
-                        //_recoveryWallet(displayName, password, getSeed, restoreFromDateHeight.toLong())
-                        dismiss()
-                    }
-                    else -> {
-                        Toast.makeText(context,getString(R.string.activity_restore_from_height_missing_error),
-                            Toast.LENGTH_SHORT).show()
-                    }
+                }else{
+                    Toast.makeText(context,getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
                 }
             }
         }

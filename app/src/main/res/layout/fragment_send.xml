@@ -43,8 +43,9 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:hint="@string/beldex_address"
+                    android:maxLines="1"
                     android:imeOptions="actionNext"
-                    android:inputType="textMultiLine"
+                    android:inputType="text"
                     android:nextFocusDown="@id/beldexAmountEditTxt"/>
             </com.google.android.material.textfield.TextInputLayout>
 

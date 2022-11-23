@@ -541,19 +541,19 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                         intent.putExtra("change_pin", false)
                         intent.putExtra("send_authentication", true)
                         resultLaunchers.launch(intent)
-                    } else if (binding.beldexAmountEditTxtLayout.editText!!.text.toString()
-                            .toDouble() <= 0.00
-                    ) {
-                        binding.beldexAmountEditTxtLayout.error =
-                            getString(R.string.beldex_amount_valid_error_message)
-                    } else if (binding.beldexAddressEditTxtLayout.editText?.text!!.isEmpty()) {
-                        Log.d("Beldex", "beldexAddressEditTxtLayout isEmpty()")
-                        binding.beldexAddressEditTxtLayout.error =
-                            getString(R.string.beldex_address_error_message)
-                    } else {
+                    }else if(binding.beldexAmountEditTxtLayout.editText?.text!!.isEmpty()){
                         Log.d("Beldex", "beldexAmountEditTxtLayout isEmpty()")
                         binding.beldexAmountEditTxtLayout.error =
                             getString(R.string.beldex_amount_error_message)
+                    }else if (binding.beldexAmountEditTxtLayout.editText!!.text.toString()
+                    .toDouble() <= 0.00
+                    ) {
+                        binding.beldexAmountEditTxtLayout.error =
+                            getString(R.string.beldex_amount_valid_error_message)
+                    }else{
+                        Log.d("Beldex", "beldexAddressEditTxtLayout isEmpty()")
+                        binding.beldexAddressEditTxtLayout.error =
+                            getString(R.string.beldex_address_error_message)
                     }
                 }
             } else {
@@ -859,9 +859,15 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         Timber.d("refreshTransactionDetails()")
         if (pendingTransaction != null) {
             val txData: TxData = getTxData()
-            //New
-            val insertRecipientAddress = DatabaseComponent.get(requireActivity()).bchatRecipientAddressDatabase()
-            insertRecipientAddress.insertRecipientAddress(pendingTransaction!!.firstTxId,txData.destinationAddress)
+            //Insert Recipient Address
+            if(TextSecurePreferences.getSaveRecipientAddress(requireActivity())) {
+                val insertRecipientAddress =
+                    DatabaseComponent.get(requireActivity()).bchatRecipientAddressDatabase()
+                insertRecipientAddress.insertRecipientAddress(
+                    pendingTransaction!!.firstTxId,
+                    txData.destinationAddress
+                )
+            }
             SendConfirmDialog(pendingTransaction!!,txData, this).show(requireActivity().supportFragmentManager,"")
         }
     }

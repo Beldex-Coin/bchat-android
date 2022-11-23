@@ -315,12 +315,10 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
 
     @Override
     public void setNode(NodeInfo node) {
-        Log.d("Beldex","value of current node set node 1 in NodeActivity "+node.getHost());
         setNode(node, true);
 
     }
     private void setNode(NodeInfo node, boolean save) {
-        Log.d("Beldex","value of current node set node 2 in NodeActivity "+node.getHost());
         if (node != this.node) {
             if ((node != null) && (node.getNetworkType() != WalletManager.getInstance().getNetworkType()))
                 throw new IllegalArgumentException("network type does not match");

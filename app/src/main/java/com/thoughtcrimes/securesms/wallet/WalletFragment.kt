@@ -230,9 +230,13 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                     }
                 if (selectedNode == null) { // autoselect
                     selectedNode = autoselect(favourites)
-                } else
-                    Log.d("Beldex","selected node 6 $selectedNode")
-                    selectedNode!!.testRpcService()
+                } else {
+                    //Steve Josephh21 //BCA-402
+                    if(selectedNode!=null) {
+                        Log.d("Beldex", "selected node 6 $selectedNode")
+                        selectedNode!!.testRpcService()
+                    }
+                }
             } else throw IllegalStateException()
             return if (selectedNode != null && selectedNode.isValid) {
                 Log.d("Testing-->12", "true")
@@ -246,14 +250,13 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         }
 
         override fun onPostExecute(result: NodeInfo?) {
-            Log.d("Beldex","Called onPostExecute ${result?.host}")
-            Toast.makeText(context, "${result!!.name}", Toast.LENGTH_SHORT).show()
-
             //if (!isAdded()) return
             //pbNode.setVisibility(View.INVISIBLE)
             //hideProgressDialogWithTitle();
             //llNode.setVisibility(View.VISIBLE)
             if (result != null) {
+                Log.d("Beldex","Called onPostExecute ${result?.host}")
+                Toast.makeText(context, "${result!!.name}", Toast.LENGTH_SHORT).show()
                 Log.d("WalletFragment", "AsyncFindBestNode Success")
                 //Important
                 /*d("found a good node %s", result.toString())

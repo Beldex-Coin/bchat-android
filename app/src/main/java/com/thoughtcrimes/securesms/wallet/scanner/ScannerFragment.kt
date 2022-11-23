@@ -5,9 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.zxing.BarcodeFormat
@@ -19,10 +17,12 @@ import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.wallet.OnUriScannedListener
 import com.thoughtcrimes.securesms.wallet.WalletFragment
 import com.thoughtcrimes.securesms.wallet.send.SendFragment
+import com.thoughtcrimes.securesms.wallet.widget.Toolbar
 import io.beldex.bchat.R
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 import timber.log.Timber
 import java.lang.ClassCastException
+
 
 class ScannerFragment(
 ) : Fragment(), ZXingScannerView.ResultHandler,OnUriScannedListener
@@ -45,6 +45,9 @@ class ScannerFragment(
     interface Listener {
         fun onSendRequest(view: View?)
         fun setBarcodeData(data: BarcodeData?)
+        fun setToolbarButton(type: Int)
+        fun setTitle(title: String?)
+        fun setSubtitle(subtitle: String?)
     }
 
     interface OnScannedListener {
@@ -53,11 +56,18 @@ class ScannerFragment(
     }
 
     private var mScannerView: ZXingScannerView? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(false);
+
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setHasOptionsMenu(true)
         Timber.d("onCreateView")
         mScannerView = ZXingScannerView(activity)
         return mScannerView
@@ -68,6 +78,8 @@ class ScannerFragment(
         Timber.d("onResume")
         mScannerView!!.setResultHandler(this)
         mScannerView!!.startCamera()
+        activityCallback!!.setTitle(getString(R.string.activity_scan_page_title))
+        activityCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
     }
 
     override fun handleResult(rawResult: Result) {

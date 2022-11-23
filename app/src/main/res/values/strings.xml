@@ -1273,4 +1273,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="wallet_name" translatable="false">Wallet Name</string>
     <string name="view_key_private" translatable="false">View Key (private)</string>
     <string name="spend_key_private" translatable="false">Spend Key (private)</string>
+    <string name="activity_scan_page_title" translatable="false">Scan</string>
 </resources>

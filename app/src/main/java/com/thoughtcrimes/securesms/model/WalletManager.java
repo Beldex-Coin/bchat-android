@@ -78,7 +78,10 @@ public class WalletManager {
     }
 
     public Wallet createWallet(File aFile, String password, String language, long height) {
+        Log.d("Beldex","Value of netType " + getNetworkType().getValue());
+        // for Mainnet
         long walletHandle = createWalletJ(aFile.getAbsolutePath(), password, language, getNetworkType().getValue());
+
         Wallet wallet = new Wallet(walletHandle);
         manageWallet(wallet);
         if (wallet.getStatus().isOk()) {

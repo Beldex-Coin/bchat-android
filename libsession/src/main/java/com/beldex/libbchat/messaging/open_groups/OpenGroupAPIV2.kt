@@ -42,8 +42,12 @@ object OpenGroupAPIV2 {
     /*private const val defaultServerPublicKey = "efcaecf00aebf5b75e62cf1fd550c6052842e1415a9339406e256c8b27cd2039"
     const val defaultServer = "http://13.233.251.36:8081"*/
 
-    private const val defaultServerPublicKey = "0cfdbcc8bba5989a6787019c6635c08415c103174609360f9c3e4e764ef48073"
-    const val defaultServer = "http://social.beldex.io"
+    //Mainnet
+    /*private const val defaultServerPublicKey = "0cfdbcc8bba5989a6787019c6635c08415c103174609360f9c3e4e764ef48073"
+    const val defaultServer = "http://social.beldex.io"*/
+    //Testnet
+    private const val defaultServerPublicKey = "ce26ea1de72aed324aa463a79cf68c018761cf499b9704d56434a19e93ae9d4c"
+    const val defaultServer = "http://3.108.219.227:8080"
 
     sealed class Error(message: String) : Exception(message) {
         object Generic : Error("An error occurred.")

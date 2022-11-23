@@ -90,8 +90,8 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
 
     override fun onResume() {
         super.onResume()
-        listenerCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
-        listenerCallback!!.setTitle(getString(R.string.activity_receive_page_title))
+        /*listenerCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
+        listenerCallback!!.setTitle(getString(R.string.activity_receive_page_title))*/
     }
 
     /*override fun onDetach() {
@@ -121,6 +121,8 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
         savedInstanceState: Bundle?
     ): View? {
         binding = ActivityReceiveBinding.inflate(layoutInflater,container,false)
+        listenerCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
+        listenerCallback!!.setTitle(getString(R.string.activity_receive_page_title))
 
         binding.walletAddressReceive.text = IdentityKeyUtil.retrieve(requireActivity(),IdentityKeyUtil.IDENTITY_W_ADDRESS_PREF)
         generateQr()

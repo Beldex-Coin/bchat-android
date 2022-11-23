@@ -3,13 +3,12 @@ package com.thoughtcrimes.securesms.wallet.scanner
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.Result
+import com.thoughtcrimes.securesms.wallet.widget.Toolbar
 import io.beldex.bchat.R
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 import timber.log.Timber
@@ -20,6 +19,9 @@ class WalletScannerFragment: Fragment(), ZXingScannerView.ResultHandler {
 
     interface OnWalletScannedListener {
         fun onWalletScanned(qrCode: String?): Boolean
+        fun setToolbarButton(type: Int)
+        fun setTitle(title: String?)
+
     }
 
     private var mScannerView: ZXingScannerView? = null
@@ -39,6 +41,8 @@ class WalletScannerFragment: Fragment(), ZXingScannerView.ResultHandler {
         Timber.d("onResume")
         mScannerView!!.setResultHandler(this)
         mScannerView!!.startCamera()
+        onScannedListener!!.setTitle(getString(R.string.activity_scan_page_title))
+        onScannedListener!!.setToolbarButton(Toolbar.BUTTON_BACK)
     }
 
     override fun handleResult(rawResult: Result) {

@@ -76,6 +76,9 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
         <activity
+            android:name="com.thoughtcrimes.securesms.wallet.utils.common.LoadingActivity"
+            android:exported="false" />
+        <activity
             android:name="com.thoughtcrimes.securesms.wallet.info.WalletInfoSeedActivity"
             android:exported="false" />
         <activity

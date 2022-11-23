@@ -13,6 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
 import com.thoughtcrimes.securesms.data.*
 import com.thoughtcrimes.securesms.model.*
 import com.thoughtcrimes.securesms.util.Helper
@@ -28,6 +29,7 @@ import com.thoughtcrimes.securesms.wallet.send.SendFragment
 import com.thoughtcrimes.securesms.wallet.service.WalletService
 import com.thoughtcrimes.securesms.wallet.settings.WalletSettings
 import com.thoughtcrimes.securesms.wallet.utils.LegacyStorageHelper
+import com.thoughtcrimes.securesms.wallet.utils.common.LoadingActivity
 import com.thoughtcrimes.securesms.wallet.widget.Toolbar
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityWalletBinding
@@ -1071,54 +1073,6 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         return favouriteNodes
     }
 
-    /*override fun getOrPopulateFavourites(): MutableSet<NodeInfo> {
-        Log.d("Beldex","getOrPopulateFavourites() fun called")
-        if(TextSecurePreferences.getDaemon(this)){
-            TextSecurePreferences.changeDaemon(this,false)
-            favouriteNodes.clear()
-            val selectedNodeId = getSelectedNodeId()
-            Log.d("Beldex"," Value of current node selectedNodeID $selectedNodeId")
-            //val storedNodes = getSharedPreferences(NODES_PREFS_NAME, MODE_PRIVATE).all
-            val nodeInfo = NodeInfo.fromString(selectedNodeId)
-            if (nodeInfo != null) {
-                nodeInfo.setFavourite(true)
-                favouriteNodes.add(nodeInfo)
-            }
-            *//*for (nodeEntry in storedNodes.entries) {
-                Log.d("Beldex","Value of current node loadFav called 1")
-                if (nodeEntry != null) { // just in case, ignore possible future errors
-                    Log.d("Beldex","Value of current node loadFav called 2")
-                    val nodeId = nodeEntry.value as String
-                    val nodeInfo = NodeInfo.fromString(selectedNodeId)
-                    if (nodeInfo != null) {
-                        nodeInfo.setFavourite(true)
-                        favouriteNodes.add(nodeInfo)
-                        Log.d("Beldex","Value of current node loadFav called 3 nodeId $nodeId")
-                        Log.d("Beldex","Value of current node loadFav called 3 selectedNodeId $selectedNodeId")
-                        if (nodeId == selectedNodeId) {
-                            Log.d("Beldex","Value of current node loadFav called 3.1 if")
-                            nodeInfo.isSelected = true
-                        }
-                    }
-                }
-            }*//*
-            saveFavourites()
-            return favouriteNodes
-        }else {
-            if (favouriteNodes.isEmpty()) {
-                for (node in DefaultNodes.values()) {
-                    val nodeInfo = NodeInfo.fromString(node.uri)
-                    if (nodeInfo != null) {
-                        nodeInfo.setFavourite(true)
-                        favouriteNodes.add(nodeInfo)
-                    }
-                }
-                saveFavourites()
-            }
-            return favouriteNodes
-        }
-    }*/
-
     override fun setFavouriteNodes(nodes: MutableCollection<NodeInfo>?) {
         Timber.d("adding %d nodes", nodes!!.size)
         favouriteNodes.clear()
@@ -1270,23 +1224,6 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     override fun onResume() {
         super.onResume()
         Log.d("Beldex","Value of change daemon ${TextSecurePreferences.getDaemon(this)}")
-        /*if (TextSecurePreferences.getDaemon(this)) {
-            walletFragmentTag = getCurrentFragment() as WalletFragment
-            TextSecurePreferences.changeDaemon(this, false)
-            dismissProgressDialog()
-            if (CheckOnline.isOnline(this)) {
-                if (mBoundService != null && getWallet() != null) {
-                    saveWallet()
-                }
-            }
-            stopWalletService()
-            mConnection()
-            Log.d("Beldex", "Value of change daemon 1 ${TextSecurePreferences.getDaemon(this)}")
-            loadFavouritesWithNetwork()
-        }*/
-
-
-
         Timber.d("onResume()-->")
         // wait for WalletService to finish
         //Important
@@ -1381,41 +1318,9 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            val walletName = TextSecurePreferences.getWalletName(this)
-            val walletPassword = TextSecurePreferences.getWalletPassword(this)
-            if (walletName != null && walletPassword!=null) {
-                startWallet(walletName,walletPassword,
-                    fingerprintUsed = false,
-                    streetmode = false
-                )
-            }
+            val intent = Intent(this, LoadingActivity::class.java)
+            push(intent)
+            finish()
         }
-    }
-
-    private fun startWallet(
-        walletName:String, walletPassword:String,
-        fingerprintUsed:Boolean, streetmode:Boolean) {
-        val REQUEST_ID = "id"
-        val REQUEST_PW = "pw"
-        val REQUEST_FINGERPRINT_USED = "fingerprint"
-        val REQUEST_STREETMODE = "streetmode"
-        val REQUEST_URI = "uri"
-
-        Timber.d("startWallet()");
-        TextSecurePreferences.setIncomingTransactionStatus(this, true)
-        TextSecurePreferences.setOutgoingTransactionStatus(this, true)
-        TextSecurePreferences.setTransactionsByDateStatus(this,false)
-        val intent = Intent(this, WalletActivity::class.java)
-        intent.putExtra(REQUEST_ID, walletName)
-        intent.putExtra(REQUEST_PW, walletPassword)
-        intent.putExtra(REQUEST_FINGERPRINT_USED, fingerprintUsed)
-        intent.putExtra(REQUEST_STREETMODE, streetmode)
-        //Important
-        /*if (uri != null) {
-            intent.putExtra(REQUEST_URI, uri)
-            uri = null // use only once
-        }*/
-        startActivity(intent)
-        finish()
     }
 }

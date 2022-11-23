@@ -196,14 +196,6 @@ public class WalletService extends Service {
         Timber.d("setObserver %s", observer);
     }
 
-    public Boolean getObserver(){
-        if(observer==null){
-            return false;
-        }else{
-            return true;
-        }
-    }
-
     public interface Observer {
         boolean onRefreshed(Wallet wallet, boolean full);
 
@@ -573,7 +565,7 @@ public class WalletService extends Service {
             showProgress(100);
         }
         Log.d("Beldex","Wallet start called Testing 5");
-        showProgress("Testing...");
+        showProgress(getString(R.string.status_wallet_connecting));
         showProgress(101);
         // if we try to refresh the history here we get occasional segfaults!
         // doesnt matter since we update as soon as we get a new block anyway

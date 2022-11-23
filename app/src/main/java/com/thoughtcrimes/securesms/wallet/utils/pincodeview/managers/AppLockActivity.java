@@ -172,7 +172,14 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
         /*mForgotTextView.setText(getForgotText());
         mForgotTextView.setVisibility(mLockManager.getAppLock().shouldShowForgot() ? View.VISIBLE : View.GONE);*/
 
-        setStepText();
+       Log.d("AppLockActivity 1",String.valueOf(mType));
+       if(changePin) {
+           Log.d("AppLockActivity 2",String.valueOf(mType));
+           mStepTextView.setText(getStepText(AppLock.CHANGE_PIN));
+       }else{
+           Log.d("AppLockActivity 3",String.valueOf(mType));
+           setStepText();
+       }
     }
 
     /**

@@ -123,6 +123,7 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
                 push(intent)*/
             }
             changePinLayout.setOnClickListener {
+                TextSecurePreferences.setChangePin(this@WalletSettings,true)
                 val lockManager: LockManager<CustomPinActivity> = LockManager.getInstance() as LockManager<CustomPinActivity>
                 lockManager.enableAppLock(this@WalletSettings, CustomPinActivity::class.java)
                 val intent = Intent(this@WalletSettings, CustomPinActivity::class.java)
@@ -191,7 +192,7 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent);
         dialog.window!!.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
         val dialogBoxTitle = dialog.findViewById(R.id.dialogBoxTitle) as TextView
-        dialogBoxTitle.text = "Fee Priority"
+        dialogBoxTitle.text = getString(R.string.fee_priority)
         val walletSubOptionsList = dialog.findViewById(R.id.walletSubOptionsListRecyclerView) as RecyclerView
         val close = dialog.findViewById(R.id.closeDialogBox) as ImageView
         close.setOnClickListener {
@@ -206,6 +207,28 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
     }
 
     private fun openDecimalsDialogBox() {
+        dialog = Dialog(this@WalletSettings)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.wallet_sub_options_list)
+        dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent);
+        dialog.window!!.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
+        val dialogBoxTitle = dialog.findViewById(R.id.dialogBoxTitle) as TextView
+        dialogBoxTitle.text = getString(R.string.decimals)
+        val walletSubOptionsList = dialog.findViewById(R.id.walletSubOptionsListRecyclerView) as RecyclerView
+        val close = dialog.findViewById(R.id.closeDialogBox) as ImageView
+        close.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        walletSubOptionsList.layoutManager = LinearLayoutManager(this)
+        walletSubOptionsListAdapter = WalletSubOptionsListAdapter(this, decimalsList,selectedDecimalIndex,2)
+        walletSubOptionsListAdapter.setClickListener(this)
+        walletSubOptionsList.adapter = walletSubOptionsListAdapter
+        dialog.show()
+    }
+
+    /*private fun openDecimalsDialogBox() {
         dialog = Dialog(this@WalletSettings)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(false)
@@ -240,7 +263,7 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         walletSubOptionsSearchListItemAdapter.setClickListener(this)
         walletSubOptionsList.adapter = walletSubOptionsSearchListItemAdapter
         dialog.show()
-    }
+    }*/
 
     private fun openCurrencyDialogBox() {
         dialog = Dialog(this@WalletSettings)
@@ -250,7 +273,7 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent);
         dialog.window!!.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
         val dialogBoxTitle = dialog.findViewById(R.id.dialogBoxTitle) as TextView
-        dialogBoxTitle.text = "Currency"
+        dialogBoxTitle.text = getString(R.string.currency)
         val walletSubOptionsList = dialog.findViewById(R.id.walletSubOptionsListRecyclerView) as RecyclerView
         val close = dialog.findViewById(R.id.closeDialogBox) as ImageView
         close.setOnClickListener {
@@ -276,19 +299,30 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
     }
 
     override fun onItemClick(view: View?, position: Int,option:Int) {
-        if(option==1){
-            binding.displayBalanceAsDescription.text = walletSubOptionsListAdapter.getItem(position)
-            TextSecurePreferences.setDisplayBalanceAs(this,position)
-        }
-        else{
-            binding.feePriorityDescription.text = walletSubOptionsListAdapter.getItem(position)
-            TextSecurePreferences.setFeePriority(this,position)
+        when (option) {
+            1 -> {
+                binding.displayBalanceAsDescription.text = walletSubOptionsListAdapter.getItem(position)
+                TextSecurePreferences.setDisplayBalanceAs(this,position)
+            }
+            2 -> {
+                binding.decimalsDescription.text = walletSubOptionsListAdapter.getItem(position)
+                TextSecurePreferences.setDecimals(this,walletSubOptionsListAdapter.getItem(position))
+                for(i in 0 until decimalsList.size){
+                    if(decimalsList[i]==binding.decimalsDescription.text.toString()){
+                        selectedDecimalIndex=i
+                    }
+                }
+            }
+            else -> {
+                binding.feePriorityDescription.text = walletSubOptionsListAdapter.getItem(position)
+                TextSecurePreferences.setFeePriority(this,position)
+            }
         }
         dialog.dismiss()
     }
 
     override fun onItemClicks(view: View?, position: Int, option: Int) {
-        if(option==2){
+        /*if(option==2){
             binding.decimalsDescription.text = walletSubOptionsSearchListItemAdapter.getItem(position)
             TextSecurePreferences.setDecimals(this,walletSubOptionsSearchListItemAdapter.getItem(position))
             for(i in 0 until decimalsList.size){
@@ -307,7 +341,15 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
                 }
             }
             dialog.dismiss()
+        }*/
+        binding.currencyDescription.text = walletSubOptionsSearchListItemAdapter.getItem(position)
+        TextSecurePreferences.setCurrency(this,walletSubOptionsSearchListItemAdapter.getItem(position))
+        for(i in 0 until currencyList.size){
+            if(currencyList[i]==binding.currencyDescription.text.toString()){
+                selectedCurrencyIndex=i
+            }
         }
+        dialog.dismiss()
     }
 
     fun filter(text: String?, arrayList: ArrayList<String>) {

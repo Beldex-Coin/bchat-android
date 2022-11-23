@@ -214,6 +214,9 @@ interface TextSecurePreferences {
     fun setSendAddressDisable(status: Boolean)
     fun getSendAddress(): Boolean
 
+    fun setChangePin(status: Boolean)
+    fun getChangePin():Boolean
+
 
     companion object {
         val TAG = TextSecurePreferences::class.simpleName
@@ -313,6 +316,7 @@ interface TextSecurePreferences {
         const val OUTGOING_TRANSACTION_STATUS = "outgoing_transaction_status"
         const val TRANSACTIONS_BY_DATE = "transactions_by_date"
         const val SEND_ADDRESS = "send_address"
+        const val CHANGE_PIN = "pref_change_pin"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -1199,6 +1203,17 @@ interface TextSecurePreferences {
             return getBooleanPreference(context, SEND_ADDRESS, false)
         }
 
+
+        @JvmStatic
+        fun setChangePin(context: Context, status: Boolean) {
+            setBooleanPreference(context, CHANGE_PIN, status)
+        }
+
+        @JvmStatic
+        fun getChangePin(context: Context): Boolean {
+            return getBooleanPreference(context, CHANGE_PIN, false)
+        }
+
     }
 }
 
@@ -1958,5 +1973,13 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun getSendAddress(): Boolean {
         return getBooleanPreference(TextSecurePreferences.SEND_ADDRESS,false)
+    }
+
+    override fun setChangePin(status: Boolean) {
+        setBooleanPreference(TextSecurePreferences.CHANGE_PIN,status)
+    }
+
+    override fun getChangePin(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.CHANGE_PIN,false)
     }
 }

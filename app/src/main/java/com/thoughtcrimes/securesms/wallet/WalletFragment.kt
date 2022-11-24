@@ -256,7 +256,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             //llNode.setVisibility(View.VISIBLE)
             if (result != null) {
                 Log.d("Beldex","Called onPostExecute ${result?.host}")
-                Toast.makeText(context, "${result!!.name}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireActivity(), "${result!!.name}", Toast.LENGTH_SHORT).show()
                 Log.d("WalletFragment", "AsyncFindBestNode Success")
                 //Important
                 /*d("found a good node %s", result.toString())

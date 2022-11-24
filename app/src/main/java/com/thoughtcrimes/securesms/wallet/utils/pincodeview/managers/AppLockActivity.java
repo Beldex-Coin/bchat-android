@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -76,6 +77,11 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
         setContentView(getContentView());
         initializeToolbar();
         initLayout(getIntent());
+        if (TextSecurePreferences.isScreenSecurityEnabled(this)) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        } else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        }
     }
 
     private void initializeToolbar() {

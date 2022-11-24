@@ -72,7 +72,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
     interface OnScanListener {
         /*fun onScan()*/
-        fun onWalletScan()
+        fun onWalletScan(view: View?)
 
     }
 
@@ -616,7 +616,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             popupMenu.show()
         }
         binding.scanQrCodeImg.setOnClickListener {
-            onScanListener?.onWalletScan()
+            onScanListener?.onWalletScan(view)
         }
         return binding.root
     }

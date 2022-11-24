@@ -11,7 +11,9 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.WindowManager;
 
+import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.thoughtcrimes.securesms.data.DefaultNodes;
 import com.thoughtcrimes.securesms.data.Node;
 import com.thoughtcrimes.securesms.data.NodeInfo;
@@ -61,6 +63,11 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         loadFavouritesWithNetwork();
+        if (TextSecurePreferences.isScreenSecurityEnabled(this)) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        } else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        }
         Fragment nodeFragment = new NodeFragment();
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.nodeList_frame, nodeFragment, NodeFragment.class.getName()).commit();

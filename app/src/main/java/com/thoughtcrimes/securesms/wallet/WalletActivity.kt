@@ -4,10 +4,10 @@ import android.app.Activity
 import android.content.*
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.Handler
 import android.os.IBinder
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
@@ -17,13 +17,12 @@ import com.thoughtcrimes.securesms.data.*
 import com.thoughtcrimes.securesms.model.*
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.push
-import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity
 import com.thoughtcrimes.securesms.wallet.listener.OnBlockUpdateListener
 import com.thoughtcrimes.securesms.wallet.node.NodeFragment
 import com.thoughtcrimes.securesms.wallet.receive.ReceiveFragment
 import com.thoughtcrimes.securesms.wallet.rescan.RescanDialog
-import com.thoughtcrimes.securesms.wallet.scanner.ScannerFragment
 import com.thoughtcrimes.securesms.wallet.scanner.WalletScannerFragment
+import com.thoughtcrimes.securesms.wallet.scanner.ScannerFragment
 import com.thoughtcrimes.securesms.wallet.send.SendFragment
 import com.thoughtcrimes.securesms.wallet.service.WalletService
 import com.thoughtcrimes.securesms.wallet.settings.WalletSettings
@@ -39,8 +38,8 @@ import java.lang.IllegalArgumentException
 import java.util.*
 
 class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.Observer,
-    ScannerFragment.OnScannedListener, SendFragment.OnScanListener, SendFragment.Listener,
-    ReceiveFragment.Listener,WalletFragment.OnScanListener,WalletScannerFragment.OnWalletScannedListener, ScannerFragment.Listener,NodeFragment.Listener {
+    WalletScannerFragment.OnScannedListener, SendFragment.OnScanListener, SendFragment.Listener,
+    ReceiveFragment.Listener,WalletFragment.OnScanListener,ScannerFragment.OnWalletScannedListener, WalletScannerFragment.Listener,NodeFragment.Listener{
     lateinit var binding: ActivityWalletBinding
 
 
@@ -70,6 +69,12 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         }
         binding = ActivityWalletBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        if (TextSecurePreferences.isScreenSecurityEnabled(this)) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        } else {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        }
 
         //Node Connection
         //by hales
@@ -563,25 +568,29 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     private fun startScanFragment() {
         val extras = Bundle()
-        replaceFragment(ScannerFragment(), null, extras)
+        replaceFragment(WalletScannerFragment(), null, extras)
     }
     private fun startWalletScanFragment() {
         val extras = Bundle()
-        replaceFragment(WalletScannerFragment(), null, extras)
+        replaceFragment(ScannerFragment(), null, extras)
     }
 
     /// QR scanner callbacks
     override fun onScan() {
         if (Helper.getCameraPermission(this)) {
+            Log.d("Beldex","Called onScan")
             startWalletScanFragment()
         } else {
             Timber.i("Waiting for permissions")
         }
     }
 
-    override fun onWalletScan() {
+    override fun onWalletScan(view: View?) {
         if (Helper.getCameraPermission(this)) {
-            startScanFragment()
+            val extras = Bundle()
+            Log.d("Beldex","Called onWalletScan")
+            replaceFragmentWithTransition(view,WalletScannerFragment(), null, extras)
+            //startScanFragment()
         } else {
             Timber.i("Waiting for permissions")
         }
@@ -661,7 +670,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             R.string.receive_transition_name
         else if (newFragment is SendFragment)
             R.string.send_transition_name
-        else if (newFragment is ScannerFragment)
+        else if (newFragment is WalletScannerFragment)
             R.string.scan_transition_name
         else throw IllegalStateException("expecting known transition")
         Log.d("Beldex", "extras value transition $transition")

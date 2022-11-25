@@ -434,15 +434,17 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                                 s.toString().toDouble()
                             }   amount -> $amount   -->" + amount.toString()
                         )
-                        binding.currencyEditTxtLayout.editText!!.setText(String.format("%.4f", amount))
+                        //binding.currencyEditTxtLayout.editText!!.setText(String.format("%.4f", amount))
+                        binding.currencyEditText.text=String.format("%.4f", amount)
                     } else {
-                        binding.currencyEditTxtLayout.editText!!.text.clear()
+                        //binding.currencyEditTxtLayout.editText!!.text.clear()
+                        binding.currencyEditText.text="0.00"
                     }
                 }
             }
         })
 
-        binding.currencyEditTxtLayout.editText?.addTextChangedListener(object : TextWatcher {
+        /*binding.currencyEditTxtLayout.editText?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable) {
                 binding.currencyEditTxtLayout.error = null
                 if(binding.currencyEditTxtLayout.editText!!.isFocused) {
@@ -472,7 +474,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
             }
-        })
+        })*/
 
         binding.sendButton.setOnClickListener {
             if(CheckOnline.isOnline(requireContext())) {
@@ -530,7 +532,8 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                         txData.mixin = MIXIN
                         binding.beldexAddressEditTxtLayout.editText?.text?.clear()
                         binding.beldexAmountEditTxtLayout.editText?.text?.clear()
-                        binding.currencyEditTxtLayout.editText?.text?.clear()
+                        binding.currencyEditText.text="0.00"
+                        //binding.currencyEditTxtLayout.editText?.text?.clear()
 
                         //Important
                         val lockManager: LockManager<CustomPinActivity> =

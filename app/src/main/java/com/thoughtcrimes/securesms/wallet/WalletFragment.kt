@@ -6,6 +6,7 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
 import android.util.Log
 import android.view.*
@@ -114,16 +115,16 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
     private fun showReceive() {
         if (walletLoaded) {
-            binding.receiveCardViewButton.visibility = View.VISIBLE
             binding.receiveCardViewButton.isEnabled = true
         }
     }
 
     fun onSynced() {
         if (!activityCallback?.isWatchOnly!!) {
-            binding.sendCardViewButton.visibility = View.VISIBLE
             binding.sendCardViewButton.isEnabled = true
+            binding.sendCardViewButtonText.setTextColor(ContextCompat.getColor(requireActivity(),R.color.text))
             binding.scanQrCodeImg.isEnabled = true
+            binding.scanQrCodeImg.setImageResource(R.drawable.ic_wallet_scan_qr)
         }
         //if (isVisible) enableAccountsList(true) //otherwise it is enabled in onResume()
     }
@@ -131,7 +132,9 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
     fun unsync() {
         if (!activityCallback!!.isWatchOnly) {
             binding.sendCardViewButton.isEnabled = false
+            binding.sendCardViewButtonText.setTextColor(ContextCompat.getColor(requireActivity(),R.color.send_button_disable_color))
             binding.scanQrCodeImg.isEnabled = false
+            binding.scanQrCodeImg.setImageResource(R.drawable.ic_wallet_scan_qr_disable)
             //binding.progressBar.show()
         }
         //if (isVisible) enableAccountsList(false) //otherwise it is enabled in onResume()
@@ -201,8 +204,6 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
         override fun doInBackground(vararg params: Int?): NodeInfo? {
             Log.d("Beldex","called AsyncFindBestNode")
-            Log.d("Beldex","called AsyncFindBestNode ${TextSecurePreferences.getDaemon(requireContext())} ")
-
 
             val favourites: Set<NodeInfo?> = activityCallback!!.getOrPopulateFavourites()
             var selectedNode: NodeInfo?
@@ -410,7 +411,9 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         }*/
 
         binding.sendCardViewButton.isEnabled = false
+        binding.sendCardViewButtonText.setTextColor(ContextCompat.getColor(requireActivity(),R.color.send_button_disable_color))
         binding.scanQrCodeImg.isEnabled = false
+        binding.scanQrCodeImg.setImageResource(R.drawable.ic_wallet_scan_qr_disable)
 
         //binding.walletName.text = walletTitle
         //Important
@@ -488,6 +491,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 popupMenu.setForceShowIcon(true)
             }*/
             val spanString = SpannableString(popupMenu.menu[0].title.toString())
+            spanString.setSpan(RelativeSizeSpan(1.2f), 0,spanString.length, 0);
             spanString.setSpan(StyleSpan(Typeface.BOLD), 0, spanString.length, 0)
             spanString.setSpan(
                 ForegroundColorSpan(

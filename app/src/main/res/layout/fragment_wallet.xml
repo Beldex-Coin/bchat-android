@@ -102,8 +102,8 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:visibility="visible"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="15dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_marginBottom="5dp"
             app:cardBackgroundColor="@color/wallet_card_transaction_card_background"
             app:cardElevation="2dp"
@@ -216,31 +216,19 @@
                 android:background="@drawable/send_card_background"
                 android:transitionName="@string/send_btn_transition_name">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_margin="10dp"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/ic_wallet_send_button" />
-
                     <TextView
+                        android:id="@+id/sendCardViewButtonText"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginStart="10dp"
                         android:gravity="center_vertical"
-                        android:text="Send"
-                        android:textSize="18sp" />
-                </LinearLayout>
+                        android:text="@string/send_title"
+                        android:textSize="18sp"
+                        android:textColor="@color/send_button_disable_color"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
             <ImageView
                 android:id="@+id/scanQrCode_img"
@@ -248,7 +236,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:src="@drawable/ic_wallet_scan_qr"
+                android:src="@drawable/ic_wallet_scan_qr_disable"
                 android:transitionName="@string/scan_transition_name" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -263,31 +251,18 @@
                 android:transitionName="@string/receive_btn_transition_name"
                 android:background="@drawable/receive_card_background">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_margin="10dp"
-                    android:gravity="center"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/ic_wallet_receive_button" />
-
                     <TextView
+                        android:id="@+id/receiveCardViewButtonText"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginStart="10dp"
                         android:gravity="center_vertical"
-                        android:text="Receive"
-                        android:textSize="18sp" />
-                </LinearLayout>
+                        android:text="@string/activity_receive_page_title"
+                        android:textSize="18sp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
 

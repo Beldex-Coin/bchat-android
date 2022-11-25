@@ -112,4 +112,7 @@
     <color name="no_transaction_image_border3">#eaeaea</color>
     <color name="dialog_title_color">#77778B</color>
     <color name="wallet_bottom_card_color">@color/white</color>
+    <color name="scan_qr_code_disable_color">#acacac</color>
+    <color name="scan_qr_code_disable_background_color">#ebebeb</color>
+    <color name="send_button_disable_color">#ACACAC</color>
 </resources>

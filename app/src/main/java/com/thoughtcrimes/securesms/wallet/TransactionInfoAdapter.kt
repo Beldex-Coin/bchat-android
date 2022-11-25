@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.io.Resources.getResource
 import com.thoughtcrimes.securesms.data.Crypto
 import com.thoughtcrimes.securesms.data.UserNotes
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
@@ -47,7 +48,7 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
     init{
         this.context =context
         inboundColour = ContextCompat.getColor(context!!, R.color.tx_plus)
-        outboundColour = ContextCompat.getColor(context, R.color.tx_minus)
+        outboundColour = ContextCompat.getColor(context, R.color.wallet_send_button)//tx_minus
         pendingColour = ContextCompat.getColor(context, R.color.tx_pending)
         failedColour = ContextCompat.getColor(context, R.color.tx_failed)
         infoItems = ArrayList()
@@ -110,8 +111,10 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
                             holder.tvAddressTitle.visibility = View.GONE
                             holder.tvAddress.text=""
                         }
+                        holder.expandableArrow.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
                     }else{
                         holder.transactionDetailsLayout.visibility = View.GONE
+                        holder.expandableArrow.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
                     }
                     //Important
                     //listener!!.onInteraction(view, infoItems!!.get(position))
@@ -165,6 +168,7 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
         private var tvTxStatus: TextView = itemView.findViewById(R.id.transaction_status)
         private var tvTxStatusIcon: ImageView = itemView.findViewById(R.id.transaction_status_icon)
         private var tvDateTimeHead: TextView = itemView.findViewById(R.id.transaction_date_and_time_head)
+        var expandableArrow:ImageView = itemView.findViewById(R.id.transaction_expandable_arrow)
 
         //var tvPaymentId: TextView
         private var tvDateTime: TextView = itemView.findViewById(R.id.transaction_date_and_time)
@@ -203,10 +207,12 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
                 tvTxStatus.text = context!!.getString(R.string.tx_status_sent)
                 tvTxStatusIcon.setImageResource(R.drawable.ic_wallet_send_button)
                 tvAmount.text = context!!.getString(R.string.tx_list_amount_negative, displayAmount)
+                tvAmount.setTextColor(ContextCompat.getColor(context!!,R.color.wallet_send_button))
             } else {
                 tvTxStatus.text = context!!.getString(R.string.tx_status_received)
                 tvTxStatusIcon.setImageResource(R.drawable.ic_wallet_receive_button)
                 tvAmount.text = context!!.getString(R.string.tx_list_amount_positive, displayAmount)
+                tvAmount.setTextColor(ContextCompat.getColor(context!!,R.color.wallet_receive_button))
             }
             txId.text = infoItem!!.hash
             if (infoItem!!.isFailed) {

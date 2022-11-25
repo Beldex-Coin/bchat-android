@@ -18,8 +18,8 @@ public enum NetworkType {
     }
 
     public int getValue() {
-        return value;
-    }
+        return 1;
+    }//value
 
     private int value;
 

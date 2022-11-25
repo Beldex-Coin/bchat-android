@@ -83,7 +83,7 @@
                         android:textSize="30sp"
                         android:layout_marginStart="5dp"
                         android:textAlignment="center"
-                        android:text="---"
+                        android:text="-.----"
                         android:textStyle="bold" />
                 </LinearLayout>
                 <TextView

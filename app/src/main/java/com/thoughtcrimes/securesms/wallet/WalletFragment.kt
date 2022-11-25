@@ -22,14 +22,12 @@ import com.github.brnunes.swipeablerecyclerview.SwipeableRecyclerViewTouchListen
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.gson.GsonBuilder
-import com.thoughtcrimes.securesms.data.BarcodeData
 import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
 import com.thoughtcrimes.securesms.model.TransactionInfo
 import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.NodePinger
-import com.thoughtcrimes.securesms.wallet.send.SendFragment
 import com.thoughtcrimes.securesms.wallet.service.exchange.ExchangeApi
 import com.thoughtcrimes.securesms.wallet.service.exchange.ExchangeRate
 import com.thoughtcrimes.securesms.wallet.utils.common.FiatCurrencyPrice
@@ -41,7 +39,6 @@ import io.beldex.bchat.databinding.FragmentWalletBinding
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
-import org.w3c.dom.Text
 import timber.log.Timber
 import java.io.IOException
 import java.lang.ClassCastException
@@ -63,6 +60,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
     private var adapterItems: ArrayList<TransactionInfo> = ArrayList()
 
     private var walletAvailableBalance: String? =null
+    private var walletSynchronized:Boolean = false
 
     fun setProgress(text: String?) {
         syncText = text
@@ -94,7 +92,9 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 binding.walletName.text = "--"
             }*/
             binding.progressBar.visibility = View.VISIBLE
-        } else { // <0
+        } /*else if(n==-2){
+            binding.progressBar.visibility = View.VISIBLE
+        }*/else { // <0
             binding.progressBar.visibility = View.GONE
         }
     }
@@ -159,7 +159,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         if(TextSecurePreferences.getDisplayBalanceAs(requireActivity())==2) {
             hideDisplayBalance()
         }else{
-            showSelectedDecimalBalance(walletAvailableBalance!!)
+            showSelectedDecimalBalance(walletAvailableBalance!!, walletSynchronized)
         }
         exitTransition = null
         reenterTransition = null
@@ -415,7 +415,8 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         //binding.walletName.text = walletTitle
         //Important
         //tvWalletAccountStatus.setText(walletSubtitle)
-        showBalance(Helper.getDisplayAmount(0))
+        Log.d("showBalance->","onCreateView")
+        showBalance(Helper.getDisplayAmount(0),walletSynchronized)
         showUnconfirmed(0.0)
 
         adapter = TransactionInfoAdapter(activity, this)
@@ -733,7 +734,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             balance = wallet.balance
             Log.d("Beldex", "value of balance $balance")
             unlockedBalance = wallet.unlockedBalance
-            refreshBalance()
+            refreshBalance(wallet.isSynchronized)
             val sync: String
             check(activityCallback!!.hasBoundService()) { "WalletService not bound." }
             val daemonConnected: Wallet.ConnectionStatus = activityCallback!!.connectionStatus!!
@@ -754,6 +755,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                     binding.filterTransactionsIcon.isClickable = false
                     //activityCallback!!.hiddenRescan(false)
                 } else {
+                    Log.d("showBalance->","Synchronized")
                     sync =
                         getString(R.string.status_synchronized)//getString(R.string.status_synced) + " " + formatter.format(wallet.blockChainHeight)
                     //binding.syncStatus.setTextColor(resources.getColor(R.color.green_color))
@@ -795,14 +797,15 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
     private val exchangeApi: ExchangeApi = ServiceHelper.getExchangeApi()
 
-    private fun refreshBalance() {
+    private fun refreshBalance(synchronized: Boolean) {
+        Log.d("showBalance->","refreshBalance()")
         val unconfirmedBdx: Double = Helper.getDecimalAmount(balance - unlockedBalance).toDouble()
         showUnconfirmed(unconfirmedBdx)
 
         val amountBdx: Double = Helper.getDecimalAmount(unlockedBalance).toDouble()
         Log.d("Beldex", "value of amountBdx$amountBdx")
         Log.d("Beldex", "value of helper amountBdx" + Helper.getFormattedAmount(amountBdx, true))
-        showBalance(Helper.getFormattedAmount(amountBdx, true))
+        showBalance(Helper.getFormattedAmount(amountBdx, true),synchronized)
     }
 
     //Important
@@ -866,24 +869,39 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             Helper.getFormattedAmount(amountA, true)
         }
         Log.d("sync updateBalance()", "true")
-        showBalance(displayB)
+        Log.d("showBalance->","UpdateBalance()")
+        showBalance(displayB,walletSynchronized)
     }
 
     private fun hideDisplayBalance(){
-        binding.tvBalance.text ="---"
-        binding.tvFiatCurrency.text="---"
+        binding.tvBalance.text ="-.----"
+        binding.tvFiatCurrency.text="-.----"
     }
 
-    private fun showSelectedDecimalBalance(balance:String){
-        when {
-            TextSecurePreferences.getDecimals(requireActivity())=="4 - Detailed" -> {
-                binding.tvBalance.text = String.format("%.4f", balance.toDouble())
+    private fun showSelectedDecimalBalance(balance: String, synchronized: Boolean){
+        if(!synchronized){
+            when {
+                TextSecurePreferences.getDecimals(requireActivity()) == "4 - Detailed" -> {
+                    binding.tvBalance.text = "-.----"
+                }
+                TextSecurePreferences.getDecimals(requireActivity()) == "0 - None" -> {
+                    binding.tvBalance.text = "-"
+                }
+                else -> {
+                    binding.tvBalance.text = "-.--"
+                }
             }
-            TextSecurePreferences.getDecimals(requireActivity())=="0 - None"-> {
-                binding.tvBalance.text = String.format("%.0f", balance.toDouble())
-            }
-            else -> {
-                binding.tvBalance.text = balance
+        }else{
+            when {
+                TextSecurePreferences.getDecimals(requireActivity()) == "4 - Detailed" -> {
+                    binding.tvBalance.text = String.format("%.4f", balance.toDouble())
+                }
+                TextSecurePreferences.getDecimals(requireActivity()) == "0 - None" -> {
+                    binding.tvBalance.text = String.format("%.0f", balance.toDouble())
+                }
+                else -> {
+                    binding.tvBalance.text = balance
+                }
             }
         }
         //Update Fiat Currency
@@ -893,12 +911,13 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         }
     }
 
-    private fun showBalance(balance: String?) {
+    private fun showBalance(balance: String?,synchronized: Boolean) {
         if(TextSecurePreferences.getDisplayBalanceAs(requireActivity())==2) {
             hideDisplayBalance()
         }else {
             walletAvailableBalance = balance
-            showSelectedDecimalBalance(balance!!)
+            walletSynchronized = synchronized
+            showSelectedDecimalBalance(balance!!,synchronized)
         }
 
         val streetMode: Boolean = activityCallback!!.isStreetMode
@@ -1018,7 +1037,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         //Important
         //sCurrency.setSelection(0, true) // default to BDX
         val amountBdx: Double = Helper.getDecimalAmount(unlockedBalance).toDouble()
-        showBalance(Helper.getFormattedAmount(amountBdx, true))
+        showBalance(Helper.getFormattedAmount(amountBdx, true),walletSynchronized)
         hideExchanging()
     }
 

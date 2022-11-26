@@ -193,4 +193,5 @@
     <color name="add_node_card_color">#353543</color>
     <color name="add_node_optional_card_color">#22222B</color>
     <color name="you_address_color">#1BB51E</color>
+    <color name="or_color">#159B24</color>
 </resources>

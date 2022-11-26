@@ -119,4 +119,5 @@
     <color name="add_node_card_color">#FFFFFF</color>
     <color name="add_node_optional_card_color">#EAEAEA</color>
     <color name="unselected_node">#F4F4F4</color>
+    <color name="or_color">#159B24</color>
 </resources>

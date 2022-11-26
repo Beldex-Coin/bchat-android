@@ -885,10 +885,13 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
     private fun showSelectedDecimalBalance(balance: String, synchronized: Boolean){
         if(!synchronized){
             when {
-                TextSecurePreferences.getDecimals(requireActivity()) == "4 - Detailed" -> {
+                TextSecurePreferences.getDecimals(requireActivity()) == "4 - Four (0.0000)" -> {
                     binding.tvBalance.text = "-.----"
                 }
-                TextSecurePreferences.getDecimals(requireActivity()) == "0 - None" -> {
+                TextSecurePreferences.getDecimals(requireActivity()) == "3 - Three (0.000)" -> {
+                    binding.tvBalance.text = "-.---"
+                }
+                TextSecurePreferences.getDecimals(requireActivity()) == "0 - Zero (000)" -> {
                     binding.tvBalance.text = "-"
                 }
                 else -> {
@@ -897,10 +900,13 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             }
         }else{
             when {
-                TextSecurePreferences.getDecimals(requireActivity()) == "4 - Detailed" -> {
+                TextSecurePreferences.getDecimals(requireActivity()) == "4 - Four (0.0000)" -> {
                     binding.tvBalance.text = String.format("%.4f", balance.toDouble())
                 }
-                TextSecurePreferences.getDecimals(requireActivity()) == "0 - None" -> {
+                TextSecurePreferences.getDecimals(requireActivity()) == "3 - Three (0.000)" -> {
+                    binding.tvBalance.text = String.format("%.3f", balance.toDouble())
+                }
+                TextSecurePreferences.getDecimals(requireActivity()) == "0 - Zero (000)" -> {
                     binding.tvBalance.text = String.format("%.0f", balance.toDouble())
                 }
                 else -> {

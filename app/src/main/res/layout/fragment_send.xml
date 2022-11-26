@@ -42,6 +42,7 @@
                 android:layout_height="match_parent"
                 app:errorTextColor="@color/red"
                 app:hintEnabled="false"
+                android:background="@color/transparent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@id/scanQrCode"
                 app:layout_constraintTop_toTopOf="parent"
@@ -49,14 +50,23 @@
 
                 <EditText
                     android:id="@+id/beldexAddressEditTxt"
-                    style="@style/BchatAddressEditText"
+                    android:fontFamily="@font/poppins_medium"
+                    android:paddingStart="@dimen/medium_spacing"
+                    android:paddingTop="@dimen/medium_spacing"
+                    android:paddingEnd="@dimen/medium_spacing"
+                    android:paddingBottom="@dimen/medium_spacing"
+                    android:textSize="@dimen/small_font_size"
+                    android:textColor="@color/text"
+                    android:textCursorDrawable="@drawable/bchat_edit_text_cursor"
+                    android:textAlignment="viewStart"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="start"
                     android:lines="4"
-                    android:hint="Enter Address"
+                    android:background="@color/transparent"
+                    android:hint="@string/enter_address"
                     android:imeOptions="actionNext"
-                    android:inputType="text"
+                    android:inputType="textMultiLine"
                     android:nextFocusDown="@id/beldexAmountEditTxt"/>
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -83,6 +93,15 @@
                 app:layout_constraintStart_toEndOf="@id/scanQrCode"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/beldexAddressErrorMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/red"
+            android:visibility="gone"
+            android:layout_marginEnd="20dp"/>
 
         <LinearLayout
             android:id="@+id/beldexAmountLayout"
@@ -97,10 +116,17 @@
                 android:id="@+id/beldexAmountTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Enter BDX to send"
+                android:text="@string/enter_bdx_to_send"
                 android:textAlignment="center"
                 android:textSize="18sp"
                 android:textStyle="bold" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/beldexAmountConstraintLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/bchat_id_text_view_background">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/beldexAmountEditTxtLayout"
@@ -108,22 +134,40 @@
                 android:layout_height="wrap_content"
                 app:errorTextColor="@color/red"
                 app:hintEnabled="false"
-                android:layout_marginTop="5dp"
+                android:background="@color/transparent"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toLeftOf="@id/scanQrCode"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
 
                 <EditText
                     android:id="@+id/beldexAmountEditTxt"
-                    style="@style/SmallBchatEditText"
+                    android:fontFamily="@font/poppins_medium"
+                    android:paddingStart="@dimen/medium_spacing"
+                    android:paddingBottom="@dimen/medium_spacing"
+                    android:paddingEnd="@dimen/medium_spacing"
+                    android:paddingTop="@dimen/medium_spacing"
+                    android:textSize="@dimen/small_font_size"
+                    android:textColor="@color/text"
+                    android:textCursorDrawable="@drawable/bchat_edit_text_cursor"
+                    android:textAlignment="viewStart"
+                    android:maxLines="1"
+                    android:background="@color/transparent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:hint="Amount"
+                    android:hint="@string/amount_hint"
                     android:imeOptions="actionNext"
                     android:inputType="numberDecimal"
                     android:maxLength="11"/>
             </com.google.android.material.textfield.TextInputLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/beldexAmountErrorMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/red"
+                android:visibility="gone"/>
         </LinearLayout>
 
         <LinearLayout

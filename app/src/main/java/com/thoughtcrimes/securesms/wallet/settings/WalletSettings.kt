@@ -60,9 +60,10 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         feePriorityList.add("Flash")
 
         // data to populate the RecyclerView with
-        decimalsList.add("4 - Detailed")
-        decimalsList.add("2 - Normal")
-        decimalsList.add("0 - None")
+        decimalsList.add("4 - Four (0.0000)")
+        decimalsList.add("3 - Three (0.000)")
+        decimalsList.add("2 - Two (0.00)")
+        decimalsList.add("0 - Zero (000)")
 
         currencyList.add("AUD")
         currencyList.add("BRL")

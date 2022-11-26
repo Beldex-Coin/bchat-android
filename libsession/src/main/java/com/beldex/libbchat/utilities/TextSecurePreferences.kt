@@ -1142,7 +1142,7 @@ interface TextSecurePreferences {
 
         @JvmStatic
         fun getDecimals(context: Context): String? {
-            return getStringPreference(context, DECIMALS, "2 - Normal")
+            return getStringPreference(context, DECIMALS, "2 - Two (0.00)")
         }
 
         @JvmStatic
@@ -1937,7 +1937,7 @@ class AppTextSecurePreferences @Inject constructor(
     }
 
     override fun getDecimals(): String? {
-        return getStringPreference(TextSecurePreferences.DECIMALS,"2 - Normal")
+        return getStringPreference(TextSecurePreferences.DECIMALS,"2 - Two (0.00)")
     }
 
     override fun setCurrency(position: String?) {

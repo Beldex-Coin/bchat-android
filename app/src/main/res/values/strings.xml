@@ -1245,7 +1245,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="fee" translatable="false">Fee:</string>
     <string name="estimated_fee" translatable="false">Estimated Fee: %1$s BDX</string>
     <string name="fiat_currency" translatable="false">%1$.2f %2$s</string>
-    <string name="beldex_amount_valid_error_message" translatable="false">Enter valid amount</string>
+    <string name="beldex_amount_valid_error_message" translatable="false">Enter a valid amount</string>
     <string name="no_node_connection" translatable="false">No node connection, Check your Internet</string>
     <string name="home_screen_new_chat_title" translatable="false">New Chat</string>
     <string name="home_screen_secret_groups_title" translatable="false">Secret Group</string>
@@ -1277,4 +1277,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="dialog_block_height_title" translatable="false">Enter the block height or date at which you created the wallet.</string>
     <string name="block_height" translatable="false"> Block Height</string>
     <string name="block_height_info" translatable="false">Blockheight is the block number in a blockchain at a given time. Enter the block height at which you created the wallet for fast synchronization.</string>
+    <string name="enter_address" translatable="false">Enter Address</string>
+    <string name="enter_bdx_to_send" translatable="false">Enter BDX to send</string>
+    <string name="amount_hint" translatable="false">Amount</string>
 </resources>

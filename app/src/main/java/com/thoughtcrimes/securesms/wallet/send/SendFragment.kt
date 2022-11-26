@@ -367,7 +367,10 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         binding.beldexAddressEditTxtLayout.editText?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable) {
                 Timber.d("AFTER: %s", editable.toString())
-                binding.beldexAddressEditTxtLayout.error = null
+                //binding.beldexAddressEditTxtLayout.error = null
+                binding.beldexAddressLayout.setBackgroundResource(R.drawable.bchat_id_text_view_background)
+                binding.beldexAddressErrorMessage.visibility = View.GONE
+                binding.beldexAddressErrorMessage.text=""
                 possibleCryptos.clear()
                 selectedCrypto = null
                 val address: String = binding.beldexAddressEditTxtLayout.editText?.text.toString()
@@ -375,7 +378,10 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                     Timber.d("isIntegratedAddress")
                     possibleCryptos.add(Crypto.BDX)
                     selectedCrypto = Crypto.BDX
-                    binding.beldexAddressEditTxtLayout.error = getString(R.string.info_paymentid_integrated)
+                    //binding.beldexAddressEditTxtLayout.error = getString(R.string.info_paymentid_integrated)
+                    binding.beldexAddressLayout.setBackgroundResource(R.drawable.error_view_background)
+                    binding.beldexAddressErrorMessage.visibility = View.VISIBLE
+                    binding.beldexAddressErrorMessage.text=getString(R.string.info_paymentid_integrated)
                     setMode(Mode.BDX)
                 } else if (isStandardAddress(address)) {
                     Timber.d("isStandardAddress")
@@ -384,7 +390,10 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                     setMode(Mode.BDX)
                 }
                /* else{
-                    binding.beldexAddressEditTxtLayout.error = getString(R.string.send_address_invalid)
+                    //binding.beldexAddressEditTxtLayout.error = getString(R.string.send_address_invalid)
+                    binding.beldexAddressLayout.setBackgroundResource(R.drawable.error_view_background)
+                    binding.beldexAddressErrorMessage.visibility = View.VISIBLE
+                    binding.beldexAddressErrorMessage.text=getString(R.string.send_address_invalid)
                 }*/
                 if (possibleCryptos.isEmpty()) {
                     Timber.d("other")
@@ -418,7 +427,10 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
         binding.beldexAmountEditTxtLayout.editText?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable) {
-                binding.beldexAmountEditTxtLayout.error = null
+                //binding.beldexAmountEditTxtLayout.error = null
+                binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.bchat_id_text_view_background)
+                binding.beldexAmountErrorMessage.visibility =View.GONE
+                binding.beldexAmountErrorMessage.text=""
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -546,17 +558,23 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                         resultLaunchers.launch(intent)
                     }else if(binding.beldexAmountEditTxtLayout.editText?.text!!.isEmpty()){
                         Log.d("Beldex", "beldexAmountEditTxtLayout isEmpty()")
-                        binding.beldexAmountEditTxtLayout.error =
-                            getString(R.string.beldex_amount_error_message)
+                        //binding.beldexAmountEditTxtLayout.error = getString(R.string.beldex_amount_error_message)
+                        binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.error_view_background)
+                        binding.beldexAmountErrorMessage.visibility =View.VISIBLE
+                        binding.beldexAmountErrorMessage.text=getString(R.string.beldex_amount_error_message)
                     }else if (binding.beldexAmountEditTxtLayout.editText!!.text.toString()
                     .toDouble() <= 0.00
                     ) {
-                        binding.beldexAmountEditTxtLayout.error =
-                            getString(R.string.beldex_amount_valid_error_message)
+                        //binding.beldexAmountEditTxtLayout.error = getString(R.string.beldex_amount_valid_error_message)
+                        binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.error_view_background)
+                        binding.beldexAmountErrorMessage.visibility =View.VISIBLE
+                        binding.beldexAmountErrorMessage.text=getString(R.string.beldex_amount_valid_error_message)
                     }else{
                         Log.d("Beldex", "beldexAddressEditTxtLayout isEmpty()")
-                        binding.beldexAddressEditTxtLayout.error =
-                            getString(R.string.beldex_address_error_message)
+                        //binding.beldexAddressEditTxtLayout.error = getString(R.string.beldex_address_error_message)
+                        binding.beldexAddressLayout.setBackgroundResource(R.drawable.error_view_background)
+                        binding.beldexAddressErrorMessage.visibility = View.VISIBLE
+                        binding.beldexAddressErrorMessage.text=getString(R.string.beldex_address_error_message)
                     }
                 }
             } else {
@@ -606,9 +624,15 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     private fun checkAddress(): Boolean {
         val ok = checkAddressNoError()
         if (possibleCryptos.isEmpty()) {
-            binding.beldexAddressEditTxtLayout.error = getString(R.string.send_address_invalid)
+            //binding.beldexAddressEditTxtLayout.error = getString(R.string.send_address_invalid)
+            binding.beldexAddressLayout.setBackgroundResource(R.drawable.error_view_background)
+            binding.beldexAddressErrorMessage.visibility = View.VISIBLE
+            binding.beldexAddressErrorMessage.text=getString(R.string.send_address_invalid)
         } else {
-            binding.beldexAddressEditTxtLayout.error = null
+            //binding.beldexAddressEditTxtLayout.error = null
+            binding.beldexAddressLayout.setBackgroundResource(R.drawable.bchat_id_text_view_background)
+            binding.beldexAddressErrorMessage.visibility = View.GONE
+            binding.beldexAddressErrorMessage.text=""
         }
         return ok
     }
@@ -624,8 +648,11 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
     private fun shakeAddress() {
         //if(possibleCryptos.size==1)
-            binding.beldexAddressEditTxtLayout.startAnimation(Helper.getShakeAnimation(context))
-            binding.beldexAddressEditTxtLayout.error = getString(R.string.send_address_invalid)
+            //binding.beldexAddressEditTxtLayout.startAnimation(Helper.getShakeAnimation(context))
+            //binding.beldexAddressEditTxtLayout.error = getString(R.string.send_address_invalid)
+            binding.beldexAddressLayout.setBackgroundResource(R.drawable.error_view_background)
+            binding.beldexAddressErrorMessage.visibility = View.VISIBLE
+            binding.beldexAddressErrorMessage.text=getString(R.string.send_address_invalid)
     }
 
     private fun processOpenAlias(dnsOA: String?) {
@@ -633,7 +660,10 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         activityCallback!!.popBarcodeData()
         if (dnsOA != null) {
             resolvingOA = true
-            binding.beldexAddressEditTxtLayout.error = getString(R.string.send_address_resolve_openalias)
+            //binding.beldexAddressEditTxtLayout.error = getString(R.string.send_address_resolve_openalias)
+            binding.beldexAddressLayout.setBackgroundResource(R.drawable.error_view_background)
+            binding.beldexAddressErrorMessage.visibility = View.VISIBLE
+            binding.beldexAddressErrorMessage.text=getString(R.string.send_address_resolve_openalias)
             OpenAliasHelper.resolve(dnsOA, object : OpenAliasHelper.OnResolvedListener {
                 override fun onResolved(dataMap: Map<Crypto?, BarcodeData?>) {
                     resolvingOA = false
@@ -643,14 +673,20 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                         Timber.d("Security=%s, %s", barcodeData.security.toString(), barcodeData.address)
                         processScannedData(barcodeData)
                     } else {
-                        binding.beldexAddressEditTxtLayout.error = getString(R.string.send_address_not_openalias)
+                        //binding.beldexAddressEditTxtLayout.error = getString(R.string.send_address_not_openalias)
+                        binding.beldexAddressLayout.setBackgroundResource(R.drawable.error_view_background)
+                        binding.beldexAddressErrorMessage.visibility = View.VISIBLE
+                        binding.beldexAddressErrorMessage.text=getString(R.string.send_address_not_openalias)
                         Timber.d("NO BDX OPENALIAS TXT FOUND")
                     }
                 }
 
                 override fun onFailure() {
                     resolvingOA = false
-                    binding.beldexAddressEditTxtLayout.error = getString(R.string.send_address_not_openalias)
+                    //binding.beldexAddressEditTxtLayout.error = getString(R.string.send_address_not_openalias)
+                    binding.beldexAddressLayout.setBackgroundResource(R.drawable.error_view_background)
+                    binding.beldexAddressErrorMessage.visibility = View.VISIBLE
+                    binding.beldexAddressErrorMessage.text=getString(R.string.send_address_not_openalias)
                     Timber.e("OA FAILED")
                 }
             })

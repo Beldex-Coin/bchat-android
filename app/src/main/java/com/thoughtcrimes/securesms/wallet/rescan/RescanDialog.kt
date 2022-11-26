@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import android.widget.Toolbar
 import androidx.fragment.app.DialogFragment
+import com.thoughtcrimes.securesms.preferences.ClearAllDataDialog
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.wallet.CheckOnline
 import com.thoughtcrimes.securesms.wallet.WalletActivity
@@ -154,6 +155,10 @@ class RescanDialog(val context: WalletActivity, private val daemonBlockChainHeig
                 }else{
                     Toast.makeText(context,getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
                 }
+            }
+
+            restoreHeightInfoIcon.setOnClickListener {
+                RestoreHeightInfoDialog().show(context.supportFragmentManager, "Restore Height Info Dialog")
             }
         }
         return binding.root

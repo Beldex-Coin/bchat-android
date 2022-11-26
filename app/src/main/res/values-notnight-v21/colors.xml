@@ -115,4 +115,5 @@
     <color name="scan_qr_code_disable_color">#acacac</color>
     <color name="scan_qr_code_disable_background_color">#ebebeb</color>
     <color name="send_button_disable_color">#ACACAC</color>
+    <color name="or_color">#159B24</color>
 </resources>

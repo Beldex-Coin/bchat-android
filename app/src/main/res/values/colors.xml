@@ -189,4 +189,5 @@
     <color name="scan_qr_code_disable_color">#5f5f72</color>
     <color name="scan_qr_code_disable_background_color">#3d3d4e</color>
     <color name="send_button_disable_color">#5F5F72</color>
+    <color name="or_color">#159B24</color>
 </resources>

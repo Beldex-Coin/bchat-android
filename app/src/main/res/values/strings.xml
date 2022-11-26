@@ -1064,7 +1064,7 @@
     <string name="activity_receive_page_title" translatable="false">Receive</string>
     <string name="activity_rescan_page_title" translatable="false">Rescan</string>
     <string name="enter_amount" translatable="false">Enter amount</string>
-    <string name="current_blockheight" translatable="false">Current Blockheight : </string>
+    <string name="current_blockheight" translatable="false">Current Blockheight </string>
     <string name="restore_from_height" translatable="false">Restore from height</string>
     <string name="restore_from_date" translatable="false"> Restore from date</string>
     <string name="activity_new_node_page_title" translatable="false">New Node</string>
@@ -1274,4 +1274,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="view_key_private" translatable="false">View Key (private)</string>
     <string name="spend_key_private" translatable="false">Spend Key (private)</string>
     <string name="activity_scan_page_title" translatable="false">Scan</string>
+    <string name="dialog_block_height_title" translatable="false">Enter the block height or date at which you created the wallet.</string>
+    <string name="block_height" translatable="false"> Block Height</string>
+    <string name="block_height_info" translatable="false">Blockheight is the block number in a blockchain at a given time. Enter the block height at which you created the wallet for fast synchronization.</string>
 </resources>

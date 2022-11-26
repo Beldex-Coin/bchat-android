@@ -246,6 +246,7 @@ public class WalletManager {
     private final NetworkType networkType = ApplicationContext.getNetworkType();
 
     public NetworkType getNetworkType() {
+        Log.d("Beldex"," value of networkType 1" +networkType);
         return networkType;
     }
 

@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.Result
 import com.thoughtcrimes.securesms.data.BarcodeData
+import com.thoughtcrimes.securesms.wallet.OnBackPressedListener
 import com.thoughtcrimes.securesms.wallet.OnUriScannedListener
 import com.thoughtcrimes.securesms.wallet.send.SendFragment
 import com.thoughtcrimes.securesms.wallet.widget.Toolbar
@@ -20,7 +21,7 @@ import java.lang.ClassCastException
 
 
 class WalletScannerFragment(
-) : Fragment(), ZXingScannerView.ResultHandler,OnUriScannedListener
+) : Fragment(), ZXingScannerView.ResultHandler,OnUriScannedListener, OnBackPressedListener
 {
     private var onScannedListener: OnScannedListener? = null
   /*  private var activityCallback: SendFragment.Listener? = null*/
@@ -136,5 +137,9 @@ class WalletScannerFragment(
     }
     override fun onPrepareOptionsMenu(menu: Menu) {
         menu.clear()
+    }
+
+    override fun onBackPressed(): Boolean {
+        return false
     }
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,7 +9,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -31,6 +31,35 @@
 
         </RelativeLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/poppins_medium"
+                android:text="Your Wallet Address"
+                android:textColor="@color/you_address_color"
+                android:textSize="15sp" />
+
+            <ImageView
+                android:id="@+id/addressCopy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:src="@drawable/copy_icon" />
+
+        </LinearLayout>
+
         <TextView
             android:id="@+id/walletAddress_Receive"
             android:layout_width="match_parent"
@@ -43,7 +72,7 @@
             android:fontFamily="@font/poppins_medium"
             android:text=""
             android:textAlignment="center"
-            android:textSize="16sp" />
+            android:textSize="15sp" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -64,12 +93,11 @@
                 android:fontFamily="@font/poppins_medium"
                 android:hint="@string/enter_amount"
                 android:imeOptions="actionDone"
-                android:minLines="1"
                 android:inputType="numberDecimal"
+                android:minLines="1"
                 android:padding="20dp"
                 android:textColor="@color/text"
-                android:textSize="16sp"
-                />
+                android:textSize="16sp" />
         </androidx.cardview.widget.CardView>
 
         <Button
@@ -91,4 +119,4 @@
             android:textSize="16sp"
             android:textStyle="bold" />
     </LinearLayout>
-</RelativeLayout>
+</ScrollView>

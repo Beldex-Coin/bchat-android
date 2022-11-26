@@ -8,13 +8,14 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.Result
+import com.thoughtcrimes.securesms.wallet.OnBackPressedListener
 import com.thoughtcrimes.securesms.wallet.widget.Toolbar
 import io.beldex.bchat.R
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 import timber.log.Timber
 import java.lang.ClassCastException
 
-class ScannerFragment: Fragment(), ZXingScannerView.ResultHandler {
+class ScannerFragment: Fragment(), ZXingScannerView.ResultHandler,OnBackPressedListener {
     private var onScannedListener: OnWalletScannedListener? = null
 
     interface OnWalletScannedListener {
@@ -84,6 +85,10 @@ class ScannerFragment: Fragment(), ZXingScannerView.ResultHandler {
                         + " must implement Listener"
             )
         }
+    }
+
+    override fun onBackPressed(): Boolean {
+        return false
     }
 }
 

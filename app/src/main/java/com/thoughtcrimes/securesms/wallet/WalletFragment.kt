@@ -1096,4 +1096,6 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         } else ivStreetGunther.setImageDrawable(null)*/
     }
 
+
+
 }

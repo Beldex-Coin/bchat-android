@@ -1,18 +1,23 @@
 package com.thoughtcrimes.securesms.wallet
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.*
 import android.content.pm.PackageManager
+import android.graphics.Typeface
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.loader.app.LoaderManager
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.thoughtcrimes.securesms.data.*
 import com.thoughtcrimes.securesms.model.*
 import com.thoughtcrimes.securesms.util.Helper
@@ -93,14 +98,17 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         binding.toolbar.setOnButtonListener { type ->
             when (type) {
                 Toolbar.BUTTON_BACK -> {
-                    if(CheckOnline.isOnline(this)) {
-                        onDisposeRequest()
+                    val fragment: Fragment = getCurrentFragment()!!
+                    if (fragment is SendFragment || fragment is ReceiveFragment || fragment is ScannerFragment || fragment is WalletScannerFragment) {
+                        if (!(fragment as OnBackPressedListener).onBackPressed()) {
+                            super.onBackPressed()
+                        }
+                    } else {
+                        backToHome()
                     }
-                    setBarcodeData(null)
-                    onBackPressed()
                 }
                 Toolbar.BUTTON_CANCEL -> {
-                    if(CheckOnline.isOnline(this)) {
+                    if (CheckOnline.isOnline(this)) {
                         onDisposeRequest()
                     }
                     Helper.hideKeyboard(this@WalletActivity)
@@ -142,6 +150,22 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         binding.toolbar.toolBarSettings.setOnClickListener {
             openWalletSettings()
         }
+
+    }
+
+    private fun backToHome() {
+        val dialog = AlertDialog.Builder(this, R.style.BChatAlertDialog_Exit)
+            .setTitle(getString(R.string.app_exit_alert))
+            .setPositiveButton(R.string.exit) { _, _ ->
+                if(CheckOnline.isOnline(this)) {
+                    onDisposeRequest()
+                }
+                setBarcodeData(null)
+                onBackPressed()
+            }
+            .setNegativeButton(R.string.cancel) { _, _ ->
+                // Do nothing
+            }.show()
 
     }
 
@@ -1071,7 +1095,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     override fun getOrPopulateFavourites(): MutableSet<NodeInfo> {
-        Log.d("Beldex","getOrPopulateFavourites() fun called")
+        Log.d("Beldex","getOrPopulateFavourites() fun called ${DefaultNodes.values()}")
         if (favouriteNodes.isEmpty()) {
             for (node in DefaultNodes.values()) {
                 val nodeInfo = NodeInfo.fromString(node.uri)

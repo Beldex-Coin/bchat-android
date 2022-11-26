@@ -1,6 +1,7 @@
 package com.thoughtcrimes.securesms.wallet.addressbook
 
 import android.content.Context
+import android.media.Image
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
@@ -78,11 +79,11 @@ class AddressBookView : LinearLayout {
     }
 
 
-    fun copyAction(): CardView {
-        return binding.copyActionCardView
+    fun copyAction(): ImageView {
+        return binding.addressBookCopyImg
     }
-    fun sendAction(): CardView {
-        return binding.sendActionCardView
+    fun sendAction(): ImageView {
+        return binding.addressBookSendImg
     }
 }
 // endregion

@@ -107,9 +107,10 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
 
         View backButton = actionbar.getCustomView().findViewById(R.id.back_button);
         TextView titleName = actionbar.getCustomView().findViewById(R.id.title_name);
-        titleName.setText("Wallet Password");
+        titleName.setText(getString(R.string.activity_wallet_password_page_title));
         backButton.setOnClickListener(view -> {
-            onSupportNavigateUp();
+            onBackPressed();
+           /*onSupportNavigateUp();*/
         });
     }
 

@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
@@ -494,12 +495,16 @@ public class NodeFragment extends Fragment
         TextView tvResult;
         ImageView iVVerified;
         ImageView iVConnectionError;
+        CardView tvResultCardView;
 
         void showTestResult() {
             if (nodeInfo.isSuccessful()) {
-                tvResult.setText(getString(R.string.node_result,
+               /* tvResult.setText(getString(R.string.node_result,
                         FORMATTER.format(nodeInfo.getHeight()), nodeInfo.getMajorVersion(),
-                        nodeInfo.getResponseTime(), nodeInfo.getHostAddress()));
+                        nodeInfo.getResponseTime(), nodeInfo.getHostAddress()));*/
+                tvResult.setText(getText(R.string.add_node_success));
+                tvResultCardView.setCardBackgroundColor(ContextCompat.getColor(requireContext(),(R.color.button_green)));
+
                 iVVerified.setVisibility(View.VISIBLE);
                 iVConnectionError.setVisibility(View.GONE);
                 tvResult.setTextColor(ContextCompat.getColor(requireContext(), R.color.text));
@@ -508,7 +513,7 @@ public class NodeFragment extends Fragment
             } else {
                 Log.d("Beldex","showTestResult in NodeFragment()");
                 tvResult.setText(NodeInfoAdapter.getResponseErrorText(getActivity(), nodeInfo.getResponseCode()));
-                tvResult.setTextColor(ContextCompat.getColor(requireContext(), R.color.red));
+                tvResultCardView.setCardBackgroundColor(ContextCompat.getColor(requireContext(),R.color.red));
                 iVVerified.setVisibility(View.GONE);
                 iVConnectionError.setVisibility(View.VISIBLE);
             }
@@ -529,6 +534,7 @@ public class NodeFragment extends Fragment
             tvResult = promptsView.findViewById(R.id.tvResult);
             iVVerified = promptsView.findViewById(R.id.iVVerified);
             iVConnectionError = promptsView.findViewById(R.id.iVConnectionError);
+            tvResultCardView = promptsView.findViewById(R.id.testResult_cardview);
 
             if (nodeInfo != null) {
                 this.nodeInfo = nodeInfo;
@@ -547,8 +553,8 @@ public class NodeFragment extends Fragment
             // set dialog message
             alertDialogBuilder
                     .setCancelable(false)
-                    .setPositiveButton("OK", null)
-                    .setNeutralButton("TEST", null)
+                    .setPositiveButton("Add", null)
+                    .setNeutralButton("Test", null)
                     .setNegativeButton(getString(R.string.cancel),
                             (dialog, id) -> {
                                 closeDialog();
@@ -572,7 +578,11 @@ public class NodeFragment extends Fragment
                     button.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            apply();
+                            if(tvResult.getText().toString().equals(getString(R.string.add_node_success))) {
+                                apply();
+                            } else if(tvResult.getText().toString().equals(getString(R.string.add_node_connection_error))){
+                                Toast.makeText(requireActivity(),"Try some another node",Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
                 }

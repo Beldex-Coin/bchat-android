@@ -1194,7 +1194,7 @@
     <string name="send_btn_transition_name" translatable="false">send_btn_transition</string>
     <string name="receive_btn_transition_name" translatable="false">receive_btn_transition</string>
     <string name="test" translatable="false">Test</string>
-    <string name="test_result_title" translatable="false">Test result:</string>
+    <string name="test_result_title" translatable="false">Test result :</string>
     <string name="test_result" translatable="false">Height 1,500,500 (V17),Ping: 500ms, IP: 15.222.187.192</string>
 
     <string name="info_nodes_enabled">Node-o-matiC enabled, tap for more info.</string>
@@ -1274,4 +1274,9 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="view_key_private" translatable="false">View Key (private)</string>
     <string name="spend_key_private" translatable="false">Spend Key (private)</string>
     <string name="activity_scan_page_title" translatable="false">Scan</string>
+    <string name="activity_wallet_password_page_title" translatable="false">Wallet Password</string>
+    <string name="show_seed_content_title" translatable="false">Copy your Recovery Phrase and keep it safe.</string>
+    <string name="show_seed_content" translatable="false">Your Recovery Phrase can be used to recover your account. If you lose your Recovery Phrase, you will lose access to your account. Restoring your account will only restore the messages and BChat contacts from the last 14 days.</string>
+    <string name="add_node_success" translatable="false">Success</string>
+    <string name="add_node_connection_error" translatable="false">Connection error</string>
 </resources>

@@ -13,6 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.thoughtcrimes.securesms.data.*
 import com.thoughtcrimes.securesms.model.*
 import com.thoughtcrimes.securesms.util.Helper
@@ -1071,7 +1072,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     override fun getOrPopulateFavourites(): MutableSet<NodeInfo> {
-        Log.d("Beldex","getOrPopulateFavourites() fun called")
+        Log.d("Beldex","getOrPopulateFavourites() fun called ${DefaultNodes.values()}")
         if (favouriteNodes.isEmpty()) {
             for (node in DefaultNodes.values()) {
                 val nodeInfo = NodeInfo.fromString(node.uri)

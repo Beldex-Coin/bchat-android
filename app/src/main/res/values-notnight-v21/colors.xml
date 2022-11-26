@@ -115,4 +115,7 @@
     <color name="scan_qr_code_disable_color">#acacac</color>
     <color name="scan_qr_code_disable_background_color">#ebebeb</color>
     <color name="send_button_disable_color">#ACACAC</color>
+    <color name="show_seed_content_title">#FC2727</color>
+    <color name="add_node_card_color">#FFFFFF</color>
+    <color name="add_node_optional_card_color">#B1B1B1</color>
 </resources>

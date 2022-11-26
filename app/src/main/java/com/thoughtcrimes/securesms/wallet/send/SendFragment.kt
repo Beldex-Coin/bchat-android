@@ -59,7 +59,7 @@ import java.io.IOException
 import java.math.BigDecimal
 
 
-class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletScannedListener {
+class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletScannedListener, OnBackPressedListener {
 
     val MIXIN = 0
 
@@ -906,5 +906,9 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
             if (Patterns.DOMAIN_NAME.matcher(openalias).matches()) return openalias
         }
         return null // not an openalias
+    }
+
+    override fun onBackPressed(): Boolean {
+        return false
     }
 }

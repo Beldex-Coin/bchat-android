@@ -1279,4 +1279,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="show_seed_content" translatable="false">Your Recovery Phrase can be used to recover your account. If you lose your Recovery Phrase, you will lose access to your account. Restoring your account will only restore the messages and BChat contacts from the last 14 days.</string>
     <string name="add_node_success" translatable="false">Success</string>
     <string name="add_node_connection_error" translatable="false">Connection error</string>
+    <string name="exit" translatable="false">Exit</string>
+    <string name="app_exit_alert" translatable="false">Are you sure you want to exit the wallet?</string>
+    <string name="transaction_send_title">Transaction Initiated Successfully</string>
+
 </resources>

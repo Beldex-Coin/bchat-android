@@ -4,20 +4,17 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.*
 import android.content.pm.PackageManager
-import android.graphics.Typeface
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import androidx.loader.app.LoaderManager
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.thoughtcrimes.securesms.data.*
 import com.thoughtcrimes.securesms.model.*
 import com.thoughtcrimes.securesms.util.Helper
@@ -134,8 +131,8 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         binding.toolbar.toolBarRescan.setOnClickListener {
             if(CheckOnline.isOnline(this)) {
                 if(getWallet()!=null) {
-                    if (getWallet().daemonBlockChainHeight != null) {
-                        RescanDialog(this, getWallet().daemonBlockChainHeight).show(
+                    if (getWallet()!!.daemonBlockChainHeight != null) {
+                        RescanDialog(this, getWallet()!!.daemonBlockChainHeight).show(
                             supportFragmentManager,
                             ""
                         )
@@ -189,11 +186,11 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
             if(getWallet()!=null) {
                 // The height entered by user
-                getWallet().restoreHeight = restoreHeight
+                getWallet()!!.restoreHeight = restoreHeight
 
-                getWallet().rescanBlockchainAsync()
+                getWallet()!!.rescanBlockchainAsync()
             }
-            Log.d("Beldex","Restore Height 2 ${getWallet().restoreHeight}")
+            Log.d("Beldex","Restore Height 2 ${getWallet()!!.restoreHeight}")
             synced = false
             walletFragment.unsync()
             invalidateOptionsMenu()
@@ -318,9 +315,16 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         return mBoundService != null
     }
 
-    override fun forceUpdate() {
+    override fun forceUpdate(context: Context) {
+        Log.d("Beldex","forceUpdate()")
         try {
-            onRefreshed(getWallet(), true)
+            if(getWallet()!=null) {
+                Log.d("Beldex","forceUpdate() if")
+                onRefreshed(getWallet(), true)
+            }else{
+                Log.d("Beldex","forceUpdate() else")
+                Toast.makeText(context,getString(R.string.please_check_your_internet_connection),Toast.LENGTH_SHORT).show()
+            }
         } catch (ex: IllegalStateException) {
             Timber.e(ex.localizedMessage)
         }
@@ -358,10 +362,10 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     override val streetModeHeight: Long
         get() = streetMode
     override val isWatchOnly: Boolean
-        get() = getWallet().isWatchOnly
+        get() = getWallet()!!.isWatchOnly
 
     override fun getTxKey(txId: String?): String? {
-        return getWallet().getTxKey(txId)
+        return getWallet()!!.getTxKey(txId)
     }
 
     override fun onWalletReceive(view: View?) {
@@ -376,9 +380,13 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
 
-    override fun getWallet(): Wallet {
+    override fun getWallet(): Wallet? {
         checkNotNull(mBoundService) { "WalletService not bound." }
-        return mBoundService!!.wallet
+        return if(mBoundService!=null) {
+            mBoundService!!.wallet
+        }else{
+            null
+        }
     }
 
     override fun getStorageRoot(): File {
@@ -479,7 +487,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     override val prefs: SharedPreferences?
         get() = getPreferences(MODE_PRIVATE)
     override val totalFunds: Long
-        get() = getWallet().unlockedBalance
+        get() = getWallet()!!.unlockedBalance
     override val isStreetMode: Boolean
         get() = streetMode > 0
 
@@ -493,7 +501,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             startService(intent)
             Timber.d("CREATE TX request sent")
             //Important
-            /*if (getWallet().deviceType === Wallet.Device.Device_Ledger) showLedgerProgressDialog(
+            /*if (getWallet()!!.deviceType === Wallet.Device.Device_Ledger) showLedgerProgressDialog(
                 LedgerProgressDialog.TYPE_SEND
             )*/
         } else {
@@ -502,7 +510,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     override val walletName: String?
-        get() = getWallet().name
+        get() = getWallet()!!.name
 
     override fun onSend(notes: UserNotes?) {
         if (mIsBound) { // no point in talking to unbound service
@@ -517,7 +525,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     override fun onDisposeRequest() {
-        getWallet().disposePendingTransaction()
+        getWallet()!!.disposePendingTransaction()
     }
 
     override fun onFragmentDone() {
@@ -784,7 +792,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         if (!isStreetMode()) {
             tvBalance.text = getString(
                 R.string.accounts_balance,
-                Helper.getDisplayAmount(getWallet().balanceAll, 5)
+                Helper.getDisplayAmount(getWallet()!!.balanceAll, 5)
             )
         } else {
             tvBalance.text = null
@@ -884,7 +892,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
                 if (status !== PendingTransaction.Status.Status_Ok) {
                     Log.d("onTransactionCreated not Status_Ok","-")
                     val errorText = pendingTransaction!!.errorString
-                    getWallet().disposePendingTransaction()
+                    getWallet()!!.disposePendingTransaction()
                     sendFragment!!.onCreateTransactionFailed(errorText)
                 } else {
                     Log.d("transaction status 1 ii %s", status.toString())
@@ -896,7 +904,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             // not in spend fragment
             Timber.d(ex.localizedMessage)
             // don't need the transaction any more
-            getWallet().disposePendingTransaction()
+            getWallet()!!.disposePendingTransaction()
         }
     }
 
@@ -986,13 +994,13 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     private fun enableStreetMode(enable: Boolean) {
         streetMode = if (enable) {
-            getWallet().daemonBlockChainHeight
+            getWallet()!!.daemonBlockChainHeight
         } else {
             0
         }
         val walletFragment = getWalletFragment()
         if (walletFragment != null) walletFragment.resetDismissedTransactions()
-        forceUpdate()
+        forceUpdate(this)
         runOnUiThread { if (getWallet() != null) updateAccountsBalance() }
     }
 
@@ -1270,6 +1278,9 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         }*/
         //Important
         //if (!Ledger.isConnected()) attachLedger()
+        if(!CheckOnline.isOnline(this)){
+            Toast.makeText(this,getString(R.string.please_check_your_internet_connection),Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onDestroy() {

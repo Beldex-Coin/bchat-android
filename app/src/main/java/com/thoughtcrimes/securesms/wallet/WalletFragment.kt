@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.get
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import com.beldex.libbchat.utilities.TextSecurePreferences
@@ -479,7 +480,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             onSynced()
         }
 
-        activityCallback!!.forceUpdate()
+        activityCallback!!.forceUpdate(requireActivity())
 
         //SteveJosephh21
         binding.filterTransactionsIcon.setOnClickListener {
@@ -948,7 +949,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
     // Container Activity must implement this interface
     interface Listener {
         fun hasBoundService(): Boolean
-        fun forceUpdate()
+        fun forceUpdate(requireActivity: Context)
         val connectionStatus: Wallet.ConnectionStatus?
 
         //mBoundService.getDaemonHeight();

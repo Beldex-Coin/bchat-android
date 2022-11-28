@@ -1288,4 +1288,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="enter_address" translatable="false">Enter Address</string>
     <string name="enter_bdx_to_send" translatable="false">Enter BDX to send</string>
     <string name="amount_hint" translatable="false">Amount</string>
+    <string name="restore_height_error_message" translatable="false">Enter a valid blockheight</string>
 </resources>

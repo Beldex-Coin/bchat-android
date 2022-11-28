@@ -132,10 +132,17 @@ class RescanDialog(val context: WalletActivity, private val daemonBlockChainHeig
                     //SteveJosephh21
                     when {
                         restoreHeight.isNotEmpty() -> {
-                            binding.restoreSeedWalletRestoreDate.text = ""
-                            context.onWalletRescan(restoreHeight.toLong())
-                            //_recoveryWallet(displayName,password,getSeed, restoreHeight.toLong())
-                            dismiss()
+                            if(restoreHeight.toLong()>=0 && restoreHeight.toLong()<daemonBlockChainHeight) {
+                                binding.restoreFromHeightErrorMessage.text=""
+                                binding.restoreFromHeightErrorMessage.visibility=View.GONE
+                                binding.restoreSeedWalletRestoreDate.text = ""
+                                context.onWalletRescan(restoreHeight.toLong())
+                                //_recoveryWallet(displayName,password,getSeed, restoreHeight.toLong())
+                                dismiss()
+                            }else{
+                                binding.restoreFromHeightErrorMessage.text=getString(R.string.restore_height_error_message)
+                                binding.restoreFromHeightErrorMessage.visibility=View.VISIBLE
+                            }
                         }
                         restoreFromDate.isNotEmpty() -> {
                             binding.restoreSeedWalletRestoreHeight.setText("")

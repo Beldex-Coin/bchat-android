@@ -2,8 +2,6 @@ package com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,12 +15,9 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.beldex.libbchat.utilities.TextSecurePreferences;
-import com.thoughtcrimes.securesms.BaseActionBarActivity;
-import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity;
 import com.thoughtcrimes.securesms.wallet.utils.keyboardview.KeyboardView;
 import com.thoughtcrimes.securesms.wallet.utils.keyboardview.enums.KeyboardButtonEnum;
 import com.thoughtcrimes.securesms.wallet.utils.keyboardview.interfaces.KeyboardButtonClickedListener;
@@ -444,11 +439,28 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
         onPinFailure(mAttempts++);
         Thread thread = new Thread() {
             public void run() {
-                mPinCode = "";
+                Log.d("AppLock","step onPinCodeError()");
                 mPinCodeRoundView.refresh(mPinCode.length());
+                mPinCode = "";
                 Animation animation = AnimationUtils.loadAnimation(
                         AppLockActivity.this, R.anim.shake);
                 mKeyboardView.startAnimation(animation);
+                animation.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        mPinCodeRoundView.refresh(mPinCode.length());
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
             }
         };
         runOnUiThread(thread);
@@ -469,6 +481,7 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
             Log.d("AppLock","step 8 -> "+mPinCode.length()+" getPinLength() -> "+this.getPinLength());
             onPinCodeInputed();
         }*/
+        Log.d("AppLock","step setPincode()");
         mPinCodeRoundView.refresh(mPinCode.length());
     }
 

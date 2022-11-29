@@ -83,6 +83,9 @@ public class PinCodeRoundView extends RelativeLayout {
             }
         }
     }
+    public void newRefresh(){
+        mRoundViews.get(3).setImageDrawable(mFullDotDrawableId);
+    }
 
     public int getCurrentLength() {
         return mCurrentLength;
@@ -132,6 +135,7 @@ public class PinCodeRoundView extends RelativeLayout {
             mRoundContainer.addView(roundView);
             mRoundViews.add(roundView);
         }
+        Log.d("AppLock","step setPinLength()");
         refresh(0);
     }
 }

@@ -1390,8 +1390,16 @@ Java_com_thoughtcrimes_securesms_model_PendingTransaction_getTxCount(JNIEnv *env
 extern "C"
 JNIEXPORT jint JNICALL
 Java_com_thoughtcrimes_securesms_model_Wallet_estimateTransactionFeeJ(JNIEnv *env, jobject instance,
-                                                                      jint priority_raw,
-                                                                      jint recipients) {
+                                                                      jint priority_raw,jint recipients) {
     Wallet::Wallet *tx = getHandle<Wallet::Wallet>(env,instance);
     return static_cast<jint>(tx->estimateTransactionFee(priority_raw,recipients));
+}
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_com_thoughtcrimes_securesms_model_Wallet_reConnectToDaemon(JNIEnv *env, jobject instance,
+                                                                jobject node, jboolean use_ssl,
+                                                                jboolean is_light_wallet) {
+    Wallet::Wallet *isConnected = getHandle<Wallet::Wallet>(env, instance);
+    bool connectionStatus = isConnected->connectToDaemon();
+    return static_cast<jboolean>(connectionStatus);
 }

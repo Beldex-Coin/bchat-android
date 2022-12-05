@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.thoughtcrimes.securesms.data.Node;
 import com.thoughtcrimes.securesms.data.Subaddress;
 import com.thoughtcrimes.securesms.data.TxData;
 
@@ -556,5 +557,7 @@ public class Wallet {
     }
 
     private native int getDeviceTypeJ();
+
+    public native boolean reConnectToDaemon(Node node, boolean useSSL, boolean isLightWallet);
 
 }

@@ -87,6 +87,7 @@
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.node.activity.NodeActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLockActivity"
@@ -94,6 +95,7 @@
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.settings.WalletSettings"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity"
@@ -105,9 +107,6 @@
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity"
-            android:exported="false" />
-        <activity
-            android:name="com.thoughtcrimes.securesms.wallet.rescan.ReScanActivity"
             android:exported="false" />
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.WalletActivity"
@@ -177,6 +176,7 @@
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name="com.thoughtcrimes.securesms.onboarding.SplashScreenHomeActivtity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name="com.thoughtcrimes.securesms.onboarding.SplashScreenActivity"

@@ -629,6 +629,37 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     }
 
+    fun onWalletReconnect(node: NodeInfo?, UseSSL: Boolean, isLightWallet: Boolean) {
+        Log.d("Beldex", "Value of 1 reconnect node host ${node!!.host}")
+        Log.d("Beldex", "Value of 1 reconnect node $node")
+        Log.d("Beldex", "Value of 1 reconnect restoreHeight 1  ${getWallet()!!.restoreHeight}")
+        if (CheckOnline.isOnline(this)) {
+            val isOnline = getWallet()!!.reConnectToDaemon(node, UseSSL, isLightWallet)
+            Log.d("Beldex", "Value of 1 reconnect isOnline $isOnline")
+            if (isOnline) {
+                setNode(node)
+                synced = false
+                val walletFragment = getWalletFragment()
+                if (getWallet() != null) {
+                    getWallet()!!.restoreHeight = 0
+                    getWallet()!!.rescanBlockchainAsync()
+                }
+                walletFragment.unsync()
+                Log.d(
+                    "Beldex",
+                    "Value of 1 reconnect restoreHeight 2  ${getWallet()!!.restoreHeight}"
+                )
+            } else {
+                getWalletFragment().setProgress(R.string.failed_connected_to_the_node)
+            }
+        } else {
+            Toast.makeText(this, R.string.please_check_your_internet_connection, Toast.LENGTH_SHORT)
+                .show()
+        }
+
+    }
+
+
     override fun onScanned(qrCode: String?): Boolean {
         // #gurke
         val bcData = BarcodeData.fromString(qrCode)
@@ -1058,6 +1089,10 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             TextSecurePreferences.changeDaemon(this,false)
             val selectedNodeId = getSelectedNodeId()
             val nodeInfo = NodeInfo.fromString(selectedNodeId)
+            Log.d("Beldex","value of node 1 $selectedNodeId")
+            Log.d("Beldex","value of node 2 $nodeInfo")
+
+
             nodeInfo
         }else {
             node

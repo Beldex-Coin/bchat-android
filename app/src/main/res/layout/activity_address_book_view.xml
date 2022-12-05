@@ -33,6 +33,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
+                    android:background="@color/transparent"
                     android:orientation="horizontal">
 
                     <androidx.cardview.widget.CardView
@@ -41,65 +42,43 @@
                         android:layout_marginStart="@dimen/medium_spacing"
                         android:layout_marginTop="10dp"
                         android:layout_marginEnd="20dp"
+                        android:elevation="5dp"
                         android:layout_marginBottom="10dp"
                         android:contextClickable="true"
-                        app:cardBackgroundColor="@color/button_green"
+                        app:cardBackgroundColor="@color/address_book_name"
                         app:cardCornerRadius="10dp"
-                        app:contentPadding="3dp">
+                       >
 
                         <LinearLayout
+                            android:id="@+id/addressBookLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:orientation="horizontal">
-
-
+                            android:orientation="horizontal"
+                            android:padding="10dp">
                             <TextView
                                 android:id="@+id/nameTextView"
                                 android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginStart="@dimen/medium_spacing"
-                                android:layout_marginEnd="10dp"
                                 android:layout_weight="1"
+                                android:layout_height="wrap_content"
                                 android:fontFamily="@font/poppins_medium"
                                 android:maxLines="1"
-                                android:padding="2dp"
-                                android:textColor="@color/white"
+                                android:layout_marginEnd="10dp"
+                                android:textColor="@color/text"
                                 android:textSize="@dimen/medium_font_size"
                                 android:textStyle="bold"
-                                tools:text="Beldex Test" />
-
+                                tools:text="Beldex Test"/>
                             <ImageView
                                 android:id="@+id/addressBook_copyImg"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="3dp"
-                                android:layout_marginEnd="10dp"
-                                android:layout_marginBottom="3dp"
-                                android:paddingLeft="5dp"
-                                android:paddingTop="5dp"
-                                android:paddingRight="5dp"
-                                android:paddingBottom="5dp"
-                                android:src="@drawable/ic_baseline_content_copy_24" />
-
+                                android:src="@drawable/ic_baseline_content_copy_24"/>
                             <ImageView
                                 android:id="@+id/addressBook_sendImg"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:layout_marginLeft="3dp"
-                                android:layout_marginTop="3dp"
-                                android:layout_marginEnd="10dp"
-                                android:layout_marginRight="3dp"
-                                android:layout_marginBottom="3dp"
-                                android:paddingLeft="5dp"
-                                android:paddingTop="5dp"
-                                android:paddingRight="5dp"
-                                android:paddingBottom="5dp"
                                 android:rotation="-40"
                                 android:src="@drawable/ic_baseline_send_24"
-                                android:visibility="gone" />
+                                android:visibility="gone"/>
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
 

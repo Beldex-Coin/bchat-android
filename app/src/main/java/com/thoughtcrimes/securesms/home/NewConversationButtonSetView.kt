@@ -249,6 +249,16 @@ class NewConversationButtonSetView : RelativeLayout {
         mainButtonLayoutParams.addRule(ALIGN_PARENT_END, TRUE)
         mainButtonLayoutParams.addRule(ALIGN_PARENT_BOTTOM, TRUE)
         mainButtonLayoutParams.bottomMargin = bottomMargin.toInt()
+
+        bchatButtonTitle.setOnClickListener {
+            delegate?.createNewPrivateChat(); collapse()
+        }
+        secretGroupButtonTitle.setOnClickListener {
+            delegate?.createNewSecretGroup(); collapse()
+        }
+        socialGroupButtonTitle.setOnClickListener {
+            delegate?.joinSocialGroup(); collapse()
+        }
     }
     // endregion
 

@@ -18,6 +18,7 @@ import com.thoughtcrimes.securesms.wallet.WalletActivity
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.RescanDialogBinding
 import timber.log.Timber
+import java.math.BigInteger
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -132,7 +133,8 @@ class RescanDialog(val context: WalletActivity, private val daemonBlockChainHeig
                     //SteveJosephh21
                     when {
                         restoreHeight.isNotEmpty() -> {
-                            if(restoreHeight.toLong()>=0 && restoreHeight.toLong()<daemonBlockChainHeight) {
+                            val restoreHeightBig = BigInteger(restoreHeight)
+                            if(restoreHeightBig.toLong()>=0 && restoreHeightBig.toLong()<daemonBlockChainHeight) {
                                 binding.restoreFromHeightErrorMessage.text=""
                                 binding.restoreFromHeightErrorMessage.visibility=View.GONE
                                 binding.restoreSeedWalletRestoreDate.text = ""

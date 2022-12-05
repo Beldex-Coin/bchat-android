@@ -341,7 +341,7 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
             case AppLock.ENABLE_PINLOCK:
                 if(changePin){
                     if(oldPinCode.equals(mPinCode)){
-                        Toast.makeText(this, "New pin and old pin can't be same, Please enter a different pin", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.change_pin_confirmation_message), Toast.LENGTH_SHORT).show();
                         onPinCodeError();
                     }else{
                         mOldPinCode = mPinCode;

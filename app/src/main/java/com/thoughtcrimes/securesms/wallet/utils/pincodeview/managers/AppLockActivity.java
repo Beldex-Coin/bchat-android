@@ -12,6 +12,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
@@ -56,6 +57,8 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
     protected int mType = AppLock.UNLOCK_PIN;
     protected int mAttempts = 1;
     protected String mPinCode;
+    //Steve Josephh
+    protected String oldPinCode;
 
     protected String mOldPinCode;
 
@@ -153,6 +156,7 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
         mLockManager = LockManager.getInstance();
         mPinCode = "";
         mOldPinCode = "";
+        oldPinCode="";
 
         enableAppLockerIfDoesNotExist();
         mLockManager.getAppLock().setPinChallengeCancelled(false);
@@ -335,10 +339,22 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
                 }
                 break;
             case AppLock.ENABLE_PINLOCK:
-                mOldPinCode = mPinCode;
-                setPinCode("");
-                mType = AppLock.CONFIRM_PIN;
-                setStepText();
+                if(changePin){
+                    if(oldPinCode.equals(mPinCode)){
+                        Toast.makeText(this, "New pin and old pin can't be same, Please enter a different pin", Toast.LENGTH_SHORT).show();
+                        onPinCodeError();
+                    }else{
+                        mOldPinCode = mPinCode;
+                        setPinCode("");
+                        mType = AppLock.CONFIRM_PIN;
+                        setStepText();
+                    }
+                }else{
+                    mOldPinCode = mPinCode;
+                    setPinCode("");
+                    mType = AppLock.CONFIRM_PIN;
+                    setStepText();
+                }
                 break;
             case AppLock.CONFIRM_PIN:
                 if (mPinCode.equals(mOldPinCode)) {
@@ -361,6 +377,7 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
                 break;
             case AppLock.CHANGE_PIN:
                 if (mLockManager.getAppLock().checkPasscode(mPinCode)) {
+                    oldPinCode=mPinCode;
                     mType = AppLock.ENABLE_PINLOCK;
                     setStepText();
                     setPinCode("");

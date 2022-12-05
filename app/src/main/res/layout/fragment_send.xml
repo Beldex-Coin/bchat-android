@@ -156,7 +156,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/amount_hint"
-                    android:imeOptions="actionNext"
+                    android:imeOptions="actionDone"
                     android:inputType="numberDecimal"
                     android:maxLength="11"/>
             </com.google.android.material.textfield.TextInputLayout>

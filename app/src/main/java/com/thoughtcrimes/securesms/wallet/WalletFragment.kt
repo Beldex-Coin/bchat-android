@@ -63,6 +63,8 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
     private var walletAvailableBalance: String? =null
     private var walletSynchronized:Boolean = false
+    private val useSSL: Boolean = false
+    private val isLightWeight: Boolean = false
 
     fun setProgress(text: String?) {
         syncText = text

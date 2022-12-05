@@ -25,12 +25,8 @@ import com.thoughtcrimes.securesms.wallet.settings.adapter.WalletSubOptionsSearc
 import android.text.Editable
 
 import android.text.TextWatcher
-import android.util.Log
+import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.util.push
-import com.thoughtcrimes.securesms.wallet.CheckOnline
-import com.thoughtcrimes.securesms.wallet.WalletActivity
-import com.thoughtcrimes.securesms.wallet.WalletFragment
-import timber.log.Timber
 
 
 class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemClickListener,WalletSubOptionsSearchListItemAdapter.ItemClickListener {
@@ -44,6 +40,8 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
     lateinit var walletSubOptionsSearchListItemAdapter:WalletSubOptionsSearchListItemAdapter
     private var selectedDecimalIndex:Int = 0
     private var selectedCurrencyIndex:Int = 30
+    var nodeItem: NodeInfo? = null
+    private val SELECTED_NODE_PREFS_NAME = "selected_node"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setUpActionBarBchatLogo("Wallet Settings",false)
@@ -172,6 +170,11 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
             }
             enableFiatCurrencyConversionSwitchCompat.isChecked = TextSecurePreferences.getFiatCurrencyCheckedStatus(this@WalletSettings)*/
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.currentNodeTextViewValue.text = getNode()?.host.toString()
     }
 
     private fun openDisplayBalanceAsDialogBox() {
@@ -377,6 +380,19 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         walletSubOptionsSearchListItemAdapter.updateList(temp)
     }
 
+    fun getNode(): NodeInfo? {
+        TextSecurePreferences.changeDaemon(this, false)
+        val selectedNodeId = getSelectedNodeId()
+        return NodeInfo.fromString(selectedNodeId)
+    }
+
+    private fun getSelectedNodeId(): String? {
+        return getSharedPreferences(
+            SELECTED_NODE_PREFS_NAME,
+            MODE_PRIVATE
+        ).getString("0", null)
+    }
+
     override fun onBackPressed() {
         if (TextSecurePreferences.getDaemon(this)) {
             val returnIntent = Intent()
@@ -385,4 +401,6 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         }
         super.onBackPressed()
     }
+
+
 }

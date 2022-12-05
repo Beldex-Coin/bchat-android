@@ -194,4 +194,5 @@
     <color name="add_node_optional_card_color">#22222B</color>
     <color name="you_address_color">#1BB51E</color>
     <color name="or_color">#159B24</color>
+    <color name="address_book_name">#292938</color>
 </resources>

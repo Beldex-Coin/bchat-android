@@ -1122,7 +1122,7 @@ interface TextSecurePreferences {
 
         @JvmStatic
         fun getDisplayBalanceAs(context: Context): Int {
-            return getIntegerPreference(context, DISPLAY_BALANCE_AS, 1)
+            return getIntegerPreference(context, DISPLAY_BALANCE_AS, 0)
         }
 
         @JvmStatic
@@ -1921,7 +1921,7 @@ class AppTextSecurePreferences @Inject constructor(
     }
 
     override fun getDisplayBalanceAs():Int {
-        return getIntegerPreference(TextSecurePreferences.DISPLAY_BALANCE_AS,1)
+        return getIntegerPreference(TextSecurePreferences.DISPLAY_BALANCE_AS,0)
     }
 
     override fun setFeePriority(position: Int) {

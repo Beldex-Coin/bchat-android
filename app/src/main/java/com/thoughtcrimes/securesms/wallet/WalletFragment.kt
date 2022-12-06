@@ -423,7 +423,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         //Important
         //tvWalletAccountStatus.setText(walletSubtitle)
         Log.d("showBalance->","onCreateView")
-        showBalance(Helper.getDisplayAmount(0),walletSynchronized)
+        showBalance(Helper.getDisplayAmount(0),walletSynchronized,Helper.getDisplayAmount(0))
         showUnconfirmed(0.0)
 
         adapter = TransactionInfoAdapter(activity, this)
@@ -820,9 +820,11 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         showUnconfirmed(unconfirmedBdx)
 
         val amountBdx: Double = Helper.getDecimalAmount(unlockedBalance).toDouble()
-        Log.d("Beldex", "value of amountBdx$amountBdx")
+        val amountFullBdx: Double = Helper.getDecimalAmount(balance).toDouble()
+        Log.d("Beldex", "value of amountBdx $amountBdx")
+        Log.d("Beldex", "value of amountFullBdx $amountFullBdx")
         Log.d("Beldex", "value of helper amountBdx" + Helper.getFormattedAmount(amountBdx, true))
-        showBalance(Helper.getFormattedAmount(amountBdx, true),synchronized)
+        showBalance(Helper.getFormattedAmount(amountBdx, true),synchronized,Helper.getFormattedAmount(amountFullBdx, true))
     }
 
     //Important
@@ -885,9 +887,19 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         } else { // BDX
             Helper.getFormattedAmount(amountA, true)
         }
+
+
+        val displayFullB: String
+        val amountFullA: Double = Helper.getDecimalAmount(balance).toDouble()
+        displayFullB = if (!Helper.BASE_CRYPTO.equals(balanceCurrency)) { // not BDX
+            val amountFullB: Double = amountFullA * balanceRate
+            Helper.getFormattedAmount(amountFullB, false)
+        } else { // BDX
+            Helper.getFormattedAmount(amountFullA, true)
+        }
         Log.d("sync updateBalance()", "true")
         Log.d("showBalance->","UpdateBalance()")
-        showBalance(displayB,walletSynchronized)
+        showBalance(displayB,walletSynchronized,displayFullB)
     }
 
     private fun hideDisplayBalance(){
@@ -934,13 +946,21 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         }
     }
 
-    private fun showBalance(balance: String?,synchronized: Boolean) {
-        if(TextSecurePreferences.getDisplayBalanceAs(requireActivity())==2) {
-            hideDisplayBalance()
-        }else {
-            walletAvailableBalance = balance
-            walletSynchronized = synchronized
-            showSelectedDecimalBalance(balance!!,synchronized)
+    private fun showBalance(balance: String?,synchronized: Boolean,fullBalance:String?) {
+        when {
+            TextSecurePreferences.getDisplayBalanceAs(requireActivity())==2 -> {
+                hideDisplayBalance()
+            }
+            TextSecurePreferences.getDisplayBalanceAs(requireActivity())==0 -> {
+                walletAvailableBalance = fullBalance
+                walletSynchronized = synchronized
+                showSelectedDecimalBalance(fullBalance!!,synchronized)
+            }
+            else -> {
+                walletAvailableBalance = balance
+                walletSynchronized = synchronized
+                showSelectedDecimalBalance(balance!!,synchronized)
+            }
         }
 
         val streetMode: Boolean = activityCallback!!.isStreetMode
@@ -1060,7 +1080,8 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         //Important
         //sCurrency.setSelection(0, true) // default to BDX
         val amountBdx: Double = Helper.getDecimalAmount(unlockedBalance).toDouble()
-        showBalance(Helper.getFormattedAmount(amountBdx, true),walletSynchronized)
+        val amountFullBdx: Double = Helper.getDecimalAmount(balance).toDouble()
+        showBalance(Helper.getFormattedAmount(amountBdx, true),walletSynchronized,Helper.getFormattedAmount(amountFullBdx, true))
         hideExchanging()
     }
 

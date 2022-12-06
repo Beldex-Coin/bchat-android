@@ -525,7 +525,9 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     override fun onDisposeRequest() {
-        getWallet()!!.disposePendingTransaction()
+        if(getWallet()!=null) {
+            getWallet()!!.disposePendingTransaction()
+        }
     }
 
     override fun onFragmentDone() {

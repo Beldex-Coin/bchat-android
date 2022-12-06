@@ -7,8 +7,10 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
@@ -57,6 +59,9 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     private var barcodeData: BarcodeData? = null
 
     private val sendFragment: SendFragment? = null
+
+    private val useSSL: Boolean = false
+    private val isLightWallet:  Boolean = false
 
 
 
@@ -129,7 +134,17 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         Timber.d("onCreate() done.")
 
         binding.toolbar.toolBarRescan.setOnClickListener {
-            if(CheckOnline.isOnline(this)) {
+
+            val dialog = AlertDialog.Builder(this, R.style.BChatAlertDialog_Syncing_Option)
+            val li = LayoutInflater.from(dialog.context)
+            val promptsView = li.inflate(R.layout.alert_sync_options, null)
+            dialog.setView(promptsView)
+
+                .setNegativeButton(R.string.cancel) { _, _ ->
+                    // Do nothing
+                }.show()
+            // set dialog message
+            /*if(CheckOnline.isOnline(this)) {
                 if(getWallet()!=null) {
                     if (getWallet()!!.daemonBlockChainHeight != null) {
                         RescanDialog(this, getWallet()!!.daemonBlockChainHeight).show(
@@ -141,7 +156,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
                 //onWalletRescan()
             }else{
                 Toast.makeText(this@WalletActivity,getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
-            }
+            }*/
         }
 
         binding.toolbar.toolBarSettings.setOnClickListener {
@@ -187,7 +202,6 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             if(getWallet()!=null) {
                 // The height entered by user
                 getWallet()!!.restoreHeight = restoreHeight
-
                 getWallet()!!.rescanBlockchainAsync()
             }
             Log.d("Beldex","Restore Height 2 ${getWallet()!!.restoreHeight}")
@@ -631,7 +645,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     }
 
-    fun onWalletReconnect(node: NodeInfo?, UseSSL: Boolean, isLightWallet: Boolean) {
+    private fun onWalletReconnect(node: NodeInfo?, UseSSL: Boolean, isLightWallet: Boolean) {
         Log.d("Beldex", "Value of 1 reconnect node host ${node!!.host}")
         Log.d("Beldex", "Value of 1 reconnect node $node")
         Log.d("Beldex", "Value of 1 reconnect restoreHeight 1  ${getWallet()!!.restoreHeight}")
@@ -639,18 +653,12 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             val isOnline = getWallet()!!.reConnectToDaemon(node, UseSSL, isLightWallet)
             Log.d("Beldex", "Value of 1 reconnect isOnline $isOnline")
             if (isOnline) {
-                setNode(node)
                 synced = false
+                setNode(node)
                 val walletFragment = getWalletFragment()
-                if (getWallet() != null) {
-                    getWallet()!!.restoreHeight = 0
-                    getWallet()!!.rescanBlockchainAsync()
-                }
-                walletFragment.unsync()
-                Log.d(
-                    "Beldex",
-                    "Value of 1 reconnect restoreHeight 2  ${getWallet()!!.restoreHeight}"
-                )
+                walletFragment.setProgress("Reconnecting...")
+                walletFragment.setProgress(101)
+                invalidateOptionsMenu()
             } else {
                 getWalletFragment().setProgress(R.string.failed_connected_to_the_node)
             }
@@ -658,7 +666,6 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             Toast.makeText(this, R.string.please_check_your_internet_connection, Toast.LENGTH_SHORT)
                 .show()
         }
-
     }
 
 

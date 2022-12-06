@@ -24,6 +24,7 @@ import com.github.brnunes.swipeablerecyclerview.SwipeableRecyclerViewTouchListen
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.gson.GsonBuilder
+import com.jakewharton.rxbinding3.view.actionViewEvents
 import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
 import com.thoughtcrimes.securesms.model.TransactionInfo
@@ -485,11 +486,19 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         activityCallback!!.forceUpdate(requireActivity())
 
         //SteveJosephh21
-        binding.filterTransactionsIcon.setOnClickListener {
+        binding.filterTransactionsIcon.setOnClickListener {view->
+            var dismissPopupMenu =false
             val wrapper: Context = ContextThemeWrapper(requireActivity(), R.style.custom_PopupMenu)
-            val popupMenu = PopupMenu(wrapper, it)
+            val popupMenu = PopupMenu(wrapper, view)
             //val popupMenu = PopupMenu(activity?.applicationContext, it)
             popupMenu.inflate(R.menu.filter_transactions_popup_menu)
+            popupMenu.setOnDismissListener{
+                if(dismissPopupMenu)it.show()
+                else {
+                    it.dismiss()
+                }
+                dismissPopupMenu=false
+            }
             /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 popupMenu.setForceShowIcon(true)
             }*/
@@ -513,6 +522,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             popupMenu.menu[2].isChecked = TextSecurePreferences.getOutgoingTransactionStatus(requireActivity())
             //popupMenu.menu[3].isChecked = TextSecurePreferences.getTransactionsByDateStatus(requireActivity())
             popupMenu.setOnMenuItemClickListener { item ->
+                dismissPopupMenu=true
                 Toast.makeText(activity, item.title, Toast.LENGTH_SHORT).show()
                 val emptyList: ArrayList<TransactionInfo> = ArrayList()
                 if (item.title == "Incoming") {

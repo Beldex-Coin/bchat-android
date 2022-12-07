@@ -395,8 +395,8 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
 
     override fun getWallet(): Wallet? {
-        checkNotNull(mBoundService) { "WalletService not bound." }
         return if(mBoundService!=null) {
+            checkNotNull(mBoundService) { "WalletService not bound." }
             mBoundService!!.wallet
         }else{
             null

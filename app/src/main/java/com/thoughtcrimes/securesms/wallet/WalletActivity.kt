@@ -4,6 +4,8 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.*
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
@@ -136,17 +138,21 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
         binding.toolbar.toolBarRescan.setOnClickListener {
 
-            val dialog = AlertDialog.Builder(this, R.style.BChatAlertDialog_Syncing_Option)
+            val dialog:AlertDialog.Builder = AlertDialog.Builder(this, R.style.BChatAlertDialog_Syncing_Option)
             val li = LayoutInflater.from(dialog.context)
             val promptsView = li.inflate(R.layout.alert_sync_options, null)
 
-            dialog.setView(promptsView).show()
+            dialog.setView(promptsView)
             val reConnect  = promptsView.findViewById<Button>(R.id.reConnectButton_Alert)
             val reScan = promptsView.findViewById<Button>(R.id.rescanButton_Alert)
 
-            reConnect.setOnClickListener {
-                onWalletReconnect(node,useSSL,isLightWallet);
+            val alertDialog: AlertDialog = dialog.create()
+            alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            alertDialog.show()
 
+            reConnect.setOnClickListener {
+                onWalletReconnect(node,useSSL,isLightWallet)
+                alertDialog.dismiss()
             }
             reScan.setOnClickListener {
                 if(CheckOnline.isOnline(this)) {
@@ -163,6 +169,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
                 }else{
                     Toast.makeText(this@WalletActivity,getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
                 }
+                alertDialog.dismiss()
             }
 
             // set dialog message

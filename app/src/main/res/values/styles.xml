@@ -433,7 +433,7 @@
         <item name="buttonBarNegativeButtonStyle">@style/Widget.BChat.AlertDialog.NegativeButtonStyle_Exit</item>
         <item name="buttonBarPositiveButtonStyle">@style/Widget.BChat.AlertDialog.PositiveButtonStyle_Exit</item>
         <item name="android:textSize">15sp</item>
-        <item name="android:background">@color/page_background</item>
+        <item name="android:background">@color/transparent</item>
         <item name="textAllCaps">false</item>
         <item name="android:windowBackground">@drawable/alert_syncing_option_shape</item>
     </style>

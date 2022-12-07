@@ -35,6 +35,7 @@ import com.thoughtcrimes.securesms.wallet.utils.common.LoadingActivity
 import com.thoughtcrimes.securesms.wallet.widget.Toolbar
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityWalletBinding
+import io.beldex.bchat.databinding.AlertSyncOptionsBinding
 import kotlinx.coroutines.NonCancellable.isCancelled
 import timber.log.Timber
 import java.io.File
@@ -138,11 +139,32 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             val dialog = AlertDialog.Builder(this, R.style.BChatAlertDialog_Syncing_Option)
             val li = LayoutInflater.from(dialog.context)
             val promptsView = li.inflate(R.layout.alert_sync_options, null)
-            dialog.setView(promptsView)
 
-                .setNegativeButton(R.string.cancel) { _, _ ->
-                    // Do nothing
-                }.show()
+            dialog.setView(promptsView).show()
+            val reConnect  = promptsView.findViewById<Button>(R.id.reConnectButton_Alert)
+            val reScan = promptsView.findViewById<Button>(R.id.rescanButton_Alert)
+
+            reConnect.setOnClickListener {
+                onWalletReconnect(node,useSSL,isLightWallet);
+
+            }
+            reScan.setOnClickListener {
+                if(CheckOnline.isOnline(this)) {
+                    if(getWallet()!=null) {
+                        if (getWallet()!!.daemonBlockChainHeight != null) {
+                            RescanDialog(this, getWallet()!!.daemonBlockChainHeight).show(
+                                supportFragmentManager,
+                                ""
+                            )
+                        }
+                    }
+
+                    //onWalletRescan()
+                }else{
+                    Toast.makeText(this@WalletActivity,getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
+                }
+            }
+
             // set dialog message
             /*if(CheckOnline.isOnline(this)) {
                 if(getWallet()!=null) {

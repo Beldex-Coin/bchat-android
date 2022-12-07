@@ -195,4 +195,5 @@
     <color name="you_address_color">#1BB51E</color>
     <color name="or_color">#159B24</color>
     <color name="address_book_name">#292938</color>
+    <color name="loading_card_background">#24242F</color>
 </resources>

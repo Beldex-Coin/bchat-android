@@ -25,6 +25,7 @@ import com.thoughtcrimes.securesms.wallet.settings.adapter.WalletSubOptionsSearc
 import android.text.Editable
 
 import android.text.TextWatcher
+import android.util.Log
 import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.util.push
 
@@ -381,7 +382,6 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
     }
 
     fun getNode(): NodeInfo? {
-        TextSecurePreferences.changeDaemon(this, false)
         val selectedNodeId = getSelectedNodeId()
         return NodeInfo.fromString(selectedNodeId)
     }

@@ -780,7 +780,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
                 releaseWakeLock(RELEASE_WAKE_LOCK_DELAY) // the idea is to stay awake until synced
                 if (!synced) { // first sync
                     Log.d("Beldex","mConnection onRefreshed called 2")
-                    onProgress(-1)
+                    onProgress(-2)//onProgress(-1)
                     saveWallet() // save on first sync
                     synced = true
                     runOnUiThread(walletFragment::onSynced)

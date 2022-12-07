@@ -77,12 +77,14 @@
         tools:replace="android:allowBackup">
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.utils.common.LoadingActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.info.WalletInfoSeedActivity"
             android:exported="false" />
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.info.WalletInfoActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
@@ -91,6 +93,7 @@
             android:exported="false" />
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLockActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
@@ -99,10 +102,12 @@
             android:exported="false" />
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.password.CreateWalletPassword"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
@@ -110,6 +115,7 @@
             android:exported="false" />
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.WalletActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
@@ -117,6 +123,7 @@
             android:exported="false" />
         <activity
             android:name="com.thoughtcrimes.securesms.calls.WebRtcCallActivity"
+            android:exported="false"
             android:launchMode="singleTop"
             android:parentActivityName="com.thoughtcrimes.securesms.home.HomeActivity"
             android:screenOrientation="portrait"
@@ -128,49 +135,59 @@
         </activity>
         <activity
             android:name="com.thoughtcrimes.securesms.onboarding.AboutActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.changelog.ChangeLogActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.onboarding.CheckPasswordActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name="com.thoughtcrimes.securesms.groups.JoinPublicChatScanQRCodeActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="com.thoughtcrimes.securesms.groups.JoinPublicChatNewActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="com.thoughtcrimes.securesms.dms.PrivateChatScanQRCodeActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="com.thoughtcrimes.securesms.dms.CreateNewPrivateChatActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="com.thoughtcrimes.securesms.preferences.ScanQRCodeActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="com.thoughtcrimes.securesms.preferences.ShowQRCodeWithScanQRCodeActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="com.thoughtcrimes.securesms.applock.ChangePasswordActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize" />
@@ -180,43 +197,53 @@
             android:exported="false" />
         <activity
             android:name="com.thoughtcrimes.securesms.onboarding.SplashScreenActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.onboarding.PasswordActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name="com.thoughtcrimes.securesms.applock.AppLockDetailsActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.keys.ShowKeysActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.keys.KeysPermissionActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.seed.ShowSeedActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.seed.SeedPermissionActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.keys.RecoveryGetKeysDetailsActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.seed.RecoveryGetSeedDetailsActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.seedorkeysrestore.SeedOrKeysRestoreActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" /> <!-- Disable all analytics -->
         <meta-data
@@ -237,46 +264,56 @@
 
         <activity
             android:name="com.thoughtcrimes.securesms.onboarding.LandingActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.onboarding.RegisterActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.onboarding.RecoveryPhraseRestoreActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="com.thoughtcrimes.securesms.onboarding.LinkDeviceActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="com.thoughtcrimes.securesms.onboarding.DisplayNameActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="com.thoughtcrimes.securesms.onboarding.PNModeActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.onboarding.AppLockActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.onboarding.CreatePasswordActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name="com.thoughtcrimes.securesms.onboarding.RecoveryPhraseActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.home.HomeActivity"
+            android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
@@ -307,50 +344,63 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.thoughtcrimes.securesms.preferences.SettingsActivity"
+            android:exported="false"
             android:label="@string/activity_settings_title"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.thoughtcrimes.securesms.home.PathActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.thoughtcrimes.securesms.preferences.QRCodeActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.dms.CreatePrivateChatActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="com.thoughtcrimes.securesms.groups.CreateClosedGroupActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.thoughtcrimes.securesms.groups.EditClosedGroupActivity"
+            android:exported="false"
             android:label="@string/activity_edit_closed_group_title"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.thoughtcrimes.securesms.groups.JoinPublicChatActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="com.thoughtcrimes.securesms.onboarding.SeedActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.thoughtcrimes.securesms.contacts.SelectContactsActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity"
+            android:exported="false"
             android:label="@string/activity_privacy_settings_title"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.thoughtcrimes.securesms.preferences.NotificationSettingsActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.thoughtcrimes.securesms.preferences.ChatSettingsActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.thoughtcrimes.securesms.ShareActivity"
+            android:exported="false"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
@@ -379,6 +429,7 @@
         </activity>
         <activity
             android:name="com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2"
+            android:exported="false"
             android:parentActivityName="com.thoughtcrimes.securesms.home.HomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
@@ -390,40 +441,48 @@
         </activity>
         <activity
             android:name="com.thoughtcrimes.securesms.conversation.v2.MessageDetailActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.TextSecure.DayNight" />
         <activity
             android:name="com.thoughtcrimes.securesms.groups.OpenGroupGuidelinesActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.TextSecure.DayNight" />
         <activity
             android:name="com.thoughtcrimes.securesms.longmessage.LongMessageActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.TextSecure.DayNight" />
         <activity
             android:name="com.thoughtcrimes.securesms.DatabaseUpgradeActivity"
+            android:exported="false"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:launchMode="singleTask"
             android:theme="@style/NoAnimation.Theme.AppCompat.Light.DarkActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.PassphrasePromptActivity"
+            android:exported="false"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:launchMode="singleTask"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.giph.ui.GiphyActivity"
+            android:exported="false"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.TextSecure.DayNight.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name="com.thoughtcrimes.securesms.mediasend.MediaSendActivity"
+            android:exported="false"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.TextSecure.DayNight.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name="com.thoughtcrimes.securesms.MediaPreviewActivity"
+            android:exported="false"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:label="@string/AndroidManifest__media_preview"
             android:launchMode="singleTask"
@@ -432,6 +491,7 @@
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name="com.thoughtcrimes.securesms.MediaOverviewActivity"
+            android:exported="false"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
@@ -439,6 +499,7 @@
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name="com.thoughtcrimes.securesms.DummyActivity"
+            android:exported="false"
             android:allowTaskReparenting="true"
             android:alwaysRetainTaskState="false"
             android:clearTaskOnLaunch="true"
@@ -450,10 +511,12 @@
             android:theme="@android:style/Theme.NoDisplay" />
         <activity
             android:name="com.thoughtcrimes.securesms.scribbles.StickerSelectActivity"
+            android:exported="false"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:theme="@style/Theme.Bchat.ForceDark" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat" />
         <activity

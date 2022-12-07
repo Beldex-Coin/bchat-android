@@ -121,4 +121,5 @@
     <color name="unselected_node">#F4F4F4</color>
     <color name="or_color">#159B24</color>
     <color name="address_book_name">#e6e6e6</color>
+    <color name="loading_card_background">#F4F4F4</color>
 </resources>

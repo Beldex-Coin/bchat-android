@@ -97,9 +97,11 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 binding.walletName.text = "--"
             }*/
             binding.progressBar.visibility = View.VISIBLE
-        } /*else if(n==-2){
+        } else if(n==-2){
             binding.progressBar.visibility = View.VISIBLE
-        }*/else { // <0
+            binding.progressBar.isIndeterminate = false
+            binding.progressBar.progress=100
+        }else { // <0
             binding.progressBar.visibility = View.GONE
         }
     }

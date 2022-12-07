@@ -23,7 +23,7 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/reConnectButton"
+            android:id="@+id/reConnectButton_Alert"
             style="@style/Widget.Bchat.Button.Common.Copy"
             android:layout_width="match_parent"
             android:layout_height="45dp"
@@ -40,7 +40,7 @@
             android:textSize="16sp" />
 
         <Button
-            android:id="@+id/RescanButton"
+            android:id="@+id/rescanButton_Alert"
             style="@style/Widget.Bchat.Button.Common.Copy"
             android:layout_width="match_parent"
             android:layout_height="45dp"

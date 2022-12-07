@@ -233,7 +233,6 @@
                             android:fontFamily="@font/poppins_medium"
                             android:textColor="@color/white"
                             android:textSize="@dimen/small_font_size"
-                            android:text="234567890-09uygfcx"
                             android:layout_marginEnd="10dp"
                             />
 
@@ -242,7 +241,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:src="@drawable/ic_baseline_check_circle_24"
-                            android:visibility="visible" />
+                            android:visibility="gone" />
 
                         <ImageView
 
@@ -250,7 +249,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:src="@drawable/ic_baseline_error_24"
-                            android:visibility="visible" />
+                            android:visibility="gone" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
             </LinearLayout>

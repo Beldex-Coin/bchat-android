@@ -428,6 +428,16 @@
         <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
     </style>
 
+    <style name="BChatAlertDialog_Syncing_Option" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.BChat.AlertDialog.NegativeButtonStyle_Exit</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.BChat.AlertDialog.PositiveButtonStyle_Exit</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:background">@color/page_background</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:windowBackground">@drawable/alert_syncing_option_shape</item>
+    </style>
+
     <style name="Widget.BChat.AlertDialog.PositiveButtonStyle_Exit" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
         <item name="android:textColor">@color/alert_ok</item>
         <item name="android:textSize">15sp</item>

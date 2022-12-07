@@ -25,6 +25,7 @@
             android:text="@string/label_nodes"
             android:textSize="20sp"
             android:textStyle="bold"
+            android:textColor="@color/green_color"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"/>
         <androidx.cardview.widget.CardView
@@ -80,6 +81,7 @@
             android:text="@string/wallets"
             android:textSize="20sp"
             android:textStyle="bold"
+            android:textColor="@color/green_color"
             android:layout_marginTop="20dp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"/>
@@ -239,6 +241,7 @@
             android:text="Personal"
             android:textSize="20sp"
             android:textStyle="bold"
+            android:textColor="@color/green_color"
             android:layout_marginTop="20dp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"/>

@@ -522,7 +522,6 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             popupMenu.menu[1].isChecked =
                 TextSecurePreferences.getIncomingTransactionStatus(requireActivity())
             popupMenu.menu[2].isChecked = TextSecurePreferences.getOutgoingTransactionStatus(requireActivity())
-            val direct = "${TransactionInfo.Direction.Direction_In}  ${TransactionInfo.Direction.Direction_Out}"
             //popupMenu.menu[3].isChecked = TextSecurePreferences.getTransactionsByDateStatus(requireActivity())
             popupMenu.setOnMenuItemClickListener { item ->
                 dismissPopupMenu=true
@@ -532,8 +531,10 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                     Log.d("Beldex","filter issue incoming if 1")
                     item.isChecked = !item.isChecked
                     if(popupMenu.menu[2].isChecked && item.isChecked){
-                        Log.d("Beldex","filter issue incoming if 2")
+                        Log.d("Beldex","filter issue incoming if 2 ${adapterItems.size}")
                         TextSecurePreferences.setIncomingTransactionStatus(requireActivity(), true)
+                        Log.d("Beldex","filter issue incoming if 2,, ${adapterItems.size}")
+                        filterAll(adapterItems)
 
                     }else if (item.isChecked && !popupMenu.menu[2].isChecked) {
                             Log.d("Beldex","filter issue incoming if 3")
@@ -676,6 +677,21 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         }
         callIfTransactionListEmpty(temp.size)
         //update recyclerview
+        adapter!!.updateList(temp)
+    }
+
+    private fun filterAll(arrayList: ArrayList<TransactionInfo>) {
+        val temp: ArrayList<TransactionInfo> = ArrayList()
+        Log.d("Beldex","filter issue filterall called 1 $arrayList")
+        Log.d("Beldex","filter issue filterall called 1,, ${arrayList.size}")
+        for (d in arrayList) {
+            Log.d("Beldex","filter issue filterall called 2")
+            temp.add(d)
+        }
+        Log.d("Beldex","filter issue filterall called 3")
+        callIfTransactionListEmpty(temp.size)
+        //update recyclerview
+        Log.d("Beldex","filter issue filterall called 4")
         adapter!!.updateList(temp)
     }
 

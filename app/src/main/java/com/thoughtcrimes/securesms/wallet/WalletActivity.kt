@@ -195,7 +195,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     private fun backToHome() {
-        val dialog = AlertDialog.Builder(this, R.style.BChatAlertDialog_Exit)
+        AlertDialog.Builder(this, R.style.BChatAlertDialog_Exit)
             .setTitle(getString(R.string.app_exit_alert))
             .setPositiveButton(R.string.exit) { _, _ ->
                 if(CheckOnline.isOnline(this)) {
@@ -366,7 +366,13 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
                 onRefreshed(getWallet(), true)
             }else{
                 Log.d("Beldex","forceUpdate() else")
-                Toast.makeText(context,getString(R.string.please_check_your_internet_connection),Toast.LENGTH_SHORT).show()
+                if(!CheckOnline.isOnline(this)) {
+                    Toast.makeText(
+                        context,
+                        getString(R.string.please_check_your_internet_connection),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         } catch (ex: IllegalStateException) {
             Timber.e(ex.localizedMessage)

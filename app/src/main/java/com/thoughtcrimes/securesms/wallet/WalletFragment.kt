@@ -549,18 +549,13 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                                 requireActivity(),
                                 false
                             )
+                        Log.d("Beldex","filter issue incoming if 4 adapterItemss.size ${adapterItems.size}")
                             filter(TransactionInfo.Direction.Direction_Out, adapterItems)
                         }
                     else if(!popupMenu.menu[2].isChecked && !item.isChecked){
                         Log.d("Beldex","filter issue incoming if 5")
                         emptyList
                     }
-                /*else {
-                                Log.d("Beldex","filter issue incoming if 6")
-                                //adapter!!.updateList(adapterItems)
-                                filter(TransactionInfo.Direction.Direction_In, emptyList)
-                            }*/
-
 
                 } else if (item.title == "Outgoing") {
                     Log.d("Beldex","filter issue outgoing if 1")
@@ -568,10 +563,9 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                     if(popupMenu.menu[1].isChecked && item.isChecked){
                         Log.d("Beldex","filter issue outgoing if 2")
                         TextSecurePreferences.setOutgoingTransactionStatus(requireActivity(), true)
-                        adapter!!.updateList(adapterItems)
+                        filterAll(adapterItems)
 
                     }else if (item.isChecked && !popupMenu.menu[1].isChecked ) {
-                        if (item.isChecked) {
                             Log.d("Beldex","filter issue outgoing if 3")
                             TextSecurePreferences.setOutgoingTransactionStatus(
                                 requireActivity(),
@@ -590,15 +584,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                             Log.d("Beldex", "filter issue outgoing if 5")
                             emptyList
                         }
-                            /*if(popupMenu.menu[1].isChecked){
-                                Log.d("Beldex","filter issue outgoing if 5")
-                                filter(TransactionInfo.Direction.Direction_In, adapterItems)
-                            }else {
-                                Log.d("Beldex","filter issue outgoing if 6")
-                                //adapter!!.updateList(adapterItems)
-                                filter(TransactionInfo.Direction.Direction_Out, emptyList)
-                            }*/
-                    }
+
                 }else{
                     val datePicker = MaterialDatePicker.Builder.dateRangePicker()
                         .setTheme(R.style.MaterialCalendarTheme)
@@ -1078,6 +1064,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 ) list.add(info)
             }
             adapter!!.setInfos(list)
+            adapterItems.clear()
             adapterItems.addAll(adapter!!.infoItems!!)
             if (accountIndex != wallet.accountIndex) {
                 accountIndex = wallet.accountIndex

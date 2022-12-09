@@ -261,7 +261,6 @@ public class KeyCachingService extends Service {
 
   private PendingIntent buildLaunchIntent() {
     Intent intent              = new Intent(this, HomeActivity.class);
-    //Intent intent = new Intent(this, PasswordActivity.class);
     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     return PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
   }

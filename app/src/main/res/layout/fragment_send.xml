@@ -63,6 +63,7 @@
                     android:layout_height="match_parent"
                     android:gravity="start"
                     android:lines="4"
+                    android:maxLength="97"
                     android:background="@color/transparent"
                     android:hint="@string/enter_address"
                     android:imeOptions="actionNext"

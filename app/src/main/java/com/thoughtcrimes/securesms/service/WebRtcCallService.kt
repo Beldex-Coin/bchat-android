@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
+import android.os.Build
 import android.os.IBinder
 import android.os.ResultReceiver
 import android.telephony.PhoneStateListener
@@ -183,7 +184,13 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
     private val serviceExecutor = Executors.newSingleThreadExecutor()
     private val timeoutExecutor = Executors.newScheduledThreadPool(1)
     private val hangupOnCallAnswered = HangUpRtcOnPstnCallAnsweredListener {
-        startService(hangupIntent(this))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Log.d("Beldex","Build version is height of 26 ${Build.VERSION.SDK_INT}")
+            startForegroundService(hangupIntent(this))
+        }else {
+            Log.d("Beldex","Build version is low of 26 ${Build.VERSION.SDK_INT}")
+            startService(hangupIntent(this))
+        }
     }
 
     private var networkChangedReceiver: NetworkChangeReceiver? = null

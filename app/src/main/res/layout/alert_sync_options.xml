@@ -13,6 +13,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:orientation="vertical"
+        android:layout_gravity="center"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
         tools:ignore="MissingConstraints">
 
         <TextView
@@ -30,15 +33,14 @@
             style="@style/Widget.Bchat.Button.Common.Copy"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginStart="90dp"
             android:layout_marginTop="20dp"
-            android:layout_marginEnd="90dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
             android:layout_weight="1"
             android:gravity="center"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
-            android:text="ReConnect"
+            android:text="Reconnect"
             android:textColor="@color/text"
             android:textSize="16sp" />
 
@@ -47,16 +49,15 @@
             style="@style/Widget.Bchat.Button.Common.Copy"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginStart="90dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="90dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
             android:layout_marginBottom="20dp"
             android:layout_weight="1"
             android:gravity="center"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
-            android:text="ReScan"
+            android:text="Rescan"
             android:textColor="@color/text"
             android:textSize="16sp" />
 

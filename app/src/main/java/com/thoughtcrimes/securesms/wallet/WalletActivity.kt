@@ -6,6 +6,7 @@ import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
@@ -15,6 +16,7 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
@@ -69,6 +71,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
 
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState != null) {
@@ -151,9 +154,19 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             alertDialog.show()
 
             reConnect.setOnClickListener {
-                onWalletReconnect(node,useSSL,isLightWallet)
-                alertDialog.dismiss()
+                if (CheckOnline.isOnline(this)) {
+                    onWalletReconnect(node, useSSL, isLightWallet)
+                    alertDialog.dismiss()
+                } else {
+                    Toast.makeText(
+                        this,
+                        R.string.please_check_your_internet_connection,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    alertDialog.dismiss()
+                }
             }
+
             reScan.setOnClickListener {
                 if(CheckOnline.isOnline(this)) {
                     if(getWallet()!=null) {
@@ -681,9 +694,6 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     private fun onWalletReconnect(node: NodeInfo?, UseSSL: Boolean, isLightWallet: Boolean) {
-        Log.d("Beldex", "Value of 1 reconnect node host ${node!!.host}")
-        Log.d("Beldex", "Value of 1 reconnect node $node")
-        Log.d("Beldex", "Value of 1 reconnect restoreHeight 1  ${getWallet()!!.restoreHeight}")
         if (CheckOnline.isOnline(this)) {
             val isOnline = getWallet()!!.reConnectToDaemon(node, UseSSL, isLightWallet)
             Log.d("Beldex", "Value of 1 reconnect isOnline $isOnline")

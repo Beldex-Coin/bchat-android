@@ -203,7 +203,12 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
   @Override
   public boolean dispatchTouchEvent(MotionEvent ev) {
     clickDetector.onTouchEvent(ev);
-    return super.dispatchTouchEvent(ev);
+    //SteveJosephh21
+    try {
+      return super.dispatchTouchEvent(ev);
+    }catch(IllegalArgumentException e){
+      return false;
+    }
   }
 
   @SuppressLint("MissingSuperCall")

@@ -94,7 +94,7 @@ class DefaultConversationRepository @Inject constructor(
     }
 
     override fun getRecipientForThreadId(threadId: Long): Recipient {
-        return threadDb.getRecipientForThreadId(threadId)!!
+        return threadDb.getRecipientForThreadId(threadId)
     }
 
     override fun saveDraft(threadId: Long, text: String) {

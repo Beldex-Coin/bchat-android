@@ -3,31 +3,31 @@ package com.thoughtcrimes.securesms.wallet.settings
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
+import android.view.View
+import android.view.Window
+import android.view.WindowManager
+import android.widget.*
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.BaseActionBarActivity
+import com.thoughtcrimes.securesms.data.NodeInfo
+import com.thoughtcrimes.securesms.util.push
 import com.thoughtcrimes.securesms.util.setUpActionBarBchatLogo
 import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity
 import com.thoughtcrimes.securesms.wallet.node.activity.NodeActivity
+import com.thoughtcrimes.securesms.wallet.settings.adapter.WalletSubOptionsListAdapter
+import com.thoughtcrimes.securesms.wallet.settings.adapter.WalletSubOptionsSearchListItemAdapter
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityWalletSettingsBinding
-import android.view.View
-import android.view.Window
-import android.view.WindowManager
-import android.widget.*
-
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.beldex.libbchat.utilities.TextSecurePreferences
-import com.thoughtcrimes.securesms.wallet.settings.adapter.WalletSubOptionsListAdapter
-import com.thoughtcrimes.securesms.wallet.settings.adapter.WalletSubOptionsSearchListItemAdapter
-import android.text.Editable
-
-import android.text.TextWatcher
-import android.util.Log
-import com.thoughtcrimes.securesms.data.NodeInfo
-import com.thoughtcrimes.securesms.util.push
 
 
 class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemClickListener,WalletSubOptionsSearchListItemAdapter.ItemClickListener {
@@ -175,7 +175,9 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
 
     override fun onResume() {
         super.onResume()
-        binding.currentNodeTextViewValue.text = getNode()?.host.toString()
+        /*binding.currentNodeTextViewValue.text = getNode()?.host.toString()*/
+        val parts = getNode().split(":")
+        binding.currentNodeTextViewValue.text = parts[0]
     }
 
     private fun openDisplayBalanceAsDialogBox() {
@@ -381,9 +383,16 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         walletSubOptionsSearchListItemAdapter.updateList(temp)
     }
 
-    fun getNode(): NodeInfo? {
+    /*fun getNode(): NodeInfo? {
         val selectedNodeId = getSelectedNodeId()
+        Log.d("WalletSettings",selectedNodeId.toString())
         return NodeInfo.fromString(selectedNodeId)
+    }*/
+
+    fun getNode(): String {
+        val selectedNodeId = getSelectedNodeId()
+        Log.d("WalletSettings",selectedNodeId.toString())
+        return selectedNodeId.toString()
     }
 
     private fun getSelectedNodeId(): String? {

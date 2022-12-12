@@ -3,6 +3,7 @@ package com.thoughtcrimes.securesms.webrtc
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.telephony.PhoneStateListener
 import android.telephony.TelephonyManager
 import com.beldex.libsignal.utilities.Log
@@ -34,9 +35,17 @@ class PowerButtonReceiver : BroadcastReceiver() {
 
         //SteveJosephh21 -
         if (Intent.ACTION_USER_PRESENT == intent.action) {
+            Log.d("WebRtcCallServiceReceiver-> ","true")
+            Log.d("WebRtcCallServiceReceiver-> ","${Intent.ACTION_USER_PRESENT}")
             val serviceIntent = Intent(context, WebRtcCallService::class.java)
                 .setAction(WebRtcCallService.ACTION_SCREEN_ON)
-            context.startService(serviceIntent)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Log.d("WebRtcCallServiceReceivers","If - ${Build.VERSION.SDK_INT}")
+                context.startForegroundService(serviceIntent)
+            }else {
+                Log.d("WebRtcCallServiceReceivers","Else - ${Build.VERSION.SDK_INT}")
+                context.startService(serviceIntent)
+            }
         }
     }
 }

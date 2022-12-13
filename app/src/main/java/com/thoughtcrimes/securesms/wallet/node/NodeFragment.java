@@ -3,6 +3,8 @@ package com.thoughtcrimes.securesms.wallet.node;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -207,8 +209,46 @@ public class NodeFragment extends Fragment
     // Callbacks from NodeInfoAdapter
     @Override
     public void onInteraction(final View view, final NodeInfo nodeItem) {
+        AlertDialog.Builder d  = new AlertDialog.Builder(getContext());
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.switch_node, null);
+        d.setView(dialogView);
+        Button cancelButton = dialogView.findViewById(R.id.cancelButton);
+        Button yesButton = dialogView.findViewById(R.id.yesButton);
+        AlertDialog alertDialog = d.create();
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        alertDialog.show();
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
 
-        new android.app.AlertDialog.Builder(getContext(), R.style.BChatAlertDialog_Wallet)
+        yesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Timber.d("onInteraction");
+                if (!nodeItem.isFavourite()) {
+                    nodeItem.setFavourite(true);
+                    activityCallback.setFavouriteNodes(nodeList);
+                }
+                AsyncTask.execute(() -> {
+                    Log.d("Beldex","Value of current node 2 " +nodeItem.getHost());
+                    activityCallback.setNode(nodeItem);
+                    // this marks it as selected & saves it as well
+                    nodeItem.setSelecting(false);
+                    TextSecurePreferences.changeDaemon(requireContext(),true);
+                    try {
+                        requireActivity().runOnUiThread(() -> nodesAdapter.allowClick(true));
+                    } catch (NullPointerException ignored) {
+                    }
+                });
+                alertDialog.dismiss();
+            }
+        });
+
+       /* new android.app.AlertDialog.Builder(getContext(), R.style.BChatAlertDialog_Wallet)
                 .setTitle(R.string.switch_node_alert)
                 .setPositiveButton(R.string.yes, (dialog, which) -> {
                     Timber.d("onInteraction");
@@ -229,8 +269,7 @@ public class NodeFragment extends Fragment
                     });
 
                 }).setNegativeButton(android.R.string.cancel, null)
-                .show();
-
+                .show();*/
     }
 
     // open up edit dialog

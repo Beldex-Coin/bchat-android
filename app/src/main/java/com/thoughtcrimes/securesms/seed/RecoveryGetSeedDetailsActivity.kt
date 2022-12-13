@@ -30,6 +30,7 @@ import com.thoughtcrimes.securesms.onboarding.CreatePasswordActivity
 import com.thoughtcrimes.securesms.util.*
 import timber.log.Timber
 import java.io.File
+import java.math.BigInteger
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -228,8 +229,13 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         val password = uuid.toString()
         //SteveJosephh21
         if (restoreHeight.isNotEmpty()){
-            binding.restoreSeedWalletRestoreDate.text = ""
-            _recoveryWallet(displayName,password,getSeed, restoreHeight.toLong())
+            val restoreHeightBig = BigInteger(restoreHeight)
+            if(restoreHeightBig.toLong()>=0) {
+                binding.restoreSeedWalletRestoreDate.text = ""
+                _recoveryWallet(displayName, password, getSeed, restoreHeight.toLong())
+            }else{
+                Toast.makeText(this,getString(R.string.restore_height_error_message),Toast.LENGTH_SHORT).show()
+            }
         }else if(restoreFromDate.isNotEmpty()){
             binding.restoreSeedWalletRestoreHeight.setText("")
             _recoveryWallet(displayName, password, getSeed, restoreFromDateHeight.toLong())

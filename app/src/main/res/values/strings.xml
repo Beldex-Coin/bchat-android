@@ -1252,7 +1252,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="home_screen_social_groups_title" translatable="false">Social Group</string>
     <string name="display_balance_as" translatable="false">Display Balance As</string>
     <string name="current_node" translatable="false">Current Node</string>
-    <string name="wallets" translatable="false">Wallets</string>
+    <string name="wallets" translatable="false">Wallet</string>
     <string name="decimals" translatable="false">Decimals</string>
     <string name="enable_fiat_currency_conversion" translatable="false">Enable Fiat Currency Conversion</string>
     <string name="currency" translatable="false">Currency</string>

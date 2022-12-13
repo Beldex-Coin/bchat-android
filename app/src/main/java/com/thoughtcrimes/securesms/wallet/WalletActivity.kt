@@ -45,6 +45,9 @@ import timber.log.Timber
 import java.io.File
 import java.lang.IllegalArgumentException
 import java.util.*
+import android.content.DialogInterface
+import androidx.core.content.ContextCompat
+
 
 class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.Observer,
     WalletScannerFragment.OnScannedListener, SendFragment.OnScanListener, SendFragment.Listener,
@@ -207,19 +210,35 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     }
 
+    override fun onBackPressed() {
+        val fragment: Fragment = getCurrentFragment()!!
+        if (fragment is SendFragment || fragment is ReceiveFragment || fragment is ScannerFragment || fragment is WalletScannerFragment) {
+            if (!(fragment as OnBackPressedListener).onBackPressed()) {
+                super.onBackPressed()
+            }
+        } else {
+            backToHome()
+        }
+    }
+
     private fun backToHome() {
-        AlertDialog.Builder(this, R.style.BChatAlertDialog_Exit)
-            .setTitle(getString(R.string.app_exit_alert))
-            .setPositiveButton(R.string.exit) { _, _ ->
+        val dialog:AlertDialog.Builder = AlertDialog.Builder(this, R.style.BChatAlertDialog_Exit)
+        dialog.setTitle(getString(R.string.app_exit_alert))
+
+        dialog.setPositiveButton(R.string.exit) { _, _ ->
                 if(CheckOnline.isOnline(this)) {
                     onDisposeRequest()
                 }
                 setBarcodeData(null)
-                onBackPressed()
-            }
-            .setNegativeButton(R.string.cancel) { _, _ ->
-                // Do nothing
-            }.show()
+                super.onBackPressed()
+        }
+        dialog.setNegativeButton(R.string.cancel) { _, _ ->
+            // Do nothing
+        }
+        val alert: AlertDialog = dialog.create()
+        alert.show()
+        alert.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(this,R.color.text))
+        alert.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(this,R.color.alert_ok))
 
     }
 

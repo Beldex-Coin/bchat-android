@@ -491,7 +491,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         binding.filterTransactionsIcon.setOnClickListener {view->
             var dismissPopupMenu =false
             val wrapper: Context = ContextThemeWrapper(requireActivity(), R.style.custom_PopupMenu)
-            val popupMenu = PopupMenu(wrapper, view)
+            val popupMenu = PopupMenu(wrapper, view,Gravity.END)
             //val popupMenu = PopupMenu(activity?.applicationContext, it)
             popupMenu.inflate(R.menu.filter_transactions_popup_menu)
             popupMenu.setOnDismissListener{

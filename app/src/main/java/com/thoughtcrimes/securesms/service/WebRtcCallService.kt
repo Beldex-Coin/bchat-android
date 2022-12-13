@@ -186,10 +186,10 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
     private val hangupOnCallAnswered = HangUpRtcOnPstnCallAnsweredListener {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Log.d("Beldex","Build version is height of 26 ${Build.VERSION.SDK_INT}")
-            startForegroundService(hangupIntent(this))
+            this.startForegroundService(hangupIntent(this))
         }else {
             Log.d("Beldex","Build version is low of 26 ${Build.VERSION.SDK_INT}")
-            startService(hangupIntent(this))
+            this.startService(hangupIntent(this))
         }
     }
 

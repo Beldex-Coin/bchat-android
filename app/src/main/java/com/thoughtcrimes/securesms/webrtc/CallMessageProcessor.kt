@@ -48,7 +48,9 @@ class CallMessageProcessor (private val context: Context, private val textSecure
                         val notification = CallNotificationBuilder.getFirstCallNotification(context)
                         context.getSystemService(NotificationManager::class.java).notify(CallNotificationBuilder.WEBRTC_NOTIFICATION, notification)
                         insertMissedCall(sender, sentTimestamp, isFirstCall = true)
+                        Log.d("Beldex","busy call called 1")
                     } else {
+                        Log.d("Beldex","busy call called 2")
                         insertMissedCall(sender, sentTimestamp)
                     }
                     continue

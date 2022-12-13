@@ -6,14 +6,16 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.net.Network
+import androidx.core.content.ContextCompat
 import com.beldex.libsignal.utilities.Log
 
 class NetworkChangeReceiver(private val onNetworkChangedCallback: (Boolean)->Unit) {
 
     private val networkList: MutableSet<Network> = mutableSetOf()
 
-    val broadcastDelegate = object: BroadcastReceiver() {
+    private val broadcastDelegate = object: BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
+            Log.d("Beldex","Unregister called 2")
             receiveBroadcast(context, intent)
         }
     }
@@ -43,6 +45,7 @@ class NetworkChangeReceiver(private val onNetworkChangedCallback: (Boolean)->Uni
     fun receiveBroadcast(context: Context, intent: Intent) {
         val connected = context.isConnected()
         Log.i("Beldex", "received broadcast, network connected: $connected")
+        Log.d("Beldex","Unregister called 3")
         onNetworkChangedCallback(connected)
     }
 
@@ -63,6 +66,7 @@ class NetworkChangeReceiver(private val onNetworkChangedCallback: (Boolean)->Uni
     }
 
     fun unregister(context: Context) {
+        Log.d("Beldex","Unregister called 1")
         context.unregisterReceiver(broadcastDelegate)
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 //            val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

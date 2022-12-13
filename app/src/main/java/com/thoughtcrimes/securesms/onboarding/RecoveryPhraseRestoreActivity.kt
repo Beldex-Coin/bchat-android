@@ -119,7 +119,7 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
                 // Gets the clipboard as text.
                 binding.mnemonicEditText.setText(item.text.toString())
             } else {
-                Toast.makeText(this, "Make sure your recovery seed is copied!", Toast.LENGTH_SHORT)
+                Toast.makeText(this, R.string.no_copied_seed, Toast.LENGTH_SHORT)
                     .show()
             }
 

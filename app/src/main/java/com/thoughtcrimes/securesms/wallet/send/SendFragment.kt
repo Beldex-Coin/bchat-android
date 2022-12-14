@@ -342,7 +342,11 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
 
         binding.scanQrCode.setOnClickListener {
-            onScanListener?.onScan()
+            if(!CheckOnline.isOnline(requireActivity())) {
+                Toast.makeText(requireActivity(), R.string.please_check_your_internet_connection, Toast.LENGTH_SHORT).show()
+            }else{
+                onScanListener?.onScan()
+            }
         }
         binding.addressBook.setOnClickListener {
             openSomeActivityForResult()

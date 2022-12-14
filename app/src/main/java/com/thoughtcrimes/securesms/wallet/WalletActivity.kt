@@ -443,7 +443,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     override val streetModeHeight: Long
         get() = streetMode
     override val isWatchOnly: Boolean
-        get() = getWallet()!!.isWatchOnly
+        get() = if(getWallet()!=null){getWallet()!!.isWatchOnly}else{false}
 
     override fun getTxKey(txId: String?): String? {
         return getWallet()!!.getTxKey(txId)
@@ -1008,7 +1008,9 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             // not in spend fragment
             Timber.d(ex.localizedMessage)
             // don't need the transaction any more
-            getWallet()!!.disposePendingTransaction()
+            if(getWallet()!=null) {
+                getWallet()!!.disposePendingTransaction()
+            }
         }
     }
 
@@ -1097,10 +1099,12 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     private fun enableStreetMode(enable: Boolean) {
-        streetMode = if (enable) {
-            getWallet()!!.daemonBlockChainHeight
+        if (enable) {
+            if(getWallet()!=null) {
+               streetMode= getWallet()!!.daemonBlockChainHeight
+            }
         } else {
-            0
+            streetMode = 0
         }
         val walletFragment = getWalletFragment()
         if (walletFragment != null) walletFragment.resetDismissedTransactions()

@@ -65,6 +65,7 @@
                         android:layout_weight="2"
                         android:layout_marginEnd="10dp"
                         android:maxLines="1"
+                        android:text="publicnode2.rpcnode.stream"
                         android:layout_height="wrap_content"/>
                 </LinearLayout>
                 <ImageView

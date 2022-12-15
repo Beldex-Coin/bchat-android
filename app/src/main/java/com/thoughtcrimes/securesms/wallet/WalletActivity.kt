@@ -714,17 +714,22 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     private fun onWalletReconnect(node: NodeInfo?, UseSSL: Boolean, isLightWallet: Boolean) {
         if (CheckOnline.isOnline(this)) {
-            val isOnline = getWallet()!!.reConnectToDaemon(node, UseSSL, isLightWallet)
-            Log.d("Beldex", "Value of 1 reconnect isOnline $isOnline")
-            if (isOnline) {
-                synced = false
-                setNode(node)
-                val walletFragment = getWalletFragment()
-                walletFragment.setProgress("Reconnecting...")
-                walletFragment.setProgress(101)
-                invalidateOptionsMenu()
+            if (getWallet() != null) {
+                val isOnline =
+                    getWallet()?.reConnectToDaemon(node, UseSSL, isLightWallet) as Boolean
+                if (isOnline) {
+                    synced = false
+                    setNode(node)
+                    val walletFragment = getWalletFragment()
+                    walletFragment.setProgress("Reconnecting...")
+                    walletFragment.setProgress(101)
+                    invalidateOptionsMenu()
+                } else {
+                    getWalletFragment().setProgress(R.string.failed_connected_to_the_node)
+                }
             } else {
-                getWalletFragment().setProgress(R.string.failed_connected_to_the_node)
+                Toast.makeText(this, "Wait for connection..", Toast.LENGTH_SHORT)
+                    .show()
             }
         } else {
             Toast.makeText(this, R.string.please_check_your_internet_connection, Toast.LENGTH_SHORT)

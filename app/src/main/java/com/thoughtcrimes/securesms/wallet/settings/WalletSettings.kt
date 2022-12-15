@@ -19,6 +19,7 @@ import com.thoughtcrimes.securesms.BaseActionBarActivity
 import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.util.push
 import com.thoughtcrimes.securesms.util.setUpActionBarBchatLogo
+import com.thoughtcrimes.securesms.wallet.CheckOnline
 import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity
 import com.thoughtcrimes.securesms.wallet.node.activity.NodeActivity
 import com.thoughtcrimes.securesms.wallet.settings.adapter.WalletSubOptionsListAdapter
@@ -177,7 +178,11 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         super.onResume()
         /*binding.currentNodeTextViewValue.text = getNode()?.host.toString()*/
         val parts = getNode().split(":")
-        binding.currentNodeTextViewValue.text = parts[0]
+        if (CheckOnline.isOnline(this)) {
+            binding.currentNodeTextViewValue.text = parts[0]
+        } else {
+            binding.currentNodeTextViewValue.text = "Waiting for network.."
+        }
     }
 
     private fun openDisplayBalanceAsDialogBox() {

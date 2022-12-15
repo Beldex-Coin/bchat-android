@@ -815,12 +815,14 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     }
 
     override fun onDestroy() {
+        Log.d("Beldex","onDestroy in Home")
         val broadcastReceiver = this.broadcastReceiver
         if (broadcastReceiver != null) {
             LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver)
         }
-        super.onDestroy()
         EventBus.getDefault().unregister(this)
+        super.onDestroy()
+
     }
     // endregion
 

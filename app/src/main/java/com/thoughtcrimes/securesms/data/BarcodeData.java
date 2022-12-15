@@ -1,6 +1,7 @@
 package com.thoughtcrimes.securesms.data;
 
 import android.net.Uri;
+import android.util.Log;
 
 import com.thoughtcrimes.securesms.wallet.utils.OpenAliasHelper;
 
@@ -124,6 +125,10 @@ public class BarcodeData {
                 if (namevalue.length == 0) {
                     continue;
                 }
+                //SteveJosephh21
+                if(!namevalue[0].equals("tx_amount")){
+                    namevalue[0]="tx_amount";
+                }
                 parms.put(Uri.decode(namevalue[0]).toLowerCase(),
                         namevalue.length > 1 ? Uri.decode(namevalue[1]) : "");
             }
@@ -154,15 +159,33 @@ public class BarcodeData {
 
 
     static public BarcodeData fromString(String qrCode) {
+        //SteveJosephh21
+        URI uri;
+        try {
+            uri = new URI(qrCode);
+        } catch (URISyntaxException ex) {
+            return null;
+        }
+        if(qrCode!=null && !qrCode.isEmpty() && qrCode.length()>2) {
+            String subStrMainNet = qrCode.substring(0, 2);
+            String subStrTestNet = qrCode.substring(0, 1);
+            if (subStrMainNet.equals("bx") || subStrTestNet.equals("9")) {
+                qrCode = "Beldex:" + qrCode;
+            }
+        }
+
         BarcodeData bcData = parseUri(qrCode);
         if (bcData == null) {
             // maybe it's naked?
             bcData = parseNaked(qrCode);
+            Log.d("Beldex","Value of barcode 1i"+bcData);
         }
         if (bcData == null) {
             // check for OpenAlias
             bcData = parseOpenAlias(qrCode, false);
+            Log.d("Beldex","Value of barcode 1ii"+bcData);
         }
+        Log.d("Beldex","Value of barcode 1iii"+bcData);
         return bcData;
     }
 

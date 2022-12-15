@@ -647,6 +647,9 @@ public class NodeFragment extends Fragment
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
+                tvResultCardView.setCardBackgroundColor(ContextCompat.getColor(requireContext(),(R.color.button_green)));
+                iVVerified.setVisibility(View.GONE);
+                iVConnectionError.setVisibility(View.GONE);
                 tvResult.setText(getString(R.string.node_testing, nodeInfo.getHostAddress()));
             }
 

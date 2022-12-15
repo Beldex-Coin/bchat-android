@@ -1294,5 +1294,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="reconnecting" translatable="false">Reconnecting...</string>
     <string name="switching_node">Switching Node</string>
     <string name="no_copied_seed" translatable="false">Make sure you have copied the seed!</string>
+    <string name="your_pin_has_been_set_up_successfully">Your PIN has been set up successfully!</string>
 
 </resources>

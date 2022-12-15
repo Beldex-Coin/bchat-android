@@ -1,20 +1,20 @@
 package com.thoughtcrimes.securesms.wallet.utils.pincodeview;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
-import android.widget.Toast;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
 
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.thoughtcrimes.securesms.wallet.WalletActivity;
-import com.thoughtcrimes.securesms.wallet.utils.keyboardview.enums.KeyboardButtonEnum;
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLockActivity;
 
-import lombok.val;
+import io.beldex.bchat.R;
 
 
 public class CustomPinActivity extends AppLockActivity {
@@ -71,13 +71,15 @@ public class CustomPinActivity extends AppLockActivity {
     }
 
     @Override
-    public void onPinSuccess(int attempts,int pinLockStatus) {
-        if(pinLockStatus==3 || pinLockStatus==4) {
-            String walletName = TextSecurePreferences.getWalletName(this);
-            String walletPassword = TextSecurePreferences.getWalletPassword(this);
-            if (walletName != null && walletPassword !=null) {
-                startWallet(walletName, walletPassword,  false,  false);
-            }
+    public void onPinSuccess(int attempts, int pinLockStatus, AppLockActivity appLockActivity) {
+        if(pinLockStatus==3) {
+            setUpPinPopUp(appLockActivity,true,this);
+        }
+        else if(pinLockStatus== 7){
+            setUpPinPopUp(appLockActivity,false, this);
+        }
+        else if(pinLockStatus == 4){
+            getWalletValuesFromSharedPreferences(this);
         }
         else if(pinLockStatus==6){
             Intent returnIntent = new Intent();
@@ -85,6 +87,41 @@ public class CustomPinActivity extends AppLockActivity {
         }
 
         Log.d(TAG,"onPinSuccess "+attempts);
+    }
+
+    private void setUpPinPopUp(AppLockActivity appLockActivity, boolean status, CustomPinActivity customPinActivity){
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.setup_pin_success, null);
+
+        dialog.setView(dialogView);
+
+        Button okButton = dialogView.findViewById(R.id.okButton);
+
+        AlertDialog alert = dialog.create();
+        alert.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        alert.setCanceledOnTouchOutside(false);
+        alert.show();
+
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alert.dismiss();
+                appLockActivity.finish();
+                if(status){
+                    getWalletValuesFromSharedPreferences(customPinActivity);
+                }
+            }
+        });
+
+    }
+
+    private void getWalletValuesFromSharedPreferences(CustomPinActivity customPinActivity){
+        String walletName = TextSecurePreferences.getWalletName(customPinActivity);
+        String walletPassword = TextSecurePreferences.getWalletPassword(customPinActivity);
+        if (walletName != null && walletPassword !=null) {
+            startWallet(walletName, walletPassword,  false,  false);
+        }
     }
 
     private void startWallet(

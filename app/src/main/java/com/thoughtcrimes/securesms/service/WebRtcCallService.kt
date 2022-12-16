@@ -184,13 +184,14 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
     private val serviceExecutor = Executors.newSingleThreadExecutor()
     private val timeoutExecutor = Executors.newScheduledThreadPool(1)
     private val hangupOnCallAnswered = HangUpRtcOnPstnCallAnsweredListener {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Log.d("Beldex","Build version is height of 26 ${Build.VERSION.SDK_INT}")
             this.startForegroundService(hangupIntent(this))
         }else {
             Log.d("Beldex","Build version is low of 26 ${Build.VERSION.SDK_INT}")
             this.startService(hangupIntent(this))
-        }
+        }*/
+        this.startService(hangupIntent(this))
     }
 
     private var networkChangedReceiver: NetworkChangeReceiver? = null
@@ -698,6 +699,13 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
         wantsToAnswerReceiver?.let { receiver ->
             LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
         }
+
+        //SteveJosephh21
+        wiredHeadsetStateReceiver.let { wiredHeadsetStateReceiver ->
+            unregisterReceiver(wiredHeadsetStateReceiver)
+        }
+        wiredHeadsetStateReceiver = null
+
         networkChangedReceiver = null
         callReceiver = null
         uncaughtExceptionHandlerManager?.unregister()

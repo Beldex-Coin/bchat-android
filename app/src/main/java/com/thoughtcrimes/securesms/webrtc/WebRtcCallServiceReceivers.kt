@@ -39,13 +39,14 @@ class PowerButtonReceiver : BroadcastReceiver() {
             Log.d("WebRtcCallServiceReceiver-> ","${Intent.ACTION_USER_PRESENT}")
             val serviceIntent = Intent(context, WebRtcCallService::class.java)
                 .setAction(WebRtcCallService.ACTION_SCREEN_ON)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Log.d("WebRtcCallServiceReceivers","If - ${Build.VERSION.SDK_INT}")
                 context.startForegroundService(serviceIntent)
             }else {
                 Log.d("WebRtcCallServiceReceivers","Else - ${Build.VERSION.SDK_INT}")
                 context.startService(serviceIntent)
-            }
+            }*/
+            context.startService(serviceIntent)
         }
     }
 }

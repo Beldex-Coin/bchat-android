@@ -56,23 +56,33 @@ class ScannerFragment: Fragment(), ZXingScannerView.ResultHandler,OnBackPressedL
                     getString(R.string.send_qr_address_invalid),
                     Toast.LENGTH_SHORT
                 ).show()
+                val handler = Handler()
+                handler.postDelayed(
+                    { mScannerView!!.resumeCameraPreview(this) },
+                    1000
+                )
             }
         } else {
             Toast.makeText(activity, getString(R.string.send_qr_invalid), Toast.LENGTH_SHORT).show()
         }
-
         // Note from dm77:
         // * Wait 2 seconds to resume the preview.
         // * On older devices continuously stopping and resuming camera preview can result in freezing the app.
         // * I don't know why this is the case but I don't have the time to figure out.
         val handler = Handler()
-        handler.postDelayed({ mScannerView!!.resumeCameraPreview(this) }, 2000)
+        handler.postDelayed(
+            { mScannerView!!.resumeCameraPreview(this) },
+            1000)
     }
 
     override fun onPause() {
-        Timber.d("onPause")
-        mScannerView!!.stopCamera()
         super.onPause()
+        Timber.d("onPause")
+       /* mScannerView!!.stopCamera()*/
+    }
+    override fun onStop() {
+        super.onStop()
+        mScannerView!!.stopCamera();
     }
 
     override fun onAttach(context: Context) {

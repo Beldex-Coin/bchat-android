@@ -72,6 +72,7 @@ class WalletScannerFragment(
     override fun onResume() {
         super.onResume()
         Timber.d("onResume")
+        Log.d("Beldex","qr code scan onResume()")
         mScannerView!!.setResultHandler(this)
         mScannerView!!.startCamera()
         activityCallback!!.setTitle(getString(R.string.activity_scan_page_title))
@@ -89,6 +90,11 @@ class WalletScannerFragment(
                     getString(R.string.send_qr_address_invalid),
                     Toast.LENGTH_SHORT
                 ).show()
+                val handler = Handler()
+                handler.postDelayed(
+                    { mScannerView!!.resumeCameraPreview(this) },
+                    1000
+                )
             }
         } else {
             Toast.makeText(activity, getString(R.string.send_qr_invalid), Toast.LENGTH_SHORT).show()
@@ -99,13 +105,21 @@ class WalletScannerFragment(
         // * On older devices continuously stopping and resuming camera preview can result in freezing the app.
         // * I don't know why this is the case but I don't have the time to figure out.
         val handler = Handler()
-        handler.postDelayed({ mScannerView!!.resumeCameraPreview(this@WalletScannerFragment) }, 2000)
+        handler.postDelayed(
+            { mScannerView!!.resumeCameraPreview(this) },
+            1000
+        )
     }
 
     override fun onPause() {
-        Timber.d("onPause")
-        mScannerView!!.stopCamera()
         super.onPause()
+        Timber.d("onPause")
+       /* mScannerView!!.stopCamera()*/
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mScannerView!!.stopCamera();
     }
 
     override fun onAttach(context: Context) {
@@ -124,17 +138,19 @@ class WalletScannerFragment(
     }
 
     override fun onUriScanned(barcodeData: BarcodeData?): Boolean {
-        Log.d("Beldex","value of barcode 7")
+        Log.d("Beldex", "value of barcode 7")
         processScannedData(barcodeData, sendFragment = SendFragment())
-        Log.d("Beldex","value of barcode 8")
+        Log.d("Beldex", "value of barcode 8")
         return true
     }
+
     private fun processScannedData(barcodeData: BarcodeData?, sendFragment: SendFragment) {
-        Log.d("Beldex","value of barcode 9 $activityCallback")
+        Log.d("Beldex", "value of barcode 9 $activityCallback")
         activityCallback!!.onSendRequest(view)
         activityCallback!!.setBarcodeData(barcodeData)
         sendFragment.processScannedData(barcodeData)
     }
+
     override fun onPrepareOptionsMenu(menu: Menu) {
         menu.clear()
     }

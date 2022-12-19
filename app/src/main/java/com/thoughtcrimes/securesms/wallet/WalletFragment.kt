@@ -1,8 +1,11 @@
 package com.thoughtcrimes.securesms.wallet
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -10,7 +13,9 @@ import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
 import android.util.Log
 import android.view.*
+import android.widget.Button
 import android.widget.PopupMenu
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
@@ -24,7 +29,6 @@ import com.github.brnunes.swipeablerecyclerview.SwipeableRecyclerViewTouchListen
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.gson.GsonBuilder
-import com.jakewharton.rxbinding3.view.actionViewEvents
 import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
 import com.thoughtcrimes.securesms.model.TransactionInfo
@@ -796,6 +800,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 //                ivSynced.setVisibility(View.GONE);
                     binding.filterTransactionsIcon.isClickable = false
                     //activityCallback!!.hiddenRescan(false)
+                    binding.syncStatusIcon.visibility=View.GONE
                 } else {
                     Log.d("showBalance->","Synchronized")
                     sync =
@@ -811,6 +816,14 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                     binding.filterTransactionsIcon.isClickable =
                         true //default = adapter!!.itemCount > 0
                     //activityCallback!!.hiddenRescan(true)
+                    binding.syncStatusIcon.visibility=View.VISIBLE
+                    binding.syncStatusIcon.setOnClickListener {
+                        if(CheckOnline.isOnline(requireActivity())){
+                            if(wallet!=null) {
+                                checkSyncInfo(requireActivity(),wallet.restoreHeight)
+                            }
+                        }
+                    }
                 }
             } else {
                 sync = getString(R.string.status_wallet_connecting)
@@ -818,6 +831,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 binding.transactionTitle.visibility = View.INVISIBLE
                 binding.transactionLayoutCardView.visibility = View.GONE
                 //anchorBehavior.setHideable(true)
+                binding.syncStatusIcon.visibility=View.GONE
             }
             setProgress(sync)
         }
@@ -831,6 +845,24 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                     R.color.red
                 )
             )
+            binding.syncStatusIcon.visibility=View.GONE
+        }
+    }
+
+    private fun checkSyncInfo(requireActivity: FragmentActivity, restoreHeight: Long) {
+        val dialog = AlertDialog.Builder(requireActivity)
+        val inflater = layoutInflater
+        val dialogView = inflater.inflate(R.layout.sync_info, null)
+        dialog.setView(dialogView)
+        val restoreFromHeight = dialogView.findViewById<TextView>(R.id.restoreFromHeight)
+        val okButton = dialogView.findViewById<Button>(R.id.okButton)
+        restoreFromHeight.text = "$restoreHeight."
+        val alert = dialog.create()
+        alert.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        alert.setCanceledOnTouchOutside(false)
+        alert.show()
+        okButton.setOnClickListener {
+            alert.dismiss()
         }
     }
 

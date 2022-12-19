@@ -413,8 +413,12 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
     private fun setNode(node: NodeInfo?, save: Boolean) {
         if (node !== this.node) {
             Log.d("networkType","${node!!.networkType},   ${WalletManager.getInstance().networkType}")
-            require(!(node != null && node.networkType !== WalletManager.getInstance().networkType)
-            ) { "network type does not match" }
+            if(!(node!=null && node.networkType !== WalletManager.getInstance()
+                    .networkType)) {
+                require(
+                    !(node != null && node.networkType !== WalletManager.getInstance().networkType)
+                ) { "network type does not match" }
+            }
             this.node = node
             for (nodeInfo in favouriteNodes) {
                 Timber.d("Testing-->14 ${node.toString()}")

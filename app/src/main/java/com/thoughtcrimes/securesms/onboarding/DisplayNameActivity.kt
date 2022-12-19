@@ -180,6 +180,7 @@ class DisplayNameActivity : BaseActionBarActivity() {
             } else throw java.lang.IllegalStateException()
             return if (selectedNode != null && selectedNode.isValid) {
                 Timber.d("Testing-->12")
+                Log.d("Testing-->12 ","$selectedNode")
                 displayNameActivity.setNode(selectedNode)
                 selectedNode
             } else {
@@ -200,10 +201,13 @@ class DisplayNameActivity : BaseActionBarActivity() {
 
     private fun setNode(node: NodeInfo?, save: Boolean) {
         if (node !== this.node) {
+            if(!(node!=null && node.networkType !== WalletManager.getInstance()
+                    .networkType)){
             require(
-                !(node != null && node !== WalletManager.getInstance()
-                    .getNetworkType())
+                !(node != null && node.networkType !== WalletManager.getInstance()
+                    .networkType)
             ) { "network type does not match" }
+            }
             this.node = node
             for (nodeInfo in favouriteNodes) {
                 Timber.d("Testing-->14")

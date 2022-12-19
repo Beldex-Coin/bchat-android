@@ -184,14 +184,14 @@ object MnodeAPI {
     }
 
     // Public API
-    fun getBchatID(onsName: String): Promise<String, Exception> {
+    fun getBchatID(bnsName: String): Promise<String, Exception> {
         val deferred = deferred<String, Exception>()
         val promise = deferred.promise
         val validationCount = 3
         val bchatIDByteCount = 33
         // Hash the BNS name using BLAKE2b
-        val onsName = onsName.toLowerCase(Locale.US)
-        val nameAsData = onsName.toByteArray()
+        val bnsName = bnsName.toLowerCase(Locale.US)
+        val nameAsData = bnsName.toByteArray()
         val nameHash = ByteArray(GenericHash.BYTES)
         if (!sodium.cryptoGenericHash(nameHash, nameHash.size, nameAsData, nameAsData.size.toLong())) {
             deferred.reject(Error.HashingFailed)
@@ -227,7 +227,7 @@ object MnodeAPI {
                         val nonce = ByteArray(SecretBox.NONCEBYTES)
                         val bchatIDAsData = ByteArray(bchatIDByteCount)
                         try {
-                            key = Key.fromHexString(sodium.cryptoPwHash(onsName, SecretBox.KEYBYTES, salt, PwHash.OPSLIMIT_MODERATE, PwHash.MEMLIMIT_MODERATE, PwHash.Alg.PWHASH_ALG_ARGON2ID13)).asBytes
+                            key = Key.fromHexString(sodium.cryptoPwHash(bnsName, SecretBox.KEYBYTES, salt, PwHash.OPSLIMIT_MODERATE, PwHash.MEMLIMIT_MODERATE, PwHash.Alg.PWHASH_ALG_ARGON2ID13)).asBytes
                         } catch (e: SodiumException) {
                             deferred.reject(Error.HashingFailed)
                             return@success

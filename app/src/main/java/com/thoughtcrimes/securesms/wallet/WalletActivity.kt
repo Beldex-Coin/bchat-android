@@ -568,7 +568,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     override val prefs: SharedPreferences?
         get() = getPreferences(MODE_PRIVATE)
     override val totalFunds: Long
-        get() = getWallet()!!.unlockedBalance
+        get() = if(getWallet()!=null){getWallet()!!.unlockedBalance}else{0}
     override val isStreetMode: Boolean
         get() = streetMode > 0
 

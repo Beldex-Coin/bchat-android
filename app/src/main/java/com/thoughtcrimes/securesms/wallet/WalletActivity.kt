@@ -151,7 +151,6 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             dialog.setView(promptsView)
             val reConnect  = promptsView.findViewById<Button>(R.id.reConnectButton_Alert)
             val reScan = promptsView.findViewById<Button>(R.id.rescanButton_Alert)
-
             val alertDialog: AlertDialog = dialog.create()
             alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             alertDialog.show()
@@ -171,19 +170,32 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             }
 
             reScan.setOnClickListener {
-                if(CheckOnline.isOnline(this)) {
-                    if(getWallet()!=null) {
-                        if (getWallet()!!.daemonBlockChainHeight != null) {
-                            RescanDialog(this, getWallet()!!.daemonBlockChainHeight).show(
-                                supportFragmentManager,
-                                ""
+                if (CheckOnline.isOnline(this)) {
+                    if (getWallet() != null) {
+                        if (isSynced) {
+                            if (getWallet()!!.daemonBlockChainHeight != null) {
+                                RescanDialog(this, getWallet()!!.daemonBlockChainHeight).show(
+                                    supportFragmentManager,
+                                    ""
+                                )
+                            }
+                        } else {
+                            Toast.makeText(
+                                this,
+                                getString(R.string.cannot_rescan_while_wallet_is_syncing),
+                                Toast.LENGTH_SHORT
                             )
+                                .show()
                         }
-                    }
 
-                    //onWalletRescan()
-                }else{
-                    Toast.makeText(this@WalletActivity,getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
+                        //onWalletRescan()
+                    }
+                } else {
+                    Toast.makeText(
+                        this@WalletActivity,
+                        getString(R.string.please_check_your_internet_connection),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
                 alertDialog.dismiss()
             }

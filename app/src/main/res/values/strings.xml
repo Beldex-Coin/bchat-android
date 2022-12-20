@@ -1294,8 +1294,11 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="reconnecting" translatable="false">Reconnecting...</string>
     <string name="switching_node">Switching Node</string>
     <string name="no_copied_seed" translatable="false">Make sure you have copied the seed!</string>
-    <string name="your_pin_has_been_set_up_successfully">Your PIN has been set up successfully!</string>
+    <string name="your_pin_has_been_set_up_successfully" translatable="false">Your PIN has been set up successfully!</string>
     <string name="sync_info" translatable="false">Sync Info</string>
     <string name="sync_info_description" translatable="false">However we recommend to scan the blockchain from the block height at which you created the wallet, to get all the transactions and correct balance</string>
+    <string name="cannot_rescan_while_wallet_is_syncing" translatable="false">Can\'t rescan while wallet is syncing</string>
+    <string name="enter_valid_amount" translatable="false">Enter valid amount</string>
+
 
 </resources>

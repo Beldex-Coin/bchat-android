@@ -429,8 +429,8 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
             override fun afterTextChanged(editable: Editable) {
                 //binding.beldexAmountEditTxtLayout.error = null
                 binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.bchat_id_text_view_background)
-                binding.beldexAmountErrorMessage.visibility =View.GONE
-                binding.beldexAmountErrorMessage.text=""
+                binding.beldexAmountErrorMessage.visibility = View.GONE
+                binding.beldexAmountErrorMessage.text = ""
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}

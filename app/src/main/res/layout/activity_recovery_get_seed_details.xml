@@ -101,6 +101,7 @@
                 android:paddingBottom="0dp"
                 android:gravity="center_vertical"
                 android:maxLines="1"
+                android:maxLength="9"
                 android:inputType="number"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"

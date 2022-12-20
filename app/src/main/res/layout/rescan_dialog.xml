@@ -151,6 +151,7 @@
                 android:maxLines="1"
                 android:paddingTop="0dp"
                 android:paddingBottom="0dp"
+                android:maxLength="9"
                 android:textColorHint="@color/grey"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHorizontal_weight="4"

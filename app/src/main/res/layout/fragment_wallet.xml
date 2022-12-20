@@ -25,19 +25,34 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <LinearLayout
+            android:id="@+id/syncStatusLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/progressBar">
+
         <TextView
             android:id="@+id/syncStatus"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="Synchronized"
             android:textAlignment="center"
             android:textColor="@color/button_green"
             android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/progressBar" />
+            android:textStyle="bold" />
+        <ImageView
+            android:id="@+id/syncStatusIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:layout_marginStart="5dp"
+            android:src="@drawable/ic_outline_info_24"/>
+        </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/walletDetailsLayout"
@@ -50,7 +65,7 @@
             android:background="@drawable/wallet_bottom_card"
             app:layout_constraintLeft_toLeftOf="@id/transactionLayoutCardView"
             app:layout_constraintRight_toRightOf="@id/transactionLayoutCardView"
-            app:layout_constraintTop_toBottomOf="@id/syncStatus">
+            app:layout_constraintTop_toBottomOf="@id/syncStatusLayout">
 
             <LinearLayout
                 android:layout_width="match_parent"

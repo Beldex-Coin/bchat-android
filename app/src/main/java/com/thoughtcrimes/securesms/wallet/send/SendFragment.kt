@@ -439,29 +439,22 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (binding.beldexAmountEditTxtLayout.editText!!.isFocused) {
+                if(binding.beldexAmountEditTxtLayout.editText!!.isFocused) {
                     if (s.isNotEmpty()) {
                         Log.d("Beldex", "Price -> $price")
-                        val amountValue: String =
-                            binding.beldexAmountEditTxtLayout.editText!!.text.toString()
-                        if (amountValue.substring(0) == ".") {
-                            Toast.makeText(context, getString(R.string.enter_valid_amount), Toast.LENGTH_SHORT).show()
-                        } else {
-                            Log.d("Beldex", "value of 1st ${amountValue.substring(0)}")
-                            val amount: BigDecimal =
-                                BigDecimal(s.toString().toDouble()).multiply(BigDecimal(price))
-                            Log.d(
-                                "Beldex",
-                                "Price ->${
-                                    s.toString().toDouble()
-                                }   amount -> $amount   -->" + amount.toString()
-                            )
-                            //binding.currencyEditTxtLayout.editText!!.setText(String.format("%.4f", amount))
-                            binding.currencyEditText.text = String.format("%.4f", amount)
-                        }
+                        val amount: BigDecimal =
+                            BigDecimal(s.toString().toDouble()).multiply(BigDecimal(price))
+                        Log.d(
+                            "Beldex",
+                            "Price ->${
+                                s.toString().toDouble()
+                            }   amount -> $amount   -->" + amount.toString()
+                        )
+                        //binding.currencyEditTxtLayout.editText!!.setText(String.format("%.4f", amount))
+                        binding.currencyEditText.text=String.format("%.4f", amount)
                     } else {
                         //binding.currencyEditTxtLayout.editText!!.text.clear()
-                        binding.currencyEditText.text = "0.00"
+                        binding.currencyEditText.text="0.00"
                     }
                 }
             }

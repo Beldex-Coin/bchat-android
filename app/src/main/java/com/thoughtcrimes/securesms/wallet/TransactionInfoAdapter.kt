@@ -1,6 +1,8 @@
 package com.thoughtcrimes.securesms.wallet
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.provider.Settings.Global.getString
 import android.text.Html
 import android.text.Spanned
@@ -11,7 +13,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.get
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -215,6 +219,19 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
                 tvAmount.setTextColor(ContextCompat.getColor(context!!,R.color.wallet_receive_button))
             }
             txId.text = infoItem!!.hash
+            //SteveJosephh21
+            if(txId.text.isNotEmpty()){
+                txId.setOnClickListener {
+                    try {
+                        //val url = "https://explorer.beldex.io/tx/${txId.text}" // Mainnet
+                        val url = "http://154.26.139.105/tx/${txId.text}" // Testnet
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                        context!!.startActivity(intent)
+                    } catch (e: Exception) {
+                        Toast.makeText(context, "Can't open URL", Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
             if (infoItem!!.isFailed) {
                 tvTxBlockHeight.text = context!!.getString(R.string.tx_failed)
             } else if (infoItem!!.isPending) {

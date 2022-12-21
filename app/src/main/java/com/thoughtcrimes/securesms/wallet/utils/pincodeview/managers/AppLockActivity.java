@@ -108,9 +108,16 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
         titleName.setText(getString(R.string.activity_wallet_password_page_title));
         backButton.setOnClickListener(view -> {
             onBackPressed();
-           /*onSupportNavigateUp();*/
+         /*  onSupportNavigateUp();*/
         });
     }
+   /* @Override
+    public boolean onSupportNavigateUp() {
+        if (super.onSupportNavigateUp()) return true;
+
+        onBackPressed();
+        return true;
+    }*/
 
     /**
      * If called in singleTop mode
@@ -125,6 +132,7 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
     @Override
     protected void onResume() {
         super.onResume();
+       /* initializeToolbar();*/
         //Init layout for Fingerprint
         //initLayoutForFingerprint();
     }
@@ -415,8 +423,8 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
                         .getInstance(this)
                         .sendBroadcast(new Intent().setAction(ACTION_CANCEL));
             }
-            super.onBackPressed();
         }
+        super.onBackPressed();
     }
 
     @Override

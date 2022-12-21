@@ -56,7 +56,8 @@ class Contact(val bchatID: String) {
     }
     // endregion
     fun displayBeldexAddress(context: ContactContext): String? {
-        nickname?.let { return it }
+        /*Hales*/
+           /*nickname?.let { return it }*/
         return when (context) {
             ContactContext.REGULAR -> beldexAddress
             ContactContext.OPEN_GROUP -> {

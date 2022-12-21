@@ -281,7 +281,7 @@
         <View
             android:id="@+id/spacer"
             android:layout_width="match_parent"
-            android:layout_height="160dp" />
+            android:layout_height="130dp" />
 
         <Button
             android:id="@+id/sendButton"
@@ -289,7 +289,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/medium_button_height"
             android:layout_marginLeft="50dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="1dp"
             android:layout_marginRight="50dp"
             android:layout_marginBottom="@dimen/medium_spacing"
             android:text="@string/send" />

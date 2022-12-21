@@ -510,8 +510,8 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                     }
                     dnsOA?.let { processOpenAlias(it) }
                 } else {
-                    if (binding.beldexAddressEditTxtLayout.editText?.text!!.isNotEmpty() && binding.beldexAmountEditTxtLayout.editText?.text!!.isNotEmpty() && binding.beldexAmountEditTxtLayout.editText!!.text.toString()
-                            .toDouble() > 0.00 && validateBELDEXAmount(binding.beldexAmountEditTxtLayout.editText!!.text.toString(), activityCallback!!.totalFunds)
+                    if (binding.beldexAddressEditTxtLayout.editText?.text!!.isNotEmpty() && binding.beldexAmountEditTxtLayout.editText?.text!!.isNotEmpty() && validateBELDEXAmount(binding.beldexAmountEditTxtLayout.editText!!.text.toString(), activityCallback!!.totalFunds) && binding.beldexAmountEditTxtLayout.editText!!.text.toString()
+                            .toDouble() > 0.00
                     ) {
                         val txData: TxData = getTxData()
                         txData.destinationAddress =
@@ -572,10 +572,9 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                         binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.error_view_background)
                         binding.beldexAmountErrorMessage.visibility =View.VISIBLE
                         binding.beldexAmountErrorMessage.text=getString(R.string.beldex_amount_error_message)
-                    }else if (binding.beldexAmountEditTxtLayout.editText!!.text.toString()
-                    .toDouble() <= 0.00
-                    ) {
-                        //binding.beldexAmountEditTxtLayout.error = getString(R.string.beldex_amount_valid_error_message)
+                    }else if(binding.beldexAmountEditTxtLayout.editText?.text.toString()=="."){
+                        Log.d("Beldex", "beldexAmountEditTxtLayout isEmpty()")
+                        //binding.beldexAmountEditTxtLayout.error = getString(R.string.beldex_amount_error_message)
                         binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.error_view_background)
                         binding.beldexAmountErrorMessage.visibility =View.VISIBLE
                         binding.beldexAmountErrorMessage.text=getString(R.string.beldex_amount_valid_error_message)
@@ -583,6 +582,13 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                             binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.error_view_background)
                             binding.beldexAmountErrorMessage.visibility =View.VISIBLE
                             binding.beldexAmountErrorMessage.text=getString(R.string.beldex_amount_valid_not_enough_money_error_message)
+                    }else if (binding.beldexAmountEditTxtLayout.editText!!.text.toString()
+                            .toDouble() <= 0.00
+                    ) {
+                        //binding.beldexAmountEditTxtLayout.error = getString(R.string.beldex_amount_valid_error_message)
+                        binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.error_view_background)
+                        binding.beldexAmountErrorMessage.visibility =View.VISIBLE
+                        binding.beldexAmountErrorMessage.text=getString(R.string.beldex_amount_valid_error_message)
                     }else{
                         Log.d("Beldex", "beldexAddressEditTxtLayout isEmpty()")
                         //binding.beldexAddressEditTxtLayout.error = getString(R.string.beldex_address_error_message)
@@ -614,8 +620,11 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         var isValid =false
 
         if (regExp.containsMatchIn(value)) {
-            if (value == "ALL") {
+            /*if (value == "ALL") {
                 isValid = true
+            } */
+            if (value == ".") {
+                isValid = false
             } else {
                 isValid = try {
                     val dValue = value.toDouble()

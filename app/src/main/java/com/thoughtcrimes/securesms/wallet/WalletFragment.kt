@@ -402,9 +402,12 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                                 "vef" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).vef
                                 else -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).zar
                             }
-                            Log.d("Beldex", "Fiat -- ${price}")
+                            TextSecurePreferences.setCurrencyAmount(requireActivity(),price.toString())
+                            Log.d("Beldex", "Fiat if wallet screen -- ${price}")
                         } else {
                             price = 0.00
+                            TextSecurePreferences.setCurrencyAmount(requireActivity(),price.toString())
+                            Log.d("Beldex", "Fiat else wallet screen -- ${price}")
                         }
                     }
                 }

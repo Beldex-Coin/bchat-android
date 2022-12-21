@@ -220,6 +220,9 @@ interface TextSecurePreferences {
     fun setSaveRecipientAddress(status:Boolean)
     fun getSaveRecipientAddress():Boolean
 
+    fun setCurrencyAmount(amount: String?)
+    fun getCurrencyAmount():String?
+
 
     companion object {
         val TAG = TextSecurePreferences::class.simpleName
@@ -321,6 +324,7 @@ interface TextSecurePreferences {
         const val SEND_ADDRESS = "send_address"
         const val CHANGE_PIN = "pref_change_pin"
         const val SAVE_RECIPIENT_ADDRESS="pref_save_recipient_address"
+        const val CURRENCY_AMOUNT = "currency_amount"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -1228,6 +1232,16 @@ interface TextSecurePreferences {
             return getBooleanPreference(context, SAVE_RECIPIENT_ADDRESS, true)
         }
 
+        @JvmStatic
+        fun setCurrencyAmount(context: Context, amount: String) {
+            setStringPreference(context, CURRENCY_AMOUNT, amount)
+        }
+
+        @JvmStatic
+        fun getCurrencyAmount(context: Context): String? {
+            return getStringPreference(context, CURRENCY_AMOUNT, "0.00")
+        }
+
     }
 }
 
@@ -2003,5 +2017,13 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun getSaveRecipientAddress(): Boolean {
         return getBooleanPreference(TextSecurePreferences.SAVE_RECIPIENT_ADDRESS,true)
+    }
+
+    override fun setCurrencyAmount(amount: String?) {
+        setStringPreference(TextSecurePreferences.CURRENCY_AMOUNT, amount)
+    }
+
+    override fun getCurrencyAmount(): String? {
+        return getStringPreference(TextSecurePreferences.CURRENCY_AMOUNT,"0.00")
     }
 }

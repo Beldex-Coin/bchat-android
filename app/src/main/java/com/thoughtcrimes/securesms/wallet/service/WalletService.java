@@ -22,6 +22,7 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 import com.thoughtcrimes.securesms.data.TxData;
+import com.thoughtcrimes.securesms.home.HomeActivity;
 import com.thoughtcrimes.securesms.model.PendingTransaction;
 import com.thoughtcrimes.securesms.model.Wallet;
 import com.thoughtcrimes.securesms.model.WalletListener;
@@ -537,7 +538,7 @@ public class WalletService extends Service {
     @Nullable
     private Wallet.Status start(String walletName, String walletPassword) {
         Timber.d("start()");
-        //startNotification();
+        startNotification();
         showProgress(getString(R.string.status_wallet_loading));
         showProgress(10);
         Log.d("Beldex","Wallet start called");
@@ -642,7 +643,7 @@ public class WalletService extends Service {
     }
 
     private void startNotification() {
-        Intent notificationIntent = new Intent(this, WalletActivity.class);
+        Intent notificationIntent = new Intent(this, HomeActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
         String channelId = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? createNotificationChannel() : "";

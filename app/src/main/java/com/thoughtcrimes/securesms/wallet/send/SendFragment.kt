@@ -579,16 +579,19 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                         binding.beldexAmountErrorMessage.visibility =View.VISIBLE
                         binding.beldexAmountErrorMessage.text=getString(R.string.beldex_amount_valid_error_message)
                     }else if(!validateBELDEXAmount(binding.beldexAmountEditTxtLayout.editText!!.text.toString(), activityCallback!!.totalFunds)){
+                        if (binding.beldexAmountEditTxtLayout.editText!!.text.toString()
+                                .toDouble() <= 0.00
+                        ) {
+                            //binding.beldexAmountEditTxtLayout.error = getString(R.string.beldex_amount_valid_error_message)
                             binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.error_view_background)
                             binding.beldexAmountErrorMessage.visibility =View.VISIBLE
-                            binding.beldexAmountErrorMessage.text=getString(R.string.beldex_amount_valid_not_enough_money_error_message)
-                    }else if (binding.beldexAmountEditTxtLayout.editText!!.text.toString()
-                            .toDouble() <= 0.00
-                    ) {
-                        //binding.beldexAmountEditTxtLayout.error = getString(R.string.beldex_amount_valid_error_message)
-                        binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.error_view_background)
-                        binding.beldexAmountErrorMessage.visibility =View.VISIBLE
-                        binding.beldexAmountErrorMessage.text=getString(R.string.beldex_amount_valid_error_message)
+                            binding.beldexAmountErrorMessage.text=getString(R.string.beldex_amount_valid_error_message)
+                        }else {
+                            binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.error_view_background)
+                            binding.beldexAmountErrorMessage.visibility = View.VISIBLE
+                            binding.beldexAmountErrorMessage.text =
+                                getString(R.string.beldex_amount_valid_not_enough_money_error_message)
+                        }
                     }else{
                         Log.d("Beldex", "beldexAddressEditTxtLayout isEmpty()")
                         //binding.beldexAddressEditTxtLayout.error = getString(R.string.beldex_address_error_message)

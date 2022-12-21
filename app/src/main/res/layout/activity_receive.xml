@@ -48,6 +48,7 @@
                 android:fontFamily="@font/poppins_bold"
                 android:text="Your Wallet Address"
                 android:textColor="@color/you_address_color"
+                android:textStyle="bold"
                 android:textSize="15sp" />
 
             <ImageView

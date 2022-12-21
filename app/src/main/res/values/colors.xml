@@ -197,4 +197,7 @@
     <color name="or_color">#159B24</color>
     <color name="address_book_name">#292938</color>
     <color name="loading_card_background">#24242F</color>
+    <color name="receive_button_card">#1BB71F</color>
+    <color name="wallet_options_disable">#333343</color>
+    <color name="scan_qr_code_background">#24242F</color>
 </resources>

@@ -129,12 +129,14 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         }
     }
 
+    @SuppressLint("ResourceType")
     fun onSynced() {
         if (!activityCallback?.isWatchOnly!!) {
             binding.sendCardViewButton.isEnabled = true
-            binding.sendCardViewButtonText.setTextColor(ContextCompat.getColor(requireActivity(),R.color.text))
+            binding.sendCardViewButton.setBackgroundResource(R.drawable.send_card_enabled_background)
+            binding.sendCardViewButtonText.setTextColor(ContextCompat.getColor(requireActivity(),R.color.white))
             binding.scanQrCodeImg.isEnabled = true
-            binding.scanQrCodeImg.setImageResource(R.drawable.ic_wallet_scan_qr)
+            binding.scanQrCodeImg.setImageResource(R.drawable.ic_scan_qr)
         }
         //if (isVisible) enableAccountsList(true) //otherwise it is enabled in onResume()
     }

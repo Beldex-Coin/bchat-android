@@ -2,7 +2,9 @@ package com.thoughtcrimes.securesms.wallet.rescan
 
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.text.Editable
 import android.text.InputType
+import android.text.TextWatcher
 import android.util.ArrayMap
 import android.util.Log
 import android.view.LayoutInflater
@@ -113,6 +115,30 @@ class RescanDialog(val context: WalletActivity, private val daemonBlockChainHeig
                 }
             }
             dialogCurrentBlockHeight.text=daemonBlockChainHeight.toString()
+
+            binding.restoreSeedWalletRestoreHeight.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable) {
+                    if (binding.restoreSeedWalletRestoreHeight.text.toString().length == 9) {
+                        Toast.makeText(
+                            context,
+                            R.string.enter_a_valid_height,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                override fun beforeTextChanged(
+                    s: CharSequence, start: Int,
+                    count: Int, after: Int
+                ) {
+                }
+
+                override fun onTextChanged(
+                    s: CharSequence, start: Int,
+                    before: Int, count: Int
+                ) {
+                }
+            })
             //SteveJosephh21
             restoreSeedWalletRestoreDate.setOnClickListener {
                 restoreSeedWalletRestoreDate.inputType = InputType.TYPE_NULL;

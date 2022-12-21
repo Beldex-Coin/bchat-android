@@ -2,7 +2,9 @@ package com.thoughtcrimes.securesms.seed
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
 import android.text.InputType
+import android.text.TextWatcher
 import android.util.ArrayMap
 import android.util.Log
 import android.view.KeyEvent
@@ -166,6 +168,29 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
                     }
                     false
                 })
+            binding.restoreSeedWalletRestoreHeight.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable) {
+                    if (binding.restoreSeedWalletRestoreHeight.text.toString().length == 9) {
+                        Toast.makeText(
+                            this@RecoveryGetSeedDetailsActivity,
+                            R.string.enter_a_valid_height,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                override fun beforeTextChanged(
+                    s: CharSequence, start: Int,
+                    count: Int, after: Int
+                ) {
+                }
+
+                override fun onTextChanged(
+                    s: CharSequence, start: Int,
+                    before: Int, count: Int
+                ) {
+                }
+            })
             restoreSeedRestoreButton.setOnClickListener { register() }
         }
 

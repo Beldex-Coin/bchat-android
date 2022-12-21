@@ -57,6 +57,8 @@
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/poppins_regular"
                         android:text="@string/current_node"
                         tools:ignore="NestedWeights" />
                     <TextView
@@ -65,6 +67,8 @@
                         android:layout_weight="2"
                         android:layout_marginEnd="10dp"
                         android:maxLines="1"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/poppins_regular"
                         android:text="publicnode2.rpcnode.stream"
                         android:layout_height="wrap_content"/>
                 </LinearLayout>
@@ -113,6 +117,8 @@
                         android:layout_width="0dp"
                         android:layout_weight="2"
                         android:gravity="center|start"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/poppins_regular"
                         android:layout_height="match_parent"
                         android:text="@string/display_balance_as"/>
                     <TextView
@@ -136,6 +142,8 @@
                         android:layout_weight="2"
                         android:gravity="center|start"
                         android:layout_height="match_parent"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/poppins_regular"
                         android:text="@string/decimals"/>
                     <TextView
                         android:id="@+id/decimalsDescription"
@@ -181,6 +189,8 @@
                         android:layout_weight="2"
                         android:gravity="center|start"
                         android:layout_height="match_parent"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/poppins_regular"
                         android:text="@string/currency"/>
                     <TextView
                         android:id="@+id/currencyDescription"
@@ -203,6 +213,8 @@
                         android:layout_weight="2"
                         android:gravity="center|start"
                         android:layout_height="match_parent"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/poppins_regular"
                         android:text="@string/fee_priority"/>
                     <TextView
                         android:id="@+id/feePriorityDescription"
@@ -225,6 +237,8 @@
                         android:layout_weight="2"
                         android:gravity="center|start"
                         android:layout_height="match_parent"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/poppins_regular"
                         android:text="@string/save_recipient_address"/>
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/saveRecipientAddressSwitchCompat"
@@ -269,6 +283,8 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/poppins_regular"
                         android:text="@string/activity_address_book_page_title"/>
                     <ImageView
                         android:layout_width="wrap_content"
@@ -287,6 +303,8 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/poppins_regular"
                         android:text="@string/change_pin"/>
                     <ImageView
                         android:layout_width="wrap_content"

@@ -146,6 +146,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             binding.sendCardViewButton.isEnabled = false
             binding.sendCardViewButtonText.setTextColor(ContextCompat.getColor(requireActivity(),R.color.send_button_disable_color))
             binding.scanQrCodeImg.isEnabled = false
+            binding.sendCardViewButton.setBackgroundResource(R.drawable.send_card_background)
             binding.scanQrCodeImg.setImageResource(R.drawable.ic_wallet_scan_qr_disable)
             //binding.progressBar.show()
         }

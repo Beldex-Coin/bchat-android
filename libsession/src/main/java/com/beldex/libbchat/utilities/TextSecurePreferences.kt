@@ -223,6 +223,9 @@ interface TextSecurePreferences {
     fun setCurrencyAmount(amount: String?)
     fun getCurrencyAmount():String?
 
+    fun getNodeIsTested():Boolean
+    fun setNodeIsTested(status: Boolean)
+
 
     companion object {
         val TAG = TextSecurePreferences::class.simpleName
@@ -325,6 +328,7 @@ interface TextSecurePreferences {
         const val CHANGE_PIN = "pref_change_pin"
         const val SAVE_RECIPIENT_ADDRESS="pref_save_recipient_address"
         const val CURRENCY_AMOUNT = "currency_amount"
+        const val IS_NODE_TESTED = "is_node_tested"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -1241,6 +1245,15 @@ interface TextSecurePreferences {
         fun getCurrencyAmount(context: Context): String? {
             return getStringPreference(context, CURRENCY_AMOUNT, "0.00")
         }
+        @JvmStatic
+        fun getNodeIsTested(context: Context):Boolean {
+            return getBooleanPreference(context, IS_NODE_TESTED, false)
+        }
+
+        @JvmStatic
+        fun setNodeIsTested(context: Context, status: Boolean) {
+             setBooleanPreference(context, IS_NODE_TESTED, status)
+        }
 
     }
 }
@@ -2026,4 +2039,13 @@ class AppTextSecurePreferences @Inject constructor(
     override fun getCurrencyAmount(): String? {
         return getStringPreference(TextSecurePreferences.CURRENCY_AMOUNT,"0.00")
     }
+
+    override fun getNodeIsTested(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.IS_NODE_TESTED,false)
+    }
+
+    override fun setNodeIsTested(status: Boolean) {
+        setBooleanPreference(TextSecurePreferences.SAVE_RECIPIENT_ADDRESS,status)
+    }
+
 }

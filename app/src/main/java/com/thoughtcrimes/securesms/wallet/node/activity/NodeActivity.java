@@ -78,6 +78,7 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
     public boolean onOptionsItemSelected(MenuItem item) {
         final int id = item.getItemId();
         if (id == R.id.action_add_node) {
+            TextSecurePreferences.setNodeIsTested(this,false);
             NodeFragment fragment = (NodeFragment) getSupportFragmentManager().findFragmentById(R.id.nodeList_frame);
             fragment.callDialog();
         }

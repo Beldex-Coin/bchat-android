@@ -1300,5 +1300,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="cannot_rescan_while_wallet_is_syncing" translatable="false">Can\'t rescan while wallet is syncing</string>
     <string name="enter_a_valid_height" translatable="false">Enter a valid height</string>
     <string name="beldex_amount_valid_not_enough_money_error_message" translatable="false">Not enough money</string>
+    <string name="make_sure_you_test_the_node_before_adding_it" translatable="false">Make sure you test the node before adding it.</string>
+    <string name="unable_to_connect_test_failed" translatable="false">Unable to connect. Test failed.</string>
 
 </resources>

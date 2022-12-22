@@ -505,7 +505,7 @@ public class NodeFragment extends Fragment
 
         private void closeDialog() {
             if (editDialog == null) throw new IllegalStateException();
-            Helper.hideKeyboardAlways(getActivity());
+            Helper.hideKeyboardAlways(requireActivity());
             editDialog.dismiss();
             editDialog = null;
             NodeFragment.this.editDialog = null;
@@ -547,12 +547,14 @@ public class NodeFragment extends Fragment
                 iVVerified.setVisibility(View.VISIBLE);
                 iVConnectionError.setVisibility(View.GONE);
                 tvResult.setTextColor(ContextCompat.getColor(requireContext(), R.color.text));
+                TextSecurePreferences.setNodeIsTested(requireContext(),true);
 
                 Log.d("Beldex","showTestResult in NodeFragment()");
             } else {
                 Log.d("Beldex","showTestResult in NodeFragment()");
                 tvResult.setText(NodeInfoAdapter.getResponseErrorText(getActivity(), nodeInfo.getResponseCode()));
                 tvResultCardView.setCardBackgroundColor(ContextCompat.getColor(requireContext(),R.color.red));
+                TextSecurePreferences.setNodeIsTested(requireContext(),false);
                 iVVerified.setVisibility(View.GONE);
                 iVConnectionError.setVisibility(View.VISIBLE);
             }
@@ -617,10 +619,13 @@ public class NodeFragment extends Fragment
                     button.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            if(tvResult.getText().toString().equals(getString(R.string.add_node_success))) {
+                            Log.d("Beldex","Value of NodeIsTested " +TextSecurePreferences.getNodeIsTested(requireContext()));
+                            if (!TextSecurePreferences.getNodeIsTested(requireContext()) && tvResult.getText().toString().equals("")) {
+                                Toast.makeText(requireActivity(), getString(R.string.make_sure_you_test_the_node_before_adding_it), Toast.LENGTH_SHORT).show();
+                            } else if (tvResult.getText().toString().equals(getString(R.string.node_general_error))) {
+                                Toast.makeText(requireActivity(), getString(R.string.unable_to_connect_test_failed), Toast.LENGTH_SHORT).show();
+                            } else if (tvResult.getText().toString().equals(getString(R.string.add_node_success))) {
                                 apply();
-                            } else if(tvResult.getText().toString().equals(getString(R.string.add_node_connection_error))){
-                                Toast.makeText(requireActivity(),"Try some another node",Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -650,6 +655,7 @@ public class NodeFragment extends Fragment
                 tvResultCardView.setCardBackgroundColor(ContextCompat.getColor(requireContext(),(R.color.button_green)));
                 iVVerified.setVisibility(View.GONE);
                 iVConnectionError.setVisibility(View.GONE);
+                TextSecurePreferences.setNodeIsTested(requireContext(),true);
                 tvResult.setText(getString(R.string.node_testing, nodeInfo.getHostAddress()));
             }
 

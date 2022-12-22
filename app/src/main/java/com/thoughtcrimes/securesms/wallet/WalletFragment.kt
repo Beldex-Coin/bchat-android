@@ -72,6 +72,9 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
     private val isLightWeight: Boolean = false
 
     fun setProgress(text: String?) {
+        if(text==getString(R.string.reconnecting)){
+           binding.syncStatusIcon.visibility=View.GONE
+        }
         syncText = text
         binding.syncStatus.text = text
     }

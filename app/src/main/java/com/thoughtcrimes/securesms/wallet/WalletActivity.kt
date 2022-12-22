@@ -733,7 +733,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
                     synced = false
                     setNode(node)
                     val walletFragment = getWalletFragment()
-                    walletFragment.setProgress("Reconnecting...")
+                    walletFragment.setProgress(getString(R.string.reconnecting))
                     walletFragment.setProgress(101)
                     invalidateOptionsMenu()
                 } else {

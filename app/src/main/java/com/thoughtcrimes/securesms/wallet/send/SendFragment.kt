@@ -381,7 +381,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                 binding.beldexAddressErrorMessage.text=""
                 possibleCryptos.clear()
                 selectedCrypto = null
-                val address: String = binding.beldexAddressEditTxtLayout.editText?.text.toString()
+                val address: String = binding.beldexAddressEditTxtLayout.editText?.text.toString().trim()
                 if (isIntegratedAddress(address)) {
                     Timber.d("isIntegratedAddress")
                     possibleCryptos.add(Crypto.BDX)
@@ -540,7 +540,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                     ) {
                         val txData: TxData = getTxData()
                         txData.destinationAddress =
-                            binding.beldexAddressEditTxtLayout.editText?.text.toString()
+                            binding.beldexAddressEditTxtLayout.editText?.text.toString().trim()
                         ServiceHelper.ASSET = null
 
                         if (getCleanAmountString(binding.beldexAmountEditTxtLayout.editText?.text.toString()).equals(

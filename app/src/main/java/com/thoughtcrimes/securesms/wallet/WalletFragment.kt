@@ -273,7 +273,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             //llNode.setVisibility(View.VISIBLE)
             if (result != null) {
                 Log.d("Beldex","Called onPostExecute ${result?.host}")
-                Toast.makeText(requireActivity(), "Connected to ${result!!.name}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireActivity().applicationContext, "Connected to ${result!!.name}", Toast.LENGTH_SHORT).show()
                 Log.d("WalletFragment", "AsyncFindBestNode Success")
                 //Important
                 /*d("found a good node %s", result.toString())
@@ -731,9 +731,13 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
     }
 
     private fun getDaysBetweenDates(startDate: Date, endDate: Date): List<Date> {
+        Log.d("Beldex","value of startDate 1 $startDate")
+        Log.d("Beldex","value of endDate 1 $endDate")
         val dates: MutableList<Date> = ArrayList()
         val calendar: Calendar = GregorianCalendar()
         calendar.time = startDate
+        Log.d("Beldex","value of startDate 2 $startDate")
+        Log.d("Beldex","value of endDate 2 $endDate")
         while (calendar.time.before(endDate)) {
             val result = calendar.time
             dates.add(result)

@@ -890,14 +890,14 @@ Java_com_thoughtcrimes_securesms_model_Wallet_createTransactionJ(JNIEnv *env, jo
     uint32_t subaddr_account = account_index;
     std::set<uint32_t> subaddr_indices = {};
     LOGD("Java_com_thoughtcrimes_securesms_model_Wallet_createTransactionJ before createTransaction");
-    LOGD("Java_com_thoughtcrimes_securesms_model_Wallet_createTransactionJ amount %d subaddr_account %d",amount,subaddr_account);
+    LOGD("Java_com_thoughtcrimes_securesms_model_Wallet_createTransactionJ amount %ld subaddr_account %d",amount,subaddr_account);
 
     Wallet::PendingTransaction *tx = wallet->createTransaction(_dst_addr,
                                                                amount,
                                                                priority,
                                                                subaddr_account,
                                                                subaddr_indices);
-    LOGD("Java_com_thoughtcrimes_securesms_model_Wallet_createTransactionJ after createTransaction pointer %d", reinterpret_cast<jlong>(tx));
+    LOGD("Java_com_thoughtcrimes_securesms_model_Wallet_createTransactionJ after createTransaction pointer %ld", reinterpret_cast<jlong>(tx));
     if (!tx){
         LOGD("No TX pointer found");
     }
@@ -1207,6 +1207,7 @@ jobject newTransferInstance(JNIEnv *env, uint64_t amount, const std::string &add
 jobject newTransferList(JNIEnv *env, Wallet::TransactionInfo *info) {
     const std::vector<Wallet::TransactionInfo::Transfer> &transfers = info->transfers();
     if (transfers.empty()) { // don't create empty Lists
+        LOGD("--> R view key transfers is empty");
         return nullptr;
     }
     // make new ArrayList
@@ -1229,8 +1230,10 @@ jobject newTransactionInfo(JNIEnv *env, Wallet::TransactionInfo *info) {
                                    "(IZZJJJLjava/lang/String;JLjava/lang/String;IIJLjava/lang/String;Ljava/util/List;)V");
     jobject transfers = newTransferList(env, info);
     jstring _hash = env->NewStringUTF(info->hash().c_str());
-    jstring _paymentId = env->NewStringUTF(info->paymentId().c_str());
-    jstring _label = env->NewStringUTF(info->label().c_str());
+    const char *paymentId = "-";
+    jstring _paymentId = env->NewStringUTF(paymentId);
+    const char *label = "-";
+    jstring _label = env->NewStringUTF(label);
     uint32_t subaddrIndex = 0;
     if (info->direction() == Wallet::TransactionInfo::Direction_In)
         subaddrIndex = *(info->subaddrIndex().begin());
@@ -1270,9 +1273,11 @@ jobject cpp2java(JNIEnv *env, const std::vector<Wallet::TransactionInfo *>& vect
     for (Wallet::TransactionInfo *s: vector) {
         LOGD("--> R_view key 1 %d",100);
         LOGD("--> R_view key 2 %lu",s->amount());
-        jobject info = newTransactionInfo(env, s);
-        env->CallBooleanMethod(arrayList, java_util_ArrayList_add, info);
-        env->DeleteLocalRef(info);
+        if(!s->isPending()) {
+            jobject info = newTransactionInfo(env, s);
+            env->CallBooleanMethod(arrayList, java_util_ArrayList_add, info);
+            env->DeleteLocalRef(info);
+        }
     }
     return arrayList;
 }
@@ -1402,4 +1407,9 @@ Java_com_thoughtcrimes_securesms_model_Wallet_reConnectToDaemon(JNIEnv *env, job
     Wallet::Wallet *isConnected = getHandle<Wallet::Wallet>(env, instance);
     bool connectionStatus = isConnected->connectToDaemon();
     return static_cast<jboolean>(connectionStatus);
+}
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_thoughtcrimes_securesms_model_WalletManager_bChatVersion(JNIEnv *env, jclass clazz) {
+    return (jstring) "-";
 }

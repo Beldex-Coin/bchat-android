@@ -237,6 +237,7 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
             } else if (infoItem!!.isPending) {
                 tvTxBlockHeight.text = context!!.getString(R.string.tx_pending)
             } else {
+                //tvTxBlockHeight.text ="ok"
                 tvTxBlockHeight.text = "" + infoItem!!.blockheight
             }
             tvDateTimeHead.text = getDateTime(infoItem!!.timestamp)
@@ -286,7 +287,7 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
                 //pbConfirmations.setVisibility(View.GONE)
                 //tvConfirmations.visibility = View.GONE
             }
-            var tag: String? = null
+            /*var tag: String? = null
             var info = ""
             if (infoItem!!.addressIndex !== 0 && infoItem!!.direction === TransactionInfo.Direction.Direction_In) tag =
                 infoItem!!.displayLabel
@@ -319,7 +320,7 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
                     )
                 )
                 //tvPaymentId.text = label
-            }
+            }*/
             tvDateTime.text = getDateTime(infoItem!!.timestamp)
         }
 

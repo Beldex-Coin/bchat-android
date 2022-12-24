@@ -226,6 +226,12 @@ interface TextSecurePreferences {
     fun getNodeIsTested():Boolean
     fun setNodeIsTested(status: Boolean)
 
+    fun changeCurrency(status: Boolean)
+    fun getChangedCurrency():Boolean
+
+    fun callFiatCurrencyApi(status: Boolean)
+    fun getFiatCurrencyApiStatus():Boolean
+
 
     companion object {
         val TAG = TextSecurePreferences::class.simpleName
@@ -329,6 +335,8 @@ interface TextSecurePreferences {
         const val SAVE_RECIPIENT_ADDRESS="pref_save_recipient_address"
         const val CURRENCY_AMOUNT = "currency_amount"
         const val IS_NODE_TESTED = "is_node_tested"
+        const val CHANGE_CURRENCY = "change_currency"
+        const val GET_FIAT_CURRENCY_API_STATUS = "get_fiat_currency_api_status"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -1255,6 +1263,26 @@ interface TextSecurePreferences {
              setBooleanPreference(context, IS_NODE_TESTED, status)
         }
 
+        @JvmStatic
+        fun getChangedCurrency(context: Context):Boolean {
+            return getBooleanPreference(context, CHANGE_CURRENCY, false)
+        }
+
+        @JvmStatic
+        fun changeCurrency(context: Context, status: Boolean) {
+            setBooleanPreference(context, CHANGE_CURRENCY, status)
+        }
+
+        @JvmStatic
+        fun getFiatCurrencyApiStatus(context: Context):Boolean {
+            return getBooleanPreference(context, GET_FIAT_CURRENCY_API_STATUS, false)
+        }
+
+        @JvmStatic
+        fun callFiatCurrencyApi(context: Context, status: Boolean) {
+            setBooleanPreference(context, GET_FIAT_CURRENCY_API_STATUS, status)
+        }
+
     }
 }
 
@@ -2046,6 +2074,22 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun setNodeIsTested(status: Boolean) {
         setBooleanPreference(TextSecurePreferences.SAVE_RECIPIENT_ADDRESS,status)
+    }
+
+    override fun getChangedCurrency(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.CHANGE_CURRENCY,false)
+    }
+
+    override fun changeCurrency(status: Boolean) {
+        setBooleanPreference(TextSecurePreferences.CHANGE_CURRENCY,status)
+    }
+
+    override fun getFiatCurrencyApiStatus(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.GET_FIAT_CURRENCY_API_STATUS,false)
+    }
+
+    override fun callFiatCurrencyApi(status: Boolean) {
+        setBooleanPreference(TextSecurePreferences.GET_FIAT_CURRENCY_API_STATUS,status)
     }
 
 }

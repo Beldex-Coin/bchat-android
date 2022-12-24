@@ -112,6 +112,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
                     val fragment: Fragment = getCurrentFragment()!!
                     if (fragment is SendFragment || fragment is ReceiveFragment || fragment is ScannerFragment || fragment is WalletScannerFragment) {
                         if (!(fragment as OnBackPressedListener).onBackPressed()) {
+                            TextSecurePreferences.callFiatCurrencyApi(this,false)
                             super.onBackPressed()
                         }
                     } else {
@@ -226,6 +227,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         val fragment: Fragment = getCurrentFragment()!!
         if (fragment is SendFragment || fragment is ReceiveFragment || fragment is ScannerFragment || fragment is WalletScannerFragment) {
             if (!(fragment as OnBackPressedListener).onBackPressed()) {
+                TextSecurePreferences.callFiatCurrencyApi(this,false)
                 super.onBackPressed()
             }
         } else {

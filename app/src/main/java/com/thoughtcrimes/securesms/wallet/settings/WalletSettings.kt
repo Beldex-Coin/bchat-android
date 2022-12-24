@@ -367,6 +367,7 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         }*/
         binding.currencyDescription.text = walletSubOptionsSearchListItemAdapter.getItem(position)
         TextSecurePreferences.setCurrency(this,walletSubOptionsSearchListItemAdapter.getItem(position))
+        TextSecurePreferences.changeCurrency(this,true)
         for(i in 0 until currencyList.size){
             if(currencyList[i]==binding.currencyDescription.text.toString()){
                 selectedCurrencyIndex=i

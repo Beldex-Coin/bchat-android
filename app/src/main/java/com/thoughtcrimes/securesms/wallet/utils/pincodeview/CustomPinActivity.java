@@ -134,6 +134,7 @@ public class CustomPinActivity extends AppLockActivity {
         String REQUEST_URI = "uri";
 
         Log.d("startWallet()","");
+        TextSecurePreferences.callFiatCurrencyApi(this,true);
         TextSecurePreferences.setIncomingTransactionStatus(this, true);
         TextSecurePreferences.setOutgoingTransactionStatus(this, true);
         TextSecurePreferences.setTransactionsByDateStatus(this,false);

@@ -232,6 +232,9 @@ interface TextSecurePreferences {
     fun callFiatCurrencyApi(status: Boolean)
     fun getFiatCurrencyApiStatus():Boolean
 
+    fun getNodeIsMainnet():Boolean
+    fun setNodeIsMainnet(status: Boolean)
+
 
     companion object {
         val TAG = TextSecurePreferences::class.simpleName
@@ -337,6 +340,7 @@ interface TextSecurePreferences {
         const val IS_NODE_TESTED = "is_node_tested"
         const val CHANGE_CURRENCY = "change_currency"
         const val GET_FIAT_CURRENCY_API_STATUS = "get_fiat_currency_api_status"
+        const val NODE_IS_MAINNET = "node_is_mainnet"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -1282,6 +1286,15 @@ interface TextSecurePreferences {
         fun callFiatCurrencyApi(context: Context, status: Boolean) {
             setBooleanPreference(context, GET_FIAT_CURRENCY_API_STATUS, status)
         }
+        @JvmStatic
+        fun getNodeIsMainnet(context: Context):Boolean {
+            return getBooleanPreference(context, NODE_IS_MAINNET, false)
+        }
+
+        @JvmStatic
+        fun setNodeIsMainnet(context: Context, status: Boolean) {
+            setBooleanPreference(context, NODE_IS_MAINNET, status)
+        }
 
     }
 }
@@ -2073,7 +2086,7 @@ class AppTextSecurePreferences @Inject constructor(
     }
 
     override fun setNodeIsTested(status: Boolean) {
-        setBooleanPreference(TextSecurePreferences.SAVE_RECIPIENT_ADDRESS,status)
+        setBooleanPreference(TextSecurePreferences.IS_NODE_TESTED,status)
     }
 
     override fun getChangedCurrency(): Boolean {
@@ -2090,6 +2103,14 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun callFiatCurrencyApi(status: Boolean) {
         setBooleanPreference(TextSecurePreferences.GET_FIAT_CURRENCY_API_STATUS,status)
+    }
+
+    override fun getNodeIsMainnet(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.NODE_IS_MAINNET,false)
+    }
+
+    override fun setNodeIsMainnet(status: Boolean) {
+        setBooleanPreference(TextSecurePreferences.NODE_IS_MAINNET,status)
     }
 
 }

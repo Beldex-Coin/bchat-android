@@ -235,6 +235,60 @@ public class  NodeInfo extends Node {
 
         return testRpcService(rpcPort);
     }
+    public boolean testIsMainnet(){
+        return testIsMainnet(rpcPort);
+    }
+    private boolean testIsMainnet(int port) {
+        Timber.d("Testing %s", toNodeString());
+        clear();
+        try {
+            Log.d("Beldex","Node list Test 1");
+            Timber.d("Testing-->1");
+            OkHttpClient client = OkHttpHelper.getEagerClient();
+            if (!getUsername().isEmpty()) {
+                Log.d("Beldex","Node list Test 2");
+                Timber.d("Testing-->2");
+                final DigestAuthenticator authenticator =
+                        new DigestAuthenticator(new Credentials(getUsername(), getPassword()));
+                final Map<String, CachingAuthenticator> authCache = new ConcurrentHashMap<>();
+                client = client.newBuilder()
+                        .authenticator(new CachingAuthenticatorDecorator(authenticator, authCache))
+                        .addInterceptor(new AuthenticationCacheInterceptor(authCache))
+                        .build();
+            }
+            Log.d("Beldex","Node list Test 3");
+            HttpUrl url = new HttpUrl.Builder()
+                    .scheme("http")
+                    .host(getHostAddress())
+                    .port(port)
+                    .addPathSegment("json_rpc")
+                    .build();
+            final RequestBody reqBody_1 = RequestBody
+                    .create(MediaType.parse("application/json"),
+                            "{\"jsonrpc\":\"2.0\",\"id\":\"0\",\"method\":\"get_info\"}");
+            Request request_1 = OkHttpHelper.getPostRequest(url, reqBody_1);
+            long ta = System.nanoTime();
+            try  (Response response = client.newCall(request_1).execute()) {
+                if(response.isSuccessful())
+                if (response.body() != null) {
+                    final JSONObject json = new JSONObject(response.body().string());
+                    final JSONObject result = json.getJSONObject("result");
+                    boolean isMainnet_node = result.getBoolean("mainnet");
+                    Log.d("Beldex", "Value of getInfo methode isMainnet  is" + isMainnet_node);
+                    return isMainnet_node;
+                }
+
+            }
+        } catch (IOException | JSONException ex) {
+            Timber.d("Testing-->5");
+            Timber.d(ex);
+        } finally {
+            Timber.d("Testing-->6");
+        }
+        return false;
+    }
+
+
 
     public boolean testRpcService(NodePinger.Listener listener) {
         Timber.d("Testing-->9");

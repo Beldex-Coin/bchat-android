@@ -504,10 +504,12 @@ public class NodeFragment extends Fragment
         }
 
         private void closeDialog() {
-            if (editDialog == null) throw new IllegalStateException();
-            Helper.hideKeyboardAlways(requireActivity());
+            Log.d("Beldex","value of editDialog " + editDialog);
+            if (editDialog == null)
+                throw new IllegalStateException();
+            Helper.hideKeyboardAlways(getActivity());
             editDialog.dismiss();
-            editDialog = null;
+            /*editDialog = null;*/
             NodeFragment.this.editDialog = null;
         }
 
@@ -625,7 +627,13 @@ public class NodeFragment extends Fragment
                             } else if (tvResult.getText().toString().equals(getString(R.string.node_general_error))) {
                                 Toast.makeText(requireActivity(), getString(R.string.unable_to_connect_test_failed), Toast.LENGTH_SHORT).show();
                             } else if (tvResult.getText().toString().equals(getString(R.string.add_node_success))) {
-                                apply();
+                                Log.d("Beldex","value of getInfo isMainnet" + TextSecurePreferences.getNodeIsMainnet(requireActivity()));
+                                if(TextSecurePreferences.getNodeIsMainnet(requireActivity())) {
+                                    apply();
+                                    TextSecurePreferences.setNodeIsMainnet(requireContext(), false);
+                                }else {
+                                    Toast.makeText(requireActivity(),getString(R.string.please_add_a_mainnet_node),Toast.LENGTH_SHORT).show();
+                                }
                             }
                         }
                     });
@@ -661,6 +669,13 @@ public class NodeFragment extends Fragment
 
             @Override
             protected Boolean doInBackground(Void... params) {
+                nodeInfo.testIsMainnet();
+                Log.d("Beldex","Value of getInfo isMainnet nodeInfo " +nodeInfo.testIsMainnet());
+                if (nodeInfo.testIsMainnet()) {
+                    TextSecurePreferences.setNodeIsMainnet(requireContext(), true);
+                } else {
+                    TextSecurePreferences.setNodeIsMainnet(requireContext(), false);
+                }
                 nodeInfo.testRpcService();
                 return true;
             }

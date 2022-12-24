@@ -1303,5 +1303,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="make_sure_you_test_the_node_before_adding_it" translatable="false">Make sure you test the node before adding it.</string>
     <string name="unable_to_connect_test_failed" translatable="false">Unable to connect. Test failed.</string>
     <string name="search_by_name_hint" translatable="false">Search by Name...</string>
+    <string name="please_add_a_mainnet_node" translatable="false">Please add a mainnet node</string>
 
 </resources>

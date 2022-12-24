@@ -106,7 +106,7 @@ public class WalletService extends Service {
                 lastBlockTime = System.currentTimeMillis();
                 Timber.d("newBlock() @ %d with observer %s", height, observer);
                 if (observer != null) {
-                    boolean fullRefresh = false;
+                    //boolean fullRefresh = false;
                     updateDaemonState(wallet, wallet.isSynchronized() ? height : 0);
                     if (!wallet.isSynchronized()) {
                         updated = true;
@@ -114,17 +114,17 @@ public class WalletService extends Service {
                         wallet.refreshHistory();
                         Log.d("Beldex","newBeldex() height "+height + ", "+wallet.getDaemonBlockChainHeight());
                         Log.d("Beldex","newBlock() getHistory() "+wallet.getHistory().getAll().toString());
-                        int txCount = wallet.getHistory().getCount();
-                        Log.d("Beldex","newBlock() txCount "+txCount);
-                        if (txCount > lastTxCount) {
+                        //int txCount = wallet.getHistory().getCount();
+                        //Log.d("Beldex","newBlock() txCount "+txCount);
+                        /*if (txCount > lastTxCount) {
                             // update the transaction list only if we have more than before
                             lastTxCount = txCount;
                             fullRefresh = true;
                             Log.d("Beldex","newBlock() fullRefresh  "+fullRefresh);
-                        }
+                        }*/
                     }
                     if (observer != null)
-                        observer.onRefreshed(wallet, fullRefresh);
+                        observer.onRefreshed(wallet, false);
                 }
             }
         }

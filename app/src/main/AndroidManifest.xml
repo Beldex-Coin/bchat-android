@@ -77,10 +77,12 @@
         tools:replace="android:allowBackup">
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.utils.common.LoadingActivity"
+            android:screenOrientation="portrait"
             android:exported="false"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.info.WalletInfoSeedActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.info.WalletInfoActivity"
@@ -112,6 +114,7 @@
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.WalletActivity"
@@ -120,6 +123,7 @@
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.contacts.BlockedContactActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name="com.thoughtcrimes.securesms.calls.WebRtcCallActivity"

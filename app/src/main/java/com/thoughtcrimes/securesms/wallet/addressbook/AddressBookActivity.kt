@@ -90,6 +90,7 @@ class AddressBookActivity(
         inflater.inflate(R.menu.search_menu, menu)
         val searchItem: MenuItem = menu.findItem(R.id.actionSearch)
         val searchView: SearchView = searchItem.actionView as SearchView
+        searchView.queryHint=getString(R.string.search_by_name_hint)
 
         // below line is to call set on query text listener method.
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener,

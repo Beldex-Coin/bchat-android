@@ -115,16 +115,31 @@
           "description":"- Wallet Integration"
         },
         {
-          "description":"- Info Text added on Floating Action Button (+)"
+          "description":"- Introduced Address book of contacts in Wallet"
         },
         {
-          "description":"- BChat contacts as Wallet address book"
+          "description":"- Added text label on FAB"
         },
         {
-          "description":"- Search feature in Address Book"
+          "description":"- Made the App content more informative"
         },
         {
-          "description":"- Animation issue fixed in floating action button"
+          "description":"- Updated the validation in restore height"
+        },
+        {
+          "description":"- Added Foreground Service for preventing crash in Device with android version 8.0 and above"
+        },
+        {
+          "description":"- Improved memory management during running call and message services"
+        },
+        {
+          "description":"- Fixed Crashes happening due to null object reference"
+        },
+        {
+          "description":"- Fixed crash issue happening during media preview"
+        },
+        {
+          "description":"- Custom notifications improved for android version 12"
         }
       ]
     }

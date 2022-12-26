@@ -12,6 +12,19 @@ import okhttp3.*
 import java.io.IOException
 
 fun fetchPriceFor(fiat: String, callback: Callback): Call {
+    val fiatApiAuthority = "api.coingecko.com/api/v3/simple/price?ids=beldex&"
+    val client = OkHttpClient()
+    val apiPath = "vs_currencies=$fiat"
+    val request = Request.Builder()
+        .url("https://$fiatApiAuthority$apiPath")
+        .build()
+
+    val call = client.newCall(request)
+    call.enqueue(callback)
+    return call
+}
+
+/*fun fetchPriceFor(fiat: String, callback: Callback): Call {
     val fiatApiAuthority = "api.beldex.io"
     val client = OkHttpClient()
     val apiPath = "/price/$fiat"
@@ -22,7 +35,7 @@ fun fetchPriceFor(fiat: String, callback: Callback): Call {
     val call = client.newCall(request)
     call.enqueue(callback)
     return call
-}
+}*/
 
 /*
 fun fetchPriceFor(fiat:String):Double {

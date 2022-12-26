@@ -83,7 +83,7 @@
                     style="@style/Widget.Bchat.Button.Common.ProminentFilled"
                     android:id="@+id/scanButton"
                     android:layout_width="150dp"
-                    android:drawableStart="@drawable/ic_scan_qr"
+                    android:drawableStart="@drawable/ic_scan_qr_code"
                     android:layout_height="@dimen/medium_button_height"
                     android:layout_marginLeft="@dimen/massive_spacing"
                     android:layout_marginRight="@dimen/massive_spacing"

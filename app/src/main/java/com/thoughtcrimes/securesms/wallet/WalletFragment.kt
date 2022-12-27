@@ -452,16 +452,16 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         binding.transactionList.adapter = adapter
         adapter!!.registerAdapterDataObserver(object : AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                Log.d("Beldex","Transaction list issue onItemRangeInserted called")
                 if (positionStart == 0 && binding.transactionList.computeVerticalScrollOffset() == 0) binding.transactionList.scrollToPosition(
-                    positionStart
-                )
+                    positionStart)
             }
         })
-
+        binding.transactionList.isNestedScrollingEnabled = false
         //      int count =  adapter.getItemCount();
 //      Timber.d ("Adapter count %s", adapter.getItemCount());
 //        anchorBehavior.setHideable(count == 0);
-        binding.transactionList.addOnItemTouchListener(
+ /*       binding.transactionList.addOnItemTouchListener(
             SwipeableRecyclerViewTouchListener(binding.transactionList,
                 object : SwipeableRecyclerViewTouchListener.SwipeListener {
                     override fun canSwipeLeft(position: Int): Boolean {
@@ -492,7 +492,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                         }
                     }
                 })
-        )
+        )*/
 
         binding.sendCardViewButton.setOnClickListener{ v: View? ->
             activityCallback!!.onSendRequest(v)
@@ -1103,9 +1103,14 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
     fun onRefreshed(wallet: Wallet, full: Boolean) {
         var full = full
+        /*val txCount = wallet.history.count
+        lastTxCount = txCount*/
         if (adapter!!.needsTransactionUpdateOnNewBlock()) {
-            wallet.refreshHistory()
-            full = true
+            // we want to see our transactions as they come in
+                wallet.refreshHistory()
+                full = true
+            Log.d("Beldex","Transaction list issue needsTransactionUpdateOnNewBlock called ")
+
         }
         if (full) {
             val list: MutableList<TransactionInfo> = ArrayList()
@@ -1122,7 +1127,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             adapterItems.addAll(adapter!!.infoItems!!)
             if (accountIndex != wallet.accountIndex) {
                 accountIndex = wallet.accountIndex
-                binding.transactionList.scrollToPosition(0)
+                /*binding.transactionList.scrollToPosition(0)*/
             }
 
             //SteveJosephh21

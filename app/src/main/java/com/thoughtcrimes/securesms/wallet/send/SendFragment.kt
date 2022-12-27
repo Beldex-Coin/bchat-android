@@ -52,6 +52,7 @@ import java.util.*
 import timber.log.Timber
 import java.io.IOException
 import java.lang.Exception
+import java.lang.Math.abs
 import java.math.BigDecimal
 
 
@@ -886,6 +887,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                 activityCallback?.setBarcodeData(barcodeData)
             }
             if (barcodeData!!.address != null) {
+                activityCallback?.setBarcodeData(null)
                 binding.beldexAddressEditTxtLayout.editText?.setText(barcodeData.address)
                 binding.beldexAmountEditTxtLayout.editText?.setText(barcodeData.amount)
 

@@ -52,7 +52,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginEnd="10dp"
-                    android:src="@drawable/ic_scan_qr" />
+                    android:src="@drawable/ic_scan_qr_code" />
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>

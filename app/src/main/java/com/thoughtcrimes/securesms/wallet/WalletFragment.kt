@@ -56,6 +56,10 @@ import java.text.NumberFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import java.text.SimpleDateFormat
+import android.R.array
+
+
+
 
 
 class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener {
@@ -365,7 +369,8 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         NodePinger.execute(nodes, null)
         val nodeList: ArrayList<NodeInfo?> = ArrayList<NodeInfo?>(nodes)
         Collections.sort(nodeList, NodeInfo.BestNodeComparator)
-        return nodeList[0]
+        val rnd = Random().nextInt(nodeList.size)
+        return nodeList[rnd]
     }
 
     interface DrawerLocker {
@@ -504,6 +509,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
         //SteveJosephh21
         binding.filterTransactionsIcon.setOnClickListener {view->
+            binding.filterTransactionsIcon.isClickable =false
             var dismissPopupMenu =false
             val wrapper: Context = ContextThemeWrapper(requireActivity(), R.style.custom_PopupMenu)
             val popupMenu = PopupMenu(wrapper, view,Gravity.END)
@@ -512,6 +518,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             popupMenu.setOnDismissListener{
                 if(dismissPopupMenu)it.show()
                 else {
+                    binding.filterTransactionsIcon.isClickable =true
                     it.dismiss()
                 }
                 dismissPopupMenu=false
@@ -982,8 +989,8 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
     private fun showSelectedDecimalBalance(balance: String, synchronized: Boolean){
         if(!synchronized){
             when {
-                TextSecurePreferences.getDecimals(requireActivity()) == "4 - Four (0.0000)" -> {
-                    binding.tvBalance.text = "-.----"
+                TextSecurePreferences.getDecimals(requireActivity()) == "2 - Two (0.00)" -> {
+                    binding.tvBalance.text = "-.--"
                 }
                 TextSecurePreferences.getDecimals(requireActivity()) == "3 - Three (0.000)" -> {
                     binding.tvBalance.text = "-.---"
@@ -992,13 +999,13 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                     binding.tvBalance.text = "-"
                 }
                 else -> {
-                    binding.tvBalance.text = "-.--"
+                    binding.tvBalance.text = "-.----"
                 }
             }
         }else{
             when {
-                TextSecurePreferences.getDecimals(requireActivity()) == "4 - Four (0.0000)" -> {
-                    binding.tvBalance.text = String.format("%.4f", balance.toDouble())
+                TextSecurePreferences.getDecimals(requireActivity()) == "2 - Two (0.00)" -> {
+                    binding.tvBalance.text = String.format("%.2f", balance.toDouble())
                 }
                 TextSecurePreferences.getDecimals(requireActivity()) == "3 - Three (0.000)" -> {
                     binding.tvBalance.text = String.format("%.3f", balance.toDouble())

@@ -236,24 +236,53 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     private fun backToHome() {
-        val dialog:AlertDialog.Builder = AlertDialog.Builder(this, R.style.BChatAlertDialog_Exit)
-        dialog.setTitle(getString(R.string.app_exit_alert))
+        when {
+            !synced -> {
+                val dialog: AlertDialog.Builder =
+                    AlertDialog.Builder(this, R.style.BChatAlertDialog_Wallet_Syncing_Exit_Alert)
+                dialog.setTitle(getString(R.string.wallet_syncing_alert_title))
+                dialog.setMessage(getString(R.string.wallet_syncing_alert_message))
 
-        dialog.setPositiveButton(R.string.exit) { _, _ ->
-                if(CheckOnline.isOnline(this)) {
-                    onDisposeRequest()
+                dialog.setPositiveButton(R.string.exit) { _, _ ->
+                    if (CheckOnline.isOnline(this)) {
+                        onDisposeRequest()
+                    }
+                    setBarcodeData(null)
+                    super.onBackPressed()
                 }
-                setBarcodeData(null)
-                super.onBackPressed()
-        }
-        dialog.setNegativeButton(R.string.cancel) { _, _ ->
-            // Do nothing
-        }
-        val alert: AlertDialog = dialog.create()
-        alert.show()
-        alert.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(this,R.color.text))
-        alert.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(this,R.color.alert_ok))
+                dialog.setNegativeButton(R.string.cancel) { _, _ ->
+                    // Do nothing
+                }
+                val alert: AlertDialog = dialog.create()
+                alert.show()
+                alert.getButton(DialogInterface.BUTTON_NEGATIVE)
+                    .setTextColor(ContextCompat.getColor(this, R.color.text))
+                alert.getButton(DialogInterface.BUTTON_POSITIVE)
+                    .setTextColor(ContextCompat.getColor(this, R.color.alert_ok))
+            }
+            else -> {
+                val dialog: AlertDialog.Builder =
+                    AlertDialog.Builder(this, R.style.BChatAlertDialog_Exit)
+                dialog.setTitle(getString(R.string.app_exit_alert))
 
+                dialog.setPositiveButton(R.string.exit) { _, _ ->
+                    if (CheckOnline.isOnline(this)) {
+                        onDisposeRequest()
+                    }
+                    setBarcodeData(null)
+                    super.onBackPressed()
+                }
+                dialog.setNegativeButton(R.string.cancel) { _, _ ->
+                    // Do nothing
+                }
+                val alert: AlertDialog = dialog.create()
+                alert.show()
+                alert.getButton(DialogInterface.BUTTON_NEGATIVE)
+                    .setTextColor(ContextCompat.getColor(this, R.color.text))
+                alert.getButton(DialogInterface.BUTTON_POSITIVE)
+                    .setTextColor(ContextCompat.getColor(this, R.color.alert_ok))
+            }
+        }
     }
 
     override fun callFinishActivity() {

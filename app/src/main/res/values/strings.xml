@@ -1304,5 +1304,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="unable_to_connect_test_failed" translatable="false">Unable to connect. Test failed.</string>
     <string name="search_by_name_hint" translatable="false">Search by Name...</string>
     <string name="please_add_a_mainnet_node" translatable="false">Please add a mainnet node</string>
+    <string name="wallet_syncing_alert_title" translatable="false">Wallet is syncing...</string>
+    <string name="wallet_syncing_alert_message" translatable="false">If you close the wallet, synchronization will be paused. Are you sure you want to exit the wallet?</string>
 
 </resources>

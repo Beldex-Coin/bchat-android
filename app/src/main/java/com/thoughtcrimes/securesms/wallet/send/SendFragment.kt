@@ -658,9 +658,10 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                 isValid = try {
                     val dValue = value.toDouble()
                     Log.d("Available balance-> ","$availableBalance")
-                    val availableBalanceDouble = Helper.getDisplayAmount(availableBalance).toDouble()
+                    /*val availableBalanceDouble = Helper.getDisplayAmount(availableBalance).toDouble()
                     Log.d("Available balance->1 ","$dValue,${availableBalanceDouble}")
-                    (dValue <= availableBalanceDouble && dValue <= maxValue && dValue > 0)
+                    (dValue <= availableBalanceDouble && dValue <= maxValue && dValue > 0)*/
+                    (dValue <= maxValue && dValue > 0)
                 } catch (e:Exception) {
                     false
                 }

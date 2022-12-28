@@ -168,12 +168,12 @@ public class Helper {
         String displayB;
         if (isCrypto) {
             if ((amount >= 0) || (amount == 0)) {
-                displayB = String.format(Locale.US, "%,.2f", amount);
+                displayB = String.format(Locale.US, "%,.4f", amount);
             } else {
                 displayB = null;
             }
         } else { // not crypto
-            displayB = String.format(Locale.US, "%,.2f", amount);
+            displayB = String.format(Locale.US, "%,.4f", amount);
         }
         return displayB;
     }

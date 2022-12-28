@@ -1307,5 +1307,32 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="wallet_syncing_alert_title" translatable="false">Wallet is syncing...</string>
     <string name="wallet_syncing_alert_message" translatable="false">If you close the wallet, synchronization will be paused. Are you sure you want to exit the wallet?</string>
     <string name="your_pin_has_been_changed_successfully" translatable="false">Your PIN has been changed successfully!</string>
+    <string name="tx_account_formatted" translatable="false">(%1$d, %2$d) &nbsp;&lt;span style=\"background-color: #%3$s; color: #%4$s;\"&gt;&nbsp;%5$s&nbsp;&lt;/span&gt;</string>
+    <string name="tx_timestamp">Timestamp</string>
+    <string name="tx_id">TX ID</string>
+    <string name="tx_key">TX Key</string>
+    <string name="tx_destination">Destination</string>
+    <string name="tx_paymentId">Payment ID</string>
+    <string name="tx_blockheight">Block</string>
+    <string name="tx_amount">Amount</string>
+    <string name="tx_fee">Fee</string>
+    <string name="tx_transfers">Transfers</string>
+    <string name="tx_notes">Notes</string>
+    <string name="tx_notes_hint">(optional)</string>
+    <string name="tx_title"> Details</string>
+    <string name="label_copy_bdxtokey">Key</string>
+    <string name="message_copy_viewkey">View Key copied to clipboard!</string>
+    <string name="message_copy_spendkey" translatable="false">Spend Key copied to clipboard!</string>
+    <string name="message_copy_bdxtokey">Key copied to clipboard!</string>
+    <string name="message_copy_address">Wallet Address copied to clipboard!</string>
+    <string name="message_copy_mnemonics_seed" translatable="false">Mnemonic Seed copied to clipboard!</string>
+    <string name="message_copy_txid">Transaction ID copied to clipboard!</string>
+    <string name="message_nocopy">Copy disabled for security reasons!</string>
+    <string name="tx_details_transition_name" translatable="false">tx_transition</string>
+    <string name="tx_account">Account #</string>
+
+
+
+
 
 </resources>

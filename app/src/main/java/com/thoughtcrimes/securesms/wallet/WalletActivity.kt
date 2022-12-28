@@ -47,11 +47,13 @@ import java.lang.IllegalArgumentException
 import java.util.*
 import android.content.DialogInterface
 import androidx.core.content.ContextCompat
+import com.thoughtcrimes.securesms.MediaOverviewActivity
+import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
 
 
 class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.Observer,
     WalletScannerFragment.OnScannedListener, SendFragment.OnScanListener, SendFragment.Listener,
-    ReceiveFragment.Listener,WalletFragment.OnScanListener,ScannerFragment.OnWalletScannedListener, WalletScannerFragment.Listener,NodeFragment.Listener{
+    ReceiveFragment.Listener,WalletFragment.OnScanListener,ScannerFragment.OnWalletScannedListener, WalletScannerFragment.Listener,NodeFragment.Listener,TxFragment.Listener{
     lateinit var binding: ActivityWalletBinding
 
 
@@ -110,7 +112,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             when (type) {
                 Toolbar.BUTTON_BACK -> {
                     val fragment: Fragment = getCurrentFragment()!!
-                    if (fragment is SendFragment || fragment is ReceiveFragment || fragment is ScannerFragment || fragment is WalletScannerFragment) {
+                    if (fragment is SendFragment || fragment is ReceiveFragment || fragment is ScannerFragment || fragment is WalletScannerFragment || fragment is TxFragment) {
                         if (!(fragment as OnBackPressedListener).onBackPressed()) {
                             TextSecurePreferences.callFiatCurrencyApi(this,false)
                             super.onBackPressed()
@@ -225,7 +227,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     override fun onBackPressed() {
         val fragment: Fragment = getCurrentFragment()!!
-        if (fragment is SendFragment || fragment is ReceiveFragment || fragment is ScannerFragment || fragment is WalletScannerFragment) {
+        if (fragment is SendFragment || fragment is ReceiveFragment || fragment is ScannerFragment || fragment is WalletScannerFragment || fragment is TxFragment) {
             if (!(fragment as OnBackPressedListener).onBackPressed()) {
                 TextSecurePreferences.callFiatCurrencyApi(this,false)
                 super.onBackPressed()
@@ -473,9 +475,14 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     override fun onTxDetailsRequest(view: View?, info: TransactionInfo?) {
         //Important
-        /*val args = Bundle()
+        val args = Bundle()
         args.putParcelable(TxFragment.ARG_INFO, info)
-        replaceFragmentWithTransition(view, TxFragment(), null, args)*/
+        replaceFragmentWithTransition(view, TxFragment(), null, args)
+       /* val intent = Intent(this, TxFragment::class.java)
+        Log.d("Beldex","Transaction list issue value of info walletActivity $info")
+        intent.putExtra("info", info)
+
+        startActivity(intent)*/
     }
 
     private var synced = false
@@ -489,8 +496,24 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     override val isWatchOnly: Boolean
         get() = if(getWallet()!=null){getWallet()!!.isWatchOnly}else{false}
 
+    override fun getWalletSubaddress(accountIndex: Int, subaddressIndex: Int): Subaddress {
+        return getWallet()!!.getSubaddressObject(accountIndex, subaddressIndex)
+    }
+
     override fun getTxKey(txId: String?): String? {
         return getWallet()!!.getTxKey(txId)
+    }
+
+    override fun getTxNotes(hash: String?): String {
+        return getWallet()!!.getUserNote(hash)
+    }
+
+    override fun setTxNotes(txId: String?, txNotes: String?): Boolean {
+        return getWallet()!!.setUserNote(txId, txNotes)
+    }
+
+    override fun getTxAddress(major: Int, minor: Int): String {
+        return getWallet()!!.getSubaddress(major, minor)
     }
 
     override fun onWalletReceive(view: View?) {
@@ -525,6 +548,10 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     override fun setTitle(title: String?) {
         Timber.d("setTitle:%s.", title)
         binding.toolbar.setTitle(title)
+    }
+
+    override fun showSubaddress(view: View?, subaddressIndex: Int) {
+        TODO("Not yet implemented")
     }
 
     override fun setTitle(title: String?, subtitle: String?) {
@@ -857,6 +884,8 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             R.string.send_transition_name
         else if (newFragment is WalletScannerFragment)
             R.string.scan_transition_name
+        else if(newFragment is TxFragment)
+            R.string.tx_details_transition_name
         else throw IllegalStateException("expecting known transition")
         Log.d("Beldex", "extras value transition $transition")
 

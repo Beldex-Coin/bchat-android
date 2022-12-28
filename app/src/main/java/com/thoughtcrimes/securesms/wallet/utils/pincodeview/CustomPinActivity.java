@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.thoughtcrimes.securesms.wallet.WalletActivity;
@@ -97,6 +98,12 @@ public class CustomPinActivity extends AppLockActivity {
         dialog.setView(dialogView);
 
         Button okButton = dialogView.findViewById(R.id.okButton);
+        TextView title = dialogView.findViewById(R.id.setUpPinSuccessTitle);
+        if(status){
+            title.setText(R.string.your_pin_has_been_set_up_successfully);
+        }else{
+            title.setText(R.string.your_pin_has_been_changed_successfully);
+        }
 
         AlertDialog alert = dialog.create();
         alert.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

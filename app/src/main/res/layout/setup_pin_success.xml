@@ -21,6 +21,7 @@
 
 
         <TextView
+            android:id="@+id/setUpPinSuccessTitle"
             android:fontFamily="@font/poppins_bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -29,7 +30,6 @@
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="10dp"
             android:gravity="center"
-            android:text="@string/your_pin_has_been_set_up_successfully"
             android:textAlignment="center" />
 
         <Button

@@ -3,6 +3,9 @@ package com.thoughtcrimes.securesms.wallet
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.provider.Settings.Global.getString
+import android.text.Html
+import android.text.Spanned
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,9 +15,11 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.get
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.io.Resources.getResource
 import com.thoughtcrimes.securesms.data.Crypto
 import com.thoughtcrimes.securesms.data.UserNotes
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
@@ -90,65 +95,40 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
             LayoutInflater.from(parent.context).inflate(R.layout.transaction_list_item, parent, false)
         return ViewHolder(view)
     }
+
     override fun onBindViewHolder(
         holder: ViewHolder,
         position: Int
     ) {
         holder.bind(position)
-    }
-
-/*    override fun onBindViewHolder(
-        holder: ViewHolder,
-        position: Int
-    ) {
-        holder.bind(position)
-        var selectedPosition= -1;
 
         holder.itemView.setOnClickListener{
             if (listener != null) {
-                Log.d("Beldex","Transaction list issue value of holder otemviewType ${holder.itemViewType}")
-                Log.d("Beldex","Transaction list issue value of holder RecyclerView position  ${RecyclerView.NO_POSITION}")
-                Log.d("Beldex","Transaction list issue value of holder selectedPosition $selectedPosition")
-                Log.d("Beldex","Transaction list issue value of holder position  $position")
-               *//* if (holder.itemViewType != RecyclerView.NO_POSITION) { *//*// Check if an item was deleted, but the user clicked it before the UI removed it
-                if (holder.transactionDetailsLayout.isShown) {
-                    Log.d("Beldex","Transaction list issue value of holder transactionDetailsLayout if")
-                }
-
-                if(selectedPosition != position) {
-                    if (holder.transactionDetailsLayout.visibility == View.GONE) {
+            Log.d("Beldex","Transaction list issue value of holder otemviewType ${holder.itemViewType}")
+            Log.d("Beldex","Transaction list issue value of holder RecyclerView position  ${RecyclerView.NO_POSITION}")
+               /* if (holder.itemViewType != RecyclerView.NO_POSITION) { */// Check if an item was deleted, but the user clicked it before the UI removed it
+                    if(holder.transactionDetailsLayout.visibility==View.GONE) {
                         holder.transactionDetailsLayout.visibility = View.VISIBLE
                         holder.tvAddressTitle.visibility = View.VISIBLE
-                        if (DatabaseComponent.get(context!!).bchatRecipientAddressDatabase()
-                                .getRecipientAddress(holder.infoItem!!.hash) != null
-                        ) {
-                            holder.tvAddress.text =
-                                DatabaseComponent.get(context!!).bchatRecipientAddressDatabase()
-                                    .getRecipientAddress(holder.infoItem!!.hash)
+                        if(DatabaseComponent.get(context!!).bchatRecipientAddressDatabase().getRecipientAddress(holder.infoItem!!.hash)!=null) {
+                            holder.tvAddress.text = DatabaseComponent.get(context!!).bchatRecipientAddressDatabase()
+                                .getRecipientAddress(holder.infoItem!!.hash)
                         }//infoItem!!.address
-                        else {
+                        else{
                             holder.tvAddressTitle.visibility = View.GONE
-                            holder.tvAddress.text = ""
+                            holder.tvAddress.text=""
                         }
-                        selectedPosition = position
                         holder.expandableArrow.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
-                    } else {
-                        selectedPosition = position
+                    }else{
                         holder.transactionDetailsLayout.visibility = View.GONE
                         holder.expandableArrow.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
                     }
-                }*//*else{
-                    notifyDataSetChanged()
-                }*//*
-
-                 //        holder.transactionDetailsLayout.visibility = View.GONE
-
                     //Important
                     //listener!!.onInteraction(view, infoItems!!.get(position))
                 }
            // }
         }
-    }*/
+    }
 
     override fun getItemViewType(position: Int): Int {
         return position
@@ -184,7 +164,7 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
         return infoItems!![position]
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),View.OnClickListener {
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         private var tvAmount: TextView = itemView.findViewById(R.id.transaction_amount)
         private var tvFeeTitle:TextView = itemView.findViewById(R.id.transaction_fee_title)
         private var tvFee: TextView = itemView.findViewById(R.id.transaction_fee)
@@ -264,8 +244,8 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
             if(txId.text.isNotEmpty()){
                 txId.setOnClickListener {
                     try {
-                        val url = "https://explorer.beldex.io/tx/${txId.text}" // Mainnet
-                       // val url = "http://154.26.139.105/tx/${txId.text}" // Testnet
+                        //val url = "https://explorer.beldex.io/tx/${txId.text}" // Mainnet
+                        val url = "http://154.26.139.105/tx/${txId.text}" // Testnet
                         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                         context!!.startActivity(intent)
                     } catch (e: Exception) {
@@ -367,41 +347,8 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
                 //tvPaymentId.text = label
             }*/
             tvDateTime.text = getDateTime(infoItem!!.timestamp)
-            itemView.setOnClickListener(this)
         }
-        override fun onClick(view: View) {
-            if (listener != null) {
-                val position = adapterPosition // gets item position
-                if (position != RecyclerView.NO_POSITION) { // Check if an item was deleted, but the user clicked it before the UI removed it
-                    listener!!.onInteraction(view, infoItems!![position])
-                }
-            }
-        /*    if (listener != null) {
-                val position = adapterPosition // gets item position
-                if (position != RecyclerView.NO_POSITION) { // Check if an item was deleted, but the user clicked it before the UI removed it
-                        if (transactionDetailsLayout.visibility == View.VISIBLE) {
-                            transactionDetailsLayout.visibility = View.GONE
 
-                        } else {
-                            transactionDetailsLayout.visibility = View.VISIBLE
-                            if (DatabaseComponent.get(context!!).bchatRecipientAddressDatabase()
-                                    .getRecipientAddress(infoItem!!.hash) != null
-                            ) {
-                                tvAddress.text =
-                                    DatabaseComponent.get(context!!).bchatRecipientAddressDatabase()
-                                        .getRecipientAddress(infoItem!!.hash)
-                            }//infoItem!!.address
-                            else {
-                                tvAddressTitle.visibility = View.GONE
-                                tvAddress.text = ""
-                            }
-                        }
-                    }
-
-                    //Important
-                    //listener!!.onInteraction(view, infoItems!!.get(position))
-                }*/
-        }
         /*init{
             //ivTxType = itemView.findViewById(R.id.ivTxType)
             //tvPaymentId = itemView.findViewById(R.id.tx_paymentid)

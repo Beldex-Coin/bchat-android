@@ -403,10 +403,6 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thoughtcrimes.securesms.wallet.TxFragment"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.thoughtcrimes.securesms.ShareActivity"
             android:exported="false"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"

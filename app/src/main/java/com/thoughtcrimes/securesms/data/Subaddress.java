@@ -47,10 +47,6 @@ public class Subaddress implements Comparable<Subaddress> {
         return address.substring(0, 8) + "…" + address.substring(address.length() - 8);
     }
 
-    public String getAddress() {
-        return address;
-    }
-
     public static final Pattern DEFAULT_LABEL_FORMATTER = Pattern.compile("^[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2}:[0-9]{2}:[0-9]{2}$");
 
     public String getDisplayLabel() {

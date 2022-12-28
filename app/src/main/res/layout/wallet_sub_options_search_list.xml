@@ -74,6 +74,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
                 android:layout_marginTop="20dp"
+                android:scrollbars="vertical"
                 android:layout_marginBottom="5dp"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>

@@ -180,7 +180,7 @@ dependencies {
 }
 
 def canonicalVersionCode = 24
-def canonicalVersionName = "2.0.0"
+def canonicalVersionName = "1.2.2"
 
 //First Release Date 17-06-2022
 //Version Code 15 Version Name 1.0.0
@@ -209,8 +209,8 @@ def canonicalVersionName = "2.0.0"
 //Ninth Release Date 05-10-2022
 //Version Code 23 Version Name 1.2.1
 
-//Tenth Release Date
-//Version Code 24 Version Name 2.0.0
+//Tenth Internal Test Release Date 28-12-2022
+//Version Code 24 Version Name 1.2.2
 
 
 def postFixSize = 10

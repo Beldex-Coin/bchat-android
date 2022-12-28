@@ -594,8 +594,8 @@ public class WalletService extends Service {
 
     private Wallet loadWallet(String walletName, String walletPassword) {
         Wallet wallet = openWallet(walletName, walletPassword);
-        long walletRestoreHeight = wallet.getRestoreHeight();
         if (wallet != null) {
+            long walletRestoreHeight = wallet.getRestoreHeight();
             //Log.d("Using daemon %s", WalletManager.getInstance().getDaemonAddress());
             showProgress(55);
             Log.d("Beldex","isOnline value in wallet.init " + CheckOnline.Companion.isOnline(getApplicationContext()));

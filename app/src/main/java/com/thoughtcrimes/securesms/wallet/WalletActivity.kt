@@ -409,6 +409,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         try {
             if(getWallet()!=null) {
                 Log.d("Beldex","forceUpdate() if")
+                Log.d("TransactionList", "full = true -1")
                 onRefreshed(getWallet(), true)
             }else{
                 Log.d("Beldex","forceUpdate() else")

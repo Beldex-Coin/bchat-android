@@ -450,18 +450,19 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
         adapter = TransactionInfoAdapter(activity, this)
         binding.transactionList.adapter = adapter
-        adapter!!.registerAdapterDataObserver(object : AdapterDataObserver() {
+        /*adapter!!.registerAdapterDataObserver(object : AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 if (positionStart == 0 && binding.transactionList.computeVerticalScrollOffset() == 0) binding.transactionList.scrollToPosition(
                     positionStart
                 )
             }
-        })
+        })*/
+        binding.transactionList.isNestedScrollingEnabled = false
 
         //      int count =  adapter.getItemCount();
 //      Timber.d ("Adapter count %s", adapter.getItemCount());
 //        anchorBehavior.setHideable(count == 0);
-        binding.transactionList.addOnItemTouchListener(
+        /*binding.transactionList.addOnItemTouchListener(
             SwipeableRecyclerViewTouchListener(binding.transactionList,
                 object : SwipeableRecyclerViewTouchListener.SwipeListener {
                     override fun canSwipeLeft(position: Int): Boolean {
@@ -492,7 +493,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                         }
                     }
                 })
-        )
+        )*/
 
         binding.sendCardViewButton.setOnClickListener{ v: View? ->
             activityCallback!!.onSendRequest(v)
@@ -987,6 +988,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
     }
 
     private fun showSelectedDecimalBalance(balance: String, synchronized: Boolean){
+        TextSecurePreferences.getDecimals(requireActivity())?.let { Log.d("Decimal", it) }
         if(!synchronized){
             when {
                 TextSecurePreferences.getDecimals(requireActivity()) == "2 - Two (0.00)" -> {
@@ -1106,8 +1108,10 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         if (adapter!!.needsTransactionUpdateOnNewBlock()) {
             wallet.refreshHistory()
             full = true
+            Log.d("TransactionList","full = true 1")
         }
         if (full) {
+            Log.d("TransactionList","full = true 2")
             val list: MutableList<TransactionInfo> = ArrayList()
             val streetHeight: Long = activityCallback!!.streetModeHeight
             wallet.refreshHistory()

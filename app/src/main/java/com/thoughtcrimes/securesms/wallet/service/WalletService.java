@@ -145,6 +145,7 @@ public class WalletService extends Service {
                 updateDaemonState(wallet, wallet.getBlockChainHeight());
                 wallet.refreshHistory();
                 if (observer != null) {
+                    Log.d("TransactionList","full = true 0");
                     updated = !observer.onRefreshed(wallet, true);
                 }
             }

@@ -44,7 +44,7 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
         fun onInteraction(view: View?, item: TransactionInfo?)
     }
 
-    public var infoItems: ArrayList<TransactionInfo>? = null
+    var infoItems: ArrayList<TransactionInfo>? = null
     private var listener: OnInteractionListener? = null
 
     private var context: Context? = null
@@ -101,9 +101,12 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
         position: Int
     ) {
         holder.bind(position)
+
         holder.itemView.setOnClickListener{
             if (listener != null) {
-                if (holder.itemViewType != RecyclerView.NO_POSITION) { // Check if an item was deleted, but the user clicked it before the UI removed it
+            Log.d("Beldex","Transaction list issue value of holder otemviewType ${holder.itemViewType}")
+            Log.d("Beldex","Transaction list issue value of holder RecyclerView position  ${RecyclerView.NO_POSITION}")
+               /* if (holder.itemViewType != RecyclerView.NO_POSITION) { */// Check if an item was deleted, but the user clicked it before the UI removed it
                     if(holder.transactionDetailsLayout.visibility==View.GONE) {
                         holder.transactionDetailsLayout.visibility = View.VISIBLE
                         holder.tvAddressTitle.visibility = View.VISIBLE
@@ -123,7 +126,7 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
                     //Important
                     //listener!!.onInteraction(view, infoItems!!.get(position))
                 }
-            }
+           // }
         }
     }
 
@@ -193,8 +196,8 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
         fun bind(position: Int) {
             infoItem = infoItems!![position]
             itemView.transitionName = context!!.getString(R.string.tx_item_transition_name, infoItem!!.hash)
-            val userNotes = UserNotes(infoItem!!.notes)
-            if (userNotes.bdxtoKey != null) {
+          /*  val userNotes = UserNotes(infoItem!!.notes)*/
+         /*   if (userNotes.bdxtoKey != null) {
                 val crypto: Crypto? = Crypto.withSymbol(userNotes.bdxtoCurrency)
                 if (crypto != null) {
                     //ivTxType.setImageResource(crypto.getIconEnabledId())
@@ -204,19 +207,37 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
                 }
             } else {
                 //ivTxType.visibility = View.GONE
-            }
+            }*/
             val displayAmount: String = Helper.getDisplayAmount(infoItem!!.amount, Helper.DISPLAY_DIGITS_INFO)
             Log.d("infoItem!!.direction","${infoItem!!.direction}")
             if (infoItem!!.direction === TransactionInfo.Direction.Direction_Out) {
                 tvTxStatus.text = context!!.getString(R.string.tx_status_sent)
                 tvTxStatusIcon.setImageResource(R.drawable.ic_wallet_send_button)
-                tvAmount.text = context!!.getString(R.string.tx_list_amount_negative, displayAmount)
-                tvAmount.setTextColor(ContextCompat.getColor(context!!,R.color.wallet_send_button))
+                if(displayAmount> 0.toString()) {
+                    tvAmount.text =
+                        context!!.getString(R.string.tx_list_amount_negative, displayAmount)
+                    Log.d("Beldex", "Transaction list issue  value of amount - $displayAmount")
+                    tvAmount.setTextColor(
+                        ContextCompat.getColor(
+                            context!!,
+                            R.color.wallet_send_button
+                        )
+                    )
+                }
             } else {
                 tvTxStatus.text = context!!.getString(R.string.tx_status_received)
                 tvTxStatusIcon.setImageResource(R.drawable.ic_wallet_receive_button)
-                tvAmount.text = context!!.getString(R.string.tx_list_amount_positive, displayAmount)
-                tvAmount.setTextColor(ContextCompat.getColor(context!!,R.color.wallet_receive_button))
+                if(displayAmount> 0.toString()) {
+                    tvAmount.text =
+                        context!!.getString(R.string.tx_list_amount_positive, displayAmount)
+                    Log.d("Beldex", "Transaction list issue  value of amount + $displayAmount")
+                    tvAmount.setTextColor(
+                        ContextCompat.getColor(
+                            context!!,
+                            R.color.wallet_receive_button
+                        )
+                    )
+                }
             }
             txId.text = infoItem!!.hash
             //SteveJosephh21
@@ -232,13 +253,17 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
                     }
                 }
             }
-            if (infoItem!!.isFailed) {
-                tvTxBlockHeight.text = context!!.getString(R.string.tx_failed)
-            } else if (infoItem!!.isPending) {
-                tvTxBlockHeight.text = context!!.getString(R.string.tx_pending)
-            } else {
-                //tvTxBlockHeight.text ="ok"
-                tvTxBlockHeight.text = "" + infoItem!!.blockheight
+            when {
+                infoItem!!.isFailed -> {
+                    tvTxBlockHeight.text = context!!.getString(R.string.tx_failed)
+                }
+                infoItem!!.isPending -> {
+                    tvTxBlockHeight.text = context!!.getString(R.string.tx_pending)
+                }
+                else -> {
+                    //tvTxBlockHeight.text ="ok"
+                    tvTxBlockHeight.text = infoItem!!.blockheight.toString()
+                }
             }
             tvDateTimeHead.text = getDateTime(infoItem!!.timestamp)
 
@@ -253,8 +278,8 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
                 tvFeeTitle.visibility = View.GONE
             }
             if (infoItem!!.isFailed) {
-                tvAmount.setText(context!!.getString(R.string.tx_list_amount_failed, displayAmount))
-                tvFee.setText(context!!.getString(R.string.tx_list_failed_text))
+                tvAmount.text = context!!.getString(R.string.tx_list_amount_failed, displayAmount)
+                tvFee.text = context!!.getString(R.string.tx_list_failed_text)
                 tvFee.visibility = View.VISIBLE
                 tvFeeTitle.visibility = View.VISIBLE
                 setTxColour(failedColour)
@@ -274,14 +299,14 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
                     //pbConfirmations.setProgressCompat(confirmations, true)
                     val confCount = confirmations.toString()
                     //tvConfirmations.text = confCount
-                    if (confCount.length == 1) // we only have space for character in the progress circle
+                   /* if (confCount.length == 1) // we only have space for character in the progress circle
                     {
                         //tvConfirmations.visibility = View.VISIBLE else tvConfirmations.visibility =View.GONE
-                    }
-                } else {
+                    }*/
+                } /*else {
                     //pbConfirmations.setVisibility(View.GONE)
                     //tvConfirmations.visibility = View.GONE
-                }
+                }*/
             } else {
                 setTxColour(outboundColour)
                 //pbConfirmations.setVisibility(View.GONE)
@@ -324,13 +349,13 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
             tvDateTime.text = getDateTime(infoItem!!.timestamp)
         }
 
-        init{
+        /*init{
             //ivTxType = itemView.findViewById(R.id.ivTxType)
             //tvPaymentId = itemView.findViewById(R.id.tx_paymentid)
             //pbConfirmations = itemView.findViewById(R.id.pbConfirmations)
             //pbConfirmations.setMax(TransactionInfo.CONFIRMATION)
             //tvConfirmations = itemView.findViewById(R.id.tvConfirmations)
-        }
+        }*/
     }
 
     fun updateList(list: ArrayList<TransactionInfo>) {

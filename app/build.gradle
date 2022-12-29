@@ -8,7 +8,7 @@ buildscript {
         classpath files('libs/gradle-witness.jar')
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlinVersion"
-        classpath "com.google.gms:google-services:4.3.10"
+        classpath "com.google.gms:google-services:4.3.12"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$daggerVersion"
     }
 }
@@ -45,7 +45,7 @@ dependencies {
     implementation 'androidx.activity:activity-ktx:1.2.2'
     implementation 'androidx.fragment:fragment-ktx:1.3.2'
     implementation "androidx.core:core-ktx:1.3.2"
-    implementation "androidx.work:work-runtime-ktx:2.4.0"
+    implementation "androidx.work:work-runtime-ktx:2.7.1"
     implementation ("com.google.firebase:firebase-messaging:18.0.0") {
         exclude group: 'com.google.firebase', module: 'firebase-core'
         exclude group: 'com.google.firebase', module: 'firebase-analytics'
@@ -179,8 +179,8 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.7'
 }
 
-def canonicalVersionCode = 24
-def canonicalVersionName = "1.2.2"
+def canonicalVersionCode = 25
+def canonicalVersionName = "1.2.3"
 
 //First Release Date 17-06-2022
 //Version Code 15 Version Name 1.0.0
@@ -212,6 +212,9 @@ def canonicalVersionName = "1.2.2"
 //Tenth Internal Test Release Date 28-12-2022
 //Version Code 24 Version Name 1.2.2
 
+//Eleventh Internal Test Release Date 29-12-2022
+//Version Code 25 Version Name 1.2.3
+
 
 def postFixSize = 10
 def abiPostFix = ['armeabi-v7a' : 1,
@@ -221,7 +224,7 @@ def abiPostFix = ['armeabi-v7a' : 1,
 
 android {
     compileSdkVersion androidCompileSdkVersion
-    buildToolsVersion '29.0.3'
+    buildToolsVersion '30.0.3'
     useLibrary 'org.apache.http.legacy'
 
     dexOptions {
@@ -261,7 +264,7 @@ android {
         versionName canonicalVersionName
 
         minSdkVersion androidMinimumSdkVersion
-        targetSdkVersion androidCompileSdkVersion
+        targetSdkVersion androidTargetSdkVersion
 
         multiDexEnabled = true
 

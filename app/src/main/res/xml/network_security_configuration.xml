@@ -1,20 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
-<domain-config cleartextTrafficPermitted="true">
-    <domain includeSubdomains="true">127.0.0.1</domain>
-</domain-config>
-<domain-config cleartextTrafficPermitted="true">
-    <domain includeSubdomains="false">38.242.196.72</domain>
-    <trust-anchors>
-        <certificates src="@raw/publicnode3"/>
-    </trust-anchors>
-</domain-config>
-<domain-config cleartextTrafficPermitted="false">
-    <domain includeSubdomains="false">154.26.139.105</domain>
-    <trust-anchors>
-        <certificates src="@raw/publicnode2"/>
-    </trust-anchors>
-</domain-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">127.0.0.1</domain>
+    </domain-config>
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="false">publicnode5.rpcnode.stream</domain>
+        <trust-anchors>
+            <certificates src="@raw/publicnode5"/>
+        </trust-anchors>
+    </domain-config>
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="false">publicnode1.rpcnode.stream</domain>
+        <trust-anchors>
+            <certificates src="@raw/publicnode1"/>
+        </trust-anchors>
+    </domain-config>
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="false">publicnode2.rpcnode.stream</domain>
+        <trust-anchors>
+            <certificates src="@raw/publicnode2"/>
+        </trust-anchors>
+    </domain-config>
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="false">publicnode3.rpcnode.stream</domain>
+        <trust-anchors>
+            <certificates src="@raw/publicnode3"/>
+        </trust-anchors>
+    </domain-config>
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="false">publicnode4.rpcnode.stream</domain>
+        <trust-anchors>
+            <certificates src="@raw/publicnode4"/>
+        </trust-anchors>
+    </domain-config>
+
 </network-security-config>
 
 

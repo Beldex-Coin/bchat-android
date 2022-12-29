@@ -12,12 +12,6 @@ import android.text.TextUtils
 import android.util.Log
 import android.util.Pair
 import android.util.TypedValue
-import android.view.ActionMode
-import android.view.Menu
-import android.view.MenuItem
-import android.view.MotionEvent
-import android.view.View
-import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.Toast
@@ -79,10 +73,16 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 import android.content.*
+import android.content.pm.PackageManager
 
 import android.os.*
+import android.telephony.PhoneStateListener
+import android.telephony.TelephonyCallback
+import android.telephony.TelephonyManager
+import android.view.*
 import android.view.ViewGroup.MarginLayoutParams
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.beldex.libbchat.messaging.messages.signal.OutgoingMediaMessage
 import com.beldex.libbchat.messaging.messages.signal.OutgoingTextMessage
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment
@@ -95,6 +95,7 @@ import com.beldex.libsignal.utilities.guava.Optional
 import com.thoughtcrimes.securesms.ApplicationContext
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
 import com.thoughtcrimes.securesms.audio.AudioRecorder
+import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.contactshare.SimpleTextWatcher
 import com.thoughtcrimes.securesms.conversation.v2.input_bar.InputBarButton
 import com.thoughtcrimes.securesms.conversation.v2.input_bar.InputBarDelegate
@@ -111,6 +112,9 @@ import com.thoughtcrimes.securesms.mediasend.Media
 import com.thoughtcrimes.securesms.mediasend.MediaSendActivity
 import com.thoughtcrimes.securesms.mms.*
 import com.thoughtcrimes.securesms.permissions.Permissions
+import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
+import com.thoughtcrimes.securesms.service.WebRtcCallService
+import com.thoughtcrimes.securesms.wallet.CheckOnline
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import nl.komponents.kovenant.ui.successUi
@@ -1009,8 +1013,137 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
             return false
+        }else if(item.itemId == R.id.menu_call) {
+            if (Helper.getPhoneStatePermission(this)) {
+                isMenuCall()
+            }else{
+                Log.d("Beldex","Permission not granded")
+            }
         }
         return ConversationMenuHelper.onOptionItemSelected(this, item, viewModel.recipient)
+    }
+
+    private fun isMenuCall() {
+        if (CheckOnline.isOnline(this)) {
+            Log.d("Beldex", "Call state issue called")
+            val tm = this.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.READ_PHONE_STATE
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                com.beldex.libsignal.utilities.Log.d("Beldex", "Call state issue called 1")
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    Log.d("Beldex", "Call state issue called 2")
+                    tm.registerTelephonyCallback(
+                        this.mainExecutor,
+                        object : TelephonyCallback(), TelephonyCallback.CallStateListener {
+                            override fun onCallStateChanged(state: Int) {
+                                when (state) {
+                                    TelephonyManager.CALL_STATE_RINGING -> {
+                                        Log.d("Beldex", "Call state issue called 3")
+                                        Toast.makeText(
+                                            this@ConversationActivityV2,
+                                            "BChat call won't allow ,Because your phone call ringing",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                    TelephonyManager.CALL_STATE_OFFHOOK -> {
+                                        Log.d("Beldex", "Call state issue called 4")
+                                        Toast.makeText(
+                                            this@ConversationActivityV2,
+                                            "BChat call won't allow ,Because your phone call is on going",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+
+                                    }
+                                    TelephonyManager.CALL_STATE_IDLE -> {
+                                        Log.d("Beldex", "Call state issue called 5")
+                                        call(this@ConversationActivityV2, viewModel.recipient)
+                                    }
+                                }
+                            }
+                        })
+
+                } else {
+                    com.beldex.libsignal.utilities.Log.d("Beldex", "Call state issue called 6")
+                    tm.listen(object : PhoneStateListener() {
+                        override fun onCallStateChanged(state: Int, phoneNumber: String?) {
+                            super.onCallStateChanged(state, phoneNumber)
+                            when (state) {
+                                TelephonyManager.CALL_STATE_RINGING -> {
+                                    Log.d("Beldex", "Call state issue called 7")
+                                    Toast.makeText(
+                                        this@ConversationActivityV2,
+                                        "BChat call won't allow ,Because your phone call ringing",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                                TelephonyManager.CALL_STATE_OFFHOOK -> {
+                                    Log.d("Beldex", "Call state issue called 8")
+                                    Toast.makeText(
+                                        this@ConversationActivityV2,
+                                        "BChat call won't allow ,Because your phone call is on going",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+
+                                }
+                                TelephonyManager.CALL_STATE_IDLE -> {
+                                    Log.d("Beldex", "Call state issue called 9")
+                                    call(this@ConversationActivityV2, viewModel.recipient)
+                                }
+                            }
+                        }
+                    }, PhoneStateListener.LISTEN_CALL_STATE)
+                }
+            } else {
+                Log.d("Beldex", "Call state issue called else")
+            }
+
+        } else {
+            Toast.makeText(this, "Check your Internet", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun call(context: Context, thread: Recipient) {
+
+        if (!TextSecurePreferences.isCallNotificationsEnabled(context)) {
+            /* AlertDialog.Builder(context)
+                 .setTitle(R.string.ConversationActivity_call_title)
+                 .setMessage(R.string.ConversationActivity_call_prompt)
+                 .setPositiveButton(R.string.activity_settings_title) { _, _ ->
+                     val intent = Intent(context, PrivacySettingsActivity::class.java)
+                     context.startActivity(intent)
+                 }
+                 .setNeutralButton(R.string.cancel) { d, _ ->
+                     d.dismiss()
+                 }.show()*/
+            //SteveJosephh22
+            val factory = LayoutInflater.from(context)
+            val callPermissionDialogView: View = factory.inflate(R.layout.call_permissions_dialog_box, null)
+            val callPermissionDialog = AlertDialog.Builder(context).create()
+            callPermissionDialog.setView(callPermissionDialogView)
+            callPermissionDialogView.findViewById<TextView>(R.id.settingsDialogBoxButton).setOnClickListener{
+                val intent = Intent(context, PrivacySettingsActivity::class.java)
+                context.startActivity(intent)
+                callPermissionDialog.dismiss()
+            }
+            callPermissionDialogView.findViewById<TextView>(R.id.cancelDialogBoxButton).setOnClickListener{
+                callPermissionDialog.dismiss()
+            }
+            callPermissionDialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+            callPermissionDialog.show()
+            return
+        }
+
+        val service = WebRtcCallService.createCall(context, thread)
+        context.startService(service)
+
+        val activity = Intent(context, WebRtcCallActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        context.startActivity(activity)
+
     }
 
     // `position` is the adapter position; not the visual position

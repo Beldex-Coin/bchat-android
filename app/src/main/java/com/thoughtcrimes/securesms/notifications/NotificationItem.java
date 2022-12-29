@@ -4,6 +4,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.TaskStackBuilder;
@@ -79,9 +81,16 @@ public class NotificationItem {
     intent.putExtra(ConversationActivityV2.THREAD_ID, threadId);
     intent.setData((Uri.parse("custom://"+System.currentTimeMillis())));
 
+
+
+    int intentFlags = PendingIntent.FLAG_UPDATE_CURRENT;
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+      intentFlags |= PendingIntent.FLAG_MUTABLE;
+    }
+
     return TaskStackBuilder.create(context)
-                           .addNextIntentWithParentStack(intent)
-                           .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+            .addNextIntentWithParentStack(intent)
+            .getPendingIntent(0, intentFlags);//PendingIntent.FLAG_UPDATE_CURRENT
   }
 
   public long getId() {

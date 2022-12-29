@@ -21,7 +21,7 @@ public class PendingMessageNotificationBuilder extends AbstractNotificationBuild
 
     Intent intent = new Intent(context, HomeActivity.class);
 
-    setSmallIcon(R.drawable.ic_notification);
+    setSmallIcon(R.drawable.ic_bchat_logo);
     setColor(context.getResources().getColor(R.color.textsecure_primary));
     setCategory(NotificationCompat.CATEGORY_MESSAGE);
 
@@ -29,7 +29,7 @@ public class PendingMessageNotificationBuilder extends AbstractNotificationBuild
     setContentText(context.getString(R.string.MessageNotifier_you_have_pending_signal_messages));
     setTicker(context.getString(R.string.MessageNotifier_you_have_pending_signal_messages));
 
-    setContentIntent(PendingIntent.getActivity(context, 0, intent, 0));
+    setContentIntent(PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE));
     setAutoCancel(true);
     setAlarms(null, Recipient.VibrateState.DEFAULT);
 

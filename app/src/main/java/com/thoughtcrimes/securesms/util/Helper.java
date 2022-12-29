@@ -94,6 +94,7 @@ public class Helper {
     }
 
     static public final int PERMISSIONS_REQUEST_CAMERA = 7;
+    static public  final int PERMISSION_REQUEST_PHONE_STATE = 1;
 
     static public boolean getCameraPermission(Activity context) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
@@ -102,6 +103,22 @@ public class Helper {
                 Timber.w("Permission denied for CAMERA - requesting it");
                 String[] permissions = {Manifest.permission.CAMERA};
                 context.requestPermissions(permissions, PERMISSIONS_REQUEST_CAMERA);
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return true;
+        }
+    }
+
+    static public boolean getPhoneStatePermission(Activity context) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            if (context.checkSelfPermission(Manifest.permission.READ_PHONE_STATE)
+                    == PackageManager.PERMISSION_DENIED) {
+                Timber.w("Permission denied for Phone - requesting it");
+                String[] permissions = {Manifest.permission.READ_PHONE_STATE};
+                context.requestPermissions(permissions, PERMISSION_REQUEST_PHONE_STATE);
                 return false;
             } else {
                 return true;

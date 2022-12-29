@@ -5,12 +5,15 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.media.AudioManager
 import android.os.Build
 import android.os.IBinder
 import android.os.ResultReceiver
 import android.telephony.PhoneStateListener
 import android.telephony.TelephonyManager
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.beldex.libbchat.messaging.calls.CallMessageType
@@ -41,6 +44,7 @@ import javax.inject.Inject
 import com.thoughtcrimes.securesms.webrtc.data.State as CallState
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
 
+@RequiresApi(Build.VERSION_CODES.S)
 @AndroidEntryPoint
 class WebRtcCallService: Service(), CallManager.WebRtcListener {
 
@@ -183,15 +187,25 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
     private val lockManager by lazy { LockManager(this) }
     private val serviceExecutor = Executors.newSingleThreadExecutor()
     private val timeoutExecutor = Executors.newScheduledThreadPool(1)
-    private val hangupOnCallAnswered = HangUpRtcOnPstnCallAnsweredListener {
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+  /*  private val hangupOnCallAnswered = HangUpRtcOnPstnCallAnsweredListener {
+        *//*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Log.d("Beldex","Build version is height of 26 ${Build.VERSION.SDK_INT}")
             this.startForegroundService(hangupIntent(this))
         }else {
             Log.d("Beldex","Build version is low of 26 ${Build.VERSION.SDK_INT}")
             this.startService(hangupIntent(this))
-        }*/
+        }*//*
         this.startService(hangupIntent(this))
+    }*/
+    private val hangupOnCallAnswered by lazy {
+        HangUpRtcOnPstnCallAnsweredListener {
+            ContextCompat.startForegroundService(this, hangupIntent(this))
+        }
+    }
+    private val hangupTelephonyCallback by lazy {
+        HangUpRtcTelephonyCallback {
+            ContextCompat.startForegroundService(this, hangupIntent(this))
+        }
     }
 
     private var networkChangedReceiver: NetworkChangeReceiver? = null
@@ -285,8 +299,15 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
         registerIncomingPstnCallReceiver()
         registerWiredHeadsetStateReceiver()
         registerWantsToAnswerReceiver()
-        getSystemService(TelephonyManager::class.java)
-            .listen(hangupOnCallAnswered, PhoneStateListener.LISTEN_CALL_STATE)
+        if (checkSelfPermission(android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+                getSystemService(TelephonyManager::class.java)
+                    .listen(hangupOnCallAnswered, PhoneStateListener.LISTEN_CALL_STATE)
+            } else {
+                getSystemService(TelephonyManager::class.java)
+                    .registerTelephonyCallback(serviceExecutor, hangupTelephonyCallback)
+            }
+        }
         registerUncaughtExceptionHandler()
         networkChangedReceiver = NetworkChangeReceiver(::networkChange)
         networkChangedReceiver!!.register(this)
@@ -690,28 +711,32 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
         System.currentTimeMillis() - intent.getLongExtra(EXTRA_TIMESTAMP, -1) > TimeUnit.SECONDS.toMillis(TIMEOUT_SECONDS)
 
     override fun onDestroy() {
-        Log.d(TAG,"onDestroy()")
+        Log.d(TAG, "onDestroy()")
         callManager.unregisterListener(this)
         callReceiver?.let { receiver ->
             unregisterReceiver(receiver)
         }
+        Log.d("Beldex","unregister called 0")
         networkChangedReceiver?.unregister(this)
         wantsToAnswerReceiver?.let { receiver ->
             LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
         }
-
-        //SteveJosephh21
-        wiredHeadsetStateReceiver.let { wiredHeadsetStateReceiver ->
-            unregisterReceiver(wiredHeadsetStateReceiver)
-        }
-        wiredHeadsetStateReceiver = null
-
         networkChangedReceiver = null
         callReceiver = null
         uncaughtExceptionHandlerManager?.unregister()
         wantsToAnswer = false
         currentTimeouts = 0
         isNetworkAvailable = false
+        if (checkSelfPermission(android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+            val telephonyManager = getSystemService(TelephonyManager::class.java)
+            with(telephonyManager) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+                    this.listen(hangupOnCallAnswered, PhoneStateListener.LISTEN_NONE)
+                } else {
+                    this.unregisterTelephonyCallback(hangupTelephonyCallback)
+                }
+            }
+        }
         super.onDestroy()
     }
 

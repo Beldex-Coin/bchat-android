@@ -321,10 +321,18 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             //pbNode.setVisibility(View.INVISIBLE)
             //hideProgressDialogWithTitle();
             //llNode.setVisibility(View.VISIBLE)
-            if (result != null) {
-                Log.d("Beldex","Called onPostExecute ${result?.host}")
-                Toast.makeText(requireActivity().applicationContext, "Connected to ${result!!.name}", Toast.LENGTH_SHORT).show()
+           /* if (result != null) {
+                Log.d("Beldex", "Called onPostExecute ${result?.host}")
+                Toast.makeText(
+                    requireActivity().applicationContext,
+                    "Connected to ${result!!.name}",
+                    Toast.LENGTH_SHORT
+                ).show()
                 Log.d("WalletFragment", "AsyncFindBestNode Success")
+            }
+            else {
+                Log.d("WalletFragment", "AsyncFindBestNode Fail")
+            }*/
                 //Important
                 /*d("found a good node %s", result.toString())
                 val ctx: Context = tvNodeAddress.getContext()
@@ -349,14 +357,13 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                     Toast.LENGTH_SHORT
                 ).show()
                 showNode(result)*/
-            } else {
-                Log.d("WalletFragment", "AsyncFindBestNode Fail")
+
                 //Important
                 /* tvNodeName.setText(getResources().getText(R.string.node_create_hint))
                  tvNodeName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
                  tvNodeAddress.setText(null)
                  tvNodeAddress.setVisibility(View.GONE)*/
-            }
+
         }
 
         /* override fun onCancelled(result: NodeInfo?) { //TODO: cancel this on exit from fragment
@@ -548,7 +555,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             //popupMenu.menu[3].isChecked = TextSecurePreferences.getTransactionsByDateStatus(requireActivity())
             popupMenu.setOnMenuItemClickListener { item ->
                 dismissPopupMenu=true
-                Toast.makeText(activity, item.title, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, item.title, Toast.LENGTH_SHORT).show()
                 val emptyList: ArrayList<TransactionInfo> = ArrayList()
                 if (item.title == "Incoming") {
                     Log.d("Beldex","filter issue incoming if 1")
@@ -616,7 +623,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
                     // Setting up the event for when ok is clicked
                     datePicker.addOnPositiveButtonClickListener {
-                        Toast.makeText(requireActivity(), "${datePicker.headerText} ${datePicker.selection!!.first}, ${datePicker.selection!!.second} ${Date(datePicker.selection!!.first!!)}, ${Date(datePicker.selection!!.second!!)}is selected", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "${datePicker.headerText} ${datePicker.selection!!.first}, ${datePicker.selection!!.second} ${Date(datePicker.selection!!.first!!)}, ${Date(datePicker.selection!!.second!!)}is selected", Toast.LENGTH_LONG).show()
                         if(popupMenu.menu[1].isChecked && popupMenu.menu[2].isChecked){
                             filterTransactionsByDate(getDaysBetweenDates(Date(datePicker.selection!!.first!!),Date(datePicker.selection!!.second!!)),adapterItems)
                         }else if(popupMenu.menu[1].isChecked){
@@ -631,12 +638,12 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
                     // Setting up the event for when cancelled is clicked
                     datePicker.addOnNegativeButtonClickListener {
-                        Toast.makeText(requireActivity(), "${datePicker.headerText} ${datePicker.selection!!.first}, ${datePicker.selection!!.second} is cancelled", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "${datePicker.headerText} ${datePicker.selection!!.first}, ${datePicker.selection!!.second} is cancelled", Toast.LENGTH_LONG).show()
                     }
 
                     // Setting up the event for when back button is pressed
                     datePicker.addOnCancelListener {
-                        Toast.makeText(requireActivity(), "Date Picker Cancelled", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Date Picker Cancelled", Toast.LENGTH_LONG).show()
                     }
                     /*val callback = RangeDaysPickCallback {startDate,endDate->
                         Toast.makeText(requireActivity(),"${startDate.longDateString}, ${endDate.longDateString}",Toast.LENGTH_SHORT).show()

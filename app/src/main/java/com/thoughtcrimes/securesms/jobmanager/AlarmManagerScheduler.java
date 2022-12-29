@@ -51,7 +51,7 @@ public class AlarmManagerScheduler implements Scheduler {
     Intent       intent       = new Intent(context, RetryReceiver.class);
 
     intent.setAction(BuildConfig.APPLICATION_ID + UUID.randomUUID().toString());
-    alarmManager.set(AlarmManager.RTC_WAKEUP, time, PendingIntent.getBroadcast(context, 0, intent, 0));
+    alarmManager.set(AlarmManager.RTC_WAKEUP, time, PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE));//0
 
     Log.i(TAG, "Set an alarm to retry a job in " + (time - System.currentTimeMillis()) + " ms.");
   }

@@ -30,12 +30,12 @@ object FileServerAPIV2 {
     //10-06-2022
 
     //Mainnet
-   /* private const val serverPublicKey = "f3024b309be838eff764c6804c417b667096d6c5301184f90fb66e9e4515444c"
-    const val server = "http://fs1.rpcnode.stream"*/
+    private const val serverPublicKey = "f3024b309be838eff764c6804c417b667096d6c5301184f90fb66e9e4515444c"
+    const val server = "http://fs1.rpcnode.stream"
 
     //Testnet
-    private const val serverPublicKey = "51a8cd2e8a2c7e012d2ed4e0a24b5ed26f6f4f5b89e0d9d9c8856a5fd7140314"
-    const val server = "http://13.233.252.86"
+    /*private const val serverPublicKey = "51a8cd2e8a2c7e012d2ed4e0a24b5ed26f6f4f5b89e0d9d9c8856a5fd7140314"
+    const val server = "http://13.233.252.86"*/
     const val maxFileSize = 10_000_000 // 10 MB
 
     /**

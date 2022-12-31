@@ -1308,4 +1308,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="wallet_syncing_alert_message" translatable="false">If you close the wallet, synchronization will be paused. Are you sure you want to exit the wallet?</string>
     <string name="your_pin_has_been_changed_successfully" translatable="false">Your PIN has been changed successfully!</string>
     <string name="transaction_details_title" translatable="false">Transaction Details</string>
+    <string name="please_try_again_later" translatable="false">Please try again later</string>
+    <string name="no_transactions_yet" translatable="false">No Transactions yet!</string>
+    <string name="after_your_first_transaction_nyou_will_be_able_to_view_it_here" translatable="false">After your first transaction,\nyou will be able to view it here.</string>
 </resources>

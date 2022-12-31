@@ -1008,10 +1008,14 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
             if(TextSecurePreferences.getSaveRecipientAddress(requireActivity())) {
                 val insertRecipientAddress =
                     DatabaseComponent.get(requireActivity()).bchatRecipientAddressDatabase()
-                insertRecipientAddress.insertRecipientAddress(
-                    pendingTransaction!!.firstTxId,
-                    txData.destinationAddress
-                )
+                try {
+                    insertRecipientAddress.insertRecipientAddress(
+                        pendingTransaction!!.firstTxId,
+                        txData.destinationAddress
+                    )
+                }catch(e: IndexOutOfBoundsException){
+                    Toast.makeText(requireContext(),getString(R.string.please_try_again_later),Toast.LENGTH_SHORT).show()
+                }
             }
             SendConfirmDialog(pendingTransaction!!,txData, this).show(requireActivity().supportFragmentManager,"")
         }

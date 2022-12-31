@@ -167,6 +167,7 @@
                     android:layout_weight="1"
                     android:nestedScrollingEnabled="false"
                     android:visibility="gone"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/transaction_list_item" />
 
@@ -189,7 +190,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
                         android:fontFamily="@font/poppins_medium"
-                        android:text="No Transactions yet!"
+                        android:text="@string/no_transactions_yet"
                         android:textAlignment="center"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -199,7 +200,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
                         android:fontFamily="@font/poppins_medium"
-                        android:text="After your first transaction,\nyou will be able to view it here."
+                        android:text="@string/after_your_first_transaction_nyou_will_be_able_to_view_it_here"
                         android:textAlignment="center"
                         android:textColor="@color/grey"
                         android:textSize="16sp"

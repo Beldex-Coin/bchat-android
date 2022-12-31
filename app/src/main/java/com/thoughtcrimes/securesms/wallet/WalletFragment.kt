@@ -376,8 +376,8 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         NodePinger.execute(nodes, null)
         val nodeList: ArrayList<NodeInfo?> = ArrayList<NodeInfo?>(nodes)
         Collections.sort(nodeList, NodeInfo.BestNodeComparator)
-        val rnd = Random().nextInt(nodeList.size)
-        return nodeList[rnd]
+        //val rnd = Random().nextInt(nodeList.size)
+        return nodeList[0]
     }
 
     interface DrawerLocker {
@@ -1113,7 +1113,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
     fun onRefreshed(wallet: Wallet, full: Boolean) {
         var full = full
         if (adapter!!.needsTransactionUpdateOnNewBlock()) {
-            wallet.refreshHistory()
+            //wallet.refreshHistory()
             full = true
             Log.d("TransactionList","full = true 1")
         }

@@ -111,7 +111,7 @@ public class WalletService extends Service {
                     if (!wallet.isSynchronized()) {
                         updated = true;
                         // we want to see our transactions as they come in
-                        wallet.refreshHistory();
+                        //wallet.refreshHistory();
                         Log.d("Beldex","newBeldex() height "+height + ", "+wallet.getDaemonBlockChainHeight());
                         Log.d("Beldex","newBlock() getHistory() "+wallet.getHistory().getAll().toString());
                         //int txCount = wallet.getHistory().getCount();
@@ -143,7 +143,7 @@ public class WalletService extends Service {
             wallet.setSynchronized();
             if (updated) {
                 updateDaemonState(wallet, wallet.getBlockChainHeight());
-                wallet.refreshHistory();
+                //wallet.refreshHistory();
                 if (observer != null) {
                     Log.d("TransactionList","full = true 0");
                     updated = !observer.onRefreshed(wallet, true);
@@ -275,7 +275,6 @@ public class WalletService extends Service {
                     String cmd = extras.getString(REQUEST, null);
                     switch (cmd) {
                         case REQUEST_CMD_LOAD:
-
                             Log.d("Beldex","Request cmd called");
                             String walletId = extras.getString(REQUEST_WALLET, null);
                             String walletPw = extras.getString(REQUEST_CMD_LOAD_PW, null);

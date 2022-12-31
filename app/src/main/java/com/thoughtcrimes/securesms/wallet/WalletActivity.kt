@@ -413,14 +413,17 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         // supporting component replacement by other applications).
         Log.d("Beldex","isOnline 7 ${CheckOnline.isOnline(this)}, $walletName , $walletPassword")
         if (CheckOnline.isOnline(this)) {
-            val intent = Intent(applicationContext, WalletService::class.java)
-            intent.putExtra(WalletService.REQUEST_WALLET, walletName)
-            intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_LOAD)
-            intent.putExtra(WalletService.REQUEST_CMD_LOAD_PW, walletPassword)
-            startService(intent)
-            bindService(intent, mConnection, BIND_AUTO_CREATE)
-            mIsBound = true
-            Timber.d("BOUND")
+            var intent: Intent? = null
+            if(intent==null) {
+                intent = Intent(applicationContext, WalletService::class.java)
+                intent.putExtra(WalletService.REQUEST_WALLET, walletName)
+                intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_LOAD)
+                intent.putExtra(WalletService.REQUEST_CMD_LOAD_PW, walletPassword)
+                startService(intent)
+                bindService(intent, mConnection, BIND_AUTO_CREATE)
+                mIsBound = true
+                Timber.d("BOUND")
+            }
         }
     }
 
@@ -619,12 +622,15 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     override fun onPrepareSend(tag: String?, txData: TxData?) {
         if (mIsBound) { // no point in talking to unbound service
-            val intent = Intent(applicationContext, WalletService::class.java)
-            intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_TX)
-            intent.putExtra(WalletService.REQUEST_CMD_TX_DATA, txData)
-            intent.putExtra(WalletService.REQUEST_CMD_TX_TAG, tag)
-            startService(intent)
-            Timber.d("CREATE TX request sent")
+            var intent: Intent? = null
+            if(intent==null) {
+                intent = Intent(applicationContext, WalletService::class.java)
+                intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_TX)
+                intent.putExtra(WalletService.REQUEST_CMD_TX_DATA, txData)
+                intent.putExtra(WalletService.REQUEST_CMD_TX_TAG, tag)
+                startService(intent)
+                Timber.d("CREATE TX request sent")
+            }
             //Important
             /*if (getWallet()!!.deviceType === Wallet.Device.Device_Ledger) showLedgerProgressDialog(
                 LedgerProgressDialog.TYPE_SEND
@@ -639,11 +645,14 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     override fun onSend(notes: UserNotes?) {
         if (mIsBound) { // no point in talking to unbound service
-            val intent = Intent(applicationContext, WalletService::class.java)
-            intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_SEND)
-            intent.putExtra(WalletService.REQUEST_CMD_SEND_NOTES, notes!!.txNotes)
-            startService(intent)
-            Timber.d("SEND TX request sent")
+            var intent: Intent? = null
+            if(intent==null) {
+                intent = Intent(applicationContext, WalletService::class.java)
+                intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_SEND)
+                intent.putExtra(WalletService.REQUEST_CMD_SEND_NOTES, notes!!.txNotes)
+                startService(intent)
+                Timber.d("SEND TX request sent")
+            }
         } else {
             Timber.e("Service not bound")
         }
@@ -929,10 +938,13 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     private fun saveWallet() {
         if (mIsBound) { // no point in talking to unbound service
-            val intent = Intent(applicationContext, WalletService::class.java)
-            intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_STORE)
-            startService(intent)
-            Timber.d("STORE request sent")
+            var intent: Intent? = null
+            if(intent==null) {
+                intent = Intent(applicationContext, WalletService::class.java)
+                intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_STORE)
+                startService(intent)
+                Timber.d("STORE request sent")
+            }
         } else {
             Timber.e("Service not bound")
         }

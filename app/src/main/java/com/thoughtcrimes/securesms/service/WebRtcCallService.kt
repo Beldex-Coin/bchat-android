@@ -540,6 +540,7 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
         if (callManager.callId != getCallId(intent)) {
             Log.e(TAG, "Hangup for non-active call...")
             TextSecurePreferences.setRemoteCallEnded(this, true)
+            stopForeground(true)
             return
         }
         onHangup()

@@ -340,7 +340,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
             val extras = intent.extras
             if (extras != null) {
-                acquireWakeLock()
+                //acquireWakeLock()
                 val walletId = extras.getString(REQUEST_ID)
                 // we can set the streetmode height AFTER opening the wallet
                 requestStreetMode = extras.getBoolean(REQUEST_STREETMODE)
@@ -906,7 +906,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             val walletFragment = getWalletFragment()
             if (wallet.isSynchronized) {
                 Log.d("Beldex","mConnection onRefreshed called 1")
-                releaseWakeLock(RELEASE_WAKE_LOCK_DELAY) // the idea is to stay awake until synced
+                //releaseWakeLock(RELEASE_WAKE_LOCK_DELAY) // the idea is to stay awake until synced
                 if (!synced) { // first sync
                     Log.d("Beldex","mConnection onRefreshed called 2")
                     onProgress(-2)//onProgress(-1)
@@ -1474,7 +1474,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     private fun stopWalletService() {
         disconnectWalletService()
-        releaseWakeLock()
+        //releaseWakeLock()
     }
 
     fun disconnectWalletService() {

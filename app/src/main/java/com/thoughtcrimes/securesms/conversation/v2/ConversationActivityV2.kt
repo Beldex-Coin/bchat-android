@@ -1024,7 +1024,8 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
     }
 
     private fun isMenuCall() {
-        if (CheckOnline.isOnline(this)) {
+        call(this@ConversationActivityV2, viewModel.recipient)
+      /*  if (CheckOnline.isOnline(this)) {
             Log.d("Beldex", "Call state issue called")
             val tm = this.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
             if (ContextCompat.checkSelfPermission(
@@ -1102,7 +1103,7 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
 
         } else {
             Toast.makeText(this, "Check your Internet", Toast.LENGTH_SHORT).show()
-        }
+        }*/
     }
 
     private fun call(context: Context, thread: Recipient) {

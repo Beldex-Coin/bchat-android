@@ -36,7 +36,7 @@ class PushNotificationService : FirebaseMessagingService() {
             Log.d("Beldex", "Failed to decode data for message.")
             val builder = NotificationCompat.Builder(this, NotificationChannels.OTHER)
                 .setSmallIcon(io.beldex.bchat.R.drawable.ic_bchat_logo)
-                .setColor(this.getResources().getColor(io.beldex.bchat.R.color.textsecure_primary))
+                .setColor(this.resources.getColor(io.beldex.bchat.R.color.textsecure_primary))
                 .setContentTitle("BChat")
                 .setContentText("You've got a new message.")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)

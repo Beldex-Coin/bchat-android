@@ -540,7 +540,7 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
         if (callManager.callId != getCallId(intent)) {
             Log.e(TAG, "Hangup for non-active call...")
             TextSecurePreferences.setRemoteCallEnded(this, true)
-            stopForeground(true)
+            stopForeground(true)//Steve Josephh21-
             return
         }
         onHangup()
@@ -632,7 +632,7 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
     private fun registerPowerButtonReceiver() {
         if (powerButtonReceiver == null) {
             powerButtonReceiver = PowerButtonReceiver()
-
+            Log.d("Beldex", "Notification issue ACTION_SCREEN_OFF Called ")
             registerReceiver(powerButtonReceiver, IntentFilter(Intent.ACTION_SCREEN_OFF))
         }
     }

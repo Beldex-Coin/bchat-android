@@ -781,6 +781,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
     override fun onPause() {
         super.onPause()
+        Log.d("Beldex","HomeActivity() onPause called")
         ApplicationContext.getInstance(this).messageNotifier.setHomeScreenVisible(false)
     }
 

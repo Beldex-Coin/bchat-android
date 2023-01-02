@@ -340,7 +340,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
             val extras = intent.extras
             if (extras != null) {
-                //acquireWakeLock()
+               // acquireWakeLock()
                 val walletId = extras.getString(REQUEST_ID)
                 // we can set the streetmode height AFTER opening the wallet
                 requestStreetMode = extras.getBoolean(REQUEST_STREETMODE)
@@ -639,7 +639,6 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             Timber.e("Service not bound")
         }
     }
-
     override val walletName: String?
         get() = getWallet()!!.name
 
@@ -1125,6 +1124,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             }
         }
         if (walletStatus == null || Wallet.ConnectionStatus.ConnectionStatus_Connected !== walletStatus.connectionStatus) {
+            Log.d("Beldex","WalletActivity finished called")
             finish()
         } else {
             Log.d("Beldex", "Wallet start called 7 1 ")

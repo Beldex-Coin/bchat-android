@@ -9,7 +9,7 @@ public enum DefaultNodes {
     // Mainnet
     BELDEX6("mainnet.beldex.io:29095"),
     BELDEX5("publicnode5.rpcnode.stream:29095"),
-    BELDEX1("publicnode1.rpcnode.stream:29095"),
+    /*BELDEX1("publicnode1.rpcnode.stream:29095"),*/
     BELDEX2 ("publicnode2.rpcnode.stream:29095"),
     BELDEX3 ("publicnode3.rpcnode.stream:29095"),
     BELDEX4("publicnode4.rpcnode.stream:29095"),

@@ -67,19 +67,30 @@ public class WalletService extends Service {
         boolean updated = true;
 
         void start() {
-            Timber.d("MyWalletListener.start()");
+            Log.d("Beldex", "MyWalletListener.start()");
             Wallet wallet = getWallet();
-            if (wallet == null) throw new IllegalStateException("No wallet!");
-            wallet.setListener(this);
-            wallet.startRefresh();
+            try {
+                if (wallet != null) {
+                    wallet.setListener(this);
+                    wallet.startRefresh();
+                }
+            } catch (IllegalStateException ex) {
+                Log.d("Beldex", "IllegalStateException " + ex);
+            }
         }
 
         void stop() {
-            Timber.d("MyWalletListener.stop()");
+            Log.d("Beldex", "MyWalletListener.stop()");
             Wallet wallet = getWallet();
-            if (wallet == null) throw new IllegalStateException("No wallet!");
-            wallet.pauseRefresh();
-            wallet.setListener(null);
+            try {
+                if (wallet != null) {
+                    wallet.pauseRefresh();
+                    wallet.setListener(null);
+                }
+            } catch (IllegalStateException ex) {
+                Log.d("Beldex", "IllegalStateException " + ex);
+            }
+            /* if (wallet == null) throw new IllegalStateException("No wallet!");*/
         }
 
         // WalletListener callbacks
@@ -100,31 +111,34 @@ public class WalletService extends Service {
 
         public void newBlock(long height) {
             final Wallet wallet = getWallet();
-            if (wallet == null) throw new IllegalStateException("No wallet!");
-            // don't flood with an update for every block ...
-            if (lastBlockTime < System.currentTimeMillis() - 2000) {
-                lastBlockTime = System.currentTimeMillis();
-                Timber.d("newBlock() @ %d with observer %s", height, observer);
-                if (observer != null) {
-                    //boolean fullRefresh = false;
-                    updateDaemonState(wallet, wallet.isSynchronized() ? height : 0);
-                    if (!wallet.isSynchronized()) {
-                        updated = true;
-                        // we want to see our transactions as they come in
-                        //wallet.refreshHistory();
-                        Log.d("Beldex","newBeldex() height "+height + ", "+wallet.getDaemonBlockChainHeight());
-                        Log.d("Beldex","newBlock() getHistory() "+wallet.getHistory().getAll().toString());
-                        //int txCount = wallet.getHistory().getCount();
-                        //Log.d("Beldex","newBlock() txCount "+txCount);
+            /*if (wallet == null)
+                throw new IllegalStateException("No wallet!");*/
+            if(wallet != null) {
+                // don't flood with an update for every block ...
+                if (lastBlockTime < System.currentTimeMillis() - 2000) {
+                    lastBlockTime = System.currentTimeMillis();
+                    Timber.d("newBlock() @ %d with observer %s", height, observer);
+                    if (observer != null) {
+                        //boolean fullRefresh = false;
+                        updateDaemonState(wallet, wallet.isSynchronized() ? height : 0);
+                        if (!wallet.isSynchronized()) {
+                            updated = true;
+                            // we want to see our transactions as they come in
+                           /* wallet.refreshHistory();*/
+                            Log.d("Beldex", "newBeldex() height " + height + ", " + wallet.getDaemonBlockChainHeight());
+                            Log.d("Beldex", "newBlock() getHistory() " + wallet.getHistory().getAll().toString());
+                            //int txCount = wallet.getHistory().getCount();
+                            //Log.d("Beldex","newBlock() txCount "+txCount);
                         /*if (txCount > lastTxCount) {
                             // update the transaction list only if we have more than before
                             lastTxCount = txCount;
                             fullRefresh = true;
                             Log.d("Beldex","newBlock() fullRefresh  "+fullRefresh);
                         }*/
+                        }
+                        if (observer != null)
+                            observer.onRefreshed(wallet, false);
                     }
-                    if (observer != null)
-                        observer.onRefreshed(wallet, false);
                 }
             }
         }
@@ -132,22 +146,45 @@ public class WalletService extends Service {
         public void updated() {
             Timber.d("updated()");
             Wallet wallet = getWallet();
-            if (wallet == null) throw new IllegalStateException("No wallet!");
-            updated = true;
+            if(wallet!= null){
+                updated = true;
+            }else {
+                Log.d("Beldex","Wallet is null");
+            }
+           /* if (wallet == null) throw new IllegalStateException("No wallet!");
+            updated = true;*/
         }
 
         public void refreshed() { // this means it's synced
             Timber.d("refreshed()");
+            Log.d("Beldex","App crash issue refreshed called");
             final Wallet wallet = getWallet();
-            if (wallet == null) throw new IllegalStateException("No wallet!");
-            wallet.setSynchronized();
-            if (updated) {
-                updateDaemonState(wallet, wallet.getBlockChainHeight());
-                //wallet.refreshHistory();
-                if (observer != null) {
-                    Log.d("TransactionList","full = true 0");
-                    updated = !observer.onRefreshed(wallet, true);
-                }
+            /* if (wallet == null) throw new IllegalStateException("No wallet!");*/
+            if (wallet != null) {
+               long blockChainHeight =  wallet.getDaemonBlockChainHeight();
+               long syncedBlockHeight = wallet.getBlockChainHeight();
+               long latestSyncedBlockHeight = blockChainHeight - syncedBlockHeight;
+                Log.d("Beldex", "App crash issue value of blockChainHeight in refreshed " + blockChainHeight);
+                Log.d("Beldex", "App crash issue value of syncedBlockHeight in refreshed " + syncedBlockHeight);
+                Log.d("Beldex", "App crash issue value of latestSyncedBlockHeight " + latestSyncedBlockHeight);
+
+               if(latestSyncedBlockHeight<50L) {
+                   Log.d("Beldex", "App crash issue value of set Sync " + wallet.isSynchronized());
+                   wallet.setSynchronized();
+               }
+                   Log.d("Beldex", "App crash issue value of set Sync 1 " + wallet.isSynchronized());
+                   if (updated) {
+                       Log.d("Beldex", "App crash issue value of getBlockChainHeight()" + wallet.getBlockChainHeight());
+                       updateDaemonState(wallet, wallet.getBlockChainHeight());
+                       /* wallet.refreshHistory();*/
+                       if (observer != null) {
+                           Log.d("TransactionList", "full = true 0");
+                           updated = !observer.onRefreshed(wallet, true);
+                       }
+                   }
+
+            }else {
+                Log.d("Beldex","Wallet is null");
             }
         }
     }
@@ -160,17 +197,28 @@ public class WalletService extends Service {
     private void updateDaemonState(Wallet wallet, long height) {
         long t = System.currentTimeMillis();
         if (height > 0) { // if we get a height, we are connected
+            Log.d("Beldex","App crash issue value of UpdateDaemonState height" + height);
             daemonHeight = height;
             connectionStatus = Wallet.ConnectionStatus.ConnectionStatus_Connected;
+            Log.d("Beldex","App crash issue value of UpdateDaemonState daemonHeight" + daemonHeight);
+            Log.d("Beldex","App crash issue value of UpdateDaemonState connectionStatus" + connectionStatus);
+
             lastDaemonStatusUpdate = t;
         } else {
             if (t - lastDaemonStatusUpdate > STATUS_UPDATE_INTERVAL) {
                 lastDaemonStatusUpdate = t;
+                Log.d("Beldex","App crash issue value of UpdateDaemonState t" + t);
+
                 // these calls really connect to the daemon - wasting time
                 daemonHeight = wallet.getDaemonBlockChainHeight();
                 if (daemonHeight > 0) {
+                    Log.d("Beldex","App crash issue value of UpdateDaemonState daemonHeight 1" + daemonHeight);
+
+
                     // if we get a valid height, then obviously we are connected
                     connectionStatus = Wallet.ConnectionStatus.ConnectionStatus_Connected;
+                    Log.d("Beldex","App crash issue value of UpdateDaemonState connectionStatus 1" + connectionStatus);
+
                 } else {
                     connectionStatus = Wallet.ConnectionStatus.ConnectionStatus_Disconnected;
                 }
@@ -275,6 +323,7 @@ public class WalletService extends Service {
                     String cmd = extras.getString(REQUEST, null);
                     switch (cmd) {
                         case REQUEST_CMD_LOAD:
+
                             Log.d("Beldex","Request cmd called");
                             String walletId = extras.getString(REQUEST_WALLET, null);
                             String walletPw = extras.getString(REQUEST_CMD_LOAD_PW, null);
@@ -597,11 +646,11 @@ public class WalletService extends Service {
             long walletRestoreHeight = wallet.getRestoreHeight();
             //Log.d("Using daemon %s", WalletManager.getInstance().getDaemonAddress());
             showProgress(55);
-            Log.d("Beldex","isOnline value in wallet.init " + CheckOnline.Companion.isOnline(getApplicationContext()));
+            Log.d("Beldex", "isOnline value in wallet.init " + CheckOnline.Companion.isOnline(getApplicationContext()));
 
-            if(!CheckOnline.Companion.isOnline(getApplicationContext())) {
+            if (!CheckOnline.Companion.isOnline(getApplicationContext())) {
                 return null;
-            }else {
+            } else {
 
                 wallet.init(0);
                 Log.d("Beldex", "init value of wallet restoreHeight loadWallet 1 " + walletRestoreHeight);
@@ -618,18 +667,23 @@ public class WalletService extends Service {
         String path = Helper.getWalletFile(getApplicationContext(), walletName).getAbsolutePath();
         showProgress(20);
         Wallet wallet = null;
+        Log.d("Beldex","App crash issue value of wallet " +wallet);
         WalletManager walletMgr = WalletManager.getInstance();
         Timber.d("WalletManager network=%s", walletMgr.getNetworkType().name());
         showProgress(30);
+        Log.d("Beldex","App crash issue value of wallet manager " +walletMgr);
         if (walletMgr.walletExists(path)) {
             Timber.d("open wallet %s", path);
             Wallet.Device device = WalletManager.getInstance().queryWalletDevice(path + ".keys", walletPassword);
             Timber.d("device is %s", device.toString());
+            Log.d("Beldex","App crash issue value of wallet device " +device.toString());
             if (observer != null) observer.onWalletOpen(device);
             wallet = walletMgr.openWallet(path, walletPassword);
+            Log.d("Beldex","App crash issue value of wallet 1" +wallet);
             showProgress(60);
             Timber.d("wallet opened");
             Wallet.Status walletStatus = wallet.getStatus();
+            Log.d("Beldex","App crash issue value of wallet status" +walletStatus);
             if (!walletStatus.isOk()) {
                 Timber.d("wallet status is %s", walletStatus);
                 WalletManager.getInstance().close(wallet); // TODO close() failed?
@@ -639,6 +693,7 @@ public class WalletService extends Service {
                 // this crashes in MyWalletListener(Wallet aWallet) as wallet == null
             }
         }
+        Log.d("Beldex","App crash issue value of wallet 2" +wallet);
         return wallet;
     }
 

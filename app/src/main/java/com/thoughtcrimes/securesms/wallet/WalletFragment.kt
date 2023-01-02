@@ -376,8 +376,8 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         NodePinger.execute(nodes, null)
         val nodeList: ArrayList<NodeInfo?> = ArrayList<NodeInfo?>(nodes)
         Collections.sort(nodeList, NodeInfo.BestNodeComparator)
-        //val rnd = Random().nextInt(nodeList.size)
-        return nodeList[0]
+        val rnd = Random().nextInt(nodeList.size)
+        return nodeList[rnd]
     }
 
     interface DrawerLocker {
@@ -459,9 +459,8 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         binding.transactionList.adapter = adapter
         adapter!!.registerAdapterDataObserver(object : AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                if (positionStart == 0 && binding.transactionList.computeVerticalScrollOffset() == 0) binding.transactionList.scrollToPosition(
-                    positionStart
-                )
+                if (positionStart == 0 && binding.transactionList.computeVerticalScrollOffset() == 0)
+                    binding.transactionList.scrollToPosition(positionStart)
             }
         })
         binding.transactionList.isNestedScrollingEnabled = false
@@ -817,15 +816,28 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             Log.d("Beldex","Value of daemon connection $daemonConnected")
             if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
                 if (!wallet.isSynchronized) {
-                    val daemonHeight: Long = activityCallback!!.daemonHeight
+                    Log.d("Beldex","Height value of daemonHeight ${wallet.daemonBlockChainHeight}")
+                    Log.d("Beldex","Height value of daemonHeight one  ${activityCallback!!.daemonHeight}")
+                    Log.d("Beldex","Height value of blockChainHeight ${wallet.blockChainHeight}")
+                    Log.d("Beldex","Height value of approximateBlockChainHeight ${wallet.approximateBlockChainHeight}")
+                    Log.d("Beldex","Height value of restoreHeight ${wallet.restoreHeight}")
+                    Log.d("Beldex","Height value of daemonBlockChainTargetHeight ${wallet.daemonBlockChainTargetHeight}")
+
+                     val daemonHeight: Long = wallet.daemonBlockChainHeight
+                   // val daemonHeight: Long = activityCallback!!.daemonHeight
                     val walletHeight = wallet.blockChainHeight
                     val n = daemonHeight - walletHeight
                     sync = formatter.format(n) + " " + getString(R.string.status_remaining)
                     if (firstBlock == 0L) {
                         firstBlock = walletHeight
                     }
-                    var x = (100 - Math.round(100f * n / (1f * daemonHeight - firstBlock))).toInt()
+                    var x = (100 - Math.round(100f * n / (1f * daemonHeight  - firstBlock))).toInt()
                     if (x == 0) x = 101 // indeterminate
+                    Log.d("Beldex","App crash issue value of height daemon height $daemonHeight")
+                    Log.d("Beldex","App crash issue value of height walletHeight height $walletHeight")
+                    Log.d("Beldex","App crash issue value of height x height $x")
+                    Log.d("Beldex","App crash issue value of height n height $n")
+                    Log.d("Beldex","App crash issue value of height n firstBlock $firstBlock")
                     setProgress(x)
 //                ivSynced.setVisibility(View.GONE);
                     binding.filterTransactionsIcon.isClickable = false
@@ -1113,7 +1125,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
     fun onRefreshed(wallet: Wallet, full: Boolean) {
         var full = full
         if (adapter!!.needsTransactionUpdateOnNewBlock()) {
-            //wallet.refreshHistory()
+           /* wallet.refreshHistory()*/
             full = true
             Log.d("TransactionList","full = true 1")
         }

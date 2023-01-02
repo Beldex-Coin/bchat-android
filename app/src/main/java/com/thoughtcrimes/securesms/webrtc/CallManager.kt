@@ -799,7 +799,11 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
 private fun isCallIdle(context: Context): Int {
     var isCall = -1
     val tm = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-    if (ContextCompat.checkSelfPermission(context,android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED){
+    if (ContextCompat.checkSelfPermission(
+            context,
+            android.Manifest.permission.READ_PHONE_STATE
+        ) == PackageManager.PERMISSION_GRANTED
+    ) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             tm.registerTelephonyCallback(
                 context.mainExecutor,
@@ -823,6 +827,8 @@ private fun isCallIdle(context: Context): Int {
                 }
             }, PhoneStateListener.LISTEN_CALL_STATE)
         }
+    } else {
+        isCall = 0
     }
     return isCall
 }

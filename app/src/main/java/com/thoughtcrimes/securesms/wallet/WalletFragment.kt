@@ -457,13 +457,13 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
         adapter = TransactionInfoAdapter(activity, this)
         binding.transactionList.adapter = adapter
-        /*adapter!!.registerAdapterDataObserver(object : AdapterDataObserver() {
+        adapter!!.registerAdapterDataObserver(object : AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 if (positionStart == 0 && binding.transactionList.computeVerticalScrollOffset() == 0) binding.transactionList.scrollToPosition(
                     positionStart
                 )
             }
-        })*/
+        })
         binding.transactionList.isNestedScrollingEnabled = false
 
         //      int count =  adapter.getItemCount();

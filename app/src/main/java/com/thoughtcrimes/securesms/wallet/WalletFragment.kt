@@ -369,6 +369,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         AsyncTaskCoroutine<Executor?, Boolean?>() {
         override fun onPreExecute() {
             super.onPreExecute()
+            refreshBalance(false)
         }
 
         override fun doInBackground(vararg params: Executor?): Boolean {

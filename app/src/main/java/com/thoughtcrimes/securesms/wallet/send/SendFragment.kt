@@ -447,7 +447,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                 if(binding.beldexAmountEditTxtLayout.editText!!.isFocused) {
                     if (s.isNotEmpty()) {
                         Log.d("Beldex", "Price -> $price")
-                        if(validateBELDEXAmount(s.toString(), activityCallback!!.totalFunds)) {
+                        if(validateBELDEXAmount(s.toString())) {
                             val bdx = getCleanAmountString(s.toString())
                             val amount: BigDecimal = if (bdx != null) {
                                 BigDecimal(bdx.toDouble()).multiply(BigDecimal(price))
@@ -462,7 +462,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                             )
                             //binding.currencyEditTxtLayout.editText!!.setText(String.format("%.4f", amount))
                             binding.currencyEditText.text = String.format("%.4f", amount)
-                        }else if(activityCallback!!.totalFunds==0L){
+                        }/*else if(activityCallback!!.totalFunds==0L){
                             if(calculateFiatCurrency(s.toString())) {
                                 val bdx = getCleanAmountString(s.toString())
                                 val amount: BigDecimal = if (bdx != null) {
@@ -479,7 +479,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                                 //binding.currencyEditTxtLayout.editText!!.setText(String.format("%.4f", amount))
                                 binding.currencyEditText.text = String.format("%.4f", amount)
                             }
-                        }else{
+                        }*/else{
                             binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.error_view_background)
                             binding.beldexAmountErrorMessage.visibility =View.VISIBLE
                             binding.beldexAmountErrorMessage.text=getString(R.string.beldex_amount_valid_error_message)
@@ -536,7 +536,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                     }
                     dnsOA?.let { processOpenAlias(it) }
                 } else {
-                    if (binding.beldexAddressEditTxtLayout.editText?.text!!.isNotEmpty() && binding.beldexAmountEditTxtLayout.editText?.text!!.isNotEmpty() && validateBELDEXAmount(binding.beldexAmountEditTxtLayout.editText!!.text.toString(), activityCallback!!.totalFunds) && binding.beldexAmountEditTxtLayout.editText!!.text.toString()
+                    if (binding.beldexAddressEditTxtLayout.editText?.text!!.isNotEmpty() && binding.beldexAmountEditTxtLayout.editText?.text!!.isNotEmpty() && validateBELDEXAmount(binding.beldexAmountEditTxtLayout.editText!!.text.toString()) && binding.beldexAmountEditTxtLayout.editText!!.text.toString()
                             .toDouble() > 0.00
                     ) {
                         val txData: TxData = getTxData()
@@ -604,7 +604,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                         binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.error_view_background)
                         binding.beldexAmountErrorMessage.visibility =View.VISIBLE
                         binding.beldexAmountErrorMessage.text=getString(R.string.beldex_amount_valid_error_message)
-                    }else if(!validateBELDEXAmount(binding.beldexAmountEditTxtLayout.editText!!.text.toString(), activityCallback!!.totalFunds)){
+                    }else if(!validateBELDEXAmount(binding.beldexAmountEditTxtLayout.editText!!.text.toString())){
                         if (binding.beldexAmountEditTxtLayout.editText!!.text.toString()
                                 .toDouble() <= 0.00
                         ) {
@@ -642,7 +642,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
     }
 
-    private fun validateBELDEXAmount(amount:String,availableBalance:Long):Boolean {
+    private fun validateBELDEXAmount(amount:String):Boolean {
         val maxValue = 18446744.073709551616
         val value = amount.replace(',', '.')
         val regExp ="^([0-9]+([.][0-9]{0,12})?|[.][0-9]{1,12})\$|ALL".toRegex()
@@ -657,7 +657,6 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
             } else {
                 isValid = try {
                     val dValue = value.toDouble()
-                    Log.d("Available balance-> ","$availableBalance")
                     /*val availableBalanceDouble = Helper.getDisplayAmount(availableBalance).toDouble()
                     Log.d("Available balance->1 ","$dValue,${availableBalanceDouble}")
                     (dValue <= availableBalanceDouble && dValue <= maxValue && dValue > 0)*/

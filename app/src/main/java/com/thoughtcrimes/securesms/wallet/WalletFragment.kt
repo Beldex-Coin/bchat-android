@@ -22,22 +22,19 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.get
 import androidx.fragment.app.FragmentActivity
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import com.github.brnunes.swipeablerecyclerview.SwipeableRecyclerViewTouchListener
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.transition.MaterialElevationScale
-import com.google.gson.GsonBuilder
 import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
 import com.thoughtcrimes.securesms.model.TransactionInfo
 import com.thoughtcrimes.securesms.model.Wallet
+import com.thoughtcrimes.securesms.util.BChatThreadPoolExecutor
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.NodePinger
 import com.thoughtcrimes.securesms.wallet.service.exchange.ExchangeApi
 import com.thoughtcrimes.securesms.wallet.service.exchange.ExchangeRate
-import com.thoughtcrimes.securesms.wallet.utils.common.FiatCurrencyPrice
 import com.thoughtcrimes.securesms.wallet.utils.common.fetchPriceFor
 import com.thoughtcrimes.securesms.wallet.utils.helper.ServiceHelper
 import com.thoughtcrimes.securesms.wallet.widget.Toolbar
@@ -56,10 +53,7 @@ import java.text.NumberFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import java.text.SimpleDateFormat
-import android.R.array
-
-
-
+import java.util.concurrent.Executor
 
 
 class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener {
@@ -369,6 +363,22 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         /* override fun onCancelled(result: NodeInfo?) { //TODO: cancel this on exit from fragment
              Log.d("cancelled with %s", result)
          }*/
+    }
+
+    inner class AsyncGetUnlockedBalance(val wallet: Wallet) :
+        AsyncTaskCoroutine<Executor?, Boolean?>() {
+        override fun onPreExecute() {
+            super.onPreExecute()
+        }
+
+        override fun doInBackground(vararg params: Executor?): Boolean {
+           unlockedBalance = wallet.unlockedBalance
+           return true
+        }
+
+        override fun onPostExecute(result: Boolean?) {
+            refreshBalance(wallet.isSynchronized)
+        }
     }
 
     fun autoselect(nodes: Set<NodeInfo?>): NodeInfo? {
@@ -808,8 +818,8 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             Log.d("Beldex", "isOnline 1  ${CheckOnline.isOnline(requireContext())}")
             balance = wallet.balance
             Log.d("Beldex", "value of balance $balance")
-            unlockedBalance = wallet.unlockedBalance
-            refreshBalance(wallet.isSynchronized)
+            //unlockedBalance = wallet.unlockedBalance
+            //refreshBalance(wallet.isSynchronized)
             val sync: String
             check(activityCallback!!.hasBoundService()) { "WalletService not bound." }
             val daemonConnected: Wallet.ConnectionStatus = activityCallback!!.connectionStatus!!
@@ -844,6 +854,8 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                     //activityCallback!!.hiddenRescan(false)
                     binding.syncStatusIcon.visibility=View.GONE
                 } else {
+                    //Steve Josephh21 ANRS
+                    AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
                     Log.d("showBalance->","Synchronized")
                     sync =
                         getString(R.string.status_synchronized)//getString(R.string.status_synced) + " " + formatter.format(wallet.blockChainHeight)

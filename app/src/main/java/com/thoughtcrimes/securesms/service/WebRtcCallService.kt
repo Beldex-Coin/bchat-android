@@ -44,7 +44,6 @@ import javax.inject.Inject
 import com.thoughtcrimes.securesms.webrtc.data.State as CallState
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
 
-@RequiresApi(Build.VERSION_CODES.S)
 @AndroidEntryPoint
 class WebRtcCallService: Service(), CallManager.WebRtcListener {
 

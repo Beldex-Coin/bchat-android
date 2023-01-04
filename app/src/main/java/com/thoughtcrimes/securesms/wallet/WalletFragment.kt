@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.transition.MaterialElevationScale
+import com.thoughtcrimes.securesms.ApplicationContext
 import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
 import com.thoughtcrimes.securesms.model.TransactionInfo
@@ -827,6 +828,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             Log.d("Beldex","Value of daemon connection $daemonConnected")
             if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
                 if (!wallet.isSynchronized) {
+                    ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(true)
                     Log.d("Beldex","Height value of daemonHeight ${wallet.daemonBlockChainHeight}")
                     Log.d("Beldex","Height value of daemonHeight one  ${activityCallback!!.daemonHeight}")
                     Log.d("Beldex","Height value of blockChainHeight ${wallet.blockChainHeight}")
@@ -855,6 +857,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                     //activityCallback!!.hiddenRescan(false)
                     binding.syncStatusIcon.visibility=View.GONE
                 } else {
+                    ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(false)
                     //Steve Josephh21 ANRS
                     AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
                     Log.d("showBalance->","Synchronized")

@@ -30,8 +30,10 @@ import androidx.appcompat.app.AlertDialog
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.google.gson.GsonBuilder
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
+import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
 import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.model.WalletManager
+import com.thoughtcrimes.securesms.util.BChatThreadPoolExecutor
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.wallet.*
 import com.thoughtcrimes.securesms.wallet.utils.OpenAliasHelper
@@ -54,6 +56,7 @@ import java.io.IOException
 import java.lang.Exception
 import java.lang.Math.abs
 import java.math.BigDecimal
+import java.util.concurrent.Executor
 
 
 class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletScannedListener, OnBackPressedListener {
@@ -70,6 +73,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     private var selectedCrypto: Crypto? = null
     val INTEGRATED_ADDRESS_LENGTH = 106
     private var resolvingOA = false
+    private var totalFunds: Long = 0
 
 
     fun newInstance(listener: Listener): SendFragment? {
@@ -280,6 +284,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     ): View? {
         binding = FragmentSendBinding.inflate(inflater, container, false)
 
+        AsyncGetUnlockedBalance(activityCallback).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
         //Get Selected Fiat Currency Price
         //if(TextSecurePreferences.getFiatCurrencyCheckedStatus(requireActivity())) {
         /*val currency = TextSecurePreferences.getCurrency(requireActivity()).toString().lowercase()
@@ -545,11 +550,11 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                         ServiceHelper.ASSET = null
 
                         if (getCleanAmountString(binding.beldexAmountEditTxtLayout.editText?.text.toString()).equals(
-                                Wallet.getDisplayAmount(activityCallback!!.totalFunds)
+                                Wallet.getDisplayAmount(totalFunds)
                             )
                         ) {
                             val amount =
-                                (activityCallback!!.totalFunds - 10485760)// 10485760 == 050000000
+                                (totalFunds - 10485760)// 10485760 == 050000000
                             val bdx =
                                 getCleanAmountString(binding.beldexAmountEditTxtLayout.editText?.text.toString())
                             Log.d(
@@ -640,6 +645,23 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
         return binding.root
 
+    }
+
+    inner class AsyncGetUnlockedBalance(val wallet: Listener?) :
+        AsyncTaskCoroutine<Executor?, Boolean?>() {
+        override fun onPreExecute() {
+            super.onPreExecute()
+
+        }
+
+        override fun doInBackground(vararg params: Executor?): Boolean {
+            totalFunds = wallet!!.totalFunds
+            return true
+        }
+
+        override fun onPostExecute(result: Boolean?) {
+
+        }
     }
 
     private fun validateBELDEXAmount(amount:String):Boolean {

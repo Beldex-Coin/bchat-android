@@ -1064,10 +1064,10 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
     private fun showBalance(balance: String?,synchronized: Boolean,fullBalance:String?) {
         when {
-            TextSecurePreferences.getDisplayBalanceAs(requireActivity())==2 -> {
+            TextSecurePreferences.getDisplayBalanceAs(requireContext())==2 -> {
                 hideDisplayBalance()
             }
-            TextSecurePreferences.getDisplayBalanceAs(requireActivity())==0 -> {
+            TextSecurePreferences.getDisplayBalanceAs(requireContext())==0 -> {
                 walletAvailableBalance = fullBalance
                 walletSynchronized = synchronized
                 showSelectedDecimalBalance(fullBalance!!,synchronized)

@@ -158,9 +158,10 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
     }
 
     private var walletTitle: String? = null
-
+    private var mContext : Context? = null
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        this.mContext = context
         if (context is Listener) {
             activityCallback = context
             onScanListener =
@@ -171,6 +172,11 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                         + " must implement Listener"
             )
         }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        this.mContext = null
     }
 
     override fun onResume() {
@@ -1063,19 +1069,21 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
     }
 
     private fun showBalance(balance: String?,synchronized: Boolean,fullBalance:String?) {
-        when {
-            TextSecurePreferences.getDisplayBalanceAs(requireContext())==2 -> {
-                hideDisplayBalance()
-            }
-            TextSecurePreferences.getDisplayBalanceAs(requireContext())==0 -> {
-                walletAvailableBalance = fullBalance
-                walletSynchronized = synchronized
-                showSelectedDecimalBalance(fullBalance!!,synchronized)
-            }
-            else -> {
-                walletAvailableBalance = balance
-                walletSynchronized = synchronized
-                showSelectedDecimalBalance(balance!!,synchronized)
+        if(mContext!=null) {
+            when {
+                TextSecurePreferences.getDisplayBalanceAs(mContext!!) == 2 -> {
+                    hideDisplayBalance()
+                }
+                TextSecurePreferences.getDisplayBalanceAs(mContext!!) == 0 -> {
+                    walletAvailableBalance = fullBalance
+                    walletSynchronized = synchronized
+                    showSelectedDecimalBalance(fullBalance!!, synchronized)
+                }
+                else -> {
+                    walletAvailableBalance = balance
+                    walletSynchronized = synchronized
+                    showSelectedDecimalBalance(balance!!, synchronized)
+                }
             }
         }
 

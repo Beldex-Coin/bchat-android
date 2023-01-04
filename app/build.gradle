@@ -178,10 +178,13 @@ dependencies {
     implementation 'app.cash.copper:copper-flow:1.0.0'
     implementation 'com.google.code.gson:gson:2.8.7'
     implementation 'com.google.firebase:firebase-crash:16.2.1'
+
+    implementation 'com.github.anrwatchdog:anrwatchdog:1.4.0'
+
 }
 
-def canonicalVersionCode = 25
-def canonicalVersionName = "1.2.3"
+def canonicalVersionCode = 26
+def canonicalVersionName = "1.2.4"
 
 //First Release Date 17-06-2022
 //Version Code 15 Version Name 1.0.0
@@ -215,6 +218,9 @@ def canonicalVersionName = "1.2.3"
 
 //Eleventh Internal Test Release Date 29-12-2022
 //Version Code 25 Version Name 1.2.3
+
+//Twelveth Internal Test Release Date 04-01-2023
+//Version Code 26 Version Name 1.2.4
 
 
 def postFixSize = 10

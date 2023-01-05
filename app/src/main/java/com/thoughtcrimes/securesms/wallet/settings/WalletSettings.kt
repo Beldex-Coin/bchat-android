@@ -179,9 +179,14 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         /*binding.currentNodeTextViewValue.text = getNode()?.host.toString()*/
         val parts = getNode().split(":")
         if (CheckOnline.isOnline(this)) {
-            binding.currentNodeTextViewValue.text = parts[0]
+            //Hales
+            if (parts[0] != null) {
+                binding.currentNodeTextViewValue.text = parts[0]
+            } else {
+                binding.currentNodeTextViewValue.text = getString(R.string.waiting_for_connection)
+            }
         } else {
-            binding.currentNodeTextViewValue.text = "Waiting for network.."
+            binding.currentNodeTextViewValue.text = getString(R.string.waiting_for_network)
         }
     }
 

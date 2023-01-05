@@ -1311,4 +1311,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="please_try_again_later" translatable="false">Please try again later</string>
     <string name="no_transactions_yet" translatable="false">No Transactions yet!</string>
     <string name="after_your_first_transaction_nyou_will_be_able_to_view_it_here" translatable="false">After your first transaction,\nyou will be able to view it here.</string>
+    <string name="waiting_for_network" translatable="false">Waiting for network..</string>
+    <string name="waiting_for_connection" translatable="false"> Waiting for connection..</string>
 </resources>

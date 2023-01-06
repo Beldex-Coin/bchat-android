@@ -184,11 +184,13 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         if(TextSecurePreferences.getDisplayBalanceAs(requireActivity())==2) {
             hideDisplayBalance()
         }else{
-            showSelectedDecimalBalance(walletAvailableBalance!!, walletSynchronized)
-        }
-        if(TextSecurePreferences.getChangedCurrency(requireActivity())) {
-            TextSecurePreferences.changeCurrency(requireActivity(),false)
-            callCurrencyConversionApi()
+            if(walletAvailableBalance!=null) {
+                showSelectedDecimalBalance(walletAvailableBalance!!, walletSynchronized)
+            }
+            if(TextSecurePreferences.getChangedCurrency(requireActivity())) {
+                TextSecurePreferences.changeCurrency(requireActivity(),false)
+                callCurrencyConversionApi()
+            }
         }
 
         exitTransition = null
@@ -228,11 +230,17 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                             val result = json.getJSONObject("beldex")
                             if(result.length()!=0) {
                                 price = result.getDouble(currency)
+                                if(walletAvailableBalance!=null) {
+                                    updateFiatCurrency(walletAvailableBalance!!)
+                                }
                                 TextSecurePreferences.setCurrencyAmount(requireActivity(),price.toString())
                                 Log.d("Beldex", "Fiat if wallet screen -- ${price}")
                             }else{
                                 Log.d("FetchPriceFor -> ", "empty")
                                 price = 0.00
+                                if(walletAvailableBalance!=null) {
+                                    updateFiatCurrency(walletAvailableBalance!!)
+                                }
                                 TextSecurePreferences.setCurrencyAmount(requireActivity(),price.toString())
                                 Log.d("Beldex", "Fiat else wallet screen -- ${price}")
                             }
@@ -240,6 +248,9 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                     } else {
                         Log.d("WalletFragment","onResponse() fail")
                         price = 0.00
+                        if(walletAvailableBalance!=null) {
+                            updateFiatCurrency(walletAvailableBalance!!)
+                        }
                         TextSecurePreferences.setCurrencyAmount(requireActivity(),price.toString())
                         Log.d("Beldex", "Fiat else wallet screen -- ${price}")
                     }
@@ -862,6 +873,12 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                     binding.filterTransactionsIcon.isClickable = false
                     //activityCallback!!.hiddenRescan(false)
                     binding.syncStatusIcon.visibility=View.GONE
+                    binding.syncStatus.setTextColor(
+                        ContextCompat.getColor(
+                            requireActivity().applicationContext,
+                            R.color.green_color
+                        )
+                    )
                 } else {
                     ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(false)
                     //Steve Josephh21 ANRS
@@ -896,6 +913,12 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 binding.transactionTitle.visibility = View.INVISIBLE
                 binding.transactionLayoutCardView.visibility = View.GONE
                 //anchorBehavior.setHideable(true)
+                binding.syncStatus.setTextColor(
+                    ContextCompat.getColor(
+                        requireActivity().applicationContext,
+                        R.color.green_color
+                    )
+                )
             }
             setProgress(sync)
         }
@@ -1062,7 +1085,11 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             }
         }
         //Update Fiat Currency
-        if(balance.isNotEmpty()) {
+        updateFiatCurrency(balance)
+    }
+
+    private fun updateFiatCurrency(balance: String) {
+        if(balance.isNotEmpty() && balance!=null) {
             val amount: BigDecimal = BigDecimal(balance.toDouble()).multiply(BigDecimal(price))
             binding.tvFiatCurrency.text = getString(R.string.fiat_currency,amount.toDouble(),TextSecurePreferences.getCurrency(requireActivity()).toString())//"$price ${TextSecurePreferences.getCurrency(requireActivity()).toString()}"
         }

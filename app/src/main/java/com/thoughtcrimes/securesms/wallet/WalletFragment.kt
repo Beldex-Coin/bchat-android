@@ -387,7 +387,17 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         AsyncTaskCoroutine<Executor?, Boolean?>() {
         override fun onPreExecute() {
             super.onPreExecute()
-            refreshBalance(false)
+            if(mContext!=null && walletAvailableBalance!=null) {
+                if(TextSecurePreferences.getDisplayBalanceAs(mContext!!) == 1 || TextSecurePreferences.getDisplayBalanceAs(mContext!!) == 0) {
+                    if(walletAvailableBalance!!.toDouble()>0.0) {
+                        showSelectedDecimalBalance(walletAvailableBalance!!, true)
+                    }else{
+                        refreshBalance(false)
+                    }
+                }
+            }else {
+                refreshBalance(false)
+            }
         }
 
         override fun doInBackground(vararg params: Executor?): Boolean {

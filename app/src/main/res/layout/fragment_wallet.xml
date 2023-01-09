@@ -76,6 +76,36 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:orientation="vertical">
+                <LinearLayout
+                    android:id="@+id/fetchBalanceStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/fetchBalanceStatusText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/grey"
+                        android:textSize="12sp"
+                        android:gravity="bottom"
+                        android:text="@string/fetching_balance"/>
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/fetchBalanceStatusAnim"
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:adjustViewBounds="true"
+                        android:layout_gravity="bottom"
+                        android:layout_marginBottom="3dp"
+                        app:layout_constraintDimensionRatio="1:1"
+                        app:layout_constraintVertical_bias="0.4"
+                        app:lottie_fileName="fetch_balance.json"
+                        app:lottie_loop="true"
+                        app:lottie_speed="1"
+                        app:lottie_autoPlay="true"
+                        app:lottie_enableMergePathsForKitKatAndAbove="true"
+                        tools:ignore="ContentDescription"/>
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/llBalance"

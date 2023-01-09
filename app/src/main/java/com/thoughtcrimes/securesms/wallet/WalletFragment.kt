@@ -1057,13 +1057,14 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
     }
 
     private fun hideDisplayBalance(){
-        binding.tvBalance.text ="-.----"
-        binding.tvFiatCurrency.text="-.----"
+        binding.tvBalance.text ="---"
+        binding.tvFiatCurrency.text="---"
     }
 
     private fun showSelectedDecimalBalance(balance: String, synchronized: Boolean){
         TextSecurePreferences.getDecimals(requireActivity())?.let { Log.d("Decimal", it) }
         if(!synchronized){
+            binding.fetchBalanceStatus.visibility =View.VISIBLE
             when {
                 TextSecurePreferences.getDecimals(requireActivity()) == "2 - Two (0.00)" -> {
                     binding.tvBalance.text = "-.--"
@@ -1079,6 +1080,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 }
             }
         }else{
+            binding.fetchBalanceStatus.visibility =View.GONE
             when {
                 TextSecurePreferences.getDecimals(requireActivity()) == "2 - Two (0.00)" -> {
                     binding.tvBalance.text = String.format("%.2f", balance.toDouble())

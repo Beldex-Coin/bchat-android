@@ -177,9 +177,7 @@ dependencies {
 
     implementation 'app.cash.copper:copper-flow:1.0.0'
     implementation 'com.google.code.gson:gson:2.8.7'
-    implementation 'com.google.firebase:firebase-crash:16.2.1'
-
-    implementation 'com.github.anrwatchdog:anrwatchdog:1.4.0'
+    //implementation 'com.google.firebase:firebase-crash:16.2.1'
 
 }
 

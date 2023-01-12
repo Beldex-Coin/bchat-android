@@ -200,17 +200,17 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     private lateinit var adapter: NavigationRVAdapter
 
     private var items = arrayListOf(
-        NavigationItemModel(R.drawable.ic_my_account, "My Account"),
-        NavigationItemModel(R.drawable.ic_wallet, "My Wallet"),
-        NavigationItemModel(R.drawable.ic_notifications, "Notification"),
-        NavigationItemModel(R.drawable.ic_message_requests, "Message Requests"),
-        NavigationItemModel(R.drawable.ic_privacy, "Privacy"),
-        NavigationItemModel(R.drawable.ic_app_permissions, "App Permissions"),
-        NavigationItemModel(R.drawable.ic_recovery_seed, "Recovery Seed"),
-        NavigationItemModel(R.drawable.ic_support,"Report Issue"),
-        NavigationItemModel(R.drawable.ic_help, "Help"),
-        NavigationItemModel(R.drawable.ic_invite, "Invite"),
-        NavigationItemModel(R.drawable.ic_about, "About")
+        NavigationItemModel(R.drawable.ic_my_account, "My Account",0),
+        NavigationItemModel(R.drawable.ic_wallet, "My Wallet",R.drawable.ic_beta),
+        NavigationItemModel(R.drawable.ic_notifications, "Notification",0),
+        NavigationItemModel(R.drawable.ic_message_requests, "Message Requests",0),
+        NavigationItemModel(R.drawable.ic_privacy, "Privacy",0),
+        NavigationItemModel(R.drawable.ic_app_permissions, "App Permissions",0),
+        NavigationItemModel(R.drawable.ic_recovery_seed, "Recovery Seed",0),
+        NavigationItemModel(R.drawable.ic_support,"Support",0),
+        NavigationItemModel(R.drawable.ic_help, "Help",0),
+        NavigationItemModel(R.drawable.ic_invite, "Invite",0),
+        NavigationItemModel(R.drawable.ic_about, "About",0)
     )
 
     // NavigationItemModel(R.drawable.ic_recovery_key, "Recovery Key"),

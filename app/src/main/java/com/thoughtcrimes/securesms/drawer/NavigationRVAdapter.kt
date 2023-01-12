@@ -44,6 +44,8 @@ class NavigationRVAdapter(private var items: ArrayList<NavigationItemModel>, pri
         holder.itemView.findViewById<TextView>(R.id.navigation_title).text = items[position].title
 
         holder.itemView.findViewById<ImageView>(R.id.navigation_icon).setImageResource(items[position].icon)
+        
+        holder.itemView.findViewById<ImageView>(R.id.navigation_SubIcon).setImageResource(items[position].subIcon)
     }
 
 }

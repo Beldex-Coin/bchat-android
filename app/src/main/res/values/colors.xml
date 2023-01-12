@@ -200,4 +200,5 @@
     <color name="receive_button_card">#1BB71F</color>
     <color name="wallet_options_disable">#333343</color>
     <color name="scan_qr_code_background">#24242F</color>
+    <color name="beta_icon">#aaaaaa</color>
 </resources>

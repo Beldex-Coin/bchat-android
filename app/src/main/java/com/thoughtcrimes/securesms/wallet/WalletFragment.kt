@@ -573,7 +573,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 popupMenu.setForceShowIcon(true)
             }*/
             val spanString = SpannableString(popupMenu.menu[0].title.toString())
-            spanString.setSpan(RelativeSizeSpan(1.2f), 0,spanString.length, 0);
+            spanString.setSpan(RelativeSizeSpan(1.2f), 0,spanString.length, 0)
             spanString.setSpan(StyleSpan(Typeface.BOLD), 0, spanString.length, 0)
             spanString.setSpan(
                 ForegroundColorSpan(
@@ -582,13 +582,12 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 ),
                 0, spanString.length, 0
             )
-           /* if (TextSecurePreferences.getIncomingTransactionStatus(requireActivity())) {
-                filter(TransactionInfo.Direction.Direction_In, adapter!!.infoItems!!)
-            }*/
+            /* if (TextSecurePreferences.getIncomingTransactionStatus(requireActivity())) {
+                 filter(TransactionInfo.Direction.Direction_In, adapter!!.infoItems!!)
+             }*/
             popupMenu.menu[0].title = spanString
             popupMenu.menu[0].isEnabled = false
-            popupMenu.menu[1].isChecked =
-                TextSecurePreferences.getIncomingTransactionStatus(requireActivity())
+            popupMenu.menu[1].isChecked = TextSecurePreferences.getIncomingTransactionStatus(requireActivity())
             popupMenu.menu[2].isChecked = TextSecurePreferences.getOutgoingTransactionStatus(requireActivity())
             //popupMenu.menu[3].isChecked = TextSecurePreferences.getTransactionsByDateStatus(requireActivity())
             popupMenu.setOnMenuItemClickListener { item ->
@@ -603,28 +602,29 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                         TextSecurePreferences.setIncomingTransactionStatus(requireActivity(), true)
                         Log.d("Beldex","filter issue incoming if 2,, ${adapterItems.size}")
                         filterAll(adapterItems)
-
                     }else if (item.isChecked && !popupMenu.menu[2].isChecked) {
-                            Log.d("Beldex","filter issue incoming if 3")
-                            TextSecurePreferences.setIncomingTransactionStatus(
-                                requireActivity(),
-                                true
-                            )
-                            filter(TransactionInfo.Direction.Direction_In, adapterItems)
-                        } else if(!item.isChecked && popupMenu.menu[2].isChecked) {
-                            Log.d("Beldex", "filter issue incoming if 4")
-                            TextSecurePreferences.setIncomingTransactionStatus(
-                                requireActivity(),
-                                false
-                            )
+                        Log.d("Beldex","filter issue incoming if 3")
+                        TextSecurePreferences.setIncomingTransactionStatus(
+                            requireActivity(),
+                            true
+                        )
+                        filter(TransactionInfo.Direction.Direction_In, adapterItems)
+                    } else if(!item.isChecked && popupMenu.menu[2].isChecked) {
+                        Log.d("Beldex", "filter issue incoming if 4")
+                        TextSecurePreferences.setIncomingTransactionStatus(
+                            requireActivity(),
+                            false
+                        )
                         Log.d("Beldex","filter issue incoming if 4 adapterItemss.size ${adapterItems.size}")
-                            filter(TransactionInfo.Direction.Direction_Out, adapterItems)
-                        }
+                        filter(TransactionInfo.Direction.Direction_Out, adapterItems)
+                    }
                     else if(!popupMenu.menu[2].isChecked && !item.isChecked){
                         Log.d("Beldex","filter issue incoming if 5")
-                        emptyList
+                        //emptyList
+                        filterAll(emptyList)
+                        TextSecurePreferences.setIncomingTransactionStatus(requireActivity(), false)
+                        TextSecurePreferences.setOutgoingTransactionStatus(requireActivity(), false)
                     }
-
                 } else if (item.title == "Outgoing") {
                     Log.d("Beldex","filter issue outgoing if 1")
                     item.isChecked = !item.isChecked
@@ -632,33 +632,33 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                         Log.d("Beldex","filter issue outgoing if 2")
                         TextSecurePreferences.setOutgoingTransactionStatus(requireActivity(), true)
                         filterAll(adapterItems)
-
                     }else if (item.isChecked && !popupMenu.menu[1].isChecked ) {
-                            Log.d("Beldex","filter issue outgoing if 3")
-                            TextSecurePreferences.setOutgoingTransactionStatus(
-                                requireActivity(),
-                                true
-                            )
-                            filter(TransactionInfo.Direction.Direction_Out, adapterItems)
-                        } else if (!item.isChecked && popupMenu.menu[1].isChecked ) {
-                            Log.d("Beldex", "filter issue outgoing if 4")
-                            TextSecurePreferences.setOutgoingTransactionStatus(
-                                requireActivity(),
-                                false
-                            )
-                            filter(TransactionInfo.Direction.Direction_In, adapterItems)
-                        }
-                        else if(!popupMenu.menu[1].isChecked && !item.isChecked){
-                            Log.d("Beldex", "filter issue outgoing if 5")
-                            emptyList
-                        }
-
+                        Log.d("Beldex","filter issue outgoing if 3")
+                        TextSecurePreferences.setOutgoingTransactionStatus(
+                            requireActivity(),
+                            true
+                        )
+                        filter(TransactionInfo.Direction.Direction_Out, adapterItems)
+                    } else if (!item.isChecked && popupMenu.menu[1].isChecked ) {
+                        Log.d("Beldex", "filter issue outgoing if 4")
+                        TextSecurePreferences.setOutgoingTransactionStatus(
+                            requireActivity(),
+                            false
+                        )
+                        filter(TransactionInfo.Direction.Direction_In, adapterItems)
+                    }
+                    else if(!popupMenu.menu[1].isChecked && !item.isChecked){
+                        Log.d("Beldex", "filter issue outgoing if 5")
+                        // emptyList
+                        filterAll(emptyList)
+                        TextSecurePreferences.setIncomingTransactionStatus(requireActivity(), false)
+                        TextSecurePreferences.setOutgoingTransactionStatus(requireActivity(), false)
+                    }
                 }else{
                     val datePicker = MaterialDatePicker.Builder.dateRangePicker()
                         .setTheme(R.style.MaterialCalendarTheme)
                         .build()
                     datePicker.show(requireActivity().supportFragmentManager, "DatePicker")
-
                     // Setting up the event for when ok is clicked
                     datePicker.addOnPositiveButtonClickListener {
                         Toast.makeText(context, "${datePicker.headerText} ${datePicker.selection!!.first}, ${datePicker.selection!!.second} ${Date(datePicker.selection!!.first!!)}, ${Date(datePicker.selection!!.second!!)}is selected", Toast.LENGTH_LONG).show()
@@ -669,16 +669,13 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                         }else if(popupMenu.menu[2].isChecked){
                             filterTransactionsByDate(getDaysBetweenDates(Date(datePicker.selection!!.first!!),Date(datePicker.selection!!.second!!)),filterTempList(TransactionInfo.Direction.Direction_Out, adapterItems))
                         }else{
-
                             filterTransactionsByDate(getDaysBetweenDates(Date(datePicker.selection!!.first!!),Date(datePicker.selection!!.second!!)),emptyList)
                         }
                     }
-
                     // Setting up the event for when cancelled is clicked
                     datePicker.addOnNegativeButtonClickListener {
                         Toast.makeText(context, "${datePicker.headerText} ${datePicker.selection!!.first}, ${datePicker.selection!!.second} is cancelled", Toast.LENGTH_LONG).show()
                     }
-
                     // Setting up the event for when back button is pressed
                     datePicker.addOnCancelListener {
                         Toast.makeText(context, "Date Picker Cancelled", Toast.LENGTH_LONG).show()
@@ -692,7 +689,6 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                         }else if(popupMenu.menu[2].isChecked){
                             filterTransactionsByDate(getDaysBetweenDates(startDate.getTime(),endDate.getTime()),filterTempList(TransactionInfo.Direction.Direction_Out, adapterItems))
                         }else{
-
                             filterTransactionsByDate(getDaysBetweenDates(startDate.getTime(),endDate.getTime()),emptyList)
                         }
                     }
@@ -701,7 +697,6 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                         civilCalendar.month = 9                         // determines starting month
                         civilCalendar.firstDayOfWeek = Calendar.MONDAY  // sets first day of week to Monday
                     }
-
                     val datePicker = dialogWith(today)
                         .pickRangeDays(callback)
                         .build()
@@ -798,7 +793,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             dates.add(result)
             calendar.add(Calendar.DATE, 1)
         }
-        return dates
+        return dates.reversed()
     }
 
 

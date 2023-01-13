@@ -895,10 +895,10 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     override fun onRefreshed(wallet: Wallet?, full: Boolean): Boolean {
         Timber.d("onRefreshed()")
-        runOnUiThread { if (getWallet() != null) updateAccountsBalance() }
+        //runOnUiThread { if (getWallet() != null) updateAccountsBalance() }
         if (numAccounts != wallet!!.numAccounts) {
             numAccounts = wallet.numAccounts
-            runOnUiThread { this.updateAccountsList() }
+            //runOnUiThread { this.updateAccountsList() }
         }
         try {
             Log.d("Beldex","mConnection onRefreshed called ")
@@ -1170,7 +1170,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         val walletFragment = getWalletFragment()
         if (walletFragment != null) walletFragment.resetDismissedTransactions()
         forceUpdate(this)
-        runOnUiThread { if (getWallet() != null) updateAccountsBalance() }
+        //runOnUiThread { if (getWallet() != null) updateAccountsBalance() }
     }
 
     override fun onWalletOpen(device: Wallet.Device?) {

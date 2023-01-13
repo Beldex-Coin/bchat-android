@@ -620,7 +620,7 @@ public class WalletService extends Service {
         // if we try to refresh the history here we get occasional segfaults!
         // doesnt matter since we update as soon as we get a new block anyway
         Timber.d("start() done");
-        Log.d("Beldex","Wallet start called 6 " + getWallet().getFullStatus());
+        Log.d("Beldex","Wallet start called 6 " + "getWallet().getFullStatus()");
         return getWallet().getFullStatus();
     }
 

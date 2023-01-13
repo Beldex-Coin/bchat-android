@@ -793,7 +793,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             dates.add(result)
             calendar.add(Calendar.DATE, 1)
         }
-        return dates.reversed()
+        return dates
     }
 
 

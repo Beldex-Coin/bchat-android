@@ -581,7 +581,11 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                         }
                         txData.userNotes =
                             UserNotes("-")//etNotes.getEditText().getText().toString()
-                        txData.priority = PendingTransaction.Priority.Priority_Flash
+                        if(TextSecurePreferences.getFeePriority(requireActivity())==0){
+                            txData.priority = PendingTransaction.Priority.Priority_Slow
+                        }else{
+                            txData.priority = PendingTransaction.Priority.Priority_Flash
+                        }
                         txData.mixin = MIXIN
                         binding.beldexAddressEditTxtLayout.editText?.text?.clear()
                         binding.beldexAmountEditTxtLayout.editText?.text?.clear()

@@ -151,7 +151,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     private var node1: NodeInfo? = null
 
     private val favouriteNodeslist = mutableSetOf<NodeInfo>()
-
+    private val supportBChatID = "bdb890a974a25ef50c64cc4e3270c4c49c7096c433b8eecaf011c1ad000e426813"
     private val globalSearchAdapter = GlobalSearchAdapter { model ->
         when (model) {
             is GlobalSearchAdapter.Model.Message -> {
@@ -200,16 +200,17 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     private lateinit var adapter: NavigationRVAdapter
 
     private var items = arrayListOf(
-        NavigationItemModel(R.drawable.ic_my_account, "My Account"),
-        NavigationItemModel(R.drawable.ic_wallet, "My Wallet"),
-        NavigationItemModel(R.drawable.ic_notifications, "Notification"),
-        NavigationItemModel(R.drawable.ic_message_requests, "Message Requests"),
-        NavigationItemModel(R.drawable.ic_privacy, "Privacy"),
-        NavigationItemModel(R.drawable.ic_app_permissions, "App Permissions"),
-        NavigationItemModel(R.drawable.ic_recovery_seed, "Recovery Seed"),
-        NavigationItemModel(R.drawable.ic_help, "Help"),
-        NavigationItemModel(R.drawable.ic_invite, "Invite"),
-        NavigationItemModel(R.drawable.ic_about, "About")
+        NavigationItemModel(R.drawable.ic_my_account, "My Account",0),
+        NavigationItemModel(R.drawable.ic_wallet, "My Wallet",R.drawable.ic_beta),
+        NavigationItemModel(R.drawable.ic_notifications, "Notification",0),
+        NavigationItemModel(R.drawable.ic_message_requests, "Message Requests",0),
+        NavigationItemModel(R.drawable.ic_privacy, "Privacy",0),
+        NavigationItemModel(R.drawable.ic_app_permissions, "App Permissions",0),
+        NavigationItemModel(R.drawable.ic_recovery_seed, "Recovery Seed",0),
+        NavigationItemModel(R.drawable.ic_support,"Support",0),
+        NavigationItemModel(R.drawable.ic_help, "Help",0),
+        NavigationItemModel(R.drawable.ic_invite, "Invite",0),
+        NavigationItemModel(R.drawable.ic_about, "About",0)
     )
 
     // NavigationItemModel(R.drawable.ic_recovery_key, "Recovery Key"),
@@ -297,14 +298,18 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                          showKeys()
                      }*/
                     7 -> {
+                        // # Support
+                        sendMessageToSupport()
+                    }
+                    8 -> {
                         // # Help Activity
                         help()
                     }
-                    8 -> {
+                    9 -> {
                         // # Invite Activity
                         sendInvitation()
                     }
-                    9 -> {
+                    10 -> {
                         // # About Activity
                         showAbout()
                     }
@@ -781,6 +786,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
     override fun onPause() {
         super.onPause()
+        Log.d("Beldex","HomeActivity() onPause called")
         ApplicationContext.getInstance(this).messageNotifier.setHomeScreenVisible(false)
     }
 
@@ -815,12 +821,14 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     }
 
     override fun onDestroy() {
+        Log.d("Beldex","onDestroy in Home")
         val broadcastReceiver = this.broadcastReceiver
         if (broadcastReceiver != null) {
             LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver)
         }
-        super.onDestroy()
         EventBus.getDefault().unregister(this)
+        super.onDestroy()
+
     }
     // endregion
 
@@ -1203,6 +1211,17 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     private fun showAbout() {
         val intent = Intent(this, AboutActivity::class.java)
         show(intent)
+    }
+
+    private fun sendMessageToSupport() {
+        val recipient = Recipient.from(this, Address.fromSerialized(supportBChatID), false)
+        val intent = Intent(this, ConversationActivityV2::class.java)
+        intent.putExtra(ConversationActivityV2.ADDRESS, recipient.address)
+        intent.setDataAndType(getIntent().data, getIntent().type)
+        val existingThread =
+            DatabaseComponent.get(this).threadDatabase().getThreadIdIfExistsFor(recipient)
+        intent.putExtra(ConversationActivityV2.THREAD_ID, existingThread)
+        startActivity(intent)
     }
 
     private fun showPath() {

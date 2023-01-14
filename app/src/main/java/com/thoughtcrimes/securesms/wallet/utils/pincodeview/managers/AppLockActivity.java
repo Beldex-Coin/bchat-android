@@ -7,18 +7,18 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.beldex.libbchat.utilities.TextSecurePreferences;
-import com.thoughtcrimes.securesms.BaseActionBarActivity;
-import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity;
 import com.thoughtcrimes.securesms.wallet.utils.keyboardview.KeyboardView;
 import com.thoughtcrimes.securesms.wallet.utils.keyboardview.enums.KeyboardButtonEnum;
 import com.thoughtcrimes.securesms.wallet.utils.keyboardview.interfaces.KeyboardButtonClickedListener;
@@ -57,6 +57,8 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
     protected int mType = AppLock.UNLOCK_PIN;
     protected int mAttempts = 1;
     protected String mPinCode;
+    //Steve Josephh
+    protected String oldPinCode;
 
     protected String mOldPinCode;
 
@@ -73,6 +75,11 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
         setContentView(getContentView());
         initializeToolbar();
         initLayout(getIntent());
+        if (TextSecurePreferences.isScreenSecurityEnabled(this)) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        } else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        }
     }
 
     private void initializeToolbar() {
@@ -98,11 +105,19 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
 
         View backButton = actionbar.getCustomView().findViewById(R.id.back_button);
         TextView titleName = actionbar.getCustomView().findViewById(R.id.title_name);
-        titleName.setText("Wallet Password");
+        titleName.setText(getString(R.string.activity_wallet_password_page_title));
         backButton.setOnClickListener(view -> {
-            onSupportNavigateUp();
+            onBackPressed();
+         /*  onSupportNavigateUp();*/
         });
     }
+   /* @Override
+    public boolean onSupportNavigateUp() {
+        if (super.onSupportNavigateUp()) return true;
+
+        onBackPressed();
+        return true;
+    }*/
 
     /**
      * If called in singleTop mode
@@ -117,8 +132,9 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
     @Override
     protected void onResume() {
         super.onResume();
+       /* initializeToolbar();*/
         //Init layout for Fingerprint
-        initLayoutForFingerprint();
+        //initLayoutForFingerprint();
     }
 
     @Override
@@ -148,6 +164,7 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
         mLockManager = LockManager.getInstance();
         mPinCode = "";
         mOldPinCode = "";
+        oldPinCode="";
 
         enableAppLockerIfDoesNotExist();
         mLockManager.getAppLock().setPinChallengeCancelled(false);
@@ -169,7 +186,14 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
         /*mForgotTextView.setText(getForgotText());
         mForgotTextView.setVisibility(mLockManager.getAppLock().shouldShowForgot() ? View.VISIBLE : View.GONE);*/
 
-        setStepText();
+       Log.d("AppLockActivity 1",String.valueOf(mType));
+       if(changePin) {
+           Log.d("AppLockActivity 2",String.valueOf(mType));
+           mStepTextView.setText(getStepText(AppLock.CHANGE_PIN));
+       }else{
+           Log.d("AppLockActivity 3",String.valueOf(mType));
+           setStepText();
+       }
     }
 
     /**
@@ -316,17 +340,29 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
                 if (mLockManager.getAppLock().checkPasscode(mPinCode)) {
                     setResult(RESULT_OK);
                     mLockManager.getAppLock().setPasscode(null);
-                    onPinCodeSuccess(1);
+                    onPinCodeSuccess(1, this);
                     finish();
                 } else {
                     onPinCodeError();
                 }
                 break;
             case AppLock.ENABLE_PINLOCK:
-                mOldPinCode = mPinCode;
-                setPinCode("");
-                mType = AppLock.CONFIRM_PIN;
-                setStepText();
+                if(changePin){
+                    if(oldPinCode.equals(mPinCode)){
+                        Toast.makeText(this, getString(R.string.change_pin_confirmation_message), Toast.LENGTH_SHORT).show();
+                        onPinCodeError();
+                    }else{
+                        mOldPinCode = mPinCode;
+                        setPinCode("");
+                        mType = AppLock.CONFIRM_PIN;
+                        setStepText();
+                    }
+                }else{
+                    mOldPinCode = mPinCode;
+                    setPinCode("");
+                    mType = AppLock.CONFIRM_PIN;
+                    setStepText();
+                }
                 break;
             case AppLock.CONFIRM_PIN:
                 if (mPinCode.equals(mOldPinCode)) {
@@ -334,11 +370,10 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
                     TextSecurePreferences.setWalletEntryPassword(this,mPinCode);
                     mLockManager.getAppLock().setPasscode(mPinCode);
                     if(changePin) {
-                        onPinCodeSuccess(2);
+                        onPinCodeSuccess(7,this);
                     }else{
-                        onPinCodeSuccess(3);
+                        onPinCodeSuccess(3, this);
                     }
-                    finish();
                 } else {
                     mOldPinCode = "";
                     setPinCode("");
@@ -349,10 +384,11 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
                 break;
             case AppLock.CHANGE_PIN:
                 if (mLockManager.getAppLock().checkPasscode(mPinCode)) {
+                    oldPinCode=mPinCode;
                     mType = AppLock.ENABLE_PINLOCK;
                     setStepText();
                     setPinCode("");
-                    onPinCodeSuccess(2);
+                    onPinCodeSuccess(2, this);
                 } else {
                     onPinCodeError();
                 }
@@ -361,9 +397,9 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
                 if (mLockManager.getAppLock().checkPasscode(mPinCode)) {
                     setResult(RESULT_OK);
                     if(sendAuthentication){
-                        onPinCodeSuccess(6);
+                        onPinCodeSuccess(6, this);
                     }else {
-                        onPinCodeSuccess(4);
+                        onPinCodeSuccess(4, this);
                     }
                     finish();
                 } else {
@@ -387,15 +423,15 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
                         .getInstance(this)
                         .sendBroadcast(new Intent().setAction(ACTION_CANCEL));
             }
-            super.onBackPressed();
         }
+        super.onBackPressed();
     }
 
     @Override
     public void onAuthenticated() {
         Log.e(TAG, "Fingerprint READ!!!");
         setResult(RESULT_OK);
-        onPinCodeSuccess(5);
+        onPinCodeSuccess(5, this);
         finish();
     }
 
@@ -427,19 +463,36 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
         onPinFailure(mAttempts++);
         Thread thread = new Thread() {
             public void run() {
-                mPinCode = "";
+                Log.d("AppLock","step onPinCodeError()");
                 mPinCodeRoundView.refresh(mPinCode.length());
+                mPinCode = "";
                 Animation animation = AnimationUtils.loadAnimation(
                         AppLockActivity.this, R.anim.shake);
                 mKeyboardView.startAnimation(animation);
+                animation.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        mPinCodeRoundView.refresh(mPinCode.length());
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
             }
         };
         runOnUiThread(thread);
     }
 
-    protected void onPinCodeSuccess(int pinLockStatus) {
-        //ENABLE_PINLOCK = 0 DISABLE_PINLOCK = 1 CHANGE_PIN = 2 CONFIRM_PIN = 3, UNLOCK_PIN = 4, FINGERPRINT_UNLOCK = 5 SEND_AUTHENTICATION = 6
-        onPinSuccess(mAttempts,pinLockStatus);
+    protected void onPinCodeSuccess(int pinLockStatus, AppLockActivity appLockActivity) {
+        //ENABLE_PINLOCK = 0 DISABLE_PINLOCK = 1 CHANGE_PIN = 2 CONFIRM_PIN = 3, UNLOCK_PIN = 4, FINGERPRINT_UNLOCK = 5 SEND_AUTHENTICATION = 6 CHANGE_PIN pop up confirmation = 7
+        onPinSuccess(mAttempts,pinLockStatus,appLockActivity);
         mAttempts = 1;
     }
 
@@ -448,6 +501,11 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
      */
     public void setPinCode(String pinCode) {
         mPinCode = pinCode;
+       /* if (mPinCode.length() == this.getPinLength()) {
+            Log.d("AppLock","step 8 -> "+mPinCode.length()+" getPinLength() -> "+this.getPinLength());
+            onPinCodeInputed();
+        }*/
+        Log.d("AppLock","step setPincode()");
         mPinCodeRoundView.refresh(mPinCode.length());
     }
 
@@ -481,8 +539,9 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
      * When the user has succeeded at a pin challenge
      *
      * @param attempts the number of attempts the user had used
+     * @param appLockActivity
      */
-    public abstract void onPinSuccess(int attempts,int pinLockStatus);
+    public abstract void onPinSuccess(int attempts, int pinLockStatus, AppLockActivity appLockActivity);
 
     /**
      * Gets the resource id to the {@link View} to be set with {@link #setContentView(int)}.

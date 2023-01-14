@@ -258,6 +258,34 @@
         <item name="android:textAlignment">viewStart</item>
         <item name="android:maxLines">1</item>
     </style>
+
+    <style name="AddNodeBchatEditText">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:background">@drawable/add_node_edit_text_background</item>
+        <item name="android:paddingLeft">@dimen/medium_spacing</item>
+        <item name="android:paddingTop">@dimen/medium_spacing</item>
+        <item name="android:paddingRight">@dimen/medium_spacing</item>
+        <item name="android:paddingBottom">@dimen/medium_spacing</item>
+        <item name="android:textSize">@dimen/small_font_size</item>
+        <item name="android:textColor">@color/text</item>
+        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor</item>
+        <item name="android:textAlignment">viewStart</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="AddNodeOptionalBchatEditText">
+        <item name="android:fontFamily">@font/poppins_medium</item>
+        <item name="android:background">@drawable/add_node_optional_edit_text_background</item>
+        <item name="android:paddingLeft">@dimen/medium_spacing</item>
+        <item name="android:paddingTop">@dimen/medium_spacing</item>
+        <item name="android:paddingRight">@dimen/medium_spacing</item>
+        <item name="android:paddingBottom">@dimen/medium_spacing</item>
+        <item name="android:textSize">@dimen/small_font_size</item>
+        <item name="android:textColor">@color/text</item>
+        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor</item>
+        <item name="android:textAlignment">viewStart</item>
+        <item name="android:maxLines">1</item>
+    </style>
    <style name="BchatAddressEditText">
         <item name="android:fontFamily">@font/poppins_medium</item>
         <item name="android:background">@drawable/bchat_id_text_view_background</item>
@@ -269,7 +297,7 @@
         <item name="android:textColor">@color/text</item>
         <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor</item>
         <item name="android:textAlignment">viewStart</item>
-
+       <item name="android:maxLines">4</item>
     </style>
 
     <style name="SmallBChatEditText">
@@ -388,6 +416,46 @@
         <item name="android:background">@color/card_color</item>
         <item name="android:textSize">15sp</item>
         <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
+    </style>
+
+    <style name="BChatAlertDialog_Exit" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.BChat.AlertDialog.NegativeButtonStyle_Exit</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.BChat.AlertDialog.PositiveButtonStyle_Exit</item>
+        <item name="android:background">@color/card_color</item>
+        <item name="android:textSize">15sp</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
+    </style>
+
+    <style name="BChatAlertDialog_Wallet_Syncing_Exit_Alert" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="android:fontFamily">@font/poppins_semi_bold</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.BChat.AlertDialog.NegativeButtonStyle_Exit</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.BChat.AlertDialog.PositiveButtonStyle_Exit</item>
+        <item name="android:background">@color/card_color</item>
+        <item name="android:textSize">15sp</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
+    </style>
+
+    <style name="BChatAlertDialog_Syncing_Option" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.BChat.AlertDialog.NegativeButtonStyle_Exit</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.BChat.AlertDialog.PositiveButtonStyle_Exit</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:windowBackground">@drawable/alert_syncing_option_shape</item>
+    </style>
+
+    <style name="Widget.BChat.AlertDialog.PositiveButtonStyle_Exit" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/alert_ok</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="Widget.BChat.AlertDialog.NegativeButtonStyle_Exit" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/text</item>
+        <item name="alpha">0.5</item>
     </style>
 
     <style name="BChatAlertDialog_Wallet" parent="ThemeOverlay.AppCompat.Dialog.Alert">

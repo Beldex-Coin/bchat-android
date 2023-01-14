@@ -2,7 +2,9 @@ package com.thoughtcrimes.securesms.wallet.rescan
 
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.text.Editable
 import android.text.InputType
+import android.text.TextWatcher
 import android.util.ArrayMap
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,12 +13,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import android.widget.Toolbar
 import androidx.fragment.app.DialogFragment
+import com.thoughtcrimes.securesms.preferences.ClearAllDataDialog
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.wallet.CheckOnline
 import com.thoughtcrimes.securesms.wallet.WalletActivity
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.RescanDialogBinding
 import timber.log.Timber
+import java.math.BigInteger
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -111,6 +115,30 @@ class RescanDialog(val context: WalletActivity, private val daemonBlockChainHeig
                 }
             }
             dialogCurrentBlockHeight.text=daemonBlockChainHeight.toString()
+
+            binding.restoreSeedWalletRestoreHeight.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable) {
+                    if (binding.restoreSeedWalletRestoreHeight.text.toString().length == 9) {
+                        Toast.makeText(
+                            context,
+                            R.string.enter_a_valid_height,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                override fun beforeTextChanged(
+                    s: CharSequence, start: Int,
+                    count: Int, after: Int
+                ) {
+                }
+
+                override fun onTextChanged(
+                    s: CharSequence, start: Int,
+                    before: Int, count: Int
+                ) {
+                }
+            })
             //SteveJosephh21
             restoreSeedWalletRestoreDate.setOnClickListener {
                 restoreSeedWalletRestoreDate.inputType = InputType.TYPE_NULL;
@@ -125,28 +153,47 @@ class RescanDialog(val context: WalletActivity, private val daemonBlockChainHeig
             }
 
             rescanButton.setOnClickListener {
-                val restoreHeight = binding.restoreSeedWalletRestoreHeight.text.toString()
-                val restoreFromDate = binding.restoreSeedWalletRestoreDate.text.toString()
-                //SteveJosephh21
-                when {
-                    restoreHeight.isNotEmpty() -> {
-                        binding.restoreSeedWalletRestoreDate.text = ""
-                        context.onWalletRescan(restoreHeight.toLong())
-                        //_recoveryWallet(displayName,password,getSeed, restoreHeight.toLong())
-                        dismiss()
+                if(CheckOnline.isOnline(context)) {
+                    val restoreHeight = binding.restoreSeedWalletRestoreHeight.text.toString()
+                    val restoreFromDate = binding.restoreSeedWalletRestoreDate.text.toString()
+                    //SteveJosephh21
+                    when {
+                        restoreHeight.isNotEmpty() -> {
+                            val restoreHeightBig = BigInteger(restoreHeight)
+                            if(restoreHeightBig.toLong()>=0 && restoreHeightBig.toLong()<daemonBlockChainHeight) {
+                                binding.restoreFromHeightErrorMessage.text=""
+                                binding.restoreFromHeightErrorMessage.visibility=View.GONE
+                                binding.restoreSeedWalletRestoreDate.text = ""
+                                context.onWalletRescan(restoreHeight.toLong())
+                                //_recoveryWallet(displayName,password,getSeed, restoreHeight.toLong())
+                                dismiss()
+                            }else{
+                                binding.restoreFromHeightErrorMessage.text=getString(R.string.restore_height_error_message)
+                                binding.restoreFromHeightErrorMessage.visibility=View.VISIBLE
+                            }
+                        }
+                        restoreFromDate.isNotEmpty() -> {
+                            binding.restoreSeedWalletRestoreHeight.setText("")
+                            Log.d("Beldex", "Restore Height 1 ${restoreFromDateHeight.toLong()}")
+                            context.onWalletRescan(restoreFromDateHeight.toLong())
+                            //_recoveryWallet(displayName, password, getSeed, restoreFromDateHeight.toLong())
+                            dismiss()
+                        }
+                        else -> {
+                            Toast.makeText(
+                                context,
+                                getString(R.string.activity_restore_from_height_missing_error),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
-                    restoreFromDate.isNotEmpty() -> {
-                        binding.restoreSeedWalletRestoreHeight.setText("")
-                        Log.d("Beldex","Restore Height 1 ${restoreFromDateHeight.toLong()}")
-                        context.onWalletRescan(restoreFromDateHeight.toLong())
-                        //_recoveryWallet(displayName, password, getSeed, restoreFromDateHeight.toLong())
-                        dismiss()
-                    }
-                    else -> {
-                        Toast.makeText(context,getString(R.string.activity_restore_from_height_missing_error),
-                            Toast.LENGTH_SHORT).show()
-                    }
+                }else{
+                    Toast.makeText(context,getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
                 }
+            }
+
+            restoreHeightInfoIcon.setOnClickListener {
+                RestoreHeightInfoDialog().show(context.supportFragmentManager, "Restore Height Info Dialog")
             }
         }
         return binding.root

@@ -3,29 +3,32 @@ package com.thoughtcrimes.securesms.wallet.settings
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
+import android.view.View
+import android.view.Window
+import android.view.WindowManager
+import android.widget.*
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.BaseActionBarActivity
+import com.thoughtcrimes.securesms.data.NodeInfo
+import com.thoughtcrimes.securesms.util.push
 import com.thoughtcrimes.securesms.util.setUpActionBarBchatLogo
+import com.thoughtcrimes.securesms.wallet.CheckOnline
 import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity
 import com.thoughtcrimes.securesms.wallet.node.activity.NodeActivity
+import com.thoughtcrimes.securesms.wallet.settings.adapter.WalletSubOptionsListAdapter
+import com.thoughtcrimes.securesms.wallet.settings.adapter.WalletSubOptionsSearchListItemAdapter
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityWalletSettingsBinding
-import android.view.View
-import android.view.Window
-import android.view.WindowManager
-import android.widget.*
-
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.beldex.libbchat.utilities.TextSecurePreferences
-import com.thoughtcrimes.securesms.wallet.settings.adapter.WalletSubOptionsListAdapter
-import com.thoughtcrimes.securesms.wallet.settings.adapter.WalletSubOptionsSearchListItemAdapter
-import android.text.Editable
-
-import android.text.TextWatcher
-import com.thoughtcrimes.securesms.util.push
 
 
 class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemClickListener,WalletSubOptionsSearchListItemAdapter.ItemClickListener {
@@ -39,6 +42,8 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
     lateinit var walletSubOptionsSearchListItemAdapter:WalletSubOptionsSearchListItemAdapter
     private var selectedDecimalIndex:Int = 0
     private var selectedCurrencyIndex:Int = 30
+    var nodeItem: NodeInfo? = null
+    private val SELECTED_NODE_PREFS_NAME = "selected_node"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setUpActionBarBchatLogo("Wallet Settings",false)
@@ -55,9 +60,10 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         feePriorityList.add("Flash")
 
         // data to populate the RecyclerView with
-        decimalsList.add("4 - Detailed")
-        decimalsList.add("2 - Normal")
-        decimalsList.add("0 - None")
+        decimalsList.add("4 - Four (0.0000)")
+        decimalsList.add("3 - Three (0.000)")
+        decimalsList.add("2 - Two (0.00)")
+        decimalsList.add("0 - Zero (000)")
 
         currencyList.add("AUD")
         currencyList.add("BRL")
@@ -118,6 +124,7 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
                 push(intent)*/
             }
             changePinLayout.setOnClickListener {
+                TextSecurePreferences.setChangePin(this@WalletSettings,true)
                 val lockManager: LockManager<CustomPinActivity> = LockManager.getInstance() as LockManager<CustomPinActivity>
                 lockManager.enableAppLock(this@WalletSettings, CustomPinActivity::class.java)
                 val intent = Intent(this@WalletSettings, CustomPinActivity::class.java)
@@ -143,6 +150,17 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
                 openCurrencyDialogBox()
             }
 
+            saveRecipientAddressSwitchCompat.setOnClickListener {
+                if(TextSecurePreferences.getSaveRecipientAddress(this@WalletSettings)){
+                    TextSecurePreferences.setSaveRecipientAddress(this@WalletSettings,false)
+                    saveRecipientAddressSwitchCompat.isChecked = TextSecurePreferences.getSaveRecipientAddress(this@WalletSettings)
+                }else{
+                    TextSecurePreferences.setSaveRecipientAddress(this@WalletSettings,true)
+                    saveRecipientAddressSwitchCompat.isChecked = TextSecurePreferences.getSaveRecipientAddress(this@WalletSettings)
+                }
+            }
+            saveRecipientAddressSwitchCompat.isChecked = TextSecurePreferences.getSaveRecipientAddress(this@WalletSettings)
+
             /*enableFiatCurrencyConversionSwitchCompat.setOnClickListener {
                 if(TextSecurePreferences.getFiatCurrencyCheckedStatus(this@WalletSettings)){
                     TextSecurePreferences.setFiatCurrencyCheckedStatus(this@WalletSettings,false)
@@ -153,6 +171,22 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
                 }
             }
             enableFiatCurrencyConversionSwitchCompat.isChecked = TextSecurePreferences.getFiatCurrencyCheckedStatus(this@WalletSettings)*/
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        /*binding.currentNodeTextViewValue.text = getNode()?.host.toString()*/
+        val parts = getNode().split(":")
+        if (CheckOnline.isOnline(this)) {
+            //Hales
+            if (parts[0] != null) {
+                binding.currentNodeTextViewValue.text = parts[0]
+            } else {
+                binding.currentNodeTextViewValue.text = getString(R.string.waiting_for_connection)
+            }
+        } else {
+            binding.currentNodeTextViewValue.text = getString(R.string.waiting_for_network)
         }
     }
 
@@ -186,7 +220,7 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent);
         dialog.window!!.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
         val dialogBoxTitle = dialog.findViewById(R.id.dialogBoxTitle) as TextView
-        dialogBoxTitle.text = "Fee Priority"
+        dialogBoxTitle.text = getString(R.string.fee_priority)
         val walletSubOptionsList = dialog.findViewById(R.id.walletSubOptionsListRecyclerView) as RecyclerView
         val close = dialog.findViewById(R.id.closeDialogBox) as ImageView
         close.setOnClickListener {
@@ -201,6 +235,28 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
     }
 
     private fun openDecimalsDialogBox() {
+        dialog = Dialog(this@WalletSettings)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.wallet_sub_options_list)
+        dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent);
+        dialog.window!!.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
+        val dialogBoxTitle = dialog.findViewById(R.id.dialogBoxTitle) as TextView
+        dialogBoxTitle.text = getString(R.string.decimals)
+        val walletSubOptionsList = dialog.findViewById(R.id.walletSubOptionsListRecyclerView) as RecyclerView
+        val close = dialog.findViewById(R.id.closeDialogBox) as ImageView
+        close.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        walletSubOptionsList.layoutManager = LinearLayoutManager(this)
+        walletSubOptionsListAdapter = WalletSubOptionsListAdapter(this, decimalsList,selectedDecimalIndex,2)
+        walletSubOptionsListAdapter.setClickListener(this)
+        walletSubOptionsList.adapter = walletSubOptionsListAdapter
+        dialog.show()
+    }
+
+    /*private fun openDecimalsDialogBox() {
         dialog = Dialog(this@WalletSettings)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(false)
@@ -235,7 +291,7 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         walletSubOptionsSearchListItemAdapter.setClickListener(this)
         walletSubOptionsList.adapter = walletSubOptionsSearchListItemAdapter
         dialog.show()
-    }
+    }*/
 
     private fun openCurrencyDialogBox() {
         dialog = Dialog(this@WalletSettings)
@@ -245,7 +301,7 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent);
         dialog.window!!.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
         val dialogBoxTitle = dialog.findViewById(R.id.dialogBoxTitle) as TextView
-        dialogBoxTitle.text = "Currency"
+        dialogBoxTitle.text = getString(R.string.currency)
         val walletSubOptionsList = dialog.findViewById(R.id.walletSubOptionsListRecyclerView) as RecyclerView
         val close = dialog.findViewById(R.id.closeDialogBox) as ImageView
         close.setOnClickListener {
@@ -271,19 +327,30 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
     }
 
     override fun onItemClick(view: View?, position: Int,option:Int) {
-        if(option==1){
-            binding.displayBalanceAsDescription.text = walletSubOptionsListAdapter.getItem(position)
-            TextSecurePreferences.setDisplayBalanceAs(this,position)
-        }
-        else{
-            binding.feePriorityDescription.text = walletSubOptionsListAdapter.getItem(position)
-            TextSecurePreferences.setFeePriority(this,position)
+        when (option) {
+            1 -> {
+                binding.displayBalanceAsDescription.text = walletSubOptionsListAdapter.getItem(position)
+                TextSecurePreferences.setDisplayBalanceAs(this,position)
+            }
+            2 -> {
+                binding.decimalsDescription.text = walletSubOptionsListAdapter.getItem(position)
+                TextSecurePreferences.setDecimals(this,walletSubOptionsListAdapter.getItem(position))
+                for(i in 0 until decimalsList.size){
+                    if(decimalsList[i]==binding.decimalsDescription.text.toString()){
+                        selectedDecimalIndex=i
+                    }
+                }
+            }
+            else -> {
+                binding.feePriorityDescription.text = walletSubOptionsListAdapter.getItem(position)
+                TextSecurePreferences.setFeePriority(this,position)
+            }
         }
         dialog.dismiss()
     }
 
     override fun onItemClicks(view: View?, position: Int, option: Int) {
-        if(option==2){
+        /*if(option==2){
             binding.decimalsDescription.text = walletSubOptionsSearchListItemAdapter.getItem(position)
             TextSecurePreferences.setDecimals(this,walletSubOptionsSearchListItemAdapter.getItem(position))
             for(i in 0 until decimalsList.size){
@@ -302,7 +369,16 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
                 }
             }
             dialog.dismiss()
+        }*/
+        binding.currencyDescription.text = walletSubOptionsSearchListItemAdapter.getItem(position)
+        TextSecurePreferences.setCurrency(this,walletSubOptionsSearchListItemAdapter.getItem(position))
+        TextSecurePreferences.changeCurrency(this,true)
+        for(i in 0 until currencyList.size){
+            if(currencyList[i]==binding.currencyDescription.text.toString()){
+                selectedCurrencyIndex=i
+            }
         }
+        dialog.dismiss()
     }
 
     fun filter(text: String?, arrayList: ArrayList<String>) {
@@ -317,4 +393,34 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         //update recyclerview
         walletSubOptionsSearchListItemAdapter.updateList(temp)
     }
+
+    /*fun getNode(): NodeInfo? {
+        val selectedNodeId = getSelectedNodeId()
+        Log.d("WalletSettings",selectedNodeId.toString())
+        return NodeInfo.fromString(selectedNodeId)
+    }*/
+
+    fun getNode(): String {
+        val selectedNodeId = getSelectedNodeId()
+        Log.d("WalletSettings",selectedNodeId.toString())
+        return selectedNodeId.toString()
+    }
+
+    private fun getSelectedNodeId(): String? {
+        return getSharedPreferences(
+            SELECTED_NODE_PREFS_NAME,
+            MODE_PRIVATE
+        ).getString("0", null)
+    }
+
+    override fun onBackPressed() {
+        if (TextSecurePreferences.getDaemon(this)) {
+            val returnIntent = Intent()
+            setResult(RESULT_OK, returnIntent)
+            finish()
+        }
+        super.onBackPressed()
+    }
+
+
 }

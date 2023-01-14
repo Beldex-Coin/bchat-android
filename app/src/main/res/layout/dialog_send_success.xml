@@ -13,12 +13,12 @@
         android:fontFamily="@font/poppins_bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/send_title"
+        android:text="@string/transaction_send_title"
         android:textColor="@color/text"
         android:textStyle="bold"
         android:layout_marginTop="32dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
         android:textSize="@dimen/medium_font_size" />
     <ImageView
         android:layout_width="wrap_content"

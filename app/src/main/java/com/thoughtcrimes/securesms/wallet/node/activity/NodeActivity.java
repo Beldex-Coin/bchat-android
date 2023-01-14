@@ -11,7 +11,9 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.WindowManager;
 
+import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.thoughtcrimes.securesms.data.DefaultNodes;
 import com.thoughtcrimes.securesms.data.Node;
 import com.thoughtcrimes.securesms.data.NodeInfo;
@@ -36,7 +38,7 @@ import java.util.Set;
 import io.beldex.bchat.R;
 import timber.log.Timber;
 
-public class NodeActivity extends AppCompatActivity implements NodeFragment.Listener, NodeListFragment.NodeListInterface {
+public class NodeActivity extends AppCompatActivity implements NodeFragment.Listener {
 
     private Toolbar toolbar;
     Set<NodeInfo> favouriteNodes = new HashSet<>();
@@ -61,6 +63,11 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         loadFavouritesWithNetwork();
+        if (TextSecurePreferences.isScreenSecurityEnabled(this)) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        } else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        }
         Fragment nodeFragment = new NodeFragment();
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.nodeList_frame, nodeFragment, NodeFragment.class.getName()).commit();
@@ -71,6 +78,7 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
     public boolean onOptionsItemSelected(MenuItem item) {
         final int id = item.getItemId();
         if (id == R.id.action_add_node) {
+            TextSecurePreferences.setNodeIsTested(this,false);
             NodeFragment fragment = (NodeFragment) getSupportFragmentManager().findFragmentById(R.id.nodeList_frame);
             fragment.callDialog();
         }
@@ -157,14 +165,14 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
         pingSelectedNode();
     }
 
-    @Override
+  /*  @Override
     public void replaceFragment(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.nodeList_frame, fragment)
                 .addToBackStack(null)
                 .commit();
-    }
+    }*/
 
     public void pingSelectedNode() {
         new AsyncFindBestNode().execute(AsyncFindBestNode.PING_SELECTED);
@@ -339,6 +347,7 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
     }
 
     private void saveSelectedNode() { // save only if changed
+        Log.d("Beldex","Value of getNode NodeActivity "+ getNode());
         final NodeInfo nodeInfo = getNode();
         final String selectedNodeId = getSelectedNodeId();
         if (nodeInfo != null) {

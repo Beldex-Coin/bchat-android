@@ -1,38 +1,57 @@
 package com.thoughtcrimes.securesms.wallet
 
+import android.app.Activity
+import android.app.AlertDialog
 import android.content.*
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.WindowManager
+import android.widget.Button
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.data.*
 import com.thoughtcrimes.securesms.model.*
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.push
 import com.thoughtcrimes.securesms.wallet.listener.OnBlockUpdateListener
+import com.thoughtcrimes.securesms.wallet.node.NodeFragment
 import com.thoughtcrimes.securesms.wallet.receive.ReceiveFragment
 import com.thoughtcrimes.securesms.wallet.rescan.RescanDialog
-import com.thoughtcrimes.securesms.wallet.scanner.ScannerFragment
 import com.thoughtcrimes.securesms.wallet.scanner.WalletScannerFragment
+import com.thoughtcrimes.securesms.wallet.scanner.ScannerFragment
 import com.thoughtcrimes.securesms.wallet.send.SendFragment
 import com.thoughtcrimes.securesms.wallet.service.WalletService
 import com.thoughtcrimes.securesms.wallet.settings.WalletSettings
 import com.thoughtcrimes.securesms.wallet.utils.LegacyStorageHelper
+import com.thoughtcrimes.securesms.wallet.utils.common.LoadingActivity
 import com.thoughtcrimes.securesms.wallet.widget.Toolbar
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityWalletBinding
+import io.beldex.bchat.databinding.AlertSyncOptionsBinding
 import kotlinx.coroutines.NonCancellable.isCancelled
 import timber.log.Timber
+import java.io.File
 import java.lang.IllegalArgumentException
 import java.util.*
+import android.content.DialogInterface
+import androidx.core.content.ContextCompat
+
 
 class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.Observer,
-    ScannerFragment.OnScannedListener, SendFragment.OnScanListener, SendFragment.Listener,
-    ReceiveFragment.Listener,WalletFragment.OnScanListener,WalletScannerFragment.OnWalletScannedListener, ScannerFragment.Listener {
+    WalletScannerFragment.OnScannedListener, SendFragment.OnScanListener, SendFragment.Listener,
+    ReceiveFragment.Listener,WalletFragment.OnScanListener,ScannerFragment.OnWalletScannedListener, WalletScannerFragment.Listener,NodeFragment.Listener{
     lateinit var binding: ActivityWalletBinding
 
 
@@ -49,9 +68,13 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     private val sendFragment: SendFragment? = null
 
+    private val useSSL: Boolean = false
+    private val isLightWallet:  Boolean = false
 
 
 
+
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState != null) {
@@ -63,9 +86,19 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         binding = ActivityWalletBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        if (TextSecurePreferences.isScreenSecurityEnabled(this)) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        } else {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        }
+
         //Node Connection
         //by hales
-       /* loadFavouritesWithNetwork()*/
+        /*if (TextSecurePreferences.getDaemon(this)) {
+            TextSecurePreferences.changeDaemon(this,false)
+            loadFavouritesWithNetwork()
+        }*/
+
 
         LegacyStorageHelper.migrateWallets(this)
 
@@ -76,13 +109,18 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         binding.toolbar.setOnButtonListener { type ->
             when (type) {
                 Toolbar.BUTTON_BACK -> {
-                    if(CheckOnline.isOnline(this)) {
-                        onDisposeRequest()
+                    val fragment: Fragment = getCurrentFragment()!!
+                    if (fragment is SendFragment || fragment is ReceiveFragment || fragment is ScannerFragment || fragment is WalletScannerFragment) {
+                        if (!(fragment as OnBackPressedListener).onBackPressed()) {
+                            TextSecurePreferences.callFiatCurrencyApi(this,false)
+                            super.onBackPressed()
+                        }
+                    } else {
+                        backToHome()
                     }
-                    onBackPressed()
                 }
                 Toolbar.BUTTON_CANCEL -> {
-                    if(CheckOnline.isOnline(this)) {
+                    if (CheckOnline.isOnline(this)) {
                         onDisposeRequest()
                     }
                     Helper.hideKeyboard(this@WalletActivity)
@@ -106,23 +144,145 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         Timber.d("onCreate() done.")
 
         binding.toolbar.toolBarRescan.setOnClickListener {
-            if(CheckOnline.isOnline(this)) {
-                if(getWallet().daemonBlockChainHeight!=null) {
-                    RescanDialog(this, getWallet().daemonBlockChainHeight).show(
-                        supportFragmentManager,
-                        ""
-                    )
+
+            val dialog:AlertDialog.Builder = AlertDialog.Builder(this, R.style.BChatAlertDialog_Syncing_Option)
+            val li = LayoutInflater.from(dialog.context)
+            val promptsView = li.inflate(R.layout.alert_sync_options, null)
+
+            dialog.setView(promptsView)
+            val reConnect  = promptsView.findViewById<Button>(R.id.reConnectButton_Alert)
+            val reScan = promptsView.findViewById<Button>(R.id.rescanButton_Alert)
+            val alertDialog: AlertDialog = dialog.create()
+            alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            alertDialog.show()
+
+            reConnect.setOnClickListener {
+                if (CheckOnline.isOnline(this)) {
+                    onWalletReconnect(node, useSSL, isLightWallet)
+                    alertDialog.dismiss()
+                } else {
+                    Toast.makeText(
+                        this,
+                        R.string.please_check_your_internet_connection,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    alertDialog.dismiss()
+                }
+            }
+
+            reScan.setOnClickListener {
+                if (CheckOnline.isOnline(this)) {
+                    if (getWallet() != null) {
+                        if (isSynced) {
+                            if (getWallet()!!.daemonBlockChainHeight != null) {
+                                RescanDialog(this, getWallet()!!.daemonBlockChainHeight).show(
+                                    supportFragmentManager,
+                                    ""
+                                )
+                            }
+                        } else {
+                            Toast.makeText(
+                                this,
+                                getString(R.string.cannot_rescan_while_wallet_is_syncing),
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                        }
+
+                        //onWalletRescan()
+                    }
+                } else {
+                    Toast.makeText(
+                        this@WalletActivity,
+                        getString(R.string.please_check_your_internet_connection),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                alertDialog.dismiss()
+            }
+
+            // set dialog message
+            /*if(CheckOnline.isOnline(this)) {
+                if(getWallet()!=null) {
+                    if (getWallet()!!.daemonBlockChainHeight != null) {
+                        RescanDialog(this, getWallet()!!.daemonBlockChainHeight).show(
+                            supportFragmentManager,
+                            ""
+                        )
+                    }
                 }
                 //onWalletRescan()
             }else{
                 Toast.makeText(this@WalletActivity,getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
-            }
+            }*/
         }
 
         binding.toolbar.toolBarSettings.setOnClickListener {
             openWalletSettings()
         }
 
+    }
+
+    override fun onBackPressed() {
+        val fragment: Fragment = getCurrentFragment()!!
+        if (fragment is SendFragment || fragment is ReceiveFragment || fragment is ScannerFragment || fragment is WalletScannerFragment) {
+            if (!(fragment as OnBackPressedListener).onBackPressed()) {
+                TextSecurePreferences.callFiatCurrencyApi(this,false)
+                super.onBackPressed()
+            }
+        } else {
+            backToHome()
+        }
+    }
+
+    private fun backToHome() {
+        when {
+            !synced -> {
+                val dialog: AlertDialog.Builder =
+                    AlertDialog.Builder(this, R.style.BChatAlertDialog_Wallet_Syncing_Exit_Alert)
+                dialog.setTitle(getString(R.string.wallet_syncing_alert_title))
+                dialog.setMessage(getString(R.string.wallet_syncing_alert_message))
+
+                dialog.setPositiveButton(R.string.exit) { _, _ ->
+                    if (CheckOnline.isOnline(this)) {
+                        onDisposeRequest()
+                    }
+                    setBarcodeData(null)
+                    super.onBackPressed()
+                }
+                dialog.setNegativeButton(R.string.cancel) { _, _ ->
+                    // Do nothing
+                }
+                val alert: AlertDialog = dialog.create()
+                alert.show()
+                alert.getButton(DialogInterface.BUTTON_NEGATIVE)
+                    .setTextColor(ContextCompat.getColor(this, R.color.text))
+                alert.getButton(DialogInterface.BUTTON_POSITIVE)
+                    .setTextColor(ContextCompat.getColor(this, R.color.alert_ok))
+            }
+            else -> {
+                val dialog: AlertDialog.Builder =
+                    AlertDialog.Builder(this, R.style.BChatAlertDialog_Exit)
+                dialog.setTitle(getString(R.string.app_exit_alert))
+
+                dialog.setPositiveButton(R.string.exit) { _, _ ->
+                    if (CheckOnline.isOnline(this)) {
+                        onDisposeRequest()
+                    }
+                    setBarcodeData(null)
+                    super.onBackPressed()
+                }
+                dialog.setNegativeButton(R.string.cancel) { _, _ ->
+                    // Do nothing
+                }
+                val alert: AlertDialog = dialog.create()
+                alert.show()
+                alert.getButton(DialogInterface.BUTTON_NEGATIVE)
+                    .setTextColor(ContextCompat.getColor(this, R.color.text))
+                alert.getButton(DialogInterface.BUTTON_POSITIVE)
+                    .setTextColor(ContextCompat.getColor(this, R.color.alert_ok))
+            }
+        }
     }
 
     override fun callFinishActivity() {
@@ -133,18 +293,22 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     private fun openWalletSettings() {
+        /*val intent = Intent(this, WalletSettings::class.java)
+        push(intent)*/
         val intent = Intent(this, WalletSettings::class.java)
-        push(intent)
+        resultLauncher.launch(intent)
     }
 
     fun onWalletRescan(restoreHeight: Long) {
         try {
             val walletFragment = getWalletFragment()
-            // The height entered by user
-            getWallet().restoreHeight = restoreHeight
 
-            getWallet().rescanBlockchainAsync()
-            Log.d("Beldex","Restore Height 2 ${getWallet().restoreHeight}")
+            if(getWallet()!=null) {
+                // The height entered by user
+                getWallet()!!.restoreHeight = restoreHeight
+                getWallet()!!.rescanBlockchainAsync()
+            }
+            Log.d("Beldex","Restore Height 2 ${getWallet()!!.restoreHeight}")
             synced = false
             walletFragment.unsync()
             invalidateOptionsMenu()
@@ -176,7 +340,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
             val extras = intent.extras
             if (extras != null) {
-                acquireWakeLock()
+               // acquireWakeLock()
                 val walletId = extras.getString(REQUEST_ID)
                 // we can set the streetmode height AFTER opening the wallet
                 requestStreetMode = extras.getBoolean(REQUEST_STREETMODE)
@@ -195,6 +359,10 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     override fun onBackPressedFun() {
+        if(CheckOnline.isOnline(this)) {
+            onDisposeRequest()
+        }
+        setBarcodeData(null)
         onBackPressed()
     }
 
@@ -217,7 +385,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
                     //setTitle(walletId, getString(R.string.status_wallet_connecting));
                     //Important
                     //setTitle(getString(R.string.status_wallet_connecting), "")
-                    setTitle(getString(R.string.my_wallet))
+                   /* setTitle(getString(R.string.my_wallet))*/
                 }
             }
             updateProgress()
@@ -233,7 +401,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             //setTitle(getString(R.string.wallet_activity_name), getString(R.string.status_wallet_disconnected));
             //Important
             //setTitle(getString(R.string.status_wallet_disconnected), "")
-            setTitle(getString(R.string.my_wallet))
+            /*setTitle(getString(R.string.my_wallet))*/
             Log.d("DISCONNECTED", "")
         }
     }
@@ -243,16 +411,19 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         // class name because we want a specific service implementation that
         // we know will be running in our own process (and thus won't be
         // supporting component replacement by other applications).
-        Log.d("Beldex","isOnline 7 ${CheckOnline.isOnline(this)}")
+        Log.d("Beldex","isOnline 7 ${CheckOnline.isOnline(this)}, $walletName , $walletPassword")
         if (CheckOnline.isOnline(this)) {
-            val intent = Intent(applicationContext, WalletService::class.java)
-            intent.putExtra(WalletService.REQUEST_WALLET, walletName)
-            intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_LOAD)
-            intent.putExtra(WalletService.REQUEST_CMD_LOAD_PW, walletPassword)
-            startService(intent)
-            bindService(intent, mConnection, BIND_AUTO_CREATE)
-            mIsBound = true
-            Timber.d("BOUND")
+            var intent: Intent? = null
+            if(intent==null) {
+                intent = Intent(applicationContext, WalletService::class.java)
+                intent.putExtra(WalletService.REQUEST_WALLET, walletName)
+                intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_LOAD)
+                intent.putExtra(WalletService.REQUEST_CMD_LOAD_PW, walletPassword)
+                startService(intent)
+                bindService(intent, mConnection, BIND_AUTO_CREATE)
+                mIsBound = true
+                Timber.d("BOUND")
+            }
         }
     }
 
@@ -265,9 +436,23 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         return mBoundService != null
     }
 
-    override fun forceUpdate() {
+    override fun forceUpdate(context: Context) {
+        Log.d("Beldex","forceUpdate()")
         try {
-            onRefreshed(getWallet(), true)
+            if(getWallet()!=null) {
+                Log.d("Beldex","forceUpdate() if")
+                Log.d("TransactionList", "full = true -1")
+                onRefreshed(getWallet(), true)
+            }else{
+                Log.d("Beldex","forceUpdate() else")
+                if(!CheckOnline.isOnline(this)) {
+                    Toast.makeText(
+                        context,
+                        getString(R.string.please_check_your_internet_connection),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
         } catch (ex: IllegalStateException) {
             Timber.e(ex.localizedMessage)
         }
@@ -280,9 +465,13 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         get() = mBoundService!!.daemonHeight
 
     override fun onSendRequest(view: View?) {
-        SendFragment.newInstance(uri)
-            .let { replaceFragmentWithTransition(view, it, null, null) }
-        uri = null // only use uri once
+        if(CheckOnline.isOnline(this)) {
+            SendFragment.newInstance(uri)
+                .let { replaceFragmentWithTransition(view, it, null, null) }
+            uri = null // only use uri once
+        }else{
+            Toast.makeText(this, getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show();
+        }
     }
 
     override fun onTxDetailsRequest(view: View?, info: TransactionInfo?) {
@@ -301,19 +490,14 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     override val streetModeHeight: Long
         get() = streetMode
     override val isWatchOnly: Boolean
-        get() = getWallet().isWatchOnly
+        get() = if(getWallet()!=null){getWallet()!!.isWatchOnly}else{false}
 
     override fun getTxKey(txId: String?): String? {
-        return getWallet().getTxKey(txId)
+        return getWallet()!!.getTxKey(txId)
     }
 
     override fun onWalletReceive(view: View?) {
-        val address = getWallet().address
-        Timber.d("startReceive()")
-        val b = Bundle()
-        b.putString("address", address)
-        b.putString("name", walletName)
-        replaceFragmentWithTransition(view, ReceiveFragment(), null, b)
+        replaceFragmentWithTransition(view, ReceiveFragment(), null, null)
         Timber.d("ReceiveFragment placed")
     }
 
@@ -324,9 +508,17 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
 
-    override fun getWallet(): Wallet {
-        checkNotNull(mBoundService) { "WalletService not bound." }
-        return mBoundService!!.wallet
+    override fun getWallet(): Wallet? {
+        return if(mBoundService!=null) {
+            checkNotNull(mBoundService) { "WalletService not bound." }
+            mBoundService!!.wallet
+        }else{
+            null
+        }
+    }
+
+    override fun getStorageRoot(): File {
+        TODO("Not yet implemented")
     }
 
     override fun setToolbarButton(type: Int) {
@@ -423,45 +615,52 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     override val prefs: SharedPreferences?
         get() = getPreferences(MODE_PRIVATE)
     override val totalFunds: Long
-        get() = getWallet().unlockedBalance
+        get() = if(getWallet()!=null){getWallet()!!.unlockedBalance}else{0}
     override val isStreetMode: Boolean
         get() = streetMode > 0
 
 
     override fun onPrepareSend(tag: String?, txData: TxData?) {
         if (mIsBound) { // no point in talking to unbound service
-            val intent = Intent(applicationContext, WalletService::class.java)
-            intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_TX)
-            intent.putExtra(WalletService.REQUEST_CMD_TX_DATA, txData)
-            intent.putExtra(WalletService.REQUEST_CMD_TX_TAG, tag)
-            startService(intent)
-            Timber.d("CREATE TX request sent")
+            var intent: Intent? = null
+            if(intent==null) {
+                intent = Intent(applicationContext, WalletService::class.java)
+                intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_TX)
+                intent.putExtra(WalletService.REQUEST_CMD_TX_DATA, txData)
+                intent.putExtra(WalletService.REQUEST_CMD_TX_TAG, tag)
+                startService(intent)
+                Timber.d("CREATE TX request sent")
+            }
             //Important
-            /*if (getWallet().deviceType === Wallet.Device.Device_Ledger) showLedgerProgressDialog(
+            /*if (getWallet()!!.deviceType === Wallet.Device.Device_Ledger) showLedgerProgressDialog(
                 LedgerProgressDialog.TYPE_SEND
             )*/
         } else {
             Timber.e("Service not bound")
         }
     }
-
     override val walletName: String?
-        get() = getWallet().name
+        get() = getWallet()!!.name
 
     override fun onSend(notes: UserNotes?) {
         if (mIsBound) { // no point in talking to unbound service
-            val intent = Intent(applicationContext, WalletService::class.java)
-            intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_SEND)
-            intent.putExtra(WalletService.REQUEST_CMD_SEND_NOTES, notes!!.txNotes)
-            startService(intent)
-            Timber.d("SEND TX request sent")
+            var intent: Intent? = null
+            if(intent==null) {
+                intent = Intent(applicationContext, WalletService::class.java)
+                intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_SEND)
+                intent.putExtra(WalletService.REQUEST_CMD_SEND_NOTES, notes!!.txNotes)
+                startService(intent)
+                Timber.d("SEND TX request sent")
+            }
         } else {
             Timber.e("Service not bound")
         }
     }
 
     override fun onDisposeRequest() {
-        getWallet().disposePendingTransaction()
+        if(getWallet()!=null) {
+            getWallet()!!.disposePendingTransaction()
+        }
     }
 
     override fun onFragmentDone() {
@@ -536,30 +735,60 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     private fun startScanFragment() {
         val extras = Bundle()
-        replaceFragment(ScannerFragment(), null, extras)
+        replaceFragment(WalletScannerFragment(), null, extras)
     }
     private fun startWalletScanFragment() {
         val extras = Bundle()
-        replaceFragment(WalletScannerFragment(), null, extras)
+        replaceFragment(ScannerFragment(), null, extras)
     }
 
     /// QR scanner callbacks
     override fun onScan() {
         if (Helper.getCameraPermission(this)) {
+            Log.d("Beldex","Called onScan")
             startWalletScanFragment()
         } else {
             Timber.i("Waiting for permissions")
         }
     }
 
-    override fun onWalletScan() {
+    override fun onWalletScan(view: View?) {
         if (Helper.getCameraPermission(this)) {
-            startScanFragment()
+            val extras = Bundle()
+            Log.d("Beldex","Called onWalletScan")
+            replaceFragmentWithTransition(view,WalletScannerFragment(), null, extras)
+            //startScanFragment()
         } else {
             Timber.i("Waiting for permissions")
         }
 
     }
+
+    private fun onWalletReconnect(node: NodeInfo?, UseSSL: Boolean, isLightWallet: Boolean) {
+        if (CheckOnline.isOnline(this)) {
+            if (getWallet() != null) {
+                val isOnline =
+                    getWallet()?.reConnectToDaemon(node, UseSSL, isLightWallet) as Boolean
+                if (isOnline) {
+                    synced = false
+                    setNode(node)
+                    val walletFragment = getWalletFragment()
+                    walletFragment.setProgress(getString(R.string.reconnecting))
+                    walletFragment.setProgress(101)
+                    invalidateOptionsMenu()
+                } else {
+                    getWalletFragment().setProgress(R.string.failed_connected_to_the_node)
+                }
+            } else {
+                Toast.makeText(this, "Wait for connection..", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        } else {
+            Toast.makeText(this, R.string.please_check_your_internet_connection, Toast.LENGTH_SHORT)
+                .show()
+        }
+    }
+
 
     override fun onScanned(qrCode: String?): Boolean {
         // #gurke
@@ -634,7 +863,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             R.string.receive_transition_name
         else if (newFragment is SendFragment)
             R.string.send_transition_name
-        else if (newFragment is ScannerFragment)
+        else if (newFragment is WalletScannerFragment)
             R.string.scan_transition_name
         else throw IllegalStateException("expecting known transition")
         Log.d("Beldex", "extras value transition $transition")
@@ -666,17 +895,20 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     override fun onRefreshed(wallet: Wallet?, full: Boolean): Boolean {
         Timber.d("onRefreshed()")
-        runOnUiThread { if (getWallet() != null) updateAccountsBalance() }
+        //runOnUiThread { if (getWallet() != null) updateAccountsBalance() }
         if (numAccounts != wallet!!.numAccounts) {
             numAccounts = wallet.numAccounts
-            runOnUiThread { this.updateAccountsList() }
+            //runOnUiThread { this.updateAccountsList() }
         }
         try {
+            Log.d("Beldex","mConnection onRefreshed called ")
             val walletFragment = getWalletFragment()
             if (wallet.isSynchronized) {
-                releaseWakeLock(RELEASE_WAKE_LOCK_DELAY) // the idea is to stay awake until synced
+                Log.d("Beldex","mConnection onRefreshed called 1")
+                //releaseWakeLock(RELEASE_WAKE_LOCK_DELAY) // the idea is to stay awake until synced
                 if (!synced) { // first sync
-                    onProgress(-1)
+                    Log.d("Beldex","mConnection onRefreshed called 2")
+                    onProgress(-2)//onProgress(-1)
                     saveWallet() // save on first sync
                     synced = true
                     runOnUiThread(walletFragment::onSynced)
@@ -705,10 +937,13 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     private fun saveWallet() {
         if (mIsBound) { // no point in talking to unbound service
-            val intent = Intent(applicationContext, WalletService::class.java)
-            intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_STORE)
-            startService(intent)
-            Timber.d("STORE request sent")
+            var intent: Intent? = null
+            if(intent==null) {
+                intent = Intent(applicationContext, WalletService::class.java)
+                intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_STORE)
+                startService(intent)
+                Timber.d("STORE request sent")
+            }
         } else {
             Timber.e("Service not bound")
         }
@@ -721,7 +956,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         if (!isStreetMode()) {
             tvBalance.text = getString(
                 R.string.accounts_balance,
-                Helper.getDisplayAmount(getWallet().balanceAll, 5)
+                Helper.getDisplayAmount(getWallet()!!.balanceAll, 5)
             )
         } else {
             tvBalance.text = null
@@ -775,7 +1010,10 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     private fun updateProgress() {
+        Log.d("Beldex","mConnection called updateProgress() 1")
         if (hasBoundService()) {
+            Log.d("Beldex","mConnection called updateProgress() 2")
+            Log.d("Beldex","mConnection called updateProgress() 2 1 $mBoundService")
             onProgress(mBoundService!!.progressText)
             onProgress(mBoundService!!.progressValue)
         }
@@ -818,7 +1056,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
                 if (status !== PendingTransaction.Status.Status_Ok) {
                     Log.d("onTransactionCreated not Status_Ok","-")
                     val errorText = pendingTransaction!!.errorString
-                    getWallet().disposePendingTransaction()
+                    getWallet()!!.disposePendingTransaction()
                     sendFragment!!.onCreateTransactionFailed(errorText)
                 } else {
                     Log.d("transaction status 1 ii %s", status.toString())
@@ -830,7 +1068,9 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             // not in spend fragment
             Timber.d(ex.localizedMessage)
             // don't need the transaction any more
-            getWallet().disposePendingTransaction()
+            if(getWallet()!=null) {
+                getWallet()!!.disposePendingTransaction()
+            }
         }
     }
 
@@ -855,6 +1095,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     override fun onWalletStarted(walletStatus: Wallet.Status?) {
+        Log.d("Beldex", "Wallet start called 7 0 ")
         runOnUiThread {
             dismissProgressDialog()
             if (walletStatus == null) {
@@ -865,28 +1106,38 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
                     Toast.LENGTH_LONG
                 ).show()
             } else {
-                if (Wallet.ConnectionStatus.ConnectionStatus_WrongVersion === walletStatus.connectionStatus) Toast.makeText(
+                if (Wallet.ConnectionStatus.ConnectionStatus_WrongVersion === walletStatus.connectionStatus) {
+                    Toast.makeText(
                     this@WalletActivity,
                     getString(R.string.status_wallet_connect_wrong_version),
                     Toast.LENGTH_LONG
-                ).show() else if (!walletStatus.isOk) Timber.d("Not Ok %s", walletStatus.toString())
-                Toast.makeText(
-                    this@WalletActivity,
-                    walletStatus.errorString,
-                    Toast.LENGTH_LONG
-                ).show()
+                ).show() }else if (!walletStatus.isOk) {
+                    Timber.d("Not Ok %s", walletStatus.toString())
+                    if(walletStatus.errorString.isNotEmpty()) {
+                        Toast.makeText(
+                            this@WalletActivity,
+                            walletStatus.errorString,
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
             }
         }
         if (walletStatus == null || Wallet.ConnectionStatus.ConnectionStatus_Connected !== walletStatus.connectionStatus) {
+            Log.d("Beldex","WalletActivity finished called")
             finish()
         } else {
+            Log.d("Beldex", "Wallet start called 7 1 ")
             haveWallet = true
             invalidateOptionsMenu()
             if (requestStreetMode) onEnableStreetMode()
+            Log.d("Beldex", "Wallet start called 7 2 ")
             val walletFragment = getWalletFragment()
+            Log.d("Beldex", "Wallet start called 7  $walletFragment")
             runOnUiThread {
                 updateAccountsHeader()
                 if (walletFragment != null) {
+                    Log.d("Beldex", "Wallet start called 8 ")
                     walletFragment.onLoaded()
                 }
             }
@@ -909,15 +1160,17 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     private fun enableStreetMode(enable: Boolean) {
-        streetMode = if (enable) {
-            getWallet().daemonBlockChainHeight
+        if (enable) {
+            if(getWallet()!=null) {
+               streetMode= getWallet()!!.daemonBlockChainHeight
+            }
         } else {
-            0
+            streetMode = 0
         }
         val walletFragment = getWalletFragment()
         if (walletFragment != null) walletFragment.resetDismissedTransactions()
-        forceUpdate()
-        runOnUiThread { if (getWallet() != null) updateAccountsBalance() }
+        forceUpdate(this)
+        //runOnUiThread { if (getWallet() != null) updateAccountsBalance() }
     }
 
     override fun onWalletOpen(device: Wallet.Device?) {
@@ -970,19 +1223,34 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     override fun getNode(): NodeInfo? {
-        return node
+        return if(TextSecurePreferences.getDaemon(this)){
+            TextSecurePreferences.changeDaemon(this,false)
+            val selectedNodeId = getSelectedNodeId()
+            val nodeInfo = NodeInfo.fromString(selectedNodeId)
+            Log.d("Beldex","value of node 1 $selectedNodeId")
+            Log.d("Beldex","value of node 2 $nodeInfo")
+
+
+            nodeInfo
+        }else {
+            node
+        }
     }
 
     override fun setNode(node: NodeInfo?) {
+        Log.d("Beldex", "Value of current Setnode called in WalletActivity ${node?.host}")
         setNode(node, true)
     }
 
     private fun setNode(node: NodeInfo?, save: Boolean) {
+        Log.d("Beldex","Value of getNode in WalletActivity ${getNode()?.host}")
+        Log.d("Beldex","Value of current node in WalletActivity ${node?.host}")
+        Log.d("Beldex","Value of current node in WalletActivity 1 ${this.node?.host}")
         if (node !== this.node) {
             require(!(node != null && node.networkType !== WalletManager.getInstance().networkType)) { "network type does not match" }
             this.node = node
             for (nodeInfo in favouriteNodes) {
-                Timber.d("Testing-->14 ${node.toString()}")
+                Log.d("Testing-->14 ","${node.toString()}")
                 nodeInfo.isSelected = nodeInfo === node
             }
             WalletManager.getInstance().setDaemon(node)
@@ -1008,6 +1276,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     override fun getOrPopulateFavourites(): MutableSet<NodeInfo> {
+        Log.d("Beldex","getOrPopulateFavourites() fun called ${DefaultNodes.values()}")
         if (favouriteNodes.isEmpty()) {
             for (node in DefaultNodes.values()) {
                 val nodeInfo = NodeInfo.fromString(node.uri)
@@ -1019,6 +1288,16 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             saveFavourites()
         }
         return favouriteNodes
+    }
+
+    override fun setFavouriteNodes(nodes: MutableCollection<NodeInfo>?) {
+        Timber.d("adding %d nodes", nodes!!.size)
+        favouriteNodes.clear()
+        for (node in nodes) {
+            /*Log.d("adding %s %b", node, node.isFavourite)*/
+            if (node.isFavourite) favouriteNodes.add(node)
+        }
+        saveFavourites()
     }
 
     private fun getSelectedNodeId(): String? {
@@ -1046,11 +1325,14 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     private fun addFavourite(nodeString: String): NodeInfo? {
+        Log.d("Beldex","Value of current node loadFav called AddFav 1")
         val nodeInfo = NodeInfo.fromString(nodeString)
         if (nodeInfo != null) {
+            Log.d("Beldex","Value of current node loadFav called AddFav 2")
             nodeInfo.setFavourite(true)
             favouriteNodes.add(nodeInfo)
         } else Timber.w("nodeString invalid: %s", nodeString)
+        Log.d("Beldex","Value of current node loadFav called AddFav 3")
         return nodeInfo
     }
 
@@ -1064,6 +1346,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     private fun saveSelectedNode() { // save only if changed
         val nodeInfo = getNode()
+        Log.d("Beldex","Value of getNode ${nodeInfo?.host}")
         val selectedNodeId = getSelectedNodeId()
         if (nodeInfo != null) {
             if (!nodeInfo.toNodeString().equals(selectedNodeId)) saveSelectedNode(nodeInfo)
@@ -1087,25 +1370,34 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     private fun loadFavourites() {
         Timber.d("loadFavourites")
+        Log.d("Beldex","Value of current node loadFav called")
         favouriteNodes.clear()
         val selectedNodeId = getSelectedNodeId()
+        Log.d("Beldex"," Value of current node selectedNodeID $selectedNodeId")
         val storedNodes = getSharedPreferences(NODES_PREFS_NAME, MODE_PRIVATE).all
 
         for (nodeEntry in storedNodes.entries) {
+            Log.d("Beldex","Value of current node loadFav called 1")
             if (nodeEntry != null) { // just in case, ignore possible future errors
+                Log.d("Beldex","Value of current node loadFav called 2")
                 val nodeId = nodeEntry.value as String
                 val addedNode: NodeInfo = addFavourite(nodeId)!!
                 if (addedNode != null) {
+                    Log.d("Beldex","Value of current node loadFav called 3 nodeId $nodeId")
+                    Log.d("Beldex","Value of current node loadFav called 3 selectedNodeId $selectedNodeId")
                     if (nodeId == selectedNodeId) {
+                        Log.d("Beldex","Value of current node loadFav called 3.1 if")
                         addedNode.isSelected = true
                     }
                 }
             }
         }
         if (storedNodes.isEmpty()) { // try to load legacy list & remove it (i.e. migrate the data once)
+            Log.d("Beldex","Value of current node loadFav called 4")
             val sharedPref = getPreferences(MODE_PRIVATE)
             when (WalletManager.getInstance().networkType) {
                 NetworkType.NetworkType_Mainnet -> {
+                    Log.d("Beldex","Value of current node loadFav called 5")
                     loadLegacyList(
                         sharedPref.getString(
                             PREF_DAEMON_MAINNET,
@@ -1116,6 +1408,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
                         .apply()
                 }
                 NetworkType.NetworkType_Stagenet -> {
+                    Log.d("Beldex","Value of current node loadFav called 6")
                     loadLegacyList(
                         sharedPref.getString(
                             PREF_DAEMON_STAGENET,
@@ -1126,6 +1419,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
                         .remove(PREF_DAEMON_STAGENET).apply()
                 }
                 NetworkType.NetworkType_Testnet -> {
+                    Log.d("Beldex","Value of current node loadFav called 7")
                     loadLegacyList(
                         sharedPref.getString(
                             PREF_DAEMON_TESTNET,
@@ -1146,7 +1440,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     override fun onResume() {
         super.onResume()
-
+        Log.d("Beldex","Value of change daemon ${TextSecurePreferences.getDaemon(this)}")
         Timber.d("onResume()-->")
         // wait for WalletService to finish
         //Important
@@ -1157,6 +1451,9 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         }*/
         //Important
         //if (!Ledger.isConnected()) attachLedger()
+        if(!CheckOnline.isOnline(this)){
+            Toast.makeText(this,getString(R.string.please_check_your_internet_connection),Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onDestroy() {
@@ -1177,11 +1474,12 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
 
     private fun stopWalletService() {
         disconnectWalletService()
-        releaseWakeLock()
+        //releaseWakeLock()
     }
 
     fun disconnectWalletService() {
         if (mIsBound) {
+            Log.d("Beldex","mIsBound called if ")
             // Detach our existing connection.
             mBoundService!!.setObserver(null)
             unbindService(mConnection)
@@ -1236,5 +1534,13 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         var REQUEST_PW = "pw"
         var REQUEST_FINGERPRINT_USED = "fingerprint"
         var REQUEST_STREETMODE = "streetmode"
+    }
+
+    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val intent = Intent(this, LoadingActivity::class.java)
+            push(intent)
+            finish()
+        }
     }
 }

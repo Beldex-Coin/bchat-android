@@ -20,6 +20,7 @@ import com.thoughtcrimes.securesms.model.NetworkType
 import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.model.WalletManager
 import com.thoughtcrimes.securesms.util.*
+import com.thoughtcrimes.securesms.wallet.CheckOnline
 import timber.log.Timber
 import java.io.File
 import java.util.*
@@ -67,19 +68,23 @@ class DisplayNameActivity : BaseActionBarActivity() {
             registerButton.setOnClickListener { register() }
         }
         //New Line load favourites with network function
-        loadFavouritesWithNetwork()
+        if (CheckOnline.isOnline(this)) {
+            loadFavouritesWithNetwork()
+        }
     }
 
     override fun onResume() {
         super.onResume()
         //New Line
-        pingSelectedNode()
+        if (CheckOnline.isOnline(this)) {
+            pingSelectedNode()
+        }
     }
 
     fun getOrPopulateFavourites(): Set<NodeInfo?> {
         if (favouriteNodes.isEmpty()) {
             for (node in DefaultNodes.values()) {
-                val nodeInfo = NodeInfo.fromString(node.name)
+                val nodeInfo = NodeInfo.fromString(node.uri)
                 if (nodeInfo != null) {
                     nodeInfo.setFavourite(true)
                     favouriteNodes.add(nodeInfo)
@@ -180,6 +185,7 @@ class DisplayNameActivity : BaseActionBarActivity() {
             } else throw java.lang.IllegalStateException()
             return if (selectedNode != null && selectedNode.isValid) {
                 Timber.d("Testing-->12")
+                Log.d("Testing-->12 ","$selectedNode")
                 displayNameActivity.setNode(selectedNode)
                 selectedNode
             } else {
@@ -200,10 +206,13 @@ class DisplayNameActivity : BaseActionBarActivity() {
 
     private fun setNode(node: NodeInfo?, save: Boolean) {
         if (node !== this.node) {
+            if(!(node!=null && node.networkType !== WalletManager.getInstance()
+                    .networkType)){
             require(
-                !(node != null && node !== WalletManager.getInstance()
-                    .getNetworkType())
+                !(node != null && node.networkType !== WalletManager.getInstance()
+                    .networkType)
             ) { "network type does not match" }
+            }
             this.node = node
             for (nodeInfo in favouriteNodes) {
                 Timber.d("Testing-->14")
@@ -315,15 +324,17 @@ class DisplayNameActivity : BaseActionBarActivity() {
             object : WalletCreator {
                 override fun createWallet(aFile: File?, password: String?): Boolean {
                     Log.d("create Wallet 2","OK")
-                    //val currentNode: NodeInfo = getNode()
+                    val currentNode: NodeInfo? = getNode()
+                    Log.d("Beldex", "Value of current Node $currentNode")
                     // get it from the connected node if we have one, and go back ca. 4 days
-                    //val restoreHeight: Long = if (currentNode != null) currentNode.getHeight() - 2000 else -1
+                    val restoreHeight: Long = if (currentNode != null) currentNode.height else -1
+                    Log.d("Beldex", "Value of restoreHeight $restoreHeight")
                     val newWallet: Wallet = WalletManager.getInstance()
                         .createWallet(
                             aFile,
                             password,
                             MNEMONIC_LANGUAGE,
-                            1723084
+                            restoreHeight
                         )
                     return checkAndCloseWallet(newWallet)
                 }
@@ -384,7 +395,7 @@ class DisplayNameActivity : BaseActionBarActivity() {
         var newWalletFile: File? = null
         override fun onPreExecute() {
             super.onPreExecute()
-        //    displayNameActivity.acquireWakeLock()
+            //    displayNameActivity.acquireWakeLock()
             displayNameActivity.showProgressDialog(R.string.generate_wallet_creating, 250)
         }
 
@@ -400,7 +411,7 @@ class DisplayNameActivity : BaseActionBarActivity() {
             displayNameActivity.dismissProgressDialog()
             if (result == true) {
                 //startDetails(newWalletFile, walletPassword, GenerateReviewFragment.VIEW_TYPE_ACCEPT)
-                    Log.d("Wallet","OK")
+                Log.d("Wallet","OK")
                 //displayNameActivity._getKeys("bxdqxWtcatDFte41zYeWGjBzRgQkFB8AA5gMA3yXLA41RTbrEVoN3976RT2CNHp7PLAR2MsQG1BhMXuLi6HEWWcj2smC3Vfgw");
                 TextSecurePreferences.setWalletName(displayNameActivity,walletName)
                 //SteveJosephh21

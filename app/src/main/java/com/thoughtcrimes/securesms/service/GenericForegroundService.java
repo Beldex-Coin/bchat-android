@@ -57,7 +57,7 @@ public class GenericForegroundService extends Service {
   private void handleStart(@NonNull Intent intent) {
     String title     = Preconditions.checkNotNull(intent.getStringExtra(EXTRA_TITLE));
     String channelId = Preconditions.checkNotNull(intent.getStringExtra(EXTRA_CHANNEL_ID));
-    int    iconRes   = intent.getIntExtra(EXTRA_ICON_RES, R.drawable.ic_notification);
+    int    iconRes   = intent.getIntExtra(EXTRA_ICON_RES, R.drawable.ic_bchat_logo);
 
     Log.i(TAG, "handleStart() Title: " + title + "  ChannelId: " + channelId);
 
@@ -91,7 +91,7 @@ public class GenericForegroundService extends Service {
     startForeground(NOTIFICATION_ID, new NotificationCompat.Builder(this, channelId)
                                                            .setSmallIcon(iconRes)
                                                            .setContentTitle(title)
-                                                           .setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, HomeActivity.class), 0))
+                                                           .setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, HomeActivity.class), PendingIntent.FLAG_IMMUTABLE))
                                                            .build());
   }
 
@@ -106,7 +106,7 @@ public class GenericForegroundService extends Service {
   }
 
   public static void startForegroundTask(@NonNull Context context, @NonNull String task, @NonNull String channelId) {
-    startForegroundTask(context, task, channelId, R.drawable.ic_notification);
+    startForegroundTask(context, task, channelId, R.drawable.ic_bchat_logo);
   }
 
   public static void startForegroundTask(@NonNull Context context, @NonNull String task, @NonNull String channelId, @DrawableRes int iconRes) {

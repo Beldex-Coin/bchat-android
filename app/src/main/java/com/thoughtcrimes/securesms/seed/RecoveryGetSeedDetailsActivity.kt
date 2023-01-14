@@ -2,7 +2,9 @@ package com.thoughtcrimes.securesms.seed
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
 import android.text.InputType
+import android.text.TextWatcher
 import android.util.ArrayMap
 import android.util.Log
 import android.view.KeyEvent
@@ -30,6 +32,7 @@ import com.thoughtcrimes.securesms.onboarding.CreatePasswordActivity
 import com.thoughtcrimes.securesms.util.*
 import timber.log.Timber
 import java.io.File
+import java.math.BigInteger
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -165,6 +168,29 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
                     }
                     false
                 })
+            binding.restoreSeedWalletRestoreHeight.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable) {
+                    if (binding.restoreSeedWalletRestoreHeight.text.toString().length == 9) {
+                        Toast.makeText(
+                            this@RecoveryGetSeedDetailsActivity,
+                            R.string.enter_a_valid_height,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                override fun beforeTextChanged(
+                    s: CharSequence, start: Int,
+                    count: Int, after: Int
+                ) {
+                }
+
+                override fun onTextChanged(
+                    s: CharSequence, start: Int,
+                    before: Int, count: Int
+                ) {
+                }
+            })
             restoreSeedRestoreButton.setOnClickListener { register() }
         }
 
@@ -228,8 +254,13 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         val password = uuid.toString()
         //SteveJosephh21
         if (restoreHeight.isNotEmpty()){
-            binding.restoreSeedWalletRestoreDate.text = ""
-            _recoveryWallet(displayName,password,getSeed, restoreHeight.toLong())
+            val restoreHeightBig = BigInteger(restoreHeight)
+            if(restoreHeightBig.toLong()>=0) {
+                binding.restoreSeedWalletRestoreDate.text = ""
+                _recoveryWallet(displayName, password, getSeed, restoreHeight.toLong())
+            }else{
+                Toast.makeText(this,getString(R.string.restore_height_error_message),Toast.LENGTH_SHORT).show()
+            }
         }else if(restoreFromDate.isNotEmpty()){
             binding.restoreSeedWalletRestoreHeight.setText("")
             _recoveryWallet(displayName, password, getSeed, restoreFromDateHeight.toLong())
@@ -407,8 +438,12 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
     private fun setNode(node: NodeInfo?, save: Boolean) {
         if (node !== this.node) {
             Log.d("networkType","${node!!.networkType},   ${WalletManager.getInstance().networkType}")
-            require(!(node != null && node.networkType !== WalletManager.getInstance().networkType)
-            ) { "network type does not match" }
+            if(!(node!=null && node.networkType !== WalletManager.getInstance()
+                    .networkType)) {
+                require(
+                    !(node != null && node.networkType !== WalletManager.getInstance().networkType)
+                ) { "network type does not match" }
+            }
             this.node = node
             for (nodeInfo in favouriteNodes) {
                 Timber.d("Testing-->14 ${node.toString()}")

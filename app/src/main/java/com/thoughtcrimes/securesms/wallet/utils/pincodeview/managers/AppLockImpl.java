@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.util.Base64;
 import android.util.Log;
 
+import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.thoughtcrimes.securesms.wallet.utils.keyboardview.interfaces.LifeCycleInterface;
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.PinActivity;
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.encryption.Encryptor;
@@ -336,13 +337,19 @@ public class AppLockImpl<T extends AppLockActivity> extends AppLock implements L
         String clazzName = activity.getClass().getName();
         Log.d(TAG, "onActivityResumed " + clazzName);
 
-        if (shouldLockSceen(activity)) {
-            Log.d(TAG, "mActivityClass.getClass() " + mActivityClass);
-            Intent intent = new Intent(activity.getApplicationContext(),
-                    mActivityClass);
-            intent.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            activity.getApplication().startActivity(intent);
+        //SteveJosephh21
+        if(!TextSecurePreferences.getChangePin(activity.getApplicationContext())) {
+            TextSecurePreferences.setChangePin(activity.getApplicationContext(),false);
+            if (shouldLockSceen(activity)) {
+                Log.d(TAG, "mActivityClass.getClass() " + mActivityClass);
+                Intent intent = new Intent(activity.getApplicationContext(),
+                        mActivityClass);
+                intent.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                activity.getApplication().startActivity(intent);
+            }
+        }else{
+            TextSecurePreferences.setChangePin(activity.getApplicationContext(),false);
         }
 
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1) {

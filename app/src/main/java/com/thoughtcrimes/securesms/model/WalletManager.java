@@ -78,7 +78,10 @@ public class WalletManager {
     }
 
     public Wallet createWallet(File aFile, String password, String language, long height) {
+        Log.d("Beldex","Value of netType " + getNetworkType().getValue());
+        // for Mainnet
         long walletHandle = createWalletJ(aFile.getAbsolutePath(), password, language, getNetworkType().getValue());
+
         Wallet wallet = new Wallet(walletHandle);
         manageWallet(wallet);
         if (wallet.getStatus().isOk()) {
@@ -243,6 +246,7 @@ public class WalletManager {
     private final NetworkType networkType = ApplicationContext.getNetworkType();
 
     public NetworkType getNetworkType() {
+        Log.d("Beldex"," value of networkType 1" +networkType);
         return networkType;
     }
 
@@ -254,7 +258,7 @@ public class WalletManager {
                 throw new IllegalArgumentException("network type does not match");
             this.daemonUsername = node.getUsername();
             this.daemonPassword = node.getPassword();
-            Timber.d("Testing-->16 %s", daemonAddress);
+            Log.d("Testing-->16 %s", daemonAddress);
             setDaemonAddressJ(daemonAddress);
         } else {
             Timber.d("Testing-->15");

@@ -1,5 +1,7 @@
 package com.thoughtcrimes.securesms.wallet.receive
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -14,6 +16,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.widget.ShareActionProvider
 import androidx.core.content.FileProvider
 import com.google.android.material.transition.MaterialContainerTransform
@@ -90,8 +93,8 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
 
     override fun onResume() {
         super.onResume()
-        listenerCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
-        listenerCallback!!.setTitle(getString(R.string.activity_receive_page_title))
+        /*listenerCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
+        listenerCallback!!.setTitle(getString(R.string.activity_receive_page_title))*/
     }
 
     /*override fun onDetach() {
@@ -121,6 +124,8 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
         savedInstanceState: Bundle?
     ): View? {
         binding = ActivityReceiveBinding.inflate(layoutInflater,container,false)
+        listenerCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
+        listenerCallback!!.setTitle(getString(R.string.activity_receive_page_title))
 
         binding.walletAddressReceive.text = IdentityKeyUtil.retrieve(requireActivity(),IdentityKeyUtil.IDENTITY_W_ADDRESS_PREF)
         generateQr()
@@ -146,6 +151,10 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
             shareQrCode()
         }
 
+        binding.addressCopy.setOnClickListener {
+            copyYourBeldexAddress()
+        }
+
         return binding.root
     }
 
@@ -168,6 +177,13 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
                 }
             }
     }
+    private fun copyYourBeldexAddress() {
+        val clipboard = requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("Beldex Address", binding.walletAddressReceive.text.toString())
+        clipboard.setPrimaryClip(clip)
+        Toast.makeText(requireActivity(), R.string.beldex_address_clipboard, Toast.LENGTH_SHORT).show()
+    }
+
 
     fun generate(text: String?, width: Int, height: Int): Bitmap? {
         if (width <= 0 || height <= 0) return null

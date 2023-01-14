@@ -1,5 +1,6 @@
 package com.thoughtcrimes.securesms.conversation.v2.menus
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.graphics.BitmapFactory
 import android.graphics.PorterDuff
@@ -43,12 +44,21 @@ import com.thoughtcrimes.securesms.util.BitmapUtil
 import com.thoughtcrimes.securesms.util.getColorWithID
 import java.io.IOException
 import android.content.*
+import android.content.pm.PackageManager
 import android.view.*
 import io.beldex.bchat.R
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.os.Build
 import android.telephony.PhoneStateListener
+import android.telephony.TelephonyCallback
 import android.telephony.TelephonyManager
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
+import androidx.core.content.PermissionChecker.checkSelfPermission
+import androidx.core.content.ContextCompat.getSystemService
+
+
 
 
 object ConversationMenuHelper {
@@ -162,41 +172,90 @@ object ConversationMenuHelper {
             R.id.menu_unmute_notifications -> { unmute(context, thread) }
             R.id.menu_mute_notifications -> { mute(context, thread) }
             R.id.menu_notification_settings -> { setNotifyType(context, thread) }
-            R.id.menu_call -> {
-                /*Hales63*/
+          /*  R.id.menu_call -> {
+                *//*Hales63*//*
                 if (isOnline(context)) {
+                    Log.d("Beldex","Call state issue called")
                     val tm = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-                    tm.listen(object : PhoneStateListener() {
-                        override fun onCallStateChanged(state: Int, phoneNumber: String?) {
-                            super.onCallStateChanged(state, phoneNumber)
-                            when (state) {
-                                TelephonyManager.CALL_STATE_RINGING -> {
-                                    Toast.makeText(
-                                        context,
-                                        "BChat call won't allow ,Because your phone call ringing",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                                TelephonyManager.CALL_STATE_OFFHOOK -> {
-                                    Toast.makeText(
-                                        context,
-                                        "BChat call won't allow ,Because your phone call is on going",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                    if (ContextCompat.checkSelfPermission(
+                            context,
+                            Manifest.permission.READ_PHONE_STATE
+                        ) == PackageManager.PERMISSION_GRANTED
+                    ) {
+                        Log.d("Beldex","Call state issue called 1")
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                            Log.d("Beldex","Call state issue called 2")
+                            tm.registerTelephonyCallback(
+                                context.mainExecutor,
+                                object : TelephonyCallback(), TelephonyCallback.CallStateListener {
+                                    override fun onCallStateChanged(state: Int) {
+                                        when (state) {
+                                            TelephonyManager.CALL_STATE_RINGING -> {
+                                                Log.d("Beldex","Call state issue called 3")
+                                                Toast.makeText(
+                                                    context,
+                                                    "BChat call won't allow ,Because your phone call ringing",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                            TelephonyManager.CALL_STATE_OFFHOOK -> {
+                                                Log.d("Beldex","Call state issue called 4")
+                                                Toast.makeText(
+                                                    context,
+                                                    "BChat call won't allow ,Because your phone call is on going",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
 
+                                            }
+                                            TelephonyManager.CALL_STATE_IDLE -> {
+                                                Log.d("Beldex","Call state issue called 5")
+                                                call(context, thread)
+                                            }
+                                        }
+                                    }
+                                })
+
+                        } else {
+                            Log.d("Beldex","Call state issue called 6")
+                            tm.listen(object : PhoneStateListener() {
+                                override fun onCallStateChanged(state: Int, phoneNumber: String?) {
+                                    super.onCallStateChanged(state, phoneNumber)
+                                    when (state) {
+                                        TelephonyManager.CALL_STATE_RINGING -> {
+                                            Log.d("Beldex","Call state issue called 7")
+                                            Toast.makeText(
+                                                context,
+                                                "BChat call won't allow ,Because your phone call ringing",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                        TelephonyManager.CALL_STATE_OFFHOOK -> {
+                                            Log.d("Beldex","Call state issue called 8")
+                                            Toast.makeText(
+                                                context,
+                                                "BChat call won't allow ,Because your phone call is on going",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+
+                                        }
+                                        TelephonyManager.CALL_STATE_IDLE -> {
+                                            Log.d("Beldex","Call state issue called 9" )
+                                            call(context, thread)
+                                        }
+                                    }
                                 }
-                                TelephonyManager.CALL_STATE_IDLE -> {
-                                    call(context, thread)
-                                }
-                            }
+                            }, PhoneStateListener.LISTEN_CALL_STATE)
                         }
-                    }, PhoneStateListener.LISTEN_CALL_STATE)
+                    }
+                    else{
 
+                        Log.d("Beldex","Call state issue called else")
+                    }
 
                 } else {
                     Toast.makeText(context, "Check your Internet", Toast.LENGTH_SHORT).show()
                 }
-            }
+            }*/
         }
         return true
     }

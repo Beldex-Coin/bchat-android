@@ -6,8 +6,8 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
         android:layout_marginBottom="10dp"
         app:cardElevation="5dp"
         app:cardCornerRadius="10dp"
@@ -34,11 +34,12 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
                     <TextView
-                        android:id="@+id/transaction_status"
+                        android:id="@+id/transaction_amount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text=""
-                        android:textSize="18sp"/>
+                        android:textSize="18sp"
+                        android:textStyle="bold"/>
                     <TextView
                         android:id="@+id/transaction_date_and_time_head"
                         android:layout_width="wrap_content"
@@ -48,16 +49,21 @@
                         android:textSize="12sp"/>
                 </LinearLayout>
                 <TextView
-                    android:id="@+id/transaction_amount"
+                    android:id="@+id/transaction_status"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="match_parent"
                     android:text=""
-                    android:textColor="@color/text"
+                    android:textColor="@color/grey"
                     android:gravity="center|end"
                     android:layout_marginEnd="10dp"
-                    android:textStyle="bold"
-                    android:textSize="18sp"/>
+                    android:textSize="15sp"/>
+                <ImageView
+                    android:id="@+id/transaction_expandable_arrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_baseline_keyboard_arrow_down_24"/>
             </LinearLayout>
 
             <LinearLayout

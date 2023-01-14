@@ -85,6 +85,7 @@
     <color name="stroke_color">#afafaf</color>
     <color name="chat_user_name_color">#159B24</color>
     <color name="disable_button_text_color">#686774</color>
+    <color name="disable_button_background_color">#D8D8D8</color>
     <color name="animation_popup_background">#1C1C26</color>
     <color name="color_action_icon_background">#F2F2F2</color>
     <color name="remote_parent_background">#FFFFFF</color>
@@ -111,4 +112,18 @@
     <color name="no_transaction_image_border2">#a3a3b2</color>
     <color name="no_transaction_image_border3">#eaeaea</color>
     <color name="dialog_title_color">#77778B</color>
+    <color name="wallet_bottom_card_color">@color/white</color>
+    <color name="scan_qr_code_disable_color">#acacac</color>
+    <color name="scan_qr_code_disable_background_color">#ebebeb</color>
+    <color name="send_button_disable_color">#ACACAC</color>
+    <color name="show_seed_content_title">#FC2727</color>
+    <color name="add_node_card_color">#FFFFFF</color>
+    <color name="add_node_optional_card_color">#EAEAEA</color>
+    <color name="unselected_node">#F4F4F4</color>
+    <color name="or_color">#159B24</color>
+    <color name="address_book_name">#e6e6e6</color>
+    <color name="loading_card_background">#F4F4F4</color>
+    <color name="wallet_options_disable">#F4F4F4</color>
+    <color name="scan_qr_code_background">#EAEAEA</color>
+    <color name="beta_icon">#797984</color>
 </resources>

@@ -3,6 +3,8 @@ package com.thoughtcrimes.securesms.wallet.node;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +24,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,6 +39,7 @@ import com.thoughtcrimes.securesms.model.NetworkType;
 import com.thoughtcrimes.securesms.model.WalletManager;
 import com.thoughtcrimes.securesms.util.Helper;
 import com.thoughtcrimes.securesms.util.NodePinger;
+import com.thoughtcrimes.securesms.wallet.WalletActivity;
 
 import java.io.File;
 import java.net.InetSocketAddress;
@@ -205,8 +209,46 @@ public class NodeFragment extends Fragment
     // Callbacks from NodeInfoAdapter
     @Override
     public void onInteraction(final View view, final NodeInfo nodeItem) {
+        AlertDialog.Builder d  = new AlertDialog.Builder(getContext());
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.switch_node, null);
+        d.setView(dialogView);
+        Button cancelButton = dialogView.findViewById(R.id.cancelButton);
+        Button yesButton = dialogView.findViewById(R.id.yesButton);
+        AlertDialog alertDialog = d.create();
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        alertDialog.show();
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
 
-        new android.app.AlertDialog.Builder(getContext(), R.style.BChatAlertDialog_Wallet)
+        yesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Timber.d("onInteraction");
+                if (!nodeItem.isFavourite()) {
+                    nodeItem.setFavourite(true);
+                    activityCallback.setFavouriteNodes(nodeList);
+                }
+                AsyncTask.execute(() -> {
+                    Log.d("Beldex","Value of current node 2 " +nodeItem.getHost());
+                    activityCallback.setNode(nodeItem);
+                    // this marks it as selected & saves it as well
+                    nodeItem.setSelecting(false);
+                    TextSecurePreferences.changeDaemon(requireContext(),true);
+                    try {
+                        requireActivity().runOnUiThread(() -> nodesAdapter.allowClick(true));
+                    } catch (NullPointerException ignored) {
+                    }
+                });
+                alertDialog.dismiss();
+            }
+        });
+
+       /* new android.app.AlertDialog.Builder(getContext(), R.style.BChatAlertDialog_Wallet)
                 .setTitle(R.string.switch_node_alert)
                 .setPositiveButton(R.string.yes, (dialog, which) -> {
                     Timber.d("onInteraction");
@@ -215,7 +257,9 @@ public class NodeFragment extends Fragment
                         activityCallback.setFavouriteNodes(nodeList);
                     }
                     AsyncTask.execute(() -> {
-                        activityCallback.setNode(nodeItem); // this marks it as selected & saves it as well
+                        Log.d("Beldex","Value of current node 2 " +nodeItem.getHost());
+                        activityCallback.setNode(nodeItem);
+                        // this marks it as selected & saves it as well
                         nodeItem.setSelecting(false);
                         TextSecurePreferences.changeDaemon(requireContext(),true);
                         try {
@@ -225,8 +269,7 @@ public class NodeFragment extends Fragment
                     });
 
                 }).setNegativeButton(android.R.string.cancel, null)
-                .show();
-
+                .show();*/
     }
 
     // open up edit dialog
@@ -461,10 +504,12 @@ public class NodeFragment extends Fragment
         }
 
         private void closeDialog() {
-            if (editDialog == null) throw new IllegalStateException();
+            Log.d("Beldex","value of editDialog " + editDialog);
+            if (editDialog == null)
+                throw new IllegalStateException();
             Helper.hideKeyboardAlways(getActivity());
             editDialog.dismiss();
-            editDialog = null;
+            /*editDialog = null;*/
             NodeFragment.this.editDialog = null;
         }
 
@@ -491,21 +536,27 @@ public class NodeFragment extends Fragment
         TextView tvResult;
         ImageView iVVerified;
         ImageView iVConnectionError;
+        CardView tvResultCardView;
 
         void showTestResult() {
             if (nodeInfo.isSuccessful()) {
-                tvResult.setText(getString(R.string.node_result,
+               /* tvResult.setText(getString(R.string.node_result,
                         FORMATTER.format(nodeInfo.getHeight()), nodeInfo.getMajorVersion(),
-                        nodeInfo.getResponseTime(), nodeInfo.getHostAddress()));
+                        nodeInfo.getResponseTime(), nodeInfo.getHostAddress()));*/
+                tvResult.setText(getText(R.string.add_node_success));
+                tvResultCardView.setCardBackgroundColor(ContextCompat.getColor(requireContext(),(R.color.button_green)));
+
                 iVVerified.setVisibility(View.VISIBLE);
                 iVConnectionError.setVisibility(View.GONE);
                 tvResult.setTextColor(ContextCompat.getColor(requireContext(), R.color.text));
+                TextSecurePreferences.setNodeIsTested(requireContext(),true);
 
                 Log.d("Beldex","showTestResult in NodeFragment()");
             } else {
                 Log.d("Beldex","showTestResult in NodeFragment()");
                 tvResult.setText(NodeInfoAdapter.getResponseErrorText(getActivity(), nodeInfo.getResponseCode()));
-                tvResult.setTextColor(ContextCompat.getColor(requireContext(), R.color.red));
+                tvResultCardView.setCardBackgroundColor(ContextCompat.getColor(requireContext(),R.color.red));
+                TextSecurePreferences.setNodeIsTested(requireContext(),false);
                 iVVerified.setVisibility(View.GONE);
                 iVConnectionError.setVisibility(View.VISIBLE);
             }
@@ -526,6 +577,7 @@ public class NodeFragment extends Fragment
             tvResult = promptsView.findViewById(R.id.tvResult);
             iVVerified = promptsView.findViewById(R.id.iVVerified);
             iVConnectionError = promptsView.findViewById(R.id.iVConnectionError);
+            tvResultCardView = promptsView.findViewById(R.id.testResult_cardview);
 
             if (nodeInfo != null) {
                 this.nodeInfo = nodeInfo;
@@ -544,8 +596,8 @@ public class NodeFragment extends Fragment
             // set dialog message
             alertDialogBuilder
                     .setCancelable(false)
-                    .setPositiveButton("OK", null)
-                    .setNeutralButton("TEST", null)
+                    .setPositiveButton("Add", null)
+                    .setNeutralButton("Test", null)
                     .setNegativeButton(getString(R.string.cancel),
                             (dialog, id) -> {
                                 closeDialog();
@@ -569,7 +621,20 @@ public class NodeFragment extends Fragment
                     button.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            apply();
+                            Log.d("Beldex","Value of NodeIsTested " +TextSecurePreferences.getNodeIsTested(requireContext()));
+                            if (!TextSecurePreferences.getNodeIsTested(requireContext()) && tvResult.getText().toString().equals("")) {
+                                Toast.makeText(requireActivity(), getString(R.string.make_sure_you_test_the_node_before_adding_it), Toast.LENGTH_SHORT).show();
+                            } else if (tvResult.getText().toString().equals(getString(R.string.node_general_error))) {
+                                Toast.makeText(requireActivity(), getString(R.string.unable_to_connect_test_failed), Toast.LENGTH_SHORT).show();
+                            } else if (tvResult.getText().toString().equals(getString(R.string.add_node_success))) {
+                                Log.d("Beldex","value of getInfo isMainnet" + TextSecurePreferences.getNodeIsMainnet(requireActivity()));
+                                if(TextSecurePreferences.getNodeIsMainnet(requireActivity())) {
+                                    apply();
+                                    TextSecurePreferences.setNodeIsMainnet(requireContext(), false);
+                                }else {
+                                    Toast.makeText(requireActivity(),getString(R.string.please_add_a_mainnet_node),Toast.LENGTH_SHORT).show();
+                                }
+                            }
                         }
                     });
                 }
@@ -595,11 +660,22 @@ public class NodeFragment extends Fragment
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
+                tvResultCardView.setCardBackgroundColor(ContextCompat.getColor(requireContext(),(R.color.button_green)));
+                iVVerified.setVisibility(View.GONE);
+                iVConnectionError.setVisibility(View.GONE);
+                TextSecurePreferences.setNodeIsTested(requireContext(),true);
                 tvResult.setText(getString(R.string.node_testing, nodeInfo.getHostAddress()));
             }
 
             @Override
             protected Boolean doInBackground(Void... params) {
+                nodeInfo.testIsMainnet();
+                Log.d("Beldex","Value of getInfo isMainnet nodeInfo " +nodeInfo.testIsMainnet());
+                if (nodeInfo.testIsMainnet()) {
+                    TextSecurePreferences.setNodeIsMainnet(requireContext(), true);
+                } else {
+                    TextSecurePreferences.setNodeIsMainnet(requireContext(), false);
+                }
                 nodeInfo.testRpcService();
                 return true;
             }

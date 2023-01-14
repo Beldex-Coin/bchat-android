@@ -726,7 +726,7 @@
     <string name="activity_create_private_chat_scan_qr_code_tab_title" translatable="false">Scan QR Code</string>
     <string name="activity_create_private_chat_scan_qr_code_explanation" translatable="false">Scan a user\'s QR code to start a BChat. QR codes can be found by tapping the QR code icon in account settings.</string>
 
-    <string name="fragment_enter_public_key_edit_text_hint" translatable="false">Enter BChat ID</string>
+    <string name="fragment_enter_public_key_edit_text_hint" translatable="false">Enter BChat ID or BNS Name</string>
     <string name="fragment_enter_public_key_explanation" translatable="false">Users can share their BChat ID by going into their account settings and tapping "Share BChat ID", or by sharing their QR code.</string>
     <string name="fragment_enter_public_key_error_message" translatable="false">Please check the BChat ID or BNS name and try again.</string>
 
@@ -1194,7 +1194,7 @@
     <string name="send_btn_transition_name" translatable="false">send_btn_transition</string>
     <string name="receive_btn_transition_name" translatable="false">receive_btn_transition</string>
     <string name="test" translatable="false">Test</string>
-    <string name="test_result_title" translatable="false">Test result:</string>
+    <string name="test_result_title" translatable="false">Test result :</string>
     <string name="test_result" translatable="false">Height 1,500,500 (V17),Ping: 500ms, IP: 15.222.187.192</string>
 
     <string name="info_nodes_enabled">Node-o-matiC enabled, tap for more info.</string>
@@ -1245,14 +1245,14 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="fee" translatable="false">Fee:</string>
     <string name="estimated_fee" translatable="false">Estimated Fee: %1$s BDX</string>
     <string name="fiat_currency" translatable="false">%1$.2f %2$s</string>
-    <string name="beldex_amount_valid_error_message" translatable="false">Enter valid amount</string>
-    <string name="no_node_connection" translatable="false">No node connection, Check your Internet</string>
+    <string name="beldex_amount_valid_error_message" translatable="false">Enter a valid amount</string>
+    <string name="no_node_connection" translatable="false">Can\'t connect to nodes. Check your internet</string>
     <string name="home_screen_new_chat_title" translatable="false">New Chat</string>
     <string name="home_screen_secret_groups_title" translatable="false">Secret Group</string>
     <string name="home_screen_social_groups_title" translatable="false">Social Group</string>
     <string name="display_balance_as" translatable="false">Display Balance As</string>
     <string name="current_node" translatable="false">Current Node</string>
-    <string name="wallets" translatable="false">Wallets</string>
+    <string name="wallets" translatable="false">Wallet</string>
     <string name="decimals" translatable="false">Decimals</string>
     <string name="enable_fiat_currency_conversion" translatable="false">Enable Fiat Currency Conversion</string>
     <string name="currency" translatable="false">Currency</string>
@@ -1273,4 +1273,45 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="wallet_name" translatable="false">Wallet Name</string>
     <string name="view_key_private" translatable="false">View Key (private)</string>
     <string name="spend_key_private" translatable="false">Spend Key (private)</string>
+    <string name="activity_scan_page_title" translatable="false">Scan</string>
+    <string name="activity_wallet_password_page_title" translatable="false">Wallet Password</string>
+    <string name="show_seed_content_title" translatable="false">Copy your Recovery Phrase and keep it safe.</string>
+    <string name="show_seed_content" translatable="false">Your Recovery Phrase can be used to recover your account. If you lose your Recovery Phrase, you will lose access to your account. Restoring your account will only restore the messages and BChat contacts from the last 14 days.</string>
+    <string name="add_node_success" translatable="false">Success</string>
+    <string name="add_node_connection_error" translatable="false">Connection error</string>
+    <string name="exit" translatable="false">Exit</string>
+    <string name="app_exit_alert" translatable="false">Are you sure you want to exit the wallet?</string>
+    <string name="transaction_send_title">Transaction Initiated Successfully</string>
+    <string name="dialog_block_height_title" translatable="false">Enter the block height or date at which you created the wallet.</string>
+    <string name="block_height" translatable="false"> Block Height</string>
+    <string name="block_height_info" translatable="false">Blockheight is the block number in a blockchain at a given time. Enter the block height at which you created the wallet for fast synchronization.</string>
+    <string name="enter_address" translatable="false">Enter Address</string>
+    <string name="enter_bdx_to_send" translatable="false">Enter BDX to send</string>
+    <string name="amount_hint" translatable="false">Amount</string>
+    <string name="restore_height_error_message" translatable="false">Enter a valid blockheight</string>
+    <string name="change_pin_confirmation_message" translatable="false">New pin and old pin can\'t be same, Please enter a different pin</string>
+    <string name="failed_connected_to_the_node" translatable="false">Failed connected to the node</string>
+    <string name="reconnecting" translatable="false">Reconnecting...</string>
+    <string name="switching_node">Switching Node</string>
+    <string name="no_copied_seed" translatable="false">Make sure you have copied the seed!</string>
+    <string name="your_pin_has_been_set_up_successfully" translatable="false">Your PIN has been set up successfully!</string>
+    <string name="sync_info" translatable="false">Sync Info</string>
+    <string name="sync_info_description" translatable="false">However we recommend to scan the blockchain from the block height at which you created the wallet, to get all the transactions and correct balance</string>
+    <string name="cannot_rescan_while_wallet_is_syncing" translatable="false">Can\'t rescan while wallet is syncing</string>
+    <string name="enter_a_valid_height" translatable="false">Enter a valid height</string>
+    <string name="beldex_amount_valid_not_enough_money_error_message" translatable="false">Not enough money</string>
+    <string name="make_sure_you_test_the_node_before_adding_it" translatable="false">Make sure you test the node before adding it.</string>
+    <string name="unable_to_connect_test_failed" translatable="false">Unable to connect. Test failed.</string>
+    <string name="search_by_name_hint" translatable="false">Search by Name...</string>
+    <string name="please_add_a_mainnet_node" translatable="false">Please add a mainnet node</string>
+    <string name="wallet_syncing_alert_title" translatable="false">Wallet is syncing...</string>
+    <string name="wallet_syncing_alert_message" translatable="false">If you close the wallet, synchronization will be paused. Are you sure you want to exit the wallet?</string>
+    <string name="your_pin_has_been_changed_successfully" translatable="false">Your PIN has been changed successfully!</string>
+    <string name="transaction_details_title" translatable="false">Transaction Details</string>
+    <string name="please_try_again_later" translatable="false">Please try again later</string>
+    <string name="no_transactions_yet" translatable="false">No Transactions yet!</string>
+    <string name="after_your_first_transaction_nyou_will_be_able_to_view_it_here" translatable="false">After your first transaction,\nyou will be able to view it here.</string>
+    <string name="waiting_for_network" translatable="false">Waiting for network..</string>
+    <string name="waiting_for_connection" translatable="false"> Waiting for connection..</string>
+    <string name="fetching_balance">Fetching Balance</string>
 </resources>

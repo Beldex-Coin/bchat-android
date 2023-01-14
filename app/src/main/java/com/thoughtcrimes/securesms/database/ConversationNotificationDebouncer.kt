@@ -29,7 +29,7 @@ class ConversationNotificationDebouncer(private val context: Context) {
     }
 
     private fun publish() {
-        for (threadID in threadIDs) {
+        for (threadID in threadIDs.toList()) {
             context.contentResolver.notifyChange(DatabaseContentProviders.Conversation.getUriForThread(threadID), null)
         }
         threadIDs.clear()

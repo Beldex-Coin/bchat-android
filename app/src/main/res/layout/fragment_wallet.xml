@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
     tools:context="com.thoughtcrimes.securesms.wallet.WalletFragment">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -25,239 +25,169 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/syncStatus"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="Synchronized"
-            android:textAlignment="center"
-            android:textColor="@color/button_green"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/progressBar" />
-
         <LinearLayout
-            android:id="@+id/walletDetailsLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/syncStatus"
-            android:orientation="horizontal">
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_marginEnd="5dp"
-                app:cardCornerRadius="10dp"
-                android:elevation="10dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="10dp"
-                app:cardBackgroundColor="@color/wallet_card_color"
-                android:layout_height="match_parent">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="10dp"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/ic_wallet_user" />
-
-                    <TextView
-                        android:id="@+id/walletName"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent"
-                        android:gravity="center_vertical"
-                        android:layout_marginStart="10dp"
-                        android:textStyle="bold"
-                        android:textSize="18sp"
-                        android:text="User Name"/>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="10dp"
-                app:cardCornerRadius="10dp"
-                android:elevation="10dp"
-                app:cardBackgroundColor="@color/wallet_card_color"
-                android:layout_height="match_parent">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="10dp"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/ic_wallet_with_background" />
-                    <LinearLayout
-                        android:id="@+id/llBalance"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent"
-                        android:gravity="center_vertical"
-                        android:layout_marginStart="10dp"
-                        android:orientation="vertical">
-                        <TextView
-                            android:id="@+id/tvBalance"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textStyle="bold"
-                            android:textSize="17sp"
-                            android:textColor="@color/text"/>
-                        <TextView
-                            android:id="@+id/tvFiatCurrency"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textSize="10sp"
-                            android:textColor="@color/grey"/>
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/buttonsLayout"
-            android:layout_width="match_parent"
+            android:id="@+id/syncStatusLayout"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginTop="15dp"
-            app:layout_constraintTop_toBottomOf="@id/walletDetailsLayout">
-            <androidx.cardview.widget.CardView
-                android:id="@+id/sendCardViewButton"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_marginEnd="5dp"
-                app:cardCornerRadius="10dp"
-                android:elevation="10dp"
-                android:layout_marginStart="25dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:transitionName="@string/send_btn_transition_name"
-                app:cardBackgroundColor="@color/wallet_card_color"
-                android:layout_height="match_parent">
+            app:layout_constraintTop_toBottomOf="@id/progressBar">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_margin="10dp"
-                    android:gravity="center"
-                    android:layout_gravity="center"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/ic_wallet_send_button" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center_vertical"
-                        android:layout_marginStart="10dp"
-                        android:textSize="18sp"
-                        android:text="Send"/>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-            <androidx.cardview.widget.CardView
-                android:id="@+id/receiveCardViewButton"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                app:cardCornerRadius="10dp"
-                android:elevation="10dp"
-                android:layout_margin="10dp"
-                android:transitionName="@string/receive_btn_transition_name"
-                app:cardBackgroundColor="@color/wallet_card_color"
-                android:layout_height="match_parent">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_margin="10dp"
-                    android:gravity="center"
-                    android:layout_gravity="center"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/ic_wallet_receive_button" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center_vertical"
-                        android:layout_marginStart="10dp"
-                        android:textSize="18sp"
-                        android:text="Receive"/>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-            <ImageView
-                android:id="@+id/scanQrCode_img"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="25dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:transitionName="@string/scan_transition_name"
-                android:src="@drawable/ic_wallet_scan_qr"/>
+        <TextView
+            android:id="@+id/syncStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textColor="@color/green_color"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+        <ImageView
+            android:id="@+id/syncStatusIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:layout_marginStart="5dp"
+            android:src="@drawable/ic_outline_info_24"/>
         </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/walletDetailsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/wallet_bottom_card"
+            app:layout_constraintLeft_toLeftOf="@id/transactionLayoutCardView"
+            app:layout_constraintRight_toRightOf="@id/transactionLayoutCardView"
+            app:layout_constraintTop_toBottomOf="@id/syncStatusLayout">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:id="@+id/fetchBalanceStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/fetchBalanceStatusText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/grey"
+                        android:textSize="12sp"
+                        android:gravity="bottom"
+                        android:text="@string/fetching_balance"/>
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/fetchBalanceStatusAnim"
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:adjustViewBounds="true"
+                        android:layout_gravity="bottom"
+                        android:layout_marginBottom="3dp"
+                        app:layout_constraintDimensionRatio="1:1"
+                        app:layout_constraintVertical_bias="0.4"
+                        app:lottie_fileName="fetch_balance.json"
+                        app:lottie_loop="true"
+                        app:lottie_speed="1"
+                        app:lottie_autoPlay="true"
+                        app:lottie_enableMergePathsForKitKatAndAbove="true"
+                        tools:ignore="ContentDescription"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llBalance"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_beldex" />
+
+                    <TextView
+                        android:id="@+id/tvBalance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/text"
+                        android:textSize="32sp"
+                        android:layout_marginStart="10dp"
+                        android:textAlignment="center"
+                        android:text="-.----"
+                        android:textStyle="bold" />
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/tvFiatCurrency"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/grey"
+                    android:textAlignment="center"
+                    android:text="---"
+                    android:textSize="15sp" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <androidx.cardview.widget.CardView
             android:id="@+id/transactionLayoutCardView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:visibility="visible"
-            app:layout_constraintTop_toBottomOf="@id/buttonsLayout"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="5dp"
+            app:cardBackgroundColor="@color/wallet_card_transaction_card_background"
+            app:cardElevation="2dp"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintBottom_toTopOf="@id/buttonsLayout"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="20dp"
-            app:cardElevation="5dp"
-            app:cardBackgroundColor="@color/wallet_card_transaction_card_background">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/walletDetailsLayout">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="25dp"
                     android:layout_marginStart="25dp"
+                    android:layout_marginTop="25dp"
                     android:layout_marginEnd="25dp"
                     android:layout_marginBottom="20dp"
                     android:orientation="horizontal">
+
                     <TextView
                         android:id="@+id/transactionTitle"
                         android:layout_width="0dp"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:layout_height="wrap_content"
                         android:text="Transactions"
+                        android:gravity=""
                         android:textSize="18sp"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
+
                     <ImageView
                         android:id="@+id/filter_transactions_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_filter"/>
+                        android:padding="7dp"
+                        android:src="@drawable/ic_filter" />
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -265,47 +195,128 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:visibility="gone"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     android:nestedScrollingEnabled="false"
+                    android:visibility="gone"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/transaction_list_item" />
+
                 <LinearLayout
                     android:id="@+id/emptyContainerLayout"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:visibility="visible"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:layout_weight="1">
+                    android:visibility="visible">
+
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_no_transactions"/>
+                        android:src="@drawable/ic_no_transactions" />
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        android:textAlignment="center"
-                        android:fontFamily="@font/poppins_medium"
                         android:layout_marginTop="20dp"
+                        android:fontFamily="@font/poppins_medium"
+                        android:text="@string/no_transactions_yet"
+                        android:textAlignment="center"
                         android:textSize="16sp"
-                        android:text="No Transactions yet!"/>
+                        android:textStyle="bold" />
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        android:textAlignment="center"
-                        android:fontFamily="@font/poppins_medium"
                         android:layout_marginTop="20dp"
-                        android:textSize="16sp"
+                        android:fontFamily="@font/poppins_medium"
+                        android:text="@string/after_your_first_transaction_nyou_will_be_able_to_view_it_here"
+                        android:textAlignment="center"
                         android:textColor="@color/grey"
-                        android:text="After your first transaction,\nyou will be able to view it here."/>
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:id="@+id/buttonsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/wallet_bottom_card"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/sendCardViewButton"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="13dp"
+                android:layout_marginBottom="13dp"
+                android:layout_marginEnd="10dp"
+                android:elevation="10dp"
+                android:background="@drawable/send_card_background"
+                android:transitionName="@string/send_btn_transition_name">
+
+                    <TextView
+                        android:id="@+id/sendCardViewButtonText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+
+                        android:gravity="center_vertical"
+                        android:text="@string/send_title"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/send_button_disable_color"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <ImageView
+                android:id="@+id/scanQrCode_img"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:src="@drawable/ic_wallet_scan_qr_disable"
+                android:transitionName="@string/scan_transition_name" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/receiveCardViewButton"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:layout_marginTop="13dp"
+                android:layout_marginBottom="13dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginStart="10dp"
+                android:elevation="10dp"
+                android:transitionName="@string/receive_btn_transition_name"
+                android:background="@drawable/receive_card_background">
+
+                    <TextView
+                        android:id="@+id/receiveCardViewButtonText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:textStyle="bold"
+                        android:text="@string/activity_receive_page_title"
+                        android:textSize="18sp"
+                        android:textColor="@color/white"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

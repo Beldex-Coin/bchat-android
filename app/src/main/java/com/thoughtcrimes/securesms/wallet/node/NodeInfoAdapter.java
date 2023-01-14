@@ -207,9 +207,13 @@ public class NodeInfoAdapter extends RecyclerView.Adapter<NodeInfoAdapter.ViewHo
                 int position = getAdapterPosition(); // gets item position
                 if (position != RecyclerView.NO_POSITION) { // Check if an item was deleted, but the user clicked it before the UI removed it
                     final NodeInfo node = nodeItems.get(position);
-                    node.setSelecting(true);
-                    allowClick(false);
-                    listener.onInteraction(view, node);
+                    if(!node.isSelected()) {
+                        node.setSelecting(true);
+                        //Hales
+                        /*allowClick(false);*/
+                        Log.d("Beldex", "Value of node in NodeInfoAdapter " + node);
+                        listener.onInteraction(view, node);
+                    }
                 }
             }
         }

@@ -52,10 +52,10 @@ object MnodeAPI {
     private val nodePort = 443
     private val seedNodePool by lazy {
         if (useTestnet) {
-            Log.d("beldex","here testnet")
-              setOf("http://3.111.42.102:29096")
+            Log.d("beldex","here testnet $useTestnet")
+              setOf("http://38.242.196.72:19095","http://154.26.139.105:19095")
         } else {
-            Log.d("beldex","here mainnet")
+            Log.d("beldex","here mainnet $useTestnet")
             setOf("https://publicnode5.rpcnode.stream:$nodePort","https://publicnode1.rpcnode.stream:$nodePort","https://publicnode2.rpcnode.stream:$nodePort","https://publicnode3.rpcnode.stream:$nodePort","https://publicnode4.rpcnode.stream:$nodePort")//"https://mainnet.beldex.io:29095","https://explorer.beldex.io:19091","https://publicnode5.rpcnode.stream:29095","http://publicnode1.rpcnode.stream:29095","http://publicnode2.rpcnode.stream:29095","http://publicnode3.rpcnode.stream:29095","http://publicnode4.rpcnode.stream:29095"
         }
     }
@@ -184,14 +184,14 @@ object MnodeAPI {
     }
 
     // Public API
-    fun getBchatID(onsName: String): Promise<String, Exception> {
+    fun getBchatID(bnsName: String): Promise<String, Exception> {
         val deferred = deferred<String, Exception>()
         val promise = deferred.promise
         val validationCount = 3
         val bchatIDByteCount = 33
         // Hash the BNS name using BLAKE2b
-        val onsName = onsName.toLowerCase(Locale.US)
-        val nameAsData = onsName.toByteArray()
+        val bnsName = bnsName.toLowerCase(Locale.US)
+        val nameAsData = bnsName.toByteArray()
         val nameHash = ByteArray(GenericHash.BYTES)
         if (!sodium.cryptoGenericHash(nameHash, nameHash.size, nameAsData, nameAsData.size.toLong())) {
             deferred.reject(Error.HashingFailed)
@@ -227,7 +227,7 @@ object MnodeAPI {
                         val nonce = ByteArray(SecretBox.NONCEBYTES)
                         val bchatIDAsData = ByteArray(bchatIDByteCount)
                         try {
-                            key = Key.fromHexString(sodium.cryptoPwHash(onsName, SecretBox.KEYBYTES, salt, PwHash.OPSLIMIT_MODERATE, PwHash.MEMLIMIT_MODERATE, PwHash.Alg.PWHASH_ALG_ARGON2ID13)).asBytes
+                            key = Key.fromHexString(sodium.cryptoPwHash(bnsName, SecretBox.KEYBYTES, salt, PwHash.OPSLIMIT_MODERATE, PwHash.MEMLIMIT_MODERATE, PwHash.Alg.PWHASH_ALG_ARGON2ID13)).asBytes
                         } catch (e: SodiumException) {
                             deferred.reject(Error.HashingFailed)
                             return@success

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -19,7 +20,7 @@ import io.beldex.bchat.R;
 public class PinCodeRoundView extends RelativeLayout {
 
     private Context mContext;
-    private List<ImageView> mRoundViews;
+    public List<ImageView> mRoundViews;
     private int mCurrentLength;
     private Drawable mEmptyDotDrawableId;
     private Drawable mFullDotDrawableId;
@@ -69,13 +70,21 @@ public class PinCodeRoundView extends RelativeLayout {
      */
     public void refresh(int pinLength) {
         mCurrentLength = pinLength;
+        Log.d("AppLock","step 9-> "+pinLength);
+
         for (int i = 0; i < mRoundViews.size(); i++) {
+            Log.d("AppLock","step 10-> "+pinLength);
             if (pinLength - 1 >= i) {
+                Log.d("AppLock","step 11-> "+pinLength);
                 mRoundViews.get(i).setImageDrawable(mFullDotDrawableId);
             } else {
+                Log.d("AppLock","step 12-> "+pinLength);
                 mRoundViews.get(i).setImageDrawable(mEmptyDotDrawableId);
             }
         }
+    }
+    public void newRefresh(){
+        mRoundViews.get(3).setImageDrawable(mFullDotDrawableId);
     }
 
     public int getCurrentLength() {
@@ -126,6 +135,7 @@ public class PinCodeRoundView extends RelativeLayout {
             mRoundContainer.addView(roundView);
             mRoundViews.add(roundView);
         }
+        Log.d("AppLock","step setPinLength()");
         refresh(0);
     }
 }

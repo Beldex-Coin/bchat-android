@@ -3,9 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
 
-    <solid  android:color="@color/sign_in_black" />
+    <solid  android:color="@color/disable_button_background_color" />
 
     <corners android:radius="@dimen/medium_button_corner_radius" />
 
-    <stroke android:width="@dimen/border_thickness" android:color="@color/sign_in_black" />
+    <stroke android:width="@dimen/border_thickness" android:color="@color/disable_button_background_color" />
 </shape>

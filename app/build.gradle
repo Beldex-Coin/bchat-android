@@ -8,7 +8,7 @@ buildscript {
         classpath files('libs/gradle-witness.jar')
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlinVersion"
-        classpath "com.google.gms:google-services:4.3.10"
+        classpath "com.google.gms:google-services:4.3.12"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$daggerVersion"
     }
 }
@@ -45,7 +45,7 @@ dependencies {
     implementation 'androidx.activity:activity-ktx:1.2.2'
     implementation 'androidx.fragment:fragment-ktx:1.3.2'
     implementation "androidx.core:core-ktx:1.3.2"
-    implementation "androidx.work:work-runtime-ktx:2.4.0"
+    implementation "androidx.work:work-runtime-ktx:2.7.1"
     implementation ("com.google.firebase:firebase-messaging:18.0.0") {
         exclude group: 'com.google.firebase', module: 'firebase-core'
         exclude group: 'com.google.firebase', module: 'firebase-analytics'
@@ -64,7 +64,7 @@ dependencies {
     implementation 'commons-net:commons-net:3.7.2'
     implementation 'com.github.chrisbanes:PhotoView:2.1.3'
     implementation "com.github.bumptech.glide:glide:$glideVersion"
-    implementation 'com.google.firebase:firebase-crashlytics-buildtools:2.8.1'
+    implementation 'com.google.firebase:firebase-crashlytics-buildtools:2.9.2'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
     kapt "com.github.bumptech.glide:compiler:$glideVersion"
@@ -177,10 +177,12 @@ dependencies {
 
     implementation 'app.cash.copper:copper-flow:1.0.0'
     implementation 'com.google.code.gson:gson:2.8.7'
+    //implementation 'com.google.firebase:firebase-crash:16.2.1'
+
 }
 
-def canonicalVersionCode = 23
-def canonicalVersionName = "1.2.1"
+def canonicalVersionCode = 27
+def canonicalVersionName = "1.2.5"
 
 //First Release Date 17-06-2022
 //Version Code 15 Version Name 1.0.0
@@ -203,11 +205,23 @@ def canonicalVersionName = "1.2.1"
 //Seventh Internal Test Release Date 27-07-2022
 //Version Code 21 Version Name 1.1.1
 
-//Eighth Release Data 26-09-2022
+//Eighth Release Date 26-09-2022
 //Version Code 22 Version Name 1.2.0
 
-//Ninth Release Data 05-10-2022
+//Ninth Release Date 05-10-2022
 //Version Code 23 Version Name 1.2.1
+
+//Tenth Internal Test Release Date 28-12-2022
+//Version Code 24 Version Name 1.2.2
+
+//Eleventh Internal Test Release Date 29-12-2022
+//Version Code 25 Version Name 1.2.3
+
+//Twelveth Internal Test Release Date 04-01-2023
+//Version Code 26 Version Name 1.2.4
+
+//Thirteenth Internal Test Release Date 04-01-2023
+//Version Code 27 Version Name 1.2.5
 
 
 def postFixSize = 10
@@ -217,8 +231,8 @@ def abiPostFix = ['armeabi-v7a' : 1,
                   'universal'   : 5]
 
 android {
-    compileSdkVersion androidCompileSdkVersion
-    buildToolsVersion '29.0.3'
+    compileSdkVersion 31
+    buildToolsVersion '30.0.3'
     useLibrary 'org.apache.http.legacy'
 
     dexOptions {
@@ -258,7 +272,7 @@ android {
         versionName canonicalVersionName
 
         minSdkVersion androidMinimumSdkVersion
-        targetSdkVersion androidCompileSdkVersion
+        targetSdkVersion androidTargetSdkVersion
 
         multiDexEnabled = true
 

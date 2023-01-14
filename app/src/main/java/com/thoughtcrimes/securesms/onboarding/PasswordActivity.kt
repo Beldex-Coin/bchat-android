@@ -117,7 +117,6 @@ class PasswordActivity : BaseActionBarActivity() {
 
     private fun validatePassword(pin: String, validation: Boolean) {
         val userPassword = TextSecurePreferences.getMyPassword(this@PasswordActivity)
-        Log.d("Beldex", "my password $userPassword")
         if(pin.isEmpty()){
             binding.userPinEditTxtLayout.isErrorEnabled=false
             if(validation) {

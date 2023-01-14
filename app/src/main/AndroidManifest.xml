@@ -123,9 +123,7 @@
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.WalletActivity"
             android:exported="false"
-            android:configChanges="orientation|keyboardHidden|uiMode|navigation"
-            android:screenOrientation="behind"
-            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.contacts.BlockedContactActivity"

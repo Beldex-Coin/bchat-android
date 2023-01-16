@@ -726,7 +726,7 @@
     <string name="activity_create_private_chat_scan_qr_code_tab_title" translatable="false">Scan QR Code</string>
     <string name="activity_create_private_chat_scan_qr_code_explanation" translatable="false">Scan a user\'s QR code to start a BChat. QR codes can be found by tapping the QR code icon in account settings.</string>
 
-    <string name="fragment_enter_public_key_edit_text_hint" translatable="false">Enter BChat ID or BNS Name</string>
+    <string name="fragment_enter_public_key_edit_text_hint" translatable="false">Enter BChat ID</string>
     <string name="fragment_enter_public_key_explanation" translatable="false">Users can share their BChat ID by going into their account settings and tapping "Share BChat ID", or by sharing their QR code.</string>
     <string name="fragment_enter_public_key_error_message" translatable="false">Please check the BChat ID or BNS name and try again.</string>
 

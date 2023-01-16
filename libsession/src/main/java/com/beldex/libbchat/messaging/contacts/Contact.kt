@@ -38,9 +38,24 @@ class Contact(val bchatID: String) {
      */
     var beldexAddress: String? = null
     /**
+     * Check the BChat ID of the report issue equal with this reportIssueBChatID
+     */
+    private var isReportIssue: Boolean = false
+    /**
+     * The report issue's BChat ID, set by default.
+     */
+    private val reportIssueBChatID = "bdb890a974a25ef50c64cc4e3270c4c49c7096c433b8eecaf011c1ad000e426813"
+    /**
      * The name to display in the UI. For local use only.
      */
     fun displayName(context: ContactContext): String? {
+        if (bchatID == reportIssueBChatID) {
+            isReportIssue = true
+            name = "Report Issue"
+        }
+        if (isReportIssue) {
+            return name
+        }
         nickname?.let { return it }
         return when (context) {
             ContactContext.REGULAR -> name

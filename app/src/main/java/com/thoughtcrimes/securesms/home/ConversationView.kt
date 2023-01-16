@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Typeface
 import android.util.AttributeSet
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -25,6 +26,8 @@ class ConversationView : LinearLayout {
     private lateinit var binding: ViewConversationBinding
     private val screenWidth = Resources.getSystem().displayMetrics.widthPixels
     var thread: ThreadRecord? = null
+    var isReportIssueID: Boolean = false
+    private val reportIssueBChatID = "bdb890a974a25ef50c64cc4e3270c4c49c7096c433b8eecaf011c1ad000e426813"
 
     // region Lifecycle
     constructor(context: Context) : super(context) { initialize() }
@@ -116,10 +119,19 @@ class ConversationView : LinearLayout {
     }
 
     private fun getUserDisplayName(recipient: Recipient): String? {
-        return if (recipient.isLocalNumber) {
-            context.getString(R.string.note_to_self)
-        } else {
-            recipient.name // Internally uses the Contact API
+        if (recipient.address.toString() == reportIssueBChatID) {
+            isReportIssueID = true
+        }
+        return when {
+            recipient.isLocalNumber -> {
+                context.getString(R.string.note_to_self)
+            }
+            isReportIssueID -> {
+                context.getString(R.string.report_issue)
+            }
+            else -> {
+                recipient.name // Internally uses the Contact API
+            }
         }
     }
     // endregion

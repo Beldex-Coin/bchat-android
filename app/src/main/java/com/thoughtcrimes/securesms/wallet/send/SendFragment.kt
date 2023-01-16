@@ -625,7 +625,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                             binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.error_view_background)
                             binding.beldexAmountErrorMessage.visibility = View.VISIBLE
                             binding.beldexAmountErrorMessage.text =
-                                getString(R.string.beldex_amount_valid_not_enough_money_error_message)
+                                getString(R.string.beldex_amount_valid_error_message)
                         }
                     }else{
                         Log.d("Beldex", "beldexAddressEditTxtLayout isEmpty()")

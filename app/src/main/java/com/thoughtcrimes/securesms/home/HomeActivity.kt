@@ -85,9 +85,6 @@ import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.tasks.Task
 import android.content.IntentSender.SendIntentException
 import android.graphics.Typeface
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import android.net.NetworkInfo
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
@@ -95,7 +92,6 @@ import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
 import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.wallet.CheckOnline
-import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity
 import com.thoughtcrimes.securesms.wallet.info.WalletInfoActivity
 import com.thoughtcrimes.securesms.wallet.node.*
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
@@ -207,7 +203,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         NavigationItemModel(R.drawable.ic_privacy, "Privacy",0),
         NavigationItemModel(R.drawable.ic_app_permissions, "App Permissions",0),
         NavigationItemModel(R.drawable.ic_recovery_seed, "Recovery Seed",0),
-        NavigationItemModel(R.drawable.ic_support,"Support",0),
+        NavigationItemModel(R.drawable.ic_report_issue,"Report Issue",0),
         NavigationItemModel(R.drawable.ic_help, "Help",0),
         NavigationItemModel(R.drawable.ic_invite, "Invite",0),
         NavigationItemModel(R.drawable.ic_about, "About",0)

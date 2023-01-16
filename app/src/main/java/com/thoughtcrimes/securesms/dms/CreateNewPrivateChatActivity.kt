@@ -204,20 +204,21 @@ class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
                 }
             })
     }
-    //BNS enabled 19-12-2022
-    fun createPrivateChatIfPossible(bnsNameOrPublicKey: String) {
+
+    //BNS disabled 16-01-2023
+    private fun createPrivateChatIfPossible(bnsNameOrPublicKey: String) {
         if (PublicKeyValidation.isValid(bnsNameOrPublicKey)) {
             Log.d("PublicKeyValidation", "OK")
             createPrivateChat(bnsNameOrPublicKey)
         } else {
             Log.d("PublicKeyValidation", "Cancel")
 
-            /*Toast.makeText(this, "Invalid BChat ID", Toast.LENGTH_SHORT).show()*/
+            Toast.makeText(this, R.string.invalid_bchat_id, Toast.LENGTH_SHORT).show()
 
             //Important 02-06-2022 - 2.30 PM
             // This could be an BNS name
-            showLoader()
-            MnodeAPI.getBchatID(bnsNameOrPublicKey).successUi { hexEncodedPublicKey ->
+            /*showLoader()
+                MnodeAPI.getBchatID(bnsNameOrPublicKey).successUi { hexEncodedPublicKey ->
                 Log.d("PublicKeyValidation", "successUi")
                 hideLoader()
                 Log.d("Beldex", "value of Bchat id for BNS name $hexEncodedPublicKey")
@@ -226,11 +227,11 @@ class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
                 hideLoader()
                 val message = resources.getString(R.string.fragment_enter_public_key_error_message)
                 exception.localizedMessage?.let {
-                    /*message = it*/
+                    *//*message = it*//*
                     Log.d("Beldex","BNS exception $it")
                 }
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-            }
+            }*/
         }
     }
 

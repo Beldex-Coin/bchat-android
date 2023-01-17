@@ -683,13 +683,7 @@ public class ThreadDatabase extends Database {
         notifyConversationListListeners();
         return false;
       } else {
-        //SteveJosephh21-17
-       /* if (shouldDeleteEmptyThread) {
-          Log.d("ThreadDatabase- 3","-");
-          deleteThread(threadId);
-          notifyConversationListListeners();
-          return true;
-        }*/
+        notifyConversationListListeners();
         return false;
       }
     } finally {

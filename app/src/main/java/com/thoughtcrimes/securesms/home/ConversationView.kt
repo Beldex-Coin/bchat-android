@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Typeface
 import android.util.AttributeSet
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -13,14 +12,18 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.beldex.libbchat.utilities.recipients.Recipient
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ViewConversationBinding
+import com.beldex.libsignal.utilities.Log
 import com.thoughtcrimes.securesms.conversation.v2.utilities.MentionUtilities.highlightMentions
+import com.thoughtcrimes.securesms.database.MmsSmsDatabase
 import com.thoughtcrimes.securesms.database.RecipientDatabase
+import com.thoughtcrimes.securesms.database.model.MessageRecord
 import com.thoughtcrimes.securesms.database.model.ThreadRecord
+import com.thoughtcrimes.securesms.dependencies.DatabaseComponent.Companion.get
 import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.util.DateUtils
-import java.util.Locale
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ViewConversationBinding
+import java.util.*
 
 class ConversationView : LinearLayout {
     private lateinit var binding: ViewConversationBinding
@@ -85,7 +88,32 @@ class ConversationView : LinearLayout {
         binding.muteIndicatorImageView.setImageResource(drawableRes)
         val rawSnippet = thread.getDisplayBody(context)
         val snippet = highlightMentions(rawSnippet, thread.threadId, context)
-        binding.snippetTextView.text = snippet
+
+        //SteveJosephh21-17 - if
+        val mmsSmsDatabase = get(context).mmsSmsDatabase()
+        var reader: MmsSmsDatabase.Reader? = null
+        try {
+            reader = mmsSmsDatabase.readerFor(mmsSmsDatabase.getConversationSnippet(thread.threadId))
+            var record: MessageRecord? = null
+            if (reader != null) {
+                record = reader.next
+                while (record != null && record.isDeleted) {
+                    record = reader.next
+                }
+                Log.d("ThreadDatabase- 1", "" + record)
+                if(record==null){
+                    binding.snippetTextView.text = "This message has been deleted"
+                }else{
+                    binding.snippetTextView.text = snippet
+                }
+            }
+        } finally {
+            if (reader != null)
+            reader.close()
+        }
+        //Important - else
+        //binding.snippetTextView.text = snippet
+
         //binding.snippetTextView.typeface = if (unreadCount > 0 && !thread.isRead) Typeface.DEFAULT else Typeface.DEFAULT
         binding.snippetTextView.visibility = if (isTyping) View.GONE else View.VISIBLE
         if (isTyping) {

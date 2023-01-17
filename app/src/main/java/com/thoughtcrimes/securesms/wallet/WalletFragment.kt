@@ -592,9 +592,9 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             //popupMenu.menu[3].isChecked = TextSecurePreferences.getTransactionsByDateStatus(requireActivity())
             popupMenu.setOnMenuItemClickListener { item ->
                 dismissPopupMenu=true
-                Toast.makeText(context, item.title, Toast.LENGTH_SHORT).show()
                 val emptyList: ArrayList<TransactionInfo> = ArrayList()
                 if (item.title == "Incoming") {
+                    Toast.makeText(context, getString(R.string.filter_applied), Toast.LENGTH_SHORT).show()
                     Log.d("Beldex","filter issue incoming if 1")
                     item.isChecked = !item.isChecked
                     if(popupMenu.menu[2].isChecked && item.isChecked){
@@ -626,6 +626,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                         TextSecurePreferences.setOutgoingTransactionStatus(requireActivity(), false)
                     }
                 } else if (item.title == "Outgoing") {
+                    Toast.makeText(context, getString(R.string.filter_applied), Toast.LENGTH_SHORT).show()
                     Log.d("Beldex","filter issue outgoing if 1")
                     item.isChecked = !item.isChecked
                     if(popupMenu.menu[1].isChecked && item.isChecked){
@@ -661,7 +662,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                     datePicker.show(requireActivity().supportFragmentManager, "DatePicker")
                     // Setting up the event for when ok is clicked
                     datePicker.addOnPositiveButtonClickListener {
-                        Toast.makeText(context, "${datePicker.headerText} ${datePicker.selection!!.first}, ${datePicker.selection!!.second} ${Date(datePicker.selection!!.first!!)}, ${Date(datePicker.selection!!.second!!)}is selected", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, getString(R.string.filter_applied), Toast.LENGTH_LONG).show()
                         if(popupMenu.menu[1].isChecked && popupMenu.menu[2].isChecked){
                             filterTransactionsByDate(getDaysBetweenDates(Date(datePicker.selection!!.first!!),Date(datePicker.selection!!.second!!)),adapterItems)
                         }else if(popupMenu.menu[1].isChecked){
@@ -674,11 +675,9 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                     }
                     // Setting up the event for when cancelled is clicked
                     datePicker.addOnNegativeButtonClickListener {
-                        Toast.makeText(context, "${datePicker.headerText} ${datePicker.selection!!.first}, ${datePicker.selection!!.second} is cancelled", Toast.LENGTH_LONG).show()
                     }
                     // Setting up the event for when back button is pressed
                     datePicker.addOnCancelListener {
-                        Toast.makeText(context, "Date Picker Cancelled", Toast.LENGTH_LONG).show()
                     }
                     /*val callback = RangeDaysPickCallback {startDate,endDate->
                         Toast.makeText(requireActivity(),"${startDate.longDateString}, ${endDate.longDateString}",Toast.LENGTH_SHORT).show()

@@ -1316,4 +1316,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="fetching_balance" translatable="false">Fetching Balance</string>
     <string name="report_issue" translatable="false">Report Issue</string>
     <string name="filter_applied" translatable="false">Filter applied</string>
+    <string name="testing_the_node" translatable="false">Testing the node...</string>
 </resources>

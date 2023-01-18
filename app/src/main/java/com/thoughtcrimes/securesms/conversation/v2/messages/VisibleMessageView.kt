@@ -224,8 +224,8 @@ class VisibleMessageView : LinearLayout {
         container.addView(if (message.isOutgoing) content else expiration)
         val expirationTimerViewSize = toPx(12, resources)
         val smallSpacing = resources.getDimension(R.dimen.small_spacing).roundToInt()
-        expirationTimerViewLayoutParams.marginStart = if (message.isOutgoing) -(smallSpacing + expirationTimerViewSize) else 0
-        expirationTimerViewLayoutParams.marginEnd = if (message.isOutgoing) 0 else -(smallSpacing + expirationTimerViewSize)
+        expirationTimerViewLayoutParams.marginStart = if (message.isOutgoing) -(smallSpacing + expirationTimerViewSize) else 10
+        expirationTimerViewLayoutParams.marginEnd = if (message.isOutgoing) 10 else -(smallSpacing + expirationTimerViewSize)
         binding.expirationTimerView.layoutParams = expirationTimerViewLayoutParams
         if (message.expiresIn > 0 && !message.isPending) {
             binding.expirationTimerView.setColorFilter(ResourcesCompat.getColor(resources, R.color.text, context.theme))

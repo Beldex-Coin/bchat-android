@@ -876,8 +876,12 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                         )
                     )
 //                ivSynced.setVisibility(View.VISIBLE);
-                    binding.filterTransactionsIcon.isClickable =
-                        true //default = adapter!!.itemCount > 0
+                    if (adapter!!.itemCount > 0) {
+                        binding.filterTransactionsIcon.isClickable = !adapter!!.infoItems!![0].isPending
+                    } else {
+                        binding.filterTransactionsIcon.isClickable =
+                            true //default = adapter!!.itemCount > 0
+                    }
                     //activityCallback!!.hiddenRescan(true)
                     binding.syncStatusIcon.visibility=View.VISIBLE
                     binding.syncStatusIcon.setOnClickListener {
@@ -1188,7 +1192,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 binding.transactionList.visibility = View.VISIBLE
                 binding.emptyContainerLayout.visibility = View.GONE
             } else {
-                binding.filterTransactionsIcon.isClickable = true // default = false
+                binding.filterTransactionsIcon.isClickable = !adapter!!.infoItems!![0].isPending
                 binding.transactionList.visibility = View.GONE
                 binding.emptyContainerLayout.visibility = View.VISIBLE
             }
@@ -1257,6 +1261,24 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             resources.getInteger(R.integer.tx_item_transition_duration).toLong()
         setReenterTransition(reenterTransition)
         activityCallback!!.onTxDetailsRequest(view, infoItem)
+    }
+
+    override fun lastTransactionStatus(status: Boolean) {
+        if(status){
+            binding.sendCardViewButton.isEnabled = false
+            binding.sendCardViewButtonText.setTextColor(ContextCompat.getColor(requireActivity(),R.color.send_button_disable_color))
+            binding.scanQrCodeImg.isEnabled = false
+            binding.sendCardViewButton.setBackgroundResource(R.drawable.send_card_background)
+            binding.scanQrCodeImg.setImageResource(R.drawable.ic_wallet_scan_qr_disable)
+            binding.filterTransactionsIcon.isClickable = false
+        }else{
+            binding.sendCardViewButton.isEnabled = true
+            binding.sendCardViewButton.setBackgroundResource(R.drawable.send_card_enabled_background)
+            binding.sendCardViewButtonText.setTextColor(ContextCompat.getColor(requireActivity(),R.color.white))
+            binding.scanQrCodeImg.isEnabled = true
+            binding.scanQrCodeImg.setImageResource(R.drawable.ic_scan_qr)
+            binding.filterTransactionsIcon.isClickable = true
+        }
     }
 
     private fun setStreetModeBackground(enable: Boolean) {

@@ -42,6 +42,7 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
 
     interface OnInteractionListener {
         fun onInteraction(view: View?, item: TransactionInfo?)
+        fun lastTransactionStatus(status: Boolean)
     }
 
     var infoItems: ArrayList<TransactionInfo>? = null
@@ -256,13 +257,33 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
             when {
                 infoItem!!.isFailed -> {
                     tvTxBlockHeight.text = context!!.getString(R.string.tx_failed)
+                    if(listener!=null) {
+                        Log.d("TransactionInfoAdapter-1","listener")
+                        listener!!.lastTransactionStatus(false)
+                    }else{
+                        Log.d("TransactionInfoAdapter-1","listener null")
+                    }
                 }
                 infoItem!!.isPending -> {
                     tvTxBlockHeight.text = context!!.getString(R.string.tx_pending)
+                    if(listener!=null) {
+                        Log.d("TransactionInfoAdapter-2","listener")
+                        listener!!.lastTransactionStatus(true)
+                    }else{
+                        Log.d("TransactionInfoAdapter-2","listener null")
+                    }
                 }
                 else -> {
                     //tvTxBlockHeight.text ="ok"
                     tvTxBlockHeight.text = infoItem!!.blockheight.toString()
+                    if(itemCount>0) {
+                        if(listener!=null && !infoItems!![0].isPending) {
+                            Log.d("TransactionInfoAdapter-3","listener")
+                            listener!!.lastTransactionStatus(false)
+                        }else{
+                            Log.d("TransactionInfoAdapter-3","listener null")
+                        }
+                    }
                 }
             }
             tvDateTimeHead.text = getDateTime(infoItem!!.timestamp)

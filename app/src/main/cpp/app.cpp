@@ -1273,11 +1273,11 @@ jobject cpp2java(JNIEnv *env, const std::vector<Wallet::TransactionInfo *>& vect
     for (Wallet::TransactionInfo *s: vector) {
         LOGD("--> R_view key 1 %d",100);
         LOGD("--> R_view key 2 %lu",s->amount());
-        //if(!s->isPending()) {
+        if(!s->isPending()) {
             jobject info = newTransactionInfo(env, s);
             env->CallBooleanMethod(arrayList, java_util_ArrayList_add, info);
             env->DeleteLocalRef(info);
-        //}
+        }
     }
     return arrayList;
 }

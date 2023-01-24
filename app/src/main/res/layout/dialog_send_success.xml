@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/default_dialog_background_inset"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:elevation="4dp"
+    tools:context="com.thoughtcrimes.securesms.wallet.send.SendSuccessDialog">
+
+    <TextView
+        android:fontFamily="@font/poppins_bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/transaction_send_title"
+        android:textColor="@color/text"
+        android:textStyle="bold"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:textSize="@dimen/medium_font_size" />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_send_success"
+        android:layout_marginTop="17dp"
+        android:layout_marginBottom="29dp"
+        />
+
+    <Button
+        style="@style/Widget.Bchat.Button.Common.ProminentFilled"
+        android:id="@+id/okButton"
+        android:layout_width="100dp"
+        android:layout_height="@dimen/medium_button_height"
+        android:layout_marginBottom="32dp"
+        android:text="@string/ok" />
+
+</LinearLayout>

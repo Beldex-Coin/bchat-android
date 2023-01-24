@@ -1,12 +1,13 @@
 package com.thoughtcrimes.securesms.model;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.thoughtcrimes.securesms.data.Node;
 import com.thoughtcrimes.securesms.data.Subaddress;
-import com.thoughtcrimes.securesms.data.Txdata;
-import com.thoughtcrimes.securesms.data.Subaddress;
-import com.thoughtcrimes.securesms.data.Txdata;
+import com.thoughtcrimes.securesms.data.TxData;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -370,7 +371,7 @@ public class Wallet {
         }
     }
 
-    public PendingTransaction createTransaction(Txdata txData) {
+    public PendingTransaction createTransaction(TxData txData) {
         return createTransaction(
                 txData.getDestinationAddress(),
                 txData.getAmount(),
@@ -427,15 +428,33 @@ public class Wallet {
     public TransactionHistory getHistory() {
         if (history == null) {
             history = new TransactionHistory(getHistoryJ(), accountIndex);
+            Log.d("Beldex","value of history"+ history.getAll().toArray());
         }
+        Log.d("Beldex","value of history 1"+ history.getAll().toArray());
         return history;
     }
 
     private native long getHistoryJ();
 
     public void refreshHistory() {
+        Log.d("Beldex","refresh size in Wallet class"+this.getAddress().toString());
         getHistory().refreshWithNotes(this);
     }
+
+    public double belDexAmountToDouble(int amount){
+        Log.d("amount-->"," "+amount);
+      return (double) amount / 1000000000;
+    }
+
+    public double estimateTransactionFee(int priority){
+        return belDexAmountToDouble(estimateTransactionFee(priority,1));
+    }
+
+    public int estimateTransactionFee(int priority,int recipients){
+        return estimateTransactionFeeJ(priority,recipients);
+    }
+
+    private native int estimateTransactionFeeJ(int priorityRaw, int recipients);//int recipients = 1
 
 //virtual AddressBook * addressBook() const = 0;
 //virtual void setListener(WalletListener *) = 0;
@@ -538,5 +557,7 @@ public class Wallet {
     }
 
     private native int getDeviceTypeJ();
+
+    public native boolean reConnectToDaemon(Node node, boolean useSSL, boolean isLightWallet);
 
 }

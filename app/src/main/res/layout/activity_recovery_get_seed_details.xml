@@ -73,7 +73,7 @@
         android:layout_marginTop="30dp"
         android:textColor="@color/chat_id_description_text"
         app:layout_constraintTop_toBottomOf="@id/restoreSeedLine"
-        android:text="@string/if_you_don_t_know_the_restore_blockheight_you_can_skip_it"/>
+        android:text="@string/please_pick_a_restore_height"/>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/restoreSeedWalletRestoreHeightCard"
@@ -101,12 +101,13 @@
                 android:paddingBottom="0dp"
                 android:gravity="center_vertical"
                 android:maxLines="1"
+                android:maxLength="9"
                 android:inputType="number"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:hint="Restore from Blockheight" />
+                android:hint="@string/restore_from_blockheight" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
@@ -135,7 +136,7 @@
         android:layout_marginTop="30dp"
         android:textColor="@color/chat_id_description_text"
         app:layout_constraintTop_toBottomOf="@id/restoreSeedOrText"
-        android:text="@string/if_you_don_t_know_the_restore_date_you_can_skip_it"/>
+        android:text="@string/please_pick_a_restore_from_date"/>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/restoreSeedWalletRestoreDateCard"
@@ -167,7 +168,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:hint="Restore from Date" />
+                android:hint="@string/restore_from_date" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
@@ -175,6 +176,7 @@
         android:id="@+id/restoreSeedView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="15dp"
         app:layout_constraintTop_toBottomOf="@id/restoreSeedWalletRestoreDateCard"
         app:layout_constraintBottom_toTopOf="@id/restoreSeedRestoreButton"
         app:layout_constraintVertical_weight="1"/>

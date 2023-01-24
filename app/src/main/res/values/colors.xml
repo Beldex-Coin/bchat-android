@@ -141,6 +141,7 @@
     <color name="stroke_color">#A6A6B5</color>
     <color name="chat_user_name_color">#29FD2E</color>
     <color name="disable_button_text_color">#686774</color>
+    <color name="disable_button_background_color">#D8D8D8</color>
     <color name="animation_popup_background">#1C1C26</color>
 
     <color name="call_action_button">#DD353535</color>
@@ -152,4 +153,52 @@
     <color name="remote_parent_background">#00000000</color>
     <color name="dialog_header_background">#FC3B3B</color>
     <color name="call_toolbar_background">#128D15</color>
+
+    <color name="light_gray">#f0f6f9</color>
+    <color name="dark_gray">#9baab2</color>
+    <color name="light_blue_500">#03a9f4</color>
+    <color name="dark_grey_color">#4a636f</color>
+    <color name="light_gray_bar">#eaf2f5</color>
+    <color name="wallet_card_color">#333343</color>
+    <color name="wallet_send_button">#FC2727</color>
+    <color name="wallet_receive_button">#128D15</color>
+    <color name="wallet_page_background">#1C1C26</color>
+    <color name="wallet_card_transaction_card_background">#24242F</color>
+    <color name="wallet_scan_qr_button_background">#333343</color>
+    <color name="wallet_transaction_list_item_card_background">#343441</color>
+
+    <color name="wallet_primary_variant">#CCC3BD</color>
+    <color name="green_color">#2EA021</color>
+    <color name="orange_color">#FA5544</color>
+    <color name="tx_failed">@color/wallet_primary_variant</color>
+    <color name="tx_pending">@color/wallet_primary_variant</color>
+    <color name="tx_plus">@color/green_color</color>
+    <color name="tx_minus">@color/orange_color</color>
+    <color name="wallet_settings_card_background">#353543</color>
+    <color name="node_status">#1EC622</color>
+    <color name="selected_node">#136EF8</color>
+    <color name="unselected_node">#353543</color>
+    <color name="green">#46AF4A</color>
+    <color name="red">#F6402C</color>
+    <color name="no_transaction_image_border1">#292938</color>
+    <color name="no_transaction_image_border2">#65656e</color>
+    <color name="no_transaction_image_border3">#24242f</color>
+    <color name="wallet_sub_options_list_item_color">#77778B</color>
+    <color name="wallet_sub_options_selected_list_item_color">@color/card_color</color>
+    <color name="dialog_title_color">#77778B</color>
+    <color name="wallet_bottom_card_color">#0F0F14</color>
+    <color name="scan_qr_code_disable_color">#5f5f72</color>
+    <color name="scan_qr_code_disable_background_color">#3d3d4e</color>
+    <color name="send_button_disable_color">#5F5F72</color>
+    <color name="show_seed_content_title">#FED447</color>
+    <color name="add_node_card_color">#353543</color>
+    <color name="add_node_optional_card_color">#22222B</color>
+    <color name="you_address_color">#1BB51E</color>
+    <color name="or_color">#159B24</color>
+    <color name="address_book_name">#292938</color>
+    <color name="loading_card_background">#24242F</color>
+    <color name="receive_button_card">#1BB71F</color>
+    <color name="wallet_options_disable">#333343</color>
+    <color name="scan_qr_code_background">#24242F</color>
+    <color name="beta_icon">#aaaaaa</color>
 </resources>

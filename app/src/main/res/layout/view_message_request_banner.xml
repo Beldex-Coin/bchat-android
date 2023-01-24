@@ -50,6 +50,7 @@
 
     </RelativeLayout>
     <TextView
+        android:fontFamily="@font/poppins_bold"
         android:id="@+id/conversationViewDisplayNameTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -67,6 +68,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:fontFamily="@font/poppins_regular"
         android:id="@+id/timestampTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

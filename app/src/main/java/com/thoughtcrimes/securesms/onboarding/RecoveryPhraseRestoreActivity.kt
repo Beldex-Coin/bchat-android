@@ -16,10 +16,6 @@ import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityRecoveryPhraseRestoreBinding
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.crypto.MnemonicCodec
-import com.beldex.libsignal.utilities.Hex
-import com.beldex.libsignal.utilities.KeyHelper
-import com.beldex.libsignal.utilities.hexEncodedPrivateKey
-import com.beldex.libsignal.utilities.hexEncodedPublicKey
 import com.thoughtcrimes.securesms.BaseActionBarActivity
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
 import com.thoughtcrimes.securesms.crypto.KeyPairUtilities
@@ -27,10 +23,7 @@ import com.thoughtcrimes.securesms.crypto.MnemonicUtilities
 import com.thoughtcrimes.securesms.util.push
 import com.thoughtcrimes.securesms.util.setUpActionBarBchatLogo
 import com.thoughtcrimes.securesms.seed.RecoveryGetSeedDetailsActivity
-import android.content.ClipData
-
-
-
+import com.beldex.libsignal.utilities.*
 
 
 class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
@@ -50,7 +43,7 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
         setContentView(binding.root)
         binding.mnemonicEditText.imeOptions = binding.mnemonicEditText.imeOptions or 16777216 // Always use incognito keyboard
         binding.restoreButton.setOnClickListener {
-            if(binding.recoveryPhraseCountWord?.text!=null && binding.recoveryPhraseCountWord?.text=="25/25") {
+            if(binding.recoveryPhraseCountWord.text!=null && binding.recoveryPhraseCountWord.text=="25/25") {
                 restore()
             }
             else{
@@ -94,7 +87,7 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
                         }
 
                     }
-                binding.recoveryPhraseCountWord?.text= "$count/25"
+                binding.recoveryPhraseCountWord.text = "$count/25"
 
                 if (count >= 25){
                     filter = InputFilter.LengthFilter(binding.mnemonicEditText.text.toString().length)
@@ -108,9 +101,9 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
             }
         })
 
-        binding.clearButton?.setOnClickListener {
+        binding.clearButton.setOnClickListener {
             binding.mnemonicEditText.text.clear()
-            binding.recoveryPhraseCountWord?.text= "0/25"
+            binding.recoveryPhraseCountWord.text= "0/25"
         }
 
        /* binding.recoveryPhrasePasteIcon?.setOnClickListener {
@@ -118,12 +111,18 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
             binding.mnemonicEditText.setText(clipboard.text.toString())
         }*/
 
-        binding.recoveryPhrasePasteIcon?.setOnClickListener {
+        binding.recoveryPhrasePasteIcon.setOnClickListener {
             val clipboard = this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             //since the clipboard contains plain text.
-            val item = clipboard.primaryClip!!.getItemAt(0)
-            // Gets the clipboard as text.
-            binding.mnemonicEditText.setText(item.text.toString())
+            if (clipboard.hasPrimaryClip()) {
+                val item = clipboard.primaryClip!!.getItemAt(0)
+                // Gets the clipboard as text.
+                binding.mnemonicEditText.setText(item.text.toString())
+            } else {
+                Toast.makeText(this, R.string.no_copied_seed, Toast.LENGTH_SHORT)
+                    .show()
+            }
+
         }
     }
 

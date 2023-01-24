@@ -69,7 +69,7 @@
             android:gravity="center"
             android:layout_marginTop="110dp"
             android:visibility="gone"
-            android:text="Please check your internet connection"/>
+            android:text="@string/please_check_your_internet_connection"/>
 
     </RelativeLayout>
 </LinearLayout>

@@ -55,6 +55,21 @@ class Contact(val bchatID: String) {
         }
     }
     // endregion
+    fun displayBeldexAddress(context: ContactContext): String? {
+        /*Hales*/
+           /*nickname?.let { return it }*/
+        return when (context) {
+            ContactContext.REGULAR -> beldexAddress
+            ContactContext.OPEN_GROUP -> {
+                // In social groups, where it's more likely that multiple users have the same name,
+                // we display a bit of the BChat ID after a user's display name for added context.
+                beldexAddress?.let {
+                    return "$beldexAddress (...${bchatID.takeLast(8)})"
+                }
+                return null
+            }
+        }
+    }
 
     enum class ContactContext {
         REGULAR, OPEN_GROUP

@@ -2,7 +2,10 @@ package com.thoughtcrimes.securesms.seed
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
 import android.text.InputType
+import android.text.TextWatcher
+import android.util.ArrayMap
 import android.util.Log
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
@@ -29,9 +32,13 @@ import com.thoughtcrimes.securesms.onboarding.CreatePasswordActivity
 import com.thoughtcrimes.securesms.util.*
 import timber.log.Timber
 import java.io.File
+import java.math.BigInteger
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.concurrent.Executor
+import kotlin.collections.ArrayList
 
 class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
     private lateinit var binding:ActivityRecoveryGetSeedDetailsBinding
@@ -55,12 +62,62 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
 
     private var getSeed:String?=null
 
+    private var restoreFromDateHeight = 0
+    private val dateFormat = SimpleDateFormat("yyyy-MM", Locale.US)
+    private var dates = ArrayMap<String,Int>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRecoveryGetSeedDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setUpActionBarBchatLogo("Restore from Seed", true)
+
+        dates["2019-03"] = 21164
+        dates["2019-04"] = 42675
+        dates["2019-05"] = 64918
+        dates["2019-06"] = 87175
+        dates["2019-07"] = 108687
+        dates["2019-08"] = 130935
+        dates["2019-09"] = 152452
+        dates["2019-10"] = 174680
+        dates["2019-11"] = 196906
+        dates["2019-12"] = 217017
+        dates["2020-01"] = 239353
+        dates["2020-02"] = 260946
+        dates["2020-03"] = 283214
+        dates["2020-04"] = 304758
+        dates["2020-05"] = 326679
+        dates["2020-06"] = 348926
+        dates["2020-07"] = 370533
+        dates["2020-08"] = 392807
+        dates["2020-09"] = 414270
+        dates["2020-10"] = 436562
+        dates["2020-11"] = 458817
+        dates["2020-12"] = 479654
+        dates["2021-01"] = 501870
+        dates["2021-02"] = 523356
+        dates["2021-03"] = 545569
+        dates["2021-04"] = 567123
+        dates["2021-05"] = 589402
+        dates["2021-06"] = 611687
+        dates["2021-07"] = 633161
+        dates["2021-08"] = 655438
+        dates["2021-09"] = 677038
+        dates["2021-10"] = 699358
+        dates["2021-11"] = 721678
+        dates["2021-12"] = 741838
+        dates["2022-01"] = 788501
+
+        dates["2022-02"] = 877781
+        dates["2022-03"] = 958421
+        dates["2022-04"] = 1006790
+        dates["2022-05"] = 1093190
+        dates["2022-06"] = 1199750
+        dates["2022-07"] = 1291910
+        dates["2022-08"] = 1361030
+        dates["2022-09"] = 1456070
+        dates["2022-10"] = 1674950
 
         getSeed = intent.extras?.getString("seed")
         // create an OnDateSetListener
@@ -111,6 +168,29 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
                     }
                     false
                 })
+            binding.restoreSeedWalletRestoreHeight.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable) {
+                    if (binding.restoreSeedWalletRestoreHeight.text.toString().length == 9) {
+                        Toast.makeText(
+                            this@RecoveryGetSeedDetailsActivity,
+                            R.string.enter_a_valid_height,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                override fun beforeTextChanged(
+                    s: CharSequence, start: Int,
+                    count: Int, after: Int
+                ) {
+                }
+
+                override fun onTextChanged(
+                    s: CharSequence, start: Int,
+                    before: Int, count: Int
+                ) {
+                }
+            })
             restoreSeedRestoreButton.setOnClickListener { register() }
         }
 
@@ -120,29 +200,74 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
     private fun updateDateInView() {
         val myFormat = "yyyy-MM-dd" // mention the format you need
         val sdf = SimpleDateFormat(myFormat, Locale.US)
-        binding.restoreSeedWalletRestoreDate.setText(sdf.format(cal.time))
+        binding.restoreSeedWalletRestoreDate.text = sdf.format(cal.time)
+
+        if (cal.time != null) {
+           restoreFromDateHeight = getHeightByDate(cal.time,sdf)
+        }
+    }
+
+    private fun getHeightByDate(date: Date, sdf: SimpleDateFormat): Int {
+        val sdfDate = sdf.parse(sdf.format(date))
+
+        val monthFormat = "MM"
+        val monthSdfFormat = SimpleDateFormat(monthFormat, Locale.US)
+        val monthVal = monthSdfFormat.format(date).toInt()
+        val month = if (monthVal < 10) "0${monthVal}" else "$monthVal"
+
+        val yearFormat = "yyyy"
+        val yearSdfFormat = SimpleDateFormat(yearFormat, Locale.US)
+        val yearVal = yearSdfFormat.format(date).toInt()
+
+        val raw = "${yearVal}-$month"
+        val firstDate = dateFormat.parse(dates.keys.first())
+
+        Log.d("Beldex","Restore Height -->$raw")
+
+        var height = dates[raw]?:0
+
+        if (height != null) {
+            if (height <= 0 && sdfDate.after(firstDate)) {
+                height = dates.values.last()
+            }
+        }
+        Log.d("Beldex","Restore Height --> $height")
+
+        return height
     }
 
     private fun register() {
         val displayName = binding.restoreSeedWalletName.text.toString().trim()
+        val restoreHeight = binding.restoreSeedWalletRestoreHeight.text.toString()
+        val restoreFromDate = binding.restoreSeedWalletRestoreDate.text.toString()
         if (displayName.isEmpty()) {
             return Toast.makeText(this, R.string.activity_display_name_display_name_missing_error, Toast.LENGTH_SHORT).show()
         }
         if (displayName.toByteArray().size > SSKEnvironment.ProfileManagerProtocol.Companion.NAME_PADDED_LENGTH) {
             return Toast.makeText(this, R.string.activity_display_name_display_name_too_long_error, Toast.LENGTH_SHORT).show()
         }
+
         val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(binding.restoreSeedWalletName.windowToken, 0)
         TextSecurePreferences.setProfileName(this, displayName)
-
-        //New Line Of Code
-        //updateKeyPair()
-        //New Line
         val uuid = UUID.randomUUID()
         val password = uuid.toString()
-        _recoveryWallet(displayName, password,getSeed)
+        //SteveJosephh21
+        if (restoreHeight.isNotEmpty()){
+            val restoreHeightBig = BigInteger(restoreHeight)
+            if(restoreHeightBig.toLong()>=0) {
+                binding.restoreSeedWalletRestoreDate.text = ""
+                _recoveryWallet(displayName, password, getSeed, restoreHeight.toLong())
+            }else{
+                Toast.makeText(this,getString(R.string.restore_height_error_message),Toast.LENGTH_SHORT).show()
+            }
+        }else if(restoreFromDate.isNotEmpty()){
+            binding.restoreSeedWalletRestoreHeight.setText("")
+            _recoveryWallet(displayName, password, getSeed, restoreFromDateHeight.toLong())
+        }else{
+            Toast.makeText(this,getString(R.string.activity_restore_from_height_missing_error),Toast.LENGTH_SHORT).show()
+        }
     }
-
     // region Updating
     private fun updateKeyPair() {
         /*Hales63*/
@@ -312,15 +437,18 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
 
     private fun setNode(node: NodeInfo?, save: Boolean) {
         if (node !== this.node) {
-            require(
-                !(node != null && node !== WalletManager.getInstance()
-                    .getNetworkType())
-            ) { "network type does not match" }
+            Log.d("networkType","${node!!.networkType},   ${WalletManager.getInstance().networkType}")
+            if(!(node!=null && node.networkType !== WalletManager.getInstance()
+                    .networkType)) {
+                require(
+                    !(node != null && node.networkType !== WalletManager.getInstance().networkType)
+                ) { "network type does not match" }
+            }
             this.node = node
             for (nodeInfo in favouriteNodes) {
-                Timber.d("Testing-->14")
+                Timber.d("Testing-->14 ${node.toString()}")
                 //Important
-                nodeInfo.setSelected(nodeInfo === node)
+                nodeInfo.isSelected = nodeInfo === node
             }
             WalletManager.getInstance().setDaemon(node)
             if (save) saveSelectedNode()
@@ -366,8 +494,14 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         return walletStatus.isOk
     }
 
-    private fun _recoveryWallet(name: String, password: String, getSeed: String?) {
+    private fun _recoveryWallet(
+        name: String,
+        password: String,
+        getSeed: String?,
+        restoreHeight: Long
+    ) {
         Log.d("recovery Wallet 1","OK")
+        Log.d("Beldex"," Restore Height $restoreHeight")
         createWallet(name, password,
             object : WalletCreator {
                 override fun createWallet(aFile: File?, password: String?): Boolean {
@@ -380,7 +514,7 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
                             aFile,
                             password,
                             getSeed,
-                            0
+                            restoreHeight
                         )
                     IdentityKeyUtil.save(this@RecoveryGetSeedDetailsActivity,
                         IdentityKeyUtil.IDENTITY_W_PUBLIC_KEY_PREF,newWallet.publicViewKey)

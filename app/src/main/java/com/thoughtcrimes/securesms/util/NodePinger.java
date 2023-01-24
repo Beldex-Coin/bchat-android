@@ -1,6 +1,7 @@
 package com.thoughtcrimes.securesms.util;
 
-import com.thoughtcrimes.securesms.data.NodeInfo;
+import android.util.Log;
+
 import com.thoughtcrimes.securesms.data.NodeInfo;
 
 import java.util.ArrayList;
@@ -25,6 +26,8 @@ public class NodePinger {
         final ExecutorService exeService = Executors.newFixedThreadPool(NUM_THREADS);
         List<Callable<Boolean>> taskList = new ArrayList<>();
         for (NodeInfo node : nodes) {
+            Log.d("Beldex","Node list majorversion5 ");
+
             taskList.add(() -> node.testRpcService(listener));
         }
 

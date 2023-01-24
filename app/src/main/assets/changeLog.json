@@ -107,6 +107,41 @@
           "description":"- Minor bug fixes"
         }
       ]
+    },
+    {
+      "title": "2.0.0",
+      "descriptions": [
+        {
+          "description":"- Wallet Integration Beta release"
+        },
+        {
+          "description":"- Introduced Address book of contacts in Wallet"
+        },
+        {
+          "description":"- Added text label on FAB"
+        },
+        {
+          "description":"- Made the App content more informative"
+        },
+        {
+          "description":"- Validation updated in restore height"
+        },
+        {
+          "description":"- Added Foreground Service for preventing crash in Device with android version 8.0 and above"
+        },
+        {
+          "description":"- Improved memory management during running call and message services"
+        },
+        {
+          "description":"- Fixed Crashes happening due to null object reference"
+        },
+        {
+          "description":"- Fixed Crash issue happening during media preview"
+        },
+        {
+          "description":"- Custom notifications improved for android version 12"
+        }
+      ]
     }
   ]
 }

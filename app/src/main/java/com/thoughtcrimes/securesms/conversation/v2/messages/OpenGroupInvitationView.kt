@@ -30,7 +30,7 @@ class OpenGroupInvitationView : LinearLayout {
         val umd = UpdateMessageData.fromJSON(message.body)!!
         val data = umd.kind as UpdateMessageData.Kind.OpenGroupInvitation
         this.data = data
-        val iconID = if (message.isOutgoing) R.drawable.ic_open_group_chat else R.drawable.ic_open_group_chat
+        val iconID = if (message.isOutgoing) R.drawable.ic_social_group_chat else R.drawable.ic_social_group_chat
         with(binding){
             openGroupInvitationIconImageView.setImageResource(iconID)
             openGroupTitleTextView.text = data.groupName

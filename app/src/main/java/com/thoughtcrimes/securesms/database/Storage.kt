@@ -638,6 +638,10 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
         DatabaseComponent.get(context).bchatContactDatabase().setContact(contact)
     }
 
+    override fun insertRecipientAddress(transactionId: String, recipientAddress: String) {
+        DatabaseComponent.get(context).bchatRecipientAddressDatabase().insertRecipientAddress(transactionId,recipientAddress)
+    }
+
     override fun getRecipientForThread(threadId: Long): Recipient? {
         return DatabaseComponent.get(context).threadDatabase().getRecipientForThreadId(threadId)
     }

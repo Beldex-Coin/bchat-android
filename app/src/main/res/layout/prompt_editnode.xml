@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/page_background">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical"
+                tools:ignore="MissingConstraints">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/poppins_bold"
+                    android:text="Add Node"
+                    android:textAlignment="center"
+                    android:textSize="@dimen/large_font_size"
+                    android:textStyle="bold" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/nodeAddressCardView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/medium_spacing"
+                    android:layout_marginTop="@dimen/medium_spacing"
+                    android:layout_marginRight="@dimen/medium_spacing"
+                    app:cardBackgroundColor="@color/add_node_card_color"
+                    app:cardCornerRadius="10dp">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/nodeAddressEditTxtLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:errorTextColor="@color/red"
+                        app:hintEnabled="false">
+
+                        <EditText
+                            android:id="@+id/nodeAddressEditText"
+                            style="@style/AddNodeBchatEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_medium"
+                            android:gravity="center_vertical"
+                            android:hint="@string/node_address" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/nodePortCardView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/medium_spacing"
+                    android:layout_marginTop="@dimen/medium_spacing"
+                    android:layout_marginRight="@dimen/medium_spacing"
+                    app:cardBackgroundColor="@color/add_node_card_color"
+                    app:cardCornerRadius="10dp">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/nodePortEditTxtLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:errorTextColor="@color/red"
+                        app:hintEnabled="false"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/nodeAddressEditTxtLayout">
+
+                        <EditText
+                            android:id="@+id/nodePortEditText"
+                            style="@style/AddNodeBchatEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_medium"
+                            android:gravity="center_vertical"
+                            android:hint="@string/node_port"
+                            android:inputType="number" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/nodeNameCardView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/medium_spacing"
+                    android:layout_marginTop="@dimen/medium_spacing"
+                    android:layout_marginRight="@dimen/medium_spacing"
+                    app:cardBackgroundColor="@color/add_node_optional_card_color"
+                    app:cardCornerRadius="10dp">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/nodeNameEditTxtLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:errorTextColor="@color/red"
+                        app:hintEnabled="false"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/nodePortCardView">
+
+
+                        <EditText
+                            android:id="@+id/nodenameEditText"
+                            style="@style/AddNodeOptionalBchatEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_medium"
+                            android:gravity="center_vertical"
+                            android:hint="@string/node_name" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/nodeUserNameCardView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/medium_spacing"
+                    android:layout_marginTop="@dimen/medium_spacing"
+                    android:layout_marginRight="@dimen/medium_spacing"
+                    app:cardBackgroundColor="@color/add_node_optional_card_color"
+                    app:cardCornerRadius="10dp">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/nodeUsernameEditTxtLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:errorTextColor="@color/red"
+                        app:hintEnabled="false"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/nodeNameCardView">
+
+
+                        <EditText
+                            android:id="@+id/usernameEditText"
+                            style="@style/AddNodeOptionalBchatEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_medium"
+                            android:gravity="center_vertical"
+                            android:hint="@string/node_login" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/nodePasswordCardView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/medium_spacing"
+                    android:layout_marginTop="@dimen/medium_spacing"
+                    android:layout_marginRight="@dimen/medium_spacing"
+                    app:cardBackgroundColor="@color/add_node_optional_card_color"
+                    app:cardCornerRadius="10dp">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/nodePasswordEditTxtLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:errorTextColor="@color/red"
+                        app:hintEnabled="false"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/nodeUserNameCardView">
+
+                        <EditText
+                            android:id="@+id/passwordEditText"
+                            style="@style/AddNodeOptionalBchatEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_medium"
+                            android:gravity="center_vertical"
+                            android:hint="@string/node_password" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </androidx.cardview.widget.CardView>
+
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/testResult_cardview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/button_green"
+                    android:layout_marginLeft="@dimen/medium_spacing"
+                    android:layout_marginTop="@dimen/medium_spacing"
+                    android:layout_marginRight="@dimen/medium_spacing"
+                    app:cardCornerRadius="10dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:elevation="5dp">
+                    <LinearLayout
+                        android:id="@+id/currentNodeLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="5dp">
+
+                        <TextView
+                            android:id="@+id/tvResultLabel"
+                            android:layout_width="wrap_content"
+                            android:textSize="@dimen/small_font_size"
+                            android:fontFamily="@font/poppins_medium"
+                            android:layout_marginStart="15dp"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white"
+                            android:text="@string/test_result_title"/>
+
+                        <TextView
+                            android:id="@+id/tvResult"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:fontFamily="@font/poppins_medium"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/small_font_size"
+                            android:layout_marginEnd="10dp"
+                            />
+
+                        <ImageView
+                            android:id="@+id/iVVerified"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_baseline_check_circle_24"
+                            android:visibility="gone" />
+
+                        <ImageView
+
+                            android:id="@+id/iVConnectionError"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_baseline_error_24"
+                            android:visibility="gone" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
+</ScrollView>

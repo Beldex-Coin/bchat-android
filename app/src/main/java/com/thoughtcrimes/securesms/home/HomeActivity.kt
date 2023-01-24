@@ -56,7 +56,6 @@ import java.io.IOException
 import javax.inject.Inject
 import android.widget.CompoundButton
 import androidx.core.view.isVisible
-import com.beldex.libbchat.messaging.jobs.AttachmentDownloadJob
 import com.beldex.libbchat.mnode.OnionRequestAPI
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
@@ -81,25 +80,23 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import com.google.android.play.core.install.model.UpdateAvailability
-
 import com.google.android.play.core.install.model.AppUpdateType
-
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.tasks.Task
-import android.content.IntentSender
 import android.content.IntentSender.SendIntentException
-import com.thoughtcrimes.securesms.lottie.LottieDialog
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.graphics.Typeface
-import android.widget.Button
 import android.widget.TextView
-
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
+import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
 import com.thoughtcrimes.securesms.service.WebRtcCallService
+import com.thoughtcrimes.securesms.wallet.CheckOnline
+import com.thoughtcrimes.securesms.wallet.info.WalletInfoActivity
+import com.thoughtcrimes.securesms.wallet.node.*
+import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
+import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
+import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
 import io.beldex.bchat.databinding.ViewMessageRequestBannerBinding
 import kotlinx.coroutines.*
@@ -112,6 +109,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     ConversationClickListener,
     SeedReminderViewDelegate,
     NewConversationButtonSetViewDelegate,
+    LoaderManager.LoaderCallbacks<Cursor>,
     GlobalSearchInputLayout.GlobalSearchInputLayoutListener {
 
     private lateinit var binding: ActivityHomeBinding
@@ -123,6 +121,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
     @Inject
     lateinit var threadDb: ThreadDatabase
+
     @Inject
     lateinit var mmsSmsDatabase: MmsSmsDatabase
     @Inject
@@ -134,16 +133,21 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
     private val globalSearchViewModel by viewModels<GlobalSearchViewModel>()
 
-    private val homeViewModel by viewModels<HomeViewModel>()
-
     private val publicKey: String
         get() = TextSecurePreferences.getLocalNumber(this)!!
 
     /*Hales63*/
-    private val homeAdapter: NewHomeAdapter by lazy {
-        NewHomeAdapter(context = this, listener = this)
+    private val homeAdapter: HomeAdapter by lazy {
+        HomeAdapter(context = this, cursor = threadDb.approvedConversationList, listener = this)
     }
 
+    private val toolbar: Toolbar? = null
+
+
+    private var node1: NodeInfo? = null
+
+    private val favouriteNodeslist = mutableSetOf<NodeInfo>()
+    private val supportBChatID = "bdb890a974a25ef50c64cc4e3270c4c49c7096c433b8eecaf011c1ad000e426813"
     private val globalSearchAdapter = GlobalSearchAdapter { model ->
         when (model) {
             is GlobalSearchAdapter.Model.Message -> {
@@ -192,16 +196,19 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     private lateinit var adapter: NavigationRVAdapter
 
     private var items = arrayListOf(
-        NavigationItemModel(R.drawable.ic_my_account, "My Account"),
-        NavigationItemModel(R.drawable.ic_notifications, "Notification"),
-        NavigationItemModel(R.drawable.ic_message_requests,"Message Requests"),
-        NavigationItemModel(R.drawable.ic_privacy, "Privacy"),
-        NavigationItemModel(R.drawable.ic_app_permissions, "App Permissions"),
-        NavigationItemModel(R.drawable.ic_recovery_seed, "Recovery Seed"),
-        NavigationItemModel(R.drawable.ic_help, "Help"),
-        NavigationItemModel(R.drawable.ic_invite, "Invite"),
-        NavigationItemModel(R.drawable.ic_about, "About")
+        NavigationItemModel(R.drawable.ic_my_account, "My Account",0),
+        NavigationItemModel(R.drawable.ic_wallet, "My Wallet",R.drawable.ic_beta),
+        NavigationItemModel(R.drawable.ic_notifications, "Notification",0),
+        NavigationItemModel(R.drawable.ic_message_requests, "Message Requests",0),
+        NavigationItemModel(R.drawable.ic_privacy, "Privacy",0),
+        NavigationItemModel(R.drawable.ic_app_permissions, "App Permissions",0),
+        NavigationItemModel(R.drawable.ic_recovery_seed, "Recovery Seed",0),
+        NavigationItemModel(R.drawable.ic_report_issue,"Report Issue",0),
+        NavigationItemModel(R.drawable.ic_help, "Help",0),
+        NavigationItemModel(R.drawable.ic_invite, "Invite",0),
+        NavigationItemModel(R.drawable.ic_about, "About",0)
     )
+
     // NavigationItemModel(R.drawable.ic_recovery_key, "Recovery Key"),
     private val hexEncodedPublicKey: String
         get() {
@@ -244,21 +251,33 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                         openSettings()
                     }
                     1 -> {
+                        // # My Wallet Activity
+                        if(CheckOnline.isOnline(this@HomeActivity)) {
+                            Log.d("Beldex","isOnline value ${CheckOnline.isOnline(this@HomeActivity)}")
+                            openMyWallet()
+                        }
+                        else {
+                            Log.d("Beldex","isOnline value ${CheckOnline.isOnline(this@HomeActivity)}")
+                            Toast.makeText(this@HomeActivity,getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    2 -> {
                         //New Line
-                        val notification = TextSecurePreferences.isNotificationsEnabled(this@HomeActivity)
+                        val notification =
+                            TextSecurePreferences.isNotificationsEnabled(this@HomeActivity)
                         Log.d("NotificationLog1", notification.toString())
                         // # Notification Activity
                         showNotificationSettings()
                     }
-                    2 -> {
+                    3 -> {
                         // # Message Requests Activity
                         showMessageRequests()
                     }
-                    3 -> {
+                    4 -> {
                         // # Privacy Activity
                         showPrivacySettings()
                     }
-                    4 -> {
+                    5 -> {
                         // # App Permissions Activity
                         val intent = Intent()
                         intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
@@ -266,23 +285,27 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                         intent.data = uri
                         push(intent)
                     }
-                    5 -> {
+                    6 -> {
                         // # Recovery Seed Activity
                         showSeed()
                     }
-                   /* 5 -> {
-                        // # Recovery Key Activity
-                        showKeys()
-                    }*/
-                    6 -> {
+                    /* 6 -> {
+                         // # Recovery Key Activity
+                         showKeys()
+                     }*/
+                    7 -> {
+                        // # Support
+                        sendMessageToSupport()
+                    }
+                    8 -> {
                         // # Help Activity
                         help()
                     }
-                    7 -> {
+                    9 -> {
                         // # Invite Activity
                         sendInvitation()
                     }
-                    8 -> {
+                    10 -> {
                         // # About Activity
                         showAbout()
                     }
@@ -303,7 +326,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         }
         binding.drawerCloseIcon.setOnClickListener { binding.drawerLayout.closeDrawer(GravityCompat.END) }
         val activeUiMode = UiModeUtilities.getUserSelectedUiMode(this)
-        Log.d("beldex","activeUiMode $activeUiMode")
+        Log.d("beldex", "activeUiMode $activeUiMode")
         binding.drawerAppearanceToggleButton.isChecked = activeUiMode == UiMode.NIGHT
 
         binding.drawerAppearanceToggleButton.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener() { compoundButton: CompoundButton, b: Boolean ->
@@ -323,7 +346,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
             }, 200)
         }
         binding.drawerProfileIcon.glide = glide
-        binding.drawerProfileId.text="ID: $hexEncodedPublicKey"
+        binding.drawerProfileId.text = "ID: $hexEncodedPublicKey"
 
 
 
@@ -360,21 +383,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         binding.createNewPrivateChatButton.setOnClickListener { createNewPrivateChat() }
         IP2Country.configureIfNeeded(this@HomeActivity)
         // This is a workaround for the fact that CursorRecyclerViewAdapter doesn't actually auto-update (even though it says it will)
-        //LoaderManager.getInstance(this).restartLoader(0, null, this)
-        homeViewModel.getObservable(this).observe(this) { newData ->
-            val manager = binding.recyclerView.layoutManager as LinearLayoutManager
-            val firstPos = manager.findFirstCompletelyVisibleItemPosition()
-            val offsetTop = if(firstPos >= 0) {
-                manager.findViewByPosition(firstPos)?.let { view ->
-                    manager.getDecoratedTop(view) - manager.getTopDecorationHeight(view)
-                } ?: 0
-            } else 0
-            homeAdapter.data = newData
-            if(firstPos >= 0) { manager.scrollToPositionWithOffset(firstPos, offsetTop) }
-            setupMessageRequestsBanner()
-            updateEmptyState()
-        }
-        homeViewModel.tryUpdateChannel()
+        LoaderManager.getInstance(this).restartLoader(0, null, this)
         // Set up new conversation button set
         binding.newConversationButtonSet.delegate = this
         // Observe blocked contacts changed events
@@ -391,20 +400,12 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                 // Double check that the long poller is up
                 (applicationContext as ApplicationContext).startPollingIfNeeded()
                 // update things based on TextSecurePrefs (profile info etc)
-                // Set up remaining components if needed
-                val application = ApplicationContext.getInstance(this@HomeActivity)
-                application.registerForFCMIfNeeded(false)
-                val userPublicKey = TextSecurePreferences.getLocalNumber(this@HomeActivity)
-                if (userPublicKey != null) {
-                    OpenGroupManager.startPolling()
-                    JobQueue.shared.resumePendingJobs()
-                }
                 // Set up typing observer
                 withContext(Dispatchers.Main) {
                     ApplicationContext.getInstance(this@HomeActivity).typingStatusRepository.typingThreads.observe(
                         this@HomeActivity,
                         Observer<Set<Long>> { threadIDs ->
-                            val adapter = binding.recyclerView.adapter as NewHomeAdapter
+                            val adapter = binding.recyclerView.adapter as HomeAdapter
                             adapter.typingThreadIDs = threadIDs ?: setOf()
                         })
                     updateProfileButton()
@@ -412,6 +413,14 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                         .collect {
                             updateProfileButton()
                         }
+                }
+                // Set up remaining components if needed
+                val application = ApplicationContext.getInstance(this@HomeActivity)
+                application.registerForFCMIfNeeded(false)
+                val userPublicKey = TextSecurePreferences.getLocalNumber(this@HomeActivity)
+                if (userPublicKey != null) {
+                    OpenGroupManager.startPolling()
+                    JobQueue.shared.resumePendingJobs()
                 }
             }
             // monitor the global search VM query
@@ -497,10 +506,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     private fun setupCallActionBar() {
 
         val startTimeNew = viewModel.callStartTime
-        if(startTimeNew==-1L) {
+        if (startTimeNew == -1L) {
             binding.toolbarCall.isVisible = false
-        }
-        else {
+        } else {
             binding.toolbarCall.isVisible = true
             uiJob = lifecycleScope.launch {
                 launch {
@@ -526,7 +534,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
             binding.toolbarCall.isVisible = false
             Toast.makeText(this, "Call ended", Toast.LENGTH_SHORT).show()
         }
-        binding.toolbarCall.setOnClickListener{
+        binding.toolbarCall.setOnClickListener {
             val intent = Intent(this, WebRtcCallActivity::class.java)
             push(intent)
         }
@@ -577,6 +585,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
             }
         }
     }
+
     private fun startUpdateFlow(appUpdateInfo: AppUpdateInfo) {
         try {
             appUpdateManager!!.startUpdateFlowForResult(
@@ -628,7 +637,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
     private fun setSearchShown(isShown: Boolean) {
         //New Line
-        binding.searchBarLayout.isVisible =isShown
+        binding.searchBarLayout.isVisible = isShown
         binding.searchBarLayout.setOnClickListener {
             onBackPressed()
         }
@@ -638,9 +647,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         binding.bchatToolbar.isVisible = !isShown
         binding.recyclerView.isVisible = !isShown
         binding.emptyStateContainer.isVisible =
-            (binding.recyclerView.adapter as NewHomeAdapter).itemCount == 0 && binding.recyclerView.isVisible
+            (binding.recyclerView.adapter as HomeAdapter).itemCount == 0 && binding.recyclerView.isVisible
         binding.emptyStateContainerText.isVisible =
-            (binding.recyclerView.adapter as NewHomeAdapter).itemCount == 0 && binding.recyclerView.isVisible
+            (binding.recyclerView.adapter as HomeAdapter).itemCount == 0 && binding.recyclerView.isVisible
         val isDayUiMode = UiModeUtilities.isDayUiMode(this)
         (if (isDayUiMode) R.drawable.ic_doodle_3_2 else R.drawable.ic_doodle_3_1).also {
             binding.emptyStateImageView.setImageResource(
@@ -669,23 +678,17 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                     threadDb.latestUnapprovedConversationTimestamp
                 )
                 root.setOnClickListener { showMessageRequests() }
-                expandMessageRequest.setOnClickListener{ showMessageRequests() }
+                expandMessageRequest.setOnClickListener { showMessageRequests() }
                 root.setOnLongClickListener { hideMessageRequests(); true }
-                root.layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
-                /*homeAdapter.headerView = root
-                homeAdapter.notifyItemChanged(0)*/
-                val hadHeader = homeAdapter.hasHeaderView()
-                homeAdapter.header = root
-                if (hadHeader) homeAdapter.notifyItemChanged(0)
-                else homeAdapter.notifyItemInserted(0)
+                root.layoutParams = RecyclerView.LayoutParams(
+                    RecyclerView.LayoutParams.MATCH_PARENT,
+                    RecyclerView.LayoutParams.WRAP_CONTENT
+                )
+                homeAdapter.headerView = root
+                homeAdapter.notifyItemChanged(0)
             }
         } else {
-            //homeAdapter.headerView = null
-            val hadHeader = homeAdapter.hasHeaderView()
-            homeAdapter.header = null
-            if (hadHeader) {
-                homeAdapter.notifyItemRemoved(0)
-            }
+            homeAdapter.headerView = null
         }
     }
 
@@ -722,7 +725,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     }*/
 
 
-    /*override fun onCreateLoader(id: Int, bundle: Bundle?): Loader<Cursor> {
+    override fun onCreateLoader(id: Int, bundle: Bundle?): Loader<Cursor> {
         return HomeLoader(this@HomeActivity)
     }
 
@@ -734,13 +737,15 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
     override fun onLoaderReset(cursor: Loader<Cursor>) {
         homeAdapter.changeCursor(null)
-    }*/
+    }
 
-    private fun checkInternetConnectivity(){
+    private fun checkInternetConnectivity() {
         if (OnionRequestAPI.paths.isEmpty()) {
-            Toast.makeText(this,"Please check your internet connection",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT)
+                .show();
         }
     }
+
     override fun onResume() {
         super.onResume()
         setupCallActionBar()
@@ -769,8 +774,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         }
 
         /*Hales63*/
-        if(TextSecurePreferences.isUnBlocked(this))
-        {
+        if (TextSecurePreferences.isUnBlocked(this)) {
             homeAdapter.notifyDataSetChanged()
             TextSecurePreferences.setUnBlockStatus(this, false)
         }
@@ -778,6 +782,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
     override fun onPause() {
         super.onPause()
+        Log.d("Beldex","HomeActivity() onPause called")
         ApplicationContext.getInstance(this).messageNotifier.setHomeScreenVisible(false)
     }
 
@@ -790,30 +795,42 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         //New Line App Update
         if (requestCode == IMMEDIATE_APP_UPDATE_REQ_CODE) {
             if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(applicationContext,
-                    "Update canceled by user! Result Code: $resultCode", Toast.LENGTH_LONG).show();
+                Toast.makeText(
+                    applicationContext,
+                    "Update canceled by user! Result Code: $resultCode", Toast.LENGTH_LONG
+                ).show();
             } else if (resultCode == RESULT_OK) {
-                Toast.makeText(applicationContext, "Update success! Result Code: $resultCode", Toast.LENGTH_LONG).show();
+                Toast.makeText(
+                    applicationContext,
+                    "Update success! Result Code: $resultCode",
+                    Toast.LENGTH_LONG
+                ).show();
             } else {
-                Toast.makeText(applicationContext, "Update Failed! Result Code: $resultCode", Toast.LENGTH_LONG).show();
+                Toast.makeText(
+                    applicationContext,
+                    "Update Failed! Result Code: $resultCode",
+                    Toast.LENGTH_LONG
+                ).show();
                 checkUpdate();
             }
         }
     }
 
     override fun onDestroy() {
+        Log.d("Beldex","onDestroy in Home")
         val broadcastReceiver = this.broadcastReceiver
         if (broadcastReceiver != null) {
             LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver)
         }
-        super.onDestroy()
         EventBus.getDefault().unregister(this)
+        super.onDestroy()
+
     }
     // endregion
 
     // region Updating
     private fun updateEmptyState() {
-        val threadCount = (binding.recyclerView.adapter)!!.itemCount
+        val threadCount = (binding.recyclerView.adapter as HomeAdapter).itemCount
         binding.emptyStateContainer.isVisible = threadCount == 0 && binding.recyclerView.isVisible
         binding.emptyStateContainerText.isVisible =
             threadCount == 0 && binding.recyclerView.isVisible
@@ -829,8 +846,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     fun onUpdateProfileEvent(event: ProfilePictureModifiedEvent) {
         if (event.recipient.isLocalNumber) {
             updateProfileButton()
-        } else {
-            homeViewModel.tryUpdateChannel()
         }
     }
 
@@ -924,7 +939,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     }
 
     private fun blockConversation(thread: ThreadRecord) {
-        val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog)
+        val dialog = AlertDialog.Builder(this, R.style.BChatAlertDialog)
             .setTitle(R.string.RecipientPreferenceActivity_block_this_contact_question)
             .setMessage(R.string.RecipientPreferenceActivity_you_will_no_longer_receive_messages_and_calls_from_this_contact)
             .setNegativeButton(android.R.string.cancel, null)
@@ -938,13 +953,13 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                 }
             }.show()
         //New Line
-        val textView:TextView = dialog.findViewById(android.R.id.message)
-        val face:Typeface =Typeface.createFromAsset(assets,"fonts/poppins_medium.ttf")
+        val textView: TextView = dialog.findViewById(android.R.id.message)
+        val face: Typeface = Typeface.createFromAsset(assets, "fonts/poppins_medium.ttf")
         textView.typeface = face
     }
 
     private fun unblockConversation(thread: ThreadRecord) {
-        val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog)
+        val dialog = AlertDialog.Builder(this, R.style.BChatAlertDialog)
             .setTitle(R.string.RecipientPreferenceActivity_unblock_this_contact_question)
             .setMessage(R.string.RecipientPreferenceActivity_you_will_once_again_be_able_to_receive_messages_and_calls_from_this_contact)
             .setNegativeButton(android.R.string.cancel, null)
@@ -959,8 +974,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
             }.show()
 
         //New Line
-        val textView:TextView = dialog.findViewById(android.R.id.message)
-        val face:Typeface =Typeface.createFromAsset(assets,"fonts/poppins_medium.ttf")
+        val textView: TextView = dialog.findViewById(android.R.id.message)
+        val face: Typeface = Typeface.createFromAsset(assets, "fonts/poppins_medium.ttf")
         textView.typeface = face
     }
 
@@ -996,11 +1011,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     private fun setConversationPinned(threadId: Long, pinned: Boolean) {
         lifecycleScope.launch(Dispatchers.IO) {
             threadDb.setPinned(threadId, pinned)
-            /*withContext(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 LoaderManager.getInstance(this@HomeActivity)
                     .restartLoader(0, null, this@HomeActivity)
-            }*/
-            homeViewModel.tryUpdateChannel()
+            }
         }
     }
 
@@ -1024,7 +1038,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         } else {
             resources.getString(R.string.activity_home_delete_conversation_dialog_message)
         }
-        val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog)
+        val dialog = AlertDialog.Builder(this, R.style.BChatAlertDialog)
             .setMessage(message)
             .setPositiveButton(R.string.yes) { _, _ ->
                 lifecycleScope.launch(Dispatchers.Main) {
@@ -1039,8 +1053,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                         var isClosedGroup: Boolean
                         var groupPublicKey: String?
                         try {
-                            groupPublicKey = GroupUtil.doubleDecodeGroupID(recipient.address.toString())
-                                .toHexString()
+                            groupPublicKey =
+                                GroupUtil.doubleDecodeGroupID(recipient.address.toString())
+                                    .toHexString()
                             isClosedGroup = DatabaseComponent.get(context).beldexAPIDatabase()
                                 .isClosedGroup(groupPublicKey)
                         } catch (e: IOException) {
@@ -1052,17 +1067,24 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                         }
                     }
                     // Delete the conversation
-                    val v2OpenGroup = DatabaseComponent.get(this@HomeActivity).beldexThreadDatabase()
-                        .getOpenGroupChat(threadID)
+                    val v2OpenGroup =
+                        DatabaseComponent.get(this@HomeActivity).beldexThreadDatabase()
+                            .getOpenGroupChat(threadID)
                     if (v2OpenGroup != null) {
-                        OpenGroupManager.delete(v2OpenGroup.server, v2OpenGroup.room, this@HomeActivity)
+                        OpenGroupManager.delete(
+                            v2OpenGroup.server,
+                            v2OpenGroup.room,
+                            this@HomeActivity
+                        )
                     } else {
                         lifecycleScope.launch(Dispatchers.IO) {
                             threadDb.deleteConversation(threadID)
                         }
                     }
                     // Update the badge count
-                    ApplicationContext.getInstance(context).messageNotifier.updateNotification(context)
+                    ApplicationContext.getInstance(context).messageNotifier.updateNotification(
+                        context
+                    )
                     // Notify the user
                     val toastMessage =
                         if (recipient.isGroupRecipient) R.string.MessageRecord_left_group else R.string.activity_home_conversation_deleted_message
@@ -1075,7 +1097,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
         //New Line
         val textView: TextView? = dialog.findViewById(android.R.id.message)
-        val face: Typeface = Typeface.createFromAsset(assets,"fonts/poppins_medium.ttf")
+        val face: Typeface = Typeface.createFromAsset(assets, "fonts/poppins_medium.ttf")
         textView!!.typeface = face
     }
 
@@ -1083,6 +1105,58 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         val intent = Intent(this, SettingsActivity::class.java)
         show(intent, isForResult = true)
     }
+
+
+    private fun openMyWallet() {
+        val walletName = TextSecurePreferences.getWalletName(this)
+        val walletPassword = TextSecurePreferences.getWalletPassword(this)
+        if (walletName != null && walletPassword !=null) {
+            //startWallet(walletName, walletPassword, fingerprintUsed = false, streetmode = false)
+            val lockManager: LockManager<CustomPinActivity> = LockManager.getInstance() as LockManager<CustomPinActivity>
+            lockManager.enableAppLock(this, CustomPinActivity::class.java)
+            val intent = Intent(this, CustomPinActivity::class.java)
+            if(TextSecurePreferences.getWalletEntryPassword(this)!=null) {
+                intent.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN)
+                intent.putExtra("change_pin",false)
+                intent.putExtra("send_authentication",false)
+                push(intent)
+            }else{
+                intent.putExtra(AppLock.EXTRA_TYPE, AppLock.ENABLE_PINLOCK)
+                intent.putExtra("change_pin",false)
+                intent.putExtra("send_authentication",false)
+                push(intent)
+            }
+        }else{
+            val intent = Intent(this, WalletInfoActivity::class.java)
+            push(intent)
+        }
+    }
+
+    /*private fun startWallet(
+        walletName:String, walletPassword:String,
+        fingerprintUsed:Boolean, streetmode:Boolean) {
+        val REQUEST_ID = "id"
+        val REQUEST_PW = "pw"
+        val REQUEST_FINGERPRINT_USED = "fingerprint"
+        val REQUEST_STREETMODE = "streetmode"
+        val REQUEST_URI = "uri"
+
+        Timber.d("startWallet()");
+        TextSecurePreferences.setIncomingTransactionStatus(this, true)
+        TextSecurePreferences.setOutgoingTransactionStatus(this, true)
+        TextSecurePreferences.setTransactionsByDateStatus(this,false)
+        val intent = Intent(this, WalletActivity::class.java)
+        intent.putExtra(REQUEST_ID, walletName)
+        intent.putExtra(REQUEST_PW, walletPassword)
+        intent.putExtra(REQUEST_FINGERPRINT_USED, fingerprintUsed)
+        intent.putExtra(REQUEST_STREETMODE, streetmode)
+        //Important
+        *//*if (uri != null) {
+            intent.putExtra(REQUEST_URI, uri)
+            uri = null // use only once
+        }*//*
+        startActivity(intent)
+    }*/
 
     private fun showNotificationSettings() {
         val intent = Intent(this, NotificationSettingsActivity::class.java)
@@ -1107,7 +1181,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     }
 
     //New Line
-    private fun help(){
+    private fun help() {
         val intent = Intent(Intent.ACTION_SENDTO)
         intent.data = Uri.parse("mailto:") // only email apps should handle this
         intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("support@beldex.io"))
@@ -1135,33 +1209,46 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         show(intent)
     }
 
-   /* private fun showPath() {
+    private fun sendMessageToSupport() {
+        val recipient = Recipient.from(this, Address.fromSerialized(supportBChatID), false)
+        val intent = Intent(this, ConversationActivityV2::class.java)
+        intent.putExtra(ConversationActivityV2.ADDRESS, recipient.address)
+        intent.setDataAndType(getIntent().data, getIntent().type)
+        val existingThread =
+            DatabaseComponent.get(this).threadDatabase().getThreadIdIfExistsFor(recipient)
+        intent.putExtra(ConversationActivityV2.THREAD_ID, existingThread)
+        startActivity(intent)
+    }
+
+    private fun showPath() {
         val intent = Intent(this, PathActivity::class.java)
         show(intent)
-    }*/
+    }
 
     override fun createNewPrivateChat() {
         val intent = Intent(this, CreateNewPrivateChatActivity::class.java)
         show(intent)
     }
 
-    override fun createNewClosedGroup() {
+    override fun createNewSecretGroup() {
         val intent = Intent(this, CreateClosedGroupActivity::class.java)
         show(intent, true)
     }
 
-    override fun joinOpenGroup() {
+    override fun joinSocialGroup() {
         val intent = Intent(this, JoinPublicChatNewActivity::class.java)
         show(intent)
+
     }
+
     /*Hales63*/
     private fun showMessageRequests() {
         val intent = Intent(this, MessageRequestsActivity::class.java)
         push(intent)
     }
 
-    private fun hideMessageRequests() { 
-        val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog_New)
+    private fun hideMessageRequests() {
+        val dialog = AlertDialog.Builder(this, R.style.BChatAlertDialog_New)
             .setTitle("Hide message requests?")
             .setMessage("Once they are hidden, you can access them from Settings > Message Requests")
             .setPositiveButton(R.string.yes) { _, _ ->
@@ -1170,8 +1257,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                 textSecurePreferences.setHasShowMessageRequests(false)*/
 
                 setupMessageRequestsBanner()
-                //LoaderManager.getInstance(this).restartLoader(0, null, this)
-                homeViewModel.tryUpdateChannel()
+                LoaderManager.getInstance(this).restartLoader(0, null, this)
             }
             .setNegativeButton(R.string.no) { _, _ ->
                 // Do nothing
@@ -1179,8 +1265,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
         //SteveJosephh21
 
-        val message:TextView = dialog.findViewById(android.R.id.message)
-        val messageFace:Typeface =Typeface.createFromAsset(assets,"fonts/poppins_medium.ttf")
+        val message: TextView = dialog.findViewById(android.R.id.message)
+        val messageFace: Typeface = Typeface.createFromAsset(assets, "fonts/poppins_medium.ttf")
         message.typeface = messageFace
     }
     // endregion

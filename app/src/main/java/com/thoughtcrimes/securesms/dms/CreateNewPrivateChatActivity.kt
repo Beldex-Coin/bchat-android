@@ -17,6 +17,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import com.beldex.libbchat.mnode.MnodeAPI
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityCreateNewPrivateChatBinding
 import com.beldex.libbchat.utilities.Address
@@ -27,6 +28,8 @@ import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
 import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.util.push
+import nl.komponents.kovenant.ui.failUi
+import nl.komponents.kovenant.ui.successUi
 
 class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
     private lateinit var binding: ActivityCreateNewPrivateChatBinding
@@ -202,26 +205,30 @@ class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
             })
     }
 
-    fun createPrivateChatIfPossible(bnsNameOrPublicKey: String) {
+    //BNS disabled 16-01-2023
+    private fun createPrivateChatIfPossible(bnsNameOrPublicKey: String) {
         if (PublicKeyValidation.isValid(bnsNameOrPublicKey)) {
             Log.d("PublicKeyValidation", "OK")
             createPrivateChat(bnsNameOrPublicKey)
         } else {
             Log.d("PublicKeyValidation", "Cancel")
-            Toast.makeText(this, "Invalid BChat ID", Toast.LENGTH_SHORT).show()
+
+            Toast.makeText(this, R.string.invalid_bchat_id, Toast.LENGTH_SHORT).show()
 
             //Important 02-06-2022 - 2.30 PM
-           /* // This could be an BNS name
-            showLoader()
-            MnodeAPI.getBchatID(bnsNameOrPublicKey).successUi { hexEncodedPublicKey ->
+            // This could be an BNS name
+            /*showLoader()
+                MnodeAPI.getBchatID(bnsNameOrPublicKey).successUi { hexEncodedPublicKey ->
                 Log.d("PublicKeyValidation", "successUi")
                 hideLoader()
+                Log.d("Beldex", "value of Bchat id for BNS name $hexEncodedPublicKey")
                 this.createPrivateChat(hexEncodedPublicKey)
             }.failUi { exception ->
                 hideLoader()
-                var message = resources.getString(R.string.fragment_enter_public_key_error_message)
+                val message = resources.getString(R.string.fragment_enter_public_key_error_message)
                 exception.localizedMessage?.let {
-                    message = it
+                    *//*message = it*//*
+                    Log.d("Beldex","BNS exception $it")
                 }
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
             }*/

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/default_dialog_background_inset"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:elevation="4dp"
+    android:padding="32dp">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_info"
+            android:layout_marginEnd="5dp"/>
+        <TextView
+            android:fontFamily="@font/poppins_bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/block_height"
+            android:textColor="@color/text"
+            android:textStyle="bold"
+            android:textSize="@dimen/medium_font_size" />
+    </LinearLayout>
+
+    <TextView
+        android:fontFamily="@font/poppins_medium"
+        android:id="@+id/dialogDescriptionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/large_spacing"
+        android:text="@string/block_height_info"
+        android:textColor="@color/text"
+        android:textSize="@dimen/small_font_size"
+        android:textAlignment="center" />
+
+    <Button
+        android:id="@+id/okButton"
+        style="@style/Widget.Bchat.Button.Common.ProminentFilled"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/medium_button_height"
+        android:layout_marginTop="@dimen/large_spacing"
+        android:text="@string/ok" />
+
+</LinearLayout>

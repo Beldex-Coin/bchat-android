@@ -66,6 +66,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 public class ThreadDatabase extends Database {
@@ -610,9 +611,9 @@ public class ThreadDatabase extends Database {
     }
   }
 
-  public @Nullable Recipient getRecipientForThreadId(long threadId) {
+  public Recipient getRecipientForThreadId(long threadId) {
     if (addressCache.containsKey(threadId) && addressCache.get(threadId) != null) {
-      return Recipient.from(context, addressCache.get(threadId), false);
+      return Recipient.from(context, Objects.requireNonNull(addressCache.get(threadId)), false);
     }
 
     SQLiteDatabase db = databaseHelper.getReadableDatabase();

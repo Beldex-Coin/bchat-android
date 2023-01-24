@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE resources [<!ENTITY nbsp "&#160;">]>
 <resources>
     <string name="app_name" translatable="false">BChat Messenger</string>
     <string name="yes" translatable="false">Yes</string>
@@ -1061,5 +1061,258 @@
     If user decline the call show call declined status.
     <string name="dialing" translatable="false">Dialing…</string>
     <string name="call_ended" translatable="false">Call Ended</string>
+    <string name="activity_receive_page_title" translatable="false">Receive</string>
+    <string name="activity_rescan_page_title" translatable="false">Rescan</string>
+    <string name="enter_amount" translatable="false">Enter amount</string>
+    <string name="current_blockheight" translatable="false">Current Blockheight : </string>
+    <string name="restore_from_height" translatable="false">Restore from height</string>
+    <string name="restore_from_date" translatable="false"> Restore from date</string>
+    <string name="activity_new_node_page_title" translatable="false">New Node</string>
+    <string name="node_address" translatable="false">Node address</string>
+    <string name="node_port" translatable="false">Node port</string>
+    <string name="node_login" translatable="false">Username (Optional)</string>
+    <string name="node_name" translatable="false">Node name (Optional)</string>
+    <string name="node_password" translatable="false">Password (Optional)</string>
+    <string name="clear">Clear</string>
+    <string name="activity_node_page_title" translatable="false">Node</string>
+    <string name="activity_address_book_page_title" translatable="false">Address Book</string>
+    <string name="estimated_fee_description" translatable="false">%1$s priority is set as the default fee.\nGo to setting to change the transaction priority.</string>
+    <string name="hint" translatable="false">0.0000</string>
+    <string name="beldex" translatable="false">Beldex</string>
+    <string name="send" translatable="false">Send</string>
 
+
+    <string name="button1_large_text">1</string>
+    <string name="button2_large_text">2</string>
+    <string name="button3_large_text">3</string>
+    <string name="button4_large_text">4</string>
+    <string name="button5_large_text">5</string>
+    <string name="button6_large_text">6</string>
+    <string name="button7_large_text">7</string>
+    <string name="button8_large_text">8</string>
+    <string name="button9_large_text">9</string>
+    <string name="button11_large_text">0</string>
+    <string name="pin_code_forgot_text">Forgot?</string>
+    <string name="pin_code_step_disable">Disable %d-digit Pincode</string>
+    <string name="pin_code_step_create">Create Pin</string>
+    <string name="pin_code_step_change">Enter your current %d-digit Pincode</string>
+    <string name="pin_code_step_unlock">Enter Pin</string>
+    <string name="pin_code_step_enable_confirm">Re-Enter Pin</string>
+
+    <string name="pin_code_fingerprint_text">Fingerprint</string>
+    <string name="pin_code_fingerprint_success">Fingerprint recognized</string>
+    <string name="pin_code_fingerprint_not_recognized">Fingerprint not recognized. Try again</string>
+
+    <string name="tx_item_transition_name" translatable="false">tx_transition_%1$s</string>
+    <string name="tx_list_amount_negative" translatable="false">- %1$s</string>
+    <string name="tx_list_amount_positive" translatable="false">+ %1$s</string>
+    <string name="tx_list_fee" translatable="false">- Fee %1$s</string>
+    <string name="tx_list_amount_failed" translatable="false">(%1$s)</string>
+    <string name="tx_list_failed_text" translatable="false">failed</string>
+    <string name="tx_details_notes" translatable="false">&lt;span style=\"background-color: #%1$s; color: #%2$s;\"&gt;&nbsp;%3$s&nbsp;&lt;/span&gt;%4$s</string>
+    <string name="service_description" translatable="false">BChat Wallet Service</string>
+    <string name="status_wallet_loading" translatable="false">Loading Wallet &#8230;</string>
+    <string name="status_wallet_connecting" translatable="false">Connecting &#8230;</string>
+    <string name="status_wallet_disconnected" translatable="false">Disconnected</string>
+
+    <string name="receive_transition_name" translatable="false">receive_transition</string>
+    <string name="send_transition_name" translatable="false">send_transition</string>
+    <string name="scan_transition_name" translatable="false">scan_transition</string>
+    <string name="nfc_tag_read_what" translatable="false">I don\'t know what you want!</string>
+    <string name="message_camera_not_permitted" translatable="false">No camera = No QR scanning!</string>
+    <string name="send_qr_address_invalid" translatable="false">Not a valid payment QR code</string>
+    <string name="send_qr_invalid" translatable="false">Not a QR Code</string>
+    <string name="status_wallet_unloaded" translatable="false">Wallet saved</string>
+    <string name="status_wallet_unload_failed" translatable="false">Wallet save failed!</string>
+    <string name="status_transaction_failed" translatable="false">Transaction failed: %1$s</string>
+    <string name="status_wallet_connect_failed" translatable="false">Node connection failed!\nCheck username/password</string>
+    <string name="status_wallet_connect_wrong_version" translatable="false">Node version incompatible - please upgrade!</string>
+    <string name="status_syncing" translatable="false">Scanning:</string>
+    <string name="bdx_unconfirmed_amount" translatable="false">+ %1$s BDX Ledger balance</string>
+    <string name="status_remaining" translatable="false">Blocks remaining</string>
+    <string name="status_synced" translatable="false">Synced:</string>
+    <string name="menu_rescan" translatable="false">Rescan</string>
+    <string name="service_busy" translatable="false">I am still busy with your last wallet &#8230;</string>
+    <string name="service_progress" translatable="false">Wallets are loading &#8230;\nPlease wait...</string>
+
+    <string name="node_test_error" translatable="false">CONNECTION ERROR %1$d</string>
+    <string name="node_general_error" translatable="false">CONNECTION ERROR</string>
+    <string name="node_auth_error" translatable="false">AUTHENTICATION FAILED</string>
+    <string name="node_updated_now" translatable="false">Last Block: %1$d seconds ago</string>
+    <string name="node_updated_mins" translatable="false">Last Block: %1$d minutes ago</string>
+    <string name="node_updated_hours" translatable="false">Last Block: %1$d hours ago</string>
+    <string name="node_updated_days" translatable="false">Last Block: %1$d days ago</string>
+    <string name="prompt_changepw" translatable="false">New Passphrase for %1$s</string>
+    <string name="prompt_changepwB" translatable="false">Repeat Passphrase for %1$s</string>
+    <string name="prompt_password" translatable="false">Password for %1$s</string>
+    <string name="prompt_fingerprint_auth" translatable="false">You can also open wallet using fingerprint.\nPlease touch sensor.</string>
+    <string name="prompt_open_wallet" translatable="false">Opening the wallet&#8230;</string>
+    <string name="bad_fingerprint" translatable="false">Fingerprint not recognized. Try again.</string>
+    <string name="bad_password" translatable="false">Incorrect password!</string>
+    <string name="bad_saved_password" translatable="false">Saved password is incorrect.\nPlease enter password manually.</string>
+    <string name="bad_wallet" translatable="false">Wallet does not exist!</string>
+    <string name="prompt_daemon_missing" translatable="false">Node must be set!</string>
+    <string name="prompt_wrong_net" translatable="false">Wallet does not match selected net</string>
+    <string name="node_testing">Testing IP: %1$s &#8230;</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="node_result">Height: %1$s (v%2$d), Ping: %3$.0fms, IP: %4$s</string>
+    <string name="info_bdxto_enabled">Non-BDX payments enabled, tap for more info.</string>
+    <string name="info_ledger_enabled">Ledger enabled, tap for more info.</string>
+    <string name="toast_default_nodes" translatable="false">Restoring already in progress…</string>
+    <string name="node_wrong_net" translatable="false">Node scanning only for mainnet!</string>
+    <string name="switch_node_alert" translatable="false"> Are you sure you want to Switch to another node? </string>
+    <string name="title_activity_send_new" translatable="false">SendActivityNew</string>
+
+    <string name="filter_by" translatable="false">Filter By</string>
+    <string name="incoming" translatable="false">Incoming</string>
+    <string name="outgoing" translatable="false">Outgoing</string>
+    <string name="transactions_by_date" translatable="false">Transactions by Date</string>
+    <string name="tx_failed" translatable="false">Failed</string>
+    <string name="tx_pending" translatable="false">Pending</string>
+    <string name="tx_status_sent" translatable="false">Sent</string>
+    <string name="tx_status_received" translatable="false">Received</string>
+    <string name="send_notes_hint">Private Notes (optional)</string>
+    <string name="send_generate_paymentid_hint">Generate</string>
+    <string name="send_qr_hint" translatable="false">Scan</string>
+    <string name="send_send_label">Spend my sweet Beldex</string>
+    <string name="send_send_timed_label">Spend my sweet Beldex (%1$s)</string>
+    <string name="send_address_invalid">Not a valid address</string>
+    <string name="send_address_not_openalias">OpenAlias address not available</string>
+    <string name="send_address_openalias">OpenAlias secure &#x2714;</string>
+    <string name="send_address_resolve_openalias">Resolving OpenAlias&#8230;</string>
+    <string name="send_address_no_dnssec">OpenAlias without DNSSEC - address may be spoofed</string>
+    <string name="send_title">Send</string>
+    <string name="send_available">%1$s BDX</string>
+    <string name="send_address_title">Address</string>
+    <string name="send_amount_title">Amount</string>
+    <string name="send_confirm_title">Confirm</string>
+    <string name="send_success_title">Done</string>
+    <string name="accounts_balance" translatable="false">%1$s BDX</string>
+    <string name="my_wallet" translatable="false">My Wallet</string>
+    <string name="status_synchronized" translatable="false">Synchronized</string>
+    <string name="send_btn_transition_name" translatable="false">send_btn_transition</string>
+    <string name="receive_btn_transition_name" translatable="false">receive_btn_transition</string>
+    <string name="test" translatable="false">Test</string>
+    <string name="test_result_title" translatable="false">Test result :</string>
+    <string name="test_result" translatable="false">Height 1,500,500 (V17),Ping: 500ms, IP: 15.222.187.192</string>
+
+    <string name="info_nodes_enabled">Node-o-matiC enabled, tap for more info.</string>
+    <string name="node_height">Last block updated: %1$s</string>
+    <string name="label_nodes">Nodes</string>
+    <string name="node_name_hint">Node Name (Optional)</string>
+    <string name="node_address_hint">Hostname</string>
+    <string name="node_port_hint">Port</string>
+    <string name="node_user_hint">Username (Optional)</string>
+    <string name="node_pass_hint">Password (Optional)</string>
+    <string name="node_host_unresolved">Cannot resolve host</string>
+    <string name="node_host_empty">We need this!</string>
+    <string name="node_port_numeric">Must be numeric</string>
+    <string name="node_port_range">Must be 1&#8211;65535</string>
+    <string name="node_fab_add">Add Node</string>
+    <string name="node_refresh_hint">Touch to refresh!</string>
+    <string name="node_result_label">Test Result:</string>
+    <string name="node_refresh_wait">Please wait for scan to finish</string>
+    <string name="node_create_hint">Touch to select or add nodes</string>
+    <string name="node_pull_hint">Add nodes manually or pull down to scan</string>
+    <string name="node_scanning">Scanning network&#8230;</string>
+    <string name="node_nobookmark">Automatically bookmarked best %1$d nodes</string>
+    <string name="label_test">Test</string><!--note: as in "Test a network connection"-->
+    <string name="wallet_info_important_subTitle" translatable="false">Info about <font color='#128D15'>Wallet Password</font> generation</string>
+    <string name="wallet_info_important_description" translatable="false">To access your wallet, you will first need to generate a wallet password.
+Your wallet password can be used to access your wallet within BChat and authenticate your transactions.</string>
+    <string name="wallet_info_important_descriptions" translatable="false">You can generate a wallet password only by restoring your account.</string>
+    <string name="wallet_info_important_confirmTitle" translatable="false">If you wish to continue, click “proceed.”</string>
+    <string name="wallet_info_important_confirmButton" translatable="false">Proceed</string>
+
+    <string name="wallet_info_seed_screen_description_content" translatable="false"><font color='#FF0000'>Note: </font> Copy your Recovery Seed and save it. You will need the Recovery Seed to restore your account and generate a wallet password. \nIf you lose your seed, you will permanently lose access to your account.</string>
+    <string name="confirmation_alert_dialog_box_message" translatable="false">Do you wish to continue to sign-in and restore your account?</string>
+    <string name="checkPasswordDescriptionsTextView" translatable="false">This is the PIN you set to your <font color='#128D15'>BChat account.</font></string>
+    <string name="checkPasswordDescriptionTextView" translatable="false">Enter your PIN to verify</string>
+    <string name="activity_restore_from_height_missing_error" translatable="false">Please pick a restore height or restore from date</string>
+    <string name="please_pick_a_restore_height" translatable="false">Please pick a restore height</string>
+    <string name="please_pick_a_restore_from_date" translatable="false">Please pick a restore from date</string>
+
+    <string name="send_create_tx_error_title" translatable="false">Create Transaction Error</string>
+    <string name="transaction_completed" translatable="false">Transaction Completed</string>
+    <string name="info_paymentid_integrated" translatable="false">&#x2714; Payment ID integrated</string>
+    <string name="beldex_address_error_message" translatable="false">Enter the recipient wallet address</string>
+    <string name="beldex_amount_error_message" translatable="false">Enter the BDX amount to send</string>
+    <string name="confirm_sending" translatable="false">Confirm Sending</string>
+    <string name="address" translatable="false">Address :</string>
+    <string name="commit_transaction" translatable="false">Commit Transaction</string>
+    <string name="amount" translatable="false">Amount:</string>
+    <string name="fee" translatable="false">Fee:</string>
+    <string name="estimated_fee" translatable="false">Estimated Fee: %1$s BDX</string>
+    <string name="fiat_currency" translatable="false">%1$.2f %2$s</string>
+    <string name="beldex_amount_valid_error_message" translatable="false">Enter a valid amount</string>
+    <string name="no_node_connection" translatable="false">Can\'t connect to nodes. Check your internet</string>
+    <string name="home_screen_new_chat_title" translatable="false">New Chat</string>
+    <string name="home_screen_secret_groups_title" translatable="false">Secret Group</string>
+    <string name="home_screen_social_groups_title" translatable="false">Social Group</string>
+    <string name="display_balance_as" translatable="false">Display Balance As</string>
+    <string name="current_node" translatable="false">Current Node</string>
+    <string name="wallets" translatable="false">Wallet</string>
+    <string name="decimals" translatable="false">Decimals</string>
+    <string name="enable_fiat_currency_conversion" translatable="false">Enable Fiat Currency Conversion</string>
+    <string name="currency" translatable="false">Currency</string>
+    <string name="fee_priority" translatable="false">Fee Priority</string>
+    <string name="save_recipient_address" translatable="false">Save Recipient Address</string>
+    <string name="change_pin" translatable="false">Change Pin</string>
+    <string name="no_record_found" translatable="false">No record found</string>
+    <string name="no_address_found" translatable="false">No address found</string>
+    <string name="transaction_id" translatable="false">Transaction ID :</string>
+    <string name="date_amp_time" translatable="false"><![CDATA[Date & Time :]]></string>
+    <string name="height" translatable="false">Height :</string>
+    <string name="transaction_fee" translatable="false">Transaction Fee :</string>
+    <string name="recipient_address" translatable="false">Recipient Address :</string>
+    <string name="please_check_your_internet_connection" translatable="false">Please check your internet connection</string>
+    <string name="or" translatable="false">OR</string>
+    <string name="restore_from_blockheight" translatable="false">Restore from Blockheight</string>
+    <string name="restore_from_date_" translatable="false">Restore from Date</string>
+    <string name="wallet_name" translatable="false">Wallet Name</string>
+    <string name="view_key_private" translatable="false">View Key (private)</string>
+    <string name="spend_key_private" translatable="false">Spend Key (private)</string>
+    <string name="activity_scan_page_title" translatable="false">Scan</string>
+    <string name="activity_wallet_password_page_title" translatable="false">Wallet Password</string>
+    <string name="show_seed_content_title" translatable="false">Copy your Recovery Phrase and keep it safe.</string>
+    <string name="show_seed_content" translatable="false">Your Recovery Phrase can be used to recover your account. If you lose your Recovery Phrase, you will lose access to your account. Restoring your account will only restore the messages and BChat contacts from the last 14 days.</string>
+    <string name="add_node_success" translatable="false">Success</string>
+    <string name="add_node_connection_error" translatable="false">Connection error</string>
+    <string name="exit" translatable="false">Exit</string>
+    <string name="app_exit_alert" translatable="false">Are you sure you want to exit the wallet?</string>
+    <string name="transaction_send_title">Transaction Initiated Successfully</string>
+    <string name="dialog_block_height_title" translatable="false">Enter the block height or date at which you created the wallet.</string>
+    <string name="block_height" translatable="false"> Block Height</string>
+    <string name="block_height_info" translatable="false">Blockheight is the block number in a blockchain at a given time. Enter the block height at which you created the wallet for fast synchronization.</string>
+    <string name="enter_address" translatable="false">Enter Address</string>
+    <string name="enter_bdx_to_send" translatable="false">Enter BDX to send</string>
+    <string name="amount_hint" translatable="false">Amount</string>
+    <string name="restore_height_error_message" translatable="false">Enter a valid blockheight</string>
+    <string name="change_pin_confirmation_message" translatable="false">New pin and old pin can\'t be same, Please enter a different pin</string>
+    <string name="failed_connected_to_the_node" translatable="false">Failed connected to the node</string>
+    <string name="reconnecting" translatable="false">Reconnecting...</string>
+    <string name="switching_node">Switching Node</string>
+    <string name="no_copied_seed" translatable="false">Make sure you have copied the seed!</string>
+    <string name="your_pin_has_been_set_up_successfully" translatable="false">Your PIN has been set up successfully!</string>
+    <string name="sync_info" translatable="false">Sync Info</string>
+    <string name="sync_info_description" translatable="false">However we recommend to scan the blockchain from the block height at which you created the wallet, to get all the transactions and correct balance</string>
+    <string name="cannot_rescan_while_wallet_is_syncing" translatable="false">Can\'t rescan while wallet is syncing</string>
+    <string name="enter_a_valid_height" translatable="false">Enter a valid height</string>
+    <string name="beldex_amount_valid_not_enough_money_error_message" translatable="false">Not enough money</string>
+    <string name="make_sure_you_test_the_node_before_adding_it" translatable="false">Make sure you test the node before adding it.</string>
+    <string name="unable_to_connect_test_failed" translatable="false">Unable to connect. Test failed.</string>
+    <string name="search_by_name_hint" translatable="false">Search by Name...</string>
+    <string name="please_add_a_mainnet_node" translatable="false">Please add a mainnet node</string>
+    <string name="wallet_syncing_alert_title" translatable="false">Wallet is syncing...</string>
+    <string name="wallet_syncing_alert_message" translatable="false">If you close the wallet, synchronization will be paused. Are you sure you want to exit the wallet?</string>
+    <string name="your_pin_has_been_changed_successfully" translatable="false">Your PIN has been changed successfully!</string>
+    <string name="transaction_details_title" translatable="false">Transaction Details</string>
+    <string name="please_try_again_later" translatable="false">Please try again later</string>
+    <string name="no_transactions_yet" translatable="false">No Transactions yet!</string>
+    <string name="after_your_first_transaction_nyou_will_be_able_to_view_it_here" translatable="false">After your first transaction,\nyou will be able to view it here.</string>
+    <string name="waiting_for_network" translatable="false">Waiting for network..</string>
+    <string name="waiting_for_connection" translatable="false"> Waiting for connection..</string>
+    <string name="fetching_balance" translatable="false">Fetching Balance</string>
+    <string name="filter_applied" translatable="false">Filter applied</string>
 </resources>

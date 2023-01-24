@@ -8,19 +8,19 @@ import com.thoughtcrimes.securesms.model.Wallet;
 import com.thoughtcrimes.securesms.util.Helper;
 
 // https://stackoverflow.com/questions/2139134/how-to-send-an-object-from-one-android-activity-to-another-using-intents
-public class Txdata implements Parcelable {
+public class TxData implements Parcelable {
 
-    public Txdata() {
+    public TxData() {
     }
 
-    public Txdata(Txdata txData) {
+    public TxData(TxData txData) {
         this.dstAddr = txData.dstAddr;
         this.amount = txData.amount;
         this.mixin = txData.mixin;
         this.priority = txData.priority;
     }
 
-    public Txdata(String dstAddr,
+    public TxData(String dstAddr,
                   long amount,
                   int mixin,
                   PendingTransaction.Priority priority) {
@@ -39,7 +39,7 @@ public class Txdata implements Parcelable {
     }
 
     public double getAmountAsDouble() {
-        return 1.0 * amount / Helper.ONE_XMR;
+        return 1.0 * amount / Helper.ONE_BDX;
     }
 
     public int getMixin() {
@@ -94,17 +94,17 @@ public class Txdata implements Parcelable {
     }
 
     // this is used to regenerate your object. All Parcelables must have a CREATOR that implements these two methods
-    public static final Parcelable.Creator<Txdata> CREATOR = new Parcelable.Creator<Txdata>() {
-        public Txdata createFromParcel(Parcel in) {
-            return new Txdata(in);
+    public static final Parcelable.Creator<TxData> CREATOR = new Parcelable.Creator<TxData>() {
+        public TxData createFromParcel(Parcel in) {
+            return new TxData(in);
         }
 
-        public Txdata[] newArray(int size) {
-            return new Txdata[size];
+        public TxData[] newArray(int size) {
+            return new TxData[size];
         }
     };
 
-    protected Txdata(Parcel in) {
+    protected TxData(Parcel in) {
         dstAddr = in.readString();
         amount = in.readLong();
         mixin = in.readInt();

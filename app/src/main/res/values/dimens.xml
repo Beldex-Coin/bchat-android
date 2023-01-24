@@ -127,11 +127,25 @@
     <dimen name="normal_padding">16dp</dimen>
     <dimen name="action_item_height">56dp</dimen>
     <dimen name="account_name_font_size">20sp</dimen>
-    <item name="alpha_value" type="integer" format="float">0.08</item>
+    <item name="alpha_value" format="float" type="integer">0.08</item>
     <dimen name="path_status_view_size_new">12dp</dimen>
     <dimen name="conversation_item_quote_width">120dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
     <dimen name="large_button_height">54dp</dimen>
+
+    <dimen name="pin_code_round_size">25dp</dimen>
+    <dimen name="pin_code_round_margin">10dp</dimen>
+    <dimen name="pin_code_elements_margin">20dp</dimen>
+    <dimen name="pin_code_round_top_margin">10dp</dimen>
+    <dimen name="keyboard_button_padding">15dp</dimen>
+    <dimen name="keyboard_button_text_size">30sp</dimen>
+    <dimen name="activity_pin_code_padding">20dp</dimen>
+    <dimen name="pin_code_logo_margin">30dp</dimen>
+    <dimen name="pin_code_step_text_size">20sp</dimen>
+    <dimen name="pin_code_forgot_text_size">16sp</dimen>
+    <dimen name="light_gray_bar_margin_top">20dp</dimen>
+    <dimen name="light_gray_bar_margin_bottom">5dp</dimen>
+    <dimen name="light_gray_bar_margin_sides">50dp</dimen>
 
 </resources>

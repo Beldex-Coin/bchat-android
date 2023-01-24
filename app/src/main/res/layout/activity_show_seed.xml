@@ -12,19 +12,56 @@
     android:background="@color/page_background"
     tools:context="com.thoughtcrimes.securesms.seed.ShowSeedActivity">
 
+
+        <TextView
+            android:id="@+id/showSeedContentTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginTop="20dp"
+            android:textAlignment="center"
+            android:textSize="@dimen/medium_font_size"
+            android:textColor="@color/show_seed_content_title"
+            android:textStyle="bold"
+            android:fontFamily="@font/poppins_medium"
+            android:text="@string/show_seed_content_title"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+           />
+    <TextView
+        android:id="@+id/showSeedContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginTop="20dp"
+        android:textAlignment="center"
+        android:textColor="@color/text"
+        android:textSize="@dimen/small_font_size"
+        android:fontFamily="@font/poppins_regular"
+        android:textStyle="normal"
+        android:text="@string/show_seed_content"
+        app:layout_constraintTop_toBottomOf="@id/showSeedContentTitle"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+
     <androidx.cardview.widget.CardView
         android:id="@+id/showSeedCardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="15dp"
         app:cardBackgroundColor="@color/card_color"
         app:cardCornerRadius="10dp"
         app:cardElevation="5dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/showSeedContent">
 
         <LinearLayout
             android:layout_width="match_parent"

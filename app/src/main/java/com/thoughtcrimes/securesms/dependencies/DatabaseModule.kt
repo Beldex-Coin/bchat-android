@@ -1,6 +1,7 @@
 package com.thoughtcrimes.securesms.dependencies
 
 import android.content.Context
+import android.util.Log
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,7 +23,12 @@ object DatabaseModule {
 
     @JvmStatic
     fun init(context: Context) {
-        SQLiteDatabase.loadLibs(context)
+        Log.d("DatabaseModule","${context.filesDir}")
+        try {
+            SQLiteDatabase.loadLibs(context)
+        }catch (e:UnsatisfiedLinkError) {
+           Log.d("DatabaseModule","${e.message.toString()}")
+        }
     }
 
     @Provides
@@ -152,5 +158,9 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideAttachmentProvider(@ApplicationContext context: Context, openHelper: SQLCipherOpenHelper): MessageDataProvider = DatabaseAttachmentProvider(context, openHelper)
+
+    @Provides
+    @Singleton
+    fun provideBchatRecipientAddressDatabase(@ApplicationContext context: Context, openHelper: SQLCipherOpenHelper) = BchatRecipientAddressDatabase(context,openHelper)
 
 }

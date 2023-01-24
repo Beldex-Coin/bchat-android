@@ -3,8 +3,11 @@ package com.thoughtcrimes.securesms.webrtc
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.telephony.PhoneStateListener
+import android.telephony.TelephonyCallback
 import android.telephony.TelephonyManager
+import androidx.annotation.RequiresApi
 import com.beldex.libsignal.utilities.Log
 import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.webrtc.locks.LockManager
@@ -24,6 +27,20 @@ class HangUpRtcOnPstnCallAnsweredListener(private val hangupListener: ()->Unit):
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
+class HangUpRtcTelephonyCallback(private val hangupListener: ()->Unit): TelephonyCallback(), TelephonyCallback.CallStateListener {
+
+    companion object {
+        private val TAG = Log.tag(HangUpRtcTelephonyCallback::class.java)
+    }
+
+    override fun onCallStateChanged(state: Int) {
+        if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
+            hangupListener()
+            Log.i(TAG, "Device phone call ended Session call.")
+        }
+    }
+}
 class PowerButtonReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         if (Intent.ACTION_SCREEN_OFF == intent.action) {
@@ -34,8 +51,17 @@ class PowerButtonReceiver : BroadcastReceiver() {
 
         //SteveJosephh21 -
         if (Intent.ACTION_USER_PRESENT == intent.action) {
+            Log.d("WebRtcCallServiceReceiver-> ","true")
+            Log.d("WebRtcCallServiceReceiver-> ","${Intent.ACTION_USER_PRESENT}")
             val serviceIntent = Intent(context, WebRtcCallService::class.java)
                 .setAction(WebRtcCallService.ACTION_SCREEN_ON)
+            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Log.d("WebRtcCallServiceReceivers","If - ${Build.VERSION.SDK_INT}")
+                context.startForegroundService(serviceIntent)
+            }else {
+                Log.d("WebRtcCallServiceReceivers","Else - ${Build.VERSION.SDK_INT}")
+                context.startService(serviceIntent)
+            }*/
             context.startService(serviceIntent)
         }
     }

@@ -68,7 +68,8 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
     //SteveJosephh21 -
     if (powerButtonReceiver == null) {
       powerButtonReceiver = new PowerButtonReceiver();
-
+    }
+    if(powerButtonReceiver!=null) {
       registerReceiver(powerButtonReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
     }
   }
@@ -80,7 +81,8 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
     super.onResume();
     if (powerButtonReceiver == null) {
       powerButtonReceiver = new PowerButtonReceiver();
-
+    }
+    if(powerButtonReceiver!=null){
       registerReceiver(powerButtonReceiver, new IntentFilter(Intent.ACTION_USER_PRESENT));
     }
   }
@@ -89,6 +91,10 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
   protected void onDestroy() {
     Log.i(TAG, "onDestroy()");
     super.onDestroy();
+    if (powerButtonReceiver != null) {
+      this.unregisterReceiver(powerButtonReceiver);
+      powerButtonReceiver = null;
+    }
     removeClearKeyReceiver(this);
   }
 

@@ -737,6 +737,10 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
                 }
             }
         }
+        wiredHeadsetStateReceiver?.let { wiredHeadsetStateReceiver ->
+            unregisterReceiver(wiredHeadsetStateReceiver)
+        }
+        wiredHeadsetStateReceiver = null
         super.onDestroy()
     }
 

@@ -2,6 +2,8 @@ package com.thoughtcrimes.securesms.webrtc
 
 import android.app.NotificationManager
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
@@ -80,7 +82,9 @@ class CallMessageProcessor (private val context: Context, private val textSecure
     private fun incomingHangup(callMessage: CallMessage) {
         val callId = callMessage.callId ?: return
         val hangupIntent = WebRtcCallService.remoteHangupIntent(context, callId)
-        ContextCompat.startForegroundService(context, hangupIntent)
+        Handler(Looper.getMainLooper()).post {
+            ContextCompat.startForegroundService(context, hangupIntent)
+        }
     }
 
     private fun incomingAnswer(callMessage: CallMessage) {

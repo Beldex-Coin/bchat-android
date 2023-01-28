@@ -1074,8 +1074,20 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
     private fun updateFiatCurrency(balance: String) {
         if(balance.isNotEmpty() && balance!=null) {
-            val amount: BigDecimal = BigDecimal(balance.toDouble()).multiply(BigDecimal(price))
-            binding.tvFiatCurrency.text = getString(R.string.fiat_currency,amount.toDouble(),TextSecurePreferences.getCurrency(requireActivity()).toString())//"$price ${TextSecurePreferences.getCurrency(requireActivity()).toString()}"
+            try {
+                val amount: BigDecimal = BigDecimal(balance.toDouble()).multiply(BigDecimal(price))
+                binding.tvFiatCurrency.text = getString(
+                    R.string.fiat_currency,
+                    amount.toDouble(),
+                    TextSecurePreferences.getCurrency(requireActivity()).toString()
+                )//"$price ${TextSecurePreferences.getCurrency(requireActivity()).toString()}"
+            }catch (e:NumberFormatException){
+                Log.w("NumberFormat Exception:","invalid input string")
+                binding.tvFiatCurrency.text = getString(
+                    R.string.fiat_currency,
+                    0.00,
+                    TextSecurePreferences.getCurrency(requireActivity()).toString())
+            }
         }
     }
 

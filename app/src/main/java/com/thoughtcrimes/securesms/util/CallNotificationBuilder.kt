@@ -86,7 +86,7 @@ class CallNotificationBuilder {
             when (type) {
                 TYPE_INCOMING_CONNECTING -> {
                     builder.setContentText(context.getString(R.string.CallNotificationBuilder_connecting))
-                        .setNotificationSilent()
+                        .setSilent(true)
                 }
                 TYPE_INCOMING_PRE_OFFER,
                 TYPE_INCOMING_RINGING -> {

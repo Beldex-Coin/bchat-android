@@ -14,7 +14,7 @@ public class FailedNotificationBuilder extends AbstractNotificationBuilder {
   public FailedNotificationBuilder(Context context, NotificationPrivacyPreference privacy, Intent intent) {
     super(context, privacy);
 
-    setSmallIcon(R.drawable.ic_bchat_logo);
+    setSmallIcon(R.drawable.ic_notification_);
     setLargeIcon(BitmapFactory.decodeResource(context.getResources(),
                                               R.drawable.ic_action_warning_red));
     setContentTitle(context.getString(R.string.MessageNotifier_message_delivery_failed));

@@ -28,6 +28,7 @@ class CallNotificationBuilder {
         const val TYPE_ESTABLISHED = 3
         const val TYPE_INCOMING_CONNECTING = 4
         const val TYPE_INCOMING_PRE_OFFER = 5
+        const val TYPE_SCREEN_ON = 6
 
         @JvmStatic
         fun areNotificationsEnabled(context: Context): Boolean {
@@ -117,6 +118,10 @@ class CallNotificationBuilder {
                         R.drawable.ic_call_end_grey600_32dp,
                         R.string.NotificationBarManager__cancel_call
                     ))
+                }
+                TYPE_SCREEN_ON -> {
+                    builder.setContentText(context.getString(R.string.CallNotificationBuilder_screen_on))
+                        .setSilent(true)
                 }
                 else -> {
                     builder.setContentText(context.getString(R.string.NotificationBarManager_call_in_progress))

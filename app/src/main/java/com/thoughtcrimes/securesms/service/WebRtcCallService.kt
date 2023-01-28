@@ -29,6 +29,7 @@ import com.thoughtcrimes.securesms.util.CallNotificationBuilder.Companion.TYPE_I
 import com.thoughtcrimes.securesms.util.CallNotificationBuilder.Companion.TYPE_INCOMING_PRE_OFFER
 import com.thoughtcrimes.securesms.util.CallNotificationBuilder.Companion.TYPE_INCOMING_RINGING
 import com.thoughtcrimes.securesms.util.CallNotificationBuilder.Companion.TYPE_OUTGOING_RINGING
+import com.thoughtcrimes.securesms.util.CallNotificationBuilder.Companion.TYPE_SCREEN_ON
 import com.thoughtcrimes.securesms.webrtc.*
 import com.thoughtcrimes.securesms.webrtc.audio.OutgoingRinger
 import com.thoughtcrimes.securesms.webrtc.data.Event
@@ -568,7 +569,13 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
     }
 
     private fun handleScreenOnChange(intent: Intent) {
-        callManager.handleScreenOnChange(this)
+        val recipient = callManager.recipient ?: return
+        val connected = callManager.postConnectionEvent(Event.Connect) {
+            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.S && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                setCallInProgressNotification(TYPE_SCREEN_ON, recipient)
+            }
+            callManager.handleScreenOnChange(this)
+        }
     }
 
     private fun handleResponseMessage(intent: Intent) {

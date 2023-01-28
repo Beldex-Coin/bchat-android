@@ -146,6 +146,7 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
 
         fun denyCallIntent(context: Context) = Intent(context, WebRtcCallService::class.java).setAction(ACTION_DENY_CALL)
 
+        //SteveJosephh21 - ContextCompat.startForegroundService()
         fun remoteHangupIntent(context: Context, callId: UUID) = Intent(context, WebRtcCallService::class.java)
             .setAction(ACTION_REMOTE_HANGUP)
             .putExtra(EXTRA_CALL_ID, callId)
@@ -537,13 +538,15 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
     }
 
     private fun handleRemoteHangup(intent: Intent) {
-        if (callManager.callId != getCallId(intent)) {
+        //SteveJosephh21 - ContextCompat.startForegroundService()
+        /*if (callManager.callId != getCallId(intent)) {
             Log.e(TAG, "Hangup for non-active call...")
             TextSecurePreferences.setRemoteCallEnded(this, true)
             stopForeground(true)//Steve Josephh21-
             return
         }
-        onHangup()
+        Log.e(TAG, "Hangup for non-active call... 1")
+        onHangup()*/
     }
 
     private fun handleSetMuteAudio(intent: Intent) {

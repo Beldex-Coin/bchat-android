@@ -572,13 +572,14 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
     }
 
     private fun handleScreenOnChange(intent: Intent) {
-        val recipient = callManager.recipient ?: return
+        /*val recipient = callManager.recipient ?: return
         val connected = callManager.postConnectionEvent(Event.Connect) {
             if(Build.VERSION.SDK_INT < Build.VERSION_CODES.S && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 setCallInProgressNotification(TYPE_SCREEN_ON, recipient)
             }
             callManager.handleScreenOnChange(this)
-        }
+        }*/
+        callManager.handleScreenOnChange(this)
     }
 
     private fun handleResponseMessage(intent: Intent) {

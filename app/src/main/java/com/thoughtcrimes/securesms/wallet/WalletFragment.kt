@@ -892,8 +892,9 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 binding.syncStatusIcon.visibility=View.GONE
                 sync = getString(R.string.status_wallet_connecting)
                 setProgress(101)
-                binding.transactionTitle.visibility = View.INVISIBLE
-                binding.transactionLayoutCardView.visibility = View.GONE
+                //SteveJosephh21
+                //binding.transactionTitle.visibility = View.INVISIBLE
+                //binding.transactionLayoutCardView.visibility = View.GONE
                 //anchorBehavior.setHideable(true)
                 binding.syncStatus.setTextColor(
                     ContextCompat.getColor(

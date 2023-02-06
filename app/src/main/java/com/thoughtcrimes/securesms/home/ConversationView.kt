@@ -90,7 +90,7 @@ class ConversationView : LinearLayout {
         val snippet = highlightMentions(rawSnippet, thread.threadId, context)
 
         //SteveJosephh21-17 - if
-        val mmsSmsDatabase = get(context).mmsSmsDatabase()
+        /*val mmsSmsDatabase = get(context).mmsSmsDatabase()
         var reader: MmsSmsDatabase.Reader? = null
         try {
             reader = mmsSmsDatabase.readerFor(mmsSmsDatabase.getConversationSnippet(thread.threadId))
@@ -110,9 +110,9 @@ class ConversationView : LinearLayout {
         } finally {
             if (reader != null)
             reader.close()
-        }
+        }*/
         //Important - else
-        //binding.snippetTextView.text = snippet
+        binding.snippetTextView.text = snippet
 
         //binding.snippetTextView.typeface = if (unreadCount > 0 && !thread.isRead) Typeface.DEFAULT else Typeface.DEFAULT
         binding.snippetTextView.visibility = if (isTyping) View.GONE else View.VISIBLE

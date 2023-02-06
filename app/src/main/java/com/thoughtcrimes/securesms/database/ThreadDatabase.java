@@ -453,17 +453,17 @@ public class ThreadDatabase extends Database {
   }
 
   //SteveJosephh21-17
-  public Cursor getApprovedConversationList() {
+  /*public Cursor getApprovedConversationList() {
     String where  = "((" + MESSAGE_COUNT + " >= 0 AND (" + HAS_SENT + " = 1 OR " + RecipientDatabase.APPROVED + " = 1 OR "+ GroupDatabase.TABLE_NAME +"."+GROUP_ID+" LIKE '"+CLOSED_GROUP_PREFIX+"%')) OR " + GroupDatabase.TABLE_NAME + "." + GROUP_ID + " LIKE '" + OPEN_GROUP_PREFIX + "%') " +
             "AND " + ARCHIVED + " = 0 ";
     return getConversationList(where);
-  }
+  }*/
 
-  /*public Cursor getApprovedConversationList() {
+  public Cursor getApprovedConversationList() {
     String where  = "((" + MESSAGE_COUNT + " != 0 AND (" + HAS_SENT + " = 1 OR " + RecipientDatabase.APPROVED + " = 1 OR "+ GroupDatabase.TABLE_NAME +"."+GROUP_ID+" LIKE '"+CLOSED_GROUP_PREFIX+"%')) OR " + GroupDatabase.TABLE_NAME + "." + GROUP_ID + " LIKE '" + OPEN_GROUP_PREFIX + "%') " +
             "AND " + ARCHIVED + " = 0 ";
     return getConversationList(where);
-  }*/
+  }
 
   public Cursor getUnapprovedConversationList() {
     String where  = MESSAGE_COUNT + " != 0 AND " + ARCHIVED + " = 0 AND " + HAS_SENT + " = 0 AND " +
@@ -653,7 +653,7 @@ public class ThreadDatabase extends Database {
   }
 
   //SteveJosephh21-17
-  public boolean update(long threadId, boolean unarchive) {
+  /*public boolean update(long threadId, boolean unarchive) {
     MmsSmsDatabase mmsSmsDatabase = DatabaseComponent.get(context).mmsSmsDatabase();
     long count                    = mmsSmsDatabase.getConversationCount(threadId);
 
@@ -690,9 +690,9 @@ public class ThreadDatabase extends Database {
       if (reader != null)
         reader.close();
     }
-  }
+  }*/
 
-  /*public boolean update(long threadId, boolean unarchive) {
+  public boolean update(long threadId, boolean unarchive) {
     MmsSmsDatabase mmsSmsDatabase = DatabaseComponent.get(context).mmsSmsDatabase();
     long count                    = mmsSmsDatabase.getConversationCount(threadId);
 
@@ -733,7 +733,7 @@ public class ThreadDatabase extends Database {
       if (reader != null)
         reader.close();
     }
-  }*/
+  }
 
   public void setPinned(long threadId, boolean pinned) {
     ContentValues contentValues = new ContentValues(1);

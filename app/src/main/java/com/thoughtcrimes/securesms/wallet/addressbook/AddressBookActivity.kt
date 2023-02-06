@@ -72,10 +72,22 @@ class AddressBookActivity(
     }
 
     private fun update(members: List<String>) {
-        this.members = members
+        val temp: MutableList<String> = ArrayList()
+        for (d in members) {
+            if (getBeldexAddress(d) != "") {
+                temp.add(d)
+            }
+        }
+        this.members = temp
         binding.mainContentContainer.visibility = if (members.isEmpty()) View.GONE else View.VISIBLE
         binding.emptyStateContainer.visibility = if (members.isEmpty()) View.VISIBLE else View.GONE
         invalidateOptionsMenu()
+    }
+
+    private fun getBeldexAddress(d: String): String? {
+        val contact = DatabaseComponent.get(this).bchatContactDatabase()
+            .getContactWithBchatID(d)
+        return contact?.displayBeldexAddress(Contact.ContactContext.REGULAR) ?: ""
     }
 
     override fun onAddressBookClick(position: Int,address: String) {
@@ -112,12 +124,6 @@ class AddressBookActivity(
         val temp: MutableList<String> = ArrayList()
 
         for (d in arrayList) {
-            fun getUserDisplayName(publicKey: String): String {
-                val contact = DatabaseComponent.get(this).bchatContactDatabase()
-                    .getContactWithBchatID(publicKey)
-                return contact?.displayName(Contact.ContactContext.REGULAR) ?: publicKey
-            }
-
             if (getUserDisplayName(d).lowercase().contains(text!!)) {
                 temp.add(d)
             }
@@ -130,6 +136,11 @@ class AddressBookActivity(
         }
         //update recyclerview
         addressbooktadapter.updateList(temp)
+    }
+    private fun getUserDisplayName(publicKey: String): String {
+        val contact = DatabaseComponent.get(this).bchatContactDatabase()
+            .getContactWithBchatID(publicKey)
+        return contact?.displayName(Contact.ContactContext.REGULAR) ?: publicKey
     }
 }
 

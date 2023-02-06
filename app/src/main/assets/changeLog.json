@@ -118,6 +118,9 @@
           "description":"- Introduced Address book of contacts in Wallet"
         },
         {
+          "description":"- Introduced report issue feature"
+        },
+        {
           "description":"- Added text label on FAB"
         },
         {
@@ -140,6 +143,17 @@
         },
         {
           "description":"- Custom notifications improved for android version 12"
+        }
+      ]
+    },
+    {
+      "title": "2.0.1",
+      "descriptions": [
+        {
+          "description":"- Fix some of the crash issues in the wallet"
+        },
+        {
+          "description":"- Fix crash when call getting disconnected while wallet is syncing"
         }
       ]
     }

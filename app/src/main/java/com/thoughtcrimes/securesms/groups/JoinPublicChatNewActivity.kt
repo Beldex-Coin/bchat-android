@@ -36,10 +36,10 @@ import com.thoughtcrimes.securesms.util.State
 import com.thoughtcrimes.securesms.util.push
 import java.util.*
 import android.text.Editable
+import android.text.InputType
 
 import android.text.TextWatcher
-
-
+import android.view.inputmethod.EditorInfo
 
 
 class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
@@ -54,6 +54,20 @@ class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
         supportActionBar!!.title = resources.getString(R.string.join_group)
 
         binding.chatURLEditText.imeOptions = binding.chatURLEditText.imeOptions or 16777216 // Always use incognito keyboard
+        binding.chatURLEditText.setRawInputType(InputType.TYPE_CLASS_TEXT)
+        binding.chatURLEditText.setOnEditorActionListener { v, actionID, _ ->
+                if (actionID == EditorInfo.IME_ACTION_DONE) {
+                    val imm =
+                        v.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(v.windowToken, 0)
+                    if (binding.joinPublicChatButton.isEnabled) {
+                        joinPublicChatIfPossible()
+                    }
+                    true
+                } else {
+                    false
+                }
+            }
         binding.joinPublicChatButton.setOnClickListener {
             if (binding.joinPublicChatButton.isEnabled) {
                 joinPublicChatIfPossible()
@@ -203,7 +217,7 @@ class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
     private fun joinPublicChatIfPossible() {
         val inputMethodManager = getSystemService(BaseActionBarActivity.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(binding.chatURLEditText.windowToken, 0)
-        val chatURL = binding.chatURLEditText.text.trim().toString().toLowerCase(Locale.US)
+        val chatURL = binding.chatURLEditText.text.trim().toString().lowercase(Locale.US)
         joinPublicChatIfPossible(chatURL)
     }
     // endregion

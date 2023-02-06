@@ -23,6 +23,8 @@ import android.util.Log
 import android.util.Patterns
 import android.view.*
 import android.view.View.OnFocusChangeListener
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -529,115 +531,22 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
             }
         })*/
 
-        binding.sendButton.setOnClickListener {
-            if(CheckOnline.isOnline(requireContext())) {
-                if (!checkAddressNoError()) {
-                    shakeAddress()
-                    val enteredAddress: String =
-                        binding.beldexAddressEditTxtLayout.editText?.text.toString().trim()
-                    val dnsOA = dnsFromOpenAlias(enteredAddress)
-                    if (dnsOA != null) {
-                        Log.d("OpenAlias is %s", dnsOA)
-                    }
-                    dnsOA?.let { processOpenAlias(it) }
-                } else {
-                    if (binding.beldexAddressEditTxtLayout.editText?.text!!.isNotEmpty() && binding.beldexAmountEditTxtLayout.editText?.text!!.isNotEmpty() && validateBELDEXAmount(binding.beldexAmountEditTxtLayout.editText!!.text.toString()) && binding.beldexAmountEditTxtLayout.editText!!.text.toString()
-                            .toDouble() > 0.00
-                    ) {
-                        val txData: TxData = getTxData()
-                        txData.destinationAddress =
-                            binding.beldexAddressEditTxtLayout.editText?.text.toString().trim()
-                        ServiceHelper.ASSET = null
-
-                        if (getCleanAmountString(binding.beldexAmountEditTxtLayout.editText?.text.toString()).equals(
-                                Wallet.getDisplayAmount(totalFunds)
-                            )
-                        ) {
-                            val amount =
-                                (totalFunds - 10485760)// 10485760 == 050000000
-                            val bdx =
-                                getCleanAmountString(binding.beldexAmountEditTxtLayout.editText?.text.toString())
-                            Log.d(
-                                "If BDX Total Amount -> " + Wallet.getAmountFromString(bdx)
-                                    .toString() + " " + bdx + "" + amount, "true"
-                            )
-                            if (bdx != null) {
-                                txData.amount = amount
-                            } else {
-                                txData.amount = 0L
-                            }
-                        } else {
-                            val bdx =
-                                getCleanAmountString(binding.beldexAmountEditTxtLayout.editText?.text.toString())
-                            Log.d(
-                                "Else BDX Total Amount -> " + Wallet.getAmountFromString(bdx)
-                                    .toString() + " " + bdx, "true"
-                            )
-                            if (bdx != null) {
-                                txData.amount = Wallet.getAmountFromString(bdx)
-                            } else {
-                                txData.amount = 0L
-                            }
-                        }
-                        txData.userNotes =
-                            UserNotes("-")//etNotes.getEditText().getText().toString()
-                        if(TextSecurePreferences.getFeePriority(requireActivity())==0){
-                            txData.priority = PendingTransaction.Priority.Priority_Slow
-                        }else{
-                            txData.priority = PendingTransaction.Priority.Priority_Flash
-                        }
-                        txData.mixin = MIXIN
-                        binding.beldexAddressEditTxtLayout.editText?.text?.clear()
-                        binding.beldexAmountEditTxtLayout.editText?.text?.clear()
-                        binding.currencyEditText.text="0.00"
-                        //binding.currencyEditTxtLayout.editText?.text?.clear()
-
-                        //Important
-                        val lockManager: LockManager<CustomPinActivity> =
-                            LockManager.getInstance() as LockManager<CustomPinActivity>
-                        lockManager.enableAppLock(requireActivity(), CustomPinActivity::class.java)
-                        val intent = Intent(requireActivity(), CustomPinActivity::class.java)
-                        intent.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN)
-                        intent.putExtra("change_pin", false)
-                        intent.putExtra("send_authentication", true)
-                        resultLaunchers.launch(intent)
-                    }else if(binding.beldexAmountEditTxtLayout.editText?.text!!.isEmpty()){
-                        Log.d("Beldex", "beldexAmountEditTxtLayout isEmpty()")
-                        //binding.beldexAmountEditTxtLayout.error = getString(R.string.beldex_amount_error_message)
-                        binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.error_view_background)
-                        binding.beldexAmountErrorMessage.visibility =View.VISIBLE
-                        binding.beldexAmountErrorMessage.text=getString(R.string.beldex_amount_error_message)
-                    }else if(binding.beldexAmountEditTxtLayout.editText?.text.toString()=="."){
-                        Log.d("Beldex", "beldexAmountEditTxtLayout isEmpty()")
-                        //binding.beldexAmountEditTxtLayout.error = getString(R.string.beldex_amount_error_message)
-                        binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.error_view_background)
-                        binding.beldexAmountErrorMessage.visibility =View.VISIBLE
-                        binding.beldexAmountErrorMessage.text=getString(R.string.beldex_amount_valid_error_message)
-                    }else if(!validateBELDEXAmount(binding.beldexAmountEditTxtLayout.editText!!.text.toString())){
-                        if (binding.beldexAmountEditTxtLayout.editText!!.text.toString()
-                                .toDouble() <= 0.00
-                        ) {
-                            //binding.beldexAmountEditTxtLayout.error = getString(R.string.beldex_amount_valid_error_message)
-                            binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.error_view_background)
-                            binding.beldexAmountErrorMessage.visibility =View.VISIBLE
-                            binding.beldexAmountErrorMessage.text=getString(R.string.beldex_amount_valid_error_message)
-                        }else {
-                            binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.error_view_background)
-                            binding.beldexAmountErrorMessage.visibility = View.VISIBLE
-                            binding.beldexAmountErrorMessage.text =
-                                getString(R.string.beldex_amount_valid_error_message)
-                        }
-                    }else{
-                        Log.d("Beldex", "beldexAddressEditTxtLayout isEmpty()")
-                        //binding.beldexAddressEditTxtLayout.error = getString(R.string.beldex_address_error_message)
-                        binding.beldexAddressLayout.setBackgroundResource(R.drawable.error_view_background)
-                        binding.beldexAddressErrorMessage.visibility = View.VISIBLE
-                        binding.beldexAddressErrorMessage.text=getString(R.string.beldex_address_error_message)
-                    }
-                }
+        binding.beldexAmountEditTxtLayout.editText?.imeOptions =
+            EditorInfo.IME_ACTION_DONE or 16777216 // Always use incognito keyboard
+        binding.beldexAmountEditTxtLayout.editText?.setOnEditorActionListener { v, actionID, _ ->
+            if (actionID == EditorInfo.IME_ACTION_DONE) {
+                val imm =
+                    v.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(v.windowToken, 0)
+                createTransactionIfPossible()
+                true
             } else {
-                Toast.makeText(requireContext(), getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
+                false
             }
+        }
+
+        binding.sendButton.setOnClickListener {
+            createTransactionIfPossible()
         }
         if(TextSecurePreferences.getFeePriority(requireActivity())==0){
             binding.estimatedFeeTextView.text = getString(R.string.estimated_fee,calculateEstimatedFee(1).toString())
@@ -649,6 +558,117 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
         return binding.root
 
+    }
+
+    private fun createTransactionIfPossible(){
+        if(CheckOnline.isOnline(requireContext())) {
+            if (!checkAddressNoError()) {
+                shakeAddress()
+                val enteredAddress: String =
+                    binding.beldexAddressEditTxtLayout.editText?.text.toString().trim()
+                val dnsOA = dnsFromOpenAlias(enteredAddress)
+                if (dnsOA != null) {
+                    Log.d("OpenAlias is %s", dnsOA)
+                }
+                dnsOA?.let { processOpenAlias(it) }
+            } else {
+                if (binding.beldexAddressEditTxtLayout.editText?.text!!.isNotEmpty() && binding.beldexAmountEditTxtLayout.editText?.text!!.isNotEmpty() && validateBELDEXAmount(binding.beldexAmountEditTxtLayout.editText!!.text.toString()) && binding.beldexAmountEditTxtLayout.editText!!.text.toString()
+                        .toDouble() > 0.00
+                ) {
+                    val txData: TxData = getTxData()
+                    txData.destinationAddress =
+                        binding.beldexAddressEditTxtLayout.editText?.text.toString().trim()
+                    ServiceHelper.ASSET = null
+
+                    if (getCleanAmountString(binding.beldexAmountEditTxtLayout.editText?.text.toString()).equals(
+                            Wallet.getDisplayAmount(totalFunds)
+                        )
+                    ) {
+                        val amount =
+                            (totalFunds - 10485760)// 10485760 == 050000000
+                        val bdx =
+                            getCleanAmountString(binding.beldexAmountEditTxtLayout.editText?.text.toString())
+                        Log.d(
+                            "If BDX Total Amount -> " + Wallet.getAmountFromString(bdx)
+                                .toString() + " " + bdx + "" + amount, "true"
+                        )
+                        if (bdx != null) {
+                            txData.amount = amount
+                        } else {
+                            txData.amount = 0L
+                        }
+                    } else {
+                        val bdx =
+                            getCleanAmountString(binding.beldexAmountEditTxtLayout.editText?.text.toString())
+                        Log.d(
+                            "Else BDX Total Amount -> " + Wallet.getAmountFromString(bdx)
+                                .toString() + " " + bdx, "true"
+                        )
+                        if (bdx != null) {
+                            txData.amount = Wallet.getAmountFromString(bdx)
+                        } else {
+                            txData.amount = 0L
+                        }
+                    }
+                    txData.userNotes =
+                        UserNotes("-")//etNotes.getEditText().getText().toString()
+                    if(TextSecurePreferences.getFeePriority(requireActivity())==0){
+                        txData.priority = PendingTransaction.Priority.Priority_Slow
+                    }else{
+                        txData.priority = PendingTransaction.Priority.Priority_Flash
+                    }
+                    txData.mixin = MIXIN
+                    binding.beldexAddressEditTxtLayout.editText?.text?.clear()
+                    binding.beldexAmountEditTxtLayout.editText?.text?.clear()
+                    binding.currencyEditText.text="0.00"
+                    //binding.currencyEditTxtLayout.editText?.text?.clear()
+
+                    //Important
+                    val lockManager: LockManager<CustomPinActivity> =
+                        LockManager.getInstance() as LockManager<CustomPinActivity>
+                    lockManager.enableAppLock(requireActivity(), CustomPinActivity::class.java)
+                    val intent = Intent(requireActivity(), CustomPinActivity::class.java)
+                    intent.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN)
+                    intent.putExtra("change_pin", false)
+                    intent.putExtra("send_authentication", true)
+                    resultLaunchers.launch(intent)
+                }else if(binding.beldexAmountEditTxtLayout.editText?.text!!.isEmpty()){
+                    Log.d("Beldex", "beldexAmountEditTxtLayout isEmpty()")
+                    //binding.beldexAmountEditTxtLayout.error = getString(R.string.beldex_amount_error_message)
+                    binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.error_view_background)
+                    binding.beldexAmountErrorMessage.visibility =View.VISIBLE
+                    binding.beldexAmountErrorMessage.text=getString(R.string.beldex_amount_error_message)
+                }else if(binding.beldexAmountEditTxtLayout.editText?.text.toString()=="."){
+                    Log.d("Beldex", "beldexAmountEditTxtLayout isEmpty()")
+                    //binding.beldexAmountEditTxtLayout.error = getString(R.string.beldex_amount_error_message)
+                    binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.error_view_background)
+                    binding.beldexAmountErrorMessage.visibility =View.VISIBLE
+                    binding.beldexAmountErrorMessage.text=getString(R.string.beldex_amount_valid_error_message)
+                }else if(!validateBELDEXAmount(binding.beldexAmountEditTxtLayout.editText!!.text.toString())){
+                    if (binding.beldexAmountEditTxtLayout.editText!!.text.toString()
+                            .toDouble() <= 0.00
+                    ) {
+                        //binding.beldexAmountEditTxtLayout.error = getString(R.string.beldex_amount_valid_error_message)
+                        binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.error_view_background)
+                        binding.beldexAmountErrorMessage.visibility =View.VISIBLE
+                        binding.beldexAmountErrorMessage.text=getString(R.string.beldex_amount_valid_error_message)
+                    }else {
+                        binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.error_view_background)
+                        binding.beldexAmountErrorMessage.visibility = View.VISIBLE
+                        binding.beldexAmountErrorMessage.text =
+                            getString(R.string.beldex_amount_valid_error_message)
+                    }
+                }else{
+                    Log.d("Beldex", "beldexAddressEditTxtLayout isEmpty()")
+                    //binding.beldexAddressEditTxtLayout.error = getString(R.string.beldex_address_error_message)
+                    binding.beldexAddressLayout.setBackgroundResource(R.drawable.error_view_background)
+                    binding.beldexAddressErrorMessage.visibility = View.VISIBLE
+                    binding.beldexAddressErrorMessage.text=getString(R.string.beldex_address_error_message)
+                }
+            }
+        } else {
+            Toast.makeText(requireContext(), getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
+        }
     }
 
     inner class AsyncGetUnlockedBalance(val wallet: Listener?) :

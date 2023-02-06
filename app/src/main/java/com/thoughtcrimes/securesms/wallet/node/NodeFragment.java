@@ -40,6 +40,7 @@ import com.thoughtcrimes.securesms.model.WalletManager;
 import com.thoughtcrimes.securesms.util.Helper;
 import com.thoughtcrimes.securesms.util.NodePinger;
 import com.thoughtcrimes.securesms.wallet.WalletActivity;
+import com.thoughtcrimes.securesms.wallet.utils.dialog.ProgressDialog;
 
 import java.io.File;
 import java.net.InetSocketAddress;
@@ -69,6 +70,8 @@ public class NodeFragment extends Fragment
     private NodeInfoAdapter nodesAdapter;
 
     private Listener activityCallback;
+
+    private ProgressDialog progressBar;
 
     public interface Listener {
         File getStorageRoot();
@@ -518,8 +521,11 @@ public class NodeFragment extends Fragment
         }
 
         private void test() {
-            if (applyChanges())
+            if (applyChanges()){
                 new AsyncTestNode().execute();
+            }else{
+                progressBar.dismiss();
+            }
         }
 
         private void showKeyboard() {
@@ -543,12 +549,12 @@ public class NodeFragment extends Fragment
                /* tvResult.setText(getString(R.string.node_result,
                         FORMATTER.format(nodeInfo.getHeight()), nodeInfo.getMajorVersion(),
                         nodeInfo.getResponseTime(), nodeInfo.getHostAddress()));*/
-                tvResult.setText(getText(R.string.add_node_success));
+                tvResult.setText(getString(R.string.add_node_success));
                 tvResultCardView.setCardBackgroundColor(ContextCompat.getColor(requireContext(),(R.color.button_green)));
 
                 iVVerified.setVisibility(View.VISIBLE);
                 iVConnectionError.setVisibility(View.GONE);
-                tvResult.setTextColor(ContextCompat.getColor(requireContext(), R.color.text));
+                tvResult.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
                 TextSecurePreferences.setNodeIsTested(requireContext(),true);
 
                 Log.d("Beldex","showTestResult in NodeFragment()");
@@ -556,6 +562,7 @@ public class NodeFragment extends Fragment
                 Log.d("Beldex","showTestResult in NodeFragment()");
                 tvResult.setText(NodeInfoAdapter.getResponseErrorText(getActivity(), nodeInfo.getResponseCode()));
                 tvResultCardView.setCardBackgroundColor(ContextCompat.getColor(requireContext(),R.color.red));
+                tvResult.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
                 TextSecurePreferences.setNodeIsTested(requireContext(),false);
                 iVVerified.setVisibility(View.GONE);
                 iVConnectionError.setVisibility(View.VISIBLE);
@@ -568,6 +575,12 @@ public class NodeFragment extends Fragment
             LayoutInflater li = LayoutInflater.from(alertDialogBuilder.getContext());
             View promptsView = li.inflate(R.layout.prompt_editnode, null);
             alertDialogBuilder.setView(promptsView);
+
+            if (TextSecurePreferences.isScreenSecurityEnabled(requireContext())) {
+                getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+            } else {
+                getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
+            }
 
             etNodeName = promptsView.findViewById(R.id.nodeNameEditTxtLayout);
             etNodeHost = promptsView.findViewById(R.id.nodeAddressEditTxtLayout);
@@ -613,6 +626,10 @@ public class NodeFragment extends Fragment
                     testButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            progressBar = new ProgressDialog(getContext());
+                            progressBar.setCancelable(false);
+                            progressBar.setMessage(getString(R.string.testing_the_node));
+                            progressBar.show();
                             test();
                         }
                     });
@@ -684,6 +701,7 @@ public class NodeFragment extends Fragment
             protected void onPostExecute(Boolean result) {
                 if (editDialog != null) {
                     showTestResult();
+                    progressBar.dismiss();
                 }
                 if (shutdown) {
                     if (nodeBackup == null) {

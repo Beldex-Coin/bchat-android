@@ -452,6 +452,13 @@ public class ThreadDatabase extends Database {
     return getConversationList(where);
   }
 
+  //SteveJosephh21-17
+  /*public Cursor getApprovedConversationList() {
+    String where  = "((" + MESSAGE_COUNT + " >= 0 AND (" + HAS_SENT + " = 1 OR " + RecipientDatabase.APPROVED + " = 1 OR "+ GroupDatabase.TABLE_NAME +"."+GROUP_ID+" LIKE '"+CLOSED_GROUP_PREFIX+"%')) OR " + GroupDatabase.TABLE_NAME + "." + GROUP_ID + " LIKE '" + OPEN_GROUP_PREFIX + "%') " +
+            "AND " + ARCHIVED + " = 0 ";
+    return getConversationList(where);
+  }*/
+
   public Cursor getApprovedConversationList() {
     String where  = "((" + MESSAGE_COUNT + " != 0 AND (" + HAS_SENT + " = 1 OR " + RecipientDatabase.APPROVED + " = 1 OR "+ GroupDatabase.TABLE_NAME +"."+GROUP_ID+" LIKE '"+CLOSED_GROUP_PREFIX+"%')) OR " + GroupDatabase.TABLE_NAME + "." + GROUP_ID + " LIKE '" + OPEN_GROUP_PREFIX + "%') " +
             "AND " + ARCHIVED + " = 0 ";
@@ -644,6 +651,46 @@ public class ThreadDatabase extends Database {
 
     notifyConversationListeners(threadId);
   }
+
+  //SteveJosephh21-17
+  /*public boolean update(long threadId, boolean unarchive) {
+    MmsSmsDatabase mmsSmsDatabase = DatabaseComponent.get(context).mmsSmsDatabase();
+    long count                    = mmsSmsDatabase.getConversationCount(threadId);
+
+    boolean shouldDeleteEmptyThread = deleteThreadOnEmpty(threadId);
+
+    if (count == 0 && shouldDeleteEmptyThread) {
+      deleteThread(threadId);
+      notifyConversationListListeners();
+      return true;
+    }
+
+    MmsSmsDatabase.Reader reader = null;
+
+    try {
+      reader = mmsSmsDatabase.readerFor(mmsSmsDatabase.getConversationSnippet(threadId));
+      MessageRecord record = null;
+      if (reader != null) {
+        record = reader.getNext();
+        while (record != null && record.isDeleted()) {
+          record = reader.getNext();
+        }
+      }
+      if (record != null && !record.isDeleted()) {
+        updateThread(threadId, count, getFormattedBodyFor(record), getAttachmentUriFor(record),
+                record.getTimestamp(), record.getDeliveryStatus(), record.getDeliveryReceiptCount(),
+                record.getType(), unarchive, record.getExpiresIn(), record.getReadReceiptCount());
+        notifyConversationListListeners();
+        return false;
+      } else {
+        notifyConversationListListeners();
+        return false;
+      }
+    } finally {
+      if (reader != null)
+        reader.close();
+    }
+  }*/
 
   public boolean update(long threadId, boolean unarchive) {
     MmsSmsDatabase mmsSmsDatabase = DatabaseComponent.get(context).mmsSmsDatabase();

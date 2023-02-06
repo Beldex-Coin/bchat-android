@@ -74,7 +74,7 @@ public class RestoreHeight {
         blockheight.put("2022-07-01", 1291910L);
         blockheight.put("2022-08-01", 1361030L);
         blockheight.put("2022-09-01", 1456070L);
-        blockheight.put("2022-10-01", 1674950L);
+        blockheight.put("2022-10-01", 1574150L);
         blockheight.put("2022-11-01", 1674950L);
         blockheight.put("2022-12-01", 1764230L);
         blockheight.put("2023-01-01", 1850630L);

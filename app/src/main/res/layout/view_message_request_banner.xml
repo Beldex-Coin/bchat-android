@@ -68,19 +68,20 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:fontFamily="@font/poppins_regular"
         android:id="@+id/timestampTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/medium_spacing"
+        android:layout_marginEnd="10dp"
         android:alpha="0.4"
         android:ellipsize="end"
+        android:fontFamily="@font/poppins_regular"
         android:maxLines="1"
+        android:gravity="end"
         android:textColor="@color/text"
-        android:textSize="@dimen/small_font_size"
-        android:layout_marginEnd="10dp"
+        android:textSize="11sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/expandMessageRequest"
+        app:layout_constraintStart_toEndOf="@+id/conversationViewDisplayNameTextView"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="9:41 AM" />
     <ImageView

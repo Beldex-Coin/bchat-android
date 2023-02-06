@@ -29,6 +29,7 @@ import com.thoughtcrimes.securesms.util.CallNotificationBuilder.Companion.TYPE_I
 import com.thoughtcrimes.securesms.util.CallNotificationBuilder.Companion.TYPE_INCOMING_PRE_OFFER
 import com.thoughtcrimes.securesms.util.CallNotificationBuilder.Companion.TYPE_INCOMING_RINGING
 import com.thoughtcrimes.securesms.util.CallNotificationBuilder.Companion.TYPE_OUTGOING_RINGING
+import com.thoughtcrimes.securesms.util.CallNotificationBuilder.Companion.TYPE_SCREEN_ON
 import com.thoughtcrimes.securesms.webrtc.*
 import com.thoughtcrimes.securesms.webrtc.audio.OutgoingRinger
 import com.thoughtcrimes.securesms.webrtc.data.Event
@@ -145,6 +146,7 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
 
         fun denyCallIntent(context: Context) = Intent(context, WebRtcCallService::class.java).setAction(ACTION_DENY_CALL)
 
+        //SteveJosephh21 - ContextCompat.startForegroundService()
         fun remoteHangupIntent(context: Context, callId: UUID) = Intent(context, WebRtcCallService::class.java)
             .setAction(ACTION_REMOTE_HANGUP)
             .putExtra(EXTRA_CALL_ID, callId)
@@ -536,13 +538,15 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
     }
 
     private fun handleRemoteHangup(intent: Intent) {
-        if (callManager.callId != getCallId(intent)) {
+        //SteveJosephh21 - ContextCompat.startForegroundService()
+        /*if (callManager.callId != getCallId(intent)) {
             Log.e(TAG, "Hangup for non-active call...")
             TextSecurePreferences.setRemoteCallEnded(this, true)
             stopForeground(true)//Steve Josephh21-
             return
         }
-        onHangup()
+        Log.e(TAG, "Hangup for non-active call... 1")
+        onHangup()*/
     }
 
     private fun handleSetMuteAudio(intent: Intent) {
@@ -568,6 +572,13 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
     }
 
     private fun handleScreenOnChange(intent: Intent) {
+        /*val recipient = callManager.recipient ?: return
+        val connected = callManager.postConnectionEvent(Event.Connect) {
+            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.S && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                setCallInProgressNotification(TYPE_SCREEN_ON, recipient)
+            }
+            callManager.handleScreenOnChange(this)
+        }*/
         callManager.handleScreenOnChange(this)
     }
 
@@ -737,6 +748,10 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
                 }
             }
         }
+        wiredHeadsetStateReceiver?.let { wiredHeadsetStateReceiver ->
+            unregisterReceiver(wiredHeadsetStateReceiver)
+        }
+        wiredHeadsetStateReceiver = null
         super.onDestroy()
     }
 

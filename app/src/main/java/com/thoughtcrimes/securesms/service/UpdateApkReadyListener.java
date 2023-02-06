@@ -68,7 +68,7 @@ public class UpdateApkReadyListener extends BroadcastReceiver {
         .setOngoing(true)
         .setContentTitle(context.getString(R.string.UpdateApkReadyListener_Signal_update))
         .setContentText(context.getString(R.string.UpdateApkReadyListener_a_new_version_of_signal_is_available_tap_to_update))
-        .setSmallIcon(R.drawable.ic_bchat_logo)
+        .setSmallIcon(R.drawable.ic_notification_)
         .setColor(context.getResources().getColor(R.color.textsecure_primary))
         .setPriority(NotificationCompat.PRIORITY_HIGH)
         .setCategory(NotificationCompat.CATEGORY_REMINDER)

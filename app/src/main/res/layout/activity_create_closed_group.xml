@@ -39,7 +39,11 @@
                             android:id="@+id/nameEditText"
                             style="@style/SmallBchatEditText"
                             android:layout_width="match_parent"
+                            android:gravity="center_vertical"
                             android:layout_height="64dp"
+                            android:imeOptions="actionDone"
+                            android:maxLines="3"
+                            android:inputType="textMultiLine"
                             android:hint="@string/activity_create_closed_group_edit_text_hint" />
 
                     </LinearLayout>

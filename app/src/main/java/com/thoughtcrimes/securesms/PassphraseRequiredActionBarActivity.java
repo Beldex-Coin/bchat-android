@@ -66,10 +66,13 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
     Log.i(TAG, "onPause()");
     super.onPause();
     //SteveJosephh21 -
-    if (powerButtonReceiver == null) {
-      powerButtonReceiver = new PowerButtonReceiver();
-
-      registerReceiver(powerButtonReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
+    if (TextSecurePreferences.getCallisActive(ApplicationContext.getInstance(this))) {
+      if (powerButtonReceiver == null) {
+        powerButtonReceiver = new PowerButtonReceiver();
+      }
+      if (powerButtonReceiver != null) {
+        registerReceiver(powerButtonReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
+      }
     }
   }
 
@@ -78,10 +81,14 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
   protected void onResume() {
     Log.i(TAG, "onResume()");
     super.onResume();
-    if (powerButtonReceiver == null) {
-      powerButtonReceiver = new PowerButtonReceiver();
 
-      registerReceiver(powerButtonReceiver, new IntentFilter(Intent.ACTION_USER_PRESENT));
+    if (TextSecurePreferences.getCallisActive(ApplicationContext.getInstance(this))) {
+      if (powerButtonReceiver == null) {
+        powerButtonReceiver = new PowerButtonReceiver();
+      }
+      if (powerButtonReceiver != null) {
+        registerReceiver(powerButtonReceiver, new IntentFilter(Intent.ACTION_USER_PRESENT));
+      }
     }
   }
 
@@ -89,6 +96,12 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
   protected void onDestroy() {
     Log.i(TAG, "onDestroy()");
     super.onDestroy();
+    if (TextSecurePreferences.getCallisActive(ApplicationContext.getInstance(this))) {
+      if (powerButtonReceiver != null) {
+        this.unregisterReceiver(powerButtonReceiver);
+        powerButtonReceiver = null;
+      }
+    }
     removeClearKeyReceiver(this);
   }
 

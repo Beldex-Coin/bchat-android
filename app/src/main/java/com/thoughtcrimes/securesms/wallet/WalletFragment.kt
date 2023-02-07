@@ -34,6 +34,7 @@ import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.util.BChatThreadPoolExecutor
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.NodePinger
+import com.thoughtcrimes.securesms.util.daterangepicker.DateRangePicker
 import com.thoughtcrimes.securesms.wallet.service.exchange.ExchangeApi
 import com.thoughtcrimes.securesms.wallet.service.exchange.ExchangeRate
 import com.thoughtcrimes.securesms.wallet.utils.common.fetchPriceFor
@@ -656,50 +657,27 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                         TextSecurePreferences.setOutgoingTransactionStatus(requireActivity(), false)
                     }
                 }else{
-                    val datePicker = MaterialDatePicker.Builder.dateRangePicker()
-                        .setTheme(R.style.MaterialCalendarTheme)
-                        .build()
-                    datePicker.show(requireActivity().supportFragmentManager, "DatePicker")
-                    // Setting up the event for when ok is clicked
-                    datePicker.addOnPositiveButtonClickListener {
-                        Toast.makeText(context, getString(R.string.filter_applied), Toast.LENGTH_LONG).show()
-                        if(popupMenu.menu[1].isChecked && popupMenu.menu[2].isChecked){
-                            filterTransactionsByDate(getDaysBetweenDates(Date(datePicker.selection!!.first!!),Date(datePicker.selection!!.second!!)),adapterItems)
-                        }else if(popupMenu.menu[1].isChecked){
-                            filterTransactionsByDate(getDaysBetweenDates(Date(datePicker.selection!!.first!!),Date(datePicker.selection!!.second!!)),filterTempList(TransactionInfo.Direction.Direction_In, adapterItems))
-                        }else if(popupMenu.menu[2].isChecked){
-                            filterTransactionsByDate(getDaysBetweenDates(Date(datePicker.selection!!.first!!),Date(datePicker.selection!!.second!!)),filterTempList(TransactionInfo.Direction.Direction_Out, adapterItems))
-                        }else{
-                            filterTransactionsByDate(getDaysBetweenDates(Date(datePicker.selection!!.first!!),Date(datePicker.selection!!.second!!)),emptyList)
-                        }
-                    }
-                    // Setting up the event for when cancelled is clicked
-                    datePicker.addOnNegativeButtonClickListener {
-                    }
-                    // Setting up the event for when back button is pressed
-                    datePicker.addOnCancelListener {
-                    }
-                    /*val callback = RangeDaysPickCallback {startDate,endDate->
-                        Toast.makeText(requireActivity(),"${startDate.longDateString}, ${endDate.longDateString}",Toast.LENGTH_SHORT).show()
-                        if(popupMenu.menu[1].isChecked && popupMenu.menu[2].isChecked){
-                            filterTransactionsByDate(getDaysBetweenDates(startDate.getTime(),endDate.getTime()),adapterItems)
-                        }else if(popupMenu.menu[1].isChecked){
-                            filterTransactionsByDate(getDaysBetweenDates(startDate.getTime(),endDate.getTime()),filterTempList(TransactionInfo.Direction.Direction_In, adapterItems))
-                        }else if(popupMenu.menu[2].isChecked){
-                            filterTransactionsByDate(getDaysBetweenDates(startDate.getTime(),endDate.getTime()),filterTempList(TransactionInfo.Direction.Direction_Out, adapterItems))
-                        }else{
-                            filterTransactionsByDate(getDaysBetweenDates(startDate.getTime(),endDate.getTime()),emptyList)
-                        }
-                    }
-                    val today: PrimeCalendar = CivilCalendar(locale = Locale.ENGLISH).also { civilCalendar->
-                        civilCalendar.year = 2022                       // determines starting year
-                        civilCalendar.month = 9                         // determines starting month
-                        civilCalendar.firstDayOfWeek = Calendar.MONDAY  // sets first day of week to Monday
-                    }
-                    val datePicker = dialogWith(today)
-                        .pickRangeDays(callback)
-                        .build()
-                    datePicker.show(requireActivity().supportFragmentManager, "SOME_TAG")*/
+                    val dateRangePicker = DateRangePicker(requireContext(),
+                        DateRangePicker.OnCalenderClickListener { selectedStartDate, selectedEndDate ->
+                            Toast.makeText(
+                                context,
+                                getString(R.string.filter_applied),
+                                Toast.LENGTH_LONG
+                            ).show()
+                            Log.d("Date-", selectedStartDate.toString() + ", " + selectedEndDate.toString())
+                             if(popupMenu.menu[1].isChecked && popupMenu.menu[2].isChecked){
+                                 filterTransactionsByDate(getDaysBetweenDates(Date(selectedStartDate),Date(selectedEndDate)),adapterItems)
+                             }else if(popupMenu.menu[1].isChecked){
+                                 filterTransactionsByDate(getDaysBetweenDates(Date(selectedStartDate),Date(selectedEndDate)),filterTempList(TransactionInfo.Direction.Direction_In, adapterItems))
+                             }else if(popupMenu.menu[2].isChecked){
+                                 filterTransactionsByDate(getDaysBetweenDates(Date(selectedStartDate),Date(selectedEndDate)),filterTempList(TransactionInfo.Direction.Direction_Out, adapterItems))
+                             }else{
+                                 filterTransactionsByDate(getDaysBetweenDates(Date(selectedStartDate),Date(selectedEndDate)),emptyList)
+                             }
+                        })
+                    dateRangePicker.show()
+                    dateRangePicker.setBtnPositiveText("OK")
+                    dateRangePicker.setBtnNegativeText("CANCEL")
                 }
                 false
             }
@@ -914,8 +892,9 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 binding.syncStatusIcon.visibility=View.GONE
                 sync = getString(R.string.status_wallet_connecting)
                 setProgress(101)
-                binding.transactionTitle.visibility = View.INVISIBLE
-                binding.transactionLayoutCardView.visibility = View.GONE
+                //SteveJosephh21
+                //binding.transactionTitle.visibility = View.INVISIBLE
+                //binding.transactionLayoutCardView.visibility = View.GONE
                 //anchorBehavior.setHideable(true)
                 binding.syncStatus.setTextColor(
                     ContextCompat.getColor(
@@ -1096,8 +1075,20 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
     private fun updateFiatCurrency(balance: String) {
         if(balance.isNotEmpty() && balance!=null) {
-            val amount: BigDecimal = BigDecimal(balance.toDouble()).multiply(BigDecimal(price))
-            binding.tvFiatCurrency.text = getString(R.string.fiat_currency,amount.toDouble(),TextSecurePreferences.getCurrency(requireActivity()).toString())//"$price ${TextSecurePreferences.getCurrency(requireActivity()).toString()}"
+            try {
+                val amount: BigDecimal = BigDecimal(balance.toDouble()).multiply(BigDecimal(price))
+                binding.tvFiatCurrency.text = getString(
+                    R.string.fiat_currency,
+                    amount.toDouble(),
+                    TextSecurePreferences.getCurrency(requireActivity()).toString()
+                )//"$price ${TextSecurePreferences.getCurrency(requireActivity()).toString()}"
+            }catch (e:NumberFormatException){
+                Log.w("NumberFormat Exception:","invalid input string")
+                binding.tvFiatCurrency.text = getString(
+                    R.string.fiat_currency,
+                    0.00,
+                    TextSecurePreferences.getCurrency(requireActivity()).toString())
+            }
         }
     }
 

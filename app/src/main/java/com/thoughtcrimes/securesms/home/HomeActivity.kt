@@ -147,7 +147,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     private var node1: NodeInfo? = null
 
     private val favouriteNodeslist = mutableSetOf<NodeInfo>()
-    private val supportBChatID = "bdb890a974a25ef50c64cc4e3270c4c49c7096c433b8eecaf011c1ad000e426813"
+    private val reportIssueBChatID = "bdb890a974a25ef50c64cc4e3270c4c49c7096c433b8eecaf011c1ad000e426813"
     private val globalSearchAdapter = GlobalSearchAdapter { model ->
         when (model) {
             is GlobalSearchAdapter.Model.Message -> {
@@ -1210,7 +1210,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     }
 
     private fun sendMessageToSupport() {
-        val recipient = Recipient.from(this, Address.fromSerialized(supportBChatID), false)
+        val recipient = Recipient.from(this, Address.fromSerialized(reportIssueBChatID), false)
         val intent = Intent(this, ConversationActivityV2::class.java)
         intent.putExtra(ConversationActivityV2.ADDRESS, recipient.address)
         intent.setDataAndType(getIntent().data, getIntent().type)

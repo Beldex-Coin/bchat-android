@@ -569,6 +569,10 @@
     <string name="preferences_notifications__in_chat_sounds" translatable="false">In-chat sounds</string>
     <string name="preferences_notifications__show" translatable="false">Show</string>
     <string name="preferences_notifications__priority" translatable="false">Priority</string>
+    <string name="preferences_chats__font_size" translatable="false">Font Size</string>
+    <string name="preferences_chat_font_small" translatable="false">Small</string>
+    <string name="preferences_chat_font_medium" translatable="false">Medium</string>
+    <string name="preferences_chat_font_large" translatable="false">large</string>
 
     <!-- **************************************** -->
     <!-- menus -->
@@ -1314,5 +1318,12 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="waiting_for_network" translatable="false">Waiting for network..</string>
     <string name="waiting_for_connection" translatable="false"> Waiting for connection..</string>
     <string name="fetching_balance" translatable="false">Fetching Balance</string>
+    <string name="report_issue" translatable="false">Report Issue</string>
     <string name="filter_applied" translatable="false">Filter applied</string>
+    <string name="testing_the_node" translatable="false">Testing the node...</string>
+    <string name="str_start_date" translatable="false">start date</string>
+    <string name="str_end_date" translatable="false">end date</string>
+    <string name="alert_start_date" translatable="false">Please enter start date</string>
+    <string name="alert_end_date" translatable="false">Please enter end date</string>
+    <string name="CallNotificationBuilder_screen_on" translatable="false">Video Resumed</string>
 </resources>

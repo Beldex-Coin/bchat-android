@@ -1,0 +1,91 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/drp_tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/page_background"
+        app:tabTextColor="@color/text"
+        app:tabIndicatorColor="@color/button_green"
+        app:tabSelectedTextColor="@color/button_green" />
+
+    <LinearLayout
+        android:id="@+id/drp_llDates"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/card_color"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/drp_tvStartDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@color/text"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/drp_tvEndDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@color/text"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <ViewFlipper
+        android:id="@+id/drp_viewFlipper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <CalendarView
+            android:id="@+id/drp_calStartDate"
+            android:layout_width="match_parent"
+            android:background="@color/card_color"
+            android:layout_height="wrap_content" />
+
+        <CalendarView
+            android:id="@+id/drp_calEndDate"
+            android:layout_width="match_parent"
+            android:background="@color/card_color"
+            android:layout_height="wrap_content" />
+    </ViewFlipper>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/card_color"
+        android:paddingBottom="10dp">
+
+        <TextView
+            android:id="@+id/drp_btnPositive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="10dp"
+            android:padding="10dp"
+            android:text="@string/ok"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:textColor="@color/text" />
+
+        <TextView
+            android:id="@+id/drp_btnNegative"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="3dp"
+            android:layout_toStartOf="@id/drp_btnPositive"
+            android:padding="10dp"
+            android:text="@string/cancel"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:textColor="@color/text" />
+    </RelativeLayout>
+</LinearLayout>

@@ -3,9 +3,12 @@ package com.thoughtcrimes.securesms.groups
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
@@ -54,14 +57,31 @@ class CreateClosedGroupActivity : PassphraseRequiredActionBarActivity(), LoaderM
         binding = ActivityCreateClosedGroupBinding.inflate(layoutInflater)
         setContentView(binding.root)
         supportActionBar!!.title = resources.getString(R.string.activity_create_closed_group_title)
-        binding.recyclerView.adapter = this.selectContactsAdapter
-        binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        binding.createNewPrivateChatButton.setOnClickListener { createNewPrivateChat() }
-        binding.createNewPrivateButton.setOnClickListener {
-            if (!isLoading) {
-                createClosedGroup()
+
+        with(binding){
+            recyclerView.adapter = this@CreateClosedGroupActivity.selectContactsAdapter
+            recyclerView.layoutManager = LinearLayoutManager(this@CreateClosedGroupActivity)
+            createNewPrivateChatButton.setOnClickListener { createNewPrivateChat() }
+            createNewPrivateButton.setOnClickListener {
+                if (!isLoading) {
+                    createClosedGroup()
+                }
+                LoaderManager.getInstance(this@CreateClosedGroupActivity).initLoader(0, null, this@CreateClosedGroupActivity)
             }
-            LoaderManager.getInstance(this).initLoader(0, null, this)
+            nameEditText.imeOptions =
+                EditorInfo.IME_ACTION_DONE or 16777216 // Always use incognito keyboard
+            nameEditText.setRawInputType(InputType.TYPE_CLASS_TEXT)
+            nameEditText.setOnEditorActionListener { v, actionID, _ ->
+                if (actionID == EditorInfo.IME_ACTION_DONE) {
+                    val imm =
+                        v.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(v.windowToken, 0)
+                    createClosedGroup()
+                    true
+                } else {
+                    false
+                }
+            }
         }
         LoaderManager.getInstance(this).initLoader(0, null, this)
     }
@@ -132,7 +152,10 @@ class CreateClosedGroupActivity : PassphraseRequiredActionBarActivity(), LoaderM
         val userPublicKey = TextSecurePreferences.getLocalNumber(this)!!
         isLoading = true
         binding.loaderContainer.fadeIn()
+        binding.nameEditText.text.clear()
+        binding.nameEditText.isFocusable = false
         MessageSender.createClosedGroup(name.toString(), selectedMembers + setOf( userPublicKey )).successUi { groupID ->
+            binding.nameEditText.isFocusable = true
             binding.loaderContainer.fadeOut()
             isLoading = false
             val threadID = DatabaseComponent.get(this).threadDatabase().getOrCreateThreadIdFor(
@@ -142,6 +165,7 @@ class CreateClosedGroupActivity : PassphraseRequiredActionBarActivity(), LoaderM
                 finish()
             }
         }.failUi {
+            binding.nameEditText.isFocusable = true
             binding.loaderContainer.fadeOut()
             isLoading = false
             Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()

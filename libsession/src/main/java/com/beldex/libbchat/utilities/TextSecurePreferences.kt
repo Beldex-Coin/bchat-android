@@ -235,6 +235,9 @@ interface TextSecurePreferences {
     fun getNodeIsMainnet():Boolean
     fun setNodeIsMainnet(status: Boolean)
 
+    fun setCallisActive(status: Boolean)
+    fun getCallisActive(): Boolean
+
 
     companion object {
         val TAG = TextSecurePreferences::class.simpleName
@@ -341,6 +344,7 @@ interface TextSecurePreferences {
         const val CHANGE_CURRENCY = "change_currency"
         const val GET_FIAT_CURRENCY_API_STATUS = "get_fiat_currency_api_status"
         const val NODE_IS_MAINNET = "node_is_mainnet"
+        const val CALL_IS_ACTIVE = "call_is_active"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -1296,6 +1300,16 @@ interface TextSecurePreferences {
             setBooleanPreference(context, NODE_IS_MAINNET, status)
         }
 
+        @JvmStatic
+        fun setCallisActive(context: Context,status: Boolean) {
+            setBooleanPreference(context, CALL_IS_ACTIVE, status)
+        }
+
+        @JvmStatic
+        fun getCallisActive(context: Context):Boolean {
+            return getBooleanPreference(context, CALL_IS_ACTIVE, true)
+        }
+
     }
 }
 
@@ -2112,5 +2126,14 @@ class AppTextSecurePreferences @Inject constructor(
     override fun setNodeIsMainnet(status: Boolean) {
         setBooleanPreference(TextSecurePreferences.NODE_IS_MAINNET,status)
     }
+
+    override fun setCallisActive(status: Boolean) {
+        setBooleanPreference(TextSecurePreferences.CALL_IS_ACTIVE,status)
+    }
+
+    override fun getCallisActive(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.IS_NODE_TESTED,false)
+    }
+
 
 }

@@ -105,6 +105,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
             //rotationListener.enable()
             binding = ActivityWebRtcCallBinding.inflate(layoutInflater)
             setContentView(binding.root)
+            TextSecurePreferences.setCallisActive(this, true)
            /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
                 setShowWhenLocked(true)
                 setTurnScreenOn(true)
@@ -249,6 +250,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
 
         override fun onDestroy() {
             super.onDestroy()
+            TextSecurePreferences.setCallisActive(this,false)
             hangupReceiver?.let { receiver ->
                 LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
             }

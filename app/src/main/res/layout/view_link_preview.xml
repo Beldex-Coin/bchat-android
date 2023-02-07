@@ -34,7 +34,7 @@
         </RelativeLayout>
 
         <TextView
-            android:fontFamily="@font/poppins_regular"
+            android:fontFamily="@font/open_sans_regular"
             android:id="@+id/titleTextView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

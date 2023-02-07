@@ -30,7 +30,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:fontFamily="@font/poppins_bold"
+                android:fontFamily="@font/open_sans_bold"
                 android:id="@+id/showKeysViewKeyPublicTextTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
                 android:src="@drawable/ic_baseline_content_copy_24"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
         <TextView
-            android:fontFamily="@font/poppins_regular"
+            android:fontFamily="@font/open_sans_regular"
             android:id="@+id/showKeysViewKeyPublicText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -85,7 +85,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:fontFamily="@font/poppins_bold"
+                android:fontFamily="@font/open_sans_bold"
                 android:id="@+id/showKeysViewKeyPrivateTextTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -107,7 +107,7 @@
                 android:src="@drawable/ic_baseline_content_copy_24"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
         <TextView
-            android:fontFamily="@font/poppins_regular"
+            android:fontFamily="@font/open_sans_regular"
             android:id="@+id/showKeysViewKeyPrivateText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -140,7 +140,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:fontFamily="@font/poppins_bold"
+                android:fontFamily="@font/open_sans_bold"
                 android:id="@+id/showKeysSpendKeyPublicTextTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -162,7 +162,7 @@
                 android:src="@drawable/ic_baseline_content_copy_24"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
         <TextView
-            android:fontFamily="@font/poppins_regular"
+            android:fontFamily="@font/open_sans_regular"
             android:id="@+id/showKeysSpendKeyPublicText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -195,7 +195,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:fontFamily="@font/poppins_bold"
+                android:fontFamily="@font/open_sans_bold"
                 android:id="@+id/showKeysSpendKeyPrivateTextTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -217,7 +217,7 @@
                 android:src="@drawable/ic_baseline_content_copy_24"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
         <TextView
-            android:fontFamily="@font/poppins_regular"
+            android:fontFamily="@font/open_sans_regular"
             android:id="@+id/showKeysSpendKeyPrivateText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

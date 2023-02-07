@@ -195,7 +195,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
-            android:fontFamily="@font/poppins_semi_bold"
+            android:fontFamily="@font/open_sans_semi_bold"
             android:textColor="@color/text"
             android:textSize="@dimen/small_font_size"
             android:textStyle="bold"
@@ -209,7 +209,7 @@
             android:paddingStart="30dp"
             android:paddingEnd="30dp"
             android:layout_marginBottom="10dp"
-            android:fontFamily="@font/poppins_medium"
+            android:fontFamily="@font/open_sans_medium"
             android:text="@string/ConversationActivity_unblock" />
     </LinearLayout>
 
@@ -295,7 +295,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/medium_spacing"
                 android:alpha="0.6"
-                android:fontFamily="@font/poppins_regular"
+                android:fontFamily="@font/open_sans_regular"
                 android:gravity="center_horizontal"
                 android:text="@string/message_requests_send_notice"
                 android:textColor="@color/text"
@@ -311,7 +311,7 @@
                     android:id="@+id/declineMessageRequestButton"
                     style="@style/Widget.Bchat.Button.Common.ProminentFilled_ClearData_WhiteText"
                     android:layout_width="0dp"
-                    android:fontFamily="@font/poppins_medium"
+                    android:fontFamily="@font/open_sans_medium"
                     android:layout_height="@dimen/medium_button_height"
                     android:layout_weight="1"
                     android:text="@string/decline" />
@@ -319,7 +319,7 @@
                 <Button
                     android:id="@+id/acceptMessageRequestButton"
                     style="@style/Widget.Bchat.Button.Common.ProminentFilled"
-                    android:fontFamily="@font/poppins_medium"
+                    android:fontFamily="@font/open_sans_medium"
                     android:layout_width="0dp"
                     android:layout_marginStart="@dimen/medium_spacing"
                     android:layout_height="@dimen/medium_button_height"

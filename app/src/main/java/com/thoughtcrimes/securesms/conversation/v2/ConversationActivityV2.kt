@@ -620,7 +620,7 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
 
         //SteveJosephh21
         val textView: TextView? = dialog.findViewById(android.R.id.message)
-        val face:Typeface =Typeface.createFromAsset(assets,"fonts/poppins_medium.ttf")
+        val face:Typeface =Typeface.createFromAsset(assets,"fonts/open_sans_medium.ttf")
         textView!!.typeface = face
     }
     private fun declineAlartDialog() {
@@ -639,7 +639,7 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
 
         //SteveJosephh21
         val textView:TextView? = dialog.findViewById(android.R.id.message)
-        val face:Typeface =Typeface.createFromAsset(assets,"fonts/poppins_medium.ttf")
+        val face:Typeface =Typeface.createFromAsset(assets,"fonts/open_sans_medium.ttf")
         textView!!.typeface = face
     }
 

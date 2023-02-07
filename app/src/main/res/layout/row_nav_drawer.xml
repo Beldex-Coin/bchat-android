@@ -22,7 +22,7 @@
             android:src="@android:drawable/btn_star_big_on"
             tools:ignore="ContentDescription" />
         <TextView
-            android:fontFamily="@font/poppins_medium"
+            android:fontFamily="@font/open_sans_medium"
             android:id="@+id/navigation_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

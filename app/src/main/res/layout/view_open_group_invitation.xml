@@ -33,7 +33,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:fontFamily="@font/poppins_medium"
+            android:fontFamily="@font/open_sans_medium"
             android:id="@+id/openGroupTitleTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
             android:textSize="@dimen/large_font_size" />
 
         <TextView
-            android:fontFamily="@font/poppins_medium"
+            android:fontFamily="@font/open_sans_medium"
             android:id="@+id/openGroupJoinMessageTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
             android:textSize="@dimen/small_font_size" />
 
         <TextView
-            android:fontFamily="@font/poppins_regular"
+            android:fontFamily="@font/open_sans_regular"
             android:id="@+id/openGroupURLTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

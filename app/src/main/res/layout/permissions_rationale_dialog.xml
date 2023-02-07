@@ -18,7 +18,7 @@
     </LinearLayout>
 
     <TextView
-        android:fontFamily="@font/poppins_medium"
+        android:fontFamily="@font/open_sans_medium"
         android:id="@+id/message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -72,7 +72,7 @@ class NewConversationButtonSetView : RelativeLayout {
     private val bchatButtonTitle by lazy {
         TextView(context).apply {
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
-            typeface = ResourcesCompat.getFont(this.context, R.font.poppins_bold)
+            typeface = ResourcesCompat.getFont(this.context, R.font.open_sans_bold)
             setText(R.string.home_screen_new_chat_title)
             isAllCaps = true
         }
@@ -81,7 +81,7 @@ class NewConversationButtonSetView : RelativeLayout {
     private val secretGroupButtonTitle by lazy {
         TextView(context).apply {
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
-            typeface = ResourcesCompat.getFont(this.context, R.font.poppins_bold)
+            typeface = ResourcesCompat.getFont(this.context, R.font.open_sans_bold)
             setText(R.string.home_screen_secret_groups_title)
             isAllCaps = true
         }
@@ -90,7 +90,7 @@ class NewConversationButtonSetView : RelativeLayout {
     private val socialGroupButtonTitle by lazy {
         TextView(context).apply {
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
-            typeface = ResourcesCompat.getFont(this.context, R.font.poppins_bold)
+            typeface = ResourcesCompat.getFont(this.context, R.font.open_sans_bold)
             setText(R.string.home_screen_social_groups_title)
             isAllCaps = true
         }

@@ -18,7 +18,7 @@
             android:layout_weight="0"/>
 
         <TextView
-            android:fontFamily="@font/poppins_medium"
+            android:fontFamily="@font/open_sans_medium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/very_large_spacing"
@@ -108,7 +108,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"/>
         <TextView
-            android:fontFamily="@font/poppins_regular"
+            android:fontFamily="@font/open_sans_regular"
             android:id="@+id/hint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

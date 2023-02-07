@@ -110,7 +110,7 @@
     <com.thoughtcrimes.securesms.components.emoji.EmojiTextView
         app:layout_constraintHorizontal_bias="0"
         android:visibility="gone"
-        android:fontFamily="@font/poppins_regular"
+        android:fontFamily="@font/open_sans_regular"
         app:layout_constraintTop_toBottomOf="@id/albumThumbnailView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/bodyBarrier"

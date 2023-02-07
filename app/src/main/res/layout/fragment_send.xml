@@ -50,7 +50,7 @@
 
                 <EditText
                     android:id="@+id/beldexAddressEditTxt"
-                    android:fontFamily="@font/poppins_medium"
+                    android:fontFamily="@font/open_sans_medium"
                     android:paddingStart="@dimen/medium_spacing"
                     android:paddingTop="@dimen/medium_spacing"
                     android:paddingEnd="@dimen/medium_spacing"
@@ -143,7 +143,7 @@
 
                 <EditText
                     android:id="@+id/beldexAmountEditTxt"
-                    android:fontFamily="@font/poppins_medium"
+                    android:fontFamily="@font/open_sans_medium"
                     android:paddingStart="@dimen/medium_spacing"
                     android:paddingBottom="@dimen/medium_spacing"
                     android:paddingEnd="@dimen/medium_spacing"

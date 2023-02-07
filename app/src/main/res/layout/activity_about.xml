@@ -11,7 +11,7 @@
     android:layout_height="0dp"
     tools:context="com.thoughtcrimes.securesms.onboarding.AboutActivity">
     <TextView
-        android:fontFamily="@font/poppins_regular"
+        android:fontFamily="@font/open_sans_regular"
         android:id="@+id/about_page_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

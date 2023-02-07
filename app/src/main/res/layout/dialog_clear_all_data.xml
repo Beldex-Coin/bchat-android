@@ -11,7 +11,7 @@
     android:padding="32dp">
 
     <TextView
-        android:fontFamily="@font/poppins_bold"
+        android:fontFamily="@font/open_sans_bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/dialog_clear_all_data_title"
@@ -20,7 +20,7 @@
         android:textSize="@dimen/medium_font_size" />
 
     <TextView
-        android:fontFamily="@font/poppins_medium"
+        android:fontFamily="@font/open_sans_medium"
         android:id="@+id/dialogDescriptionText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -38,7 +38,7 @@
                 android:backgroundTint="@color/destructive" />
 
             <TextView
-                android:fontFamily="@font/poppins_regular"
+                android:fontFamily="@font/open_sans_regular"
                 android:id="@+id/recordingViewDurationTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -70,7 +70,7 @@
                 android:alpha="0.6" />
 
             <TextView
-                android:fontFamily="@font/poppins_regular"
+                android:fontFamily="@font/open_sans_regular"
                 android:id="@+id/inputBarSlideToCancelTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -85,7 +85,7 @@
         <!-- The cancel button -->
 
         <TextView
-            android:fontFamily="@font/poppins_regular"
+            android:fontFamily="@font/open_sans_regular"
             android:id="@+id/inputBarCancelButton"
             android:layout_width="100dp"
             android:layout_height="40dp"

@@ -24,7 +24,7 @@
             android:textSize="@dimen/medium_font_size"
             android:textColor="@color/show_seed_content_title"
             android:textStyle="bold"
-            android:fontFamily="@font/poppins_medium"
+            android:fontFamily="@font/open_sans_medium"
             android:text="@string/show_seed_content_title"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -40,7 +40,7 @@
         android:textAlignment="center"
         android:textColor="@color/text"
         android:textSize="@dimen/small_font_size"
-        android:fontFamily="@font/poppins_regular"
+        android:fontFamily="@font/open_sans_regular"
         android:textStyle="normal"
         android:text="@string/show_seed_content"
         app:layout_constraintTop_toBottomOf="@id/showSeedContentTitle"
@@ -69,7 +69,7 @@
             android:padding="12dp">
 
             <TextView
-                android:fontFamily="@font/poppins_regular"
+                android:fontFamily="@font/open_sans_regular"
                 android:id="@+id/showSeedText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

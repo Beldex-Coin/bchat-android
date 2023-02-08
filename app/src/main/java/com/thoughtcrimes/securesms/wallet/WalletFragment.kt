@@ -890,8 +890,8 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 }
             } else {
                 binding.syncStatusIcon.visibility=View.GONE
-                sync = getString(R.string.status_wallet_connecting)
-                setProgress(101)
+                sync = getString(R.string.failed_connected_to_the_node)
+                setProgress(-1)
                 //SteveJosephh21
                 //binding.transactionTitle.visibility = View.INVISIBLE
                 //binding.transactionLayoutCardView.visibility = View.GONE
@@ -899,7 +899,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 binding.syncStatus.setTextColor(
                     ContextCompat.getColor(
                         requireActivity().applicationContext,
-                        R.color.green_color
+                        R.color.red
                     )
                 )
             }

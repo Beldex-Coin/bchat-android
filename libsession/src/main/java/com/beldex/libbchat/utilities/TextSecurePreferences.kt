@@ -1307,7 +1307,7 @@ interface TextSecurePreferences {
 
         @JvmStatic
         fun getCallisActive(context: Context):Boolean {
-            return getBooleanPreference(context, CALL_IS_ACTIVE, true)
+            return getBooleanPreference(context, CALL_IS_ACTIVE, false)
         }
 
     }
@@ -2132,7 +2132,7 @@ class AppTextSecurePreferences @Inject constructor(
     }
 
     override fun getCallisActive(): Boolean {
-        return getBooleanPreference(TextSecurePreferences.IS_NODE_TESTED,false)
+        return getBooleanPreference(TextSecurePreferences.CALL_IS_ACTIVE,false)
     }
 
 

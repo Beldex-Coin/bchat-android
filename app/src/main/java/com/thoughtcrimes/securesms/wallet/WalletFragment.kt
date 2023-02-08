@@ -402,7 +402,11 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         }
 
         override fun doInBackground(vararg params: Executor?): Boolean {
-           unlockedBalance = wallet.unlockedBalance
+            try {
+                unlockedBalance = wallet.unlockedBalance
+            }catch (e: Exception){
+                Log.d("WalletFragment",e.toString())
+            }
            return true
         }
 

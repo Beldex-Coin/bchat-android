@@ -1076,7 +1076,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
     private fun updateFiatCurrency(balance: String) {
         if(balance.isNotEmpty() && balance!=null) {
             try {
-                val amount: BigDecimal = BigDecimal(balance.toDouble()).multiply(BigDecimal(price))
+                val amount: BigDecimal = BigDecimal(balance.replace(",","").toDouble()).multiply(BigDecimal(price))
                 binding.tvFiatCurrency.text = getString(
                     R.string.fiat_currency,
                     amount.toDouble(),

@@ -379,7 +379,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
         }
 
-        /* override fun onCancelled(result: NodeInfo?) { //TODO: cancel this on exit from fragment
+        /* override fun onCancelled(result: NodeInfo?) {
              Log.d("cancelled with %s", result)
          }*/
     }
@@ -1076,7 +1076,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
     private fun updateFiatCurrency(balance: String) {
         if(balance.isNotEmpty() && balance!=null) {
             try {
-                val amount: BigDecimal = BigDecimal(balance.toDouble()).multiply(BigDecimal(price))
+                val amount: BigDecimal = BigDecimal(balance.replace(",","").toDouble()).multiply(BigDecimal(price))
                 binding.tvFiatCurrency.text = getString(
                     R.string.fiat_currency,
                     amount.toDouble(),

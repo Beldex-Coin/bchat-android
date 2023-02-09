@@ -402,7 +402,11 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         }
 
         override fun doInBackground(vararg params: Executor?): Boolean {
-           unlockedBalance = wallet.unlockedBalance
+            try {
+                unlockedBalance = wallet.unlockedBalance
+            }catch (e: Exception){
+                Log.d("WalletFragment",e.toString())
+            }
            return true
         }
 
@@ -890,8 +894,8 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 }
             } else {
                 binding.syncStatusIcon.visibility=View.GONE
-                sync = getString(R.string.status_wallet_connecting)
-                setProgress(101)
+                sync = getString(R.string.failed_connected_to_the_node)
+                setProgress(-1)
                 //SteveJosephh21
                 //binding.transactionTitle.visibility = View.INVISIBLE
                 //binding.transactionLayoutCardView.visibility = View.GONE
@@ -899,7 +903,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 binding.syncStatus.setTextColor(
                     ContextCompat.getColor(
                         requireActivity().applicationContext,
-                        R.color.green_color
+                        R.color.red
                     )
                 )
             }
@@ -1076,7 +1080,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
     private fun updateFiatCurrency(balance: String) {
         if(balance.isNotEmpty() && balance!=null) {
             try {
-                val amount: BigDecimal = BigDecimal(balance.toDouble()).multiply(BigDecimal(price))
+                val amount: BigDecimal = BigDecimal(balance.replace(",","").toDouble()).multiply(BigDecimal(price))
                 binding.tvFiatCurrency.text = getString(
                     R.string.fiat_currency,
                     amount.toDouble(),

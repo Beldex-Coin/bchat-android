@@ -352,13 +352,17 @@ public class WalletService extends Service {
                             Wallet myWallet = getWallet();
                             if (myWallet == null) break;
                             Timber.d("STORE wallet: %s", myWallet.getName());
-                            boolean rc = myWallet.store();
-                            Timber.d("wallet stored: %s with rc=%b", myWallet.getName(), rc);
-                            if (!rc) {
-                                Timber.w("Wallet store failed: %s", myWallet.getStatus().getErrorString());
+                            try {
+                                boolean rc = myWallet.store();
+                                Timber.d("wallet stored: %s with rc=%b", myWallet.getName(), rc);
+                                if (!rc) {
+                                    Timber.w("Wallet store failed: %s", myWallet.getStatus().getErrorString());
+                                }
+                                if (observer != null)
+                                    observer.onWalletStored(rc);
+                            }catch(Exception e){
+                                Log.d("WalletService ",e.toString());
                             }
-                            if (observer != null)
-                                observer.onWalletStored(rc);
                             break;
                         }
                         case REQUEST_CMD_TX: {
@@ -431,13 +435,17 @@ public class WalletService extends Service {
                                 if ((notes != null) && (!notes.isEmpty())) {
                                     myWallet.setUserNote(txid, notes);
                                 }
-                                boolean rc = myWallet.store();
-                                Timber.d("wallet stored: %s with rc=%b", myWallet.getName(), rc);
-                                if (!rc) {
-                                    Timber.w("Wallet store failed: %s", myWallet.getStatus().getErrorString());
+                                try {
+                                    boolean rc = myWallet.store();
+                                    Timber.d("wallet stored: %s with rc=%b", myWallet.getName(), rc);
+                                    if (!rc) {
+                                        Timber.w("Wallet store failed: %s", myWallet.getStatus().getErrorString());
+                                    }
+                                    if (observer != null) observer.onWalletStored(rc);
+                                    listener.updated = true;
+                                }catch(Exception e){
+                                    Log.d("WalletService",e.toString());
                                 }
-                                if (observer != null) observer.onWalletStored(rc);
-                                listener.updated = true;
                             } else {
                                 Timber.d("SEND TX Error: %s", myWallet.getName());
                                 final String error = pendingTransaction.getErrorString();
@@ -652,7 +660,11 @@ public class WalletService extends Service {
                 return null;
             } else {
 
-                wallet.init(0);
+                try {
+                    wallet.init(0);
+                }catch (Exception e){
+                    Log.d("WalletService",e.toString());
+                }
                 Log.d("Beldex", "init value of wallet restoreHeight loadWallet 1 " + walletRestoreHeight);
                 Log.d("Beldex", "init value of wallet restoreHeight loadWallet 2 " + wallet.getRestoreHeight());
                 wallet.setRestoreHeight(walletRestoreHeight);

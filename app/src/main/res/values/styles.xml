@@ -415,6 +415,7 @@
         <item name="buttonBarPositiveButtonStyle">@style/Widget.BChat.AlertDialog.PositiveButtonStyle</item>
         <item name="android:background">@color/card_color</item>
         <item name="android:textSize">15sp</item>
+        <item name="textAllCaps">false</item>
         <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
     </style>
 
@@ -510,6 +511,7 @@
         <item name="buttonBarNegativeButtonStyle">@style/Widget.BChat.AlertDialog.NegativeButtonStyle_New</item>
         <item name="buttonBarPositiveButtonStyle">@style/Widget.BChat.AlertDialog.PositiveButtonStyle_New</item>
         <item name="android:background">@color/card_color</item>
+        <item name="textAllCaps">false</item>
         <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
     </style>
 
@@ -520,6 +522,7 @@
         <item name="fontFamily">@font/open_sans_medium</item>
         <item name="buttonBarNeutralButtonStyle">@style/AlertDialog_Positive_Button</item>
         <item name="android:textSize">15sp</item>
+        <item name="textAllCaps">false</item>
         <item name="android:windowBackground">@drawable/alert_dialog_shape</item>
     </style>
 
@@ -560,9 +563,8 @@
         <item name="android:textAllCaps">true</item>
     </style>
 
-    <style name="Widget.BChat.AlertDialog.PositiveButtonStyle_New" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+    <style name="Widget.BChat.AlertDialog.PositiveButtonStyle_New" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
         <item name="android:textColor">@color/red</item>
-        <item name="android:textAllCaps">true</item>
         <item name="android:textSize">15sp</item>
     </style>
 
@@ -571,9 +573,8 @@
         <item name="android:textAllCaps">true</item>
     </style>
 
-    <style name="Widget.BChat.AlertDialog.NegativeButtonStyle_New" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+    <style name="Widget.BChat.AlertDialog.NegativeButtonStyle_New" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
         <item name="android:textColor">@color/text</item>
-        <item name="android:textAllCaps">true</item>
         <item name="android:textSize">15sp</item>
     </style>
 

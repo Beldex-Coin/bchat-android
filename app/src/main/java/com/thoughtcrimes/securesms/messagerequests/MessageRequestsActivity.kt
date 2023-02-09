@@ -81,7 +81,7 @@ class MessageRequestsActivity : PassphraseRequiredActionBarActivity(), Conversat
     }
 
     override fun onBlockConversationClick(thread: ThreadRecord) {
-        val dialog = AlertDialog.Builder(this)
+        val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog_Clear_All)
         dialog.setTitle(R.string.RecipientPreferenceActivity_block_this_contact_question)
             .setMessage(R.string.message_requests_block_message)
             .setPositiveButton(R.string.recipient_preferences__block) { _, _ ->

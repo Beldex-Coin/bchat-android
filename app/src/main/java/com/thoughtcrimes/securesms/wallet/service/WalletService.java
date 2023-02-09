@@ -659,6 +659,7 @@ public class WalletService extends Service {
             if (!CheckOnline.Companion.isOnline(getApplicationContext())) {
                 return null;
             } else {
+
                 try {
                     wallet.init(0);
                 }catch (Exception e){

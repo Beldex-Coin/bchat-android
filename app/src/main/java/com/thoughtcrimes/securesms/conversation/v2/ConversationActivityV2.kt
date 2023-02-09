@@ -615,13 +615,18 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
         binding?.inputBar?.showMediaControls = !isOutgoingMessageRequestThread()
         binding?.messageRequestBar?.isVisible = isIncomingMessageRequestThread()
         binding?.acceptMessageRequestButton?.setOnClickListener {
-            acceptAlartDialog()
+            acceptAlertDialog()
         }
         binding?.messageRequestBlock?.setOnClickListener {
             block(deleteThread = true)
         }
         binding?.declineMessageRequestButton?.setOnClickListener {
-            declineAlartDialog()
+            viewModel.declineMessageRequest()
+            lifecycleScope.launch(Dispatchers.IO) {
+                ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(this@ConversationActivityV2)
+            }
+            finish()
+            //declineAlertDialog()
         }
     }
 
@@ -629,7 +634,7 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
     override fun block(deleteThread: Boolean) {
         val title = R.string.RecipientPreferenceActivity_block_this_contact_question
         val message = R.string.RecipientPreferenceActivity_you_will_no_longer_receive_messages_and_calls_from_this_contact
-        val dialog = AlertDialog.Builder(this)
+        val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog_Clear_All)
             .setTitle(title)
             .setMessage(message)
             .setNegativeButton(android.R.string.cancel, null)
@@ -673,7 +678,7 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
     override fun unblock() {
         val title = R.string.ConversationActivity_unblock_this_contact_question
         val message = R.string.ConversationActivity_you_will_once_again_be_able_to_receive_messages_and_calls_from_this_contact
-        val dialog = AlertDialog.Builder(this)
+        val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog_Clear_All)
             .setTitle(title)
             .setMessage(message)
             .setNegativeButton(android.R.string.cancel, null)
@@ -689,7 +694,7 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
 
 
     /*Hales63*/
-    private fun acceptAlartDialog() {
+    private fun acceptAlertDialog() {
         val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog)
             .setMessage(resources.getString(R.string.message_requests_accept_message))
             .setPositiveButton(R.string.accept) { _, _ ->
@@ -704,8 +709,8 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
         val face:Typeface =Typeface.createFromAsset(assets,"fonts/open_sans_medium.ttf")
         textView!!.typeface = face
     }
-    private fun declineAlartDialog() {
-        val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog_remove_new)
+    private fun declineAlertDialog() {
+        val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog_Clear_All)
             .setMessage(resources.getString(R.string.message_requests_decline_message))
             .setPositiveButton(R.string.decline) { _, _ ->
             viewModel.declineMessageRequest()
@@ -780,7 +785,7 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
 
     override fun onDestroy() {
         viewModel.saveDraft(binding?.inputBar?.text?.trim() ?: "")
-        val recipient = viewModel.recipient ?: return
+        val recipient = viewModel.recipient ?: return super.onDestroy()
         /*Hales63*/ // New Line
         if(TextSecurePreferences.getPlayerStatus(this)) {
             TextSecurePreferences.setPlayerStatus(this,false)

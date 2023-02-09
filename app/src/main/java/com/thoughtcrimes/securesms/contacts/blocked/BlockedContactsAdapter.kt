@@ -1,17 +1,20 @@
 package com.thoughtcrimes.securesms.contacts.blocked
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.utilities.recipients.Recipient
+import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.mms.GlideApp
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.BlockedContactLayoutBinding
 
-class BlockedContactsAdapter: ListAdapter<Recipient, BlockedContactsAdapter.ViewHolder>(RecipientDiffer()) {
+class BlockedContactsAdapter(private val context: Context) : ListAdapter<Recipient, BlockedContactsAdapter.ViewHolder>(RecipientDiffer()) {
 
     class RecipientDiffer: DiffUtil.ItemCallback<Recipient>() {
         override fun areItemsTheSame(oldItem: Recipient, newItem: Recipient) = oldItem === newItem
@@ -39,7 +42,7 @@ class BlockedContactsAdapter: ListAdapter<Recipient, BlockedContactsAdapter.View
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val recipient = getItem(position)
         val isSelected = recipient in selectedItems
-        holder.bind(recipient, isSelected) {
+        holder.bind(recipient, isSelected,context) {
             toggleSelection(recipient, isSelected, position)
         }
     }
@@ -54,14 +57,20 @@ class BlockedContactsAdapter: ListAdapter<Recipient, BlockedContactsAdapter.View
         val glide = GlideApp.with(itemView)
         val binding = BlockedContactLayoutBinding.bind(itemView)
 
-        fun bind(recipient: Recipient, isSelected: Boolean, toggleSelection: () -> Unit) {
-            binding.recipientName.text = recipient.name
+        fun bind(recipient: Recipient, isSelected: Boolean, context: Context,toggleSelection: () -> Unit) {
+            val address = recipient.address.serialize()
+            binding.recipientName.text =  if (recipient.isGroupRecipient) recipient.name else getUserDisplayName(address,context)
             with (binding.profilePictureView) {
                 glide = this@ViewHolder.glide
                 update(recipient)
             }
             binding.root.setOnClickListener { toggleSelection() }
             binding.selectButton.isSelected = isSelected
+        }
+        fun getUserDisplayName(publicKey: String, context: Context): String {
+            val contact = DatabaseComponent.get(context).bchatContactDatabase()
+                .getContactWithBchatID(publicKey)
+            return contact?.displayName(Contact.ContactContext.REGULAR) ?: publicKey
         }
     }
 

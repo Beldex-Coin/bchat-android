@@ -415,7 +415,7 @@ object ConversationMenuHelper {
         } else {
             context.resources.getString(R.string.ConversationActivity_are_you_sure_you_want_to_leave_this_group)
         }
-        val builder = AlertDialog.Builder(context,R.style.BChatAlertDialog_remove_new)
+        val builder = AlertDialog.Builder(context,R.style.BChatAlertDialog_Clear_All)
         .setTitle(context.resources.getString(R.string.ConversationActivity_leave_group))
         .setCancelable(true)
         .setMessage(message)

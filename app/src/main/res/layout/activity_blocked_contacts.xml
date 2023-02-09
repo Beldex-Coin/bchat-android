@@ -10,7 +10,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/unblockButton"
+        app:layout_constraintBottom_toTopOf="@id/unblockButton"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         tools:listitem="@layout/blocked_contact_layout"
@@ -41,7 +41,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerView"
+        app:layout_constraintTop_toBottomOf="@id/recyclerView"
         android:id="@+id/unblockButton"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginVertical="@dimen/large_spacing"

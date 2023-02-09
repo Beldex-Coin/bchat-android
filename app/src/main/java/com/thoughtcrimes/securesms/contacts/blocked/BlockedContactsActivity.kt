@@ -1,10 +1,13 @@
 package com.thoughtcrimes.securesms.contacts.blocked
 
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
@@ -17,7 +20,7 @@ class BlockedContactsActivity: PassphraseRequiredActionBarActivity(), View.OnCli
 
     val viewModel: BlockedContactsViewModel by viewModels()
 
-    val adapter = BlockedContactsAdapter()
+    val adapter = BlockedContactsAdapter(this)
 
     override fun onClick(v: View?) {
         if (v === binding.unblockButton && adapter.getSelectedItems().isNotEmpty()) {
@@ -51,10 +54,11 @@ class BlockedContactsActivity: PassphraseRequiredActionBarActivity(), View.OnCli
                 getString(R.string.Unblock_dialog__message, stringBuilder.toString())
             }
 
-            AlertDialog.Builder(this)
+           val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog_Clear_All)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(R.string.continue_2) { d, _ ->
+                    TextSecurePreferences.setUnBlockStatus(this, true)
                     viewModel.unblock(contactsToUnblock)
                     d.dismiss()
                 }
@@ -62,6 +66,10 @@ class BlockedContactsActivity: PassphraseRequiredActionBarActivity(), View.OnCli
                     d.dismiss()
                 }
                 .show()
+            //New Line
+            val textView: TextView? = dialog.findViewById(android.R.id.message)
+            val face: Typeface = Typeface.createFromAsset(this.assets,"fonts/open_sans_medium.ttf")
+            textView!!.typeface = face
         }
     }
 

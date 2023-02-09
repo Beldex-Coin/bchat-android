@@ -1330,8 +1330,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="message_requests_decline_messages" translatable="false">Are you sure you want to decline this message request?</string>
     <string name="message_requests_block_message" translatable="false">Are you sure you want to block this message request?</string>
 
-    <string name="blocked_contacts_title">Blocked Contacts</string>
-    <string name="blocked_contacts_empty_state">You have no blocked contacts</string>
     <string name="Unblock_dialog__title_single">Unblock %s</string>
     <string name="Unblock_dialog__title_multiple">Unblock Users</string>
     <string name="Unblock_dialog__message">Are you sure you want to unblock %s?</string>

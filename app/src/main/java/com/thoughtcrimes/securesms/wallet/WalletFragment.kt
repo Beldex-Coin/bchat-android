@@ -379,7 +379,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
 
         }
 
-        /* override fun onCancelled(result: NodeInfo?) {
+        /* override fun onCancelled(result: NodeInfo?) { //TODO: cancel this on exit from fragment
              Log.d("cancelled with %s", result)
          }*/
     }
@@ -402,11 +402,11 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         }
 
         override fun doInBackground(vararg params: Executor?): Boolean {
-           try {
-               unlockedBalance = wallet.unlockedBalance
-           }catch (e: Exception){
-               Log.d("WalletFragment",e.toString())
-           }
+            try {
+                unlockedBalance = wallet.unlockedBalance
+            }catch (e: Exception){
+                Log.d("WalletFragment",e.toString())
+            }
            return true
         }
 

@@ -156,6 +156,17 @@
           "description":"- Fix crash when call getting disconnected while wallet is syncing"
         }
       ]
+    },
+    {
+      "title": "2.0.2",
+      "descriptions": [
+        {
+          "description":"- Fix Crash issues in wallet"
+        },
+        {
+          "description":"- Fix ANR issues in wallet"
+        }
+      ]
     }
   ]
 }

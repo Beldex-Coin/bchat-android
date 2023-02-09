@@ -2,6 +2,7 @@ package com.thoughtcrimes.securesms.messagerequests
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.database.Cursor
 import android.os.Build
 import android.text.SpannableString
@@ -32,7 +33,7 @@ class MessageRequestsAdapter(
         view.setOnClickListener { view.thread?.let { listener.onConversationClick(it) } }
         view.setOnLongClickListener {
             view.thread?.let {
-                listener.onLongConversationClick(view.thread!!) }
+                showPopupMenu(view) }
             true
         }
         return ViewHolder(view)
@@ -53,7 +54,9 @@ class MessageRequestsAdapter(
         popupMenu.menuInflater.inflate(R.menu.menu_message_request, popupMenu.menu)
         popupMenu.setOnMenuItemClickListener { menuItem ->
             if (menuItem.itemId == R.id.menu_delete_message_request) {
-                listener.onLongConversationClick(view.thread!!)
+                listener.onDeleteConversationClick(view.thread!!)
+            } else if (menuItem.itemId == R.id.menu_block_message_request) {
+                listener.onBlockConversationClick(view.thread!!)
             }
             true
         }
@@ -61,6 +64,7 @@ class MessageRequestsAdapter(
             val item = popupMenu.menu.getItem(i)
             val s = SpannableString(item.title)
             s.setSpan(ForegroundColorSpan(context.getColor(R.color.destructive)), 0, s.length, 0)
+            //item.iconTintList = ColorStateList.valueOf(context.getColor(R.color.destructive))
             item.title = s
         }
         popupMenu.forceShowIcon() //TODO: call setForceShowIcon(true) after update to appcompat 1.4.1+
@@ -74,7 +78,8 @@ class MessageRequestsAdapter(
 
 interface ConversationClickListener {
     fun onConversationClick(thread: ThreadRecord)
-    fun onLongConversationClick(thread: ThreadRecord)
+    fun onBlockConversationClick(thread: ThreadRecord)
+    fun onDeleteConversationClick(thread: ThreadRecord)
 }
 
 @SuppressLint("PrivateApi")

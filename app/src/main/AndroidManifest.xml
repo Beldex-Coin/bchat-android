@@ -76,9 +76,13 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
         <activity
-            android:name="com.thoughtcrimes.securesms.wallet.TransactionDetails"
+            android:name="com.thoughtcrimes.securesms.contacts.blocked.BlockedContactsActivity"
             android:exported="false"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name="com.thoughtcrimes.securesms.wallet.TransactionDetails"
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.utils.common.LoadingActivity"
             android:exported="false"
@@ -628,6 +632,10 @@
         <provider
             android:name="com.thoughtcrimes.securesms.database.DatabaseContentProviders$StickerPack"
             android:authorities="io.beldex.securesms.database.stickerpack"
+            android:exported="false" />
+        <provider
+            android:name="com.thoughtcrimes.securesms.database.DatabaseContentProviders$Recipient"
+            android:authorities="io.beldex.securesms.database.recipient"
             android:exported="false" />
 
         <receiver

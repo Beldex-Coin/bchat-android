@@ -2,6 +2,7 @@ package com.thoughtcrimes.securesms.contacts
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
@@ -56,6 +57,7 @@ class BlockedContactActivity : PassphraseRequiredActionBarActivity(), BlockedCon
     }
 
     override fun onLoadFinished(loader: Loader<List<String>>, members: List<String>) {
+        Log.d("BlockedContactLoader1",members.size.toString())
         update(members)
     }
 

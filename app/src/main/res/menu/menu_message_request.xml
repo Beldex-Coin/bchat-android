@@ -6,4 +6,9 @@
         android:icon="@drawable/ic_delete_24"
         android:title="@string/delete"/>
 
+    <item
+        android:id="@+id/menu_block_message_request"
+        android:icon="@drawable/ic_baseline_block"
+        android:title="@string/RecipientPreferenceActivity_block"/>
+
 </menu>

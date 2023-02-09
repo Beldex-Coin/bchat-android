@@ -789,4 +789,15 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
         val callMessage = IncomingTextMessage.fromCallInfo(callMessageType, address, Optional.absent(), sentTimestamp)
         database.insertCallMessage(callMessage)
     }
+
+    //SteveJosephh21
+    override fun unblock(toUnblock: List<Recipient>) {
+        val recipientDb = DatabaseComponent.get(context).recipientDatabase()
+        recipientDb.setBlocked(toUnblock, false)
+    }
+
+    override fun blockedContacts(): List<Recipient> {
+        val recipientDb = DatabaseComponent.get(context).recipientDatabase()
+        return recipientDb.blockedContacts
+    }
 }

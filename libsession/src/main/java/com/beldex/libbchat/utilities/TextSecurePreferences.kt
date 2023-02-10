@@ -238,6 +238,8 @@ interface TextSecurePreferences {
     fun setCallisActive(status: Boolean)
     fun getCallisActive(): Boolean
 
+    fun getChatFontSize(): String?
+
 
     companion object {
         val TAG = TextSecurePreferences::class.simpleName
@@ -345,6 +347,7 @@ interface TextSecurePreferences {
         const val GET_FIAT_CURRENCY_API_STATUS = "get_fiat_currency_api_status"
         const val NODE_IS_MAINNET = "node_is_mainnet"
         const val CALL_IS_ACTIVE = "call_is_active"
+        const val CHAT_FONT_SIZE =  "chat_font_size"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -1307,7 +1310,12 @@ interface TextSecurePreferences {
 
         @JvmStatic
         fun getCallisActive(context: Context):Boolean {
-            return getBooleanPreference(context, CALL_IS_ACTIVE, true)
+            return getBooleanPreference(context, CALL_IS_ACTIVE, false)
+        }
+
+        @JvmStatic
+        fun getChatFontSize(context: Context): String? {
+            return getStringPreference(context, CHAT_FONT_SIZE, "16")
         }
 
     }
@@ -2132,7 +2140,11 @@ class AppTextSecurePreferences @Inject constructor(
     }
 
     override fun getCallisActive(): Boolean {
-        return getBooleanPreference(TextSecurePreferences.IS_NODE_TESTED,false)
+        return getBooleanPreference(TextSecurePreferences.CALL_IS_ACTIVE,false)
+    }
+
+    override fun getChatFontSize(): String? {
+        return getStringPreference(TextSecurePreferences.CHAT_FONT_SIZE,"16")
     }
 
 

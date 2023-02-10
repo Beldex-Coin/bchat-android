@@ -25,6 +25,7 @@ import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewVisibleMessageBinding
 import com.beldex.libbchat.messaging.contacts.Contact.ContactContext
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.ViewUtil
 import com.beldex.libsignal.utilities.ThreadUtils
 import com.thoughtcrimes.securesms.ApplicationContext
@@ -131,6 +132,8 @@ class VisibleMessageView : LinearLayout {
             binding.senderNameTextView.visibility = View.GONE
         }
         // Date break
+        val fontSize = TextSecurePreferences.getChatFontSize(context)
+        binding.dateBreakTextView.textSize = fontSize!!.toFloat()
         binding.dateBreakTextView.showDateBreak(message, previous)
         // Timestamp
         binding.messageTimestampTextView.text = DateUtils.getDisplayFormattedTimeSpanString(context, Locale.getDefault(), message.timestamp)

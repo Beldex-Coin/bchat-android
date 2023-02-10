@@ -4,15 +4,15 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingHorizontal="@dimen/medium_spacing"
+    android:paddingHorizontal="4dp"
     android:paddingVertical="@dimen/small_spacing"
     android:gravity="center_vertical"
     android:background="@color/page_background"
     android:id="@+id/backgroundContainer">
     <com.thoughtcrimes.securesms.components.ProfilePictureView
         android:id="@+id/profilePictureView"
-        android:layout_height="@dimen/small_profile_picture_size"
-        android:layout_width="@dimen/small_profile_picture_size"
+        android:layout_height="@dimen/medium_profile_picture_size"
+        android:layout_width="@dimen/medium_profile_picture_size"
         />
 
     <TextView
@@ -27,12 +27,21 @@
         android:lines="1"
         android:ellipsize="end"
         />
+    <Button
+        android:id="@+id/unblockButtonBlockedList"
+        style="@style/Widget.Bchat.Button.Common.ProminentFilled_ClearData_WhiteText_With_Regular"
+        android:layout_width="wrap_content"
+        android:layout_marginStart="20dp"
+        android:visibility="visible"
+        android:layout_height="@dimen/small_button_height"
+        android:text="@string/ConversationActivity_unblock" />
 
-    <View
+    <ImageView
         android:id="@+id/selectButton"
         android:background="@drawable/padded_circle_accent_select"
         android:foreground="@drawable/radial_multi_select"
         android:layout_width="@dimen/small_radial_size"
+        android:visibility="gone"
         android:layout_height="@dimen/small_radial_size"/>
 
 </LinearLayout>

@@ -58,6 +58,10 @@ class BlockedContactsViewModel @Inject constructor(private val storage: Storage)
         storage.unblock(toUnblock)
     }
 
+    fun unblockSingleUser(toUnblock:Recipient){
+        storage.unblockSingleUser(toUnblock)
+    }
+
     data class BlockedContactsViewState(
         val blockedContacts: List<Recipient>
     )

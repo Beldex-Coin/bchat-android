@@ -1341,4 +1341,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
         <item quantity="one">and %d other</item>
         <item quantity="other">and %d others</item>
     </plurals>
+    <string name="unblock_selected" translatable="false">Unblock Selected</string>
 </resources>

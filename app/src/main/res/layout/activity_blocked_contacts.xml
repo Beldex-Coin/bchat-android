@@ -5,18 +5,86 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/page_background"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?colorPrimary"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:contentInsetStart="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/bchat_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:orientation="horizontal">
+                <ImageView
+                    android:id="@+id/backPressIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="15dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:background="@drawable/ic_back" />
+
+                <TextView
+                    android:id="@+id/bchatHeaderImage"
+                    android:layout_width="0dp"
+                    android:width="2dp"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/open_sans_regular"
+                    android:text="@string/blocked_contacts"
+                    android:textSize="25sp"
+                    android:layout_gravity="center_vertical"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/backPressIcon"
+                    app:layout_constraintEnd_toStartOf="@id/select_all"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginStart="15dp"
+                    android:textStyle="bold" />
+                <ImageView
+                    android:id="@+id/select_all"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="15dp"
+                    android:src="@drawable/ic_unselected_all" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="?android:dividerHorizontal"
+                android:elevation="1dp" />
+
+        </LinearLayout>
+
+    </androidx.appcompat.widget.Toolbar>
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/unblockButton"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         tools:listitem="@layout/blocked_contact_layout"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:layout_marginHorizontal="@dimen/medium_spacing"
-        android:layout_marginVertical="@dimen/large_spacing"
+        android:layout_marginHorizontal="14dp"
+        android:layout_marginVertical="@dimen/medium_spacing"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
         />
 
     <TextView
@@ -32,13 +100,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:text="@string/no_blocked_contact"
+        android:textSize="@dimen/medium_font_size"
         />
 
     <TextView
-        style="@style/Widget.Bchat.Button.Common.ProminentFilled_ClearData"
+        style="@style/Widget.Bchat.Button.Common.ProminentFilled_ClearData_WhiteText_With_Regular"
         android:paddingHorizontal="@dimen/large_spacing"
         android:paddingVertical="@dimen/small_spacing"
-        android:text="@string/ConversationActivity_unblock"
+        android:text="@string/unblock_selected"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
@@ -48,12 +117,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginVertical="@dimen/large_spacing"
         app:layout_constraintVertical_bias="1"
+        android:visibility="gone"
         />
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/nonEmptyStateGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:constraint_referenced_ids="unblockButton,recyclerView"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -65,6 +65,16 @@
             android:title="@string/preferences__pref_enter_sends_title"
             app:layout="@layout/preference_layout"/>
 
+        <com.thoughtcrimes.securesms.preferences.widgets.SignalListPreference
+            android:key="chat_font_size"
+            android:title="@string/preferences_chats__font_size"
+            app:iconSpaceReserved="false"
+            android:dependency="chat_font_size"
+            android:defaultValue="16"
+            android:entries="@array/pref_chat_font_size_entries"
+            android:entryValues="@array/pref_chat_font_size_values"
+            app:layout="@layout/preference_layout"/>
+
     </PreferenceCategory>
 
 
@@ -97,21 +107,6 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:key="message_trimming" android:title="@string/preferences_chats__font_size"
-        app:iconSpaceReserved="false"
-        app:layout="@layout/preference_layout_header">
-
-        <com.thoughtcrimes.securesms.preferences.widgets.SignalListPreference
-            android:key="chat_font_size"
-            android:title="@string/preferences_chats__font_size"
-            app:iconSpaceReserved="false"
-            android:dependency="chat_font_size"
-            android:defaultValue="16"
-            android:entries="@array/pref_chat_font_size_entries"
-            android:entryValues="@array/pref_chat_font_size_values"
-            app:layout="@layout/preference_layout"/>
-
-    </PreferenceCategory>
 
     <!-- <PreferenceCategory android:layout="@layout/preference_divider" />
 

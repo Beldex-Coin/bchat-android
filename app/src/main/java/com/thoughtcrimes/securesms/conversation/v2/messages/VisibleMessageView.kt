@@ -107,6 +107,8 @@ class VisibleMessageView : LinearLayout {
         val isGroupThread = thread.isGroupRecipient
         val isStartOfMessageCluster = isStartOfMessageCluster(message, previous, isGroupThread)
         val isEndOfMessageCluster = isEndOfMessageCluster(message, next, isGroupThread)
+        val fontSize = TextSecurePreferences.getChatFontSize(context)
+        binding.senderNameTextView.textSize = fontSize!!.toFloat()
         // Show profile picture and sender name if this is a group thread AND
         // the message is incoming
         if (isGroupThread && !message.isOutgoing) {
@@ -132,8 +134,7 @@ class VisibleMessageView : LinearLayout {
             binding.senderNameTextView.visibility = View.GONE
         }
         // Date break
-        val fontSize = TextSecurePreferences.getChatFontSize(context)
-        binding.dateBreakTextView.textSize = fontSize!!.toFloat()
+        binding.dateBreakTextView.textSize = fontSize.toFloat()
         binding.dateBreakTextView.showDateBreak(message, previous)
         // Timestamp
         binding.messageTimestampTextView.text = DateUtils.getDisplayFormattedTimeSpanString(context, Locale.getDefault(), message.timestamp)

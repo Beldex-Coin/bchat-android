@@ -35,6 +35,7 @@ import com.thoughtcrimes.securesms.applock.AppLockDetailsActivity
 import com.thoughtcrimes.securesms.avatar.AvatarSelection
 import com.thoughtcrimes.securesms.changelog.ChangeLogActivity
 import com.thoughtcrimes.securesms.contacts.BlockedContactActivity
+import com.thoughtcrimes.securesms.contacts.blocked.BlockedContactsActivity
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
 import com.thoughtcrimes.securesms.home.PathActivity
 import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
@@ -357,7 +358,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
     }
 
     private fun blockedContacts() {
-        val intent = Intent(this, BlockedContactActivity::class.java)
+        val intent = Intent(this, BlockedContactsActivity::class.java)
         show(intent)
     }
 

@@ -148,4 +148,6 @@
     <dimen name="light_gray_bar_margin_bottom">5dp</dimen>
     <dimen name="light_gray_bar_margin_sides">50dp</dimen>
 
+    <dimen name="small_radial_size">24dp</dimen>
+
 </resources>

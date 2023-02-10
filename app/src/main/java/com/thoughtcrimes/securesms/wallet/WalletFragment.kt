@@ -402,7 +402,11 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         }
 
         override fun doInBackground(vararg params: Executor?): Boolean {
-           unlockedBalance = wallet.unlockedBalance
+            try {
+                unlockedBalance = wallet.unlockedBalance
+            }catch (e: Exception){
+                Log.d("WalletFragment",e.toString())
+            }
            return true
         }
 
@@ -1076,7 +1080,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
     private fun updateFiatCurrency(balance: String) {
         if(balance.isNotEmpty() && balance!=null) {
             try {
-                val amount: BigDecimal = BigDecimal(balance.toDouble()).multiply(BigDecimal(price))
+                val amount: BigDecimal = BigDecimal(balance.replace(",","").toDouble()).multiply(BigDecimal(price))
                 binding.tvFiatCurrency.text = getString(
                     R.string.fiat_currency,
                     amount.toDouble(),

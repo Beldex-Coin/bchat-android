@@ -164,7 +164,7 @@ object ConversationMenuHelper {
             R.id.menu_expiring_messages -> { showExpiringMessagesDialog(context, thread) }
             R.id.menu_expiring_messages_off -> { showExpiringMessagesDialog(context, thread) }
             R.id.menu_unblock -> { unblock(context, thread) }
-            R.id.menu_block -> { block(context, thread) }
+            R.id.menu_block -> { block(context, thread,deleteThread = false) }
             R.id.menu_copy_bchat_id -> { copyBchatID(context, thread) }
             R.id.menu_edit_group -> { editClosedGroup(context, thread) }
             R.id.menu_leave_group -> { leaveClosedGroup(context, thread) }
@@ -374,69 +374,26 @@ object ConversationMenuHelper {
     }
 
     private fun showExpiringMessagesDialog(context: Context, thread: Recipient) {
-        if (thread.isClosedGroupRecipient) {
-            val group = DatabaseComponent.get(context).groupDatabase().getGroup(thread.address.toGroupString()).orNull()
-            if (group?.isActive == false) { return }
-        }
-        ExpirationDialog.show(context, thread.expireMessages) { expirationTime: Int ->
-            DatabaseComponent.get(context).recipientDatabase().setExpireMessages(thread, expirationTime)
-            val message = ExpirationTimerUpdate(expirationTime)
-            message.recipient = thread.address.serialize()
-            message.sentTimestamp = System.currentTimeMillis()
-            val expiringMessageManager = ApplicationContext.getInstance(context).expiringMessageManager
-            expiringMessageManager.setExpirationTimer(message)
-            MessageSender.send(message, thread.address)
-            val activity = context as AppCompatActivity
-            activity.invalidateOptionsMenu()
-        }
+        val listener = context as? ConversationMenuListener ?: return
+        listener.showExpiringMessagesDialog(thread)
     }
 
     private fun unblock(context: Context, thread: Recipient) {
         if (!thread.isContactRecipient) { return }
-        val title = R.string.ConversationActivity_unblock_this_contact_question
-        val message = R.string.ConversationActivity_you_will_once_again_be_able_to_receive_messages_and_calls_from_this_contact
-        val dialog = AlertDialog.Builder(context, R.style.BChatAlertDialog)
-            .setTitle(title)
-            .setMessage(message)
-            .setNegativeButton(android.R.string.cancel, null)
-            .setPositiveButton(R.string.ConversationActivity_unblock) { _, _ ->
-                DatabaseComponent.get(context).recipientDatabase()
-                    .setBlocked(thread, false)
-            }.show()
-
-        //New Line
-        val textView: TextView? = dialog.findViewById(android.R.id.message)
-        val face: Typeface = Typeface.createFromAsset(context.assets,"fonts/open_sans_medium.ttf")
-        textView!!.typeface = face
+        val listener = context as? ConversationMenuListener ?: return
+        listener.unblock()
     }
 
-    private fun block(context: Context, thread: Recipient) {
+    private fun block(context: Context, thread: Recipient, deleteThread: Boolean) {
         if (!thread.isContactRecipient) { return }
-        val title = R.string.RecipientPreferenceActivity_block_this_contact_question
-        val message = R.string.RecipientPreferenceActivity_you_will_no_longer_receive_messages_and_calls_from_this_contact
-        val dialog = AlertDialog.Builder(context,R.style.BChatAlertDialog)
-            .setTitle(title)
-            .setMessage(message)
-            .setNegativeButton(android.R.string.cancel, null)
-            .setPositiveButton(R.string.RecipientPreferenceActivity_block) { _, _ ->
-                DatabaseComponent.get(context).recipientDatabase()
-                    .setBlocked(thread, true)
-            }.show()
-
-        //New Line
-        val textView: TextView? = dialog.findViewById(android.R.id.message)
-        val face: Typeface = Typeface.createFromAsset(context.assets,"fonts/open_sans_medium.ttf")
-        textView!!.typeface = face
+        val listener = context as? ConversationMenuListener ?: return
+        listener.block(deleteThread)
     }
 
     private fun copyBchatID(context: Context, thread: Recipient) {
         if (!thread.isContactRecipient) { return }
-        val bchatID = thread.address.toString()
-        val clip = ClipData.newPlainText("BChat ID", bchatID)
-        val activity = context as AppCompatActivity
-        val manager = activity.getSystemService(PassphraseRequiredActionBarActivity.CLIPBOARD_SERVICE) as ClipboardManager
-        manager.setPrimaryClip(clip)
-        Toast.makeText(context, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
+        val listener = context as? ConversationMenuListener ?: return
+        listener.copyBchatID(thread.address.toString())
     }
 
     private fun editClosedGroup(context: Context, thread: Recipient) {
@@ -458,7 +415,7 @@ object ConversationMenuHelper {
         } else {
             context.resources.getString(R.string.ConversationActivity_are_you_sure_you_want_to_leave_this_group)
         }
-        val builder = AlertDialog.Builder(context,R.style.BChatAlertDialog_remove_new)
+        val builder = AlertDialog.Builder(context,R.style.BChatAlertDialog_Clear_All)
         .setTitle(context.resources.getString(R.string.ConversationActivity_leave_group))
         .setCancelable(true)
         .setMessage(message)
@@ -512,6 +469,13 @@ object ConversationMenuHelper {
         NotificationUtils.showNotifyDialog(context, thread) { notifyType ->
             DatabaseComponent.get(context).recipientDatabase().setNotifyType(thread, notifyType)
         }
+    }
+
+    interface ConversationMenuListener {
+        fun block(deleteThread: Boolean = false)
+        fun unblock()
+        fun copyBchatID(bchatId: String)
+        fun showExpiringMessagesDialog(thread: Recipient)
     }
 
 }

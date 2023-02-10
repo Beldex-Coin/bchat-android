@@ -77,7 +77,7 @@ class ConversationViewModelTest: BaseViewModelTest() {
 
         viewModel.unblock()
 
-        verify(repository).unblock(recipient)
+        verify(repository).setBlocked(recipient,false)
     }
 
     @Test
@@ -156,6 +156,20 @@ class ConversationViewModelTest: BaseViewModelTest() {
             viewModel.uiState.first().uiMessages.first().message,
             equalTo("Successfully banned user and deleted all their messages")
         )
+    }
+
+    @Test
+    fun `should accept message request`() = runBlockingTest {
+        viewModel.acceptMessageRequest()
+
+        verify(repository).acceptMessageRequest(threadId, recipient)
+    }
+
+    @Test
+    fun `should decline message request`() {
+        viewModel.declineMessageRequest()
+
+        verify(repository).declineMessageRequest(threadId)
     }
 
     @Test

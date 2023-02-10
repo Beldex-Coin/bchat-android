@@ -1330,4 +1330,15 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="alert_start_date" translatable="false">Please enter start date</string>
     <string name="alert_end_date" translatable="false">Please enter end date</string>
     <string name="CallNotificationBuilder_screen_on" translatable="false">Video Resumed</string>
+    <string name="activity_conversation_block_user" translatable="false">Block User</string>
+    <string name="message_requests_decline_messages" translatable="false">Are you sure you want to decline this message request?</string>
+    <string name="message_requests_block_message" translatable="false">Are you sure you want to block this message request?</string>
+
+    <string name="Unblock_dialog__title_single">Unblock %s</string>
+    <string name="Unblock_dialog__title_multiple">Unblock Users</string>
+    <string name="Unblock_dialog__message">Are you sure you want to unblock %s?</string>
+    <plurals name="Unblock_dialog__message_multiple_overflow">
+        <item quantity="one">and %d other</item>
+        <item quantity="other">and %d others</item>
+    </plurals>
 </resources>

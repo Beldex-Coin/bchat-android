@@ -621,12 +621,12 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
             block(deleteThread = true)
         }
         binding?.declineMessageRequestButton?.setOnClickListener {
-            viewModel.declineMessageRequest()
+            /*viewModel.declineMessageRequest()
             lifecycleScope.launch(Dispatchers.IO) {
                 ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(this@ConversationActivityV2)
             }
-            finish()
-            //declineAlertDialog()
+            finish()*/
+            declineAlertDialog()
         }
     }
 

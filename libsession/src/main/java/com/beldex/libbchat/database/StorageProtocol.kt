@@ -169,4 +169,5 @@ interface StorageProtocol {
     fun insertRecipientAddress(transactionId:String,recipientAddress:String)
     fun unblock(toUnblock: List<Recipient>)
     fun blockedContacts(): List<Recipient>
+    fun unblockSingleUser(toUnblock: Recipient)
 }

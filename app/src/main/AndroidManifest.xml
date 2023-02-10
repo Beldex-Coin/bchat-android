@@ -78,7 +78,8 @@
         <activity
             android:name="com.thoughtcrimes.securesms.contacts.blocked.BlockedContactsActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.TransactionDetails"
             android:exported="false"

@@ -286,19 +286,21 @@ class DisplayNameActivity : BaseActionBarActivity() {
     }
     //New Line
     private fun removeWallet(){
-        val walletFolder: File = Helper.getWalletRoot(this)
-        val walletName = TextSecurePreferences.getWalletName(this)
-        val walletFile = File(walletFolder, walletName!!)
-        val walletKeys =File(walletFolder, "$walletName.keys")
-        val walletAddress = File(walletFolder,"$walletName.address.txt")
-        if(walletFile.exists()) {
-            walletFile.delete() // when recovering wallets, the cache seems corrupt - so remove it
-        }
-        if(walletKeys.exists()) {
-            walletKeys.delete()
-        }
-        if(walletAddress.exists()) {
-            walletAddress.delete()
+        if(TextSecurePreferences.getWalletName(this)!=null) {
+            val walletFolder: File = Helper.getWalletRoot(this)
+            val walletName = TextSecurePreferences.getWalletName(this)
+            val walletFile = File(walletFolder, walletName!!)
+            val walletKeys = File(walletFolder, "$walletName.keys")
+            val walletAddress = File(walletFolder, "$walletName.address.txt")
+            if (walletFile.exists()) {
+                walletFile.delete() // when recovering wallets, the cache seems corrupt - so remove it
+            }
+            if (walletKeys.exists()) {
+                walletKeys.delete()
+            }
+            if (walletAddress.exists()) {
+                walletAddress.delete()
+            }
         }
     }
 

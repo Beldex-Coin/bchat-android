@@ -14,7 +14,7 @@ import com.thoughtcrimes.securesms.mms.GlideApp
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.BlockedContactLayoutBinding
 
-class BlockedContactsAdapter(private val context: Context) : ListAdapter<Recipient, BlockedContactsAdapter.ViewHolder>(RecipientDiffer()) {
+class BlockedContactsAdapter(private val context: BlockedContactsActivity) : ListAdapter<Recipient, BlockedContactsAdapter.ViewHolder>(RecipientDiffer()) {
 
     class RecipientDiffer: DiffUtil.ItemCallback<Recipient>() {
         override fun areItemsTheSame(oldItem: Recipient, newItem: Recipient) = oldItem === newItem
@@ -24,6 +24,10 @@ class BlockedContactsAdapter(private val context: Context) : ListAdapter<Recipie
     private val selectedItems = mutableListOf<Recipient>()
 
     fun getSelectedItems() = selectedItems
+
+    fun setSelectedItems() {
+        selectedItems.clear()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.blocked_contact_layout, parent, false)
@@ -42,8 +46,11 @@ class BlockedContactsAdapter(private val context: Context) : ListAdapter<Recipie
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val recipient = getItem(position)
         val isSelected = recipient in selectedItems
-        holder.bind(recipient, isSelected,context) {
+        holder.bind(recipient, isSelected, context) {
             toggleSelection(recipient, isSelected, position)
+        }
+        holder.binding.unblockButtonBlockedList.setOnClickListener {
+            context.unblockSingleUser(recipient,context)
         }
     }
 
@@ -57,15 +64,25 @@ class BlockedContactsAdapter(private val context: Context) : ListAdapter<Recipie
         val glide = GlideApp.with(itemView)
         val binding = BlockedContactLayoutBinding.bind(itemView)
 
-        fun bind(recipient: Recipient, isSelected: Boolean, context: Context,toggleSelection: () -> Unit) {
+        fun bind(recipient: Recipient, isSelected: Boolean, context: BlockedContactsActivity,toggleSelection: () -> Unit) {
             val address = recipient.address.serialize()
             binding.recipientName.text =  if (recipient.isGroupRecipient) recipient.name else getUserDisplayName(address,context)
             with (binding.profilePictureView) {
                 glide = this@ViewHolder.glide
                 update(recipient)
             }
-            binding.root.setOnClickListener { toggleSelection() }
-            binding.selectButton.isSelected = isSelected
+            if(!context.selectedAll){
+                binding.unblockButtonBlockedList.visibility = View.GONE
+                binding.selectButton.visibility = View.VISIBLE
+                binding.root.setOnClickListener { toggleSelection() }
+                binding.selectButton.isSelected = isSelected
+            }else{
+                binding.unblockButtonBlockedList.visibility = View.VISIBLE
+                binding.selectButton.visibility = View.GONE
+                binding.selectButton.isSelected = false
+            }
+            binding.selectButton.isClickable = !context.selectedAll
+
         }
         fun getUserDisplayName(publicKey: String, context: Context): String {
             val contact = DatabaseComponent.get(context).bchatContactDatabase()

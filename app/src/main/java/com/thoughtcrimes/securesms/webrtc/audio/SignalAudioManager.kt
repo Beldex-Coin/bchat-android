@@ -108,7 +108,7 @@ class SignalAudioManager(private val context: Context,
                 updateAudioDeviceState()
 
                 wiredHeadsetReceiver = WiredHeadsetReceiver()
-                context.registerReceiver(wiredHeadsetReceiver, IntentFilter(if (Build.VERSION.SDK_INT >= 21) AudioManager.ACTION_HEADSET_PLUG else Intent.ACTION_HEADSET_PLUG))
+                context.registerReceiver(wiredHeadsetReceiver, IntentFilter(AudioManager.ACTION_HEADSET_PLUG))
 
                 state = State.PREINITIALIZED
 

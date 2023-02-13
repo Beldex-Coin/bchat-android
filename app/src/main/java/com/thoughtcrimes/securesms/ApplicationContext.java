@@ -46,6 +46,7 @@ import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.beldex.libbchat.utilities.Util;
 import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageContextWrapper;
 import com.beldex.libbchat.utilities.dynamiclanguage.LocaleParser;
+import com.beldex.libsignal.utilities.HTTP;
 import com.beldex.libsignal.utilities.Log;
 import com.beldex.libsignal.utilities.ThreadUtils;
 import org.signal.aesgcmprovider.AesGcmProvider;
@@ -60,6 +61,7 @@ import com.thoughtcrimes.securesms.groups.OpenGroupManager;
 import com.thoughtcrimes.securesms.home.HomeActivity;
 import com.thoughtcrimes.securesms.jobmanager.JobManager;
 import com.thoughtcrimes.securesms.jobmanager.impl.JsonDataSerializer;
+import com.thoughtcrimes.securesms.jobmanager.impl.NetworkConstraint;
 import com.thoughtcrimes.securesms.jobs.FastJobStorage;
 import com.thoughtcrimes.securesms.jobs.JobManagerFactories;
 import com.thoughtcrimes.securesms.logging.AndroidLogger;
@@ -199,6 +201,9 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
         initializeWebRtc();
         initializeBlobProvider();
         resubmitProfilePictureIfNeeded();
+
+        NetworkConstraint networkConstraint = new NetworkConstraint.Factory(this).create();
+        HTTP.INSTANCE.setConnectedToNetwork(networkConstraint::isMet);
     }
 
     @Override

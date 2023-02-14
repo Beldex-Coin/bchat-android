@@ -1109,7 +1109,7 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
             if (Helper.getPhoneStatePermission(this)) {
                 isMenuCall()
             }else{
-                Log.d("Beldex","Permission not granded")
+                Log.d("Beldex","Permission not granted")
             }
         }
         return  viewModel.recipient?.let { recipient ->
@@ -1118,76 +1118,67 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
     }
 
     private fun isMenuCall() {
-        viewModel.recipient?.let { recipient ->
-            call(this@ConversationActivityV2, recipient)
-        }
-      /*  if (CheckOnline.isOnline(this)) {
-            Log.d("Beldex", "Call state issue called")
+        if (CheckOnline.isOnline(this)) {
             val tm = this.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
             if (ContextCompat.checkSelfPermission(
                     this,
                     Manifest.permission.READ_PHONE_STATE
                 ) == PackageManager.PERMISSION_GRANTED
             ) {
-                com.beldex.libsignal.utilities.Log.d("Beldex", "Call state issue called 1")
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    Log.d("Beldex", "Call state issue called 2")
                     tm.registerTelephonyCallback(
                         this.mainExecutor,
                         object : TelephonyCallback(), TelephonyCallback.CallStateListener {
                             override fun onCallStateChanged(state: Int) {
                                 when (state) {
                                     TelephonyManager.CALL_STATE_RINGING -> {
-                                        Log.d("Beldex", "Call state issue called 3")
                                         Toast.makeText(
                                             this@ConversationActivityV2,
-                                            "BChat call won't allow ,Because your phone call ringing",
+                                            getString(R.string.call_alert_while_ringing),
                                             Toast.LENGTH_SHORT
                                         ).show()
                                     }
                                     TelephonyManager.CALL_STATE_OFFHOOK -> {
-                                        Log.d("Beldex", "Call state issue called 4")
                                         Toast.makeText(
                                             this@ConversationActivityV2,
-                                            "BChat call won't allow ,Because your phone call is on going",
+                                            getString(R.string.call_alert_while_on_going),
                                             Toast.LENGTH_SHORT
                                         ).show()
 
                                     }
                                     TelephonyManager.CALL_STATE_IDLE -> {
-                                        Log.d("Beldex", "Call state issue called 5")
-                                        call(this@ConversationActivityV2, viewModel.recipient)
+                                        viewModel.recipient?.let { recipient ->
+                                            call(this@ConversationActivityV2, recipient)
+                                        }
                                     }
                                 }
                             }
                         })
 
                 } else {
-                    com.beldex.libsignal.utilities.Log.d("Beldex", "Call state issue called 6")
                     tm.listen(object : PhoneStateListener() {
                         override fun onCallStateChanged(state: Int, phoneNumber: String?) {
                             super.onCallStateChanged(state, phoneNumber)
                             when (state) {
                                 TelephonyManager.CALL_STATE_RINGING -> {
-                                    Log.d("Beldex", "Call state issue called 7")
                                     Toast.makeText(
                                         this@ConversationActivityV2,
-                                        "BChat call won't allow ,Because your phone call ringing",
+                                        getString(R.string.call_alert_while_ringing),
                                         Toast.LENGTH_SHORT
                                     ).show()
                                 }
                                 TelephonyManager.CALL_STATE_OFFHOOK -> {
-                                    Log.d("Beldex", "Call state issue called 8")
                                     Toast.makeText(
                                         this@ConversationActivityV2,
-                                        "BChat call won't allow ,Because your phone call is on going",
+                                        getString(R.string.call_alert_while_on_going),
                                         Toast.LENGTH_SHORT
                                     ).show()
 
                                 }
                                 TelephonyManager.CALL_STATE_IDLE -> {
-                                    Log.d("Beldex", "Call state issue called 9")
-                                    call(this@ConversationActivityV2, viewModel.recipient)
+                                    viewModel.recipient?.let { recipient ->
+                                        call(this@ConversationActivityV2, recipient)
+                                    }
                                 }
                             }
                         }
@@ -1199,7 +1190,7 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
 
         } else {
             Toast.makeText(this, "Check your Internet", Toast.LENGTH_SHORT).show()
-        }*/
+        }
     }
 
     private fun call(context: Context, thread: Recipient) {

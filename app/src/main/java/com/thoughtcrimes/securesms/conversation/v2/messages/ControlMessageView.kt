@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewControlMessageBinding
 import com.thoughtcrimes.securesms.database.model.MessageRecord
@@ -46,6 +47,12 @@ class ControlMessageView : LinearLayout {
     fun bind(message: MessageRecord, previous: MessageRecord?) {
         binding.dateBreakTextView.showDateBreak(message, previous)
         binding.iconImageView.visibility = View.GONE
+
+        val fontSize = TextSecurePreferences.getChatFontSize(context)
+        binding.textView.textSize = fontSize!!.toFloat()
+        binding.receiverStatusIconTextView.textSize = fontSize.toFloat()
+        binding.senderStatusIconTextView.textSize = fontSize.toFloat()
+        binding.dateBreakTextView.textSize = fontSize.toFloat()
 
         //SteveJosephh21
         binding.receiverStatusIconCardView.visibility = View.GONE

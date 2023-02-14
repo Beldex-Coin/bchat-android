@@ -507,6 +507,10 @@
     <string name="arrays__high" translatable="false">High</string>
     <string name="arrays__max" translatable="false">Max</string>
 
+    <string name="arrays_small_font_size" translatable="false">Small</string>
+    <string name="arrays_medium_font_size" translatable="false">Medium</string>
+    <string name="arrays_large_font_size" translatable="false">Large</string>
+
     <!-- plurals.xml -->
     <plurals name="hours_ago">
         <item quantity="one">%d hour</item>

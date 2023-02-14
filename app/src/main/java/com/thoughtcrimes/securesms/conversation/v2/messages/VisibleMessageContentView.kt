@@ -28,6 +28,7 @@ import androidx.core.graphics.BlendModeCompat
 import androidx.core.text.getSpans
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.ThemeUtil
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
@@ -326,6 +327,8 @@ class VisibleMessageContentView : LinearLayout {
             else binding.quoteView.calculateWidth(quote, bodyWidth, maxWidth, thread)
 
         binding.quoteView.layoutParams = quoteLayoutParams
+        val fontSize = TextSecurePreferences.getChatFontSize(context)
+        binding.bodyTextView.textSize = fontSize!!.toFloat()
 
         if (message.body.isNotEmpty() && !hideBody) {
             val color = getTextColor(context, message)

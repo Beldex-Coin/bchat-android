@@ -25,6 +25,7 @@ import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewVisibleMessageBinding
 import com.beldex.libbchat.messaging.contacts.Contact.ContactContext
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.ViewUtil
 import com.beldex.libsignal.utilities.ThreadUtils
 import com.thoughtcrimes.securesms.ApplicationContext
@@ -106,6 +107,8 @@ class VisibleMessageView : LinearLayout {
         val isGroupThread = thread.isGroupRecipient
         val isStartOfMessageCluster = isStartOfMessageCluster(message, previous, isGroupThread)
         val isEndOfMessageCluster = isEndOfMessageCluster(message, next, isGroupThread)
+        val fontSize = TextSecurePreferences.getChatFontSize(context)
+        binding.senderNameTextView.textSize = fontSize!!.toFloat()
         // Show profile picture and sender name if this is a group thread AND
         // the message is incoming
         if (isGroupThread && !message.isOutgoing) {
@@ -131,6 +134,7 @@ class VisibleMessageView : LinearLayout {
             binding.senderNameTextView.visibility = View.GONE
         }
         // Date break
+        binding.dateBreakTextView.textSize = fontSize.toFloat()
         binding.dateBreakTextView.showDateBreak(message, previous)
         // Timestamp
         binding.messageTimestampTextView.text = DateUtils.getDisplayFormattedTimeSpanString(context, Locale.getDefault(), message.timestamp)

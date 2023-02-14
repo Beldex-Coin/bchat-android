@@ -202,6 +202,17 @@
       <item>none</item>
   </string-array>
 
+    <string-array name="pref_chat_font_size_entries">
+        <item>@string/arrays_small_font_size</item>
+        <item>@string/arrays_medium_font_size</item>
+        <item>@string/arrays_large_font_size</item>
+    </string-array>
+
+    <string-array name="pref_chat_font_size_values">
+        <item>14</item>
+        <item>16</item>
+        <item>18</item>
+    </string-array>
   <!-- discrete MIME type (the part before the "/") -->
 
     <!-- RedPhone -->

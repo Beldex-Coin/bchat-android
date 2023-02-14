@@ -100,7 +100,7 @@ class CallMessageProcessor (private val context: Context, private val textSecure
             sdp = sdp,
             callId = callId
         )
-        ContextCompat.startForegroundService(context, answerIntent)
+        context.startService(answerIntent)
     }
 
     private fun handleIceCandidates(callMessage: CallMessage) {
@@ -129,7 +129,7 @@ class CallMessageProcessor (private val context: Context, private val textSecure
             callId = callId,
             callTime = callMessage.sentTimestamp!!
         )
-        ContextCompat.startForegroundService(context, incomingIntent)
+        context.startService(incomingIntent)
     }
 
     private fun incomingCall(callMessage: CallMessage) {
@@ -143,7 +143,7 @@ class CallMessageProcessor (private val context: Context, private val textSecure
             callId = callId,
             callTime = callMessage.sentTimestamp!!
         )
-        ContextCompat.startForegroundService(context, incomingIntent)
+        context.startService(incomingIntent)
 
     }
 

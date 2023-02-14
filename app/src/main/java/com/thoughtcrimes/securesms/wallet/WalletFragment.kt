@@ -390,7 +390,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             super.onPreExecute()
             if(mContext!=null && walletAvailableBalance!=null) {
                 if(TextSecurePreferences.getDisplayBalanceAs(mContext!!) == 1 || TextSecurePreferences.getDisplayBalanceAs(mContext!!) == 0) {
-                    if(walletAvailableBalance!!.toDouble()>0.0) {
+                    if(walletAvailableBalance!!.replace(",","").toDouble()>0.0) {
                         showSelectedDecimalBalance(walletAvailableBalance!!, true)
                     }else{
                         refreshBalance(false)
@@ -1060,13 +1060,13 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             binding.fetchBalanceStatus.visibility =View.GONE
             when {
                 TextSecurePreferences.getDecimals(requireActivity()) == "2 - Two (0.00)" -> {
-                    binding.tvBalance.text = String.format("%.2f", balance.toDouble())
+                    binding.tvBalance.text = String.format("%.2f", balance.replace(",","").toDouble())
                 }
                 TextSecurePreferences.getDecimals(requireActivity()) == "3 - Three (0.000)" -> {
-                    binding.tvBalance.text = String.format("%.3f", balance.toDouble())
+                    binding.tvBalance.text = String.format("%.3f", balance.replace(",","").toDouble())
                 }
                 TextSecurePreferences.getDecimals(requireActivity()) == "0 - Zero (000)" -> {
-                    binding.tvBalance.text = String.format("%.0f", balance.toDouble())
+                    binding.tvBalance.text = String.format("%.0f", balance.replace(",","").toDouble())
                 }
                 else -> {
                     binding.tvBalance.text = balance

@@ -395,7 +395,7 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
         val isOutgoing = currentConnectionState in CallState.OUTGOING_STATES
         stateProcessor.processEvent(Event.Cleanup) {
             Log.d("Beldex","signalAudioManager.handleCommand 5")
-            signalAudioManager.handleCommand(AudioManagerCommand.Stop(isOutgoing))
+            signalAudioManager.handleCommand(AudioManagerCommand.Stop(true))
             peerConnection?.dispose()
             peerConnection = null
 

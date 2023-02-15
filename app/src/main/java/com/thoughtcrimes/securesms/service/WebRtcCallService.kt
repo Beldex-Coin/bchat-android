@@ -539,14 +539,14 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
 
     private fun handleRemoteHangup(intent: Intent) {
         //SteveJosephh21 - ContextCompat.startForegroundService()
-        /*if (callManager.callId != getCallId(intent)) {
+        if (callManager.callId != getCallId(intent)) {
             Log.e(TAG, "Hangup for non-active call...")
             TextSecurePreferences.setRemoteCallEnded(this, true)
             stopForeground(true)//Steve Josephh21-
             return
         }
         Log.e(TAG, "Hangup for non-active call... 1")
-        onHangup()*/
+        onHangup()
     }
 
     private fun handleSetMuteAudio(intent: Intent) {

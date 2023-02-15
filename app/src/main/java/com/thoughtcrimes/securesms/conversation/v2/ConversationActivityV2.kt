@@ -1105,11 +1105,16 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
             return false
-        }else if(item.itemId == R.id.menu_call) {
-            if (Helper.getPhoneStatePermission(this)) {
-                isMenuCall()
-            }else{
-                Log.d("Beldex","Permission not granted")
+        } else if (item.itemId == R.id.menu_call) {
+            val recipient = viewModel.recipient ?: return false
+            if (recipient.isContactRecipient && recipient.isBlocked) {
+                BlockedDialog(recipient).show(supportFragmentManager, "Blocked Dialog")
+            } else {
+                if (Helper.getPhoneStatePermission(this)) {
+                    isMenuCall()
+                } else {
+                    Log.d("Beldex", "Permission not granted")
+                }
             }
         }
         return  viewModel.recipient?.let { recipient ->

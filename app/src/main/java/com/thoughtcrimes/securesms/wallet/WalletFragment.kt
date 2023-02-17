@@ -868,7 +868,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 } else {
                     ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(false)
                     //Steve Josephh21 ANRS
-                    AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+                  // AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
                     Log.d("showBalance->","Synchronized")
                     sync =
                         getString(R.string.status_synchronized)//getString(R.string.status_synced) + " " + formatter.format(wallet.blockChainHeight)
@@ -1208,6 +1208,16 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 binding.filterTransactionsIcon.isClickable = true // default = false
                 binding.transactionList.visibility = View.GONE
                 binding.emptyContainerLayout.visibility = View.VISIBLE
+            }
+            //Steve Josephh21 ANRS
+            if(CheckOnline.isOnline(requireContext())) {
+                check(activityCallback!!.hasBoundService()) { "WalletService not bound." }
+                val daemonConnected: Wallet.ConnectionStatus = activityCallback!!.connectionStatus!!
+                Log.d("Beldex", "Value of daemon connection 1 $daemonConnected")
+                if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
+                    Log.d("Beldex","onRefreshed Called unlocked balance updated")
+                    AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+                }
             }
         }
         updateStatus(wallet)

@@ -73,6 +73,8 @@ public class NodeFragment extends Fragment
 
     private ProgressDialog progressBar;
 
+    Button testButton;
+
     public interface Listener {
         File getStorageRoot();
 
@@ -524,6 +526,7 @@ public class NodeFragment extends Fragment
             if (applyChanges()){
                 new AsyncTestNode().execute();
             }else{
+                testButton.setEnabled(true);
                 progressBar.dismiss();
             }
         }
@@ -622,10 +625,11 @@ public class NodeFragment extends Fragment
             editDialog.setOnShowListener(new DialogInterface.OnShowListener() {
                 @Override
                 public void onShow(final DialogInterface dialog) {
-                    Button testButton = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_NEUTRAL);
+                    testButton = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_NEUTRAL);
                     testButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            testButton.setEnabled(false);
                             progressBar = new ProgressDialog(getContext());
                             progressBar.setCancelable(false);
                             progressBar.setMessage(getString(R.string.testing_the_node));
@@ -701,6 +705,7 @@ public class NodeFragment extends Fragment
             protected void onPostExecute(Boolean result) {
                 if (editDialog != null) {
                     showTestResult();
+                    testButton.setEnabled(true);
                     progressBar.dismiss();
                 }
                 if (shutdown) {

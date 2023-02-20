@@ -53,6 +53,7 @@ class LoadingActivity : AppCompatActivity() {
         val REQUEST_URI = "uri"
 
         Timber.d("startWallet()");
+        TextSecurePreferences.callFiatCurrencyApi(this, true)
         TextSecurePreferences.setIncomingTransactionStatus(this, true)
         TextSecurePreferences.setOutgoingTransactionStatus(this, true)
         TextSecurePreferences.setTransactionsByDateStatus(this,false)

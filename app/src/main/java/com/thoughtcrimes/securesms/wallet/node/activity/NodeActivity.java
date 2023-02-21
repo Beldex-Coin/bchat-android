@@ -334,7 +334,6 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
             for (NodeInfo nodeInfo : favouriteNodes) {
                 nodeInfo.setSelected(nodeInfo == node);
             }
-            Log.d("Daemon Address setNode() ",""+node.getAddress());
             WalletManager.getInstance().setDaemon(node);
             if (save)
                 saveSelectedNode();

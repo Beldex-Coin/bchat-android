@@ -282,6 +282,8 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
         } catch (ClassNotFoundException e) {
             Log.e(TAG, "Failed to find AesGcmCipher class");
             throw new ProviderInitializationException();
+        }catch(UnsatisfiedLinkError e){
+            Log.w(TAG, e);
         }
 
         int aesPosition = Security.insertProviderAt(new AesGcmProvider(), 1);
@@ -406,10 +408,10 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
         }
         firebaseInstanceIdJob = FcmUtils.getFcmInstanceId(task->{
             if (!task.isSuccessful()) {
-                Log.w("Beldex", "FirebaseInstanceId.getInstance().getInstanceId() failed." + task.getException());
+                Log.w("Beldex", "FirebaseMessaging.getInstance().token failed." + task.getException());
                 return Unit.INSTANCE;
             }
-            String token = task.getResult().getToken();
+            String token = task.getResult();
             String userPublicKey = TextSecurePreferences.getLocalNumber(this);
             if (userPublicKey == null) return Unit.INSTANCE;
             if (TextSecurePreferences.isUsingFCM(this)) {

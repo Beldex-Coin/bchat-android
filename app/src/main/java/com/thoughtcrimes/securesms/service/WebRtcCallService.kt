@@ -205,7 +205,7 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
     }
     private val hangupTelephonyCallback by lazy {
         HangUpRtcTelephonyCallback {
-            ContextCompat.startForegroundService(this, hangupIntent(this))
+            this.startService(hangupIntent(this))
         }
     }
 
@@ -305,6 +305,7 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
                 getSystemService(TelephonyManager::class.java)
                     .listen(hangupOnCallAnswered, PhoneStateListener.LISTEN_CALL_STATE)
             } else {
+                Log.d("hangupTelephonyCallback","register")
                 getSystemService(TelephonyManager::class.java)
                     .registerTelephonyCallback(serviceExecutor, hangupTelephonyCallback)
             }
@@ -744,6 +745,7 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
                     this.listen(hangupOnCallAnswered, PhoneStateListener.LISTEN_NONE)
                 } else {
+                    Log.d("hangupTelephonyCallback","unregister")
                     this.unregisterTelephonyCallback(hangupTelephonyCallback)
                 }
             }

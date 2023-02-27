@@ -507,6 +507,10 @@
     <string name="arrays__high" translatable="false">High</string>
     <string name="arrays__max" translatable="false">Max</string>
 
+    <string name="arrays_small_font_size" translatable="false">Small</string>
+    <string name="arrays_medium_font_size" translatable="false">Medium</string>
+    <string name="arrays_large_font_size" translatable="false">Large</string>
+
     <!-- plurals.xml -->
     <plurals name="hours_ago">
         <item quantity="one">%d hour</item>
@@ -1326,4 +1330,20 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="alert_start_date" translatable="false">Please enter start date</string>
     <string name="alert_end_date" translatable="false">Please enter end date</string>
     <string name="CallNotificationBuilder_screen_on" translatable="false">Video Resumed</string>
+    <string name="activity_conversation_block_user" translatable="false">Block User</string>
+    <string name="message_requests_decline_messages" translatable="false">Are you sure you want to decline this message request?</string>
+    <string name="message_requests_block_message" translatable="false">Are you sure you want to block this message request?</string>
+
+    <string name="Unblock_dialog__title_single">Unblock %s</string>
+    <string name="Unblock_dialog__title_multiple">Unblock Users</string>
+    <string name="Unblock_dialog__message">Are you sure you want to unblock %s?</string>
+    <plurals name="Unblock_dialog__message_multiple_overflow">
+        <item quantity="one">and %d other</item>
+        <item quantity="other">and %d others</item>
+    </plurals>
+    <string name="unblock_selected" translatable="false">Unblock Selected</string>
+    <string name="call_alert_while_ringing" translatable="false">BChat call won\'t allow ,Because your phone call ringing</string>
+    <string name="call_alert_while_on_going" translatable="false">BChat call won\'t allow ,Because your phone call is on going</string>
+    <string name="please_connect_to_other_node" translatable="false">Please connect to other node</string>
+    <string name="please_try_after_some_time" translatable="false">Please try after some time</string>
 </resources>

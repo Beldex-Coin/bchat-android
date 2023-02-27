@@ -23,7 +23,7 @@ class ConversationViewModel(
     private val _uiState = MutableStateFlow(ConversationUiState())
     val uiState: StateFlow<ConversationUiState> = _uiState
     /*Hales63*/
-    val recipient: Recipient
+    val recipient: Recipient?
         get() = repository.getRecipientForThreadId(threadId)
 
     init {
@@ -32,6 +32,7 @@ class ConversationViewModel(
         }
     }
     fun acceptMessageRequest() = viewModelScope.launch {
+        val recipient = recipient ?: return@launch Log.w("Beldex", "Recipient was null for accept message request action")
         repository.acceptMessageRequest(threadId, recipient)
             .onSuccess {
                 _uiState.update {
@@ -44,7 +45,7 @@ class ConversationViewModel(
     }
 
     fun declineMessageRequest() {
-        repository.declineMessageRequest(threadId, recipient)
+        repository.declineMessageRequest(threadId)
     }
 
     fun saveDraft(text: String) {
@@ -59,22 +60,37 @@ class ConversationViewModel(
         repository.inviteContacts(threadId, contacts)
     }
 
-    fun unblock() {
+    fun block() {
+        val recipient = recipient ?: return Log.w("Beldex", "Recipient was null for block action")
         if (recipient.isContactRecipient) {
-            repository.unblock(recipient)
+            repository.setBlocked(recipient, true)
         }
     }
 
+    fun unblock() {
+        val recipient = recipient ?: return Log.w("Beldex", "Recipient was null for unblock action")
+        if (recipient.isContactRecipient) {
+            repository.setBlocked(recipient,false)
+        }
+    }
+
+    fun deleteThread() = viewModelScope.launch {
+        repository.deleteThread(threadId)
+    }
+
     fun deleteLocally(message: MessageRecord) {
+        val recipient = recipient ?: return Log.w("Beldex", "Recipient was null for delete locally action")
         repository.deleteLocally(recipient, message)
     }
 
     //New Line v32
     fun setRecipientApproved() {
+        val recipient = recipient ?: return Log.w("Beldex", "Recipient was null for set approved action")
         repository.setApproved(recipient, true)
     }
 
     fun deleteForEveryone(message: MessageRecord) = viewModelScope.launch {
+        val recipient = recipient ?: return@launch
         repository.deleteForEveryone(threadId, recipient, message)
             .onFailure {
                 showMessage("Couldn't delete message due to error: $it")

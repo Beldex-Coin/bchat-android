@@ -52,12 +52,24 @@ class BatchMessageReceiveJob(
                     message.serverHash = serverHash
                     MessageReceiver.handle(message, proto, this.openGroupID)
                 } catch (e: Exception) {
-                    Log.e(TAG, "Couldn't receive message.", e)
-                    if (e is MessageReceiver.Error && !e.isRetryable) {
-                        Log.e(TAG, "Message failed permanently",e)
-                    } else {
-                        Log.e(TAG, "Message failed",e)
-                        failures += messageParameters
+                    when (e) {
+                        is MessageReceiver.Error.DuplicateMessage, MessageReceiver.Error.SelfSend -> {
+                            Log.i(TAG, "Couldn't receive message, failed with error: ${e.message}")
+                            failures += messageParameters
+                        }
+                        is MessageReceiver.Error -> {
+                            if (!e.isRetryable) {
+                                Log.e(TAG, "Couldn't receive message, failed permanently", e)
+                            }
+                            else {
+                                Log.e(TAG, "Couldn't receive message, failed", e)
+                                failures += messageParameters
+                            }
+                        }
+                        else -> {
+                            Log.e(TAG, "Couldn't receive message, failed", e)
+                            failures += messageParameters
+                        }
                     }
                 }
             }

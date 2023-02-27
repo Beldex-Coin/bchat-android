@@ -8,7 +8,7 @@
 
 
     <TextView
-        android:fontFamily="@font/poppins_semi_bold"
+        android:fontFamily="@font/open_sans_semi_bold"
         android:id="@+id/lblListHeader"
         android:layout_width="0dp"
         android:layout_weight="2"

@@ -58,7 +58,7 @@ class SaveAttachmentTask : ProgressDialogAsyncTask<SaveAttachmentTask.Attachment
 
             //New Line
             val textView: TextView? = builder.findViewById(android.R.id.message)
-            val face: Typeface = Typeface.createFromAsset(context.assets,"fonts/poppins_medium.ttf")
+            val face: Typeface = Typeface.createFromAsset(context.assets,"fonts/open_sans_medium.ttf")
             textView!!.typeface = face
         }
     }

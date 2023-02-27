@@ -45,7 +45,7 @@
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="10dp"
                         android:textColor="@color/white"
-                        android:fontFamily="@font/poppins_bold"
+                        android:fontFamily="@font/open_sans_bold"
                         android:text="@string/call_in_progress"
                         android:textSize="15sp"
                         android:textStyle="bold"
@@ -61,7 +61,7 @@
                         android:layout_marginEnd="20dp"
                         android:textColor="@color/white"
                         android:layout_toEndOf="@id/callInProgress_Call"
-                        android:fontFamily="@font/poppins_bold"
+                        android:fontFamily="@font/open_sans_bold"
                         tools:text="@tools:sample/date/hhmmss"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -129,7 +129,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:layout_toStartOf="@+id/profileButton"
-                        android:fontFamily="@font/poppins_bold"
+                        android:fontFamily="@font/open_sans_bold"
                         android:text="BChat"
                         android:textSize="30sp"
                         android:textStyle="bold" />
@@ -187,7 +187,7 @@
                         android:layout_alignParentStart="@id/searchBarBackButton"
                         android:layout_centerVertical="true"
                         android:layout_marginStart="55dp"
-                        android:fontFamily="@font/poppins_bold"
+                        android:fontFamily="@font/open_sans_bold"
                         android:text="Search"
                         android:textSize="25sp"
                         android:textStyle="bold" />
@@ -261,7 +261,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
-                        android:fontFamily="@font/poppins_medium"
+                        android:fontFamily="@font/open_sans_medium"
                         android:text="Search people and groups"
                         android:textColor="@color/home_search_icon_and_hint" />
                 </RelativeLayout>
@@ -343,7 +343,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:alpha="0.2"
-                    android:fontFamily="@font/poppins_medium"
+                    android:fontFamily="@font/open_sans_medium"
                     android:gravity="center"
                     android:text="Much empty. Such wow.\nGo get some friends to BChat!"
                     android:textColor="@color/text"
@@ -370,7 +370,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="170dp"
-                android:fontFamily="@font/poppins_medium"
+                android:fontFamily="@font/open_sans_medium"
                 android:gravity="center"
                 android:text="Much empty. Such wow.\nGo get some friends to BChat!"
                 android:textColor="@color/empty_state_container_text"
@@ -430,7 +430,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
             <TextView
-                android:fontFamily="@font/poppins_bold"
+                android:fontFamily="@font/open_sans_bold"
                 android:id="@+id/drawer_settings_title"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -485,7 +485,7 @@
                     app:layout_constraintRight_toLeftOf="@id/drawer_qrcode_img">
 
                     <TextView
-                        android:fontFamily="@font/poppins_bold"
+                        android:fontFamily="@font/open_sans_bold"
                         android:id="@+id/drawer_profile_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -497,7 +497,7 @@
                         app:layout_constraintLeft_toRightOf="@id/drawer_profile_icon" />
 
                     <TextView
-                        android:fontFamily="@font/poppins_medium"
+                        android:fontFamily="@font/open_sans_medium"
                         android:id="@+id/drawer_profile_id"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -550,7 +550,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="40dp">
             <TextView
-                android:fontFamily="@font/poppins_medium"
+                android:fontFamily="@font/open_sans_medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Dark Mode"
@@ -571,10 +571,10 @@
             android:layout_margin="12dp"
             android:orientation="horizontal">
             <TextView
-                android:fontFamily="@font/poppins_medium"
+                android:fontFamily="@font/open_sans_medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="BChat V2.0.2"
+                android:text="BChat V2.0.3"
                 android:textAlignment="viewEnd"
                 android:textColor="@color/bchat_version"
                 android:textStyle="normal" />

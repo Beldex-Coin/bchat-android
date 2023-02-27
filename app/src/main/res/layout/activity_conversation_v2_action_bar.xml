@@ -52,7 +52,7 @@
                 tools:visibility="visible"/>
 
             <TextView
-                android:fontFamily="@font/poppins_regular"
+                android:fontFamily="@font/open_sans_regular"
                 android:id="@+id/conversationSubtitleView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

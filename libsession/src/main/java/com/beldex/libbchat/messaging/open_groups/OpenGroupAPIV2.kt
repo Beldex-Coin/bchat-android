@@ -146,11 +146,24 @@ object OpenGroupAPIV2 {
                     // A 401 means that we didn't provide a (valid) auth token for a route that required one. We use this as an
                     // indication that the token we're using has expired. Note that a 403 has a different meaning; it means that
                     // we provided a valid token but it doesn't have a high enough permission level for the route in question.
-                    if (e is OnionRequestAPI.HTTPRequestFailedAtDestinationException && e.statusCode == 401) {
+                    /*if (e is OnionRequestAPI.HTTPRequestFailedAtDestinationException && e.statusCode == 401) {
                         val storage = MessagingModuleConfiguration.shared.storage
                         if (request.room != null) {
                             storage.removeAuthToken(request.room, request.server)
                         }
+                    }*/
+                    when (e) {
+                        // No need for the stack trace for HTTP errors
+                        is HTTP.HTTPRequestFailedException -> {
+                            Log.e("OpenGroupAPIV2", "Failed onion request: ${e.message}")
+                            if(e.statusCode == 401) {
+                                val storage = MessagingModuleConfiguration.shared.storage
+                                if (request.room != null) {
+                                    storage.removeAuthToken(request.room, request.server)
+                                }
+                            }
+                        }
+                        else -> Log.e("OpenGroupAPIV2", "Failed onion request", e)
                     }
                 }
             } else {

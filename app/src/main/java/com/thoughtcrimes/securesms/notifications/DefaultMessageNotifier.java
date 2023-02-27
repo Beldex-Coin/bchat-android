@@ -130,7 +130,7 @@ public class DefaultMessageNotifier implements MessageNotifier {
 
   @Override
   public void notifyMessageDeliveryFailed(Context context, Recipient recipient, long threadId) {
-    if (visibleThread == threadId) {
+    /*if (visibleThread == threadId) {
       sendInThreadNotification(context, recipient);
     } else {
       Intent intent = new Intent(context, ConversationActivityV2.class);
@@ -141,6 +141,16 @@ public class DefaultMessageNotifier implements MessageNotifier {
       FailedNotificationBuilder builder = new FailedNotificationBuilder(context, TextSecurePreferences.getNotificationPrivacy(context), intent);
       ((NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE))
         .notify((int)threadId, builder.build());
+    }*/
+    if (visibleThread != threadId) {
+      Intent intent = new Intent(context, ConversationActivityV2.class);
+      intent.putExtra(ConversationActivityV2.ADDRESS, recipient.getAddress());
+      intent.putExtra(ConversationActivityV2.THREAD_ID, threadId);
+      intent.setData((Uri.parse("custom://" + System.currentTimeMillis())));
+
+      FailedNotificationBuilder builder = new FailedNotificationBuilder(context, TextSecurePreferences.getNotificationPrivacy(context), intent);
+      ((NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE))
+              .notify((int)threadId, builder.build());
     }
   }
 
@@ -238,7 +248,7 @@ public class DefaultMessageNotifier implements MessageNotifier {
     Recipient      recipients = threads.getRecipientForThreadId(threadId);
 
     //New Line
-    if (!recipients.isGroupRecipient() && threads.getMessageCount(threadId) == 1 &&
+    if (recipients != null && !recipients.isGroupRecipient() && threads.getMessageCount(threadId) == 1 &&
             !(recipients.isApproved() || threads.getLastSeenAndHasSent(threadId).second())) {
       TextSecurePreferences.removeHasHiddenMessageRequests(context);
     }
@@ -254,9 +264,12 @@ public class DefaultMessageNotifier implements MessageNotifier {
       return;
     }
 
-    if (isVisible) {
+    /*if (isVisible) {
       sendInThreadNotification(context, threads.getRecipientForThreadId(threadId));
     } else if (!homeScreenVisible) {
+      updateNotification(context, signal, 0);
+    }*/
+    if (!isVisible && !homeScreenVisible) {
       updateNotification(context, signal, 0);
     }
   }
@@ -456,7 +469,7 @@ public class DefaultMessageNotifier implements MessageNotifier {
     Log.i(TAG, "Posted notification. " + notification.toString());
   }
 
-  private void sendInThreadNotification(Context context, Recipient recipient) {
+  /*private void sendInThreadNotification(Context context, Recipient recipient) {
     if (!TextSecurePreferences.isInThreadNotifications(context) ||
             ServiceUtil.getAudioManager(context).getRingerMode() != AudioManager.RINGER_MODE_NORMAL ||
             (System.currentTimeMillis() - lastAudibleNotification) < MIN_AUDIBLE_PERIOD_MILLIS)
@@ -496,7 +509,7 @@ public class DefaultMessageNotifier implements MessageNotifier {
     }
 
     ringtone.play();
-  }
+  }*/
 
  /* Hales63*/
   private NotificationState constructNotificationState(@NonNull  Context context,

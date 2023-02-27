@@ -140,7 +140,7 @@ class PathActivity : PassphraseRequiredActionBarActivity() {
         titleTextView.text = title
 
         //New Line
-        val face = Typeface.createFromAsset(assets, "fonts/poppins_medium.ttf")
+        val face = Typeface.createFromAsset(assets, "fonts/open_sans_medium.ttf")
         titleTextView.typeface = face
 
         titleTextView.textAlignment = TextView.TEXT_ALIGNMENT_VIEW_START
@@ -158,7 +158,7 @@ class PathActivity : PassphraseRequiredActionBarActivity() {
             subtitleTextView.text = subtitle
 
             //New Line
-            val face1 = Typeface.createFromAsset(assets, "fonts/poppins_regular.ttf")
+            val face1 = Typeface.createFromAsset(assets, "fonts/open_sans_regular.ttf")
             subtitleTextView.typeface = face1
 
             subtitleTextView.textAlignment = TextView.TEXT_ALIGNMENT_VIEW_START

@@ -23,7 +23,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:fontFamily="@font/poppins_bold"
+            android:fontFamily="@font/open_sans_bold"
             android:id="@+id/keys_permission_important_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
             app:layout_constraintTop_toBottomOf="@id/keys_permission_important_image"
             android:textStyle="bold"/>
         <TextView
-            android:fontFamily="@font/poppins_bold"
+            android:fontFamily="@font/open_sans_bold"
             android:id="@+id/keys_permission_important_subTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
             android:textStyle="bold"/>
 
         <TextView
-            android:fontFamily="@font/poppins_medium"
+            android:fontFamily="@font/open_sans_medium"
             android:id="@+id/keys_permission_important_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
             android:layout_marginStart="15dp"
             android:layout_marginEnd="15dp"/>
         <TextView
-            android:fontFamily="@font/poppins_bold"
+            android:fontFamily="@font/open_sans_bold"
             android:id="@+id/keys_permission_important_confirmTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

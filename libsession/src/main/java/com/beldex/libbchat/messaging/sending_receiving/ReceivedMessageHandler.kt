@@ -313,7 +313,7 @@ private fun MessageReceiver.handleClosedGroupControlMessage(message: ClosedGroup
 private fun MessageReceiver.handleNewClosedGroup(message: ClosedGroupControlMessage) {
     val kind = message.kind!! as? ClosedGroupControlMessage.Kind.New ?: return
     val recipient = Recipient.from(MessagingModuleConfiguration.shared.context, Address.fromSerialized(message.sender!!), false)
-    if (!recipient.isApproved) return
+    if (!recipient.isApproved && !recipient.isLocalNumber) return
     val groupPublicKey = kind.publicKey.toByteArray().toHexString()
     val members = kind.members.map { it.toByteArray().toHexString() }
     val admins = kind.admins.map { it.toByteArray().toHexString() }

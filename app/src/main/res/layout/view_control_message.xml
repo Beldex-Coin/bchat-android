@@ -10,7 +10,7 @@
     <!--android:paddingHorizontal="@dimen/massive_spacing"-->
 
     <TextView
-        android:fontFamily="@font/poppins_regular"
+        android:fontFamily="@font/open_sans_regular"
         android:id="@+id/dateBreakTextView"
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -29,7 +29,7 @@
         tools:src="@drawable/ic_timer" />
 
     <TextView
-        android:fontFamily="@font/poppins_regular"
+        android:fontFamily="@font/open_sans_regular"
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -72,7 +72,7 @@
                 android:layout_gravity="center"/>
 
             <TextView
-                android:fontFamily="@font/poppins_regular"
+                android:fontFamily="@font/open_sans_regular"
                 android:id="@+id/receiverStatusIconTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -110,7 +110,7 @@
             android:paddingEnd="13dp"
             android:paddingBottom="15dp">
             <TextView
-                android:fontFamily="@font/poppins_regular"
+                android:fontFamily="@font/open_sans_regular"
                 android:id="@+id/senderStatusIconTextView"
                 android:layout_width="0dp"
                 android:layout_weight="1"

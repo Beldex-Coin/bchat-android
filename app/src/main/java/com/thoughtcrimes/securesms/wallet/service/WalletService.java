@@ -16,6 +16,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -264,6 +265,8 @@ public class WalletService extends Service {
         void onWalletStarted(Wallet.Status walletStatus);
 
         void onWalletOpen(Wallet.Device device);
+
+        void onWalletFinish();
     }
 
     String progressText = null;
@@ -610,12 +613,13 @@ public class WalletService extends Service {
                 Wallet.Status walletStatus = aWallet.getFullStatus();
                 Log.d("Beldex","Wallet start called  4" + walletStatus);
                 if (!walletStatus.isOk()) {
-                    aWallet.close();
+                    Toast.makeText(getApplicationContext(),getString(R.string.please_try_after_some_time),Toast.LENGTH_SHORT).show();
+                    observer.onWalletFinish();
                     return walletStatus;
                 }
             }
             else{
-                aWallet.close();
+                Toast.makeText(getApplicationContext(),getString(R.string.please_check_your_internet_connection),Toast.LENGTH_SHORT).show();
                 return null;
             }
             listener = new MyWalletListener();

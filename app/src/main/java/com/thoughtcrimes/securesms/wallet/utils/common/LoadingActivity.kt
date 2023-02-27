@@ -1,5 +1,6 @@
 package com.thoughtcrimes.securesms.wallet.utils.common
 
+import android.app.ActivityManager
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,12 +8,11 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import com.thoughtcrimes.securesms.onboarding.LandingActivity
-import com.thoughtcrimes.securesms.onboarding.PasswordActivity
 import com.thoughtcrimes.securesms.wallet.WalletActivity
 import io.beldex.bchat.databinding.ActivityLoadingBinding
 import io.beldex.bchat.databinding.ActivitySplashScreenBinding
 import timber.log.Timber
+import com.thoughtcrimes.securesms.wallet.service.WalletService as WalletService
 
 class LoadingActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoadingBinding
@@ -20,16 +20,27 @@ class LoadingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoadingBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        Handler(Looper.getMainLooper()).postDelayed({
-            val walletName = TextSecurePreferences.getWalletName(this)
-            val walletPassword = TextSecurePreferences.getWalletPassword(this)
-            if (walletName != null && walletPassword!=null) {
-                startWallet(walletName,walletPassword,
-                    fingerprintUsed = false,
-                    streetmode = false
-                )
-            }
-        }, 3000)
+        checkServiceRunning()
+    }
+
+    private fun checkServiceRunning(){
+        Log.d("Service Running Status ", WalletService.Running.toString())
+        if(!WalletService.Running){
+            Handler(Looper.getMainLooper()).postDelayed({
+                val walletName = TextSecurePreferences.getWalletName(this)
+                val walletPassword = TextSecurePreferences.getWalletPassword(this)
+                if (walletName != null && walletPassword!=null) {
+                    startWallet(walletName,walletPassword,
+                        fingerprintUsed = false,
+                        streetmode = false
+                    )
+                }
+            }, 3000)
+        }else{
+            Handler(Looper.getMainLooper()).postDelayed({
+                checkServiceRunning()
+            },1000)
+        }
     }
 
     private fun startWallet(
@@ -42,6 +53,7 @@ class LoadingActivity : AppCompatActivity() {
         val REQUEST_URI = "uri"
 
         Timber.d("startWallet()");
+        TextSecurePreferences.callFiatCurrencyApi(this, true)
         TextSecurePreferences.setIncomingTransactionStatus(this, true)
         TextSecurePreferences.setOutgoingTransactionStatus(this, true)
         TextSecurePreferences.setTransactionsByDateStatus(this,false)

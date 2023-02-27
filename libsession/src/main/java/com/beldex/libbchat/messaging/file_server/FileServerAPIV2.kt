@@ -98,7 +98,12 @@ object FileServerAPIV2 {
         if (request.useOnionRouting) {
             //-Log.d("Beldex","request for fileserver ${request.useOnionRouting}")
             return OnionRequestAPI.sendOnionRequest(requestBuilder.build(), server, serverPublicKey).fail { e ->
-                Log.e("Beldex", "File server request failed.", e)
+                //Log.e("Beldex", "File server request failed.", e)
+                when (e) {
+                    // No need for the stack trace for HTTP errors
+                    is HTTP.HTTPRequestFailedException -> Log.e("Beldex", "File server request failed due to error: ${e.message}")
+                    else -> Log.e("Beldex", "File server request failed", e)
+                }
             }
         } else {
             return Promise.ofFail(IllegalStateException("It's currently not allowed to send non onion routed requests."))

@@ -20,7 +20,7 @@
             android:layout_height="@dimen/medium_profile_picture_size" />
 
         <TextView
-            android:fontFamily="@font/poppins_medium"
+            android:fontFamily="@font/open_sans_medium"
             android:id="@+id/nameTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

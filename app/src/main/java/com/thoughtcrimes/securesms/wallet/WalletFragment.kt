@@ -390,7 +390,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             super.onPreExecute()
             if(mContext!=null && walletAvailableBalance!=null) {
                 if(TextSecurePreferences.getDisplayBalanceAs(mContext!!) == 1 || TextSecurePreferences.getDisplayBalanceAs(mContext!!) == 0) {
-                    if(walletAvailableBalance!!.toDouble()>0.0) {
+                    if(walletAvailableBalance!!.replace(",","").toDouble()>0.0) {
                         showSelectedDecimalBalance(walletAvailableBalance!!, true)
                     }else{
                         refreshBalance(false)
@@ -868,7 +868,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 } else {
                     ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(false)
                     //Steve Josephh21 ANRS
-                    AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+                  // AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
                     Log.d("showBalance->","Synchronized")
                     sync =
                         getString(R.string.status_synchronized)//getString(R.string.status_synced) + " " + formatter.format(wallet.blockChainHeight)
@@ -1060,13 +1060,13 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
             binding.fetchBalanceStatus.visibility =View.GONE
             when {
                 TextSecurePreferences.getDecimals(requireActivity()) == "2 - Two (0.00)" -> {
-                    binding.tvBalance.text = String.format("%.2f", balance.toDouble())
+                    binding.tvBalance.text = String.format("%.2f", balance.replace(",","").toDouble())
                 }
                 TextSecurePreferences.getDecimals(requireActivity()) == "3 - Three (0.000)" -> {
-                    binding.tvBalance.text = String.format("%.3f", balance.toDouble())
+                    binding.tvBalance.text = String.format("%.3f", balance.replace(",","").toDouble())
                 }
                 TextSecurePreferences.getDecimals(requireActivity()) == "0 - Zero (000)" -> {
-                    binding.tvBalance.text = String.format("%.0f", balance.toDouble())
+                    binding.tvBalance.text = String.format("%.0f", balance.replace(",","").toDouble())
                 }
                 else -> {
                     binding.tvBalance.text = balance
@@ -1208,6 +1208,16 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
                 binding.filterTransactionsIcon.isClickable = true // default = false
                 binding.transactionList.visibility = View.GONE
                 binding.emptyContainerLayout.visibility = View.VISIBLE
+            }
+            //Steve Josephh21 ANRS
+            if(CheckOnline.isOnline(requireContext())) {
+                check(activityCallback!!.hasBoundService()) { "WalletService not bound." }
+                val daemonConnected: Wallet.ConnectionStatus = activityCallback!!.connectionStatus!!
+                Log.d("Beldex", "Value of daemon connection 1 $daemonConnected")
+                if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
+                    Log.d("Beldex","onRefreshed Called unlocked balance updated")
+                    AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+                }
             }
         }
         updateStatus(wallet)

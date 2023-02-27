@@ -62,7 +62,7 @@
         </androidx.cardview.widget.CardView>
 
         <TextView
-            android:fontFamily="@font/poppins_regular"
+            android:fontFamily="@font/open_sans_regular"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/large_spacing"
@@ -90,7 +90,7 @@
                 android:visibility="gone" />
 
             <TextView
-                android:fontFamily="@font/poppins_semi_bold"
+                android:fontFamily="@font/open_sans_semi_bold"
                 android:id="@+id/publicKeyTextViewTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -115,7 +115,7 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:fontFamily="@font/poppins_regular"
+                        android:fontFamily="@font/open_sans_regular"
                         android:id="@+id/publicKeyTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

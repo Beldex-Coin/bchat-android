@@ -167,4 +167,7 @@ interface StorageProtocol {
     fun setRecipientApproved(recipient: Recipient, approved: Boolean)
     fun setRecipientApprovedMe(recipient: Recipient, approvedMe: Boolean)
     fun insertRecipientAddress(transactionId:String,recipientAddress:String)
+    fun unblock(toUnblock: List<Recipient>)
+    fun blockedContacts(): List<Recipient>
+    fun unblockSingleUser(toUnblock: Recipient)
 }

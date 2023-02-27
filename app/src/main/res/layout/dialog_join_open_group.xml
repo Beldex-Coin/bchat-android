@@ -10,7 +10,7 @@
     android:padding="32dp">
 
     <TextView
-        android:fontFamily="@font/poppins_medium"
+        android:fontFamily="@font/open_sans_medium"
         android:id="@+id/joinOpenGroupTitleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -20,7 +20,7 @@
         android:textSize="@dimen/large_font_size" />
 
     <TextView
-        android:fontFamily="@font/poppins_medium"
+        android:fontFamily="@font/open_sans_medium"
         android:id="@+id/joinOpenGroupExplanationTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

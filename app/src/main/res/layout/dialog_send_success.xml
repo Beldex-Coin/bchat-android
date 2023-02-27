@@ -10,7 +10,7 @@
     tools:context="com.thoughtcrimes.securesms.wallet.send.SendSuccessDialog">
 
     <TextView
-        android:fontFamily="@font/poppins_bold"
+        android:fontFamily="@font/open_sans_bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/transaction_send_title"

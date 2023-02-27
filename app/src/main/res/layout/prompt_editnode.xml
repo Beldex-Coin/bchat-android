@@ -26,7 +26,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:fontFamily="@font/poppins_bold"
+                    android:fontFamily="@font/open_sans_bold"
                     android:text="Add Node"
                     android:textAlignment="center"
                     android:textSize="@dimen/large_font_size"
@@ -54,7 +54,7 @@
                             style="@style/AddNodeBchatEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/poppins_medium"
+                            android:fontFamily="@font/open_sans_medium"
                             android:gravity="center_vertical"
                             android:hint="@string/node_address" />
                     </com.google.android.material.textfield.TextInputLayout>
@@ -86,7 +86,7 @@
                             style="@style/AddNodeBchatEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/poppins_medium"
+                            android:fontFamily="@font/open_sans_medium"
                             android:gravity="center_vertical"
                             android:hint="@string/node_port"
                             android:inputType="number" />
@@ -120,7 +120,7 @@
                             style="@style/AddNodeOptionalBchatEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/poppins_medium"
+                            android:fontFamily="@font/open_sans_medium"
                             android:gravity="center_vertical"
                             android:hint="@string/node_name" />
 
@@ -153,7 +153,7 @@
                             style="@style/AddNodeOptionalBchatEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/poppins_medium"
+                            android:fontFamily="@font/open_sans_medium"
                             android:gravity="center_vertical"
                             android:hint="@string/node_login" />
 
@@ -185,7 +185,7 @@
                             style="@style/AddNodeOptionalBchatEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/poppins_medium"
+                            android:fontFamily="@font/open_sans_medium"
                             android:gravity="center_vertical"
                             android:hint="@string/node_password" />
 
@@ -219,7 +219,7 @@
                             android:id="@+id/tvResultLabel"
                             android:layout_width="wrap_content"
                             android:textSize="@dimen/small_font_size"
-                            android:fontFamily="@font/poppins_medium"
+                            android:fontFamily="@font/open_sans_medium"
                             android:layout_marginStart="15dp"
                             android:layout_height="wrap_content"
                             android:textColor="@color/white"
@@ -230,7 +230,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
-                            android:fontFamily="@font/poppins_medium"
+                            android:fontFamily="@font/open_sans_medium"
                             android:textColor="@color/white"
                             android:textSize="@dimen/small_font_size"
                             android:layout_marginEnd="10dp"

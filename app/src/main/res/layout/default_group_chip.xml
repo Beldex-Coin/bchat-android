@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:theme="@style/Theme.MaterialComponents.DayNight"
     style="?attr/chipStyle"
-    android:fontFamily="@font/poppins_regular"
+    android:fontFamily="@font/open_sans_regular"
     app:chipStartPadding="4dp"
     app:chipBackgroundColor="@color/card_color"
     android:layout_columnWeight="1"

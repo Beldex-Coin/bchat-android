@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="20dp">
         <TextView
-            android:fontFamily="@font/poppins_bold"
+            android:fontFamily="@font/open_sans_bold"
             android:id="@+id/changePassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -48,14 +48,14 @@
             android:orientation="vertical"
             android:padding="20dp">
             <TextView
-                android:fontFamily="@font/poppins_bold"
+                android:fontFamily="@font/open_sans_bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/screenlock_inactivity_timeout"
                 android:textSize="@dimen/medium_font_size"
                 android:textStyle="bold"/>
             <TextView
-                android:fontFamily="@font/poppins_medium"
+                android:fontFamily="@font/open_sans_medium"
                 android:id="@+id/appLockDetailsScreenLockInActivityTimeOut"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

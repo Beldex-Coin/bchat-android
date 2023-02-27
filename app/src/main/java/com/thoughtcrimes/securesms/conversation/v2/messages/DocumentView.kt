@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.annotation.ColorInt
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.databinding.ViewDocumentBinding
 import com.thoughtcrimes.securesms.database.model.MmsMessageRecord
 
@@ -39,6 +40,8 @@ class DocumentView : LinearLayout {
     // region Updating
     fun bind(message: MmsMessageRecord, @ColorInt textColor: Int) {
         val document = message.slideDeck.documentSlide!!
+        val fontSize = TextSecurePreferences.getChatFontSize(context)
+        binding.documentTitleTextView.textSize = fontSize!!.toFloat()
         binding.documentTitleTextView.text = document.fileName.or("Untitled File")
         binding.documentTitleTextView.setTextColor(textColor)
         binding.documentViewIconImageView.imageTintList = ColorStateList.valueOf(textColor)

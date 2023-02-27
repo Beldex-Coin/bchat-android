@@ -1180,6 +1180,10 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         }*/
     }
 
+    override fun onWalletFinish() {
+        finish()
+    }
+
     //Node Connection
 
     private val NODES_PREFS_NAME = "nodes"

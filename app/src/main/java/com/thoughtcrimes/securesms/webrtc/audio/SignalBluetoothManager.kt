@@ -1,5 +1,6 @@
 package com.thoughtcrimes.securesms.webrtc.audio
 
+import android.Manifest
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothHeadset
 import android.bluetooth.BluetoothProfile
@@ -7,7 +8,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.media.AudioManager
+import androidx.core.app.ActivityCompat
 import com.beldex.libsignal.utilities.Log
 import com.thoughtcrimes.securesms.webrtc.AudioManagerCommand
 import java.util.concurrent.TimeUnit
@@ -78,7 +81,6 @@ class SignalBluetoothManager(
         bluetoothReceiver = BluetoothHeadsetBroadcastReceiver()
         context.registerReceiver(bluetoothReceiver, bluetoothHeadsetFilter)
 
-        Log.i(TAG, "Headset profile state: ${bluetoothAdapter?.getProfileConnectionState(BluetoothProfile.HEADSET)?.toStateString()}")
         Log.i(TAG, "Bluetooth proxy for headset profile has started")
         state = State.UNAVAILABLE
     }
@@ -159,7 +161,7 @@ class SignalBluetoothManager(
 
         Log.d(TAG, "updateDevice(): state: $state")
 
-        if (state == State.UNINITIALIZED || bluetoothHeadset == null) {
+        if (state == State.UNINITIALIZED || bluetoothHeadset == null || ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
             return
         }
 

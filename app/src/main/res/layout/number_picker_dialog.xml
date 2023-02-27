@@ -8,7 +8,7 @@
     android:padding="15dp"
     android:background="@drawable/dialog_background_circle">
     <TextView
-        android:fontFamily="@font/poppins_bold"
+        android:fontFamily="@font/open_sans_bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Screenlock Inactivity Timeout"
@@ -36,7 +36,7 @@
         android:layout_gravity="end"
         android:layout_marginBottom="20dp">
         <TextView
-            android:fontFamily="@font/poppins_semi_bold"
+            android:fontFamily="@font/open_sans_semi_bold"
             android:id="@+id/number_picker_dialog_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
             android:textSize="16sp"
             android:textColor="@color/scan_qr_code_text_color"/>
         <TextView
-            android:fontFamily="@font/poppins_semi_bold"
+            android:fontFamily="@font/open_sans_semi_bold"
             android:id="@+id/number_picker_dialog_ok"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

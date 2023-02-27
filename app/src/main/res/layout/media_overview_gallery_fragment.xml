@@ -19,6 +19,6 @@
               android:textColor="@color/text"
               android:visibility="gone"
               android:text="@string/media_overview_activity__no_media"
-        android:fontFamily="@font/poppins_medium"/>
+        android:fontFamily="@font/open_sans_medium"/>
 
 </RelativeLayout>

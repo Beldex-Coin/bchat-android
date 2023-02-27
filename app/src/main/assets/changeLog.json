@@ -167,6 +167,38 @@
           "description":"- Fix ANR issues in wallet"
         }
       ]
+    },
+    {
+      "title": "2.0.3",
+      "descriptions": [
+        {
+          "description":"- Added font size customization for Chat"
+        },
+        {
+          "description":"- BChat Font changed to standard font 'Open Sans' across all platforms"
+        },
+        {
+          "description":"- Added ringtone while calling and alert sound when call ends"
+        },
+        {
+          "description":"- Users can select multiple contacts in the address book to unblock them all at once"
+        },
+        {
+          "description":"- Users won't be allowed to call blocked contacts"
+        },
+        {
+          "description":"- Beldex address in the address book will only appear if a message request is accepted"
+        },
+        {
+          "description":"- Fixed crashes in Video Calls"
+        },
+        {
+          "description":"- Fixed crash due to big icon size in social group"
+        },
+        {
+          "description":"- Fixed crashes from wallet beta release"
+        }
+      ]
     }
   ]
 }

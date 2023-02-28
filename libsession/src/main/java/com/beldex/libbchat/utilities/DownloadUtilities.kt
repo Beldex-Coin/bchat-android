@@ -2,6 +2,7 @@ package com.beldex.libbchat.utilities
 
 import okhttp3.HttpUrl
 import com.beldex.libbchat.messaging.file_server.FileServerAPIV2
+import com.beldex.libsignal.utilities.HTTP
 import com.beldex.libsignal.utilities.Log
 import java.io.*
 
@@ -40,7 +41,12 @@ object DownloadUtilities {
                 outputStream.write(it)
             }
         } catch (e: Exception) {
-            Log.e("Beldex", "Couldn't download attachment.", e)
+            //Log.e("Beldex", "Couldn't download attachment.", e)
+            when (e) {
+                // No need for the stack trace for HTTP errors
+                is HTTP.HTTPRequestFailedException -> Log.e("Beldex", "Couldn't download attachment due to error: ${e.message}")
+                else -> Log.e("Beldex", "Couldn't download attachment", e)
+            }
             throw e
         }
     }

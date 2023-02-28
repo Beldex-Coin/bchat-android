@@ -311,7 +311,7 @@
     </style>
 
     <style name="Theme.TextSecure.Dialog.Rationale" parent="Theme.AppCompat.DayNight.Dialog.Alert">
-        <item name="android:fontFamily">@font/poppins_semi_bold</item>
+        <item name="android:fontFamily">@font/open_sans_semi_bold</item>
         <item name="android:windowBackground">@drawable/default_dialog_background</item>
     </style>
 

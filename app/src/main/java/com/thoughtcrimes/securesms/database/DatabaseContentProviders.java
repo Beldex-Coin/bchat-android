@@ -37,6 +37,10 @@ public class DatabaseContentProviders {
     public static final Uri CONTENT_URI = Uri.parse("content://io.beldex.securesms.database.stickerpack");
   }
 
+  public static class Recipient extends NoopContentProvider {
+    public static final Uri CONTENT_URI = Uri.parse("content://io.beldex.securesms.database.recipient");
+  }
+
   private static abstract class NoopContentProvider extends ContentProvider {
 
     @Override

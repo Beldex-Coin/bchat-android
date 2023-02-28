@@ -10,7 +10,7 @@
     tools:context="com.thoughtcrimes.securesms.wallet.send.SendConfirmDialog">
 
     <TextView
-        android:fontFamily="@font/poppins_bold"
+        android:fontFamily="@font/open_sans_bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/confirm_sending"
@@ -22,7 +22,7 @@
         android:textSize="@dimen/medium_font_size" />
 
     <TextView
-        android:fontFamily="@font/poppins_medium"
+        android:fontFamily="@font/open_sans_medium"
         android:id="@+id/dialogReceiverAddressTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
         android:textSize="@dimen/medium_font_size"/>
 
     <TextView
-        android:fontFamily="@font/poppins_medium"
+        android:fontFamily="@font/open_sans_medium"
         android:id="@+id/dialogReceiverAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
         android:textSize="@dimen/small_font_size"/>
 
     <TextView
-        android:fontFamily="@font/poppins_medium"
+        android:fontFamily="@font/open_sans_medium"
         android:id="@+id/dialogCommitTransaction"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp">
         <TextView
-            android:fontFamily="@font/poppins_medium"
+            android:fontFamily="@font/open_sans_medium"
             android:id="@+id/dialogTransactionAmountTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -71,7 +71,7 @@
             android:textColor="@color/dialog_title_color"
             android:textSize="@dimen/small_font_size"/>
         <TextView
-            android:fontFamily="@font/poppins_medium"
+            android:fontFamily="@font/open_sans_medium"
             android:id="@+id/dialogTransactionAmount"
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -87,7 +87,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp">
         <TextView
-            android:fontFamily="@font/poppins_medium"
+            android:fontFamily="@font/open_sans_medium"
             android:id="@+id/dialogTransactionFeeTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -95,7 +95,7 @@
             android:textColor="@color/dialog_title_color"
             android:textSize="@dimen/small_font_size"/>
         <TextView
-            android:fontFamily="@font/poppins_medium"
+            android:fontFamily="@font/open_sans_medium"
             android:id="@+id/dialogTransactionFee"
             android:layout_width="0dp"
             android:layout_weight="1"

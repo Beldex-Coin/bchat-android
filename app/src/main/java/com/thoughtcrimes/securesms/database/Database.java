@@ -87,4 +87,9 @@ public abstract class Database {
     this.databaseHelper = databaseHelper;
   }
 
+  protected void notifyRecipientListeners() {
+    context.getContentResolver().notifyChange(DatabaseContentProviders.Recipient.CONTENT_URI, null);
+    notifyConversationListListeners();
+  }
+
 }

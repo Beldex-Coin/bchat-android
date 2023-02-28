@@ -205,7 +205,7 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
     }
     private val hangupTelephonyCallback by lazy {
         HangUpRtcTelephonyCallback {
-            ContextCompat.startForegroundService(this, hangupIntent(this))
+            this.startService(hangupIntent(this))
         }
     }
 
@@ -305,6 +305,7 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
                 getSystemService(TelephonyManager::class.java)
                     .listen(hangupOnCallAnswered, PhoneStateListener.LISTEN_CALL_STATE)
             } else {
+                Log.d("hangupTelephonyCallback","register")
                 getSystemService(TelephonyManager::class.java)
                     .registerTelephonyCallback(serviceExecutor, hangupTelephonyCallback)
             }
@@ -539,14 +540,14 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
 
     private fun handleRemoteHangup(intent: Intent) {
         //SteveJosephh21 - ContextCompat.startForegroundService()
-        /*if (callManager.callId != getCallId(intent)) {
+        if (callManager.callId != getCallId(intent)) {
             Log.e(TAG, "Hangup for non-active call...")
             TextSecurePreferences.setRemoteCallEnded(this, true)
             stopForeground(true)//Steve Josephh21-
             return
         }
         Log.e(TAG, "Hangup for non-active call... 1")
-        onHangup()*/
+        onHangup()
     }
 
     private fun handleSetMuteAudio(intent: Intent) {
@@ -744,6 +745,7 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
                     this.listen(hangupOnCallAnswered, PhoneStateListener.LISTEN_NONE)
                 } else {
+                    Log.d("hangupTelephonyCallback","unregister")
                     this.unregisterTelephonyCallback(hangupTelephonyCallback)
                 }
             }

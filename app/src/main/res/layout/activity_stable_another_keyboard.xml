@@ -8,7 +8,7 @@
     android:weightSum="3">
 
     <Button
-        android:fontFamily="@font/poppins_bold"
+        android:fontFamily="@font/open_sans_bold"
         android:id="@+id/buttonNew_1"
         app:layout_columnWeight="1"
         android:layout_margin="5dp"
@@ -18,7 +18,7 @@
         android:textColor="@color/button_text" />
 
     <Button
-        android:fontFamily="@font/poppins_bold"
+        android:fontFamily="@font/open_sans_bold"
         android:id="@+id/buttonNew_2"
         app:layout_columnWeight="1"
         android:layout_margin="5dp"
@@ -28,7 +28,7 @@
         android:textColor="@color/button_text" />
 
     <Button
-        android:fontFamily="@font/poppins_bold"
+        android:fontFamily="@font/open_sans_bold"
         android:id="@+id/buttonNew_3"
         app:layout_columnWeight="1"
         android:layout_margin="5dp"
@@ -38,7 +38,7 @@
         android:textColor="@color/button_text" />
 
     <Button
-        android:fontFamily="@font/poppins_bold"
+        android:fontFamily="@font/open_sans_bold"
         android:id="@+id/buttonNew_4"
         app:layout_columnWeight="1"
         android:layout_marginTop="15dp"
@@ -51,7 +51,7 @@
         android:textColor="@color/button_text" />
 
     <Button
-        android:fontFamily="@font/poppins_bold"
+        android:fontFamily="@font/open_sans_bold"
         android:id="@+id/buttonNew_5"
         app:layout_columnWeight="1"
         android:layout_marginTop="15dp"
@@ -64,7 +64,7 @@
         android:textColor="@color/button_text" />
 
     <Button
-        android:fontFamily="@font/poppins_bold"
+        android:fontFamily="@font/open_sans_bold"
         android:id="@+id/buttonNew_6"
         app:layout_columnWeight="1"
         android:layout_marginTop="15dp"
@@ -77,7 +77,7 @@
         android:textColor="@color/button_text" />
 
     <Button
-        android:fontFamily="@font/poppins_bold"
+        android:fontFamily="@font/open_sans_bold"
         android:id="@+id/buttonNew_7"
         app:layout_columnWeight="1"
         android:layout_marginTop="15dp"
@@ -90,7 +90,7 @@
         android:textColor="@color/button_text" />
 
     <Button
-        android:fontFamily="@font/poppins_bold"
+        android:fontFamily="@font/open_sans_bold"
         android:id="@+id/buttonNew_8"
         app:layout_columnWeight="1"
         android:layout_marginTop="15dp"
@@ -103,7 +103,7 @@
         android:textColor="@color/button_text" />
 
     <Button
-        android:fontFamily="@font/poppins_bold"
+        android:fontFamily="@font/open_sans_bold"
         android:id="@+id/buttonNew_9"
         app:layout_columnWeight="1"
         android:layout_marginTop="15dp"
@@ -116,7 +116,7 @@
         android:textColor="@color/button_text" />
 
     <Button
-        android:fontFamily="@font/poppins_bold"
+        android:fontFamily="@font/open_sans_bold"
         android:id="@+id/buttonNew_delete"
         app:layout_columnWeight="1"
         android:layout_marginTop="15dp"
@@ -129,7 +129,7 @@
         android:textColor="@color/button_text" />
 
     <Button
-        android:fontFamily="@font/poppins_bold"
+        android:fontFamily="@font/open_sans_bold"
         android:id="@+id/buttonNew_0"
         app:layout_columnWeight="1"
         android:layout_marginTop="15dp"
@@ -142,7 +142,7 @@
         android:textColor="@color/button_text" />
 
     <Button
-        android:fontFamily="@font/poppins_bold"
+        android:fontFamily="@font/open_sans_bold"
         android:id="@+id/buttonNew_enter"
         app:layout_columnWeight="1"
         android:layout_marginTop="15dp"

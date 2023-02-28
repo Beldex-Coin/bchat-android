@@ -64,7 +64,7 @@
         app:layout_constraintBottom_toTopOf="@id/restoreFromHeightDescription"/>
 
     <TextView
-        android:fontFamily="@font/poppins_medium"
+        android:fontFamily="@font/open_sans_medium"
         android:id="@+id/restoreFromHeightDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -113,7 +113,7 @@
     </androidx.cardview.widget.CardView>
 
     <TextView
-        android:fontFamily="@font/poppins_bold"
+        android:fontFamily="@font/open_sans_bold"
         android:id="@+id/restoreSeedOrText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -127,7 +127,7 @@
         app:layout_constraintTop_toBottomOf="@id/restoreSeedWalletRestoreHeightCard"
         app:layout_constraintBottom_toTopOf="@id/restoreFromDateDescription"/>
     <TextView
-        android:fontFamily="@font/poppins_medium"
+        android:fontFamily="@font/open_sans_medium"
         android:id="@+id/restoreFromDateDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

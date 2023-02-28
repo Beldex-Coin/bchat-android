@@ -30,6 +30,7 @@
         android:required="false" />
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
     <uses-permission android:name="io.beldex.bchat.ACCESS_BCHAT_SECRETS" />
@@ -76,9 +77,14 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
         <activity
+            android:name="com.thoughtcrimes.securesms.contacts.blocked.BlockedContactsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
+        <activity
             android:name="com.thoughtcrimes.securesms.wallet.TransactionDetails"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.utils.common.LoadingActivity"
             android:exported="false"
@@ -628,6 +634,10 @@
         <provider
             android:name="com.thoughtcrimes.securesms.database.DatabaseContentProviders$StickerPack"
             android:authorities="io.beldex.securesms.database.stickerpack"
+            android:exported="false" />
+        <provider
+            android:name="com.thoughtcrimes.securesms.database.DatabaseContentProviders$Recipient"
+            android:authorities="io.beldex.securesms.database.recipient"
             android:exported="false" />
 
         <receiver

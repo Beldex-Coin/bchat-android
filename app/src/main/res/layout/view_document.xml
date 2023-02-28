@@ -20,7 +20,7 @@
             app:tint="@color/text" />
 
         <TextView
-            android:fontFamily="@font/poppins_regular"
+            android:fontFamily="@font/open_sans_regular"
             android:id="@+id/documentViewIconTextView"
             android:layout_width="5dp"
             android:layout_height="5dp"
@@ -45,7 +45,7 @@
     </RelativeLayout>
 
     <TextView
-        android:fontFamily="@font/poppins_regular"
+        android:fontFamily="@font/open_sans_regular"
         android:id="@+id/documentTitleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -46,6 +46,7 @@ import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.beldex.libbchat.utilities.Util;
 import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageContextWrapper;
 import com.beldex.libbchat.utilities.dynamiclanguage.LocaleParser;
+import com.beldex.libsignal.utilities.HTTP;
 import com.beldex.libsignal.utilities.Log;
 import com.beldex.libsignal.utilities.ThreadUtils;
 import org.signal.aesgcmprovider.AesGcmProvider;
@@ -60,6 +61,7 @@ import com.thoughtcrimes.securesms.groups.OpenGroupManager;
 import com.thoughtcrimes.securesms.home.HomeActivity;
 import com.thoughtcrimes.securesms.jobmanager.JobManager;
 import com.thoughtcrimes.securesms.jobmanager.impl.JsonDataSerializer;
+import com.thoughtcrimes.securesms.jobmanager.impl.NetworkConstraint;
 import com.thoughtcrimes.securesms.jobs.FastJobStorage;
 import com.thoughtcrimes.securesms.jobs.JobManagerFactories;
 import com.thoughtcrimes.securesms.logging.AndroidLogger;
@@ -199,6 +201,9 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
         initializeWebRtc();
         initializeBlobProvider();
         resubmitProfilePictureIfNeeded();
+
+        NetworkConstraint networkConstraint = new NetworkConstraint.Factory(this).create();
+        HTTP.INSTANCE.setConnectedToNetwork(networkConstraint::isMet);
     }
 
     @Override
@@ -277,6 +282,8 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
         } catch (ClassNotFoundException e) {
             Log.e(TAG, "Failed to find AesGcmCipher class");
             throw new ProviderInitializationException();
+        }catch(UnsatisfiedLinkError e){
+            Log.w(TAG, e);
         }
 
         int aesPosition = Security.insertProviderAt(new AesGcmProvider(), 1);
@@ -401,10 +408,10 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
         }
         firebaseInstanceIdJob = FcmUtils.getFcmInstanceId(task->{
             if (!task.isSuccessful()) {
-                Log.w("Beldex", "FirebaseInstanceId.getInstance().getInstanceId() failed." + task.getException());
+                Log.w("Beldex", "FirebaseMessaging.getInstance().token failed." + task.getException());
                 return Unit.INSTANCE;
             }
-            String token = task.getResult().getToken();
+            String token = task.getResult();
             String userPublicKey = TextSecurePreferences.getLocalNumber(this);
             if (userPublicKey == null) return Unit.INSTANCE;
             if (TextSecurePreferences.isUsingFCM(this)) {

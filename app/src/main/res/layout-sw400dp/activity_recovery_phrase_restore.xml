@@ -80,7 +80,7 @@
                     />
             </androidx.constraintlayout.widget.ConstraintLayout>
             <TextView
-                android:fontFamily="@font/poppins_regular"
+                android:fontFamily="@font/open_sans_regular"
                 android:id="@+id/recoveryPhraseCountWord"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

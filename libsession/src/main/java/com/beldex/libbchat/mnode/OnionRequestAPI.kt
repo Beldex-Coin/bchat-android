@@ -71,8 +71,8 @@ object OnionRequestAPI {
     const val targetPathCount = 2 // A main path and a backup path for the case where the target mnode is in the main path
     // endregion
 
-    class HTTPRequestFailedAtDestinationException(val statusCode: Int, val json: Map<*, *>, val destination: String)
-        : Exception("HTTP request failed at destination ($destination) with status code $statusCode.")
+    open class HTTPRequestFailedAtDestinationException(statusCode: Int, json: Map<*, *>, val destination: String)
+        : HTTP.HTTPRequestFailedException(statusCode, json, "HTTP request failed at destination ($destination) with status code $statusCode.")
     class InsufficientMnodesException : Exception("Couldn't find enough mnodes to build a path.")
 
     private data class OnionBuildingResult(

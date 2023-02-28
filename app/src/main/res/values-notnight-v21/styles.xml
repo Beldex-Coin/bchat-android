@@ -2,7 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Widget.Bchat.Button.Common.ProminentOutline">
-        <item name="android:fontFamily">@font/poppins_semi_bold</item>
+        <item name="android:fontFamily">@font/open_sans_semi_bold</item>
         <item name="android:background">@drawable/prominent_outline_button_medium_background</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:drawableTint" tools:ignore="NewApi">?android:textColorPrimary</item>
@@ -15,7 +15,7 @@
     </style>
 
     <style name="Widget.Bchat.Button.Common.ProminentFilled">
-        <item name="android:fontFamily">@font/poppins_semi_bold</item>
+        <item name="android:fontFamily">@font/open_sans_semi_bold</item>
         <item name="android:background">@drawable/prominent_filled_button_medium_background</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:drawableTint" tools:ignore="NewApi">@android:color/white</item>
@@ -45,7 +45,7 @@
 
     <style name="chipText" parent="TextAppearance.MaterialComponents.Chip">
         <item name="android:textSize">14sp</item>
-        <item name="android:fontFamily">@font/poppins_regular</item>
+        <item name="android:fontFamily">@font/open_sans_regular</item>
     </style>
 
     <style name="FullScreenDialogTheme" parent="Theme.AppCompat.Light.DialogWhenLarge">

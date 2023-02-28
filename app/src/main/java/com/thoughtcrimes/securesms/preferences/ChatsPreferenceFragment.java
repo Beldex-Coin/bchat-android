@@ -1,7 +1,9 @@
 package com.thoughtcrimes.securesms.preferences;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -10,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.preference.EditTextPreference;
+import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 
 import com.thoughtcrimes.securesms.permissions.Permissions;
@@ -30,7 +33,10 @@ public class ChatsPreferenceFragment extends ListSummaryPreferenceFragment {
     findPreference(TextSecurePreferences.THREAD_TRIM_NOW)
         .setOnPreferenceClickListener(new TrimNowClickListener());
     findPreference(TextSecurePreferences.THREAD_TRIM_LENGTH)
-        .setOnPreferenceChangeListener(new TrimLengthValidationListener());
+            .setOnPreferenceChangeListener(new TrimLengthValidationListener());
+    findPreference(TextSecurePreferences.CHAT_FONT_SIZE)
+            .setOnPreferenceChangeListener(new ChangeFontSizeListener());
+    initializeListSummary((ListPreference) findPreference(TextSecurePreferences.CHAT_FONT_SIZE));
 
   }
 
@@ -131,4 +137,20 @@ public class ChatsPreferenceFragment extends ListSummaryPreferenceFragment {
     }
   }
 
+  class ChangeFontSizeListener extends ListSummaryListener {
+    @SuppressLint("StaticFieldLeak")
+    @Override
+    public boolean onPreferenceChange(Preference preference, Object value) {
+      new AsyncTask<Void, Void, Void>() {
+        @Override
+        protected Void doInBackground(Void... params) {
+          TextSecurePreferences.getChatFontSize(getContext());
+          return null;
+        }
+      }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+      return super.onPreferenceChange(preference, value);
+    }
+
+  }
 }

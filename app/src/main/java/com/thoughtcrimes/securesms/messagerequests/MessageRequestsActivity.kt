@@ -17,7 +17,6 @@ import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
 import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
 import com.thoughtcrimes.securesms.database.ThreadDatabase
 import com.thoughtcrimes.securesms.database.model.ThreadRecord
-import com.thoughtcrimes.securesms.home.ConversationClickListener
 import com.thoughtcrimes.securesms.mms.GlideApp
 import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.util.ConfigurationMessageUtilities
@@ -81,7 +80,21 @@ class MessageRequestsActivity : PassphraseRequiredActionBarActivity(), Conversat
         push(intent)
     }
 
-    override fun onLongConversationClick(thread: ThreadRecord) {
+    override fun onBlockConversationClick(thread: ThreadRecord) {
+        val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog_Clear_All)
+        dialog.setTitle(R.string.RecipientPreferenceActivity_block_this_contact_question)
+            .setMessage(R.string.message_requests_block_message)
+            .setPositiveButton(R.string.recipient_preferences__block) { _, _ ->
+                viewModel.blockMessageRequest(thread)
+                LoaderManager.getInstance(this).restartLoader(0, null, this)
+            }
+            .setNegativeButton(R.string.no) { _, _ ->
+                // Do nothing
+            }
+        dialog.create().show()
+    }
+
+    override fun onDeleteConversationClick(thread: ThreadRecord) {
         val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog_Clear_All)
         dialog.setMessage(resources.getString(R.string.message_requests_delete_message))
         dialog.setPositiveButton(R.string.yes) { _, _ ->

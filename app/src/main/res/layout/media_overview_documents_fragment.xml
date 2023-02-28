@@ -14,7 +14,7 @@
         tools:listitem="@layout/media_overview_document_item" />
 
     <TextView
-        android:fontFamily="@font/poppins_medium"
+        android:fontFamily="@font/open_sans_medium"
         android:id="@+id/no_documents"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -80,14 +80,12 @@ class CallMessageProcessor (private val context: Context, private val textSecure
     }
 
     private fun incomingHangup(callMessage: CallMessage) {
-        TextSecurePreferences.setRemoteCallEnded(context, true)
+        //TextSecurePreferences.setRemoteCallEnded(context, true)
         //SteveJosephh21 - ContextCompat.startForegroundService()
-        /*val callId = callMessage.callId ?: return
+        val callId = callMessage.callId ?: return
         val hangupIntent = WebRtcCallService.remoteHangupIntent(context, callId)
-        Handler(Looper.getMainLooper()).post {
-            com.beldex.libsignal.utilities.Log.d("startForegroundService->","3")
-            ContextCompat.startForegroundService(context, hangupIntent)
-        }*/
+        Log.d("startForegroundService->","3")
+        context.startService(hangupIntent)
     }
 
     private fun incomingAnswer(callMessage: CallMessage) {
@@ -100,7 +98,7 @@ class CallMessageProcessor (private val context: Context, private val textSecure
             sdp = sdp,
             callId = callId
         )
-        ContextCompat.startForegroundService(context, answerIntent)
+        context.startService(answerIntent)
     }
 
     private fun handleIceCandidates(callMessage: CallMessage) {
@@ -129,7 +127,7 @@ class CallMessageProcessor (private val context: Context, private val textSecure
             callId = callId,
             callTime = callMessage.sentTimestamp!!
         )
-        ContextCompat.startForegroundService(context, incomingIntent)
+        context.startService(incomingIntent)
     }
 
     private fun incomingCall(callMessage: CallMessage) {
@@ -143,7 +141,7 @@ class CallMessageProcessor (private val context: Context, private val textSecure
             callId = callId,
             callTime = callMessage.sentTimestamp!!
         )
-        ContextCompat.startForegroundService(context, incomingIntent)
+        context.startService(incomingIntent)
 
     }
 

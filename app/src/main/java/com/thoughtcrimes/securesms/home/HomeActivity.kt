@@ -954,7 +954,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
             }.show()
         //New Line
         val textView: TextView = dialog.findViewById(android.R.id.message)
-        val face: Typeface = Typeface.createFromAsset(assets, "fonts/poppins_medium.ttf")
+        val face: Typeface = Typeface.createFromAsset(assets, "fonts/open_sans_medium.ttf")
         textView.typeface = face
     }
 
@@ -975,7 +975,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
         //New Line
         val textView: TextView = dialog.findViewById(android.R.id.message)
-        val face: Typeface = Typeface.createFromAsset(assets, "fonts/poppins_medium.ttf")
+        val face: Typeface = Typeface.createFromAsset(assets, "fonts/open_sans_medium.ttf")
         textView.typeface = face
     }
 
@@ -1097,7 +1097,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
         //New Line
         val textView: TextView? = dialog.findViewById(android.R.id.message)
-        val face: Typeface = Typeface.createFromAsset(assets, "fonts/poppins_medium.ttf")
+        val face: Typeface = Typeface.createFromAsset(assets, "fonts/open_sans_medium.ttf")
         textView!!.typeface = face
     }
 
@@ -1266,7 +1266,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         //SteveJosephh21
 
         val message: TextView = dialog.findViewById(android.R.id.message)
-        val messageFace: Typeface = Typeface.createFromAsset(assets, "fonts/poppins_medium.ttf")
+        val messageFace: Typeface = Typeface.createFromAsset(assets, "fonts/open_sans_medium.ttf")
         message.typeface = messageFace
     }
     // endregion

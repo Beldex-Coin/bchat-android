@@ -25,7 +25,7 @@ class HangUpRtcOnPstnCallAnsweredListener(private val hangupListener: ()->Unit):
         super.onCallStateChanged(state, phoneNumber)
         if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
             hangupListener()
-            Log.i(TAG, "Device phone call ended Bchat call.")
+            Log.i(TAG, "Device phone call ended BChat call.")
         }
     }
 }
@@ -40,34 +40,48 @@ class HangUpRtcTelephonyCallback(private val hangupListener: ()->Unit): Telephon
     override fun onCallStateChanged(state: Int) {
         if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
             hangupListener()
-            Log.i(TAG, "Device phone call ended Session call.")
+            Log.i(TAG, "Device phone call ended BChat call.")
         }
     }
 }
 class PowerButtonReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         if (Intent.ACTION_SCREEN_OFF == intent.action) {
-            val serviceIntent = Intent(context, WebRtcCallService::class.java)
-                .setAction(WebRtcCallService.ACTION_SCREEN_OFF)
-            context.startService(serviceIntent)
+            try {
+                val serviceIntent = Intent(context, WebRtcCallService::class.java)
+                    .setAction(WebRtcCallService.ACTION_SCREEN_OFF)
+                when {
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
+                        Handler(Looper.getMainLooper()).post {
+                            ContextCompat.startForegroundService(context, serviceIntent)
+                        }
+                    }
+                    else -> {
+                        context.startService(serviceIntent)
+                    }
+                }
+            }catch (e:Exception){
+                Log.d("WebRtcCallServiceReceivers ", "ACTION_SCREEN_OFF $e")
+            }
         }
 
         //SteveJosephh21 -
         if (Intent.ACTION_USER_PRESENT == intent.action) {
-            val serviceIntent = Intent(context, WebRtcCallService::class.java)
-                .setAction(WebRtcCallService.ACTION_SCREEN_ON)
-            when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-                    context.startService(serviceIntent)
-                }
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
-                    Handler(Looper.getMainLooper()).post {
-                        ContextCompat.startForegroundService(context, serviceIntent)
+            try {
+                val serviceIntent = Intent(context, WebRtcCallService::class.java)
+                    .setAction(WebRtcCallService.ACTION_SCREEN_ON)
+                when {
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
+                        Handler(Looper.getMainLooper()).post {
+                            ContextCompat.startForegroundService(context, serviceIntent)
+                        }
+                    }
+                    else -> {
+                        context.startService(serviceIntent)
                     }
                 }
-                else -> {
-                    context.startService(serviceIntent)
-                }
+            }catch (e:Exception){
+                Log.d("WebRtcCallServiceReceivers ", "ACTION_USER_PRESENT $e")
             }
         }
     }

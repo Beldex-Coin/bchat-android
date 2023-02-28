@@ -17,7 +17,7 @@ class OutgoingRinger(private val context: Context) {
 
     private var mediaPlayer: MediaPlayer? = null
     fun start(type: Type) {
-        val soundId: Int = if (type == Type.RINGING) R.raw.redphone_outring else if (type == Type.BUSY) R.raw.redphone_busy else throw IllegalArgumentException("Not a valid sound type")
+        val soundId: Int = if (type == Type.RINGING) R.raw.webrtc_call_out_ring else if (type == Type.BUSY) R.raw.redphone_busy else throw IllegalArgumentException("Not a valid sound type")
         if (mediaPlayer != null) {
             mediaPlayer!!.release()
         }

@@ -83,6 +83,7 @@ import android.view.*
 import android.view.ViewGroup.MarginLayoutParams
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.beldex.libbchat.messaging.messages.control.ExpirationTimerUpdate
 import com.beldex.libbchat.messaging.messages.signal.OutgoingMediaMessage
 import com.beldex.libbchat.messaging.messages.signal.OutgoingTextMessage
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment
@@ -93,6 +94,7 @@ import com.beldex.libbchat.utilities.recipients.RecipientModifiedListener
 import com.beldex.libsignal.utilities.ListenableFuture
 import com.beldex.libsignal.utilities.guava.Optional
 import com.thoughtcrimes.securesms.ApplicationContext
+import com.thoughtcrimes.securesms.ExpirationDialog
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
 import com.thoughtcrimes.securesms.audio.AudioRecorder
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
@@ -128,7 +130,7 @@ import kotlin.concurrent.thread
 class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDelegate,
     InputBarRecordingViewDelegate, AttachmentManager.AttachmentListener, ActivityDispatcher,
         ConversationActionModeCallbackDelegate, VisibleMessageContentViewDelegate, RecipientModifiedListener,
-        SearchBottomBar.EventListener, VoiceMessageViewDelegate, LoaderManager.LoaderCallbacks<Cursor> {
+        SearchBottomBar.EventListener, VoiceMessageViewDelegate, LoaderManager.LoaderCallbacks<Cursor>,ConversationMenuHelper.ConversationMenuListener {
 
 
     private var binding: ActivityConversationV2Binding? = null
@@ -318,19 +320,29 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
         showOrHideInputIfNeeded()
         /*Hales63*/
         setUpMessageRequestsBar()
-        if (viewModel.recipient.isOpenGroupRecipient) {
+        viewModel.recipient?.let { recipient ->
+            if (recipient.isOpenGroupRecipient) {
+                val openGroup = beldexThreadDb.getOpenGroupChat(viewModel.threadId)
+                if (openGroup == null) {
+                    Toast.makeText(this, "This thread has been deleted.", Toast.LENGTH_LONG).show()
+                    return finish()
+                }
+            }
+        }
+       /* if (viewModel.recipient.isOpenGroupRecipient) {
             val openGroup = beldexThreadDb.getOpenGroupChat(viewModel.threadId)
             if (openGroup == null) {
                 Toast.makeText(this, "This thread has been deleted.", Toast.LENGTH_LONG).show()
                 return finish()
             }
-        }
+        }*/
     }
 
     override fun onResume() {
         super.onResume()
         ApplicationContext.getInstance(this).messageNotifier.setVisibleThread(viewModel.threadId)
-        threadDb.markAllAsRead(viewModel.threadId, viewModel.recipient.isOpenGroupRecipient)
+        val recipient = viewModel.recipient ?: return
+        threadDb.markAllAsRead(viewModel.threadId, recipient.isOpenGroupRecipient)
     }
 
     override fun onPause() {
@@ -395,12 +407,13 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
     private fun setUpToolBar() {
         //test
         val actionBar = supportActionBar ?: return
+        val recipient = viewModel.recipient ?: return
         actionBarBinding = ActivityConversationV2ActionBarBinding.inflate(layoutInflater)
         actionBar.title = ""
         actionBar.customView = actionBarBinding.root
         actionBar.setDisplayShowCustomEnabled(true)
-        actionBarBinding.conversationTitleView.text = viewModel.recipient.toShortString()
-        @DimenRes val sizeID: Int = if (viewModel.recipient.isClosedGroupRecipient) {
+        actionBarBinding.conversationTitleView.text = recipient.toShortString()
+        @DimenRes val sizeID: Int = if (recipient.isClosedGroupRecipient) {
             R.dimen.medium_profile_picture_size
         } else {
             R.dimen.small_profile_picture_size
@@ -409,10 +422,10 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
         actionBarBinding.profilePictureView.layoutParams = LinearLayout.LayoutParams(size, size)
         actionBarBinding.profilePictureView.glide = glide
         MentionManagerUtilities.populateUserPublicKeyCacheIfNeeded(viewModel.threadId, this)
-        actionBarBinding.profilePictureView.update(viewModel.recipient)
+        actionBarBinding.profilePictureView.update(recipient)
         actionBarBinding.layoutConversation.setOnClickListener()
         {
-            ConversationMenuHelper.showAllMedia(this, viewModel.recipient)
+            ConversationMenuHelper.showAllMedia(this, recipient)
         }
 
     }
@@ -460,7 +473,7 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
                     Optional.absent(),
                     Optional.absent()
                 )
-                startActivityForResult(MediaSendActivity.buildEditorIntent(this, listOf( media ), viewModel.recipient, ""), PICK_FROM_LIBRARY)
+                startActivityForResult(MediaSendActivity.buildEditorIntent(this, listOf( media ), viewModel.recipient!!, ""), PICK_FROM_LIBRARY)
                 return
             } else {
                 prepMediaForSending(mediaURI, mediaType).addListener(object : ListenableFuture.Listener<Boolean> {
@@ -514,7 +527,7 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
     }
 
     private fun setUpRecipientObserver() {
-        viewModel.recipient.addListener(this)
+        viewModel.recipient?.addListener(this)
     }
 
     private fun getLatestOpenGroupInfoIfNeeded() {
@@ -523,12 +536,13 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
     }
 
     private fun setUpBlockedBanner() {
-        if (viewModel.recipient.isGroupRecipient) { return }
-        val bchatID = viewModel.recipient.address.toString()
+        val recipient = viewModel.recipient ?: return
+        if (recipient.isGroupRecipient) { return }
+        val bchatID = recipient.address.toString()
         val contact = bchatContactDb.getContactWithBchatID(bchatID)
         val name = contact?.displayName(Contact.ContactContext.REGULAR) ?: bchatID
         binding?.blockedBannerTextView?.text = resources.getString(R.string.activity_conversation_blocked_banner_text, name)
-        binding?.blockedBanner?.isVisible = viewModel.recipient.isBlocked
+        binding?.blockedBanner?.isVisible = recipient.isBlocked
         binding?.blockedBanner?.setOnClickListener { viewModel.unblock() }
         binding?.unblockButton?.setOnClickListener{viewModel.unblock()}
     }
@@ -588,9 +602,10 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
     }
     /*Hales63*/
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        val recipient = viewModel.recipient ?: return false
         //New Line
         if (!isMessageRequestThread()) {
-            ConversationMenuHelper.onPrepareOptionsMenu(menu, menuInflater, viewModel.recipient, viewModel.threadId, this) { onOptionsItemSelected(it) }
+            ConversationMenuHelper.onPrepareOptionsMenu(menu, menuInflater, recipient, viewModel.threadId, this) { onOptionsItemSelected(it) }
         }
         super.onPrepareOptionsMenu(menu)
         return true
@@ -600,15 +615,86 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
         binding?.inputBar?.showMediaControls = !isOutgoingMessageRequestThread()
         binding?.messageRequestBar?.isVisible = isIncomingMessageRequestThread()
         binding?.acceptMessageRequestButton?.setOnClickListener {
-            acceptAlartDialog()
+            acceptAlertDialog()
+        }
+        binding?.messageRequestBlock?.setOnClickListener {
+            block(deleteThread = true)
         }
         binding?.declineMessageRequestButton?.setOnClickListener {
-            declineAlartDialog()
+            /*viewModel.declineMessageRequest()
+            lifecycleScope.launch(Dispatchers.IO) {
+                ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(this@ConversationActivityV2)
+            }
+            finish()*/
+            declineAlertDialog()
         }
     }
 
+    //SteveJosephh21 - 08
+    override fun block(deleteThread: Boolean) {
+        val title = R.string.RecipientPreferenceActivity_block_this_contact_question
+        val message = R.string.RecipientPreferenceActivity_you_will_no_longer_receive_messages_and_calls_from_this_contact
+        val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog_Clear_All)
+            .setTitle(title)
+            .setMessage(message)
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(R.string.RecipientPreferenceActivity_block) { _, _ ->
+                viewModel.block()
+                if (deleteThread) {
+                    viewModel.deleteThread()
+                    finish()
+                }
+            }.show()
+        //New Line
+        val textView: TextView? = dialog.findViewById(android.R.id.message)
+        val face: Typeface = Typeface.createFromAsset(this.assets,"fonts/open_sans_medium.ttf")
+        textView!!.typeface = face
+    }
+
+    override fun copyBchatID(bchatId: String) {
+        val clip = ClipData.newPlainText("BChat ID", bchatId)
+        val manager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        manager.setPrimaryClip(clip)
+        Toast.makeText(this, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun showExpiringMessagesDialog(thread: Recipient) {
+        if (thread.isClosedGroupRecipient) {
+            val group = groupDb.getGroup(thread.address.toGroupString()).orNull()
+            if (group?.isActive == false) { return }
+        }
+        ExpirationDialog.show(this, thread.expireMessages) { expirationTime: Int ->
+            recipientDatabase.setExpireMessages(thread, expirationTime)
+            val message = ExpirationTimerUpdate(expirationTime)
+            message.recipient = thread.address.serialize()
+            message.sentTimestamp = System.currentTimeMillis()
+            val expiringMessageManager = ApplicationContext.getInstance(this).expiringMessageManager
+            expiringMessageManager.setExpirationTimer(message)
+            MessageSender.send(message, thread.address)
+            invalidateOptionsMenu()
+        }
+    }
+
+    override fun unblock() {
+        val title = R.string.ConversationActivity_unblock_this_contact_question
+        val message = R.string.ConversationActivity_you_will_once_again_be_able_to_receive_messages_and_calls_from_this_contact
+        val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog_Clear_All)
+            .setTitle(title)
+            .setMessage(message)
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(R.string.ConversationActivity_unblock) { _, _ ->
+                viewModel.unblock()
+            }.show()
+
+        //New Line
+        val textView: TextView? = dialog.findViewById(android.R.id.message)
+        val face: Typeface = Typeface.createFromAsset(this.assets,"fonts/open_sans_medium.ttf")
+        textView!!.typeface = face
+    }
+
+
     /*Hales63*/
-    private fun acceptAlartDialog() {
+    private fun acceptAlertDialog() {
         val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog)
             .setMessage(resources.getString(R.string.message_requests_accept_message))
             .setPositiveButton(R.string.accept) { _, _ ->
@@ -620,11 +706,11 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
 
         //SteveJosephh21
         val textView: TextView? = dialog.findViewById(android.R.id.message)
-        val face:Typeface =Typeface.createFromAsset(assets,"fonts/poppins_medium.ttf")
+        val face:Typeface =Typeface.createFromAsset(assets,"fonts/open_sans_medium.ttf")
         textView!!.typeface = face
     }
-    private fun declineAlartDialog() {
-        val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog_remove_new)
+    private fun declineAlertDialog() {
+        val dialog = AlertDialog.Builder(this,R.style.BChatAlertDialog_Clear_All)
             .setMessage(resources.getString(R.string.message_requests_decline_message))
             .setPositiveButton(R.string.decline) { _, _ ->
             viewModel.declineMessageRequest()
@@ -639,7 +725,7 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
 
         //SteveJosephh21
         val textView:TextView? = dialog.findViewById(android.R.id.message)
-        val face:Typeface =Typeface.createFromAsset(assets,"fonts/poppins_medium.ttf")
+        val face:Typeface =Typeface.createFromAsset(assets,"fonts/open_sans_medium.ttf")
         textView!!.typeface = face
     }
 
@@ -662,7 +748,8 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
         return (!viewModel.recipient.isGroupRecipient && !hasSent) ||
                 (!viewModel.recipient.isGroupRecipient && hasSent && !(viewModel.recipient.hasApprovedMe() || viewModel.hasReceived()))*/
         //New Line v32
-        return !viewModel.recipient.isGroupRecipient && !viewModel.recipient.isApproved
+        val recipient = viewModel.recipient ?: return false
+        return !recipient.isGroupRecipient && !recipient.isApproved
     }
 
     /*private fun isOutgoingMessageRequestThread(): Boolean {
@@ -698,11 +785,12 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
 
     override fun onDestroy() {
         viewModel.saveDraft(binding?.inputBar?.text?.trim() ?: "")
+        val recipient = viewModel.recipient ?: return super.onDestroy()
         /*Hales63*/ // New Line
         if(TextSecurePreferences.getPlayerStatus(this)) {
             TextSecurePreferences.setPlayerStatus(this,false)
             val contactDB = DatabaseComponent.get(this).bchatContactDatabase()
-            val contact = contactDB.getContactWithBchatID(viewModel.recipient.address.toString())
+            val contact = contactDB.getContactWithBchatID(recipient.address.toString())
             Log.d("Beldex", "Contact Trust Value ${contact?.isTrusted}")
             if (contact?.isTrusted != null ) {
                     if (contact.isTrusted == true) {
@@ -762,8 +850,9 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
     // region Animation & Updating
     override fun onModified(recipient: Recipient) {
         runOnUiThread {
-            if (viewModel.recipient.isContactRecipient) {
-                binding?.blockedBanner?.isVisible = viewModel.recipient.isBlocked
+            val threadRecipient = viewModel.recipient ?: return@runOnUiThread
+            if (threadRecipient.isContactRecipient) {
+                binding?.blockedBanner?.isVisible = threadRecipient.isBlocked
             }
             //New Line v32
             setUpMessageRequestsBar()
@@ -777,8 +866,9 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
     }
 
     private fun showOrHideInputIfNeeded() {
-        if (viewModel.recipient.isClosedGroupRecipient) {
-            val group = groupDb.getGroup(viewModel.recipient.address.toGroupString()).orNull()
+        val recipient = viewModel.recipient
+        if (recipient != null && recipient.isClosedGroupRecipient) {
+            val group = groupDb.getGroup(recipient.address.toGroupString()).orNull()
             val isActive = (group?.isActive == true)
             binding?.inputBar?.showInput = isActive
         } else {
@@ -843,17 +933,18 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
 
     private fun showOrUpdateMentionCandidatesIfNeeded(query: String = "") {
         val additionalContentContainer = binding?.additionalContentContainer ?: return
+        val recipient = viewModel.recipient ?: return
         if (!isShowingMentionCandidatesView) {
             additionalContentContainer.removeAllViews()
             val view = MentionCandidatesView(this)
             view.glide = glide
             view.onCandidateSelected = { handleMentionSelected(it) }
             additionalContentContainer.addView(view)
-            val candidates = MentionsManager.getMentionCandidates(query, viewModel.threadId, viewModel.recipient.isOpenGroupRecipient)
+            val candidates = MentionsManager.getMentionCandidates(query, viewModel.threadId, recipient.isOpenGroupRecipient)
             this.mentionCandidatesView = view
             view.show(candidates, viewModel.threadId)
         } else {
-            val candidates = MentionsManager.getMentionCandidates(query, viewModel.threadId, viewModel.recipient.isOpenGroupRecipient)
+            val candidates = MentionsManager.getMentionCandidates(query, viewModel.threadId, recipient.isOpenGroupRecipient)
             this.mentionCandidatesView!!.setMentionCandidates(candidates)
         }
         isShowingMentionCandidatesView = true
@@ -987,15 +1078,16 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
     }
 
     private fun updateSubtitle() {
-        actionBarBinding.muteIconImageView.isVisible = viewModel.recipient.isMuted
+        val recipient = viewModel.recipient ?: return
+        actionBarBinding.muteIconImageView.isVisible = recipient.isMuted
         actionBarBinding.conversationSubtitleView.isVisible = true
-        if (viewModel.recipient.isMuted) {
-            if (viewModel.recipient.mutedUntil != Long.MAX_VALUE) {
-                actionBarBinding.conversationSubtitleView.text = getString(R.string.ConversationActivity_muted_until_date, DateUtils.getFormattedDateTime(viewModel.recipient.mutedUntil, "EEE, MMM d, yyyy HH:mm", Locale.getDefault()))
+        if (recipient.isMuted) {
+            if (recipient.mutedUntil != Long.MAX_VALUE) {
+                actionBarBinding.conversationSubtitleView.text = getString(R.string.ConversationActivity_muted_until_date, DateUtils.getFormattedDateTime(recipient.mutedUntil, "EEE, MMM d, yyyy HH:mm", Locale.getDefault()))
             } else {
                 actionBarBinding.conversationSubtitleView.text = getString(R.string.ConversationActivity_muted_forever)
             }
-        } else if (viewModel.recipient.isGroupRecipient) {
+        } else if (recipient.isGroupRecipient) {
             val openGroup = beldexThreadDb.getOpenGroupChat(viewModel.threadId)
             if (openGroup != null) {
                 val userCount = beldexApiDb.getUserCount(openGroup.room, openGroup.server) ?: 0
@@ -1013,85 +1105,85 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
             return false
-        }else if(item.itemId == R.id.menu_call) {
-            if (Helper.getPhoneStatePermission(this)) {
-                isMenuCall()
-            }else{
-                Log.d("Beldex","Permission not granded")
+        } else if (item.itemId == R.id.menu_call) {
+            val recipient = viewModel.recipient ?: return false
+            if (recipient.isContactRecipient && recipient.isBlocked) {
+                BlockedDialog(recipient).show(supportFragmentManager, "Blocked Dialog")
+            } else {
+                if (Helper.getPhoneStatePermission(this)) {
+                    isMenuCall()
+                } else {
+                    Log.d("Beldex", "Permission not granted")
+                }
             }
         }
-        return ConversationMenuHelper.onOptionItemSelected(this, item, viewModel.recipient)
+        return  viewModel.recipient?.let { recipient ->
+            ConversationMenuHelper.onOptionItemSelected(this, item, recipient)
+        } ?: false
     }
 
     private fun isMenuCall() {
-        call(this@ConversationActivityV2, viewModel.recipient)
-      /*  if (CheckOnline.isOnline(this)) {
-            Log.d("Beldex", "Call state issue called")
+        if (CheckOnline.isOnline(this)) {
             val tm = this.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
             if (ContextCompat.checkSelfPermission(
                     this,
                     Manifest.permission.READ_PHONE_STATE
                 ) == PackageManager.PERMISSION_GRANTED
             ) {
-                com.beldex.libsignal.utilities.Log.d("Beldex", "Call state issue called 1")
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    Log.d("Beldex", "Call state issue called 2")
                     tm.registerTelephonyCallback(
                         this.mainExecutor,
                         object : TelephonyCallback(), TelephonyCallback.CallStateListener {
                             override fun onCallStateChanged(state: Int) {
                                 when (state) {
                                     TelephonyManager.CALL_STATE_RINGING -> {
-                                        Log.d("Beldex", "Call state issue called 3")
                                         Toast.makeText(
                                             this@ConversationActivityV2,
-                                            "BChat call won't allow ,Because your phone call ringing",
+                                            getString(R.string.call_alert_while_ringing),
                                             Toast.LENGTH_SHORT
                                         ).show()
                                     }
                                     TelephonyManager.CALL_STATE_OFFHOOK -> {
-                                        Log.d("Beldex", "Call state issue called 4")
                                         Toast.makeText(
                                             this@ConversationActivityV2,
-                                            "BChat call won't allow ,Because your phone call is on going",
+                                            getString(R.string.call_alert_while_on_going),
                                             Toast.LENGTH_SHORT
                                         ).show()
 
                                     }
                                     TelephonyManager.CALL_STATE_IDLE -> {
-                                        Log.d("Beldex", "Call state issue called 5")
-                                        call(this@ConversationActivityV2, viewModel.recipient)
+                                        viewModel.recipient?.let { recipient ->
+                                            call(this@ConversationActivityV2, recipient)
+                                        }
                                     }
                                 }
                             }
                         })
 
                 } else {
-                    com.beldex.libsignal.utilities.Log.d("Beldex", "Call state issue called 6")
                     tm.listen(object : PhoneStateListener() {
                         override fun onCallStateChanged(state: Int, phoneNumber: String?) {
                             super.onCallStateChanged(state, phoneNumber)
                             when (state) {
                                 TelephonyManager.CALL_STATE_RINGING -> {
-                                    Log.d("Beldex", "Call state issue called 7")
                                     Toast.makeText(
                                         this@ConversationActivityV2,
-                                        "BChat call won't allow ,Because your phone call ringing",
+                                        getString(R.string.call_alert_while_ringing),
                                         Toast.LENGTH_SHORT
                                     ).show()
                                 }
                                 TelephonyManager.CALL_STATE_OFFHOOK -> {
-                                    Log.d("Beldex", "Call state issue called 8")
                                     Toast.makeText(
                                         this@ConversationActivityV2,
-                                        "BChat call won't allow ,Because your phone call is on going",
+                                        getString(R.string.call_alert_while_on_going),
                                         Toast.LENGTH_SHORT
                                     ).show()
 
                                 }
                                 TelephonyManager.CALL_STATE_IDLE -> {
-                                    Log.d("Beldex", "Call state issue called 9")
-                                    call(this@ConversationActivityV2, viewModel.recipient)
+                                    viewModel.recipient?.let { recipient ->
+                                        call(this@ConversationActivityV2, recipient)
+                                    }
                                 }
                             }
                         }
@@ -1103,7 +1195,7 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
 
         } else {
             Toast.makeText(this, "Check your Internet", Toast.LENGTH_SHORT).show()
-        }*/
+        }
     }
 
     private fun call(context: Context, thread: Recipient) {
@@ -1182,8 +1274,8 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
         //New Line
         val params = binding?.attachmentOptionsContainer?.layoutParams as MarginLayoutParams
         params.bottomMargin=400
-
-        binding?.inputBar?.draftQuote(viewModel.recipient, message, glide)
+        val recipient = viewModel.recipient ?: return
+        binding?.inputBar?.draftQuote(recipient, message, glide)
     }
 
     // `position` is the adapter position; not the visual position
@@ -1297,8 +1389,9 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
        /* if (isIncomingMessageRequestThread()) {
             acceptMessageRequest()
         }*/
-        if (viewModel.recipient.isContactRecipient && viewModel.recipient.isBlocked) {
-            BlockedDialog(viewModel.recipient).show(supportFragmentManager, "Blocked Dialog")
+        val recipient = viewModel.recipient ?: return
+        if (recipient.isContactRecipient && recipient.isBlocked) {
+            BlockedDialog(recipient).show(supportFragmentManager, "Blocked Dialog")
             return
         }
         val binding = binding ?: return
@@ -1324,6 +1417,7 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
     }
 
     override fun commitInputContent(contentUri: Uri) {
+        val recipient = viewModel.recipient ?: return
         val media = Media(
             contentUri,
             MediaUtil.getMimeType(
@@ -1337,17 +1431,18 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
             Optional.absent(),
             Optional.absent()
         )
-        startActivityForResult(MediaSendActivity.buildEditorIntent(this, listOf( media ), viewModel.recipient, getMessageBody()), PICK_FROM_LIBRARY)
+        startActivityForResult(MediaSendActivity.buildEditorIntent(this, listOf( media ), recipient, getMessageBody()), PICK_FROM_LIBRARY)
     }
 
     private fun sendTextOnlyMessage(hasPermissionToSendSeed: Boolean = false) {
+        val recipient = viewModel.recipient ?: return
         //New Line v32
         processMessageRequestApproval()
 
         val text = getMessageBody()
         Log.d("Beldex","bchat id validation -- get bchat id")
         val userPublicKey = textSecurePreferences.getLocalNumber()
-        val isNoteToSelf = (viewModel.recipient.isContactRecipient && viewModel.recipient.address.toString() == userPublicKey)
+        val isNoteToSelf = (recipient.isContactRecipient && recipient.address.toString() == userPublicKey)
         if (text.contains(seed) && !isNoteToSelf && !hasPermissionToSendSeed) {
             val dialog = SendSeedDialog { sendTextOnlyMessage(true) }
             return dialog.show(supportFragmentManager, "Send Seed Dialog")
@@ -1376,11 +1471,12 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
 
         // Send it
         Log.d("Beldex","bchat id validation -- message send using bchat id")
-        MessageSender.send(message, viewModel.recipient.address)
+        MessageSender.send(message, recipient.address)
         // Send a typing stopped message
         ApplicationContext.getInstance(this).typingStatusSender.onTypingStopped(viewModel.threadId)
     }
     private fun sendAttachments(attachments: List<Attachment>, body: String?, quotedMessage: MessageRecord? = null, linkPreview: LinkPreview? = null) {
+        val recipient = viewModel.recipient ?: return
         //New Line v32
         processMessageRequestApproval()
 
@@ -1393,7 +1489,7 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
             val sender = if (it.isOutgoing) fromSerialized(textSecurePreferences.getLocalNumber()!!) else it.individualRecipient.address
             QuoteModel(it.dateSent, sender, it.body, false, quotedAttachments)
         }
-        val outgoingTextMessage = OutgoingMediaMessage.from(message, viewModel.recipient, attachments, quote, linkPreview)
+        val outgoingTextMessage = OutgoingMediaMessage.from(message, recipient, attachments, quote, linkPreview)
         // Clear the input bar
         binding?.inputBar?.text = ""
         //New Line
@@ -1413,7 +1509,7 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
         // Put the message in the database
         message.id = mmsDb.insertMessageOutbox(outgoingTextMessage, viewModel.threadId, false) { }
         // Send it
-        MessageSender.send(message, viewModel.recipient.address, attachments, quote, linkPreview)
+        MessageSender.send(message, recipient.address, attachments, quote, linkPreview)
         // Send a typing stopped message
         ApplicationContext.getInstance(this).typingStatusSender.onTypingStopped(viewModel.threadId)
     }
@@ -1562,7 +1658,7 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
                 sendAttachments(slideDeck.asAttachments(), body)
             }
             INVITE_CONTACTS -> {
-                if (!viewModel.recipient.isOpenGroupRecipient) { return }
+                if (viewModel.recipient?.isOpenGroupRecipient != true) { return }
                 val extras = intent?.extras ?: return
                 if (!intent.hasExtra(selectedContactsKey)) { return }
                 val selectedContacts = extras.getStringArray(selectedContactsKey)!!
@@ -1650,13 +1746,14 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
     }
 
     override fun deleteMessages(messages: Set<MessageRecord>) {
+        val recipient = viewModel.recipient ?: return
         if (!IS_UNSEND_REQUESTS_ENABLED) {
             deleteMessagesWithoutUnsendRequest(messages)
             return
         }
         val allSentByCurrentUser = messages.all { it.isOutgoing }
         val allHasHash = messages.all { beldexMessageDb.getMessageServerHash(it.id) != null }
-        if (viewModel.recipient.isOpenGroupRecipient) {
+        if (recipient.isOpenGroupRecipient) {
             val messageCount = messages.size
             val builder = AlertDialog.Builder(this,R.style.BChatAlertDialog)
             builder.setTitle(resources.getQuantityString(R.plurals.ConversationFragment_delete_selected_messages, messageCount, messageCount))
@@ -1675,7 +1772,7 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
             builder.show()
         } else if (allSentByCurrentUser && allHasHash) {
             val bottomSheet = DeleteOptionsBottomSheet()
-            bottomSheet.recipient = viewModel.recipient
+            bottomSheet.recipient = recipient
             bottomSheet.onDeleteForMeTapped = {
                 for (message in messages) {
                     viewModel.deleteLocally(message)
@@ -1834,20 +1931,22 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
     }
 
     override fun reply(messages: Set<MessageRecord>) {
+        val recipient = viewModel.recipient ?: return
         //New Line
         val params = binding?.attachmentOptionsContainer?.layoutParams as MarginLayoutParams
         params.bottomMargin=400
 
-        binding?.inputBar?.draftQuote(viewModel.recipient, messages.first(), glide)
+        binding?.inputBar?.draftQuote(recipient, messages.first(), glide)
         endActionMode()
     }
 
     private fun sendMediaSavedNotification() {
-        if (viewModel.recipient.isGroupRecipient) { return }
+        val recipient = viewModel.recipient ?: return
+        if (recipient.isGroupRecipient) { return }
         val timestamp = System.currentTimeMillis()
         val kind = DataExtractionNotification.Kind.MediaSaved(timestamp)
         val message = DataExtractionNotification(kind)
-        MessageSender.send(message, viewModel.recipient.address)
+        MessageSender.send(message, recipient.address)
     }
 
     private fun endActionMode() {

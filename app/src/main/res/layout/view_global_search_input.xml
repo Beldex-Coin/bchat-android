@@ -30,7 +30,7 @@
             app:tint="@color/home_search_icon_and_hint"
             android:contentDescription="@string/SearchToolbar_search" />
         <EditText
-            android:fontFamily="@font/poppins_medium"
+            android:fontFamily="@font/open_sans_medium"
             android:hint="@string/global_search_messages"
             android:imeOptions="actionSearch"
             android:id="@+id/search_input"

@@ -81,7 +81,7 @@ public class ExpirationDialog extends AlertDialog {
     };
 
     //New Line
-    Typeface face = Typeface.createFromAsset(context.getAssets(),"fonts/poppins_medium.ttf");
+    Typeface face = Typeface.createFromAsset(context.getAssets(),"fonts/open_sans_medium.ttf");
     textView.setTypeface(face);
 
     numberPickerView.setOnValueChangedListener(listener);

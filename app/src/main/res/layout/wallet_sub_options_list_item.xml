@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:fontFamily="@font/poppins_medium"
+            android:fontFamily="@font/open_sans_medium"
             android:layout_margin="12dp"
             android:textColor="@color/wallet_sub_options_list_item_color"
             android:text="Beldex Full Balance"/>

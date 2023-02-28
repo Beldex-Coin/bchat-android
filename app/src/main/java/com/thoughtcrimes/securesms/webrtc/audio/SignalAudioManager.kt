@@ -55,7 +55,7 @@ class SignalAudioManager(private val context: Context,
 
     private val soundPool: SoundPool = androidAudioManager.createSoundPool()
     private val connectedSoundId = soundPool.load(context, R.raw.webrtc_completed, 1)
-    private val disconnectedSoundId = soundPool.load(context, R.raw.webrtc_disconnected, 1)
+    private val disconnectedSoundId = soundPool.load(context, R.raw.webrtc_call_end, 1)
 
     private val incomingRinger = IncomingRinger(context)
     private val outgoingRinger = OutgoingRinger(context)
@@ -108,7 +108,7 @@ class SignalAudioManager(private val context: Context,
                 updateAudioDeviceState()
 
                 wiredHeadsetReceiver = WiredHeadsetReceiver()
-                context.registerReceiver(wiredHeadsetReceiver, IntentFilter(if (Build.VERSION.SDK_INT >= 21) AudioManager.ACTION_HEADSET_PLUG else Intent.ACTION_HEADSET_PLUG))
+                context.registerReceiver(wiredHeadsetReceiver, IntentFilter(AudioManager.ACTION_HEADSET_PLUG))
 
                 state = State.PREINITIALIZED
 

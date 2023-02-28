@@ -46,7 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
-                android:fontFamily="@font/poppins_medium"
+                android:fontFamily="@font/open_sans_medium"
                 android:layout_gravity="center"
                 android:textSize="@dimen/text_size"
                 tools:text="@tools:sample/full_names"
@@ -82,7 +82,7 @@
 
             </RelativeLayout>
             <TextView
-                android:fontFamily="@font/poppins_regular"
+                android:fontFamily="@font/open_sans_regular"
                 android:textColor="@color/text"
                 android:alpha="0.4"
                 android:layout_weight="1"
@@ -95,7 +95,7 @@
                 android:layout_height="wrap_content"/>
         </LinearLayout>
         <TextView
-            android:fontFamily="@font/poppins_regular"
+            android:fontFamily="@font/open_sans_regular"
             tools:text="@tools:sample/full_names"
             android:textSize="@dimen/text_size"
             android:id="@+id/search_result_subtitle"

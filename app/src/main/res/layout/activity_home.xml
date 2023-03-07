@@ -152,7 +152,7 @@
 
                 </RelativeLayout>
 
-                <RelativeLayout
+               <!-- <RelativeLayout
                     android:id="@+id/search_toolbar1"
                     android:layout_width="match_parent"
                     android:layout_height="?actionBarSize"
@@ -164,7 +164,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true" />
-                </RelativeLayout>
+                </RelativeLayout>-->
 
                 <RelativeLayout
                     android:id="@+id/searchBarLayout"
@@ -222,7 +222,18 @@
             app:lottie_enableMergePathsForKitKatAndAbove="true"
             tools:ignore="ContentDescription"/>-->
 
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </com.google.android.material.tabs.TabLayout>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+       <!-- <androidx.cardview.widget.CardView
             android:id="@+id/searchViewCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -350,7 +361,7 @@
                     android:textSize="@dimen/medium_font_size"
                     android:textStyle="bold"
                     android:visibility="gone" />
-                <!-- android:text="@string/activity_home_empty_state_message"-->
+                &lt;!&ndash; android:text="@string/activity_home_empty_state_message"&ndash;&gt;
 
                 <Button
                     android:id="@+id/createNewPrivateChatButton"
@@ -388,15 +399,15 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginEnd="30dp"
                 android:layout_marginBottom="-30dp" />
-            <!-- <com.thoughtcrime.securesms.home.NewConversationButtonSetView
+            &lt;!&ndash; <com.thoughtcrime.securesms.home.NewConversationButtonSetView
                  android:id="@+id/newConversationButtonSet"
                  android:layout_width="276dp"
                  android:layout_height="236dp"
                  android:layout_alignParentEnd="true"
                  android:layout_alignParentBottom="true"
-                 android:gravity="end" />-->
+                 android:gravity="end" />&ndash;&gt;
 
-        </RelativeLayout>
+        </RelativeLayout>-->
 
     </LinearLayout>
 

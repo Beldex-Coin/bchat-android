@@ -1,11 +1,6 @@
 package com.thoughtcrimes.securesms.home
 
-import android.app.AlertDialog
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
-import android.database.Cursor
 import android.graphics.PointF
 import android.net.Uri
 import android.os.Bundle
@@ -15,13 +10,9 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.loader.app.LoaderManager
-import androidx.loader.content.Loader
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -33,15 +24,10 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import com.beldex.libbchat.messaging.jobs.JobQueue
-import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.utilities.Address
-import com.beldex.libbchat.utilities.GroupUtil
 import com.beldex.libbchat.utilities.ProfilePictureModifiedEvent
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import com.beldex.libsignal.utilities.ThreadUtils
-import com.beldex.libsignal.utilities.toHexString
 import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
-import com.thoughtcrimes.securesms.conversation.v2.utilities.NotificationUtils
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.drawer.ClickListener
 import com.thoughtcrimes.securesms.drawer.NavigationItemModel
@@ -49,10 +35,6 @@ import com.thoughtcrimes.securesms.drawer.NavigationRVAdapter
 import com.thoughtcrimes.securesms.drawer.RecyclerTouchListener
 import com.thoughtcrimes.securesms.groups.CreateClosedGroupActivity
 import com.thoughtcrimes.securesms.groups.OpenGroupManager
-import com.thoughtcrimes.securesms.home.search.GlobalSearchAdapter
-import com.thoughtcrimes.securesms.home.search.GlobalSearchInputLayout
-import com.thoughtcrimes.securesms.home.search.GlobalSearchViewModel
-import java.io.IOException
 import javax.inject.Inject
 import android.widget.CompoundButton
 import androidx.core.view.isVisible
@@ -62,11 +44,9 @@ import com.beldex.libsignal.utilities.Log
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.thoughtcrimes.securesms.ApplicationContext
-import com.thoughtcrimes.securesms.MuteDialog
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
 import com.thoughtcrimes.securesms.database.*
-import com.thoughtcrimes.securesms.database.model.ThreadRecord
 import com.thoughtcrimes.securesms.dms.CreateNewPrivateChatActivity
 import com.thoughtcrimes.securesms.groups.JoinPublicChatNewActivity
 import com.thoughtcrimes.securesms.keys.KeysPermissionActivity
@@ -77,16 +57,13 @@ import com.thoughtcrimes.securesms.preferences.*
 import com.thoughtcrimes.securesms.seed.SeedPermissionActivity
 import com.thoughtcrimes.securesms.util.*
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.tasks.Task
 import android.content.IntentSender.SendIntentException
-import android.graphics.Typeface
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.tabs.TabLayout
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
@@ -98,48 +75,38 @@ import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
-import io.beldex.bchat.databinding.ViewMessageRequestBannerBinding
 import kotlinx.coroutines.*
 import org.apache.commons.lang3.time.DurationFormatUtils
 import java.util.*
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayoutMediator
+import com.thoughtcrimes.securesms.home.search.GlobalSearchAdapter
+import com.thoughtcrimes.securesms.home.search.GlobalSearchInputLayout
+import com.thoughtcrimes.securesms.home.search.GlobalSearchViewModel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 
 
 @AndroidEntryPoint
 class HomeActivity : PassphraseRequiredActionBarActivity(),
-    ConversationClickListener,
-    SeedReminderViewDelegate,
-    NewConversationButtonSetViewDelegate,
-    LoaderManager.LoaderCallbacks<Cursor>,
-    GlobalSearchInputLayout.GlobalSearchInputLayoutListener {
+    SeedReminderViewDelegate,NewConversationButtonSetViewDelegate,HomeFragment.HomeFragmentListener {
 
     private lateinit var binding: ActivityHomeBinding
     private lateinit var glide: GlideRequests
-    private var broadcastReceiver: BroadcastReceiver? = null
+
     private var uiJob: Job? = null
     private val viewModel by viewModels<CallViewModel>()
     private val CALLDURATIONFORMAT = "HH:mm:ss"
 
     @Inject
-    lateinit var threadDb: ThreadDatabase
-
-    @Inject
-    lateinit var mmsSmsDatabase: MmsSmsDatabase
-    @Inject
-    lateinit var recipientDatabase: RecipientDatabase
-    @Inject
-    lateinit var groupDatabase: GroupDatabase
-    @Inject
     lateinit var textSecurePreferences: TextSecurePreferences
 
-    private val globalSearchViewModel by viewModels<GlobalSearchViewModel>()
+
 
     private val publicKey: String
         get() = TextSecurePreferences.getLocalNumber(this)!!
 
-    /*Hales63*/
-    private val homeAdapter: HomeAdapter by lazy {
-        HomeAdapter(context = this, cursor = threadDb.approvedConversationList, listener = this)
-    }
+
 
     private val toolbar: Toolbar? = null
 
@@ -148,49 +115,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
     private val favouriteNodeslist = mutableSetOf<NodeInfo>()
     private val reportIssueBChatID = "bdb890a974a25ef50c64cc4e3270c4c49c7096c433b8eecaf011c1ad000e426813"
-    private val globalSearchAdapter = GlobalSearchAdapter { model ->
-        when (model) {
-            is GlobalSearchAdapter.Model.Message -> {
-                val threadId = model.messageResult.threadId
-                val timestamp = model.messageResult.receivedTimestampMs
-                val author = model.messageResult.messageRecipient.address
 
-                val intent = Intent(this, ConversationActivityV2::class.java)
-                intent.putExtra(ConversationActivityV2.THREAD_ID, threadId)
-                intent.putExtra(ConversationActivityV2.SCROLL_MESSAGE_ID, timestamp)
-                intent.putExtra(ConversationActivityV2.SCROLL_MESSAGE_AUTHOR, author)
-                push(intent)
-            }
-            is GlobalSearchAdapter.Model.SavedMessages -> {
-                val intent = Intent(this, ConversationActivityV2::class.java)
-                intent.putExtra(
-                    ConversationActivityV2.ADDRESS,
-                    Address.fromSerialized(model.currentUserPublicKey)
-                )
-                push(intent)
-            }
-            is GlobalSearchAdapter.Model.Contact -> {
-                val address = model.contact.bchatID
-
-                val intent = Intent(this, ConversationActivityV2::class.java)
-                intent.putExtra(ConversationActivityV2.ADDRESS, Address.fromSerialized(address))
-                push(intent)
-            }
-            is GlobalSearchAdapter.Model.GroupConversation -> {
-                val groupAddress = Address.fromSerialized(model.groupRecord.encodedId)
-                val threadId =
-                    threadDb.getThreadIdIfExistsFor(Recipient.from(this, groupAddress, false))
-                if (threadId >= 0) {
-                    val intent = Intent(this, ConversationActivityV2::class.java)
-                    intent.putExtra(ConversationActivityV2.THREAD_ID, threadId)
-                    push(intent)
-                }
-            }
-            else -> {
-                Log.d("Beldex", "callback with model: $model")
-            }
-        }
-    }
 
     //New Line
     private lateinit var adapter: NavigationRVAdapter
@@ -218,6 +143,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     //New Line App Update
     private var appUpdateManager: AppUpdateManager? = null
     private val IMMEDIATE_APP_UPDATE_REQ_CODE = 124
+
+    private var homeFragment: HomeFragment? = null
+
+    private val globalSearchViewModel by viewModels<GlobalSearchViewModel>()
 
     // region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?, isReady: Boolean) {
@@ -348,12 +277,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         binding.drawerProfileIcon.glide = glide
         binding.drawerProfileId.text = "ID: $hexEncodedPublicKey"
 
-
-
-
-        binding.searchViewContainer.setOnClickListener {
-            binding.globalSearchInputLayout.requestFocus()
-        }
         binding.bchatToolbar.disableClipping()
 
         //Comment-->
@@ -370,31 +293,46 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         } else {
             binding.seedReminderView.isVisible = false
         }*/
+
+        val adapter = HomeViewPagerAdapter(this)
+
+        adapter.addFragment(HomeFragment(),"Chat")
+        adapter.addFragment(WalletFragment(),"Wallet")
+        val viewPager: ViewPager2 = binding.viewPager
+        viewPager.adapter = adapter
+        viewPager.currentItem = 0
+        val tabs: TabLayout = binding.tabLayout
+        TabLayoutMediator(tabs, viewPager) { tab, position ->
+            tab.text = adapter.getTabTitle(position)
+        }.attach()
         /*Hales63*/
-        setupMessageRequestsBanner()
+
         setupHeaderImage()
-        // Set up recycler view
-        binding.globalSearchInputLayout.listener = this
-        homeAdapter.setHasStableIds(true)
-        homeAdapter.glide = glide
-        binding.recyclerView.adapter = homeAdapter
-        binding.globalSearchRecycler.adapter = globalSearchAdapter
-        // Set up empty state view
-        binding.createNewPrivateChatButton.setOnClickListener { createNewPrivateChat() }
         IP2Country.configureIfNeeded(this@HomeActivity)
-        // This is a workaround for the fact that CursorRecyclerViewAdapter doesn't actually auto-update (even though it says it will)
-        LoaderManager.getInstance(this).restartLoader(0, null, this)
-        // Set up new conversation button set
-        binding.newConversationButtonSet.delegate = this
-        // Observe blocked contacts changed events
-        val broadcastReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                binding.recyclerView.adapter!!.notifyDataSetChanged()
-            }
-        }
-        this.broadcastReceiver = broadcastReceiver
-        LocalBroadcastManager.getInstance(this)
-            .registerReceiver(broadcastReceiver, IntentFilter("blockedContactsChanged"))
+        homeFragment = supportFragmentManager.findFragmentById(R.id.viewPager) as HomeFragment?
+
+        EventBus.getDefault().register(this@HomeActivity)
+
+        //New Line App Update
+        /*binding.airdropIcon.setAnimation(R.raw.airdrop_animation_top)
+        binding.airdropIcon.setOnClickListener { callAirdropUrl() }*/
+        appUpdateManager = AppUpdateManagerFactory.create(applicationContext)
+        checkUpdate()
+
+        /*if(TextSecurePreferences.getAirdropAnimationStatus(this)) {
+            //New Line AirDrop
+            TextSecurePreferences.setAirdropAnimationStatus(this,false)
+            launchSuccessLottieDialog()
+        }*/
+    }
+
+    override fun callLifeCycleScope(
+        recyclerView: RecyclerView,
+        globalSearchInputLayout: GlobalSearchInputLayout,
+        mmsSmsDatabase: MmsSmsDatabase,
+        globalSearchAdapter: GlobalSearchAdapter,
+        publicKey: String
+    ) {
         lifecycleScope.launchWhenStarted {
             launch(Dispatchers.IO) {
                 // Double check that the long poller is up
@@ -405,7 +343,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                     ApplicationContext.getInstance(this@HomeActivity).typingStatusRepository.typingThreads.observe(
                         this@HomeActivity,
                         Observer<Set<Long>> { threadIDs ->
-                            val adapter = binding.recyclerView.adapter as HomeAdapter
+                            val adapter = recyclerView.adapter as HomeAdapter
                             adapter.typingThreadIDs = threadIDs ?: setOf()
                         })
                     updateProfileButton()
@@ -425,7 +363,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
             }
             // monitor the global search VM query
             launch {
-                binding.globalSearchInputLayout.query
+                globalSearchInputLayout.query
                     .onEach(globalSearchViewModel::postQuery)
                     .collect()
             }
@@ -482,24 +420,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                     }
 
                     val newData = contactResults + messageResults
-
                     globalSearchAdapter.setNewData(result.query, newData)
                 }
             }
         }
-        EventBus.getDefault().register(this@HomeActivity)
-
-        //New Line App Update
-        /*binding.airdropIcon.setAnimation(R.raw.airdrop_animation_top)
-        binding.airdropIcon.setOnClickListener { callAirdropUrl() }*/
-        appUpdateManager = AppUpdateManagerFactory.create(applicationContext)
-        checkUpdate()
-
-        /*if(TextSecurePreferences.getAirdropAnimationStatus(this)) {
-            //New Line AirDrop
-            TextSecurePreferences.setAirdropAnimationStatus(this,false)
-            launchSuccessLottieDialog()
-        }*/
     }
 
 
@@ -602,11 +526,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     //Important
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
         if (event?.getAction() === MotionEvent.ACTION_DOWN) {
+
             val touch = PointF(event.x, event.y)
-            if (binding.newConversationButtonSet.isExpanded) {
-                binding.newConversationButtonSet.collapse()
-            } else {
-                //binding.newConversationButtonSet.collapse()
+            if(homeFragment!=null) {
+                homeFragment!!.dispatchTouchEvent()
             }
         }
         return super.dispatchTouchEvent(event)
@@ -627,70 +550,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         //binding.bchatHeaderImage.setColorFilter(getColor(headerTint))
     }
 
-    override fun onInputFocusChanged(hasFocus: Boolean) {
-        if (hasFocus) {
-            setSearchShown(true)
-        } else {
-            setSearchShown(!binding.globalSearchInputLayout.query.value.isNullOrEmpty())
-        }
-    }
 
-    private fun setSearchShown(isShown: Boolean) {
-        //New Line
-        binding.searchBarLayout.isVisible = isShown
-        binding.searchBarLayout.setOnClickListener {
-            onBackPressed()
-        }
-
-        binding.searchToolbar.isVisible = isShown
-        binding.searchViewCard.isVisible = !isShown
-        binding.bchatToolbar.isVisible = !isShown
-        binding.recyclerView.isVisible = !isShown
-        binding.emptyStateContainer.isVisible =
-            (binding.recyclerView.adapter as HomeAdapter).itemCount == 0 && binding.recyclerView.isVisible
-        binding.emptyStateContainerText.isVisible =
-            (binding.recyclerView.adapter as HomeAdapter).itemCount == 0 && binding.recyclerView.isVisible
-        val isDayUiMode = UiModeUtilities.isDayUiMode(this)
-        (if (isDayUiMode) R.drawable.ic_doodle_3_2 else R.drawable.ic_doodle_3_1).also {
-            binding.emptyStateImageView.setImageResource(
-                it
-            )
-        }
-        //Comment-->
-        /*binding.seedReminderView.isVisible =
-            !TextSecurePreferences.getHasViewedSeed(this) && !isShown*/
-
-        binding.gradientView.isVisible = !isShown
-        binding.globalSearchRecycler.isVisible = isShown
-        binding.newConversationButtonSet.isVisible = !isShown
-    }
-
-    /*Hales63*/
-    private fun setupMessageRequestsBanner() {
-        val messageRequestCount = threadDb.unapprovedConversationCount
-        // Set up message requests
-        if (messageRequestCount > 0 && !textSecurePreferences.hasHiddenMessageRequests()) {
-            with(ViewMessageRequestBannerBinding.inflate(layoutInflater)) {
-                unreadCountTextView.text = messageRequestCount.toString()
-                timestampTextView.text = DateUtils.getDisplayFormattedTimeSpanString(
-                    this@HomeActivity,
-                    Locale.getDefault(),
-                    threadDb.latestUnapprovedConversationTimestamp
-                )
-                root.setOnClickListener { showMessageRequests() }
-                expandMessageRequest.setOnClickListener { showMessageRequests() }
-                root.setOnLongClickListener { hideMessageRequests(); true }
-                root.layoutParams = RecyclerView.LayoutParams(
-                    RecyclerView.LayoutParams.MATCH_PARENT,
-                    RecyclerView.LayoutParams.WRAP_CONTENT
-                )
-                homeAdapter.headerView = root
-                homeAdapter.notifyItemChanged(0)
-            }
-        } else {
-            homeAdapter.headerView = null
-        }
-    }
 
     /*//New Line
     private fun setupMessageRequestsBanner() {
@@ -724,21 +584,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         }
     }*/
 
-
-    override fun onCreateLoader(id: Int, bundle: Bundle?): Loader<Cursor> {
-        return HomeLoader(this@HomeActivity)
-    }
-
-    override fun onLoadFinished(loader: Loader<Cursor>, cursor: Cursor?) {
-        homeAdapter.changeCursor(cursor)
-        setupMessageRequestsBanner()
-        updateEmptyState()
-    }
-
-    override fun onLoaderReset(cursor: Loader<Cursor>) {
-        homeAdapter.changeCursor(null)
-    }
-
     private fun checkInternetConnectivity() {
         if (OnionRequestAPI.paths.isEmpty()) {
             Toast.makeText(this, getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT)
@@ -771,12 +616,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
             lifecycleScope.launch(Dispatchers.IO) {
                 ConfigurationMessageUtilities.syncConfigurationIfNeeded(this@HomeActivity)
             }
-        }
-
-        /*Hales63*/
-        if (TextSecurePreferences.isUnBlocked(this)) {
-            homeAdapter.notifyDataSetChanged()
-            TextSecurePreferences.setUnBlockStatus(this, false)
         }
     }
 
@@ -818,10 +657,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
     override fun onDestroy() {
         Log.d("Beldex","onDestroy in Home")
-        val broadcastReceiver = this.broadcastReceiver
-        if (broadcastReceiver != null) {
-            LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver)
-        }
         EventBus.getDefault().unregister(this)
         super.onDestroy()
 
@@ -829,18 +664,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     // endregion
 
     // region Updating
-    private fun updateEmptyState() {
-        val threadCount = (binding.recyclerView.adapter as HomeAdapter).itemCount
-        binding.emptyStateContainer.isVisible = threadCount == 0 && binding.recyclerView.isVisible
-        binding.emptyStateContainerText.isVisible =
-            threadCount == 0 && binding.recyclerView.isVisible
-        val isDayUiMode = UiModeUtilities.isDayUiMode(this)
-        (if (isDayUiMode) R.drawable.ic_doodle_3_2 else R.drawable.ic_doodle_3_1).also {
-            binding.emptyStateImageView.setImageResource(
-                it
-            )
-        }
-    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onUpdateProfileEvent(event: ProfilePictureModifiedEvent) {
@@ -849,7 +672,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         }
     }
 
-    private fun updateProfileButton() {
+    override fun updateProfileButton() {
         binding.profileButton.publicKey = publicKey
         binding.profileButton.displayName = TextSecurePreferences.getProfileName(this)
         binding.profileButton.recycle()
@@ -866,239 +689,16 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
 
     // region Interaction
     override fun onBackPressed() {
-        if (binding.globalSearchRecycler.isVisible) {
+       /* if (binding.globalSearchRecycler.isVisible) {
             binding.globalSearchInputLayout.clearSearch(true)
             return
-        }
+        }*/ //- Important
         super.onBackPressed()
     }
 
     override fun handleSeedReminderViewContinueButtonTapped() {
         val intent = Intent(this, SeedActivity::class.java)
         show(intent)
-    }
-
-    override fun onConversationClick(thread: ThreadRecord) {
-        val intent = Intent(this, ConversationActivityV2::class.java)
-        intent.putExtra(ConversationActivityV2.THREAD_ID, thread.threadId)
-        push(intent)
-    }
-
-    override fun onLongConversationClick(thread: ThreadRecord) {
-        val bottomSheet = ConversationOptionsBottomSheet()
-        bottomSheet.thread = thread
-        bottomSheet.onViewDetailsTapped = {
-            bottomSheet.dismiss()
-            val userDetailsBottomSheet = UserDetailsBottomSheet()
-            val bundle = bundleOf(
-                UserDetailsBottomSheet.ARGUMENT_PUBLIC_KEY to thread.recipient.address.toString(),
-                UserDetailsBottomSheet.ARGUMENT_THREAD_ID to thread.threadId
-            )
-            userDetailsBottomSheet.arguments = bundle
-            userDetailsBottomSheet.show(supportFragmentManager, userDetailsBottomSheet.tag)
-        }
-        bottomSheet.onBlockTapped = {
-            bottomSheet.dismiss()
-            if (!thread.recipient.isBlocked) {
-                blockConversation(thread)
-            }
-        }
-        bottomSheet.onUnblockTapped = {
-            bottomSheet.dismiss()
-            if (thread.recipient.isBlocked) {
-                unblockConversation(thread)
-            }
-        }
-        bottomSheet.onDeleteTapped = {
-            bottomSheet.dismiss()
-            deleteConversation(thread)
-        }
-        bottomSheet.onSetMuteTapped = { muted ->
-            bottomSheet.dismiss()
-            setConversationMuted(thread, muted)
-        }
-        bottomSheet.onNotificationTapped = {
-            bottomSheet.dismiss()
-            NotificationUtils.showNotifyDialog(this, thread.recipient) { notifyType ->
-                setNotifyType(thread, notifyType)
-            }
-        }
-        bottomSheet.onPinTapped = {
-            bottomSheet.dismiss()
-            setConversationPinned(thread.threadId, true)
-        }
-        bottomSheet.onUnpinTapped = {
-            bottomSheet.dismiss()
-            setConversationPinned(thread.threadId, false)
-        }
-        bottomSheet.onMarkAllAsReadTapped = {
-            bottomSheet.dismiss()
-            markAllAsRead(thread)
-        }
-        bottomSheet.show(supportFragmentManager, bottomSheet.tag)
-    }
-
-    private fun blockConversation(thread: ThreadRecord) {
-        val dialog = AlertDialog.Builder(this, R.style.BChatAlertDialog)
-            .setTitle(R.string.RecipientPreferenceActivity_block_this_contact_question)
-            .setMessage(R.string.RecipientPreferenceActivity_you_will_no_longer_receive_messages_and_calls_from_this_contact)
-            .setNegativeButton(android.R.string.cancel, null)
-            .setPositiveButton(R.string.RecipientPreferenceActivity_block) { dialog, _ ->
-                lifecycleScope.launch(Dispatchers.IO) {
-                    recipientDatabase.setBlocked(thread.recipient, true)
-                    withContext(Dispatchers.Main) {
-                        binding.recyclerView.adapter!!.notifyDataSetChanged()
-                        dialog.dismiss()
-                    }
-                }
-            }.show()
-        //New Line
-        val textView: TextView = dialog.findViewById(android.R.id.message)
-        val face: Typeface = Typeface.createFromAsset(assets, "fonts/open_sans_medium.ttf")
-        textView.typeface = face
-    }
-
-    private fun unblockConversation(thread: ThreadRecord) {
-        val dialog = AlertDialog.Builder(this, R.style.BChatAlertDialog)
-            .setTitle(R.string.RecipientPreferenceActivity_unblock_this_contact_question)
-            .setMessage(R.string.RecipientPreferenceActivity_you_will_once_again_be_able_to_receive_messages_and_calls_from_this_contact)
-            .setNegativeButton(android.R.string.cancel, null)
-            .setPositiveButton(R.string.RecipientPreferenceActivity_unblock) { dialog, _ ->
-                lifecycleScope.launch(Dispatchers.IO) {
-                    recipientDatabase.setBlocked(thread.recipient, false)
-                    withContext(Dispatchers.Main) {
-                        binding.recyclerView.adapter!!.notifyDataSetChanged()
-                        dialog.dismiss()
-                    }
-                }
-            }.show()
-
-        //New Line
-        val textView: TextView = dialog.findViewById(android.R.id.message)
-        val face: Typeface = Typeface.createFromAsset(assets, "fonts/open_sans_medium.ttf")
-        textView.typeface = face
-    }
-
-    private fun setConversationMuted(thread: ThreadRecord, isMuted: Boolean) {
-        if (!isMuted) {
-            lifecycleScope.launch(Dispatchers.IO) {
-                recipientDatabase.setMuted(thread.recipient, 0)
-                withContext(Dispatchers.Main) {
-                    binding.recyclerView.adapter!!.notifyDataSetChanged()
-                }
-            }
-        } else {
-            MuteDialog.show(this) { until: Long ->
-                lifecycleScope.launch(Dispatchers.IO) {
-                    recipientDatabase.setMuted(thread.recipient, until)
-                    withContext(Dispatchers.Main) {
-                        binding.recyclerView.adapter!!.notifyDataSetChanged()
-                    }
-                }
-            }
-        }
-    }
-
-    private fun setNotifyType(thread: ThreadRecord, newNotifyType: Int) {
-        lifecycleScope.launch(Dispatchers.IO) {
-            recipientDatabase.setNotifyType(thread.recipient, newNotifyType)
-            withContext(Dispatchers.Main) {
-                binding.recyclerView.adapter!!.notifyDataSetChanged()
-            }
-        }
-    }
-
-    private fun setConversationPinned(threadId: Long, pinned: Boolean) {
-        lifecycleScope.launch(Dispatchers.IO) {
-            threadDb.setPinned(threadId, pinned)
-            withContext(Dispatchers.Main) {
-                LoaderManager.getInstance(this@HomeActivity)
-                    .restartLoader(0, null, this@HomeActivity)
-            }
-        }
-    }
-
-    private fun markAllAsRead(thread: ThreadRecord) {
-        ThreadUtils.queue {
-            threadDb.markAllAsRead(thread.threadId, thread.recipient.isOpenGroupRecipient)
-        }
-    }
-
-    private fun deleteConversation(thread: ThreadRecord) {
-        val threadID = thread.threadId
-        val recipient = thread.recipient
-        val message = if (recipient.isGroupRecipient) {
-            val group = groupDatabase.getGroup(recipient.address.toString()).orNull()
-            if (group != null && group.admins.map { it.toString() }
-                    .contains(TextSecurePreferences.getLocalNumber(this))) {
-                "Because you are the creator of this group it will be deleted for everyone. This cannot be undone."
-            } else {
-                resources.getString(R.string.activity_home_leave_group_dialog_message)
-            }
-        } else {
-            resources.getString(R.string.activity_home_delete_conversation_dialog_message)
-        }
-        val dialog = AlertDialog.Builder(this, R.style.BChatAlertDialog)
-            .setMessage(message)
-            .setPositiveButton(R.string.yes) { _, _ ->
-                lifecycleScope.launch(Dispatchers.Main) {
-                    val context = this@HomeActivity as Context
-                    // Cancel any outstanding jobs
-                    DatabaseComponent.get(context).bchatJobDatabase()
-                        .cancelPendingMessageSendJobs(threadID)
-                    // Send a leave group message if this is an active closed group
-                    if (recipient.address.isClosedGroup && DatabaseComponent.get(context)
-                            .groupDatabase().isActive(recipient.address.toGroupString())
-                    ) {
-                        var isClosedGroup: Boolean
-                        var groupPublicKey: String?
-                        try {
-                            groupPublicKey =
-                                GroupUtil.doubleDecodeGroupID(recipient.address.toString())
-                                    .toHexString()
-                            isClosedGroup = DatabaseComponent.get(context).beldexAPIDatabase()
-                                .isClosedGroup(groupPublicKey)
-                        } catch (e: IOException) {
-                            groupPublicKey = null
-                            isClosedGroup = false
-                        }
-                        if (isClosedGroup) {
-                            MessageSender.explicitLeave(groupPublicKey!!, false)
-                        }
-                    }
-                    // Delete the conversation
-                    val v2OpenGroup =
-                        DatabaseComponent.get(this@HomeActivity).beldexThreadDatabase()
-                            .getOpenGroupChat(threadID)
-                    if (v2OpenGroup != null) {
-                        OpenGroupManager.delete(
-                            v2OpenGroup.server,
-                            v2OpenGroup.room,
-                            this@HomeActivity
-                        )
-                    } else {
-                        lifecycleScope.launch(Dispatchers.IO) {
-                            threadDb.deleteConversation(threadID)
-                        }
-                    }
-                    // Update the badge count
-                    ApplicationContext.getInstance(context).messageNotifier.updateNotification(
-                        context
-                    )
-                    // Notify the user
-                    val toastMessage =
-                        if (recipient.isGroupRecipient) R.string.MessageRecord_left_group else R.string.activity_home_conversation_deleted_message
-                    Toast.makeText(context, toastMessage, Toast.LENGTH_LONG).show()
-                }
-            }
-            .setNegativeButton(R.string.no) { _, _ ->
-                // Do nothing
-            }.show()
-
-        //New Line
-        val textView: TextView? = dialog.findViewById(android.R.id.message)
-        val face: Typeface = Typeface.createFromAsset(assets, "fonts/open_sans_medium.ttf")
-        textView!!.typeface = face
     }
 
     private fun openSettings() {
@@ -1247,27 +847,55 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         push(intent)
     }
 
-    private fun hideMessageRequests() {
-        val dialog = AlertDialog.Builder(this, R.style.BChatAlertDialog_New)
-            .setTitle("Hide message requests?")
-            .setMessage("Once they are hidden, you can access them from Settings > Message Requests")
-            .setPositiveButton(R.string.yes) { _, _ ->
-                textSecurePreferences.setHasHiddenMessageRequests()
-                /*//New Line
-                textSecurePreferences.setHasShowMessageRequests(false)*/
+    override fun passGlobalSearchAdapterModelMessageValues(
+        threadId: Long,
+        timestamp: Long,
+        author: Address
+    ) {
+        val intent = Intent(this, ConversationActivityV2::class.java)
+        intent.putExtra(ConversationActivityV2.THREAD_ID, threadId)
+        intent.putExtra(ConversationActivityV2.SCROLL_MESSAGE_ID, timestamp)
+        intent.putExtra(ConversationActivityV2.SCROLL_MESSAGE_AUTHOR, author)
+        push(intent)
+    }
 
-                setupMessageRequestsBanner()
-                LoaderManager.getInstance(this).restartLoader(0, null, this)
-            }
-            .setNegativeButton(R.string.no) { _, _ ->
-                // Do nothing
-            }.show()
+    override fun passGlobalSearchAdapterModelSavedMessagesValues(model: GlobalSearchAdapter.Model.SavedMessages) {
+        val intent = Intent(this, ConversationActivityV2::class.java)
+        intent.putExtra(
+            ConversationActivityV2.ADDRESS,
+            Address.fromSerialized(model.currentUserPublicKey)
+        )
+        push(intent)
+    }
 
-        //SteveJosephh21
+    override fun passGlobalSearchAdapterModelContactValues(address: String) {
+        val intent = Intent(this, ConversationActivityV2::class.java)
+        intent.putExtra(ConversationActivityV2.ADDRESS, Address.fromSerialized(address))
+        push(intent)
+    }
 
-        val message: TextView = dialog.findViewById(android.R.id.message)
-        val messageFace: Typeface = Typeface.createFromAsset(assets, "fonts/open_sans_medium.ttf")
-        message.typeface = messageFace
+    override fun passGlobalSearchAdapterModelGroupConversationValues(threadId: Long) {
+        val intent = Intent(this, ConversationActivityV2::class.java)
+        intent.putExtra(ConversationActivityV2.THREAD_ID, threadId)
+        push(intent)
+    }
+
+    override fun onConversationClick(threadId: Long) {
+        val intent = Intent(this, ConversationActivityV2::class.java)
+        intent.putExtra(ConversationActivityV2.THREAD_ID, threadId)
+        push(intent)
+    }
+
+    override fun callJoinSocialGroup() {
+        this.joinSocialGroup()
+    }
+
+    override fun callCreateNewPrivateChat() {
+        this.createNewPrivateChat()
+    }
+
+    override fun callCreateNewSecretGroup() {
+        this.createNewSecretGroup()
     }
     // endregion
 }

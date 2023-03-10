@@ -176,9 +176,14 @@ class HomeFragment : Fragment(),ConversationClickListener,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater,container,false)
-
         // Set custom toolbar
         (activity as HomeActivity).setSupportActionBar(binding.toolbar)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         //New Line
         val notification = TextSecurePreferences.isNotificationsEnabled(requireActivity().applicationContext)
         Log.d("NotificationLog", notification.toString())
@@ -338,7 +343,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
         LocalBroadcastManager.getInstance(requireActivity().applicationContext)
             .registerReceiver(broadcastReceiver, IntentFilter("blockedContactsChanged"))
         activityCallback?.callLifeCycleScope(binding.recyclerView,binding.globalSearchInputLayout,(activity as HomeActivity).mmsSmsDatabase,globalSearchAdapter,publicKey,binding.profileButton,binding.drawerProfileName,binding.drawerProfileIcon)
-        return binding.root
+
     }
 
 

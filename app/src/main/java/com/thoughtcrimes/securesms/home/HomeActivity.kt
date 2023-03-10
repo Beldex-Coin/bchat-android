@@ -47,6 +47,8 @@ import com.google.android.play.core.tasks.Task
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.components.ProfilePictureView
 import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
+import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
+import com.thoughtcrimes.securesms.conversation.v2.ConversationViewModel
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.dms.CreateNewPrivateChatActivity
 import com.thoughtcrimes.securesms.groups.CreateClosedGroupActivity
@@ -68,7 +70,7 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDelegate,HomeFragment.HomeFragmentListener {
+class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDelegate,HomeFragment.HomeFragmentListener,ConversationFragmentV2.Listener {
 
     private lateinit var binding: ActivityHomeBinding
 
@@ -85,6 +87,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     lateinit var groupDatabase: GroupDatabase
     @Inject
     lateinit var textSecurePreferences: TextSecurePreferences
+    @Inject
+    lateinit var viewModelFactory: ConversationViewModel.AssistedFactory
 
     //New Line App Update
     private var appUpdateManager: AppUpdateManager? = null
@@ -328,9 +332,20 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     override fun onConversationClick(threadId: Long) {
-        val intent = Intent(this, ConversationActivityV2::class.java)
-        intent.putExtra(ConversationActivityV2.THREAD_ID, threadId)
-        push(intent)
+        val extras = Bundle()
+        extras.putLong(ConversationFragmentV2.THREAD_ID, threadId)
+        replaceFragment(ConversationFragmentV2(), null, extras)
+    }
+
+    private fun replaceFragment(newFragment: Fragment, stackName: String?, extras: Bundle?) {
+        if (extras != null) {
+            newFragment.arguments = extras
+        }
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.activity_home_frame_layout_container, newFragment)
+            .addToBackStack(stackName)
+            .commit()
     }
 
     private fun updateProfileButton(
@@ -356,8 +371,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
         if (event?.action === MotionEvent.ACTION_DOWN) {
             val touch = PointF(event.x, event.y)
-            val homeFragment: HomeFragment = supportFragmentManager.findFragmentById(R.id.activity_home_frame_layout_container) as HomeFragment
-            if(homeFragment!=null) {
+            val homeFragment: Fragment? = getCurrentFragment()
+            if((homeFragment is HomeFragment)) {
                 homeFragment.dispatchTouchEvent()
             }
         }
@@ -365,8 +380,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     override fun onBackPressed() {
-        val homeFragment:HomeFragment = supportFragmentManager.findFragmentById(R.id.activity_home_frame_layout_container) as HomeFragment
-        if(homeFragment!=null){
+        val homeFragment: Fragment? = getCurrentFragment()
+        if((homeFragment is HomeFragment)) {
             homeFragment.onBackPressed()
         }
         super.onBackPressed()
@@ -510,5 +525,17 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     override fun onDestroy() {
         EventBus.getDefault().unregister(this@HomeActivity)
         super.onDestroy()
+    }
+
+    override fun getConversationViewModel(): ConversationViewModel.AssistedFactory {
+        return viewModelFactory
+    }
+
+    override fun gettextSecurePreferences(): TextSecurePreferences {
+        return textSecurePreferences
+    }
+
+    private fun getCurrentFragment(): Fragment? {
+        return supportFragmentManager.findFragmentById(R.id.activity_home_frame_layout_container)
     }
 }

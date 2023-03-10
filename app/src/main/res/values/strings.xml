@@ -1346,4 +1346,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="call_alert_while_on_going" translatable="false">BChat call won\'t allow ,Because your phone call is on going</string>
     <string name="please_connect_to_other_node" translatable="false">Please connect to other node</string>
     <string name="please_try_after_some_time" translatable="false">Please try after some time</string>
+    <string name="conversation_transition_name" translatable="false">conversation_transition</string>
 </resources>

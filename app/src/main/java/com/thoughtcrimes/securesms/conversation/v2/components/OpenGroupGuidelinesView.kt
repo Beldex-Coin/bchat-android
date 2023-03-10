@@ -19,9 +19,9 @@ class OpenGroupGuidelinesView : FrameLayout {
     private fun initialize() {
         ViewOpenGroupGuidelinesBinding.inflate(LayoutInflater.from(context), this, true).apply {
             readButton.setOnClickListener {
-                val activity = context as ConversationActivityV2
-                val intent = Intent(activity, OpenGroupGuidelinesActivity::class.java)
-                activity.push(intent)
+              /*  val activity = context as ConversationActivityV2
+                val intent = Intent(ConversationActivityV2, OpenGroupGuidelinesActivity::class.java)
+                activity.push(intent)*/
             }
         }
     }

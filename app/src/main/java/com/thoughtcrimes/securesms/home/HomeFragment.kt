@@ -375,7 +375,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
     }
 
     private fun hideMessageRequests() {
-        val dialog = AlertDialog.Builder(requireActivity().applicationContext, R.style.BChatAlertDialog_New)
+        val dialog = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog_New)
             .setTitle("Hide message requests?")
             .setMessage("Once they are hidden, you can access them from Settings > Message Requests")
             .setPositiveButton(R.string.yes) { _, _ ->
@@ -688,7 +688,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
     }
 
     private fun blockConversation(thread: ThreadRecord) {
-        val dialog = AlertDialog.Builder(requireActivity().applicationContext, R.style.BChatAlertDialog)
+        val dialog = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog)
             .setTitle(R.string.RecipientPreferenceActivity_block_this_contact_question)
             .setMessage(R.string.RecipientPreferenceActivity_you_will_no_longer_receive_messages_and_calls_from_this_contact)
             .setNegativeButton(android.R.string.cancel, null)
@@ -708,7 +708,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
     }
 
     private fun unblockConversation(thread: ThreadRecord) {
-        val dialog = AlertDialog.Builder(requireActivity().applicationContext, R.style.BChatAlertDialog)
+        val dialog = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog)
             .setTitle(R.string.RecipientPreferenceActivity_unblock_this_contact_question)
             .setMessage(R.string.RecipientPreferenceActivity_you_will_once_again_be_able_to_receive_messages_and_calls_from_this_contact)
             .setNegativeButton(android.R.string.cancel, null)
@@ -737,7 +737,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
                 }
             }
         } else {
-            MuteDialog.show(requireActivity().applicationContext) { until: Long ->
+            MuteDialog.show(requireActivity()) { until: Long ->
                 lifecycleScope.launch(Dispatchers.IO) {
                     (activity as HomeActivity).recipientDatabase.setMuted(thread.recipient, until)
                     withContext(Dispatchers.Main) {
@@ -782,7 +782,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
         val message = if (recipient.isGroupRecipient) {
             val group = (activity as HomeActivity).groupDatabase.getGroup(recipient.address.toString()).orNull()
             if (group != null && group.admins.map { it.toString() }
-                    .contains(TextSecurePreferences.getLocalNumber(requireActivity().applicationContext))) {
+                    .contains(TextSecurePreferences.getLocalNumber(requireActivity()))) {
                 "Because you are the creator of this group it will be deleted for everyone. This cannot be undone."
             } else {
                 resources.getString(R.string.activity_home_leave_group_dialog_message)
@@ -790,11 +790,11 @@ class HomeFragment : Fragment(),ConversationClickListener,
         } else {
             resources.getString(R.string.activity_home_delete_conversation_dialog_message)
         }
-        val dialog = AlertDialog.Builder(requireActivity().applicationContext, R.style.BChatAlertDialog)
+        val dialog = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog)
             .setMessage(message)
             .setPositiveButton(R.string.yes) { _, _ ->
                 lifecycleScope.launch(Dispatchers.Main) {
-                    val context = requireActivity().applicationContext as Context
+                    val context = requireActivity() as Context
                     // Cancel any outstanding jobs
                     DatabaseComponent.get(context).bchatJobDatabase()
                         .cancelPendingMessageSendJobs(threadID)

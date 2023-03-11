@@ -223,6 +223,11 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 checkUpdate();
             }
         }
+
+        val fragment = supportFragmentManager.findFragmentById(R.id.activity_home_frame_layout_container)
+        if(fragment is ConversationFragmentV2) {
+            (fragment as ConversationFragmentV2).onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     override fun callLifeCycleScope(

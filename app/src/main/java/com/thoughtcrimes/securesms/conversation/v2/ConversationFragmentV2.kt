@@ -404,6 +404,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             BeldexMessageDatabase(requireActivity().applicationContext, databaseHelper)
         recipientDatabase = RecipientDatabase(requireContext().applicationContext, databaseHelper)
 
+        val thread = threadDb.getRecipientForThreadId(viewModel.threadId)
+        if (thread == null) {
+            Toast.makeText(requireActivity(), "This thread has been deleted.", Toast.LENGTH_LONG)
+                .show()
+            return backToHome()
+        }
+
         // messageIdToScroll
         messageToScrollTimestamp.set(requireActivity().intent.getLongExtra(SCROLL_MESSAGE_ID, -1))
         messageToScrollAuthor.set(requireActivity().intent.getParcelableExtra(SCROLL_MESSAGE_AUTHOR))

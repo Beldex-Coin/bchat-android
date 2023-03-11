@@ -110,7 +110,10 @@ import kotlin.math.roundToInt
 import kotlin.math.sqrt
 import androidx.lifecycle.Observer
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
+import com.thoughtcrimes.securesms.contacts.SelectContactsActivity
+import com.thoughtcrimes.securesms.giph.ui.GiphyActivity
 import com.thoughtcrimes.securesms.home.HomeActivity
+import com.thoughtcrimes.securesms.home.HomeFragment
 import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
 import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.wallet.CheckOnline
@@ -1334,7 +1337,17 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         {
             ConversationMenuHelper.showAllMedia(requireActivity(), recipient)
         }
+        binding.backToHomeBtn.setOnClickListener{
+            backToHome()
 
+        }
+
+    }
+
+    private fun backToHome(){
+        val homeFragment: Fragment = HomeFragment()
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.activity_home_frame_layout_container, homeFragment, HomeFragment::class.java.name).commit()
     }
 
     private fun setUpInputBar() {

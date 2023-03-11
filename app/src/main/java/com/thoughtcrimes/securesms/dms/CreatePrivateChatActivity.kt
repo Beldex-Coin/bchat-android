@@ -115,7 +115,7 @@ class CreatePrivateChatActivity : PassphraseRequiredActionBarActivity(), ScanQRC
     }
 
     private fun createPrivateChat(hexEncodedPublicKey: String) {
-        val recipient = Recipient.from(this, Address.fromSerialized(hexEncodedPublicKey), false)
+        /*val recipient = Recipient.from(this, Address.fromSerialized(hexEncodedPublicKey), false)
         //-Log.d("Beldex","recipient in create private chat ${recipient.address}")
         val intent = Intent(this, ConversationActivityV2::class.java)
         intent.putExtra(ConversationActivityV2.ADDRESS, recipient.address)
@@ -123,7 +123,7 @@ class CreatePrivateChatActivity : PassphraseRequiredActionBarActivity(), ScanQRC
         val existingThread = DatabaseComponent.get(this).threadDatabase().getThreadIdIfExistsFor(recipient)
         intent.putExtra(ConversationActivityV2.THREAD_ID, existingThread)
         startActivity(intent)
-        finish()
+        finish()*/
     }
     // endregion
 }

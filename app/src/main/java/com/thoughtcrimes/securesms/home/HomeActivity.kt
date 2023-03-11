@@ -48,7 +48,6 @@ import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.tasks.Task
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.components.ProfilePictureView
-import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.conversation.v2.ConversationViewModel
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
@@ -60,8 +59,6 @@ import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
 import com.thoughtcrimes.securesms.seed.SeedPermissionActivity
 import com.thoughtcrimes.securesms.wallet.info.WalletInfoActivity
 import com.thoughtcrimes.securesms.wallet.node.*
-import com.thoughtcrimes.securesms.wallet.settings.WalletSettings
-import com.thoughtcrimes.securesms.wallet.utils.common.LoadingActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
@@ -197,10 +194,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == CreateClosedGroupActivity.closedGroupCreatedResultCode) {
-            createNewPrivateChat()
-        }
-
         //New Line App Update
         if (requestCode == IMMEDIATE_APP_UPDATE_REQ_CODE) {
             if (resultCode == PassphraseRequiredActionBarActivity.RESULT_CANCELED) {
@@ -222,6 +215,11 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 ).show();
                 checkUpdate();
             }
+        }
+
+        val fragment = supportFragmentManager.findFragmentById(R.id.activity_home_frame_layout_container)
+        if(fragment is ConversationFragmentV2) {
+            (fragment as ConversationFragmentV2).onActivityResult(requestCode, resultCode, data)
         }
     }
 
@@ -465,17 +463,46 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     override fun createNewPrivateChat() {
         val intent = Intent(this, CreateNewPrivateChatActivity::class.java)
-        show(intent)
+        createNewPrivateChatResultLauncher.launch(intent)
+    }
+    private var createNewPrivateChatResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val extras = Bundle()
+            extras.putParcelable(ConversationFragmentV2.ADDRESS,result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
+            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,0))
+            replaceFragment(ConversationFragmentV2(), null, extras)
+        }
     }
 
     override fun createNewSecretGroup() {
-        val intent = Intent(this, CreateClosedGroupActivity::class.java)
-        show(intent, true)
+        val intent = Intent(this,CreateClosedGroupActivity::class.java)
+        createClosedGroupActivityResultLauncher.launch(intent)
+    }
+
+    private var createClosedGroupActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val extras = Bundle()
+            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,0))
+            extras.putParcelable(ConversationFragmentV2.ADDRESS,result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
+            replaceFragment(ConversationFragmentV2(), null, extras)
+        }
+        if (result.resultCode == CreateClosedGroupActivity.closedGroupCreatedResultCode) {
+            createNewPrivateChat()
+        }
     }
 
     override fun joinSocialGroup() {
         val intent = Intent(this, JoinPublicChatNewActivity::class.java)
-        show(intent)
+        joinPublicChatNewActivityResultLauncher.launch(intent)
+    }
+
+    private var joinPublicChatNewActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val extras = Bundle()
+            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,0))
+            extras.putParcelable(ConversationFragmentV2.ADDRESS,result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
+            replaceFragment(ConversationFragmentV2(), null, extras)
+        }
     }
 
     /*Hales63*/
@@ -493,14 +520,21 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     override fun sendMessageToSupport() {
-        val recipient = Recipient.from(this, Address.fromSerialized(reportIssueBChatID), false)
+        /*val recipient = Recipient.from(this, Address.fromSerialized(reportIssueBChatID), false)
         val intent = Intent(this, ConversationActivityV2::class.java)
         intent.putExtra(ConversationActivityV2.ADDRESS, recipient.address)
         intent.setDataAndType(getIntent().data, getIntent().type)
         val existingThread =
             DatabaseComponent.get(this).threadDatabase().getThreadIdIfExistsFor(recipient)
         intent.putExtra(ConversationActivityV2.THREAD_ID, existingThread)
-        startActivity(intent)
+        startActivity(intent)*/
+        val recipient = Recipient.from(this, Address.fromSerialized(reportIssueBChatID), false)
+        val extras = Bundle()
+        extras.putParcelable(ConversationFragmentV2.ADDRESS, recipient.address)
+        val existingThread =
+            DatabaseComponent.get(this).threadDatabase().getThreadIdIfExistsFor(recipient)
+        extras.putLong(ConversationFragmentV2.THREAD_ID,existingThread)
+        replaceFragment(ConversationFragmentV2(), null, extras)
     }
 
     override fun help() {

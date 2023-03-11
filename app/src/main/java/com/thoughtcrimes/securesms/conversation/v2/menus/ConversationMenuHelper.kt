@@ -33,7 +33,6 @@ import com.thoughtcrimes.securesms.*
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.contacts.ContactSelectionListItem
 import com.thoughtcrimes.securesms.contacts.SelectContactsActivity
-import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
 import com.thoughtcrimes.securesms.conversation.v2.utilities.NotificationUtils
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.groups.EditClosedGroupActivity
@@ -44,22 +43,11 @@ import com.thoughtcrimes.securesms.util.BitmapUtil
 import com.thoughtcrimes.securesms.util.getColorWithID
 import java.io.IOException
 import android.content.*
-import android.content.pm.PackageManager
 import android.view.*
 import io.beldex.bchat.R
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.os.Build
-import android.telephony.PhoneStateListener
-import android.telephony.TelephonyCallback
-import android.telephony.TelephonyManager
-import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
-import androidx.core.content.PermissionChecker.checkSelfPermission
-import androidx.core.content.ContextCompat.getSystemService
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
-import com.thoughtcrimes.securesms.home.HomeActivity
-
 
 object ConversationMenuHelper {
 
@@ -457,7 +445,7 @@ object ConversationMenuHelper {
         if (!thread.isOpenGroupRecipient) { return }
         val intent = Intent(context, SelectContactsActivity::class.java)
         val activity = context as AppCompatActivity
-        activity.startActivityForResult(intent, ConversationActivityV2.INVITE_CONTACTS)
+        activity.startActivityForResult(intent, ConversationFragmentV2.INVITE_CONTACTS)
     }
 
     private fun unmute(context: Context, thread: Recipient) {

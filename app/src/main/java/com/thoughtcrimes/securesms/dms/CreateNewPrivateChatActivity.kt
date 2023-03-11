@@ -2,6 +2,7 @@ package com.thoughtcrimes.securesms.dms
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -15,9 +16,9 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import com.beldex.libbchat.mnode.MnodeAPI
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityCreateNewPrivateChatBinding
 import com.beldex.libbchat.utilities.Address
@@ -25,11 +26,8 @@ import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.PublicKeyValidation
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
-import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
+import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
-import com.thoughtcrimes.securesms.util.push
-import nl.komponents.kovenant.ui.failUi
-import nl.komponents.kovenant.ui.successUi
 
 class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
     private lateinit var binding: ActivityCreateNewPrivateChatBinding
@@ -83,12 +81,8 @@ class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
                 }
             }
             scanQRCode.setOnClickListener {
-                val intent = Intent(
-                    this@CreateNewPrivateChatActivity,
-                    PrivateChatScanQRCodeActivity::class.java
-                )
-                push(intent)
-                finish()
+                val intent = Intent(this@CreateNewPrivateChatActivity,PrivateChatScanQRCodeActivity::class.java)
+                privateChatScanQRCodeActivityResultLauncher.launch(intent)
             }
 
             //SteveJosephh21
@@ -237,13 +231,31 @@ class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
 
     private fun createPrivateChat(hexEncodedPublicKey: String) {
         val recipient = Recipient.from(this, Address.fromSerialized(hexEncodedPublicKey), false)
-        val intent = Intent(this, ConversationActivityV2::class.java)
-        intent.putExtra(ConversationActivityV2.ADDRESS, recipient.address)
-        intent.setDataAndType(getIntent().data, getIntent().type)
+        val returnIntent = Intent()
+        returnIntent.putExtra(ConversationFragmentV2.ADDRESS, recipient.address)
+        returnIntent.setDataAndType(intent.data, intent.type)
         val existingThread =
             DatabaseComponent.get(this).threadDatabase().getThreadIdIfExistsFor(recipient)
-        intent.putExtra(ConversationActivityV2.THREAD_ID, existingThread)
-        startActivity(intent)
+        returnIntent.putExtra(ConversationFragmentV2.THREAD_ID, existingThread)
+        setResult(RESULT_OK, returnIntent)
         finish()
+    }
+
+    private var privateChatScanQRCodeActivityResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val hexEncodedPublicKey = result.data!!.getStringExtra(ConversationFragmentV2.HEX_ENCODED_PUBLIC_KEY)
+            if(hexEncodedPublicKey!=null) {
+                val recipient = Recipient.from(this, Address.fromSerialized(hexEncodedPublicKey), false)
+                val returnIntent = Intent()
+                returnIntent.putExtra(ConversationFragmentV2.ADDRESS, recipient.address)
+                returnIntent.setDataAndType(intent.data, intent.type)
+                val existingThread =
+                    DatabaseComponent.get(this).threadDatabase().getThreadIdIfExistsFor(recipient)
+                returnIntent.putExtra(ConversationFragmentV2.THREAD_ID, existingThread)
+                setResult(RESULT_OK, returnIntent)
+                finish()
+            }
+        }
     }
 }

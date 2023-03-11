@@ -14,17 +14,13 @@ import com.tbruyelle.rxpermissions2.RxPermissions
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityPrivateChatScanQrcodeBinding
 import com.beldex.libbchat.mnode.MnodeAPI
-import com.beldex.libbchat.utilities.Address
-import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.PublicKeyValidation
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
-import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
-import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
+import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.qr.ScanListener
 import com.thoughtcrimes.securesms.util.ScanQRCodeFragment
 import com.thoughtcrimes.securesms.util.ScanQRCodePlaceholderFragment
 import com.thoughtcrimes.securesms.util.ScanQRCodePlaceholderFragmentDelegate
-import com.thoughtcrimes.securesms.util.push
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
 
@@ -106,8 +102,6 @@ class PrivateChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
 
     override fun onBackPressed() {
         super.onBackPressed()
-        val intent = Intent(this, CreateNewPrivateChatActivity::class.java)
-        push(intent)
         finish()
     }
 
@@ -152,13 +146,10 @@ class PrivateChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
     }
 
     private fun createPrivateChat(hexEncodedPublicKey: String) {
-        val recipient = Recipient.from(this, Address.fromSerialized(hexEncodedPublicKey), false)
-        val intent = Intent(this, ConversationActivityV2::class.java)
-        intent.putExtra(ConversationActivityV2.ADDRESS, recipient.address)
-        intent.setDataAndType(getIntent().data, getIntent().type)
-        val existingThread = DatabaseComponent.get(this).threadDatabase().getThreadIdIfExistsFor(recipient)
-        intent.putExtra(ConversationActivityV2.THREAD_ID, existingThread)
-        startActivity(intent)
+        val returnIntent = Intent()
+        returnIntent.putExtra(ConversationFragmentV2.HEX_ENCODED_PUBLIC_KEY, hexEncodedPublicKey)
+        returnIntent.setDataAndType(intent.data, intent.type)
+        setResult(RESULT_OK, returnIntent)
         finish()
     }
 }

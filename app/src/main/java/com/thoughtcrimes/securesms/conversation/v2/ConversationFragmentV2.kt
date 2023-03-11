@@ -110,6 +110,8 @@ import kotlin.math.roundToInt
 import kotlin.math.sqrt
 import androidx.lifecycle.Observer
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
+import com.thoughtcrimes.securesms.contacts.SelectContactsActivity
+import com.thoughtcrimes.securesms.giph.ui.GiphyActivity
 import com.thoughtcrimes.securesms.home.HomeActivity
 import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
 import com.thoughtcrimes.securesms.service.WebRtcCallService
@@ -186,7 +188,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private val viewModel: ConversationViewModel by viewModels {
         threadId = requireArguments().getLong(THREAD_ID)
         if (threadId == -1L) {
-            requireActivity().intent.getParcelableExtra<Address>(ADDRESS)?.let { address ->
+            requireArguments().getParcelable<Address>(ADDRESS)?.let { address ->
                 val recipient = Recipient.from(requireActivity(), address, false)
                 threadId = threadDb.getOrCreateThreadIdFor(recipient)
             }
@@ -342,6 +344,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         const val ADDRESS = "address"
         const val SCROLL_MESSAGE_ID = "scroll_message_id"
         const val SCROLL_MESSAGE_AUTHOR = "scroll_message_author"
+        const val HEX_ENCODED_PUBLIC_KEY="hex_encode_public_key"
 
         // Request codes
         const val PICK_DOCUMENT = 2
@@ -660,19 +663,135 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         allButtons.forEach { it.snIsEnabled = isShowingAttachmentOptions }
     }
 
-    override fun showVoiceMessageUI() {
-        //New Line
-        binding.inputBar.visibility = View.GONE
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        Permissions.onRequestPermissionsResult(this, requestCode, permissions, grantResults)
+    }
 
-        binding.inputBarRecordingView.show()
-       binding.inputBarCard.alpha = 0.0f
-       binding.inputBar.alpha = 0.0f
-        val animation = ValueAnimator.ofObject(FloatEvaluator(), 1.0f, 0.0f)
-        animation.duration = 250L
-        animation.addUpdateListener { animator ->
-           binding.inputBar.alpha = animator.animatedValue as Float
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+        super.onActivityResult(requestCode, resultCode, intent)
+        //-Log.d("-->onActivityResult boolean", "Done result"+resultCode.toString()+" requestcode "+requestCode.toString()+"")
+        val mediaPreppedListener = object : ListenableFuture.Listener<Boolean> {
+
+            override fun onSuccess(result: Boolean?) {
+                //-Log.d("-->onActivityResult boolean", result.toString())
+                sendAttachments(attachmentManager.buildSlideDeck().asAttachments(), null)
+            }
+
+            override fun onFailure(e: ExecutionException?) {
+                Log.d("-->onActivityResult exception", e.toString())
+                Toast.makeText(requireActivity(), R.string.activity_conversation_attachment_prep_failed, Toast.LENGTH_LONG).show()
+            }
         }
-        animation.start()
+        when (requestCode) {
+            ConversationFragmentV2.PICK_DOCUMENT -> {
+                Log.d("-->onActivityResult boolean", "PICK_DOCUMENT")
+                val uri = intent?.data ?: return
+                /*getImagePath(this,uri)?.let { Log.d("@--> uri get Image path", it) }
+                val file = File(uri.path)
+                Log.d("@--> uri ",file.absolutePath.toString())
+                val file_size: Int = java.lang.String.valueOf(file.length() / 1024).toInt()
+                Log.d("@--> uri ",file_size.toString())*/
+                prepMediaForSending(uri, AttachmentManager.MediaType.DOCUMENT).addListener(mediaPreppedListener)
+            }
+            ConversationFragmentV2.PICK_GIF -> {
+                intent ?: return
+                val uri = intent.data ?: return
+                val type = AttachmentManager.MediaType.GIF
+                val width = intent.getIntExtra(GiphyActivity.EXTRA_WIDTH, 0)
+                val height = intent.getIntExtra(GiphyActivity.EXTRA_HEIGHT, 0)
+                prepMediaForSending(uri, type, width, height).addListener(mediaPreppedListener)
+            }
+            ConversationFragmentV2.PICK_FROM_LIBRARY,
+            ConversationFragmentV2.TAKE_PHOTO -> {
+                Log.d("TAKE_PHOTO","1")
+                intent ?: return
+                Log.d("TAKE_PHOTO","2")
+                val body = intent.getStringExtra(MediaSendActivity.EXTRA_MESSAGE)
+                val media = intent.getParcelableArrayListExtra<Media>(
+                    MediaSendActivity.EXTRA_MEDIA) ?: return
+                Log.d("TAKE_PHOTO","3")
+                val slideDeck = SlideDeck()
+                Log.d("TAKE_PHOTO","4")
+                for (item in media) {
+                    when {
+                        MediaUtil.isVideoType(item.mimeType) -> {
+                            slideDeck.addSlide(
+                                VideoSlide(
+                                    requireActivity(),
+                                    item.uri,
+                                    0,
+                                    item.caption.orNull()
+                                )
+                            )
+                        }
+                        MediaUtil.isGif(item.mimeType) -> {
+                            slideDeck.addSlide(
+                                GifSlide(
+                                    requireActivity(),
+                                    item.uri,
+                                    0,
+                                    item.width,
+                                    item.height,
+                                    item.caption.orNull()
+                                )
+                            )
+                        }
+                        MediaUtil.isImageType(item.mimeType) -> {
+                            slideDeck.addSlide(
+                                ImageSlide(
+                                    requireActivity(),
+                                    item.uri,
+                                    0,
+                                    item.width,
+                                    item.height,
+                                    item.caption.orNull()
+                                )
+                            )
+                        }
+                        else -> {
+                            Log.d("Beldex", "Asked to send an unexpected media type: '" + item.mimeType + "'. Skipping.")
+                        }
+                    }
+                }
+                sendAttachments(slideDeck.asAttachments(), body)
+            }
+            ConversationFragmentV2.INVITE_CONTACTS -> {
+                if (viewModel.recipient?.isOpenGroupRecipient != true) { return }
+                val extras = intent?.extras ?: return
+                if (!intent.hasExtra(SelectContactsActivity.selectedContactsKey)) { return }
+                val selectedContacts = extras.getStringArray(SelectContactsActivity.selectedContactsKey)!!
+                val recipients = selectedContacts.map { contact ->
+                    Recipient.from(requireActivity(), Address.fromSerialized(contact), true)
+                }
+                viewModel.inviteContacts(recipients)
+            }
+        }
+    }
+
+    private fun prepMediaForSending(
+        uri: Uri,
+        type: AttachmentManager.MediaType
+    ): ListenableFuture<Boolean> {
+        Log.d("-->Doc 1", "true")
+        return prepMediaForSending(uri, type, null, null)
+    }
+
+    private fun prepMediaForSending(
+        uri: Uri,
+        type: AttachmentManager.MediaType,
+        width: Int?,
+        height: Int?
+    ): ListenableFuture<Boolean> {
+        Log.d("-->Doc 2", "true")
+        return attachmentManager.setMedia(
+            glide,
+            uri,
+            type,
+            MediaConstraints.getPushMediaConstraints(),
+            width ?: 0,
+            height ?: 0
+        )
     }
 
     override fun startRecordingVoiceMessage() {
@@ -1868,6 +1987,21 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         return hitRect.contains(x, y)
     }
 
+    override fun showVoiceMessageUI() {
+        //New Line
+        binding.inputBar.visibility = View.GONE
+
+        binding.inputBarRecordingView.show()
+        binding.inputBarCard.alpha = 0.0f
+        binding.inputBar.alpha = 0.0f
+        val animation = ValueAnimator.ofObject(FloatEvaluator(), 1.0f, 0.0f)
+        animation.duration = 250L
+        animation.addUpdateListener { animator ->
+            binding.inputBar.alpha = animator.animatedValue as Float
+        }
+        animation.start()
+    }
+
     private fun expandVoiceMessageLockView() {
         val lockView =binding.inputBarRecordingView?.lockView ?: return
         val animation = ValueAnimator.ofObject(FloatEvaluator(), lockView.scaleX, 1.10f)
@@ -2263,31 +2397,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             resources
         ) // The height of the social group guidelines view is hardcoded to this
         binding.conversationRecyclerView.layoutParams = recyclerViewLayoutParams
-    }
-
-    private fun prepMediaForSending(
-        uri: Uri,
-        type: AttachmentManager.MediaType
-    ): ListenableFuture<Boolean> {
-        Log.d("-->Doc 1", "true")
-        return prepMediaForSending(uri, type, null, null)
-    }
-
-    private fun prepMediaForSending(
-        uri: Uri,
-        type: AttachmentManager.MediaType,
-        width: Int?,
-        height: Int?
-    ): ListenableFuture<Boolean> {
-        Log.d("-->Doc 2", "true")
-        return attachmentManager.setMedia(
-            glide,
-            uri,
-            type,
-            MediaConstraints.getPushMediaConstraints(),
-            width ?: 0,
-            height ?: 0
-        )
     }
 
     private fun isMessageRequestThread(): Boolean {

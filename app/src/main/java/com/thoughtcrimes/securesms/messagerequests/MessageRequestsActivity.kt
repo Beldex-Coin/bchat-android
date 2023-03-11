@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
@@ -15,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
 import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
+import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.database.ThreadDatabase
 import com.thoughtcrimes.securesms.database.model.ThreadRecord
 import com.thoughtcrimes.securesms.mms.GlideApp
@@ -75,9 +77,13 @@ class MessageRequestsActivity : PassphraseRequiredActionBarActivity(), Conversat
     }
 
     override fun onConversationClick(thread: ThreadRecord) {
-        val intent = Intent(this, ConversationActivityV2::class.java)
+        /*val intent = Intent(this, ConversationActivityV2::class.java)
         intent.putExtra(ConversationActivityV2.THREAD_ID, thread.threadId)
-        push(intent)
+        push(intent)*/
+        val returnIntent = Intent()
+        returnIntent.putExtra(ConversationFragmentV2.THREAD_ID,thread.threadId)
+        setResult(RESULT_OK, returnIntent)
+        finish()
     }
 
     override fun onBlockConversationClick(thread: ThreadRecord) {

@@ -1,5 +1,6 @@
 package com.thoughtcrimes.securesms.home
 
+import android.app.Activity
 import android.content.Intent
 import android.content.IntentSender
 import android.graphics.PointF
@@ -33,6 +34,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.beldex.libbchat.utilities.Address
@@ -58,6 +60,8 @@ import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
 import com.thoughtcrimes.securesms.seed.SeedPermissionActivity
 import com.thoughtcrimes.securesms.wallet.info.WalletInfoActivity
 import com.thoughtcrimes.securesms.wallet.node.*
+import com.thoughtcrimes.securesms.wallet.settings.WalletSettings
+import com.thoughtcrimes.securesms.wallet.utils.common.LoadingActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
@@ -380,11 +384,13 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     override fun onBackPressed() {
-        val homeFragment: Fragment? = getCurrentFragment()
-        if((homeFragment is HomeFragment)) {
-            homeFragment.onBackPressed()
+        val fragment: Fragment? = getCurrentFragment()
+        if((fragment is HomeFragment)) {
+            fragment.onBackPressed()
+            super.onBackPressed()
+        }else if(fragment is ConversationFragmentV2){
+            replaceFragment(HomeFragment(), null, null)
         }
-        super.onBackPressed()
     }
 
     override fun handleSeedReminderViewContinueButtonTapped() {
@@ -475,7 +481,15 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     /*Hales63*/
     override fun showMessageRequests() {
         val intent = Intent(this, MessageRequestsActivity::class.java)
-        push(intent)
+        resultLauncher.launch(intent)
+    }
+
+    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val extras = Bundle()
+            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,0))
+            replaceFragment(ConversationFragmentV2(), null, extras)
+        }
     }
 
     override fun sendMessageToSupport() {

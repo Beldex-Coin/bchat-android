@@ -120,7 +120,6 @@ import com.thoughtcrimes.securesms.wallet.CheckOnline
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import nl.komponents.kovenant.ui.successUi
-import kotlin.concurrent.thread
 
 
 // Some things that seemingly belong to the input bar (e.g. the voice message recording UI) are actually
@@ -605,7 +604,7 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
         val recipient = viewModel.recipient ?: return false
         //New Line
         if (!isMessageRequestThread()) {
-            ConversationMenuHelper.onPrepareOptionsMenu(menu, menuInflater, recipient, viewModel.threadId, this) { onOptionsItemSelected(it) }
+            //ConversationMenuHelper.onPrepareOptionsMenu(menu, menuInflater, recipient, viewModel.threadId, this) { onOptionsItemSelected(it) } //- Important
         }
         super.onPrepareOptionsMenu(menu)
         return true
@@ -1117,9 +1116,9 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
                 }
             }
         }
-        return  viewModel.recipient?.let { recipient ->
-            ConversationMenuHelper.onOptionItemSelected(this, item, recipient)
-        } ?: false
+        return  false/*viewModel.recipient?.let { recipient ->
+            ConversationMenuHelper.onOptionItemSelected(this, this, item, recipient)
+        } ?: false*/ //- Important
     }
 
     private fun isMenuCall() {

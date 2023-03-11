@@ -5,12 +5,16 @@ import android.animation.FloatEvaluator
 import android.animation.ValueAnimator
 import android.content.*
 import android.content.Context.CLIPBOARD_SERVICE
+import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.database.Cursor
 import android.graphics.Rect
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.*
+import android.telephony.PhoneStateListener
+import android.telephony.TelephonyCallback
+import android.telephony.TelephonyManager
 import android.text.TextUtils
 import android.util.Log
 import android.util.Pair
@@ -23,6 +27,7 @@ import androidx.fragment.app.Fragment
 import android.widget.Toast
 import androidx.annotation.DimenRes
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -104,7 +109,11 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 import androidx.lifecycle.Observer
+import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.home.HomeActivity
+import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
+import com.thoughtcrimes.securesms.service.WebRtcCallService
+import com.thoughtcrimes.securesms.wallet.CheckOnline
 import com.thoughtcrimes.securesms.wallet.OnBackPressedListener
 import java.lang.ClassCastException
 
@@ -217,7 +226,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     // Search
     /*private val searchViewModel: SearchViewModel by viewModels()*/
-    private var searchViewModel: SearchViewModel? = null
+    var searchViewModel: SearchViewModel? = null
     var searchViewItem: MenuItem? = null
 
 
@@ -359,6 +368,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             threadId = it.getLong(THREAD_ID)
             param2 = it.getString(ARG_PARAM2)
         }
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(
@@ -1112,6 +1122,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     //SteveJosephh21 - 08
     override fun block(deleteThread: Boolean) {
+        Log.d("test-","true")
         val title = R.string.RecipientPreferenceActivity_block_this_contact_question
         val message =
             R.string.RecipientPreferenceActivity_you_will_no_longer_receive_messages_and_calls_from_this_contact
@@ -1198,6 +1209,27 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         val viewHolder =
             binding.conversationRecyclerView.findViewHolderForAdapterPosition(indexInAdapter) as? ConversationAdapter.VisibleMessageViewHolder
         viewHolder?.view?.playVoiceMessage()
+    }
+
+    fun onSearchOpened() {
+        searchViewModel!!.onSearchOpened()
+        binding.searchBottomBar.visibility = View.VISIBLE
+        binding.searchBottomBar.setData(0, 0)
+        binding.inputBar.visibility = View.GONE
+    }
+
+    fun onSearchClosed() {
+        searchViewModel!!.onSearchClosed()
+        binding.searchBottomBar.visibility = View.GONE
+        binding.inputBar.visibility = View.VISIBLE
+        adapter.onSearchQueryUpdated(null)
+        requireActivity().invalidateOptionsMenu()
+    }
+
+    fun onSearchQueryUpdated(query: String) {
+        searchViewModel!!.onQueryUpdated(query, viewModel.threadId)
+        binding.searchBottomBar.showLoading()
+        adapter.onSearchQueryUpdated(query)
     }
 
     override fun onSearchMoveUpPressed() {
@@ -1521,6 +1553,143 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            return false
+        } else if (item.itemId == R.id.menu_call) {
+            val recipient = viewModel.recipient ?: return false
+            if (recipient.isContactRecipient && recipient.isBlocked) {
+                BlockedDialog(recipient).show(requireActivity().supportFragmentManager, "Blocked Dialog")
+            } else {
+                if (Helper.getPhoneStatePermission(requireActivity())) {
+                    isMenuCall()
+                } else {
+                    Log.d("Beldex", "Permission not granted")
+                }
+            }
+        }
+        return  viewModel.recipient?.let { recipient ->
+            ConversationMenuHelper.onOptionItemSelected(requireActivity(),this, item, recipient)
+        } ?: false
+    }
+
+    private fun isMenuCall() {
+        if (CheckOnline.isOnline(requireActivity().applicationContext)) {
+            val tm = this.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+            if (ContextCompat.checkSelfPermission(
+                    requireActivity().applicationContext,
+                    Manifest.permission.READ_PHONE_STATE
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    tm.registerTelephonyCallback(
+                        requireActivity().applicationContext.mainExecutor,
+                        object : TelephonyCallback(), TelephonyCallback.CallStateListener {
+                            override fun onCallStateChanged(state: Int) {
+                                when (state) {
+                                    TelephonyManager.CALL_STATE_RINGING -> {
+                                        Toast.makeText(
+                                            requireActivity().applicationContext,
+                                            getString(R.string.call_alert_while_ringing),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                    TelephonyManager.CALL_STATE_OFFHOOK -> {
+                                        Toast.makeText(
+                                            requireActivity().applicationContext,
+                                            getString(R.string.call_alert_while_on_going),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+
+                                    }
+                                    TelephonyManager.CALL_STATE_IDLE -> {
+                                        viewModel.recipient?.let { recipient ->
+                                            call(requireActivity().applicationContext, recipient)
+                                        }
+                                    }
+                                }
+                            }
+                        })
+
+                } else {
+                    tm.listen(object : PhoneStateListener() {
+                        override fun onCallStateChanged(state: Int, phoneNumber: String?) {
+                            super.onCallStateChanged(state, phoneNumber)
+                            when (state) {
+                                TelephonyManager.CALL_STATE_RINGING -> {
+                                    Toast.makeText(
+                                        requireActivity().applicationContext,
+                                        getString(R.string.call_alert_while_ringing),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                                TelephonyManager.CALL_STATE_OFFHOOK -> {
+                                    Toast.makeText(
+                                        requireActivity().applicationContext,
+                                        getString(R.string.call_alert_while_on_going),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+
+                                }
+                                TelephonyManager.CALL_STATE_IDLE -> {
+                                    viewModel.recipient?.let { recipient ->
+                                        call(requireActivity().applicationContext, recipient)
+                                    }
+                                }
+                            }
+                        }
+                    }, PhoneStateListener.LISTEN_CALL_STATE)
+                }
+            } else {
+                Log.d("Beldex", "Call state issue called else")
+            }
+
+        } else {
+            Toast.makeText(requireActivity().applicationContext, "Check your Internet", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun call(context: Context, thread: Recipient) {
+
+        if (!TextSecurePreferences.isCallNotificationsEnabled(context)) {
+            /* AlertDialog.Builder(context)
+                 .setTitle(R.string.ConversationActivity_call_title)
+                 .setMessage(R.string.ConversationActivity_call_prompt)
+                 .setPositiveButton(R.string.activity_settings_title) { _, _ ->
+                     val intent = Intent(context, PrivacySettingsActivity::class.java)
+                     context.startActivity(intent)
+                 }
+                 .setNeutralButton(R.string.cancel) { d, _ ->
+                     d.dismiss()
+                 }.show()*/
+            //SteveJosephh22
+            val factory = LayoutInflater.from(context)
+            val callPermissionDialogView: View = factory.inflate(R.layout.call_permissions_dialog_box, null)
+            val callPermissionDialog = AlertDialog.Builder(context).create()
+            callPermissionDialog.setView(callPermissionDialogView)
+            callPermissionDialogView.findViewById<TextView>(R.id.settingsDialogBoxButton).setOnClickListener{
+                val intent = Intent(context, PrivacySettingsActivity::class.java)
+                context.startActivity(intent)
+                callPermissionDialog.dismiss()
+            }
+            callPermissionDialogView.findViewById<TextView>(R.id.cancelDialogBoxButton).setOnClickListener{
+                callPermissionDialog.dismiss()
+            }
+            callPermissionDialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+            callPermissionDialog.show()
+            return
+        }
+
+        val service = WebRtcCallService.createCall(context, thread)
+        context.startService(service)
+
+        val activity = Intent(context, WebRtcCallActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        context.startActivity(activity)
+
+    }
+
     private fun getLatestOpenGroupInfoIfNeeded() {
         val openGroup = beldexThreadDb.getOpenGroupChat(viewModel.threadId) ?: return
         OpenGroupAPIV2.getMemberCount(openGroup.room, openGroup.server)
@@ -1579,7 +1748,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 requireActivity().menuInflater,
                 recipient,
                 viewModel.threadId,
-                requireActivity()
+                requireActivity().applicationContext,
+                this
             ) { onOptionsItemSelected(it) }
         }
         super.onPrepareOptionsMenu(menu)

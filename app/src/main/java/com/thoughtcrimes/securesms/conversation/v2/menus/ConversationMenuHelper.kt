@@ -57,13 +57,13 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker.checkSelfPermission
 import androidx.core.content.ContextCompat.getSystemService
-
-
+import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
+import com.thoughtcrimes.securesms.home.HomeActivity
 
 
 object ConversationMenuHelper {
 
-    fun onPrepareOptionsMenu(menu: Menu, inflater: MenuInflater, thread: Recipient, threadId: Long, context: Context, onOptionsItemSelected: (MenuItem) -> Unit) {
+    fun onPrepareOptionsMenu(menu: Menu, inflater: MenuInflater, thread: Recipient, threadId: Long, context: Context,fragmentV2: ConversationFragmentV2, onOptionsItemSelected: (MenuItem) -> Unit) {
         // Prepare
         menu.clear()
         val isOpenGroup = thread.isOpenGroupRecipient
@@ -120,7 +120,7 @@ object ConversationMenuHelper {
 
         // Search
         val searchViewItem = menu.findItem(R.id.menu_search)
-        (context as ConversationActivityV2).searchViewItem = searchViewItem
+        fragmentV2.searchViewItem = searchViewItem
         val searchView = searchViewItem.actionView as SearchView
 
         val queryListener = object : OnQueryTextListener {
@@ -129,7 +129,7 @@ object ConversationMenuHelper {
             }
 
             override fun onQueryTextChange(query: String): Boolean {
-                context.onSearchQueryUpdated(query)
+                fragmentV2.onSearchQueryUpdated(query)
                 Log.d("Beldex","Search Query text change")
                 return true
             }
@@ -138,7 +138,7 @@ object ConversationMenuHelper {
             override fun onMenuItemActionExpand(item: MenuItem): Boolean {
                 Log.d("Beldex","Search expand listener")
                 searchView.setOnQueryTextListener(queryListener)
-                context.onSearchOpened()
+                fragmentV2.onSearchOpened()
                 for (i in 0 until menu.size()) {
                     if (menu.getItem(i) != searchViewItem) {
                         menu.getItem(i).isVisible = false
@@ -149,23 +149,28 @@ object ConversationMenuHelper {
 
             override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
                 searchView.setOnQueryTextListener(null)
-                context.onSearchClosed()
+                fragmentV2.onSearchClosed()
                 return true
             }
         })
 
     }
 
-    fun onOptionItemSelected(context: Context, item: MenuItem, thread: Recipient): Boolean {
+    fun onOptionItemSelected(
+        context: Context,
+        fragmentV2: ConversationFragmentV2,
+        item: MenuItem,
+        thread: Recipient
+    ): Boolean {
         when (item.itemId) {
             R.id.menu_view_all_media -> { showAllMedia(context, thread) }
-            R.id.menu_search -> { search(context) }
+            R.id.menu_search -> { search(fragmentV2) }
             R.id.menu_add_shortcut -> { addShortcut(context, thread) }
-            R.id.menu_expiring_messages -> { showExpiringMessagesDialog(context, thread) }
-            R.id.menu_expiring_messages_off -> { showExpiringMessagesDialog(context, thread) }
-            R.id.menu_unblock -> { unblock(context, thread) }
-            R.id.menu_block -> { block(context, thread,deleteThread = false) }
-            R.id.menu_copy_bchat_id -> { copyBchatID(context, thread) }
+            R.id.menu_expiring_messages -> { showExpiringMessagesDialog(fragmentV2, thread) }
+            R.id.menu_expiring_messages_off -> { showExpiringMessagesDialog(fragmentV2, thread) }
+            R.id.menu_unblock -> { unblock(fragmentV2, thread) }
+            R.id.menu_block -> { block(fragmentV2, thread,deleteThread = false) }
+            R.id.menu_copy_bchat_id -> { copyBchatID(fragmentV2, thread) }
             R.id.menu_edit_group -> { editClosedGroup(context, thread) }
             R.id.menu_leave_group -> { leaveClosedGroup(context, thread) }
             R.id.menu_invite_to_open_group -> { inviteContacts(context, thread) }
@@ -288,9 +293,9 @@ object ConversationMenuHelper {
         activity.startActivity(intent)
     }
 
-    private fun search(context: Context) {
-        val searchViewModel = (context as ConversationActivityV2).searchViewModel
-        searchViewModel.onSearchOpened()
+    private fun search(context: ConversationFragmentV2) {
+        val searchViewModel = context.searchViewModel
+        searchViewModel!!.onSearchOpened()
     }
 
     //New Line
@@ -373,24 +378,24 @@ object ConversationMenuHelper {
         }.execute()
     }
 
-    private fun showExpiringMessagesDialog(context: Context, thread: Recipient) {
+    private fun showExpiringMessagesDialog(context: ConversationFragmentV2, thread: Recipient) {
         val listener = context as? ConversationMenuListener ?: return
         listener.showExpiringMessagesDialog(thread)
     }
 
-    private fun unblock(context: Context, thread: Recipient) {
+    private fun unblock(context: ConversationFragmentV2, thread: Recipient) {
         if (!thread.isContactRecipient) { return }
         val listener = context as? ConversationMenuListener ?: return
         listener.unblock()
     }
 
-    private fun block(context: Context, thread: Recipient, deleteThread: Boolean) {
+    private fun block(context: ConversationFragmentV2, thread: Recipient, deleteThread: Boolean) {
         if (!thread.isContactRecipient) { return }
         val listener = context as? ConversationMenuListener ?: return
         listener.block(deleteThread)
     }
 
-    private fun copyBchatID(context: Context, thread: Recipient) {
+    private fun copyBchatID(context: ConversationFragmentV2, thread: Recipient) {
         if (!thread.isContactRecipient) { return }
         val listener = context as? ConversationMenuListener ?: return
         listener.copyBchatID(thread.address.toString())

@@ -1,6 +1,7 @@
 package com.thoughtcrimes.securesms.home
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.graphics.PointF
@@ -52,6 +53,7 @@ import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.conversation.v2.ConversationViewModel
 import com.thoughtcrimes.securesms.conversation.v2.messages.VoiceMessageViewDelegate
+import com.thoughtcrimes.securesms.conversation.v2.utilities.BaseDialog
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.dms.CreateNewPrivateChatActivity
 import com.thoughtcrimes.securesms.groups.CreateClosedGroupActivity
@@ -73,7 +75,7 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDelegate,HomeFragment.HomeFragmentListener,ConversationFragmentV2.Listener,UserDetailsBottomSheet.UserDetailsBottomSheetListener,VoiceMessageViewDelegate {
+class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDelegate,HomeFragment.HomeFragmentListener,ConversationFragmentV2.Listener,UserDetailsBottomSheet.UserDetailsBottomSheetListener,VoiceMessageViewDelegate, ActivityDispatcher {
 
     private lateinit var binding: ActivityHomeBinding
 
@@ -665,5 +667,21 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         if(fragment is ConversationFragmentV2) {
             (fragment as ConversationFragmentV2).playVoiceMessageAtIndexIfPossible(indexInAdapter)
         }
+    }
+
+    override fun getSystemService(name: String): Any? {
+        if (name == ActivityDispatcher.SERVICE) {
+            return this
+        }
+        return super.getSystemService(name)
+    }
+
+    override fun dispatchIntent(body: (Context) -> Intent?) {
+        val intent = body(this) ?: return
+        push(intent, false)
+    }
+
+    override fun showDialog(baseDialog: BaseDialog, tag: String?) {
+        baseDialog.show(supportFragmentManager, tag)
     }
 }

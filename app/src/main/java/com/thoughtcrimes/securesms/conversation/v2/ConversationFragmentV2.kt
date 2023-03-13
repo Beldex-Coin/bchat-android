@@ -131,7 +131,7 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class ConversationFragmentV2 : Fragment(), InputBarDelegate,
-    InputBarRecordingViewDelegate, AttachmentManager.AttachmentListener, ActivityDispatcher,
+    InputBarRecordingViewDelegate, AttachmentManager.AttachmentListener,
     ConversationActionModeCallbackDelegate, VisibleMessageContentViewDelegate,
     RecipientModifiedListener,
     SearchBottomBar.EventListener, LoaderManager.LoaderCallbacks<Cursor>,
@@ -1370,14 +1370,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     override fun onAttachmentChanged() {
     }
 
-    override fun dispatchIntent(body: (Context) -> Intent?) {
-        val intent = body(requireActivity()) ?: return
-        startActivity(intent)
-    }
-
-    override fun showDialog(baseDialog: BaseDialog, tag: String?) {
-        baseDialog.show(requireActivity().supportFragmentManager, tag)
-    }
 
     // region Animation & Updating
     override fun onModified(recipient: Recipient) {

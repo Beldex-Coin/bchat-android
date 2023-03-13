@@ -37,12 +37,12 @@ import com.thoughtcrimes.securesms.database.model.MessageRecord
 import com.thoughtcrimes.securesms.database.model.SmsMessageRecord
 import com.thoughtcrimes.securesms.mms.GlideRequests
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
 import com.thoughtcrimes.securesms.conversation.v2.ModalUrlBottomSheet
 import com.thoughtcrimes.securesms.conversation.v2.utilities.MentionUtilities
 import com.thoughtcrimes.securesms.conversation.v2.utilities.ModalURLSpan
 import com.thoughtcrimes.securesms.conversation.v2.utilities.TextUtilities.getIntersectedModalSpans
 import com.thoughtcrimes.securesms.database.model.MmsMessageRecord
+import com.thoughtcrimes.securesms.home.HomeActivity
 import com.thoughtcrimes.securesms.mms.PartAuthority
 import com.thoughtcrimes.securesms.util.*
 import io.beldex.bchat.R
@@ -210,7 +210,7 @@ class VisibleMessageContentView : LinearLayout {
             // Audio attachment
             if (contactIsTrusted || message.isOutgoing) {
                 binding.voiceMessageView.indexInAdapter = indexInAdapter
-                binding.voiceMessageView.delegate = context as? ConversationActivityV2
+                binding.voiceMessageView.delegate = context as? HomeActivity
                 binding.voiceMessageView.bind(
                     message,
                     isStartOfMessageCluster,

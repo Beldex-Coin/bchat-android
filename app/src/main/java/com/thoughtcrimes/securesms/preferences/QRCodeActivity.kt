@@ -48,7 +48,7 @@ class QRCodeActivity : PassphraseRequiredActionBarActivity(), ScanQRCodeWrapperF
     }
 
     fun createPrivateChatIfPossible(hexEncodedPublicKey: String) {
-        if (!PublicKeyValidation.isValid(hexEncodedPublicKey)) { return Toast.makeText(this, R.string.invalid_bchat_id, Toast.LENGTH_SHORT).show() }
+       /* if (!PublicKeyValidation.isValid(hexEncodedPublicKey)) { return Toast.makeText(this, R.string.invalid_bchat_id, Toast.LENGTH_SHORT).show() }
         val recipient = Recipient.from(this, Address.fromSerialized(hexEncodedPublicKey), false)
         val intent = Intent(this, ConversationActivityV2::class.java)
         intent.putExtra(ConversationActivityV2.ADDRESS, recipient.address)
@@ -56,7 +56,7 @@ class QRCodeActivity : PassphraseRequiredActionBarActivity(), ScanQRCodeWrapperF
         val existingThread = DatabaseComponent.get(this).threadDatabase().getThreadIdIfExistsFor(recipient)
         intent.putExtra(ConversationActivityV2.THREAD_ID, existingThread)
         startActivity(intent)
-        finish()
+        finish()*/
     }
     // endregion
 }

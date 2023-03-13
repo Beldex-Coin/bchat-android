@@ -85,36 +85,33 @@ class HomeFragment : Fragment(),ConversationClickListener,
                 val threadId = model.messageResult.threadId
                 val timestamp = model.messageResult.receivedTimestampMs
                 val author = model.messageResult.messageRecipient.address
-
-                /*val intent = Intent(this, ConversationActivityV2::class.java)
-                intent.putExtra(ConversationActivityV2.THREAD_ID, threadId)
-                intent.putExtra(ConversationActivityV2.SCROLL_MESSAGE_ID, timestamp)
-                intent.putExtra(ConversationActivityV2.SCROLL_MESSAGE_AUTHOR, author)
-                push(intent)*/ //- Important
+                if (binding.globalSearchRecycler.isVisible) {
+                    binding.globalSearchInputLayout.clearSearch(true)
+                }
+                activityCallback?.passGlobalSearchAdapterModelMessageValue(threadId,timestamp,author)
             }
             is GlobalSearchAdapter.Model.SavedMessages -> {
-               /* val intent = Intent(this, ConversationActivityV2::class.java)
-                intent.putExtra(
-                    ConversationActivityV2.ADDRESS,
-                    Address.fromSerialized(model.currentUserPublicKey)
-                )
-                push(intent)*/ //- Important
+                if (binding.globalSearchRecycler.isVisible) {
+                    binding.globalSearchInputLayout.clearSearch(true)
+                }
+                activityCallback?.passGlobalSearchAdapterModelSavedMessagesValue(Address.fromSerialized(model.currentUserPublicKey))
             }
             is GlobalSearchAdapter.Model.Contact -> {
                 val address = model.contact.bchatID
-
-                /*val intent = Intent(this, ConversationActivityV2::class.java)
-                intent.putExtra(ConversationActivityV2.ADDRESS, Address.fromSerialized(address))
-                push(intent)*/ //- Important
+                if (binding.globalSearchRecycler.isVisible) {
+                    binding.globalSearchInputLayout.clearSearch(true)
+                }
+                activityCallback?.passGlobalSearchAdapterModelContactValue(Address.fromSerialized(address))
             }
             is GlobalSearchAdapter.Model.GroupConversation -> {
                 val groupAddress = Address.fromSerialized(model.groupRecord.encodedId)
                 val threadId =
                     (activity as HomeActivity).threadDb.getThreadIdIfExistsFor(Recipient.from(requireActivity().applicationContext, groupAddress, false))
                 if (threadId >= 0) {
-                   /* val intent = Intent(this, ConversationActivityV2::class.java)
-                    intent.putExtra(ConversationActivityV2.THREAD_ID, threadId)
-                    push(intent)*/ //- Important
+                    if (binding.globalSearchRecycler.isVisible) {
+                        binding.globalSearchInputLayout.clearSearch(true)
+                    }
+                    activityCallback?.passGlobalSearchAdapterModelGroupConversationValue(threadId)
                 }
             }
             else -> {
@@ -622,7 +619,6 @@ class HomeFragment : Fragment(),ConversationClickListener,
     fun onBackPressed() {
         if (binding.globalSearchRecycler.isVisible) {
             binding.globalSearchInputLayout.clearSearch(true)
-            return
         }
     }
 
@@ -893,7 +889,14 @@ class HomeFragment : Fragment(),ConversationClickListener,
         fun joinSocialGroup()
         fun toolBarCall()
         fun callAppPermission()
-        fun setUserSelectedUiMode(uiMode: UiMode) {}
+        fun passGlobalSearchAdapterModelMessageValue(
+            threadId: Long,
+            timestamp: Long,
+            author: Address
+        )
+        fun passGlobalSearchAdapterModelSavedMessagesValue(address: Address)
+        fun passGlobalSearchAdapterModelContactValue(address: Address)
+        fun passGlobalSearchAdapterModelGroupConversationValue(threadId: Long)
     }
 
     fun dispatchTouchEvent() {

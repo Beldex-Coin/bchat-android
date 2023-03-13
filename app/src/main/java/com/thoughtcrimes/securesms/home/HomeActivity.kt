@@ -48,8 +48,10 @@ import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.tasks.Task
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.components.ProfilePictureView
+import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.conversation.v2.ConversationViewModel
+import com.thoughtcrimes.securesms.conversation.v2.messages.VoiceMessageViewDelegate
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.dms.CreateNewPrivateChatActivity
 import com.thoughtcrimes.securesms.groups.CreateClosedGroupActivity
@@ -71,7 +73,7 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDelegate,HomeFragment.HomeFragmentListener,ConversationFragmentV2.Listener {
+class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDelegate,HomeFragment.HomeFragmentListener,ConversationFragmentV2.Listener,UserDetailsBottomSheet.UserDetailsBottomSheetListener,VoiceMessageViewDelegate {
 
     private lateinit var binding: ActivityHomeBinding
 
@@ -97,6 +99,11 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     private val reportIssueBChatID = "bdb890a974a25ef50c64cc4e3270c4c49c7096c433b8eecaf011c1ad000e426813"
 
+    companion object{
+        const val SHORTCUT_LAUNCHER = "short_cut_launcher"
+    }
+
+
     // region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?, isReady: Boolean) {
         super.onCreate(savedInstanceState, isReady)
@@ -104,9 +111,20 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val homeFragment: Fragment = HomeFragment()
-        supportFragmentManager.beginTransaction()
-            .add(R.id.activity_home_frame_layout_container, homeFragment, HomeFragment::class.java.name).commit()
+        if(intent.getBooleanExtra(SHORTCUT_LAUNCHER,false)){
+            val extras = Bundle()
+            extras.putParcelable(ConversationFragmentV2.ADDRESS,intent.getParcelableExtra(ConversationFragmentV2.ADDRESS))
+            extras.putLong(ConversationFragmentV2.THREAD_ID, intent.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
+            replaceFragment(ConversationFragmentV2(), null, extras)
+        }else {
+            val homeFragment: Fragment = HomeFragment()
+            supportFragmentManager.beginTransaction()
+                .add(
+                    R.id.activity_home_frame_layout_container,
+                    homeFragment,
+                    HomeFragment::class.java.name
+                ).commit()
+        }
 
         IP2Country.configureIfNeeded(this@HomeActivity)
         EventBus.getDefault().register(this@HomeActivity)
@@ -398,7 +416,16 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     override fun openSettings() {
         val intent = Intent(this, SettingsActivity::class.java)
-        show(intent, isForResult = true)
+        callSettingsActivityResultLauncher.launch(intent)
+    }
+
+    private var callSettingsActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val extras = Bundle()
+            extras.putParcelable(ConversationFragmentV2.ADDRESS,result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
+            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
+            replaceFragment(ConversationFragmentV2(), null, extras)
+        }
     }
 
     override fun openMyWallet() {
@@ -438,7 +465,16 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     override fun showQRCode() {
         val intent = Intent(this, ShowQRCodeWithScanQRCodeActivity::class.java)
-        push(intent)
+        showQRCodeWithScanQRCodeActivityResultLauncher.launch(intent)
+    }
+
+    private var showQRCodeWithScanQRCodeActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val extras = Bundle()
+            extras.putParcelable(ConversationFragmentV2.ADDRESS,result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
+            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
+            replaceFragment(ConversationFragmentV2(), null, extras)
+        }
     }
 
     override fun showSeed() {
@@ -469,7 +505,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         if (result.resultCode == Activity.RESULT_OK) {
             val extras = Bundle()
             extras.putParcelable(ConversationFragmentV2.ADDRESS,result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
-            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,0))
+            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
             replaceFragment(ConversationFragmentV2(), null, extras)
         }
     }
@@ -482,7 +518,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     private var createClosedGroupActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val extras = Bundle()
-            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,0))
+            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
             extras.putParcelable(ConversationFragmentV2.ADDRESS,result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
             replaceFragment(ConversationFragmentV2(), null, extras)
         }
@@ -499,7 +535,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     private var joinPublicChatNewActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val extras = Bundle()
-            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,0))
+            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
             extras.putParcelable(ConversationFragmentV2.ADDRESS,result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
             replaceFragment(ConversationFragmentV2(), null, extras)
         }
@@ -514,7 +550,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val extras = Bundle()
-            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,0))
+            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
             replaceFragment(ConversationFragmentV2(), null, extras)
         }
     }
@@ -585,5 +621,49 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     private fun getCurrentFragment(): Fragment? {
         return supportFragmentManager.findFragmentById(R.id.activity_home_frame_layout_container)
+    }
+
+    override fun passGlobalSearchAdapterModelMessageValue(
+        threadId: Long,
+        timestamp: Long,
+        author: Address
+    ) {
+        val extras = Bundle()
+        extras.putLong(ConversationFragmentV2.THREAD_ID,threadId)
+        extras.putLong(ConversationFragmentV2.SCROLL_MESSAGE_ID,timestamp)
+        extras.putParcelable(ConversationFragmentV2.SCROLL_MESSAGE_AUTHOR,author)
+        replaceFragment(ConversationFragmentV2(),null,extras)
+    }
+
+    override fun passGlobalSearchAdapterModelSavedMessagesValue(address: Address) {
+        val extras = Bundle()
+        extras.putParcelable(ConversationFragmentV2.ADDRESS,address)
+        replaceFragment(ConversationFragmentV2(),null,extras)
+    }
+
+    override fun passGlobalSearchAdapterModelContactValue(address: Address) {
+        val extras = Bundle()
+        extras.putParcelable(ConversationFragmentV2.ADDRESS,address)
+        replaceFragment(ConversationFragmentV2(),null,extras)
+    }
+
+    override fun passGlobalSearchAdapterModelGroupConversationValue(threadId: Long) {
+        val extras = Bundle()
+        extras.putLong(ConversationFragmentV2.THREAD_ID,threadId)
+        replaceFragment(ConversationFragmentV2(),null,extras)
+    }
+
+    override fun callConversationFragmentV2(address: Address, threadId: Long) {
+        val extras = Bundle()
+        extras.putParcelable(ConversationFragmentV2.ADDRESS,address)
+        extras.putLong(ConversationFragmentV2.THREAD_ID,threadId)
+        replaceFragment(ConversationFragmentV2(),null,extras)
+    }
+
+    override fun playVoiceMessageAtIndexIfPossible(indexInAdapter: Int) {
+        val fragment = supportFragmentManager.findFragmentById(R.id.activity_home_frame_layout_container)
+        if(fragment is ConversationFragmentV2) {
+            (fragment as ConversationFragmentV2).playVoiceMessageAtIndexIfPossible(indexInAdapter)
+        }
     }
 }

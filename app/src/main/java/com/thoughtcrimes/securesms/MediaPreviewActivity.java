@@ -500,7 +500,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
 
     switch (item.getItemId()) {
       case R.id.media_preview__overview: showOverview(); return true;
-      case R.id.media_preview__forward:  forward();      return true;
+      //case R.id.media_preview__forward:  forward();      return true; //- Important
       case R.id.save:                    saveToDisk();   return true;
       case R.id.delete:                  deleteMedia();  return true;
       case android.R.id.home:            finish();       return true;

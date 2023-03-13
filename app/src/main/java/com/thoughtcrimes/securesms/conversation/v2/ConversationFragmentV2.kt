@@ -133,7 +133,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     InputBarRecordingViewDelegate, AttachmentManager.AttachmentListener, ActivityDispatcher,
     ConversationActionModeCallbackDelegate, VisibleMessageContentViewDelegate,
     RecipientModifiedListener,
-    SearchBottomBar.EventListener, VoiceMessageViewDelegate, LoaderManager.LoaderCallbacks<Cursor>,
+    SearchBottomBar.EventListener, LoaderManager.LoaderCallbacks<Cursor>,
     ConversationMenuHelper.ConversationMenuListener, OnBackPressedListener {
     // TODO: Rename and change types of parameters
 
@@ -186,7 +186,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     var threadId: Long? = -1L
 
     private val viewModel: ConversationViewModel by viewModels {
-        threadId = requireArguments().getLong(THREAD_ID)
+        threadId = requireArguments().getLong(THREAD_ID,-1L)
         if (threadId == -1L) {
             requireArguments().getParcelable<Address>(ADDRESS)?.let { address ->
                 val recipient = Recipient.from(requireActivity(), address, false)
@@ -405,8 +405,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         recipientDatabase = RecipientDatabase(requireContext().applicationContext, databaseHelper)
 
         // messageIdToScroll
-        messageToScrollTimestamp.set(requireActivity().intent.getLongExtra(SCROLL_MESSAGE_ID, -1))
-        messageToScrollAuthor.set(requireActivity().intent.getParcelableExtra(SCROLL_MESSAGE_AUTHOR))
+        messageToScrollTimestamp.set(requireArguments().getLong(SCROLL_MESSAGE_ID, -1))
+        messageToScrollAuthor.set(requireArguments().getParcelable<Address>(SCROLL_MESSAGE_AUTHOR))
 
 
         setUpRecyclerView()
@@ -1321,7 +1321,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         binding.conversationRecyclerView.scrollToPosition(lastSeenItemPosition)
     }
 
-    override fun playVoiceMessageAtIndexIfPossible(indexInAdapter: Int) {
+    fun playVoiceMessageAtIndexIfPossible(indexInAdapter: Int) {
         if (indexInAdapter < 0 || indexInAdapter >= adapter.itemCount) {
             return
         }

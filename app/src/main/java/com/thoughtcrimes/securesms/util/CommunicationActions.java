@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -13,7 +14,9 @@ import androidx.core.app.TaskStackBuilder;
 
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2;
+import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2;
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent;
+import com.thoughtcrimes.securesms.home.HomeActivity;
 
 import io.beldex.bchat.R;
 
@@ -32,14 +35,20 @@ public class CommunicationActions {
 
       @Override
       protected void onPostExecute(Long threadId) {
-        Intent intent = new Intent(context, ConversationActivityV2.class);
+        /*Intent intent = new Intent(context, ConversationActivityV2.class);
         intent.putExtra(ConversationActivityV2.ADDRESS, recipient.getAddress());
-        intent.putExtra(ConversationActivityV2.THREAD_ID, threadId);
+        intent.putExtra(ConversationActivityV2.THREAD_ID, threadId);*/
+        Intent intent = new Intent(context, HomeActivity.class);
+        intent.putExtra(ConversationFragmentV2.ADDRESS, recipient.getAddress());
+        intent.putExtra(ConversationFragmentV2.THREAD_ID, threadId);
+        intent.putExtra(HomeActivity.SHORTCUT_LAUNCHER,true); //- New
 
         if (backStack != null) {
+          Log.d("backStack","if");
           backStack.addNextIntent(intent);
           backStack.startActivities();
         } else {
+          Log.d("backStack","else");
           context.startActivity(intent);
         }
       }

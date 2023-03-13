@@ -113,6 +113,7 @@ import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.contacts.SelectContactsActivity
 import com.thoughtcrimes.securesms.giph.ui.GiphyActivity
 import com.thoughtcrimes.securesms.home.HomeActivity
+import com.thoughtcrimes.securesms.home.HomeFragment
 import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
 import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.wallet.CheckOnline
@@ -403,6 +404,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         beldexMessageDb =
             BeldexMessageDatabase(requireActivity().applicationContext, databaseHelper)
         recipientDatabase = RecipientDatabase(requireContext().applicationContext, databaseHelper)
+
+        val thread = threadDb.getRecipientForThreadId(viewModel.threadId)
+        if (thread == null) {
+            Toast.makeText(requireActivity(), "This thread has been deleted.", Toast.LENGTH_LONG)
+                .show()
+            return backToHome()
+        }
 
         // messageIdToScroll
         messageToScrollTimestamp.set(requireArguments().getLong(SCROLL_MESSAGE_ID, -1))
@@ -1453,7 +1461,17 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         {
             ConversationMenuHelper.showAllMedia(requireActivity(), recipient)
         }
+        binding.backToHomeBtn.setOnClickListener{
+            backToHome()
 
+        }
+
+    }
+
+    private fun backToHome(){
+        val homeFragment: Fragment = HomeFragment()
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.activity_home_frame_layout_container, homeFragment, HomeFragment::class.java.name).commit()
     }
 
     private fun setUpInputBar() {

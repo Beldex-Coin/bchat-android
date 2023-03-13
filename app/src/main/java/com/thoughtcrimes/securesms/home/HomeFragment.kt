@@ -370,7 +370,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
     }
 
     private fun hideMessageRequests() {
-        val dialog = AlertDialog.Builder(requireActivity().applicationContext, R.style.BChatAlertDialog_New)
+        val dialog = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog_New)
             .setTitle("Hide message requests?")
             .setMessage("Once they are hidden, you can access them from Settings > Message Requests")
             .setPositiveButton(R.string.yes) { _, _ ->

@@ -63,6 +63,12 @@ import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
 import com.thoughtcrimes.securesms.seed.SeedPermissionActivity
 import com.thoughtcrimes.securesms.wallet.info.WalletInfoActivity
 import com.thoughtcrimes.securesms.wallet.node.*
+import com.thoughtcrimes.securesms.wallet.receive.ReceiveFragment
+import com.thoughtcrimes.securesms.wallet.scanner.ScannerFragment
+import com.thoughtcrimes.securesms.wallet.scanner.WalletScannerFragment
+import com.thoughtcrimes.securesms.wallet.send.SendFragment
+import com.thoughtcrimes.securesms.wallet.service.WalletService
+import com.thoughtcrimes.securesms.wallet.utils.LegacyStorageHelper
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
@@ -112,6 +118,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         // Set content view
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        //-Wallet
+        LegacyStorageHelper.migrateWallets(this)
+
 
         if(intent.getBooleanExtra(SHORTCUT_LAUNCHER,false)){
             val extras = Bundle()

@@ -380,7 +380,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        binding = FragmentConversationV2Binding.inflate(layoutInflater, container, false)
+        binding = FragmentConversationV2Binding.inflate(inflater, container, false)
         (activity as HomeActivity).setSupportActionBar(binding.conversationFragmentToolbar)
         return binding.root
     }
@@ -474,12 +474,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun onPause() {
-        super.onPause()
         endActionMode()
         Log.d("Beldex", "OnPause called")
         ApplicationContext.getInstance(requireActivity()).messageNotifier.setVisibleThread(-1)
         viewModel.saveDraft(binding.inputBar.text.trim())
-        val recipient = viewModel.recipient ?: return super.onDestroy()
+        val recipient = viewModel.recipient ?: return  super.onPause()
         /*Hales63*/ // New Line
         if (TextSecurePreferences.getPlayerStatus(requireActivity())) {
             TextSecurePreferences.setPlayerStatus(requireActivity(), false)
@@ -529,6 +528,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
             }
         }
+        super.onPause()
     }
 
     override fun onDestroy() {

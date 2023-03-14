@@ -478,17 +478,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         endActionMode()
         Log.d("Beldex", "OnPause called")
         ApplicationContext.getInstance(requireActivity()).messageNotifier.setVisibleThread(-1)
-    }
-
-    override fun onDestroy() {
-        viewModel.saveDraft(binding?.inputBar?.text?.trim() ?: "")
+        viewModel.saveDraft(binding.inputBar.text.trim())
         val recipient = viewModel.recipient ?: return super.onDestroy()
         /*Hales63*/ // New Line
         if (TextSecurePreferences.getPlayerStatus(requireActivity())) {
             TextSecurePreferences.setPlayerStatus(requireActivity(), false)
             val contactDB = DatabaseComponent.get(requireActivity()).bchatContactDatabase()
             val contact = contactDB.getContactWithBchatID(recipient.address.toString())
-            Log.d("Beldex", "Contact Trust Value ${contact?.isTrusted}")
             if (contact?.isTrusted != null) {
                 if (contact.isTrusted) {
                     val actionMode = this.actionMode
@@ -525,9 +521,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 if (selectedMessageRecord?.isOutgoing!!) {
                     val actionMode = this.actionMode
                     if (actionMode == null) {
-                        Log.d("First-->2", "${selectedMessageRecord?.isOutgoing}")
                         if (selectedEvent != null && selectedView != null) {
-                            Log.d("First-->3", "${selectedMessageRecord?.isOutgoing}")
                             selectedEvent?.let { selectedView?.onContentClick(it) }
                         }
                     }
@@ -535,6 +529,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
             }
         }
+    }
+
+    override fun onDestroy() {
         super.onDestroy()
     }
 

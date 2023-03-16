@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.IBinder
 import android.provider.Settings
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import androidx.activity.viewModels
@@ -44,6 +43,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.ProfilePictureModifiedEvent
 import com.beldex.libbchat.utilities.recipients.Recipient
+import com.beldex.libsignal.utilities.Log
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
@@ -52,7 +52,6 @@ import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.tasks.Task
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.components.ProfilePictureView
-import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.conversation.v2.ConversationViewModel
 import com.thoughtcrimes.securesms.conversation.v2.messages.VoiceMessageViewDelegate
@@ -85,7 +84,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import java.io.File
-import java.lang.IllegalArgumentException
 import java.util.*
 import javax.inject.Inject
 
@@ -142,6 +140,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     private var onUriWalletScannedListener: OnUriWalletScannedListener? = null
     private var barcodeData: BarcodeData? = null
 
+    private val tagHOME: String = HomeFragment::class.java.name
+    private val tagCONVERSATION: String = ConversationFragmentV2::class.java.name
+
 
     // region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?, isReady: Boolean) {
@@ -165,7 +166,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 .add(
                     R.id.activity_home_frame_layout_container,
                     homeFragment,
-                    HomeFragment::class.java.name
+                    tagHOME
                 ).commit()
         }
 
@@ -397,7 +398,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     override fun onConversationClick(threadId: Long) {
         val extras = Bundle()
         extras.putLong(ConversationFragmentV2.THREAD_ID, threadId)
-        replaceFragment(ConversationFragmentV2(), null, extras)
+        replaceFragment(ConversationFragmentV2(), tagCONVERSATION, extras)
     }
 
     private fun replaceFragment(newFragment: Fragment, stackName: String?, extras: Bundle?) {
@@ -406,7 +407,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.activity_home_frame_layout_container, newFragment)
+            .replace(R.id.activity_home_frame_layout_container, newFragment,stackName)
             .addToBackStack(stackName)
             .commit()
     }
@@ -443,12 +444,15 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     override fun onBackPressed() {
-        val fragment: Fragment? = getCurrentFragment()
-        if((fragment is HomeFragment)) {
-            fragment.onBackPressed()
-            super.onBackPressed()
-        }else if(fragment is ConversationFragmentV2){
-            replaceFragment(HomeFragment(), null, null)
+        if (getConversationFragment() != null) {
+            if (getConversationFragment()!!.isVisible) {
+                super.onBackPressed()
+            }
+        } else {
+            if (getHomeFragment() != null) {
+                getHomeFragment()!!.onBackPressed()
+                finish()
+            }
         }
     }
 
@@ -678,6 +682,13 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     private fun getCurrentFragment(): Fragment? {
         return supportFragmentManager.findFragmentById(R.id.activity_home_frame_layout_container)
+    }
+    private fun getConversationFragment(): ConversationFragmentV2? {
+        return supportFragmentManager.findFragmentByTag(tagCONVERSATION) as ConversationFragmentV2?
+    }
+
+    private fun getHomeFragment(): HomeFragment? {
+        return supportFragmentManager.findFragmentByTag(tagHOME) as HomeFragment?
     }
 
     override fun passGlobalSearchAdapterModelMessageValue(

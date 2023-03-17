@@ -159,10 +159,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     private val useSSL: Boolean = false
     private val isLightWallet:  Boolean = false
 
-    private val tagHOME: String = HomeFragment::class.java.name
-    private val tagCONVERSATION: String = ConversationFragmentV2::class.java.name
-
-
     // region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?, isReady: Boolean) {
         super.onCreate(savedInstanceState, isReady)
@@ -185,7 +181,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 .add(
                     R.id.activity_home_frame_layout_container,
                     homeFragment,
-                    tagHOME
+                    HomeFragment::class.java.name
                 ).commit()
         }
 
@@ -417,7 +413,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     override fun onConversationClick(threadId: Long) {
         val extras = Bundle()
         extras.putLong(ConversationFragmentV2.THREAD_ID, threadId)
-        replaceFragment(ConversationFragmentV2(), tagCONVERSATION, extras)
+        replaceFragment(ConversationFragmentV2(), null, extras)
     }
 
     private fun replaceFragment(newFragment: Fragment, stackName: String?, extras: Bundle?) {
@@ -426,7 +422,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.activity_home_frame_layout_container, newFragment,stackName)
+            .replace(R.id.activity_home_frame_layout_container, newFragment)
             .addToBackStack(stackName)
             .commit()
     }
@@ -463,22 +459,14 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     override fun onBackPressed() {
-
-        if (getConversationFragment() != null) {
-            if (getConversationFragment()!!.isVisible) {
-                super.onBackPressed()
-            }
-        } else {
-            if (getHomeFragment() != null) {
-               backToHome(getHomeFragment())
-            }
-        }
         val fragment: Fragment? = getCurrentFragment()
-        if (fragment is SendFragment || fragment is ReceiveFragment || fragment is ScannerFragment || fragment is WalletScannerFragment || fragment is WalletFragment) {
+        if (fragment is SendFragment || fragment is ReceiveFragment || fragment is ScannerFragment || fragment is WalletScannerFragment || fragment is WalletFragment || fragment is ConversationFragmentV2) {
             if (!(fragment as OnBackPressedListener).onBackPressed()) {
                 TextSecurePreferences.callFiatCurrencyApi(this,false)
                 super.onBackPressed()
             }
+        }else if(fragment is HomeFragment){
+            backToHome(fragment)
         }
     }
 
@@ -766,13 +754,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     private fun getCurrentFragment(): Fragment? {
         return supportFragmentManager.findFragmentById(R.id.activity_home_frame_layout_container)
-    }
-    private fun getConversationFragment(): ConversationFragmentV2? {
-        return supportFragmentManager.findFragmentByTag(tagCONVERSATION) as ConversationFragmentV2?
-    }
-
-    private fun getHomeFragment(): HomeFragment? {
-        return supportFragmentManager.findFragmentByTag(tagHOME) as HomeFragment?
     }
 
     override fun passGlobalSearchAdapterModelMessageValue(
@@ -1949,7 +1930,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     override fun walletOnBackPressed(){
         val fragment: Fragment = getCurrentFragment()!!
-        if (fragment is SendFragment || fragment is ReceiveFragment || fragment is ScannerFragment || fragment is WalletScannerFragment || fragment is WalletFragment) {
+        if (fragment is SendFragment || fragment is ReceiveFragment || fragment is ScannerFragment || fragment is WalletScannerFragment || fragment is WalletFragment || fragment is ConversationFragmentV2) {
             if (!(fragment as OnBackPressedListener).onBackPressed()) {
                 TextSecurePreferences.callFiatCurrencyApi(this,false)
                 super.onBackPressed()

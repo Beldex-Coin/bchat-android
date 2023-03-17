@@ -364,6 +364,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     interface Listener {
         fun getConversationViewModel(): ConversationViewModel.AssistedFactory
         fun gettextSecurePreferences(): TextSecurePreferences
+        fun walletOnBackPressed() //-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -1451,8 +1452,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             ConversationMenuHelper.showAllMedia(requireActivity(), recipient)
         }
         binding.backToHomeBtn.setOnClickListener{
-            backToHome()
-
+            listenerCallback?.walletOnBackPressed()
         }
 
     }
@@ -1669,8 +1669,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             val openGroup = beldexThreadDb.getOpenGroupChat(viewModel.threadId)
             if (openGroup != null) {
                 val userCount = beldexApiDb.getUserCount(openGroup.room, openGroup.server) ?: 0
-                binding.conversationSubtitleView.text =
-                    getString(R.string.ConversationActivity_member_count, userCount)
+                binding.conversationSubtitleView.text = requireActivity().getString(R.string.ConversationActivity_member_count, userCount)
             } else {
                 binding.conversationSubtitleView.isVisible = false
             }

@@ -318,7 +318,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
         setupHeaderImage()
         // Set up recycler view
         binding.globalSearchInputLayout.listener = this
-        homeAdapter.setHasStableIds(true)
+        //homeAdapter.setHasStableIds(true)
         homeAdapter.glide = glide
         binding.recyclerView.adapter = homeAdapter
         binding.globalSearchRecycler.adapter = globalSearchAdapter

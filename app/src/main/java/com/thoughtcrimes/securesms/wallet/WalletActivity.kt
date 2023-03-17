@@ -47,11 +47,11 @@ import java.lang.IllegalArgumentException
 import java.util.*
 import android.content.DialogInterface
 import androidx.core.content.ContextCompat
+import com.thoughtcrimes.securesms.home.HomeActivity
 
 
 class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.Observer,
-    WalletScannerFragment.OnScannedListener, SendFragment.OnScanListener, SendFragment.Listener,
-    ReceiveFragment.Listener,WalletFragment.OnScanListener,ScannerFragment.OnWalletScannedListener, WalletScannerFragment.Listener,NodeFragment.Listener{
+    WalletScannerFragment.OnScannedListener, SendFragment.OnScanListener, SendFragment.Listener,WalletFragment.OnScanListener,ScannerFragment.OnWalletScannedListener, WalletScannerFragment.Listener,NodeFragment.Listener{
     lateinit var binding: ActivityWalletBinding
 
 
@@ -175,10 +175,10 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
                     if (getWallet() != null) {
                         if (isSynced) {
                             if (getWallet()!!.daemonBlockChainHeight != null) {
-                                RescanDialog(this, getWallet()!!.daemonBlockChainHeight).show(
+                                /*RescanDialog(this, getWallet()!!.daemonBlockChainHeight).show(
                                     supportFragmentManager,
                                     ""
-                                )
+                                )*/ //- Important
                             }
                         } else {
                             Toast.makeText(
@@ -522,20 +522,24 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
     }
 
     override fun setToolbarButton(type: Int) {
-        binding.toolbar.setButton(type)
+        /*binding.toolbar.setButton(type)*/
     }
 
-    override fun setTitle(title: String?) {
+    override fun setTitle(titleId: Int) {
+
+    }
+
+   /* override fun setTitle(title: String?) {
         Timber.d("setTitle:%s.", title)
         binding.toolbar.setTitle(title)
     }
 
     override fun setTitle(title: String?, subtitle: String?) {
         binding.toolbar.setTitle(title, subtitle)
-    }
+    }*/
 
     override fun setSubtitle(subtitle: String?) {
-        binding.toolbar.setSubtitle(subtitle)
+       /* binding.toolbar.setSubtitle(subtitle)*/
     }
 
 
@@ -554,12 +558,12 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         return data
     }
 
-    override fun setMode(mode: Mode?) {
+    override fun setMode(mode: HomeActivity.Mode?) {
         if (this.mode != mode) {
             this.mode = mode!!
             when (mode) {
-                Mode.BDX -> txData = TxData()
-                Mode.BTC -> txData = TxDataBtc()
+                HomeActivity.Mode.BDX -> txData = TxData()
+                HomeActivity.Mode.BTC -> txData = TxDataBtc()
                 else -> throw IllegalArgumentException("Mode " + mode.toString() + " unknown!")
             }
             //Important
@@ -573,7 +577,7 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
         TODO("Not yet implemented")
     }
 
-    private var mode: Mode = Mode.BDX
+    private var mode: HomeActivity.Mode = HomeActivity.Mode.BDX
 
     /*  override fun setMode(aMode: Mode) {
           if (mode != aMode) {
@@ -589,15 +593,15 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
           }
       }*/
 
-    fun getMode(): Mode {
+    fun getMode(): HomeActivity.Mode {
         return mode
     }
 
     private var txData = TxData()
 
-    enum class Mode {
+/*    enum class Mode {
         BDX, BTC
-    }
+    }*/
 
     private fun getWalletFragment(): WalletFragment {
         return supportFragmentManager.findFragmentByTag(WalletFragment::class.java.name) as WalletFragment
@@ -1546,5 +1550,14 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             push(intent)
             finish()
         }
+    }
+
+    override fun callToolBarRescan() {
+    }
+
+    override fun callToolBarSettings() {
+    }
+
+    override fun walletOnBackPressed() {
     }
 }

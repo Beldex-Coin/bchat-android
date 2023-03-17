@@ -80,7 +80,8 @@ public class CustomPinActivity extends AppLockActivity {
             setUpPinPopUp(appLockActivity,false, this);
         }
         else if(pinLockStatus == 4){
-            getWalletValuesFromSharedPreferences(this);
+            //getWalletValuesFromSharedPreferences(this); //-
+            showWalletFragment();
         }
         else if(pinLockStatus==6){
             Intent returnIntent = new Intent();
@@ -116,11 +117,21 @@ public class CustomPinActivity extends AppLockActivity {
                 alert.dismiss();
                 appLockActivity.finish();
                 if(status){
-                    getWalletValuesFromSharedPreferences(customPinActivity);
+                    showWalletFragment();
+                    //getWalletValuesFromSharedPreferences(customPinActivity); //-
                 }
             }
         });
 
+    }
+
+    private void showWalletFragment(){
+        TextSecurePreferences.callFiatCurrencyApi(this,true);
+        TextSecurePreferences.setIncomingTransactionStatus(this, true);
+        TextSecurePreferences.setOutgoingTransactionStatus(this, true);
+        TextSecurePreferences.setTransactionsByDateStatus(this,false);
+        Intent returnIntent = new Intent();
+        setResult(Activity.RESULT_OK,returnIntent);
     }
 
     private void getWalletValuesFromSharedPreferences(CustomPinActivity customPinActivity){

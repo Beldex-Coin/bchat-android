@@ -28,6 +28,7 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.transition.MaterialElevationScale
 import com.thoughtcrimes.securesms.ApplicationContext
 import com.thoughtcrimes.securesms.data.NodeInfo
+import com.thoughtcrimes.securesms.home.HomeActivity
 import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
 import com.thoughtcrimes.securesms.model.TransactionInfo
 import com.thoughtcrimes.securesms.model.Wallet
@@ -58,7 +59,7 @@ import java.text.SimpleDateFormat
 import java.util.concurrent.Executor
 
 
-class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener {
+class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,OnBackPressedListener {
 
     private var adapter: TransactionInfoAdapter? = null
     private val formatter = NumberFormat.getInstance()
@@ -197,8 +198,8 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         exitTransition = null
         reenterTransition = null
         Timber.d("onResume()")
-        activityCallback!!.setTitle(getString(R.string.my_wallet))
-        activityCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
+        //activityCallback!!.setTitle(getString(R.string.my_wallet))
+        //activityCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
         //binding.walletName.text = walletTitle
         //Important
         //tvWalletAccountStatus.setText(walletSubtitle)
@@ -464,6 +465,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
     ): View {
         Log.d("Beldex","Value of current node ")
         binding = FragmentWalletBinding.inflate(inflater, container, false)
+        (activity as HomeActivity).setSupportActionBar(binding.toolbar)
         //Get Selected Fiat Currency Price
         //if(TextSecurePreferences.getFiatCurrencyCheckedStatus(requireActivity())) {
             if(TextSecurePreferences.getFiatCurrencyApiStatus(requireActivity())) {
@@ -690,6 +692,18 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         binding.scanQrCodeImg.setOnClickListener {
             onScanListener?.onWalletScan(view)
         }
+
+        binding.toolBarRescan.setOnClickListener {
+            activityCallback?.callToolBarRescan()
+        }
+        binding.toolBarSettings.setOnClickListener {
+            activityCallback?.callToolBarSettings()
+        }
+
+        binding.exitButton.setOnClickListener {
+            activityCallback?.walletOnBackPressed()
+        }
+
         return binding.root
     }
     private val DATETIME_FORMATTER = SimpleDateFormat("dd-MM-yyyy")
@@ -802,7 +816,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         binding.transactionLayoutCardView.visibility = View.VISIBLE
         //Important
         //tvWalletAccountStatus.setText(walletSubtitle)
-        activityCallback!!.setTitle(getString(R.string.my_wallet))
+        //activityCallback!!.setTitle(getString(R.string.my_wallet))
         Timber.d("wallet title is %s", walletTitle)
     }
 
@@ -1151,11 +1165,6 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         fun hasWallet(): Boolean
         fun getWallet(): Wallet?
 
-        fun setToolbarButton(type: Int)
-        fun setTitle(title: String?)
-        fun setTitle(title: String?, subtitle: String?)
-        fun setSubtitle(subtitle: String?)
-
         //Node Connection
         fun getFavouriteNodes(): MutableSet<NodeInfo>
         fun getOrPopulateFavourites(): MutableSet<NodeInfo>
@@ -1168,6 +1177,11 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         //fun hiddenRescan(status:Boolean)
 
         fun callFinishActivity()
+
+        fun callToolBarRescan()
+        fun callToolBarSettings()
+
+        fun walletOnBackPressed() //-
     }
 
     // called from activity
@@ -1295,6 +1309,9 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener 
         } else ivStreetGunther.setImageDrawable(null)*/
     }
 
+    override fun onBackPressed(): Boolean {
+        return false
+    }
 
 
 }

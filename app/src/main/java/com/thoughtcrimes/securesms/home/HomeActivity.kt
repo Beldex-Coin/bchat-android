@@ -1,16 +1,21 @@
 package com.thoughtcrimes.securesms.home
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.*
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.graphics.PointF
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.IBinder
 import android.provider.Settings
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.widget.Button
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -38,11 +43,14 @@ import kotlinx.coroutines.flow.onEach
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.ProfilePictureModifiedEvent
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getWalletName
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getWalletPassword
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
@@ -52,7 +60,6 @@ import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.tasks.Task
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.components.ProfilePictureView
-import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.conversation.v2.ConversationViewModel
 import com.thoughtcrimes.securesms.conversation.v2.messages.VoiceMessageViewDelegate
@@ -71,10 +78,12 @@ import com.thoughtcrimes.securesms.wallet.info.WalletInfoActivity
 import com.thoughtcrimes.securesms.wallet.listener.OnBlockUpdateListener
 import com.thoughtcrimes.securesms.wallet.node.*
 import com.thoughtcrimes.securesms.wallet.receive.ReceiveFragment
+import com.thoughtcrimes.securesms.wallet.rescan.RescanDialog
 import com.thoughtcrimes.securesms.wallet.scanner.ScannerFragment
 import com.thoughtcrimes.securesms.wallet.scanner.WalletScannerFragment
 import com.thoughtcrimes.securesms.wallet.send.SendFragment
 import com.thoughtcrimes.securesms.wallet.service.WalletService
+import com.thoughtcrimes.securesms.wallet.settings.WalletSettings
 import com.thoughtcrimes.securesms.wallet.utils.LegacyStorageHelper
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
@@ -85,7 +94,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import java.io.File
-import java.lang.IllegalArgumentException
 import java.util.*
 import javax.inject.Inject
 
@@ -121,6 +129,12 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     companion object{
         const val SHORTCUT_LAUNCHER = "short_cut_launcher"
+
+        var REQUEST_URI = "uri"
+        var REQUEST_ID = "id"
+        var REQUEST_PW = "pw"
+        var REQUEST_FINGERPRINT_USED = "fingerprint"
+        var REQUEST_STREETMODE = "streetmode"
     }
 
     //Wallet
@@ -141,6 +155,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     private var onUriScannedListener: OnUriScannedListener? = null
     private var onUriWalletScannedListener: OnUriWalletScannedListener? = null
     private var barcodeData: BarcodeData? = null
+
+    private val useSSL: Boolean = false
+    private val isLightWallet:  Boolean = false
 
 
     // region Lifecycle
@@ -445,10 +462,64 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     override fun onBackPressed() {
         val fragment: Fragment? = getCurrentFragment()
         if((fragment is HomeFragment)) {
-            fragment.onBackPressed()
-            super.onBackPressed()
+            backToHome(fragment)
         }else if(fragment is ConversationFragmentV2){
             replaceFragment(HomeFragment(), null, null)
+        }else if (fragment is SendFragment || fragment is ReceiveFragment || fragment is ScannerFragment || fragment is WalletScannerFragment || fragment is WalletFragment) {
+            if (!(fragment as OnBackPressedListener).onBackPressed()) {
+                TextSecurePreferences.callFiatCurrencyApi(this,false)
+                super.onBackPressed()
+            }
+        }
+    }
+
+    private fun backToHome(fragment: HomeFragment) {
+        when {
+            !synced -> {
+                val dialog: AlertDialog.Builder =
+                    AlertDialog.Builder(this, R.style.BChatAlertDialog_Wallet_Syncing_Exit_Alert)
+                dialog.setTitle(getString(R.string.wallet_syncing_alert_title))
+                dialog.setMessage(getString(R.string.wallet_syncing_alert_message))
+
+                dialog.setPositiveButton(R.string.exit) { _, _ ->
+                    if (CheckOnline.isOnline(this)) {
+                        onDisposeRequest()
+                    }
+                    setBarcodeData(null)
+                }
+                dialog.setNegativeButton(R.string.cancel) { _, _ ->
+                    // Do nothing
+                }
+                val alert: AlertDialog = dialog.create()
+                alert.show()
+                alert.getButton(DialogInterface.BUTTON_NEGATIVE)
+                    .setTextColor(ContextCompat.getColor(this, R.color.text))
+                alert.getButton(DialogInterface.BUTTON_POSITIVE)
+                    .setTextColor(ContextCompat.getColor(this, R.color.alert_ok))
+            }
+            else -> {
+                val dialog: AlertDialog.Builder =
+                    AlertDialog.Builder(this, R.style.BChatAlertDialog_Exit)
+                dialog.setTitle(getString(R.string.app_exit_alert))
+
+                dialog.setPositiveButton(R.string.exit) { _, _ ->
+                    if (CheckOnline.isOnline(this)) {
+                        onDisposeRequest()
+                    }
+                    setBarcodeData(null)
+                    fragment.onBackPressed()
+                    finish()
+                }
+                dialog.setNegativeButton(R.string.cancel) { _, _ ->
+                    // Do nothing
+                }
+                val alert: AlertDialog = dialog.create()
+                alert.show()
+                alert.getButton(DialogInterface.BUTTON_NEGATIVE)
+                    .setTextColor(ContextCompat.getColor(this, R.color.text))
+                alert.getButton(DialogInterface.BUTTON_POSITIVE)
+                    .setTextColor(ContextCompat.getColor(this, R.color.alert_ok))
+            }
         }
     }
 
@@ -483,16 +554,22 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 intent.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN)
                 intent.putExtra("change_pin",false)
                 intent.putExtra("send_authentication",false)
-                push(intent)
+                customPinActivityResultLauncher.launch(intent)
             }else{
                 intent.putExtra(AppLock.EXTRA_TYPE, AppLock.ENABLE_PINLOCK)
                 intent.putExtra("change_pin",false)
                 intent.putExtra("send_authentication",false)
-                push(intent)
+                customPinActivityResultLauncher.launch(intent)
             }
         }else{
             val intent = Intent(this, WalletInfoActivity::class.java)
             push(intent)
+        }
+    }
+
+    private var customPinActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            replaceFragment(WalletFragment(), null, null)
         }
     }
 
@@ -754,16 +831,17 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             // cast its IBinder to a concrete class and directly access it.
             mBoundService = (service as WalletService.WalletServiceBinder).service
             mBoundService!!.setObserver(this@HomeActivity)
-            val extras = intent.extras
+
+            /*val extras = intent.extras
             if (extras != null) {
-                val walletId = extras.getString(WalletActivity.REQUEST_ID)
+                val walletId = extras.getString(HomeActivity.REQUEST_ID)
                 if (walletId != null) {
                     //setTitle(walletId, getString(R.string.status_wallet_connecting));
                     //Important
                     //setTitle(getString(R.string.status_wallet_connecting), "")
-                    /* setTitle(getString(R.string.my_wallet))*/
+                    *//* setTitle(getString(R.string.my_wallet))*//*
                 }
-            }
+            }*/
             updateProgress()
             Timber.d("CONNECTED")
         }
@@ -907,23 +985,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     override fun getStorageRoot(): File {
         TODO("Not yet implemented")
-    }
-
-    override fun setToolbarButton(type: Int) {
-        //binding.toolbar.setButton(type)
-    }
-
-    override fun setTitle(title: String?) {
-        /*Timber.d("setTitle:%s.", title)
-        binding.toolbar.setTitle(title)*/
-    }
-
-    override fun setTitle(title: String?, subtitle: String?) {
-        //binding.toolbar.setTitle(title, subtitle)
-    }
-
-    override fun setSubtitle(subtitle: String?) {
-        //binding.toolbar.setSubtitle(subtitle)
     }
 
     override fun getFavouriteNodes(): MutableSet<NodeInfo> {
@@ -1479,7 +1540,11 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         return data
     }
 
-    override fun setMode(mode: WalletActivity.Mode?) {
+    enum class Mode {
+        BDX, BTC
+    }
+
+    override fun setMode(mode: Mode?) {
         TODO("Not yet implemented")
     }
 
@@ -1488,19 +1553,36 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     private fun getWalletFragment(): WalletFragment {
-        return supportFragmentManager.findFragmentByTag(WalletFragment::class.java.name) as WalletFragment
+        return supportFragmentManager.findFragmentById(R.id.activity_home_frame_layout_container) as WalletFragment
+        //return supportFragmentManager.findFragmentByTag(WalletFragment::class.java.name) as WalletFragment
     }
 
     private fun startWalletService() {
-
-        val extras = intent.extras
+        val walletName = getWalletName(this)
+        val walletPassword = getWalletPassword(this)
+        if (walletName != null && walletPassword != null) {
+            // acquireWakeLock()
+            // we can set the streetmode height AFTER opening the wallet
+            requestStreetMode = false
+            if (CheckOnline.isOnline(this)) {
+                Log.d("Beldex", "isOnline 5 if")
+                connectWalletService(walletName, walletPassword)
+            }
+            else {
+                Log.d("Beldex","isOnline 5 else")
+            }
+        }
+        else{
+            finish()
+        }
+        /*val extras = intent.extras
         if (extras != null) {
             // acquireWakeLock()
-            val walletId = extras.getString(WalletActivity.REQUEST_ID)
+            val walletId = extras.getString(HomeActivity.REQUEST_ID)
             // we can set the streetmode height AFTER opening the wallet
-            requestStreetMode = extras.getBoolean(WalletActivity.REQUEST_STREETMODE)
-            password = extras.getString(WalletActivity.REQUEST_PW)
-            uri = extras.getString(WalletActivity.REQUEST_URI)
+            requestStreetMode = extras.getBoolean(HomeActivity.REQUEST_STREETMODE)
+            password = extras.getString(HomeActivity.REQUEST_PW)
+            uri = extras.getString(HomeActivity.REQUEST_URI)
             if (CheckOnline.isOnline(this)) {
                 Log.d("Beldex", "isOnline 5 if")
                 connectWalletService(walletId, password)
@@ -1510,7 +1592,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             }
         }else {
             finish()
-        }
+        }*/
     }
 
     override fun onBackPressedFun() {
@@ -1686,6 +1768,173 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             } else {
                 val msg = getString(R.string.message_camera_not_permitted)
                 Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    fun onWalletRescan(restoreHeight: Long) {
+        try {
+            val walletFragment = getWalletFragment()
+
+            if(getWallet()!=null) {
+                // The height entered by user
+                getWallet()!!.restoreHeight = restoreHeight
+                getWallet()!!.rescanBlockchainAsync()
+            }
+            Log.d("Beldex","Restore Height 2 ${getWallet()!!.restoreHeight}")
+            synced = false
+            walletFragment.unsync()
+            invalidateOptionsMenu()
+        } catch (ex: java.lang.ClassCastException) {
+            Timber.d(ex.localizedMessage)
+            // keep calm and carry on
+        }
+    }
+
+    override fun setToolbarButton(type: Int) {
+        /*binding.toolbar.setButton(type)*/
+    }
+
+    override fun setSubtitle(title: String?) {
+        /* binding.toolbar.setSubtitle(subtitle)*/
+    }
+
+    override fun setTitle(titleId: Int) {
+
+    }
+
+    /* override fun setTitle(title: String?) {
+         Timber.d("setTitle:%s.", title)
+         binding.toolbar.setTitle(title)
+     }
+
+     override fun setTitle(title: String?, subtitle: String?) {
+         binding.toolbar.setTitle(title, subtitle)
+     }*/
+
+    override fun callToolBarRescan(){
+        val dialog: AlertDialog.Builder = AlertDialog.Builder(this, R.style.BChatAlertDialog_Syncing_Option)
+        val li = LayoutInflater.from(dialog.context)
+        val promptsView = li.inflate(R.layout.alert_sync_options, null)
+
+        dialog.setView(promptsView)
+        val reConnect  = promptsView.findViewById<Button>(R.id.reConnectButton_Alert)
+        val reScan = promptsView.findViewById<Button>(R.id.rescanButton_Alert)
+        val alertDialog: AlertDialog = dialog.create()
+        alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        alertDialog.show()
+
+        reConnect.setOnClickListener {
+            if (CheckOnline.isOnline(this)) {
+                onWalletReconnect(node, useSSL, isLightWallet)
+                alertDialog.dismiss()
+            } else {
+                Toast.makeText(
+                    this,
+                    R.string.please_check_your_internet_connection,
+                    Toast.LENGTH_SHORT
+                ).show()
+                alertDialog.dismiss()
+            }
+        }
+
+        reScan.setOnClickListener {
+            if (CheckOnline.isOnline(this)) {
+                if (getWallet() != null) {
+                    if (isSynced) {
+                        if (getWallet()!!.daemonBlockChainHeight != null) {
+                            RescanDialog(this, getWallet()!!.daemonBlockChainHeight).show(
+                                supportFragmentManager,
+                                ""
+                            )
+                        }
+                    } else {
+                        Toast.makeText(
+                            this,
+                            getString(R.string.cannot_rescan_while_wallet_is_syncing),
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
+                    }
+
+                    //onWalletRescan()
+                }
+            } else {
+                Toast.makeText(
+                    this,
+                    getString(R.string.please_check_your_internet_connection),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            alertDialog.dismiss()
+        }
+
+        // set dialog message
+        /*if(CheckOnline.isOnline(this)) {
+            if(getWallet()!=null) {
+                if (getWallet()!!.daemonBlockChainHeight != null) {
+                    RescanDialog(this, getWallet()!!.daemonBlockChainHeight).show(
+                        supportFragmentManager,
+                        ""
+                    )
+                }
+            }
+            //onWalletRescan()
+        }else{
+            Toast.makeText(this@WalletActivity,getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
+        }*/
+    }
+
+    private fun onWalletReconnect(node: NodeInfo?, UseSSL: Boolean, isLightWallet: Boolean) {
+        if (CheckOnline.isOnline(this)) {
+            if (getWallet() != null) {
+                val isOnline =
+                    getWallet()?.reConnectToDaemon(node, UseSSL, isLightWallet) as Boolean
+                if (isOnline) {
+                    synced = false
+                    setNode(node)
+                    val walletFragment = getWalletFragment()
+                    walletFragment.setProgress(getString(R.string.reconnecting))
+                    walletFragment.setProgress(101)
+                    invalidateOptionsMenu()
+                } else {
+                    getWalletFragment().setProgress(R.string.failed_connected_to_the_node)
+                }
+            } else {
+                Toast.makeText(this, "Wait for connection..", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        } else {
+            Toast.makeText(this, R.string.please_check_your_internet_connection, Toast.LENGTH_SHORT)
+                .show()
+        }
+    }
+
+    override fun callToolBarSettings() {
+        openWalletSettings()
+    }
+
+    private fun openWalletSettings() {
+        /*val intent = Intent(this, WalletSettings::class.java)
+        push(intent)*/
+        val intent = Intent(this, WalletSettings::class.java)
+        walletSettingsResultLauncher.launch(intent)
+    }
+
+    private var walletSettingsResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            /*val intent = Intent(this, LoadingActivity::class.java)
+            push(intent)
+            finish()*/ //-
+        }
+    }
+
+    override fun walletOnBackPressed(){
+        val fragment: Fragment = getCurrentFragment()!!
+        if (fragment is SendFragment || fragment is ReceiveFragment || fragment is ScannerFragment || fragment is WalletScannerFragment || fragment is WalletFragment) {
+            if (!(fragment as OnBackPressedListener).onBackPressed()) {
+                TextSecurePreferences.callFiatCurrencyApi(this,false)
+                super.onBackPressed()
             }
         }
     }

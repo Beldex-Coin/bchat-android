@@ -29,6 +29,7 @@ import com.jakewharton.rxbinding3.view.visibility
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
 import com.thoughtcrimes.securesms.data.BarcodeData
 import com.thoughtcrimes.securesms.data.Crypto
+import com.thoughtcrimes.securesms.home.HomeActivity
 import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.util.FileProviderUtil
 import com.thoughtcrimes.securesms.util.Helper
@@ -64,7 +65,7 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
     private var qrValid = false
     private var logo: Bitmap? = null
     private val isLoaded = false
-    var listenerCallback: ReceiveFragment.Listener? = null
+    var listenerCallback: Listener? = null
     private val shareActionProvider: ShareActionProvider? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,10 +86,7 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
         sharedElementEnterTransition = transform
     }
     interface Listener {
-        fun setToolbarButton(type: Int)
-        fun setTitle(title: String?)
-        fun setSubtitle(subtitle: String?)
-
+        fun walletOnBackPressed() //-
     }
 
     override fun onResume() {
@@ -124,8 +122,9 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
         savedInstanceState: Bundle?
     ): View? {
         binding = ActivityReceiveBinding.inflate(layoutInflater,container,false)
-        listenerCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
-        listenerCallback!!.setTitle(getString(R.string.activity_receive_page_title))
+        (activity as HomeActivity).setSupportActionBar(binding.toolbar)
+        //listenerCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
+        //listenerCallback!!.setTitle(getString(R.string.activity_receive_page_title))
 
         binding.walletAddressReceive.text = IdentityKeyUtil.retrieve(requireActivity(),IdentityKeyUtil.IDENTITY_W_ADDRESS_PREF)
         generateQr()
@@ -153,6 +152,10 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
 
         binding.addressCopy.setOnClickListener {
             copyYourBeldexAddress()
+        }
+
+        binding.exitButton.setOnClickListener {
+            listenerCallback?.walletOnBackPressed()
         }
 
         return binding.root

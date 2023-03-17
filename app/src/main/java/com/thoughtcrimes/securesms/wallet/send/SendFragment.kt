@@ -32,6 +32,7 @@ import androidx.appcompat.app.AlertDialog
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.google.gson.GsonBuilder
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
+import com.thoughtcrimes.securesms.home.HomeActivity
 import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
 import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.model.WalletManager
@@ -99,9 +100,6 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         fun onSend(notes: UserNotes?)
         fun onDisposeRequest()
         fun onFragmentDone()
-        fun setToolbarButton(type: Int)
-        fun setTitle(title: String?)
-        fun setSubtitle(subtitle: String?)
         fun setOnUriScannedListener(onUriScannedListener: OnUriScannedListener?)
         fun setOnUriWalletScannedListener(onUriWalletScannedListener: OnUriWalletScannedListener?)
         fun setBarcodeData(data: BarcodeData?)
@@ -110,11 +108,13 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
         fun popBarcodeData(): BarcodeData?
 
-        fun setMode(mode: WalletActivity.Mode?)
+        fun setMode(mode: HomeActivity.Mode?)
 
         fun getTxData(): TxData?
 
         fun onBackPressedFun()
+
+        fun walletOnBackPressed() //-
     }
 
     var sendConfirmListener: SendConfirmListener? = null
@@ -214,7 +214,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         hideProgress()
         //Important
         Timber.d("txid=%s", txId)
-        activityCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
+        //activityCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
         Log.d("Beldex","Transaction Completed")
         SendSuccessDialog(this).show(requireActivity().supportFragmentManager,"")
        /* val builder = AlertDialog.Builder(
@@ -262,7 +262,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         fun newInstance(uri: String?): SendFragment {
             val f = SendFragment()
             val args = Bundle()
-            args.putString(WalletActivity.REQUEST_URI, uri)
+            args.putString(HomeActivity.REQUEST_URI, uri)
             f.arguments = args
             return f
         }
@@ -285,6 +285,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentSendBinding.inflate(inflater, container, false)
+        (activity as HomeActivity).setSupportActionBar(binding.toolbar)
 
         AsyncGetUnlockedBalance(activityCallback).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
         //Get Selected Fiat Currency Price
@@ -554,6 +555,10 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         }else{
             binding.estimatedFeeTextView.text = getString(R.string.estimated_fee,calculateEstimatedFee(5).toString())
             binding.estimatedFeeDescriptionTextView.text =getString(R.string.estimated_fee_description,"Flash")
+        }
+
+        binding.exitButton.setOnClickListener {
+            activityCallback?.walletOnBackPressed()
         }
 
         return binding.root
@@ -902,8 +907,8 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     override fun onResume() {
         super.onResume()
         Timber.d("onResume")
-        activityCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
-        activityCallback!!.setTitle(getString(R.string.send))
+        //activityCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
+        //activityCallback!!.setTitle(getString(R.string.send))
         processScannedData()
 
       /*  if(txData.priority.value != null) {

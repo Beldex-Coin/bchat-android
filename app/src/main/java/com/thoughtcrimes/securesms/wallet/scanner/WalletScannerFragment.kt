@@ -10,11 +10,13 @@ import androidx.fragment.app.Fragment
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.Result
 import com.thoughtcrimes.securesms.data.BarcodeData
+import com.thoughtcrimes.securesms.home.HomeActivity
 import com.thoughtcrimes.securesms.wallet.OnBackPressedListener
 import com.thoughtcrimes.securesms.wallet.OnUriScannedListener
 import com.thoughtcrimes.securesms.wallet.send.SendFragment
 import com.thoughtcrimes.securesms.wallet.widget.Toolbar
 import io.beldex.bchat.R
+import io.beldex.bchat.databinding.FragmentWalletScannerBinding
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 import timber.log.Timber
 import java.lang.ClassCastException
@@ -41,9 +43,7 @@ class WalletScannerFragment(
     interface Listener {
         fun onSendRequest(view: View?)
         fun setBarcodeData(data: BarcodeData?)
-        fun setToolbarButton(type: Int)
-        fun setTitle(title: String?)
-        fun setSubtitle(subtitle: String?)
+        fun walletOnBackPressed() //-
     }
 
     interface OnScannedListener {
@@ -51,32 +51,39 @@ class WalletScannerFragment(
         fun setOnBarcodeScannedListener(onUriScannedListener: OnUriScannedListener?)
     }
 
-    private var mScannerView: ZXingScannerView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true);
 
     }
 
+    lateinit var binding:FragmentWalletScannerBinding
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        binding = FragmentWalletScannerBinding.inflate(inflater,container,false)
+        (activity as HomeActivity).setSupportActionBar(binding.toolbar)
         setHasOptionsMenu(true)
         Timber.d("onCreateView")
-        mScannerView = ZXingScannerView(activity)
-        return mScannerView
+
+        binding.exitButton.setOnClickListener {
+            activityCallback?.walletOnBackPressed()
+        }
+
+        return binding.root
     }
 
     override fun onResume() {
         super.onResume()
         Timber.d("onResume")
         Log.d("Beldex","qr code scan onResume()")
-        mScannerView!!.setResultHandler(this)
-        mScannerView!!.startCamera()
-        activityCallback!!.setTitle(getString(R.string.activity_scan_page_title))
-        activityCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
+        binding.mScannerView.setResultHandler(this)
+        binding.mScannerView.startCamera()
+        //activityCallback!!.setTitle(getString(R.string.activity_scan_page_title))
+        //activityCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
     }
 
     override fun handleResult(rawResult: Result) {
@@ -92,7 +99,7 @@ class WalletScannerFragment(
                 ).show()
                 val handler = Handler()
                 handler.postDelayed(
-                    { mScannerView!!.resumeCameraPreview(this) },
+                    { binding.mScannerView.resumeCameraPreview(this) },
                     1000
                 )
             }
@@ -106,7 +113,7 @@ class WalletScannerFragment(
         // * I don't know why this is the case but I don't have the time to figure out.
         val handler = Handler()
         handler.postDelayed(
-            { mScannerView!!.resumeCameraPreview(this) },
+            { binding.mScannerView.resumeCameraPreview(this) },
             1000
         )
     }
@@ -119,7 +126,7 @@ class WalletScannerFragment(
 
     override fun onStop() {
         super.onStop()
-        mScannerView!!.stopCamera();
+        binding.mScannerView.stopCamera();
     }
 
     override fun onAttach(context: Context) {

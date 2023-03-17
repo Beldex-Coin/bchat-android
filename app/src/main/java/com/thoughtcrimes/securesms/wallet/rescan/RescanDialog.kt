@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import android.widget.Toolbar
 import androidx.fragment.app.DialogFragment
+import com.thoughtcrimes.securesms.home.HomeActivity
 import com.thoughtcrimes.securesms.preferences.ClearAllDataDialog
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.wallet.CheckOnline
@@ -24,7 +25,7 @@ import java.math.BigInteger
 import java.text.SimpleDateFormat
 import java.util.*
 
-class RescanDialog(val context: WalletActivity, private val daemonBlockChainHeight: Long): DialogFragment() {
+class RescanDialog(val context: HomeActivity, private val daemonBlockChainHeight: Long): DialogFragment() {
 
     private lateinit var binding: RescanDialogBinding
 

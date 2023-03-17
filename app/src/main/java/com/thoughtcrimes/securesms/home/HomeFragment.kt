@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
@@ -35,6 +36,7 @@ import com.thoughtcrimes.securesms.MuteDialog
 import com.thoughtcrimes.securesms.components.ProfilePictureView
 import com.thoughtcrimes.securesms.conversation.v2.utilities.NotificationUtils
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
+import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.database.MmsSmsDatabase
 import com.thoughtcrimes.securesms.database.model.ThreadRecord
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
@@ -47,6 +49,8 @@ import com.thoughtcrimes.securesms.home.search.GlobalSearchAdapter
 import com.thoughtcrimes.securesms.home.search.GlobalSearchInputLayout
 import com.thoughtcrimes.securesms.mms.GlideApp
 import com.thoughtcrimes.securesms.mms.GlideRequests
+import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
+import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.util.*
 import com.thoughtcrimes.securesms.wallet.CheckOnline
@@ -57,6 +61,8 @@ import io.beldex.bchat.databinding.ViewMessageRequestBannerBinding
 import kotlinx.coroutines.*
 import org.apache.commons.lang3.time.DurationFormatUtils
 import java.io.IOException
+import java.lang.IllegalStateException
+import java.text.NumberFormat
 import java.util.*
 
 class HomeFragment : Fragment(),ConversationClickListener,
@@ -70,6 +76,12 @@ class HomeFragment : Fragment(),ConversationClickListener,
     private var uiJob: Job? = null
     private var viewModel : CallViewModel? =null // by viewModels<CallViewModel>()
     private val CALLDURATIONFORMAT = "HH:mm:ss"
+
+    private var syncText: String? = null
+    private var syncProgress = -1
+    private var firstBlock: Long = 0
+    private var balance: Long = 0
+    private val formatter = NumberFormat.getInstance()
 
     private val publicKey: String
         get() = TextSecurePreferences.getLocalNumber(requireActivity().applicationContext)!!
@@ -318,7 +330,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
         setupHeaderImage()
         // Set up recycler view
         binding.globalSearchInputLayout.listener = this
-        homeAdapter.setHasStableIds(true)
+        /*homeAdapter.setHasStableIds(true)*/
         homeAdapter.glide = glide
         binding.recyclerView.adapter = homeAdapter
         binding.globalSearchRecycler.adapter = globalSearchAdapter
@@ -567,6 +579,8 @@ class HomeFragment : Fragment(),ConversationClickListener,
             homeAdapter.notifyDataSetChanged()
             TextSecurePreferences.setUnBlockStatus(requireActivity().applicationContext, false)
         }
+
+        pingSelectedNode()
     }
 
     override fun onPause() {
@@ -897,6 +911,16 @@ class HomeFragment : Fragment(),ConversationClickListener,
         fun passGlobalSearchAdapterModelSavedMessagesValue(address: Address)
         fun passGlobalSearchAdapterModelContactValue(address: Address)
         fun passGlobalSearchAdapterModelGroupConversationValue(threadId: Long)
+        
+        //Node Connection
+        fun getFavouriteNodes(): MutableSet<NodeInfo>
+        fun getOrPopulateFavourites(): MutableSet<NodeInfo>
+        fun getNode(): NodeInfo?
+        fun setNode(node: NodeInfo?)
+
+        //Wallet
+        fun hasBoundService(): Boolean
+        val connectionStatus: Wallet.ConnectionStatus?
     }
 
     fun dispatchTouchEvent() {
@@ -906,4 +930,289 @@ class HomeFragment : Fragment(),ConversationClickListener,
             //binding.newConversationButtonSet.collapse()
         }
     }
+
+    fun pingSelectedNode() {
+        Log.d("Beldex","Value of current node loadFav pinSelec")
+        val PING_SELECTED = 0
+        val FIND_BEST = 1
+        /*if(TextSecurePreferences.getDaemon(requireActivity())) {
+             AsyncFindBestNode(PING_SELECTED, FIND_BEST).execute<Int>(FIND_BEST)
+         }else{
+             AsyncFindBestNode(PING_SELECTED, FIND_BEST).execute<Int>(PING_SELECTED)
+         }*/
+        AsyncFindBestNode(PING_SELECTED, FIND_BEST).execute<Int>(PING_SELECTED)
+    }
+
+    inner class AsyncFindBestNode(val PING_SELECTED: Int, val FIND_BEST: Int) :
+        AsyncTaskCoroutine<Int?, NodeInfo?>() {
+        override fun onPreExecute() {
+            super.onPreExecute()
+            //pbNode.setVisibility(View.VISIBLE)
+            //showProgressDialogWithTitle("Connecting to Remote Node");
+            //llNode.setVisibility(View.INVISIBLE)
+        }
+
+        override fun doInBackground(vararg params: Int?): NodeInfo? {
+            Log.d("Beldex","called AsyncFindBestNode")
+
+            val favourites: Set<NodeInfo?> = activityCallback!!.getOrPopulateFavourites()
+            var selectedNode: NodeInfo?
+            Log.d("Beldex","selected node 1 $favourites")
+            if (params[0] == FIND_BEST) {
+                Log.d("Beldex","called AsyncFindBestNode 1")
+                selectedNode = autoselect(favourites)
+                Log.d("Beldex","selected node 2 $selectedNode")
+            } else if (params[0] == PING_SELECTED) {
+                Log.d("Beldex","called AsyncFindBestNode 2")
+                selectedNode = activityCallback!!.getNode()
+                Log.d("Beldex","selected node 3 $selectedNode")
+                Log.d("Beldex","called AsyncFindBestNode 2 ${selectedNode?.host}")
+
+                if (!activityCallback!!.getFavouriteNodes().contains(selectedNode))
+                    selectedNode = null // it's not in the favourites (any longer)
+                if (selectedNode == null)
+                    Log.d("Beldex","selected node 4 $selectedNode")
+                for (node in favourites) {
+                    if (node!!.isSelected) {
+                        Log.d("Beldex","selected node 5 $node")
+                        selectedNode = node
+                        break
+                    }
+                }
+                if (selectedNode == null) { // autoselect
+                    selectedNode = autoselect(favourites)
+                } else {
+                    //Steve Josephh21 //BCA-402
+                    if(selectedNode!=null) {
+                        Log.d("Beldex", "selected node 6 $selectedNode")
+                        selectedNode!!.testRpcService()
+                    }
+                }
+            } else throw IllegalStateException()
+            return if (selectedNode != null && selectedNode.isValid) {
+                Log.d("Testing-->12", "true")
+                activityCallback!!.setNode(selectedNode)
+                selectedNode
+            } else {
+                Log.d("Testing-->13", "true")
+                activityCallback!!.setNode(null)
+                null
+            }
+        }
+
+        override fun onPostExecute(result: NodeInfo?) {
+            Log.d("Beldex", "daemon connected to  ${result?.host}")
+        }
+        
+    }
+
+    fun autoselect(nodes: Set<NodeInfo?>): NodeInfo? {
+        if (nodes.isEmpty()) return null
+        NodePinger.execute(nodes, null)
+        val nodeList: ArrayList<NodeInfo?> = ArrayList<NodeInfo?>(nodes)
+        Collections.sort(nodeList, NodeInfo.BestNodeComparator)
+        val rnd = Random().nextInt(nodeList.size)
+        return nodeList[rnd]
+    }
+
+    fun setProgress(text: String?) {
+        //WalletFragment Functionality
+        /*if(text==getString(R.string.reconnecting) || text==getString(R.string.status_wallet_connecting)){
+           binding.syncStatusIcon.visibility=View.GONE
+        }*/
+        syncText = text
+        binding.syncStatus.text = text
+    }
+
+    fun setProgress(n: Int) {
+        android.util.Log.d("Beldex","mConnection value of n $n")
+        syncProgress = n
+        if (n > 100) {
+            binding.progressBar.isIndeterminate = true
+            binding.progressBar.visibility = View.VISIBLE
+        } else if (n >= 0) {
+            binding.progressBar.isIndeterminate = false
+            binding.progressBar.progress = n
+            /*if (tvWalletAccountStatus.getText() === "") {
+                tvWalletAccountStatus.setText("--")
+            }*/
+            /*if (binding.walletName.text === "") {
+                binding.walletName.text = "--"
+            }*/
+            binding.progressBar.visibility = View.VISIBLE
+        } else if(n==-2){
+            binding.progressBar.visibility = View.VISIBLE
+            binding.progressBar.isIndeterminate = false
+            binding.progressBar.progress=100
+        }else { // <0
+            binding.progressBar.visibility = View.GONE
+        }
+    }
+
+    fun onRefreshed(wallet: Wallet, full: Boolean) {
+        var full = full
+        //WalletFragment Functionality
+        /*if (adapter!!.needsTransactionUpdateOnNewBlock()) {
+            *//* wallet.refreshHistory()*//*
+            full = true
+            android.util.Log.d("TransactionList","full = true 1")
+        }
+        if (full) {
+            android.util.Log.d("TransactionList","full = true 2")
+            val list: MutableList<TransactionInfo> = ArrayList()
+            val streetHeight: Long = activityCallback!!.streetModeHeight
+            wallet.refreshHistory()
+            for (info in wallet.history.all) {
+                //Log.d("TxHeight=%d, Label=%s", info.blockheight.toString(), info.subaddressLabel)
+                if ((info.isPending || info.blockheight >= streetHeight)
+                    && !dismissedTransactions.contains(info.hash)
+                ) list.add(info)
+            }
+            adapter!!.setInfos(list)
+            adapterItems.clear()
+            adapterItems.addAll(adapter!!.infoItems!!)
+            if (accountIndex != wallet.accountIndex) {
+                accountIndex = wallet.accountIndex
+                binding.transactionList.scrollToPosition(0)
+            }
+
+            //SteveJosephh21
+            if (adapter!!.itemCount > 0) {
+                binding.transactionList.visibility = View.VISIBLE
+                binding.emptyContainerLayout.visibility = View.GONE
+            } else {
+                binding.filterTransactionsIcon.isClickable = true // default = false
+                binding.transactionList.visibility = View.GONE
+                binding.emptyContainerLayout.visibility = View.VISIBLE
+            }*/
+        //Steve Josephh21 ANRS
+        /*if (CheckOnline.isOnline(requireContext())) {
+            check(activityCallback!!.hasBoundService()) { "WalletService not bound." }
+            val daemonConnected: Wallet.ConnectionStatus = activityCallback!!.connectionStatus!!
+            android.util.Log.d("Beldex", "Value of daemon connection 1 $daemonConnected")
+            if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
+                android.util.Log.d("Beldex", "onRefreshed Called unlocked balance updated")
+                AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+            }
+        }
+    }*/
+        updateStatus(wallet)
+    }
+
+    private fun updateStatus(wallet: Wallet) {
+        if (!isAdded) return
+        android.util.Log.d("Beldex", "updateStatus()")
+        //WalletFragment Functionality
+        /*if (walletTitle == null || accountIdx != wallet.accountIndex) {
+            accountIdx = wallet.accountIndex
+            setActivityTitle(wallet)
+        }*/
+        android.util.Log.d("Beldex", "isOnline 0  ${CheckOnline.isOnline(requireContext())}")
+        if(CheckOnline.isOnline(requireContext())) {
+            android.util.Log.d("Beldex", "isOnline 1  ${CheckOnline.isOnline(requireContext())}")
+            balance = wallet.balance
+            android.util.Log.d("Beldex", "value of balance $balance")
+            //unlockedBalance = wallet.unlockedBalance
+            //refreshBalance(wallet.isSynchronized)
+            val sync: String
+            check(activityCallback!!.hasBoundService()) { "WalletService not bound." }
+            val daemonConnected: Wallet.ConnectionStatus = activityCallback!!.connectionStatus!!
+            android.util.Log.d("Beldex","Value of daemon connection $daemonConnected")
+            if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
+                if (!wallet.isSynchronized) {
+                    ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(true)
+                    android.util.Log.d("Beldex","Height value of daemonHeight ${wallet.daemonBlockChainHeight}")
+                    //android.util.Log.d("Beldex","Height value of daemonHeight one  ${activityCallback!!.daemonHeight}")
+                    android.util.Log.d("Beldex","Height value of blockChainHeight ${wallet.blockChainHeight}")
+                    android.util.Log.d("Beldex","Height value of approximateBlockChainHeight ${wallet.approximateBlockChainHeight}")
+                    android.util.Log.d("Beldex","Height value of restoreHeight ${wallet.restoreHeight}")
+                    android.util.Log.d("Beldex","Height value of daemonBlockChainTargetHeight ${wallet.daemonBlockChainTargetHeight}")
+
+                    val daemonHeight: Long = wallet.daemonBlockChainHeight
+                    //val daemonHeight: Long = activityCallback!!.daemonHeight
+                    val walletHeight = wallet.blockChainHeight
+                    val n = daemonHeight - walletHeight
+                    sync = formatter.format(n) + " " + getString(R.string.status_remaining)
+                    if (firstBlock == 0L) {
+                        firstBlock = walletHeight
+                    }
+                    var x = (100 - Math.round(100f * n / (1f * daemonHeight  - firstBlock))).toInt()
+                    if (x == 0) x = 101 // indeterminate
+                    android.util.Log.d("Beldex","App crash issue value of height daemon height $daemonHeight")
+                    android.util.Log.d("Beldex","App crash issue value of height walletHeight height $walletHeight")
+                    android.util.Log.d("Beldex","App crash issue value of height x height $x")
+                    android.util.Log.d("Beldex","App crash issue value of height n height $n")
+                    android.util.Log.d("Beldex","App crash issue value of height n firstBlock $firstBlock")
+                    setProgress(x)
+                    //WalletFragment Functionality
+                    /*ivSynced.setVisibility(View.GONE);
+                    binding.filterTransactionsIcon.isClickable = false
+                    activityCallback!!.hiddenRescan(false)
+                    binding.syncStatusIcon.visibility=View.GONE*/
+                    binding.syncStatus.setTextColor(
+                        ContextCompat.getColor(
+                            requireActivity().applicationContext,
+                            R.color.green_color
+                        )
+                    )
+                } else {
+                    ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(false)
+                    //Steve Josephh21 ANRS
+                    // AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+                    android.util.Log.d("showBalance->","Synchronized")
+                    sync =
+                        getString(R.string.status_synchronized)//getString(R.string.status_synced) + " " + formatter.format(wallet.blockChainHeight)
+                    //binding.syncStatus.setTextColor(resources.getColor(R.color.green_color))
+                    binding.syncStatus.setTextColor(
+                        ContextCompat.getColor(
+                            requireActivity().applicationContext,
+                            R.color.green_color
+                        )
+                    )
+                    //WalletFragment Functionality
+                    /*ivSynced.setVisibility(View.VISIBLE);
+                    binding.filterTransactionsIcon.isClickable = true //default = adapter!!.itemCount > 0
+                    activityCallback!!.hiddenRescan(true)
+                    binding.syncStatusIcon.visibility = View.VISIBLE
+                    binding.syncStatusIcon.setOnClickListener {
+                        if (CheckOnline.isOnline(requireActivity())) {
+                            if (wallet != null) {
+                                checkSyncInfo(requireActivity(), wallet.restoreHeight)
+                            }
+                        }
+                    }*/
+                }
+            } else {
+                sync = getString(R.string.failed_connected_to_the_node)
+                setProgress(-1)
+                //WalletFragment Functionality
+                //binding.syncStatusIcon.visibility=View.GONE
+                //SteveJosephh21
+                //binding.transactionTitle.visibility = View.INVISIBLE
+                //binding.transactionLayoutCardView.visibility = View.GONE
+                //anchorBehavior.setHideable(true)
+                binding.syncStatus.setTextColor(
+                    ContextCompat.getColor(
+                        requireActivity().applicationContext,
+                        R.color.red
+                    )
+                )
+            }
+            setProgress(sync)
+        }
+        else
+        {
+            android.util.Log.d("Beldex","isOnline else 2")
+            setProgress(getString(R.string.no_node_connection))
+            binding.syncStatus.setTextColor(
+                ContextCompat.getColor(
+                    requireActivity().applicationContext,
+                    R.color.red
+                )
+            )
+            //WalletFragment Functionality
+            //binding.syncStatusIcon.visibility=View.GONE
+        }
+    }
+
 }

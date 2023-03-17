@@ -42,6 +42,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.ProfilePictureModifiedEvent
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getWalletName
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getWalletPassword
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import com.google.android.play.core.appupdate.AppUpdateInfo
@@ -1185,7 +1187,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }
         try {
             Log.d("Beldex","mConnection onRefreshed called ")
-            val walletFragment = getWalletFragment()
+            //WalletFragment Functionality
+            // val walletFragment = getWalletFragment()
             if (wallet.isSynchronized) {
                 Log.d("Beldex","mConnection onRefreshed called 1")
                 //releaseWakeLock(RELEASE_WAKE_LOCK_DELAY) // the idea is to stay awake until synced
@@ -1194,11 +1197,14 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                     onProgress(-2)//onProgress(-1)
                     saveWallet() // save on first sync
                     synced = true
-                    runOnUiThread(walletFragment::onSynced)
+                    //WalletFragment Functionality
+                    // runOnUiThread(walletFragment::onSynced)
                 }
             }
             runOnUiThread {
-                walletFragment.onRefreshed(wallet, full)
+                //WalletFragment Functionality
+                getHomeFragment()!!.onRefreshed(wallet,full)
+                // walletFragment.onRefreshed(wallet, full)
                 updateCurrentFragment(wallet)
             }
             return true
@@ -1219,8 +1225,11 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     override fun onProgress(text: String?) {
         try {
-            val walletFragment = getWalletFragment()
-            runOnUiThread { walletFragment.setProgress(text) }
+            //WalletFragment Functionality
+            /*val walletFragment = getWalletFragment()
+               runOnUiThread { walletFragment.setProgress(text) }*/
+            val homeFragment = getHomeFragment()
+            runOnUiThread { homeFragment!!.setProgress(text) }
         } catch (ex: ClassCastException) {
             // not in wallet fragment (probably send beldex)
             Timber.d(ex.localizedMessage)
@@ -1231,8 +1240,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     override fun onProgress(n: Int) {
         runOnUiThread {
             try {
-                val walletFragment: WalletFragment = getWalletFragment()
-                if (walletFragment != null) walletFragment.setProgress(n)
+                //WalletFragment Functionality
+                /*val walletFragment: WalletFragment = getWalletFragment()
+                if (walletFragment != null) walletFragment.setProgress(n)*/
+                getHomeFragment()?.setProgress(n)
             } catch (ex: ClassCastException) {
                 // not in wallet fragment (probably send monero)
                 Timber.d(ex.localizedMessage)
@@ -1261,7 +1272,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     override fun onTransactionCreated(tag: String, pendingTransaction: PendingTransaction) {
         try {
-            val sendFragment = getCurrentFragment() as SendFragment?
+            //WalletFragment Functionality
+            val sendFragment = getCurrentFragment() as ConversationFragmentV2?
             runOnUiThread {
                 //dismissProgressDialog()
                 val status = pendingTransaction.status
@@ -1290,7 +1302,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     override fun onTransactionSent(txId: String?) {
         try {
-            val sendFragment = getCurrentFragment() as SendFragment?
+            //WalletFragment Functionality
+            val sendFragment = getCurrentFragment() as ConversationFragmentV2?
             runOnUiThread { sendFragment!!.onTransactionSent(txId) }
         } catch (ex: ClassCastException) {
             // not in spend fragment
@@ -1346,14 +1359,16 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             invalidateOptionsMenu()
             if (requestStreetMode) onEnableStreetMode()
             Log.d("Beldex", "Wallet start called 7 2 ")
-            val walletFragment = getWalletFragment()
-            Log.d("Beldex", "Wallet start called 7  $walletFragment")
+            //WalletFragment Functionality
+            //val walletFragment = getWalletFragment()
+            // Log.d("Beldex", "Wallet start called 7  $walletFragment")
             runOnUiThread {
                 updateAccountsHeader()
-                if (walletFragment != null) {
+                //WalletFragment Functionality
+                /*if (walletFragment != null) {
                     Log.d("Beldex", "Wallet start called 8 ")
                     walletFragment.onLoaded()
-                }
+                }*/
             }
         }
     }
@@ -1410,14 +1425,19 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         get() = streetMode > 0
 
     override fun onPrepareSend(tag: String?, txData: TxData?) {
+        android.util.Log.d("Beldex","pending transaction called 4")
         if (mIsBound) { // no point in talking to unbound service
+            android.util.Log.d("Beldex","pending transaction called 5")
             var intent: Intent? = null
             if(intent==null) {
+                android.util.Log.d("Beldex","pending transaction called 6")
                 intent = Intent(applicationContext, WalletService::class.java)
                 intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_TX)
                 intent.putExtra(WalletService.REQUEST_CMD_TX_DATA, txData)
                 intent.putExtra(WalletService.REQUEST_CMD_TX_TAG, tag)
+                android.util.Log.d("Beldex","pending transaction called 7")
                 startService(intent)
+                android.util.Log.d("Beldex","pending transaction called 8")
                 Timber.d("CREATE TX request sent")
             }
             //Important
@@ -1504,23 +1524,33 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     private fun startWalletService() {
 
-        val extras = intent.extras
-        if (extras != null) {
-            // acquireWakeLock()
-            val walletId = extras.getString(WalletActivity.REQUEST_ID)
-            // we can set the streetmode height AFTER opening the wallet
-            requestStreetMode = extras.getBoolean(WalletActivity.REQUEST_STREETMODE)
-            password = extras.getString(WalletActivity.REQUEST_PW)
-            uri = extras.getString(WalletActivity.REQUEST_URI)
-            if (CheckOnline.isOnline(this)) {
-                Log.d("Beldex", "isOnline 5 if")
-                connectWalletService(walletId, password)
-            }
-            else {
-                Log.d("Beldex","isOnline 5 else")
-            }
-        }else {
-            finish()
+        /*val extras = intent.extras
+         if (extras != null) {
+             // acquireWakeLock()
+             val walletId = extras.getString(WalletActivity.REQUEST_ID)
+             // we can set the streetmode height AFTER opening the wallet
+             requestStreetMode = extras.getBoolean(WalletActivity.REQUEST_STREETMODE)
+             password = extras.getString(WalletActivity.REQUEST_PW)
+             uri = extras.getString(WalletActivity.REQUEST_URI)
+             if (CheckOnline.isOnline(this)) {
+                 Log.d("Beldex", "isOnline 5 if")
+                 connectWalletService(walletId, password)
+             }
+             else {
+                 Log.d("Beldex","isOnline 5 else")
+             }
+         }else {
+             finish()
+         }*/
+
+        val walletName = getWalletName(this)
+        val walletPassword = getWalletPassword(this)
+
+        if (CheckOnline.isOnline(this)) {
+            Log.d("Beldex", "isOnline 5 if")
+            connectWalletService(walletName, walletPassword)
+        } else {
+            Log.d("Beldex", "isOnline 5 else")
         }
     }
 

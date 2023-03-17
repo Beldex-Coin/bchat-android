@@ -3,6 +3,7 @@ package com.thoughtcrimes.securesms.conversation.v2
 import android.Manifest
 import android.animation.FloatEvaluator
 import android.animation.ValueAnimator
+import android.app.Activity
 import android.content.*
 import android.content.Context.CLIPBOARD_SERVICE
 import android.content.pm.PackageManager
@@ -25,6 +26,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DimenRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
@@ -76,7 +78,6 @@ import com.thoughtcrimes.securesms.conversation.v2.menus.ConversationActionModeC
 import com.thoughtcrimes.securesms.conversation.v2.menus.ConversationMenuHelper
 import com.thoughtcrimes.securesms.conversation.v2.messages.VisibleMessageContentViewDelegate
 import com.thoughtcrimes.securesms.conversation.v2.messages.VisibleMessageView
-import com.thoughtcrimes.securesms.conversation.v2.messages.VoiceMessageViewDelegate
 import com.thoughtcrimes.securesms.conversation.v2.search.SearchBottomBar
 import com.thoughtcrimes.securesms.conversation.v2.search.SearchViewModel
 import com.thoughtcrimes.securesms.conversation.v2.utilities.*
@@ -111,14 +112,27 @@ import kotlin.math.sqrt
 import androidx.lifecycle.Observer
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.contacts.SelectContactsActivity
+import com.thoughtcrimes.securesms.data.PendingTx
+import com.thoughtcrimes.securesms.data.TxData
+import com.thoughtcrimes.securesms.data.UserNotes
 import com.thoughtcrimes.securesms.giph.ui.GiphyActivity
 import com.thoughtcrimes.securesms.home.HomeActivity
 import com.thoughtcrimes.securesms.home.HomeFragment
+import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
+import com.thoughtcrimes.securesms.model.PendingTransaction
+import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
 import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.wallet.CheckOnline
 import com.thoughtcrimes.securesms.wallet.OnBackPressedListener
+import com.thoughtcrimes.securesms.wallet.send.interfaces.SendConfirm
+import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
+import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
+import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
+import timber.log.Timber
 import java.lang.ClassCastException
+import java.lang.NumberFormatException
+import java.util.concurrent.Executor
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -135,7 +149,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     ConversationActionModeCallbackDelegate, VisibleMessageContentViewDelegate,
     RecipientModifiedListener,
     SearchBottomBar.EventListener, LoaderManager.LoaderCallbacks<Cursor>,
-    ConversationMenuHelper.ConversationMenuListener, OnBackPressedListener {
+    ConversationMenuHelper.ConversationMenuListener, OnBackPressedListener,SendConfirm {
     // TODO: Rename and change types of parameters
 
     private var param1: String? = null
@@ -361,10 +375,31 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     var listenerCallback: Listener? = null
     private var mContext: Context? = null
 
+    var senderBeldexAddress: String? = null
+    var sendBDXAmount: String? = null
+
+    private fun getTxData(): TxData {
+        return txData
+    }
+
+    private var txData = TxData()
+
+    var pendingTransaction: PendingTransaction? = null
+    var pendingTx: PendingTx? = null
+    private var totalFunds: Long = 0
+    val MIXIN = 0
+    private var isResume:Boolean = false
+    private val CLEAN_FORMAT = "%." + Helper.BDX_DECIMALS.toString() + "f"
+    var committedTx: PendingTx? = null
+
     interface Listener {
         fun getConversationViewModel(): ConversationViewModel.AssistedFactory
         fun gettextSecurePreferences(): TextSecurePreferences
-        fun walletOnBackPressed() //-
+        fun onDisposeRequest()
+        val totalFunds: Long
+        fun onPrepareSend(tag: String?, data: TxData?)
+        fun onSend(notes: UserNotes?)
+        fun onBackPressedFun()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -417,7 +452,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         messageToScrollTimestamp.set(requireArguments().getLong(SCROLL_MESSAGE_ID, -1))
         messageToScrollAuthor.set(requireArguments().getParcelable<Address>(SCROLL_MESSAGE_AUTHOR))
 
-
+        if (!thread.isGroupRecipient && thread.hasApprovedMe()) {
+           senderBeldexAddress =  getBeldexAddress(thread.address)
+        }
+        AsyncGetUnlockedBalance(listenerCallback).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
         setUpRecyclerView()
         setUpToolBar()
         setUpInputBar()
@@ -1452,7 +1490,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             ConversationMenuHelper.showAllMedia(requireActivity(), recipient)
         }
         binding.backToHomeBtn.setOnClickListener{
-            listenerCallback?.walletOnBackPressed()
+            backToHome()
+
         }
 
     }
@@ -1669,7 +1708,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             val openGroup = beldexThreadDb.getOpenGroupChat(viewModel.threadId)
             if (openGroup != null) {
                 val userCount = beldexApiDb.getUserCount(openGroup.room, openGroup.server) ?: 0
-                binding.conversationSubtitleView.text = requireActivity().getString(R.string.ConversationActivity_member_count, userCount)
+                binding.conversationSubtitleView.text =
+                    getString(R.string.ConversationActivity_member_count, userCount)
             } else {
                 binding.conversationSubtitleView.isVisible = false
             }
@@ -1758,7 +1798,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                                 }
                                 TelephonyManager.CALL_STATE_IDLE -> {
                                     viewModel.recipient?.let { recipient ->
-                                        call(requireActivity().applicationContext, recipient)
+                                        call(requireActivity(), recipient)
                                     }
                                 }
                             }
@@ -2418,4 +2458,246 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         return false
     }
 
+    private fun getBeldexAddress(address: Address): String {
+        val contact = bchatContactDb.getContactWithBchatID(address.toString())
+        val beldexAddress =
+            contact?.displayBeldexAddress(Contact.ContactContext.REGULAR) ?: address.toString()
+        Log.d("Beldex", "value of Beldex address $beldexAddress")
+        return beldexAddress
+    }
+
+      fun sendBDX() {
+        val txData: TxData = getTxData()
+        txData.destinationAddress = senderBeldexAddress
+        if (getCleanAmountString(getBDXAmount()).equals(
+                Wallet.getDisplayAmount(totalFunds)))
+                {
+            val amount = (totalFunds - 10485760)// 10485760 == 050000000
+            val bdx = getCleanAmountString(getBDXAmount())
+            if (bdx != null) {
+                txData.amount = amount
+            } else {
+                txData.amount = 0L
+            }
+
+        } else {
+            val bdx =
+                getCleanAmountString(getBDXAmount())
+            if (bdx != null) {
+                txData.amount = Wallet.getAmountFromString(bdx)
+            } else {
+                txData.amount = 0L
+            }
+        }
+         txData.userNotes = UserNotes("-")
+        if(TextSecurePreferences.getFeePriority(requireActivity())==0){
+            txData.priority = PendingTransaction.Priority.Priority_Slow
+        }else{
+            txData.priority = PendingTransaction.Priority.Priority_Flash
+        }
+         Log.d("Beldex","Value of txData amount ${txData.amount}")
+         Log.d("Beldex","Value of txData destination address ${txData.destinationAddress}")
+         Log.d("Beldex","Value of txData priority ${txData.priority}")
+        txData.mixin = MIXIN
+        //Important
+        val lockManager: LockManager<CustomPinActivity> =
+            LockManager.getInstance() as LockManager<CustomPinActivity>
+        lockManager.enableAppLock(requireActivity(), CustomPinActivity::class.java)
+        val intent = Intent(requireActivity(), CustomPinActivity::class.java)
+        intent.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN)
+        intent.putExtra("change_pin", false)
+        intent.putExtra("send_authentication", true)
+        resultLaunchers.launch(intent)
+    }
+
+    override fun sendFailed(errorText: String?) {
+        binding.progressBar.visibility = View.INVISIBLE
+        //  sendButtonEnabled()
+        showAlert(getString(R.string.send_create_tx_error_title), errorText!!)
+    }
+
+    override fun createTransactionFailed(errorText: String?) {
+         hideProgress()
+        //sendButtonEnabled()
+        showAlert(getString(R.string.send_create_tx_error_title), errorText!!)
+    }
+
+    override fun transactionCreated(txTag: String?, pendingTransaction: PendingTransaction?) {
+        // ignore txTag - the app flow ensures this is the correct tx
+        Log.d("onTransactionCreated Status_Ok", "----")
+        Log.d("Beldex","pending transaction called 1")
+         hideProgress()
+        if (isResume) {
+            this.pendingTransaction = pendingTransaction
+            refreshTransactionDetails()
+        } else {
+            this.disposeTransaction()
+        }
+    }
+
+    // callbacks from send service
+    fun onTransactionCreated(txTag: String?, pendingTransaction: PendingTransaction?) {
+        pendingTx = PendingTx(pendingTransaction)
+        transactionCreated(txTag, pendingTransaction)
+    }
+
+    fun onCreateTransactionFailed(errorText: String?) {
+        //Important
+        /*val confirm: SendConfirm? = getSendConfirm()
+        if (confirm != null) {
+            confirm.createTransactionFailed(errorText)
+        }*/
+        createTransactionFailed(errorText)
+    }
+
+    private fun showAlert(title: String, message: String) {
+        val builder = AlertDialog.Builder(
+            requireActivity(), R.style.backgroundColor
+        )
+        builder.setCancelable(true).setTitle(title).setMessage(message).create().show()
+    }
+
+    fun disposeTransaction() {
+        pendingTx = null
+        listenerCallback!!.onDisposeRequest()
+    }
+
+    var inProgress = false
+
+    private fun hideProgress() {
+        binding.progressBar.visibility = View.GONE
+        inProgress = false
+    }
+
+    private fun showProgress() {
+        binding.progressBar.visibility = View.VISIBLE
+        inProgress = true
+    }
+
+    private fun refreshTransactionDetails() {
+        Timber.d("refreshTransactionDetails()")
+        Log.d("Beldex","refreshTransactionDetails called value of pending transaction $pendingTransaction")
+        if (pendingTransaction != null) {
+            Log.d("Beldex","refreshTransactionDetails called 1")
+            val txData: TxData = getTxData()
+            //Insert Recipient Address
+            if(TextSecurePreferences.getSaveRecipientAddress(requireActivity())) {
+                val insertRecipientAddress =
+                    DatabaseComponent.get(requireActivity()).bchatRecipientAddressDatabase()
+                try {
+                    insertRecipientAddress.insertRecipientAddress(
+                        pendingTransaction!!.firstTxId,
+                        txData.destinationAddress
+                    )
+                }catch(e: IndexOutOfBoundsException){
+                    Toast.makeText(requireContext(),getString(R.string.please_try_again_later),Toast.LENGTH_SHORT).show()
+                }
+            }
+            InChatSend(pendingTransaction!!,txData, this).show(requireActivity().supportFragmentManager,"")
+        }
+    }
+
+
+
+    inner class AsyncGetUnlockedBalance(val wallet: Listener?) :
+        AsyncTaskCoroutine<Executor?, Boolean?>() {
+        override fun onPreExecute() {
+            super.onPreExecute()
+
+        }
+
+        override fun doInBackground(vararg params: Executor?): Boolean {
+            totalFunds = wallet!!.totalFunds
+            return true
+        }
+
+        override fun onPostExecute(result: Boolean?) {
+
+        }
+    }
+
+    private fun getCleanAmountString(enteredAmount: String): String? {
+        return try {
+            val amount = enteredAmount.toDouble()
+            if (amount >= 0) {
+                String.format(Locale.US, CLEAN_FORMAT, amount)
+            } else {
+                null
+            }
+        } catch (ex: NumberFormatException) {
+            null
+        }
+    }
+
+    private val resultLaunchers = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        Log.d("Beldex","resultLaunchers called")
+        if (result.resultCode == Activity.RESULT_OK) {
+            Log.d("Beldex","resultLaunchers called 1")
+            onResumeFragment()
+        }
+    }
+
+
+    private fun onResumeFragment(){
+        Timber.d("onResumeFragment()")
+        Helper.hideKeyboard(activity)
+        isResume = true
+
+        //val txData: TxData = getTxData()
+        //tvTxAddress.setText(txData.destinationAddress)
+        //val notes: UserNotes = getTxData().userNotes
+        /*if (notes != null && notes.note.isNotEmpty()) {
+            //tvTxNotes.setText(notes.note)
+            //fragmentSendConfirmNotesLinearLayout.setVisibility(View.VISIBLE)
+        } else {
+            //fragmentSendConfirmNotesLinearLayout.setVisibility(View.GONE)
+        }*/
+        refreshTransactionDetails()
+        if (pendingTransaction == null && !inProgress) {
+            Log.d("Beldex","pending transaction called 2")
+           /* binding.sendButton.isEnabled=false
+            binding.sendButton.isClickable=false*/
+            showProgress()
+            Log.d("Beldex","value of txData $txData")
+            prepareSend(txData)
+        }
+    }
+
+    private fun prepareSend(txData: TxData?) {
+        Log.d("Beldex","pending transaction called 3")
+        listenerCallback!!.onPrepareSend(null, txData)
+    }
+
+    fun send() {
+        commitTransaction()
+        requireActivity().runOnUiThread { binding.progressBar.visibility = View.VISIBLE }
+    }
+
+    private fun commitTransaction() {
+        Timber.d("REALLY SEND")
+        //disableNavigation() // committed - disable all navigation
+        listenerCallback!!.onSend(txData.userNotes)
+        committedTx = pendingTx
+    }
+
+
+    private fun getBDXAmount(): String {
+        sendBDXAmount = binding.inputBar.text.trim() ?: return ""
+        return sendBDXAmount as String
+    }
+
+    //If Transaction successfully completed after call this function
+    fun onTransactionSent(txId: String?) {
+        hideProgress()
+        //Important
+        Timber.d("txid=%s", txId)
+        //activityCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
+        Log.d("Beldex","Transaction Completed")
+        InChatSendSuccess(this).show(requireActivity().supportFragmentManager,"")
+    }
+
+    fun transactionFinished(){
+       //sendButtonEnabled()
+        listenerCallback!!.onBackPressedFun()
+    }
 }

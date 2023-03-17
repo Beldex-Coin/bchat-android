@@ -492,4 +492,21 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </RelativeLayout>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:layout_weight="1"
+        app:layout_constraintDimensionRatio="1:1"
+        app:lottie_fileName="load_animation.json"
+        app:lottie_loop="true"
+        app:lottie_speed="1"
+        app:lottie_autoPlay="true"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        app:lottie_enableMergePathsForKitKatAndAbove="true"
+        tools:ignore="ContentDescription"/>
+
 </LinearLayout>

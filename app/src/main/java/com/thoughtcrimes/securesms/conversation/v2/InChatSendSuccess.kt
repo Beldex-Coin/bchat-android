@@ -1,0 +1,27 @@
+package com.thoughtcrimes.securesms.conversation.v2
+
+import android.view.LayoutInflater
+import androidx.appcompat.app.AlertDialog
+import com.thoughtcrimes.securesms.conversation.v2.utilities.BaseDialog
+import io.beldex.bchat.databinding.ActivityInChatSendSuccessBinding
+
+class InChatSendSuccess(
+    private val context: ConversationFragmentV2
+) : BaseDialog() {
+    private lateinit var binding: ActivityInChatSendSuccessBinding
+
+
+    override fun setContentView(builder: AlertDialog.Builder) {
+        binding = ActivityInChatSendSuccessBinding.inflate(LayoutInflater.from(requireContext()))
+
+        with(binding) {
+            okButton.setOnClickListener {
+                context.transactionFinished()
+                dismiss()
+            }
+        }
+
+        builder.setView(binding.root)
+        builder.setCancelable(false)
+    }
+}

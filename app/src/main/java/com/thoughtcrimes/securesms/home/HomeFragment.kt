@@ -1,5 +1,6 @@
 package com.thoughtcrimes.securesms.home
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.*
 import android.database.Cursor
@@ -1033,12 +1034,6 @@ class HomeFragment : Fragment(),ConversationClickListener,
         } else if (n >= 0) {
             binding.progressBar.isIndeterminate = false
             binding.progressBar.progress = n
-            /*if (tvWalletAccountStatus.getText() === "") {
-                tvWalletAccountStatus.setText("--")
-            }*/
-            /*if (binding.walletName.text === "") {
-                binding.walletName.text = "--"
-            }*/
             binding.progressBar.visibility = View.VISIBLE
         } else if(n==-2){
             binding.progressBar.visibility = View.VISIBLE
@@ -1161,8 +1156,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
                     // AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
                     android.util.Log.d("showBalance->","Synchronized")
                     sync =
-                        getString(R.string.status_synchronized)//getString(R.string.status_synced) + " " + formatter.format(wallet.blockChainHeight)
-                    //binding.syncStatus.setTextColor(resources.getColor(R.color.green_color))
+                        getString(R.string.status_synchronized)
                     binding.syncStatus.setTextColor(
                         ContextCompat.getColor(
                             requireActivity().applicationContext,
@@ -1213,6 +1207,31 @@ class HomeFragment : Fragment(),ConversationClickListener,
             //WalletFragment Functionality
             //binding.syncStatusIcon.visibility=View.GONE
         }
+    }
+
+    @SuppressLint("ResourceType")
+    fun onSynced() {
+        //WalletFragment Functionality-
+       /* if (!activityCallback?.isWatchOnly!!) {
+            binding.sendCardViewButton.isEnabled = true
+            binding.sendCardViewButton.setBackgroundResource(R.drawable.send_card_enabled_background)
+            binding.sendCardViewButtonText.setTextColor(ContextCompat.getColor(requireActivity(),R.color.white))
+            binding.scanQrCodeImg.isEnabled = true
+            binding.scanQrCodeImg.setImageResource(R.drawable.ic_scan_qr)
+        }*/
+    }
+
+    var walletLoaded = false
+
+    fun onLoaded() {
+        walletLoaded = true
+        showReceive()
+    }
+
+    private fun showReceive() {
+        /*if (walletLoaded) {
+            binding.receiveCardViewButton.isEnabled = true
+        }*/
     }
 
 }

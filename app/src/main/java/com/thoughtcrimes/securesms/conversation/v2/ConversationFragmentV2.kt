@@ -3,6 +3,7 @@ package com.thoughtcrimes.securesms.conversation.v2
 import android.Manifest
 import android.animation.FloatEvaluator
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.*
 import android.content.Context.CLIPBOARD_SERVICE
@@ -132,6 +133,7 @@ import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
 import timber.log.Timber
 import java.lang.ClassCastException
 import java.lang.NumberFormatException
+import java.text.NumberFormat
 import java.util.concurrent.Executor
 
 // TODO: Rename parameter arguments, choose names that match
@@ -392,6 +394,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private val CLEAN_FORMAT = "%." + Helper.BDX_DECIMALS.toString() + "f"
     var committedTx: PendingTx? = null
 
+    private var syncText: String? = null
+    private var syncProgress = -1
+    private var firstBlock: Long = 0
+    private var balance: Long = 0
+    private val formatter = NumberFormat.getInstance()
+    
+    
     interface Listener {
         fun getConversationViewModel(): ConversationViewModel.AssistedFactory
         fun gettextSecurePreferences(): TextSecurePreferences
@@ -402,6 +411,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         fun onBackPressedFun()
 
         fun walletOnBackPressed() //-
+
+        //Wallet
+        fun hasBoundService(): Boolean
+        val connectionStatus: Wallet.ConnectionStatus?
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -2698,5 +2711,223 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     fun transactionFinished(){
        //sendButtonEnabled()
         listenerCallback!!.onBackPressedFun()
+    }
+
+    @SuppressLint("ResourceType")
+    fun onSynced() {
+        //WalletFragment Functionality-
+        /* if (!activityCallback?.isWatchOnly!!) {
+             binding.sendCardViewButton.isEnabled = true
+             binding.sendCardViewButton.setBackgroundResource(R.drawable.send_card_enabled_background)
+             binding.sendCardViewButtonText.setTextColor(ContextCompat.getColor(requireActivity(),R.color.white))
+             binding.scanQrCodeImg.isEnabled = true
+             binding.scanQrCodeImg.setImageResource(R.drawable.ic_scan_qr)
+         }*/
+    }
+
+    fun setProgress(text: String?) {
+        //WalletFragment Functionality
+        /*if(text==getString(R.string.reconnecting) || text==getString(R.string.status_wallet_connecting)){
+           binding.syncStatusIcon.visibility=View.GONE
+        }*/
+        syncText = text
+        binding.syncStatus.text = text
+    }
+
+    fun setProgress(n: Int) {
+        Log.d("Beldex","mConnection value of n $n")
+        syncProgress = n
+        if (n > 100) {
+            binding.blockProgressBar.isIndeterminate = true
+            binding.blockProgressBar.visibility = View.VISIBLE
+        } else if (n >= 0) {
+            binding.blockProgressBar.isIndeterminate = false
+            binding.blockProgressBar.progress = n
+            binding.blockProgressBar.visibility = View.VISIBLE
+        } else if(n==-2){
+            binding.blockProgressBar.visibility = View.VISIBLE
+            binding.blockProgressBar.isIndeterminate = false
+            binding.blockProgressBar.progress=100
+        }else { // <0
+            binding.blockProgressBar.visibility = View.GONE
+        }
+    }
+
+    fun onRefreshed(wallet: Wallet, full: Boolean) {
+        var full = full
+        //WalletFragment Functionality
+        /*if (adapter!!.needsTransactionUpdateOnNewBlock()) {
+            *//* wallet.refreshHistory()*//*
+            full = true
+            Log.d("TransactionList","full = true 1")
+        }
+        if (full) {
+            Log.d("TransactionList","full = true 2")
+            val list: MutableList<TransactionInfo> = ArrayList()
+            val streetHeight: Long = activityCallback!!.streetModeHeight
+            wallet.refreshHistory()
+            for (info in wallet.history.all) {
+                //Log.d("TxHeight=%d, Label=%s", info.blockheight.toString(), info.subaddressLabel)
+                if ((info.isPending || info.blockheight >= streetHeight)
+                    && !dismissedTransactions.contains(info.hash)
+                ) list.add(info)
+            }
+            adapter!!.setInfos(list)
+            adapterItems.clear()
+            adapterItems.addAll(adapter!!.infoItems!!)
+            if (accountIndex != wallet.accountIndex) {
+                accountIndex = wallet.accountIndex
+                binding.transactionList.scrollToPosition(0)
+            }
+
+            //SteveJosephh21
+            if (adapter!!.itemCount > 0) {
+                binding.transactionList.visibility = View.VISIBLE
+                binding.emptyContainerLayout.visibility = View.GONE
+            } else {
+                binding.filterTransactionsIcon.isClickable = true // default = false
+                binding.transactionList.visibility = View.GONE
+                binding.emptyContainerLayout.visibility = View.VISIBLE
+            }*/
+        //Steve Josephh21 ANRS
+        /*if (CheckOnline.isOnline(requireContext())) {
+            check(activityCallback!!.hasBoundService()) { "WalletService not bound." }
+            val daemonConnected: Wallet.ConnectionStatus = activityCallback!!.connectionStatus!!
+            Log.d("Beldex", "Value of daemon connection 1 $daemonConnected")
+            if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
+                Log.d("Beldex", "onRefreshed Called unlocked balance updated")
+                AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+            }
+        }
+    }*/
+        updateStatus(wallet)
+    }
+
+    private fun updateStatus(wallet: Wallet) {
+        if (!isAdded) return
+        Log.d("Beldex", "updateStatus()")
+        //WalletFragment Functionality
+        /*if (walletTitle == null || accountIdx != wallet.accountIndex) {
+            accountIdx = wallet.accountIndex
+            setActivityTitle(wallet)
+        }*/
+        Log.d("Beldex", "isOnline 0  ${CheckOnline.isOnline(requireContext())}")
+        if(CheckOnline.isOnline(requireContext())) {
+            Log.d("Beldex", "isOnline 1  ${CheckOnline.isOnline(requireContext())}")
+            balance = wallet.balance
+            Log.d("Beldex", "value of balance $balance")
+            //unlockedBalance = wallet.unlockedBalance
+            //refreshBalance(wallet.isSynchronized)
+            val sync: String
+            check(listenerCallback!!.hasBoundService()) { "WalletService not bound." }
+            val daemonConnected: Wallet.ConnectionStatus = listenerCallback!!.connectionStatus!!
+            Log.d("Beldex","Value of daemon connection $daemonConnected")
+            if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
+                if (!wallet.isSynchronized) {
+                    ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(true)
+                    Log.d("Beldex","Height value of daemonHeight ${wallet.daemonBlockChainHeight}")
+                    //Log.d("Beldex","Height value of daemonHeight one  ${activityCallback!!.daemonHeight}")
+                    Log.d("Beldex","Height value of blockChainHeight ${wallet.blockChainHeight}")
+                    Log.d("Beldex","Height value of approximateBlockChainHeight ${wallet.approximateBlockChainHeight}")
+                    Log.d("Beldex","Height value of restoreHeight ${wallet.restoreHeight}")
+                    Log.d("Beldex","Height value of daemonBlockChainTargetHeight ${wallet.daemonBlockChainTargetHeight}")
+
+                    val daemonHeight: Long = wallet.daemonBlockChainHeight
+                    //val daemonHeight: Long = activityCallback!!.daemonHeight
+                    val walletHeight = wallet.blockChainHeight
+                    val n = daemonHeight - walletHeight
+                    sync = formatter.format(n) + " " + getString(R.string.status_remaining)
+                    if (firstBlock == 0L) {
+                        firstBlock = walletHeight
+                    }
+                    var x = (100 - Math.round(100f * n / (1f * daemonHeight  - firstBlock))).toInt()
+                    if (x == 0) x = 101 // indeterminate
+                    Log.d("Beldex","App crash issue value of height daemon height $daemonHeight")
+                    Log.d("Beldex","App crash issue value of height walletHeight height $walletHeight")
+                    Log.d("Beldex","App crash issue value of height x height $x")
+                    Log.d("Beldex","App crash issue value of height n height $n")
+                    Log.d("Beldex","App crash issue value of height n firstBlock $firstBlock")
+                    setProgress(x)
+                    //WalletFragment Functionality
+                    /*ivSynced.setVisibility(View.GONE);
+                    binding.filterTransactionsIcon.isClickable = false
+                    activityCallback!!.hiddenRescan(false)
+                    binding.syncStatusIcon.visibility=View.GONE*/
+                    binding.syncStatus.setTextColor(
+                        ContextCompat.getColor(
+                            requireActivity().applicationContext,
+                            R.color.green_color
+                        )
+                    )
+                } else {
+                    ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(false)
+                    //Steve Josephh21 ANRS
+                    // AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+                    Log.d("showBalance->","Synchronized")
+                    sync =
+                        getString(R.string.status_synchronized)
+                    binding.syncStatus.setTextColor(
+                        ContextCompat.getColor(
+                            requireActivity().applicationContext,
+                            R.color.green_color
+                        )
+                    )
+                    //WalletFragment Functionality
+                    /*ivSynced.setVisibility(View.VISIBLE);
+                    binding.filterTransactionsIcon.isClickable = true //default = adapter!!.itemCount > 0
+                    activityCallback!!.hiddenRescan(true)
+                    binding.syncStatusIcon.visibility = View.VISIBLE
+                    binding.syncStatusIcon.setOnClickListener {
+                        if (CheckOnline.isOnline(requireActivity())) {
+                            if (wallet != null) {
+                                checkSyncInfo(requireActivity(), wallet.restoreHeight)
+                            }
+                        }
+                    }*/
+                }
+            } else {
+                sync = getString(R.string.failed_connected_to_the_node)
+                setProgress(-1)
+                //WalletFragment Functionality
+                //binding.syncStatusIcon.visibility=View.GONE
+                //SteveJosephh21
+                //binding.transactionTitle.visibility = View.INVISIBLE
+                //binding.transactionLayoutCardView.visibility = View.GONE
+                //anchorBehavior.setHideable(true)
+                binding.syncStatus.setTextColor(
+                    ContextCompat.getColor(
+                        requireActivity().applicationContext,
+                        R.color.red
+                    )
+                )
+            }
+            setProgress(sync)
+        }
+        else
+        {
+            Log.d("Beldex","isOnline else 2")
+            setProgress(getString(R.string.no_node_connection))
+            binding.syncStatus.setTextColor(
+                ContextCompat.getColor(
+                    requireActivity().applicationContext,
+                    R.color.red
+                )
+            )
+            //WalletFragment Functionality
+            //binding.syncStatusIcon.visibility=View.GONE
+        }
+    }
+
+    var walletLoaded = false
+
+    fun onLoaded() {
+        walletLoaded = true
+        showReceive()
+    }
+
+    private fun showReceive() {
+        /*if (walletLoaded) {
+            binding.receiveCardViewButton.isEnabled = true
+        }*/
     }
 }

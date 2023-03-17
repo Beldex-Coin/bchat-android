@@ -75,7 +75,6 @@ import com.thoughtcrimes.securesms.model.*
 import com.thoughtcrimes.securesms.seed.SeedPermissionActivity
 import com.thoughtcrimes.securesms.wallet.*
 import com.thoughtcrimes.securesms.wallet.info.WalletInfoActivity
-import com.thoughtcrimes.securesms.wallet.listener.OnBlockUpdateListener
 import com.thoughtcrimes.securesms.wallet.node.*
 import com.thoughtcrimes.securesms.wallet.receive.ReceiveFragment
 import com.thoughtcrimes.securesms.wallet.rescan.RescanDialog
@@ -138,8 +137,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     //Wallet
-    private var requestStreetMode = false
-    private var password: String? = null
     private var streetMode: Long = 0
     private var uri: String? = null
 
@@ -1238,8 +1235,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }
         try {
             Log.d("Beldex","mConnection onRefreshed called ")
-            //WalletFragment Functionality
-            // val walletFragment = getWalletFragment()
+            //WalletFragment Functionality --
+            val currentFragment = getCurrentFragment()
             if (wallet.isSynchronized) {
                 Log.d("Beldex","mConnection onRefreshed called 1")
                 //releaseWakeLock(RELEASE_WAKE_LOCK_DELAY) // the idea is to stay awake until synced
@@ -1248,15 +1245,33 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                     onProgress(-2)//onProgress(-1)
                     saveWallet() // save on first sync
                     synced = true
-                    //WalletFragment Functionality
-                    // runOnUiThread(walletFragment::onSynced)
+                    //WalletFragment Functionality --
+                    when (currentFragment) {
+                        is HomeFragment -> {
+                            runOnUiThread(currentFragment::onSynced)
+                        }
+                        is ConversationFragmentV2 -> {
+                            runOnUiThread(currentFragment::onSynced)
+                        }
+                        is WalletFragment -> {
+                            runOnUiThread(currentFragment::onSynced)
+                        }
+                    }
                 }
             }
             runOnUiThread {
-                //WalletFragment Functionality
-                getHomeFragment()!!.onRefreshed(wallet,full)
-                // walletFragment.onRefreshed(wallet, full)
-                updateCurrentFragment(wallet)
+                //WalletFragment Functionality --
+                when (currentFragment) {
+                    is HomeFragment -> {
+                        currentFragment.onRefreshed(wallet,full)
+                    }
+                    is ConversationFragmentV2 -> {
+                        currentFragment.onRefreshed(wallet,full)
+                    }
+                    is WalletFragment -> {
+                        currentFragment.onRefreshed(wallet,full)
+                    }
+                }
             }
             return true
         } catch (ex: ClassCastException) {
@@ -1267,20 +1282,20 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         return false
     }
 
-    private fun updateCurrentFragment(wallet: Wallet) {
-        val fragment = getCurrentFragment()
-        if (fragment is OnBlockUpdateListener) {
-            (fragment as OnBlockUpdateListener?)!!.onBlockUpdate(wallet)
-        }
-    }
-
     override fun onProgress(text: String?) {
         try {
-            //WalletFragment Functionality
-            /*val walletFragment = getWalletFragment()
-               runOnUiThread { walletFragment.setProgress(text) }*/
-            val homeFragment = getHomeFragment()
-            runOnUiThread { homeFragment!!.setProgress(text) }
+            //WalletFragment Functionality --
+            when (val currentFragment = getCurrentFragment()) {
+                is HomeFragment -> {
+                    runOnUiThread { currentFragment.setProgress(text) }
+                }
+                is ConversationFragmentV2 -> {
+                    runOnUiThread { currentFragment.setProgress(text) }
+                }
+                is WalletFragment -> {
+                    runOnUiThread { currentFragment.setProgress(text) }
+                }
+            }
         } catch (ex: ClassCastException) {
             // not in wallet fragment (probably send beldex)
             Timber.d(ex.localizedMessage)
@@ -1291,10 +1306,18 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     override fun onProgress(n: Int) {
         runOnUiThread {
             try {
-                //WalletFragment Functionality
-                /*val walletFragment: WalletFragment = getWalletFragment()
-                if (walletFragment != null) walletFragment.setProgress(n)*/
-                getHomeFragment()?.setProgress(n)
+                //WalletFragment Functionality --
+                when (val currentFragment = getCurrentFragment()) {
+                    is HomeFragment -> {
+                        currentFragment.setProgress(n)
+                    }
+                    is ConversationFragmentV2 -> {
+                        currentFragment.setProgress(n)
+                    }
+                    is WalletFragment -> {
+                        currentFragment.setProgress(n)
+                    }
+                }
             } catch (ex: ClassCastException) {
                 // not in wallet fragment (probably send monero)
                 Timber.d(ex.localizedMessage)
@@ -1323,8 +1346,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     override fun onTransactionCreated(tag: String, pendingTransaction: PendingTransaction) {
         try {
-            //WalletFragment Functionality
-            val sendFragment = getCurrentFragment() as ConversationFragmentV2?
+            //WalletFragment Functionality --
+            val currentFragment = getCurrentFragment()
             runOnUiThread {
                 //dismissProgressDialog()
                 val status = pendingTransaction.status
@@ -1332,13 +1355,21 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 Log.d("transaction status 1 i %s", status.toString())
                 if (status !== PendingTransaction.Status.Status_Ok) {
                     Log.d("onTransactionCreated not Status_Ok","-")
-                    val errorText = pendingTransaction!!.errorString
+                    val errorText = pendingTransaction.errorString
                     getWallet()!!.disposePendingTransaction()
-                    sendFragment!!.onCreateTransactionFailed(errorText)
+                    if(currentFragment is ConversationFragmentV2){
+                        currentFragment.onCreateTransactionFailed(errorText)
+                    }else if(currentFragment is SendFragment){
+                        currentFragment.onCreateTransactionFailed(errorText)
+                    }
                 } else {
                     Log.d("transaction status 1 ii %s", status.toString())
                     Log.d("onTransactionCreated Status_Ok","-")
-                    sendFragment!!.onTransactionCreated("txTag", pendingTransaction)
+                    if(currentFragment is ConversationFragmentV2){
+                        currentFragment.onTransactionCreated("txTag", pendingTransaction)
+                    }else if(currentFragment is SendFragment){
+                        currentFragment.onTransactionCreated("txTag", pendingTransaction)
+                    }
                 }
             }
         } catch (ex: ClassCastException) {
@@ -1353,9 +1384,13 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     override fun onTransactionSent(txId: String?) {
         try {
-            //WalletFragment Functionality
-            val sendFragment = getCurrentFragment() as ConversationFragmentV2?
-            runOnUiThread { sendFragment!!.onTransactionSent(txId) }
+            //WalletFragment Functionality --
+            val currentFragment = getCurrentFragment()
+            if(currentFragment is ConversationFragmentV2){
+                runOnUiThread { currentFragment.onTransactionSent(txId) }
+            }else if(currentFragment is SendFragment){
+                runOnUiThread { currentFragment.onTransactionSent(txId) }
+            }
         } catch (ex: ClassCastException) {
             // not in spend fragment
             Timber.d(ex.localizedMessage)
@@ -1408,18 +1443,28 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             Log.d("Beldex", "Wallet start called 7 1 ")
             haveWallet = true
             invalidateOptionsMenu()
-            if (requestStreetMode) onEnableStreetMode()
             Log.d("Beldex", "Wallet start called 7 2 ")
-            //WalletFragment Functionality
-            //val walletFragment = getWalletFragment()
-            // Log.d("Beldex", "Wallet start called 7  $walletFragment")
+            //WalletFragment Functionality --
+            val currentFragment = getCurrentFragment()
             runOnUiThread {
-                updateAccountsHeader()
-                //WalletFragment Functionality
-                /*if (walletFragment != null) {
-                    Log.d("Beldex", "Wallet start called 8 ")
-                    walletFragment.onLoaded()
-                }*/
+                //WalletFragment Functionality --
+                when (currentFragment) {
+                    is HomeFragment -> {
+                        Log.d("Beldex", "Wallet start called 7  $currentFragment")
+                        Log.d("Beldex", "Wallet start called 8 ")
+                        currentFragment.onLoaded()
+                    }
+                    is ConversationFragmentV2 -> {
+                        Log.d("Beldex", "Wallet start called 7  $currentFragment")
+                        Log.d("Beldex", "Wallet start called 8 ")
+                        currentFragment.onLoaded()
+                    }
+                    is WalletFragment -> {
+                        Log.d("Beldex", "Wallet start called 7  $currentFragment")
+                        Log.d("Beldex", "Wallet start called 8 ")
+                        currentFragment.onLoaded()
+                    }
+                }
             }
         }
     }
@@ -1583,7 +1628,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         if (walletName != null && walletPassword != null) {
             // acquireWakeLock()
             // we can set the streetmode height AFTER opening the wallet
-            requestStreetMode = false
             if (CheckOnline.isOnline(this)) {
                 Log.d("Beldex", "isOnline 5 if")
                 connectWalletService(walletName, walletPassword)
@@ -1722,35 +1766,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         } else {
             Timber.e("Service not bound")
         }
-    }
-
-    private fun updateAccountsHeader() {
-        /*val wallet = getWallet()
-        val tvName: TextView = accountsView.getHeaderView(0).findViewById<TextView>(R.id.tvName)
-        tvName.text = wallet.name*/
-    }
-
-    private fun onEnableStreetMode() {
-        enableStreetMode(true)
-        updateStreetMode()
-    }
-
-    private fun enableStreetMode(enable: Boolean) {
-        if (enable) {
-            if(getWallet()!=null) {
-                streetMode= getWallet()!!.daemonBlockChainHeight
-            }
-        } else {
-            streetMode = 0
-        }
-        val walletFragment = getWalletFragment()
-        if (walletFragment != null) walletFragment.resetDismissedTransactions()
-        forceUpdate(this)
-        //runOnUiThread { if (getWallet() != null) updateAccountsBalance() }
-    }
-
-    private fun updateStreetMode() {
-        invalidateOptionsMenu()
     }
 
     private var startScanFragment = false

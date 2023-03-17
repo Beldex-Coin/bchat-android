@@ -18,17 +18,14 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.data.*
 import com.thoughtcrimes.securesms.model.*
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.push
-import com.thoughtcrimes.securesms.wallet.listener.OnBlockUpdateListener
 import com.thoughtcrimes.securesms.wallet.node.NodeFragment
 import com.thoughtcrimes.securesms.wallet.receive.ReceiveFragment
-import com.thoughtcrimes.securesms.wallet.rescan.RescanDialog
 import com.thoughtcrimes.securesms.wallet.scanner.WalletScannerFragment
 import com.thoughtcrimes.securesms.wallet.scanner.ScannerFragment
 import com.thoughtcrimes.securesms.wallet.send.SendFragment
@@ -39,7 +36,6 @@ import com.thoughtcrimes.securesms.wallet.utils.common.LoadingActivity
 import com.thoughtcrimes.securesms.wallet.widget.Toolbar
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityWalletBinding
-import io.beldex.bchat.databinding.AlertSyncOptionsBinding
 import kotlinx.coroutines.NonCancellable.isCancelled
 import timber.log.Timber
 import java.io.File
@@ -920,7 +916,6 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             }
             runOnUiThread {
                 walletFragment.onRefreshed(wallet, full)
-                updateCurrentFragment(wallet)
             }
             return true
         } catch (ex: ClassCastException) {
@@ -929,14 +924,6 @@ class WalletActivity : SecureActivity(), WalletFragment.Listener, WalletService.
             // keep calm and carry on
         }
         return false
-    }
-
-
-    private fun updateCurrentFragment(wallet: Wallet) {
-        val fragment = getCurrentFragment()
-        if (fragment is OnBlockUpdateListener) {
-            (fragment as OnBlockUpdateListener?)!!.onBlockUpdate(wallet)
-        }
     }
 
     private fun saveWallet() {

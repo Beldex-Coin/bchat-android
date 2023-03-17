@@ -328,6 +328,37 @@
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="-12dp"
             android:visibility="gone" />
+        <ProgressBar
+            android:id="@+id/blockProgressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="false"
+            android:maxHeight="10dp"
+            android:minHeight="10dp"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/syncStatusLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp">
+
+            <TextView
+                android:id="@+id/syncStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textColor="@color/green_color"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/blockedBanner"
@@ -337,6 +368,7 @@
             android:gravity="center"
             android:orientation="vertical"
             android:visibility="gone"
+            android:layout_marginTop="35dp"
             tools:visibility="visible">
 
             <TextView

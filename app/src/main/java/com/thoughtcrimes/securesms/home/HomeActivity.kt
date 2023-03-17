@@ -554,16 +554,22 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 intent.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN)
                 intent.putExtra("change_pin",false)
                 intent.putExtra("send_authentication",false)
-                push(intent)
+                customPinActivityResultLauncher.launch(intent)
             }else{
                 intent.putExtra(AppLock.EXTRA_TYPE, AppLock.ENABLE_PINLOCK)
                 intent.putExtra("change_pin",false)
                 intent.putExtra("send_authentication",false)
-                push(intent)
+                customPinActivityResultLauncher.launch(intent)
             }
         }else{
             val intent = Intent(this, WalletInfoActivity::class.java)
             push(intent)
+        }
+    }
+
+    private var customPinActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            replaceFragment(WalletFragment(), null, null)
         }
     }
 
@@ -829,16 +835,16 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             // cast its IBinder to a concrete class and directly access it.
             mBoundService = (service as WalletService.WalletServiceBinder).service
             mBoundService!!.setObserver(this@HomeActivity)
-            val extras = intent.extras
+            /*val extras = intent.extras
             if (extras != null) {
                 val walletId = extras.getString(WalletActivity.REQUEST_ID)
                 if (walletId != null) {
                     //setTitle(walletId, getString(R.string.status_wallet_connecting));
                     //Important
                     //setTitle(getString(R.string.status_wallet_connecting), "")
-                    /* setTitle(getString(R.string.my_wallet))*/
+                    *//* setTitle(getString(R.string.my_wallet))*//*
                 }
-            }
+            }*/
             updateProgress()
             Timber.d("CONNECTED")
         }

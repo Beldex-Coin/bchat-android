@@ -209,7 +209,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
         //if (activityCallback!!.isSynced) enableAccountsList(true)
 
         //SteveJosephh21 Log
-        pingSelectedNode()
+        //pingSelectedNode() //-
     }
 
     private fun callCurrencyConversionApi(){

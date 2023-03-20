@@ -84,6 +84,7 @@ import com.thoughtcrimes.securesms.wallet.send.SendFragment
 import com.thoughtcrimes.securesms.wallet.service.WalletService
 import com.thoughtcrimes.securesms.wallet.settings.WalletSettings
 import com.thoughtcrimes.securesms.wallet.utils.LegacyStorageHelper
+import com.thoughtcrimes.securesms.wallet.utils.common.LoadingActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
@@ -566,7 +567,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     private var customPinActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            replaceFragment(WalletFragment(), null, null)
+            replaceFragment(WalletFragment(), WalletFragment::class.java.name, null)
         }
     }
 
@@ -1950,17 +1951,15 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     private fun openWalletSettings() {
-        /*val intent = Intent(this, WalletSettings::class.java)
-        push(intent)*/
         val intent = Intent(this, WalletSettings::class.java)
         walletSettingsResultLauncher.launch(intent)
     }
 
     private var walletSettingsResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            /*val intent = Intent(this, LoadingActivity::class.java)
+            val intent = Intent(this, LoadingActivity::class.java)
             push(intent)
-            finish()*/ //-
+            finish()
         }
     }
 

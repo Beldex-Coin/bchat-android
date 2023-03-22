@@ -2754,9 +2754,22 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     fun onRefreshed(wallet: Wallet, full: Boolean) {
-        var full = full
+        Log.d("onRefreshed ->",full.toString())
+        if(full){
+            //Steve Josephh21 ANRS
+           /* if(CheckOnline.isOnline(requireContext())) {
+                check(listenerCallback!!.hasBoundService()) { "WalletService not bound." }
+                val daemonConnected: Wallet.ConnectionStatus = listenerCallback!!.connectionStatus!!
+                Log.d("Beldex", "Value of daemon connection 1 $daemonConnected")
+                if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
+                    Log.d("Beldex","onRefreshed Called unlocked balance updated")
+                    AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+                }
+            }*/ //-
+        }
         //WalletFragment Functionality
-        /*if (adapter!!.needsTransactionUpdateOnNewBlock()) {
+        /*var full = full
+        if (adapter!!.needsTransactionUpdateOnNewBlock()) {
             *//* wallet.refreshHistory()*//*
             full = true
             Log.d("TransactionList","full = true 1")
@@ -2872,6 +2885,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                             R.color.green_color
                         )
                     )
+                    //SteveJosephh21
+                    setProgress(-2)
                     //WalletFragment Functionality
                     /*ivSynced.setVisibility(View.VISIBLE);
                     binding.filterTransactionsIcon.isClickable = true //default = adapter!!.itemCount > 0

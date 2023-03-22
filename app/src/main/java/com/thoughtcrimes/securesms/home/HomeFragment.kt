@@ -1163,6 +1163,8 @@ class HomeFragment : Fragment(),ConversationClickListener,
                             R.color.green_color
                         )
                     )
+                    //SteveJosephh21
+                    setProgress(-2)
                     //WalletFragment Functionality
                     /*ivSynced.setVisibility(View.VISIBLE);
                     binding.filterTransactionsIcon.isClickable = true //default = adapter!!.itemCount > 0

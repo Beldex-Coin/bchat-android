@@ -121,11 +121,11 @@ message DataMessage {
 
 
   message Payment {
-      // @required
-      required string amount = 1;
-      // @required
-      required string txid = 3;
-    }
+    // @required
+    required string amount = 1;
+    // @required
+    required string txnId = 3;
+  }
 
   message ClosedGroupControlMessage {
 

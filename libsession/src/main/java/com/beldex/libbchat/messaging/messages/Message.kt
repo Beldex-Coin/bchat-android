@@ -1,5 +1,6 @@
 package com.beldex.libbchat.messaging.messages
 
+import android.util.Log
 import com.google.protobuf.ByteString
 import com.beldex.libbchat.utilities.GroupUtil
 import com.beldex.libsignal.protos.SignalServiceProtos
@@ -20,9 +21,21 @@ abstract class Message {
 
     open fun isValid(): Boolean {
         val sentTimestamp = sentTimestamp
-        if (sentTimestamp != null && sentTimestamp <= 0) { return false }
+        Log.d("DataMessage message body sendTimstamp->","${sentTimestamp != null}")
+        if (sentTimestamp != null && sentTimestamp <= 0) {
+            Log.d("DataMessage message body sendTimstamp <=0->","false")
+            return false }
         val receivedTimestamp = receivedTimestamp
-        if (receivedTimestamp != null && receivedTimestamp <= 0) { return false }
+        Log.d("DataMessage message body receivedTimestamp->","${receivedTimestamp != null}")
+        if (receivedTimestamp != null && receivedTimestamp <= 0) {
+            Log.d("DataMessage message body receivedTimestamp <=0->","false")
+            return false }
+        if(sender != null && recipient != null) {
+            Log.d(
+                "DataMessage message body sender and receiver->",
+                "${sender != null} and ${recipient != null}"
+            )
+        }
         return sender != null && recipient != null
     }
 

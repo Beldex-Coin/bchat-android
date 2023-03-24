@@ -381,6 +381,9 @@ public class SmsDatabase extends MessagingDatabase {
 
     if (message.isOpenGroupInvitation()) type |= Types.OPEN_GROUP_INVITATION_BIT;
 
+    //Payment Tag
+    if (message.isPayment())             type |= Types.PAYMENT_BIT;
+
     CallMessageType callMessageType = message.getCallType();
     if (callMessageType != null) {
       switch (callMessageType) {
@@ -503,6 +506,8 @@ public class SmsDatabase extends MessagingDatabase {
     if (message.isSecureMessage())       type |= (Types.SECURE_MESSAGE_BIT | Types.PUSH_MESSAGE_BIT);
     if (forceSms)                        type |= Types.MESSAGE_FORCE_SMS_BIT;
     if (message.isOpenGroupInvitation()) type |= Types.OPEN_GROUP_INVITATION_BIT;
+    //Payment Tag
+    if (message.isPayment())             type |= Types.PAYMENT_BIT;
 
     Address            address               = message.getRecipient().getAddress();
     Map<Address, Long> earlyDeliveryReceipts = earlyDeliveryReceiptCache.remove(date);

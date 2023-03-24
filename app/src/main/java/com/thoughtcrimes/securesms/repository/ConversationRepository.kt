@@ -6,6 +6,7 @@ import com.beldex.libbchat.messaging.messages.control.MessageRequestResponse
 import com.beldex.libbchat.messaging.messages.control.UnsendRequest
 import com.beldex.libbchat.messaging.messages.signal.OutgoingTextMessage
 import com.beldex.libbchat.messaging.messages.visible.OpenGroupInvitation
+import com.beldex.libbchat.messaging.messages.visible.Payment
 import com.beldex.libbchat.messaging.messages.visible.VisibleMessage
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
@@ -30,6 +31,8 @@ interface ConversationRepository {
     fun saveDraft(threadId: Long, text: String)
     fun getDraft(threadId: Long): String?
     fun inviteContacts(threadId: Long, contacts: List<Recipient>)
+    //Payment Tah
+    fun sentPayment(threadId: Long, amount: String, txnId: String?, recipient: Recipient?)
     fun setBlocked(recipient: Recipient, blocked: Boolean)
     fun deleteLocally(recipient: Recipient, message: MessageRecord)
     /*Hales63*/
@@ -131,6 +134,21 @@ class DefaultConversationRepository @Inject constructor(
         }
     }
 
+    override fun sentPayment(threadId: Long, amount: String, txnId: String?, recipient: Recipient?) {
+        val message = VisibleMessage()
+        message.sentTimestamp = System.currentTimeMillis()
+        val payment = Payment()
+        payment.amount = amount
+        payment.txnId = txnId
+        message.payment = payment
+        val outgoingTextMessage = OutgoingTextMessage.fromPayment(
+            payment,
+            recipient,
+            message.sentTimestamp
+        )
+        smsDb.insertMessageOutboxNew(-1,outgoingTextMessage,message.sentTimestamp!!)
+        MessageSender.send(message,recipient!!.address)
+    }
     override fun setBlocked(recipient: Recipient, blocked: Boolean) {
         recipientDb.setBlocked(recipient, blocked)
     }

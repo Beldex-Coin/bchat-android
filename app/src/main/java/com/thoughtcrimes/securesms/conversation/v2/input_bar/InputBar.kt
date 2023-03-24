@@ -79,7 +79,8 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         binding.microphoneOrSendButtonContainer.addView(sendButton)
         sendButton.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
         sendButton.isVisible = false
-        sendButton.onUp = { delegate?.sendMessage() }
+        //sendButton.onUp = { delegate?.sendMessage() }
+        sendButton.onUp = { delegate?.sendBDX() } //Payment Tag
         // Edit text
         binding.inputBarEditText.delegate = this
 
@@ -219,5 +220,6 @@ interface InputBarDelegate {
     fun onMicrophoneButtonCancel(event: MotionEvent)
     fun onMicrophoneButtonUp(event: MotionEvent)
     fun sendMessage()
+    fun sendBDX()   //Payment Tag
     fun commitInputContent(contentUri: Uri)
 }

@@ -2478,7 +2478,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         return beldexAddress
     }
 
-      fun sendBDX() {
+    //Payment Tag
+    override fun sendBDX() {
         val txData: TxData = getTxData()
         txData.destinationAddress = senderBeldexAddress
         if (getCleanAmountString(getBDXAmount()).equals(
@@ -2705,6 +2706,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         Timber.d("txid=%s", txId)
         //activityCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
         Log.d("Beldex","Transaction Completed")
+        //Payment Tag
+        viewModel.sentPayment(sendBDXAmount.toString(),txId,viewModel.recipient)
         InChatSendSuccess(this).show(requireActivity().supportFragmentManager,"")
     }
 

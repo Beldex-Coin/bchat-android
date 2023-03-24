@@ -1405,6 +1405,10 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
         }
     }
 
+    override fun sendBDX() {
+        TODO("Not yet implemented")
+    }
+
     //New Line v32
     private fun processMessageRequestApproval() {
         if (isIncomingMessageRequestThread()) {

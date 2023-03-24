@@ -162,7 +162,11 @@ class VisibleMessageContentView : LinearLayout {
         binding.documentView.isVisible =
             contactIsTrusted && message is MmsMessageRecord && message.slideDeck.documentSlide != null
         binding.albumThumbnailView.isVisible = mediaThumbnailMessage
+        Log.d("DataMessage 1->",message.isOpenGroupInvitation.toString())
         binding.openGroupInvitationView.isVisible = message.isOpenGroupInvitation
+        Log.d("DataMessage 2->",message.isPayment.toString())
+        //Payment Tag
+        binding.paymentCardView.isVisible = message.isPayment
 
         var hideBody = false
 
@@ -305,6 +309,13 @@ class VisibleMessageContentView : LinearLayout {
                 VisibleMessageContentView.getTextColor(context, message)
             )
             onContentClick.add { binding.openGroupInvitationView.joinOpenGroup() }
+        } else if (message.isPayment) { //Payment Tag
+            hideBody = true
+            binding.paymentCardView.bind(
+                message,
+                VisibleMessageContentView.getTextColor(context, message)
+            )
+            //onContentClick.add { binding.openGroupInvitationView.joinOpenGroup() }
         }
 
         binding.bodyTextView.isVisible = message.body.isNotEmpty() && !hideBody
@@ -407,6 +418,7 @@ class VisibleMessageContentView : LinearLayout {
             binding.untrustedView,
             binding.voiceMessageView,
             binding.openGroupInvitationView,
+            binding.paymentCardView, //Payment Tag
             binding.documentView,
             binding.quoteView,
             binding.linkPreviewView,

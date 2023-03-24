@@ -163,14 +163,18 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
             val smsDatabase = DatabaseComponent.get(context).smsDatabase()
             val contactDB   = DatabaseComponent.get(context).bchatContactDatabase()
             val isOpenGroupInvitation = (message.openGroupInvitation != null)
+            //Payment Tag
+            val isPayment = (message.payment != null)
 
             val insertResult = if (message.sender == getUserPublicKey()) {
                 val textMessage = if (isOpenGroupInvitation) OutgoingTextMessage.fromOpenGroupInvitation(message.openGroupInvitation, targetRecipient, message.sentTimestamp)
+                else if(isPayment) OutgoingTextMessage.fromPayment(message.payment,targetRecipient,message.sentTimestamp) //Payment Tag
                 else OutgoingTextMessage.from(message, targetRecipient)
                 smsDatabase.insertMessageOutboxNew(message.threadID ?: -1, textMessage, message.sentTimestamp!!)
 
             } else {
                 val textMessage = if (isOpenGroupInvitation) IncomingTextMessage.fromOpenGroupInvitation(message.openGroupInvitation, senderAddress, message.sentTimestamp)
+                else if(isPayment) IncomingTextMessage.fromPayment(message.payment,senderAddress,message.sentTimestamp) //Payment Tag
                 else IncomingTextMessage.from(message, senderAddress, group, targetRecipient.expireMessages * 1000L)
                 val encrypted =
                     IncomingEncryptedMessage(

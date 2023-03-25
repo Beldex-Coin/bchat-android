@@ -86,7 +86,7 @@ public interface MmsSmsColumns {
     protected static final long OPEN_GROUP_INVITATION_BIT  = 0x04000;
 
     //Payment Tag
-    protected static final long PAYMENT_BIT = 0x05000;
+    protected static final long PAYMENT_BIT = 0x0500000;
 
     // Encrypted Storage Information XXX
     public    static final long ENCRYPTION_MASK                  = 0xFF000000;

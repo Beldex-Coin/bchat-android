@@ -80,9 +80,11 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         sendButton.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
         sendButton.isVisible = false
         //sendButton.onUp = { delegate?.sendMessage() }
-        sendButton.onUp = { delegate?.sendBDX() } //Payment Tag
+         sendButton.onUp = { delegate?.sendBDX() } //Payment Tag
         // Edit text
         binding.inputBarEditText.delegate = this
+        // In Chat BDX
+        binding.inChatBDX.setOnClickListener { delegate?.inChatBDXOptions() }
 
         /* Hales63 */
         val incognitoFlag = if (TextSecurePreferences.isIncognitoKeyboardEnabled(context)) 16777216 else 0
@@ -222,4 +224,5 @@ interface InputBarDelegate {
     fun sendMessage()
     fun sendBDX()   //Payment Tag
     fun commitInputContent(contentUri: Uri)
+    fun inChatBDXOptions()
 }

@@ -1810,7 +1810,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     fun onWalletRescan(restoreHeight: Long) {
         try {
-            val walletFragment = getWalletFragment()
+          /*  val walletFragment = getWalletFragment()*/
+            val currentWallet = getCurrentFragment()
 
             if(getWallet()!=null) {
                 // The height entered by user
@@ -1819,8 +1820,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             }
             android.util.Log.d("Beldex","Restore Height 2 ${getWallet()!!.restoreHeight}")
             synced = false
-            walletFragment.unsync()
+            if(currentWallet is WalletFragment){
+                currentWallet.unsync()
             invalidateOptionsMenu()
+            }
         } catch (ex: java.lang.ClassCastException) {
             Timber.d(ex.localizedMessage)
             // keep calm and carry on

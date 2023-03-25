@@ -10,23 +10,23 @@ import android.content.Context.CLIPBOARD_SERVICE
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.database.Cursor
+import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.Typeface
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.*
 import android.telephony.PhoneStateListener
 import android.telephony.TelephonyCallback
 import android.telephony.TelephonyManager
+import android.text.Html
 import android.text.TextUtils
 import android.util.Log
 import android.util.Pair
 import android.util.TypedValue
 import android.view.*
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.fragment.app.Fragment
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DimenRes
 import androidx.appcompat.app.AlertDialog
@@ -122,7 +122,9 @@ import com.thoughtcrimes.securesms.home.HomeFragment
 import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
 import com.thoughtcrimes.securesms.model.PendingTransaction
 import com.thoughtcrimes.securesms.model.Wallet
+import com.thoughtcrimes.securesms.preferences.ChatSettingsActivity
 import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
+import com.thoughtcrimes.securesms.preferences.SettingsActivity
 import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.wallet.CheckOnline
 import com.thoughtcrimes.securesms.wallet.OnBackPressedListener
@@ -399,7 +401,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private var firstBlock: Long = 0
     private var balance: Long = 0
     private val formatter = NumberFormat.getInstance()
-    
+    private var walletAvailableBalance: String? =null
+    private var unlockedBalance: Long = 0
+    private var walletSynchronized:Boolean = false
+
     
     interface Listener {
         fun getConversationViewModel(): ConversationViewModel.AssistedFactory
@@ -470,7 +475,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (!thread.isGroupRecipient && thread.hasApprovedMe()) {
            senderBeldexAddress =  getBeldexAddress(thread.address)
         }
-        AsyncGetUnlockedBalance(listenerCallback).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+        //AsyncGetUnlockedBalance(listenerCallback).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
         setUpRecyclerView()
         setUpToolBar()
         setUpInputBar()
@@ -518,6 +523,26 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 }
             }
         }
+        if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked) {
+            binding.blockProgressBar.visibility = View.VISIBLE
+            binding.syncStatusLayout.visibility = View.VISIBLE
+        } else{
+            binding.blockProgressBar.visibility = View.GONE
+            binding.syncStatusLayout.visibility = View.GONE
+        }
+
+        binding.conversationExpandableArrow.setOnClickListener {
+            if (!binding.inChatWalletDetails.isVisible) {
+                binding.inChatWalletDetails.visibility = View.VISIBLE
+                binding.conversationExpandableArrow.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
+            } else if (binding.inChatWalletDetails.isVisible) {
+                binding.inChatWalletDetails.visibility = View.GONE
+                binding.conversationExpandableArrow.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
+            }
+        }
+
+        showBalance(Helper.getDisplayAmount(0),Helper.getDisplayAmount(0),walletSynchronized)
+
     }
 
     override fun onResume() {
@@ -963,6 +988,31 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             } else {
                 sendTextOnlyMessage()
             }
+        }
+    }
+
+    override fun inChatBDXOptions() {
+        val dialog = android.app.AlertDialog.Builder(requireActivity())
+        val inflater = layoutInflater
+        val dialogView = inflater.inflate(R.layout.pay_as_you_chat, null)
+        dialog.setView(dialogView)
+
+        val okButton = dialogView.findViewById<Button>(R.id.okButton)
+        val cancelButton = dialogView.findViewById<Button>(R.id.cancelButton)
+        val enableInstruction = dialogView.findViewById<TextView>(R.id.payAsYouChatEnable_Instruction)
+        val alert = dialog.create()
+        alert.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        alert.setCanceledOnTouchOutside(false)
+        alert.show()
+        val sourceString = "Enable pay as you chat from <b>My Account -> Chat Settings -> Pay As You Chat</b> to use this option"
+        enableInstruction.text = Html.fromHtml(sourceString)
+        okButton.setOnClickListener {
+            val intent = Intent(requireActivity(), ChatSettingsActivity::class.java)
+            requireActivity().startActivity(intent)
+            alert.dismiss()
+        }
+        cancelButton.setOnClickListener {
+            alert.dismiss()
         }
     }
 
@@ -2612,7 +2662,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
 
 
-    inner class AsyncGetUnlockedBalance(val wallet: Listener?) :
+   /* inner class AsyncGetUnlockedBalance(val wallet: Listener?) :
         AsyncTaskCoroutine<Executor?, Boolean?>() {
         override fun onPreExecute() {
             super.onPreExecute()
@@ -2627,7 +2677,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         override fun onPostExecute(result: Boolean?) {
 
         }
-    }
+    }*/
 
     private fun getCleanAmountString(enteredAmount: String): String? {
         return try {
@@ -2757,22 +2807,20 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     fun onRefreshed(wallet: Wallet, full: Boolean) {
-        Log.d("onRefreshed ->",full.toString())
-        if(full){
-            //Steve Josephh21 ANRS
-           /* if(CheckOnline.isOnline(requireContext())) {
+        if (full) {
+            if (CheckOnline.isOnline(requireContext())) {
                 check(listenerCallback!!.hasBoundService()) { "WalletService not bound." }
                 val daemonConnected: Wallet.ConnectionStatus = listenerCallback!!.connectionStatus!!
                 Log.d("Beldex", "Value of daemon connection 1 $daemonConnected")
                 if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
-                    Log.d("Beldex","onRefreshed Called unlocked balance updated")
                     AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+
                 }
-            }*/ //-
+            }
         }
+        binding.valueOfRemote.text = wallet.daemonBlockChainHeight.toString()
         //WalletFragment Functionality
-        /*var full = full
-        if (adapter!!.needsTransactionUpdateOnNewBlock()) {
+        /*if (adapter!!.needsTransactionUpdateOnNewBlock()) {
             *//* wallet.refreshHistory()*//*
             full = true
             Log.d("TransactionList","full = true 1")
@@ -2827,6 +2875,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             accountIdx = wallet.accountIndex
             setActivityTitle(wallet)
         }*/
+        val daemonHeight: Long = wallet.daemonBlockChainHeight
+        val walletHeight: Long = wallet.blockChainHeight
+        val walletSyncPercentage: Long = ((100 * walletHeight) / daemonHeight)
+
         Log.d("Beldex", "isOnline 0  ${CheckOnline.isOnline(requireContext())}")
         if(CheckOnline.isOnline(requireContext())) {
             Log.d("Beldex", "isOnline 1  ${CheckOnline.isOnline(requireContext())}")
@@ -2848,9 +2900,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     Log.d("Beldex","Height value of restoreHeight ${wallet.restoreHeight}")
                     Log.d("Beldex","Height value of daemonBlockChainTargetHeight ${wallet.daemonBlockChainTargetHeight}")
 
-                    val daemonHeight: Long = wallet.daemonBlockChainHeight
-                    //val daemonHeight: Long = activityCallback!!.daemonHeight
-                    val walletHeight = wallet.blockChainHeight
+
                     val n = daemonHeight - walletHeight
                     sync = formatter.format(n) + " " + getString(R.string.status_remaining)
                     if (firstBlock == 0L) {
@@ -2864,6 +2914,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     Log.d("Beldex","App crash issue value of height n height $n")
                     Log.d("Beldex","App crash issue value of height n firstBlock $firstBlock")
                     setProgress(x)
+                    binding.valueOfWallet.text = "$walletHeight/$daemonHeight ($walletSyncPercentage%)"
                     //WalletFragment Functionality
                     /*ivSynced.setVisibility(View.GONE);
                     binding.filterTransactionsIcon.isClickable = false
@@ -2875,8 +2926,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                             R.color.green_color
                         )
                     )
+                    binding.valueOfRemote.text = wallet.daemonBlockChainHeight.toString()
                 } else {
                     ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(false)
+                    binding.valueOfRemote.text = wallet.daemonBlockChainHeight.toString()
                     //Steve Josephh21 ANRS
                     // AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
                     Log.d("showBalance->","Synchronized")
@@ -2888,6 +2941,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                             R.color.green_color
                         )
                     )
+                    binding.valueOfWallet.text = "$walletHeight/$daemonHeight ($walletSyncPercentage%)"
                     //SteveJosephh21
                     setProgress(-2)
                     //WalletFragment Functionality
@@ -2947,5 +3001,89 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         /*if (walletLoaded) {
             binding.receiveCardViewButton.isEnabled = true
         }*/
+    }
+
+    private fun refreshBalance(synchronized: Boolean) {
+        val unlockedBalance: Double = Helper.getDecimalAmount(unlockedBalance).toDouble()
+        val balance: Double = Helper.getDecimalAmount(balance).toDouble()
+        Log.d("Beldex", "value of balance $balance")
+        Log.d("Beldex", "value of unlockedBalance $unlockedBalance")
+        showBalance(
+            Helper.getFormattedAmount(balance, true),
+            Helper.getFormattedAmount(unlockedBalance, true),
+            synchronized
+        )
+    }
+
+    private fun showBalance(walletBalance: String?, walletUnlockedBalance: String?, synchronized:Boolean){
+        Log.d("Beldex","value of show balance called 1")
+        TextSecurePreferences.getDecimals(requireActivity())?.let { Log.d("Decimal", it) }
+        if(!synchronized){
+            Log.d("Beldex","value of show balance called 2")
+            when {
+                TextSecurePreferences.getDecimals(requireActivity()) == "2 - Two (0.00)" -> {
+                    binding.valueOfBalance.text = "-.--"
+                    binding.valueOfUnlockedBalance.text = "-.--"
+                }
+                TextSecurePreferences.getDecimals(requireActivity()) == "3 - Three (0.000)" -> {
+                    binding.valueOfBalance.text = "-.---"
+                    binding.valueOfUnlockedBalance.text = "-.---"
+                }
+                TextSecurePreferences.getDecimals(requireActivity()) == "0 - Zero (000)" -> {
+                    binding.valueOfBalance.text = "-"
+                    binding.valueOfUnlockedBalance.text = "-"
+                }
+                else -> {
+                    binding.valueOfBalance.text = "-.----"
+                    binding.valueOfUnlockedBalance.text = "-.----"
+                }
+            }
+        }else{
+            Log.d("Beldex","value of show balance called 3")
+            when {
+                TextSecurePreferences.getDecimals(requireActivity()) == "2 - Two (0.00)" -> {
+                    binding.valueOfBalance.text = String.format("%.2f", walletBalance!!.replace(",","").toDouble())
+                    binding.valueOfUnlockedBalance.text = String.format("%.2f", walletUnlockedBalance!!.replace(",","").toDouble())
+                }
+                TextSecurePreferences.getDecimals(requireActivity()) == "3 - Three (0.000)" -> {
+                    binding.valueOfBalance.text = String.format("%.3f", walletBalance!!.replace(",","").toDouble())
+                    binding.valueOfUnlockedBalance.text = String.format("%.3f", walletUnlockedBalance!!.replace(",","").toDouble())
+                }
+                TextSecurePreferences.getDecimals(requireActivity()) == "0 - Zero (000)" -> {
+                    binding.valueOfBalance.text = String.format("%.0f", walletBalance!!.replace(",","").toDouble())
+                    binding.valueOfUnlockedBalance.text = String.format("%.0f", walletUnlockedBalance!!.replace(",","").toDouble())
+                }
+                else -> {
+                    binding.valueOfBalance.text = walletBalance
+                }
+            }
+        }
+    }
+
+    inner class AsyncGetUnlockedBalance(val wallet: Wallet) :
+        AsyncTaskCoroutine<Executor?, Boolean?>() {
+        override fun onPreExecute() {
+            super.onPreExecute()
+            if (mContext != null && walletAvailableBalance != null) {
+                if (walletAvailableBalance!!.replace(",", "").toDouble() > 0.0) {
+                    showBalance(walletAvailableBalance!!, unlockedBalance.toString(), true)
+                }
+            } else {
+                refreshBalance(false)
+            }
+        }
+
+        override fun doInBackground(vararg params: Executor?): Boolean {
+            try {
+                unlockedBalance = wallet.unlockedBalance
+            }catch (e: Exception){
+                Log.d("WalletFragment",e.toString())
+            }
+            return true
+        }
+
+        override fun onPostExecute(result: Boolean?) {
+            refreshBalance(wallet.isSynchronized)
+        }
     }
 }

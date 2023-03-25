@@ -1409,6 +1409,10 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
         TODO("Not yet implemented")
     }
 
+    override fun inChatBDXOptions() {
+        TODO("Not yet implemented")
+    }
+
     //New Line v32
     private fun processMessageRequestApproval() {
         if (isIncomingMessageRequestThread()) {

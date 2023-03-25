@@ -578,6 +578,7 @@
     <string name="preferences_chat_font_small" translatable="false">Small</string>
     <string name="preferences_chat_font_medium" translatable="false">Medium</string>
     <string name="preferences_chat_font_large" translatable="false">large</string>
+    <string name="preferences_chat_pay_as_you_chat_title" translatable="false">Pay as you chat</string>
 
     <!-- **************************************** -->
     <!-- menus -->
@@ -1349,4 +1350,10 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="please_try_after_some_time" translatable="false">Please try after some time</string>
     <string name="conversation_transition_name" translatable="false">conversation_transition</string>
     <string name="in_chat_payment" translatable="false">In-Chat Payment</string>
+    <string name="pay_as_you_chat" translatable="false">Pay As You Chat</string>
+    <string name="subtitle_balance" translatable="false">Balance :</string>
+    <string name="subtitle_unlocked_balance" translatable="false">Unlocked Balance :</string>
+    <string name="subtitle_remote" translatable="false">Remote :</string>
+    <string name="subtitle_wallet" translatable="false">Wallet :</string>
+
 </resources>

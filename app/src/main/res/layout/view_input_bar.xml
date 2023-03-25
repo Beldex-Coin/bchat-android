@@ -42,6 +42,21 @@
             android:textColor="@color/text"
             android:textSize="@dimen/small_font_size" />
 
+        <LinearLayout
+            android:layout_width="@dimen/input_bar_button_expanded_size"
+            android:layout_height="@dimen/input_bar_button_expanded_size"
+            android:layout_toStartOf="@id/microphoneOrSendButtonContainer"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/inChatBDX"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_in_chat_bdx" />
+        </LinearLayout>
+
         <RelativeLayout
             android:id="@+id/microphoneOrSendButtonContainer"
             android:layout_width="@dimen/input_bar_button_expanded_size"

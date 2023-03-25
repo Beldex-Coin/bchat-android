@@ -239,6 +239,7 @@ interface TextSecurePreferences {
     fun getCallisActive(): Boolean
 
     fun getChatFontSize(): String?
+    fun isPayAsYouChat(): Boolean
 
 
     companion object {
@@ -348,6 +349,7 @@ interface TextSecurePreferences {
         const val NODE_IS_MAINNET = "node_is_mainnet"
         const val CALL_IS_ACTIVE = "call_is_active"
         const val CHAT_FONT_SIZE =  "chat_font_size"
+        const val PAY_AS_YOU_CHAT_PREF = "pref_pay_as_you_chat"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -1318,6 +1320,11 @@ interface TextSecurePreferences {
             return getStringPreference(context, CHAT_FONT_SIZE, "16")
         }
 
+        @JvmStatic
+        fun isPayAsYouChat(context: Context): Boolean {
+            return getBooleanPreference(context, PAY_AS_YOU_CHAT_PREF, false)
+        }
+
     }
 }
 
@@ -2145,6 +2152,10 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun getChatFontSize(): String? {
         return getStringPreference(TextSecurePreferences.CHAT_FONT_SIZE,"16")
+    }
+
+    override fun isPayAsYouChat(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.PAY_AS_YOU_CHAT_PREF, false)
     }
 
 

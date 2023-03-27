@@ -32,6 +32,8 @@ import com.thoughtcrimes.securesms.database.MmsSmsColumns;
 import com.thoughtcrimes.securesms.database.SmsDatabase;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libbchat.utilities.ExpirationUtil;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import io.beldex.bchat.R;
 
@@ -81,7 +83,23 @@ public class ThreadRecord extends DisplayRecord {
     } else if (isOpenGroupInvitation()) {
       return emphasisAdded(context.getString(R.string.ThreadRecord_open_group_invitation));
     } else if (isPayment()) { //Payment Tag
-      return emphasisAdded(context.getString(R.string.ThreadRecord_payment));
+      String amount = "";
+      String direction = "";
+      try {
+        JSONObject mainObject = new JSONObject(getBody());
+        JSONObject uniObject = mainObject.getJSONObject("kind");
+        amount = uniObject.getString("amount");
+      } catch (JSONException e) {
+        e.printStackTrace();
+      }
+      Boolean isOutGoing = MmsSmsColumns.Types.isOutgoingMessageType(type);
+      if (isOutGoing) {
+        direction = context.getString(R.string.send);
+      } else {
+        direction = context.getString(R.string.message_details_header__received);
+        ;
+      }
+      return emphasisAdded(context.getString(R.string.ThreadRecord_payment ,amount,direction));
     } else if (SmsDatabase.Types.isFailedDecryptType(type)) {
       return emphasisAdded(context.getString(R.string.MessageDisplayHelper_bad_encrypted_message));
     } else if (SmsDatabase.Types.isNoRemoteBchatType(type)) {

@@ -50,7 +50,6 @@ class VisibleMessage : Message()  {
 
         fun fromProto(proto: SignalServiceProtos.Content, bAddress: String): VisibleMessage? {
             val dataMessage = proto.dataMessage ?: return null
-            Log.d("DataMessage value -> ",dataMessage.payment.toString())
             val result = VisibleMessage()
             //New Line
             result.beldexAddress=bAddress

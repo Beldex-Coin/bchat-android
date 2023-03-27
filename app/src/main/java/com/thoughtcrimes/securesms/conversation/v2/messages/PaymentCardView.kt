@@ -30,11 +30,12 @@ class PaymentCardView : LinearLayout {
         val umd = UpdateMessageData.fromJSON(message.body)!!
         val data = umd.kind as UpdateMessageData.Kind.Payment
         this.data = data
-        val iconID = if (message.isOutgoing) R.drawable.ic_beldex_white_logo else R.drawable.ic_beldex_white_logo
+        val iconID = R.drawable.ic_beldex_white_logo
         with(binding){
             paymentCardViewBdxIconImageView.setImageResource(iconID)
             paymentCardViewBdxAmountTextView.text = data.amount
-            paymentCardViewMessageTextView.text = data.txnId
+            paymentCardViewMessageTextView.text = if(message.isOutgoing) resources.getString(R.string.payment_success_message) else resources.getString(R.string.payment_received_message)
+            paymentCardViewMessageTextView.textAlignment = if(message.isOutgoing) TEXT_ALIGNMENT_TEXT_END else TEXT_ALIGNMENT_TEXT_START
         }
     }
 }

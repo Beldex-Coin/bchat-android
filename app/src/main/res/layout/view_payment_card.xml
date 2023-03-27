@@ -1,62 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:padding="12dp"
+    android:id="@+id/viewPaymentCard"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
     android:orientation="vertical"
-    android:gravity="center_vertical">
-    <androidx.cardview.widget.CardView
+    android:padding="12dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/white"
-        android:alpha="0.3"
-        app:cardCornerRadius="10dp">
-        <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_height="wrap_content">
+
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
+            android:alpha="0.3"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintBottom_toBottomOf="@id/paymentCardViewLayout"
+            app:layout_constraintEnd_toEndOf="@id/paymentCardViewLayout"
+            app:layout_constraintStart_toStartOf="@id/paymentCardViewLayout"
+            app:layout_constraintTop_toTopOf="@id/paymentCardViewLayout" />
+
+        <LinearLayout
+            android:id="@+id/paymentCardViewLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:elevation="0dp"
-            android:padding="10dp">
+            android:orientation="horizontal"
+            android:padding="10dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
             <ImageView
                 android:id="@+id/paymentCardViewBdxIconImageView"
                 android:layout_width="44dp"
-                android:layout_height="44dp"
+                android:layout_height="match_parent"
                 android:src="@drawable/ic_beldex_white_logo"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-            <TextView
-                android:fontFamily="@font/open_sans_bold"
-                android:id="@+id/paymentCardViewBdxAmountTextView"
+                android:contentDescription="" />
+            <LinearLayout
+                android:id="@+id/paymentCardViewLinearLayout"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                tools:text="1 BDX"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:maxLines="2"
-                android:ellipsize="end"
-                android:textAlignment="textEnd"
-                android:textSize="@dimen/large_font_size"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginStart="5dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/paymentCardViewBdxIconImageView"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+                app:layout_constraintStart_toEndOf="@id/paymentCardViewBdxIconImageView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+                <TextView
+                    android:id="@+id/paymentCardViewBdxAmountTextView"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:maxLines="2"
+                    android:textAlignment="textEnd"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/large_font_size"
+                    android:textStyle="bold"
+                    tools:text="0.1"
+                    tools:ignore="NestedWeights" />
+                <TextView
+                    android:id="@+id/paymentCardViewBdxTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="2dp"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/large_font_size"
+                    android:textStyle="bold"
+                    android:text="@string/bdx" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
-        android:fontFamily="@font/open_sans_medium"
         android:id="@+id/paymentCardViewMessageTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Transaction Initiated Successfully!"
-        android:textColor="@color/white"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/open_sans_medium"
         android:maxLines="1"
-        android:ellipsize="end"
-        android:textSize="@dimen/small_font_size"
-        android:layout_marginTop="5dp"/>
+        tools:text="Send Successfully"
+        android:textColor="@color/white"
+        android:textSize="@dimen/small_font_size" />
 
 </LinearLayout>

@@ -85,6 +85,8 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         // In Chat BDX
         binding.inChatBDX.setOnClickListener { delegate?.inChatBDXOptions() }
 
+        binding.inChatBDXAnimation.setOnClickListener{ delegate?.inChatBDXOptions() }
+
         /* Hales63 */
         val incognitoFlag = if (TextSecurePreferences.isIncognitoKeyboardEnabled(context)) 16777216 else 0
         binding.inputBarEditText.imeOptions = binding.inputBarEditText.imeOptions or incognitoFlag
@@ -206,6 +208,12 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
 
     fun setSelection(index: Int) {
         binding.inputBarEditText.setSelection(index)
+    }
+
+    //Payment Tag
+    fun showPayAsYouChatBDXIcon(status:Boolean){
+        binding.inChatBDXAnimation.isVisible = status
+        binding.inChatBDX.isVisible = !status
     }
     // endregion
 }

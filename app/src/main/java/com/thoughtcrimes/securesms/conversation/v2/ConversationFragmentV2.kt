@@ -124,7 +124,6 @@ import com.thoughtcrimes.securesms.model.PendingTransaction
 import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.preferences.ChatSettingsActivity
 import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
-import com.thoughtcrimes.securesms.preferences.SettingsActivity
 import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.wallet.CheckOnline
 import com.thoughtcrimes.securesms.wallet.OnBackPressedListener
@@ -616,6 +615,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        mContext = context
         if (context is Listener) {
             listenerCallback = context
         } else {
@@ -989,22 +989,34 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 sendTextOnlyMessage()
             }*/
                 if(TextSecurePreferences.isPayAsYouChat(requireActivity())) {
-                    if(binding.syncStatus.text==getString(R.string.status_synchronized) && binding.inputBar.text.matches(Regex("^[0-9]*\\.?[0-9]*\$"))){
-                        sendBDX()
-                    }else{
-                        Toast.makeText(requireActivity(),"Blocks are syncing wait until finished",Toast.LENGTH_SHORT).show()
+                    if (binding.inputBar.text.matches(Regex("^[0-9]*\\.?[0-9]*\$"))) {
+                        if (binding.syncStatus.text == getString(R.string.status_synchronized)) {
+                            sendBDX()
+                        } else {
+                            Toast.makeText(
+                                requireActivity(),
+                                "Blocks are syncing wait until finished",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    } else {
+                        callSendTextOnlyMessage()
                     }
                 }else{
-                   if (binding.inputBar.text.length > 4096) {
-                        Toast.makeText(
-                            requireActivity(),
-                            "Text limit exceed: Maximum limit of messages is 4096 characters",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    } else {
-                        sendTextOnlyMessage()
-                    }
+                   callSendTextOnlyMessage()
                 }
+        }
+    }
+
+    fun callSendTextOnlyMessage(){
+        if (binding.inputBar.text.length > 4096) {
+            Toast.makeText(
+                requireActivity(),
+                "Text limit exceed: Maximum limit of messages is 4096 characters",
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            sendTextOnlyMessage()
         }
     }
 
@@ -1491,7 +1503,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     // region Animation & Updating
     override fun onModified(recipient: Recipient) {
-        requireActivity().runOnUiThread {
+        this.activity?.runOnUiThread {
             val threadRecipient = viewModel.recipient ?: return@runOnUiThread
             if (threadRecipient.isContactRecipient) {
                 binding.blockedBanner.isVisible = threadRecipient.isBlocked
@@ -1760,6 +1772,18 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     )
                 }
             })
+        }else{
+            binding.inputBar.addTextChangedListener(object : SimpleTextWatcher() {
+                override fun onTextChanged(text: String?) {
+                    if(TextSecurePreferences.isPayAsYouChat(requireActivity())){
+                        if(text!!.isNotEmpty() && text.matches(Regex("^[0-9]*\\.?[0-9]*\$"))){
+                            binding.inputBar.showPayAsYouChatBDXIcon(true)
+                        }else{
+                            binding.inputBar.showPayAsYouChatBDXIcon(false)
+                        }
+                    }
+                }
+            })
         }
     }
 
@@ -1952,7 +1976,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             resources.getString(R.string.activity_conversation_blocked_banner_text, name)
         binding.blockedBanner.isVisible = recipient.isBlocked
         binding.blockedBanner.setOnClickListener { viewModel.unblock() }
-        binding.unblockButton.setOnClickListener { viewModel.unblock() }
+        binding.unblockButton.setOnClickListener {
+            binding.blockProgressBar.visibility = View.VISIBLE
+            binding.syncStatusLayout.visibility = View.VISIBLE
+            viewModel.unblock()
+        }
     }
 
     // region Search
@@ -2588,6 +2616,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         intent.putExtra("change_pin", false)
         intent.putExtra("send_authentication", true)
         resultLaunchers.launch(intent)
+        // Clear the input bar
+        binding.inputBar.text = ""
     }
 
     override fun sendFailed(errorText: String?) {

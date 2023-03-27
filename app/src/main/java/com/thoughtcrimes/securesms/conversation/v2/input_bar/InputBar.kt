@@ -79,8 +79,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         binding.microphoneOrSendButtonContainer.addView(sendButton)
         sendButton.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
         sendButton.isVisible = false
-        //sendButton.onUp = { delegate?.sendMessage() }
-         sendButton.onUp = { delegate?.sendBDX() } //Payment Tag
+        sendButton.onUp = { delegate?.sendMessage() }
         // Edit text
         binding.inputBarEditText.delegate = this
         // In Chat BDX

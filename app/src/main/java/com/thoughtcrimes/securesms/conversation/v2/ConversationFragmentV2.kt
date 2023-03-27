@@ -979,7 +979,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 binding.inputBar.linkPreview
             )
         } else {
-            if (binding.inputBar.text.length > 4096) {
+           /* if (binding.inputBar.text.length > 4096) {
                 Toast.makeText(
                     requireActivity(),
                     "Text limit exceed: Maximum limit of messages is 4096 characters",
@@ -987,7 +987,24 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 ).show()
             } else {
                 sendTextOnlyMessage()
-            }
+            }*/
+                if(TextSecurePreferences.isPayAsYouChat(requireActivity())) {
+                    if(binding.syncStatus.text==getString(R.string.status_synchronized) && binding.inputBar.text.matches(Regex("^[0-9]*\\.?[0-9]*\$"))){
+                        sendBDX()
+                    }else{
+                        Toast.makeText(requireActivity(),"Blocks are syncing wait until finished",Toast.LENGTH_SHORT).show()
+                    }
+                }else{
+                   if (binding.inputBar.text.length > 4096) {
+                        Toast.makeText(
+                            requireActivity(),
+                            "Text limit exceed: Maximum limit of messages is 4096 characters",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        sendTextOnlyMessage()
+                    }
+                }
         }
     }
 
@@ -3017,44 +3034,58 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     private fun showBalance(walletBalance: String?, walletUnlockedBalance: String?, synchronized:Boolean){
         Log.d("Beldex","value of show balance called 1")
-        TextSecurePreferences.getDecimals(requireActivity())?.let { Log.d("Decimal", it) }
-        if(!synchronized){
-            Log.d("Beldex","value of show balance called 2")
-            when {
-                TextSecurePreferences.getDecimals(requireActivity()) == "2 - Two (0.00)" -> {
-                    binding.valueOfBalance.text = "-.--"
-                    binding.valueOfUnlockedBalance.text = "-.--"
+        if(mContext!=null) {
+            TextSecurePreferences.getDecimals(requireActivity())?.let { Log.d("Decimal", it) }
+            if (!synchronized) {
+                Log.d("Beldex", "value of show balance called 2")
+                when {
+                    TextSecurePreferences.getDecimals(requireActivity()) == "2 - Two (0.00)" -> {
+                        binding.valueOfBalance.text = "-.--"
+                        binding.valueOfUnlockedBalance.text = "-.--"
+                    }
+                    TextSecurePreferences.getDecimals(requireActivity()) == "3 - Three (0.000)" -> {
+                        binding.valueOfBalance.text = "-.---"
+                        binding.valueOfUnlockedBalance.text = "-.---"
+                    }
+                    TextSecurePreferences.getDecimals(requireActivity()) == "0 - Zero (000)" -> {
+                        binding.valueOfBalance.text = "-"
+                        binding.valueOfUnlockedBalance.text = "-"
+                    }
+                    else -> {
+                        binding.valueOfBalance.text = "-.----"
+                        binding.valueOfUnlockedBalance.text = "-.----"
+                    }
                 }
-                TextSecurePreferences.getDecimals(requireActivity()) == "3 - Three (0.000)" -> {
-                    binding.valueOfBalance.text = "-.---"
-                    binding.valueOfUnlockedBalance.text = "-.---"
-                }
-                TextSecurePreferences.getDecimals(requireActivity()) == "0 - Zero (000)" -> {
-                    binding.valueOfBalance.text = "-"
-                    binding.valueOfUnlockedBalance.text = "-"
-                }
-                else -> {
-                    binding.valueOfBalance.text = "-.----"
-                    binding.valueOfUnlockedBalance.text = "-.----"
-                }
-            }
-        }else{
-            Log.d("Beldex","value of show balance called 3")
-            when {
-                TextSecurePreferences.getDecimals(requireActivity()) == "2 - Two (0.00)" -> {
-                    binding.valueOfBalance.text = String.format("%.2f", walletBalance!!.replace(",","").toDouble())
-                    binding.valueOfUnlockedBalance.text = String.format("%.2f", walletUnlockedBalance!!.replace(",","").toDouble())
-                }
-                TextSecurePreferences.getDecimals(requireActivity()) == "3 - Three (0.000)" -> {
-                    binding.valueOfBalance.text = String.format("%.3f", walletBalance!!.replace(",","").toDouble())
-                    binding.valueOfUnlockedBalance.text = String.format("%.3f", walletUnlockedBalance!!.replace(",","").toDouble())
-                }
-                TextSecurePreferences.getDecimals(requireActivity()) == "0 - Zero (000)" -> {
-                    binding.valueOfBalance.text = String.format("%.0f", walletBalance!!.replace(",","").toDouble())
-                    binding.valueOfUnlockedBalance.text = String.format("%.0f", walletUnlockedBalance!!.replace(",","").toDouble())
-                }
-                else -> {
-                    binding.valueOfBalance.text = walletBalance
+            } else {
+                Log.d("Beldex", "value of show balance called 3")
+                when {
+                    TextSecurePreferences.getDecimals(requireActivity()) == "2 - Two (0.00)" -> {
+                        binding.valueOfBalance.text =
+                            String.format("%.2f", walletBalance!!.replace(",", "").toDouble())
+                        binding.valueOfUnlockedBalance.text = String.format(
+                            "%.2f",
+                            walletUnlockedBalance!!.replace(",", "").toDouble()
+                        )
+                    }
+                    TextSecurePreferences.getDecimals(requireActivity()) == "3 - Three (0.000)" -> {
+                        binding.valueOfBalance.text =
+                            String.format("%.3f", walletBalance!!.replace(",", "").toDouble())
+                        binding.valueOfUnlockedBalance.text = String.format(
+                            "%.3f",
+                            walletUnlockedBalance!!.replace(",", "").toDouble()
+                        )
+                    }
+                    TextSecurePreferences.getDecimals(requireActivity()) == "0 - Zero (000)" -> {
+                        binding.valueOfBalance.text =
+                            String.format("%.0f", walletBalance!!.replace(",", "").toDouble())
+                        binding.valueOfUnlockedBalance.text = String.format(
+                            "%.0f",
+                            walletUnlockedBalance!!.replace(",", "").toDouble()
+                        )
+                    }
+                    else -> {
+                        binding.valueOfBalance.text = walletBalance
+                    }
                 }
             }
         }

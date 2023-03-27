@@ -403,6 +403,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private var walletAvailableBalance: String? =null
     private var unlockedBalance: Long = 0
     private var walletSynchronized:Boolean = false
+    private var blockProgressBarVisible:Boolean = false
 
     
     interface Listener {
@@ -522,13 +523,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 }
             }
         }
-        if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked) {
-            binding.blockProgressBar.visibility = View.VISIBLE
-            binding.syncStatusLayout.visibility = View.VISIBLE
-        } else{
-            binding.blockProgressBar.visibility = View.GONE
-            binding.syncStatusLayout.visibility = View.GONE
-        }
+        showBlockProgressBar(thread)
 
         binding.conversationExpandableArrow.setOnClickListener {
             if (!binding.inChatWalletDetails.isVisible) {
@@ -549,6 +544,23 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         ApplicationContext.getInstance(requireActivity()).messageNotifier.setVisibleThread(viewModel.threadId)
         val recipient = viewModel.recipient ?: return
         threadDb.markAllAsRead(viewModel.threadId, recipient.isOpenGroupRecipient)
+
+        val thread = threadDb.getRecipientForThreadId(viewModel.threadId)
+        showBlockProgressBar(thread)
+    }
+
+    private fun showBlockProgressBar(thread: Recipient?) {
+        if (thread != null) {
+            if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && TextSecurePreferences.isPayAsYouChat(requireActivity())) {
+                binding.blockProgressBar.visibility = View.VISIBLE
+                binding.syncStatusLayout.visibility = View.VISIBLE
+                blockProgressBarVisible = true
+            } else{
+                binding.blockProgressBar.visibility = View.GONE
+                binding.syncStatusLayout.visibility = View.GONE
+                blockProgressBarVisible = false
+            }
+        }
     }
 
     override fun onPause() {
@@ -1977,8 +1989,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         binding.blockedBanner.isVisible = recipient.isBlocked
         binding.blockedBanner.setOnClickListener { viewModel.unblock() }
         binding.unblockButton.setOnClickListener {
-            binding.blockProgressBar.visibility = View.VISIBLE
-            binding.syncStatusLayout.visibility = View.VISIBLE
+            val thread = threadDb.getRecipientForThreadId(viewModel.threadId)
+            showBlockProgressBar(thread)
             viewModel.unblock()
         }
     }
@@ -2839,13 +2851,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         syncProgress = n
         if (n > 100) {
             binding.blockProgressBar.isIndeterminate = true
-            binding.blockProgressBar.visibility = View.VISIBLE
+            binding.blockProgressBar.isVisible = blockProgressBarVisible
         } else if (n >= 0) {
             binding.blockProgressBar.isIndeterminate = false
             binding.blockProgressBar.progress = n
-            binding.blockProgressBar.visibility = View.VISIBLE
+            binding.blockProgressBar.isVisible = blockProgressBarVisible
         } else if(n==-2){
-            binding.blockProgressBar.visibility = View.VISIBLE
+            binding.blockProgressBar.isVisible = blockProgressBarVisible
             binding.blockProgressBar.isIndeterminate = false
             binding.blockProgressBar.progress=100
         }else { // <0

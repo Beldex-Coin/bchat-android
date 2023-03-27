@@ -104,7 +104,7 @@ public class Node {
         String host = da[0];
 
         if (daParts.length == 1) {
-            networkType = NetworkType.NetworkType_Mainnet;
+            networkType = NetworkType.NetworkType_Testnet;
         } else {
             switch (daParts[1]) {
                 case MAINNET:

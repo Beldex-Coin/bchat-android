@@ -63,7 +63,7 @@ object MnodeAPI {
     private val targetSwarmMnodeCount = 2
     private val useOnionRequests = true
 
-    internal val useTestnet = false
+    internal val useTestnet = true
 
     // Error
     internal sealed class Error(val description: String) : Exception(description) {

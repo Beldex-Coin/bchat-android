@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/inputBarLinearLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -55,6 +56,20 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/ic_in_chat_bdx" />
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/inChatBDXAnimation"
+                android:layout_width="28.203dp"
+                android:layout_height="28.203dp"
+                android:adjustViewBounds="true"
+                android:layout_centerInParent="true"
+                app:layout_constraintDimensionRatio="1:1"
+                app:lottie_fileName="coin.json"
+                app:lottie_loop="true"
+                app:lottie_speed="1"
+                app:lottie_autoPlay="true"
+                android:visibility="gone"
+                app:lottie_enableMergePathsForKitKatAndAbove="true"
+                tools:ignore="ContentDescription"/>
         </LinearLayout>
 
         <RelativeLayout

@@ -244,8 +244,8 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
             if(txId.text.isNotEmpty()){
                 txId.setOnClickListener {
                     try {
-                        val url = "https://explorer.beldex.io/tx/${txId.text}" // Mainnet
-                        //val url = "http://154.26.139.105/tx/${txId.text}" // Testnet
+                        //val url = "https://explorer.beldex.io/tx/${txId.text}" // Mainnet
+                        val url = "http://154.26.139.105/tx/${txId.text}" // Testnet
                         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                         context!!.startActivity(intent)
                     } catch (e: Exception) {

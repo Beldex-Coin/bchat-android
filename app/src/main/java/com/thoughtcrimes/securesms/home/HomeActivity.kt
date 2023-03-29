@@ -496,7 +496,13 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                     .setTextColor(ContextCompat.getColor(this, R.color.alert_ok))
             }
             else -> {
-                val dialog: AlertDialog.Builder =
+                if (CheckOnline.isOnline(this)) {
+                    onDisposeRequest()
+                }
+                setBarcodeData(null)
+                fragment!!.onBackPressed()
+                finish()
+               /* val dialog: AlertDialog.Builder =
                     AlertDialog.Builder(this, R.style.BChatAlertDialog_Exit)
                 dialog.setTitle(getString(R.string.app_exit_alert))
 
@@ -516,7 +522,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 alert.getButton(DialogInterface.BUTTON_NEGATIVE)
                     .setTextColor(ContextCompat.getColor(this, R.color.text))
                 alert.getButton(DialogInterface.BUTTON_POSITIVE)
-                    .setTextColor(ContextCompat.getColor(this, R.color.alert_ok))
+                    .setTextColor(ContextCompat.getColor(this, R.color.alert_ok))*/
             }
         }
     }

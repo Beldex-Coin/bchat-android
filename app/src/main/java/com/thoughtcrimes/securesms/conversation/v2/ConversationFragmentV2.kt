@@ -534,6 +534,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 binding.conversationExpandableArrow.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
             }
         }
+        binding.inputBar.showPayAsYouChatBDXIcon(thread)
 
         showBalance(Helper.getDisplayAmount(0),Helper.getDisplayAmount(0),walletSynchronized)
 
@@ -1945,11 +1946,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             //SteveJosephh22
             val factory = LayoutInflater.from(context)
             val callPermissionDialogView: View = factory.inflate(R.layout.call_permissions_dialog_box, null)
-            val callPermissionDialog = AlertDialog.Builder(context).create()
+            val callPermissionDialog = AlertDialog.Builder(requireActivity()).create()
             callPermissionDialog.setView(callPermissionDialogView)
             callPermissionDialogView.findViewById<TextView>(R.id.settingsDialogBoxButton).setOnClickListener{
-                val intent = Intent(context, PrivacySettingsActivity::class.java)
-                context.startActivity(intent)
+                val intent = Intent(requireActivity(), PrivacySettingsActivity::class.java)
+                requireActivity().startActivity(intent)
                 callPermissionDialog.dismiss()
             }
             callPermissionDialogView.findViewById<TextView>(R.id.cancelDialogBoxButton).setOnClickListener{

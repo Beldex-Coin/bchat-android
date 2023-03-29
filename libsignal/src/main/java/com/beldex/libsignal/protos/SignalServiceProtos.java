@@ -6,10 +6,10 @@ package com.beldex.libsignal.protos;
 public final class SignalServiceProtos {
   private SignalServiceProtos() {}
   public static void registerAllExtensions(
-          com.google.protobuf.ExtensionRegistry registry) {
+      com.google.protobuf.ExtensionRegistry registry) {
   }
   public interface EnvelopeOrBuilder
-          extends com.google.protobuf.MessageOrBuilder {
+      extends com.google.protobuf.MessageOrBuilder {
 
     // required .signalservice.Envelope.Type type = 1;
     /**

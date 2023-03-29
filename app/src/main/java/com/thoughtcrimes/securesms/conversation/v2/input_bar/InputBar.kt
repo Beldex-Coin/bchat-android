@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.RelativeLayout
 import androidx.core.view.isVisible
@@ -214,6 +215,14 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
     fun showPayAsYouChatBDXIcon(status:Boolean){
         binding.inChatBDXAnimation.isVisible = status
         binding.inChatBDX.isVisible = !status
+    }
+
+    fun showPayAsYouChatBDXIcon(thread: Recipient) {
+        if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked) {
+            binding.payAsYouChatLayout.visibility = View.VISIBLE
+        }else{
+            binding.payAsYouChatLayout.visibility = View.GONE
+        }
     }
     // endregion
 }

@@ -35,7 +35,7 @@
             android:layout_height="40dp"
             android:layout_centerInParent="true"
             android:layout_marginStart="64dp"
-            android:layout_marginEnd="64dp"
+            android:layout_toStartOf="@id/payAsYouChatLayout"
             android:background="@null"
             android:gravity="center_vertical"
             android:fontFamily="@font/open_sans_medium"
@@ -43,11 +43,13 @@
             android:textColor="@color/text"
             android:textSize="@dimen/small_font_size" />
 
-        <LinearLayout
+        <RelativeLayout
+            android:id="@+id/payAsYouChatLayout"
             android:layout_width="@dimen/input_bar_button_expanded_size"
             android:layout_height="@dimen/input_bar_button_expanded_size"
             android:layout_toStartOf="@id/microphoneOrSendButtonContainer"
             android:gravity="center"
+            android:layout_centerVertical="true"
             android:orientation="horizontal">
 
             <ImageView
@@ -56,6 +58,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/ic_in_chat_bdx" />
+
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/inChatBDXAnimation"
                 android:layout_width="28.203dp"
@@ -69,8 +72,8 @@
                 app:lottie_autoPlay="true"
                 android:visibility="gone"
                 app:lottie_enableMergePathsForKitKatAndAbove="true"
-                tools:ignore="ContentDescription"/>
-        </LinearLayout>
+                tools:ignore="ContentDescription" />
+        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/microphoneOrSendButtonContainer"

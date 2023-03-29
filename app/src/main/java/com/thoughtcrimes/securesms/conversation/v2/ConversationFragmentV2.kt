@@ -131,6 +131,8 @@ import com.thoughtcrimes.securesms.wallet.send.interfaces.SendConfirm
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
+import org.json.JSONException
+import org.json.JSONObject
 import timber.log.Timber
 import java.lang.ClassCastException
 import java.lang.NumberFormatException
@@ -2210,7 +2212,27 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 if (it.isOutgoing) Address.fromSerialized(
                     listenerCallback!!.gettextSecurePreferences().getLocalNumber()!!
                 ) else it.individualRecipient.address
-            QuoteModel(it.dateSent, sender, it.body, false, quotedAttachments)
+            var quoteBody = it.body
+            if(it.isPayment){
+                Log.d("QuoteModel->1","${it.body}")
+                //Payment Tag
+                var amount = ""
+                var direction = ""
+                try {
+                    val mainObject: JSONObject = JSONObject(it.body)
+                    val uniObject = mainObject.getJSONObject("kind")
+                    amount = uniObject.getString("amount")
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
+                direction = if (it.isOutgoing) {
+                    resources.getString(R.string.payment_sent)
+                } else {
+                    resources.getString(R.string.payment_received)
+                }
+                quoteBody = resources.getString(R.string.reply_payment_card_message,direction,amount)
+            }
+            QuoteModel(it.dateSent, sender, quoteBody, false, quotedAttachments)
         }
         val outgoingTextMessage =
             OutgoingMediaMessage.from(message, recipient, attachments, quote, linkPreview)
@@ -2849,19 +2871,24 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     fun setProgress(n: Int) {
         Log.d("Beldex","mConnection value of n $n")
         syncProgress = n
-        if (n > 100) {
-            binding.blockProgressBar.isIndeterminate = true
-            binding.blockProgressBar.isVisible = blockProgressBarVisible
-        } else if (n >= 0) {
-            binding.blockProgressBar.isIndeterminate = false
-            binding.blockProgressBar.progress = n
-            binding.blockProgressBar.isVisible = blockProgressBarVisible
-        } else if(n==-2){
-            binding.blockProgressBar.isVisible = blockProgressBarVisible
-            binding.blockProgressBar.isIndeterminate = false
-            binding.blockProgressBar.progress=100
-        }else { // <0
-            binding.blockProgressBar.visibility = View.GONE
+        when {
+            n > 100 -> {
+                binding.blockProgressBar.isIndeterminate = true
+                binding.blockProgressBar.isVisible = blockProgressBarVisible
+            }
+            n >= 0 -> {
+                binding.blockProgressBar.isIndeterminate = false
+                binding.blockProgressBar.progress = n
+                binding.blockProgressBar.isVisible = blockProgressBarVisible
+            }
+            n==-2 -> {
+                binding.blockProgressBar.isVisible = blockProgressBarVisible
+                binding.blockProgressBar.isIndeterminate = false
+                binding.blockProgressBar.progress=100
+            }
+            else -> { // <0
+                binding.blockProgressBar.visibility = View.GONE
+            }
         }
     }
 

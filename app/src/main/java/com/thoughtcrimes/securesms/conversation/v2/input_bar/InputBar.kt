@@ -146,7 +146,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         val attachments = (message as? MmsMessageRecord)?.slideDeck
         val sender = if (message.isOutgoing) TextSecurePreferences.getLocalNumber(context)!! else message.individualRecipient.address.serialize()
         quoteView.bind(sender, message.body, attachments,
-            thread, true, message.isOpenGroupInvitation, message.threadId, false, glide)
+            thread, true, message.isOpenGroupInvitation, message.isPayment,message.isOutgoing,message.threadId, false, glide)
         requestLayout()
     }
 

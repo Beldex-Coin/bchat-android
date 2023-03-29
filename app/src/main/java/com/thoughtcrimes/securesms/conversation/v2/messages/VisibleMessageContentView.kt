@@ -194,8 +194,8 @@ class VisibleMessageContentView : LinearLayout {
             }
             binding.quoteView.bind(
                 quote.author.toString(), quoteText, quote.attachment, thread,
-                message.isOutgoing, message.isOpenGroupInvitation, message.threadId,
-                quote.isOriginalMissing, glide
+                message.isOutgoing, message.isOpenGroupInvitation, message.isPayment,
+                message.isOutgoing, message.threadId, quote.isOriginalMissing, glide
             )
             onContentClick.add { event ->
                 val r = Rect()

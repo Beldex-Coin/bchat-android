@@ -64,7 +64,7 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/large_font_size"
                     android:textStyle="bold"
-                    tools:text="0.1"
+                    tools:text="0.01"
                     tools:ignore="NestedWeights" />
                 <TextView
                     android:id="@+id/paymentCardViewBdxTextView"
@@ -72,7 +72,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginStart="2dp"
                     android:fontFamily="@font/open_sans_bold"
-                    android:gravity="center_vertical"
+                    android:gravity="center"
                     android:textColor="@color/white"
                     android:textSize="@dimen/large_font_size"
                     android:textStyle="bold"

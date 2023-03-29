@@ -1003,23 +1003,24 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             } else {
                 sendTextOnlyMessage()
             }*/
-                if(TextSecurePreferences.isPayAsYouChat(requireActivity())) {
-                    if (binding.inputBar.text.matches(Regex("^[0-9]*\\.?[0-9]*\$"))) {
-                        if (binding.syncStatus.text == getString(R.string.status_synchronized)) {
-                            sendBDX()
-                        } else {
-                            Toast.makeText(
-                                requireActivity(),
-                                "Blocks are syncing wait until finished",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                //if (TextSecurePreferences.isPayAsYouChat(requireActivity()) && !recipient.isOpenGroupRecipient && !recipient.isClosedGroupRecipient && blockProgressBarVisible)
+            if (blockProgressBarVisible) {
+                if (binding.inputBar.text.matches(Regex("^[0-9]*\\.?[0-9]*\$"))) {
+                    if (binding.syncStatus.text == getString(R.string.status_synchronized)) {
+                        sendBDX()
                     } else {
-                        callSendTextOnlyMessage()
+                        Toast.makeText(
+                            requireActivity(),
+                            "Blocks are syncing wait until finished",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
-                }else{
-                   callSendTextOnlyMessage()
+                } else {
+                    callSendTextOnlyMessage()
                 }
+            } else {
+                callSendTextOnlyMessage()
+            }
         }
     }
 
@@ -2213,6 +2214,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 if (it.isOutgoing) Address.fromSerialized(
                     listenerCallback!!.gettextSecurePreferences().getLocalNumber()!!
                 ) else it.individualRecipient.address
+            //Payment Tag
             var quoteBody = it.body
             if(it.isPayment){
                 Log.d("QuoteModel->1","${it.body}")
@@ -2840,6 +2842,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         Log.d("Beldex","Transaction Completed")
         //Payment Tag
         viewModel.sentPayment(sendBDXAmount.toString(),txId,viewModel.recipient)
+        processMessageRequestApproval()
         InChatSendSuccess(this).show(requireActivity().supportFragmentManager,"")
     }
 

@@ -172,21 +172,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_weight="1"
-            android:adjustViewBounds="true"
-            android:visibility="gone"
-            app:layout_constraintDimensionRatio="1:1"
-            app:lottie_autoPlay="true"
-            app:lottie_enableMergePathsForKitKatAndAbove="true"
-            app:lottie_fileName="load_animation.json"
-            app:lottie_loop="true"
-            app:lottie_speed="1"
-            tools:ignore="ContentDescription" />
 
         <com.thoughtcrimes.securesms.conversation.ChatWallpaperImageView
             android:id="@+id/contentImageView"

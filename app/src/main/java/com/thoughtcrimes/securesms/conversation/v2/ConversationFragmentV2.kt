@@ -32,6 +32,7 @@ import androidx.annotation.DimenRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -2661,7 +2662,12 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun sendFailed(errorText: String?) {
-        binding.progressBar.visibility = View.INVISIBLE
+        val transactionLoadingBar: Fragment? =
+            requireActivity().supportFragmentManager.findFragmentByTag("transaction_progressbar_tag")
+        if (transactionLoadingBar != null) {
+            val df: DialogFragment = transactionLoadingBar as DialogFragment
+            df.dismiss()
+        }
         //  sendButtonEnabled()
         showAlert(getString(R.string.send_create_tx_error_title), errorText!!)
     }
@@ -2715,12 +2721,20 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     var inProgress = false
 
     private fun hideProgress() {
-        binding.progressBar.visibility = View.GONE
+        val transactionLoadingBar: Fragment? =
+            requireActivity().supportFragmentManager.findFragmentByTag("transaction_progressbar_tag")
+        if (transactionLoadingBar != null) {
+            val df: DialogFragment = transactionLoadingBar as DialogFragment
+            df.dismiss()
+        }
         inProgress = false
     }
 
     private fun showProgress() {
-        binding.progressBar.visibility = View.VISIBLE
+        TransactionLoadingBar().show(
+            requireActivity().supportFragmentManager,
+            "transaction_progressbar_tag"
+        )
         inProgress = true
     }
 
@@ -2820,7 +2834,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     fun send() {
         commitTransaction()
-        requireActivity().runOnUiThread { binding.progressBar.visibility = View.VISIBLE }
+        requireActivity().runOnUiThread { TransactionLoadingBar().show(
+            requireActivity().supportFragmentManager,
+            "transaction_progressbar_tag"
+        ) }
     }
 
     private fun commitTransaction() {

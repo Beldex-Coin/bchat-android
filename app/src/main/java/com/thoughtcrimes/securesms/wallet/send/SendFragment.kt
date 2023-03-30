@@ -29,8 +29,10 @@ import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.DialogFragment
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.google.gson.GsonBuilder
+import com.thoughtcrimes.securesms.conversation.v2.TransactionLoadingBar
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.home.HomeActivity
 import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
@@ -851,12 +853,20 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     var inProgress = false
 
     private fun hideProgress() {
-        binding.progressBar.visibility = View.GONE
+        val prev: Fragment? =
+            requireActivity().supportFragmentManager.findFragmentByTag("transaction_progressbar_tag")
+        if (prev != null) {
+            val df: DialogFragment = prev as DialogFragment
+            df.dismiss()
+        }
         inProgress = false
     }
 
     private fun showProgress() {
-        binding.progressBar.visibility = View.VISIBLE
+        TransactionLoadingBar().show(
+            requireActivity().supportFragmentManager,
+            "transaction_progressbar_tag"
+        )
         inProgress = true
     }
 
@@ -1018,7 +1028,12 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     }
 
     override fun sendFailed(errorText: String?) {
-        binding.progressBar.visibility = View.INVISIBLE
+        val prev: Fragment? =
+            requireActivity().supportFragmentManager.findFragmentByTag("transaction_progressbar_tag")
+        if (prev != null) {
+            val df: DialogFragment = prev as DialogFragment
+            df.dismiss()
+        }
         sendButtonEnabled()
         showAlert(getString(R.string.send_create_tx_error_title), errorText!!)
     }
@@ -1078,7 +1093,10 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
     fun send() {
         commitTransaction()
-        requireActivity().runOnUiThread { binding.progressBar.visibility = View.VISIBLE }
+        requireActivity().runOnUiThread { requireActivity().runOnUiThread { TransactionLoadingBar().show(
+            requireActivity().supportFragmentManager,
+            "transaction_progressbar_tag"
+        ) } }
     }
 
     fun transactionFinished(){

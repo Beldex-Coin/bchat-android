@@ -43,6 +43,6 @@ class InChatSend(
         }
 
         builder.setView(binding.root)
-        builder.setCancelable(false)
+        isCancelable = false
     }
 }

@@ -29,6 +29,8 @@ class SendConfirmDialog(
 
             cancelButton.setOnClickListener {
                 context.sendButtonEnabled()
+                context.pendingTransaction = null
+                context.pendingTx = null
                 dismiss()
             }
             okButton.setOnClickListener {

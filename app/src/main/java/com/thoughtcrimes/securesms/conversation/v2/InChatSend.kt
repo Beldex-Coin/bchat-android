@@ -27,6 +27,8 @@ class InChatSend(
                 com.thoughtcrimes.securesms.model.Wallet.getDisplayAmount(pendingTransaction.amount)
 
             cancelButton.setOnClickListener {
+                context.pendingTransaction = null
+                context.pendingTx = null
                 dismiss()
             }
             okButton.setOnClickListener {

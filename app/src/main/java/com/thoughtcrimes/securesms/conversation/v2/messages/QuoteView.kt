@@ -149,7 +149,46 @@ class QuoteView : LinearLayout {
                 resources.getString(R.string.reply_payment_card_message,direction,amount)
             }
             else -> {
-                MentionUtilities.highlightMentions((body ?: "").toSpannable(), threadID, context)
+                var bodyText=""
+                if(body!=null && body.isNotEmpty()){
+                    var type = ""
+                    try {
+                        val mainObject: JSONObject = JSONObject(body)
+                        val uniObject = mainObject.getJSONObject("kind")
+                        type = uniObject.getString("@type")
+                    } catch (e: JSONException) {
+                        e.printStackTrace()
+                    }
+                    when (type) {
+                        "OpenGroupInvitation" -> {
+                            bodyText = resources.getString(R.string.open_group_invitation_view__open_group_invitation)
+                        }
+                        "Payment" -> {
+                            //Payment Tag
+                            var amount = ""
+                            var direction = ""
+                            try {
+                                val mainObject: JSONObject = JSONObject(body)
+                                val uniObject = mainObject.getJSONObject("kind")
+                                amount = uniObject.getString("amount")
+                            } catch (e: JSONException) {
+                                e.printStackTrace()
+                            }
+                            direction = if (outgoing) {
+                                context.getString(R.string.payment_sent)
+                            } else {
+                                context.getString(R.string.payment_received)
+                            }
+                            bodyText = resources.getString(R.string.reply_payment_card_message,direction,amount)
+                        }
+                        else -> {
+                            bodyText = MentionUtilities.highlightMentions((body ?: "").toSpannable(), threadID, context)
+                        }
+                    }
+                }else{
+                   bodyText = MentionUtilities.highlightMentions((body ?: "").toSpannable(), threadID, context)
+                }
+                bodyText
             }
         }
         binding.quoteViewBodyTextView.setTextColor(getTextColor(isOutgoingMessage))

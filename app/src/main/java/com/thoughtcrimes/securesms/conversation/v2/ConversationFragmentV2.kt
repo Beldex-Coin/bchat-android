@@ -2234,6 +2234,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     resources.getString(R.string.payment_received)
                 }
                 quoteBody = resources.getString(R.string.reply_payment_card_message,direction,amount)
+            }else if(it.isOpenGroupInvitation){
+                Log.d("QuoteModel->2","${it.body}")
+                quoteBody = resources.getString(R.string.ThreadRecord_open_group_invitation)
             }
             QuoteModel(it.dateSent, sender, quoteBody, false, quotedAttachments)
         }

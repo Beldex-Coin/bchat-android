@@ -120,6 +120,8 @@ import com.thoughtcrimes.securesms.wallet.CheckOnline
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import nl.komponents.kovenant.ui.successUi
+import org.json.JSONException
+import org.json.JSONObject
 import kotlin.concurrent.thread
 
 
@@ -1487,7 +1489,30 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
         val quote = quotedMessage?.let {
             val quotedAttachments = (it as? MmsMessageRecord)?.slideDeck?.asAttachments() ?: listOf()
             val sender = if (it.isOutgoing) fromSerialized(textSecurePreferences.getLocalNumber()!!) else it.individualRecipient.address
-            QuoteModel(it.dateSent, sender, it.body, false, quotedAttachments)
+            var quoteBody = it.body
+            if(it.isPayment){
+                Log.d("QuoteModel->1","${it.body}")
+                //Payment Tag
+                var amount = ""
+                var direction = ""
+                try {
+                    val mainObject: JSONObject = JSONObject(it.body)
+                    val uniObject = mainObject.getJSONObject("kind")
+                    amount = uniObject.getString("amount")
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
+                direction = if (it.isOutgoing) {
+                    resources.getString(R.string.payment_sent)
+                } else {
+                    resources.getString(R.string.payment_received)
+                }
+                quoteBody = resources.getString(R.string.reply_payment_card_message,direction,amount)
+            }else if(it.isOpenGroupInvitation){
+                Log.d("QuoteModel->2","${it.body}")
+                quoteBody = resources.getString(R.string.ThreadRecord_open_group_invitation)
+            }
+            QuoteModel(it.dateSent, sender, quoteBody, false, quotedAttachments)
         }
         val outgoingTextMessage = OutgoingMediaMessage.from(message, recipient, attachments, quote, linkPreview)
         // Clear the input bar

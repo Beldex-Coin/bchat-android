@@ -72,6 +72,7 @@
         <item name="message_received_background_color">@color/card_color</item>
         <item name="message_sent_background_color">@color/send_message_background</item>
         <item name="message_sent_background_transparent_color">@color/transparent</item>
+        <item name="payment_message_received_background_color">@color/receive_payment_card_background</item>
 
         <item name="menu_accept_icon">@drawable/ic_baseline_done_24</item>
         <item name="menu_trash_icon">@drawable/ic_baseline_delete_24</item>

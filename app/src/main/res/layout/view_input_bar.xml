@@ -64,7 +64,7 @@
                 android:layout_width="28.203dp"
                 android:layout_height="28.203dp"
                 android:adjustViewBounds="true"
-                android:layout_centerInParent="true"
+                android:layout_gravity="center_vertical"
                 app:layout_constraintDimensionRatio="1:1"
                 app:lottie_fileName="coin.json"
                 app:lottie_loop="true"

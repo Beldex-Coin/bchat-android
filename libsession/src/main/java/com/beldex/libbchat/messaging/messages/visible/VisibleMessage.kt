@@ -9,6 +9,8 @@ import com.beldex.libbchat.utilities.GroupUtil
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.protos.SignalServiceProtos
 import com.beldex.libsignal.utilities.Log
+import com.fasterxml.jackson.annotation.JsonFormat
+import com.google.protobuf.TextFormat.printToString
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment as SignalAttachment
 
 class VisibleMessage : Message()  {
@@ -26,12 +28,16 @@ class VisibleMessage : Message()  {
     var beldexAddress:String?= null
 
     override val isSelfSendValid: Boolean = true
+    //Payment Tag
+    var payment: Payment? = null
 
     // region Validation
     override fun isValid(): Boolean {
+        Log.d("DataMessage body VisibleMessage->","yes")
         if (!super.isValid()) return false
         if (attachmentIDs.isNotEmpty()) return true
         if (openGroupInvitation != null) return true
+        if (payment !=null) return true //Payment Tag
         val text = text?.trim() ?: return false
         if (text.isNotEmpty()) return true
         return false
@@ -61,10 +67,18 @@ class VisibleMessage : Message()  {
                 val linkPreview = LinkPreview.fromProto(linkPreviewProto)
                 result.linkPreview = linkPreview
             }
+            Log.d("DataMessage opengroup-> ",dataMessage.hasOpenGroupInvitation().toString())
             val openGroupInvitationProto = if (dataMessage.hasOpenGroupInvitation()) dataMessage.openGroupInvitation else null
             if (openGroupInvitationProto != null) {
                 val openGroupInvitation = OpenGroupInvitation.fromProto(openGroupInvitationProto)
                 result.openGroupInvitation = openGroupInvitation
+            }
+            Log.d("DataMessage payment-> ",dataMessage.hasPayment().toString())
+            //Payment Tag
+            val paymentProto = if (dataMessage.hasPayment()) dataMessage.payment else null
+            if (paymentProto != null) {
+                val payment = Payment.fromProto(paymentProto)
+                result.payment = payment
             }
             // TODO Contact
             val profile = Profile.fromProto(dataMessage)
@@ -99,6 +113,11 @@ class VisibleMessage : Message()  {
         val openGroupInvitationProto = openGroupInvitation?.toProto()
         if (openGroupInvitationProto != null) {
             dataMessage.openGroupInvitation = openGroupInvitationProto
+        }
+        // Payment Tag
+        val paymentProto = payment?.toProto()
+        if (paymentProto != null) {
+            dataMessage.payment = paymentProto
         }
         // Attachments
         val database = MessagingModuleConfiguration.shared.messageDataProvider

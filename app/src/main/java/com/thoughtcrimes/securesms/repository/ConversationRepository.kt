@@ -1,6 +1,7 @@
 package com.thoughtcrimes.securesms.repository
 
 import com.beldex.libbchat.database.MessageDataProvider
+import com.beldex.libbchat.messaging.messages.visible.Payment
 import com.beldex.libbchat.messaging.messages.Destination
 import com.beldex.libbchat.messaging.messages.control.MessageRequestResponse
 import com.beldex.libbchat.messaging.messages.control.UnsendRequest
@@ -30,6 +31,8 @@ interface ConversationRepository {
     fun saveDraft(threadId: Long, text: String)
     fun getDraft(threadId: Long): String?
     fun inviteContacts(threadId: Long, contacts: List<Recipient>)
+    //Payment Tah
+    fun sentPayment(threadId: Long, amount: String, txnId: String?, recipient: Recipient?)
     fun setBlocked(recipient: Recipient, blocked: Boolean)
     fun deleteLocally(recipient: Recipient, message: MessageRecord)
     /*Hales63*/
@@ -131,6 +134,21 @@ class DefaultConversationRepository @Inject constructor(
         }
     }
 
+    override fun sentPayment(threadId: Long, amount: String, txnId: String?, recipient: Recipient?) {
+        val message = VisibleMessage()
+        message.sentTimestamp = System.currentTimeMillis()
+        val payment = Payment()
+        payment.amount = amount
+        payment.txnId = txnId
+        message.payment = payment
+        val outgoingTextMessage = OutgoingTextMessage.fromPayment(
+            payment,
+            recipient,
+            message.sentTimestamp
+        )
+        smsDb.insertMessageOutboxNew(-1,outgoingTextMessage,message.sentTimestamp!!)
+        MessageSender.send(message,recipient!!.address)
+    }
     override fun setBlocked(recipient: Recipient, blocked: Boolean) {
         recipientDb.setBlocked(recipient, blocked)
     }

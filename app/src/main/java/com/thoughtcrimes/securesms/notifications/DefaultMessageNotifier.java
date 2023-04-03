@@ -67,11 +67,10 @@ import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libsignal.utilities.Log;
 import com.beldex.libsignal.utilities.Util;
 
-import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2;
-import com.thoughtcrimes.securesms.conversation.v2.utilities.MentionManagerUtilities;
-import com.thoughtcrimes.securesms.conversation.v2.utilities.MentionUtilities;
-import com.thoughtcrimes.securesms.dependencies.DatabaseComponent;
-import com.thoughtcrimes.securesms.util.BchatMetaProtocol;
+
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashSet;
 import java.util.List;
@@ -560,6 +559,23 @@ public class DefaultMessageNotifier implements MessageNotifier {
         body = SpanUtil.italic(message, italicLength);
       } else if (record.isOpenGroupInvitation()) {
         body = SpanUtil.italic(context.getString(R.string.ThreadRecord_open_group_invitation));
+      } else if (record.isPayment()) {
+        //Payment Tag
+        String amount = "";
+        String direction = "";
+        try {
+          JSONObject mainObject = new JSONObject(record.getBody());
+          JSONObject uniObject = mainObject.getJSONObject("kind");
+          amount = uniObject.getString("amount");
+        } catch (JSONException e) {
+          e.printStackTrace();
+        }
+        if (record.isOutgoing()) {
+          direction = context.getString(R.string.send);
+        } else {
+          direction = context.getString(R.string.message_details_header__received);
+        }
+        body = SpanUtil.italic(context.getString(R.string.ThreadRecord_payment, amount, direction));
       }
 
       if (threadRecipients == null || !threadRecipients.isMuted()) {

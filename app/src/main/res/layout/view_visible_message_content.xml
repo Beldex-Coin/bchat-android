@@ -62,6 +62,15 @@
         android:id="@+id/openGroupInvitationView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
+    <com.thoughtcrimes.securesms.conversation.v2.messages.PaymentCardView
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"
+        android:id="@+id/paymentCardView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
     <com.thoughtcrimes.securesms.conversation.v2.messages.DocumentView
        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"

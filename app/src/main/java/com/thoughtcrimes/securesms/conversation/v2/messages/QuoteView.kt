@@ -24,7 +24,8 @@ import com.thoughtcrimes.securesms.conversation.v2.utilities.MentionUtilities
 import com.thoughtcrimes.securesms.conversation.v2.utilities.TextUtilities
 import com.thoughtcrimes.securesms.database.BchatContactDatabase
 import com.thoughtcrimes.securesms.util.UiModeUtilities
-import com.thoughtcrimes.securesms.util.toPx
+import org.json.JSONException
+import org.json.JSONObject
 import javax.inject.Inject
 import kotlin.math.max
 import kotlin.math.min
@@ -107,9 +108,10 @@ class QuoteView : LinearLayout {
     // endregion
 
     // region Updating
-    fun bind(authorPublicKey: String, body: String?, attachments: SlideDeck?, thread: Recipient,
-             isOutgoingMessage: Boolean, isOpenGroupInvitation: Boolean, threadID: Long,
-             isOriginalMissing: Boolean, glide: GlideRequests
+    fun bind(
+        authorPublicKey: String, body: String?, attachments: SlideDeck?, thread: Recipient,
+        isOutgoingMessage: Boolean, isOpenGroupInvitation: Boolean, isPayment: Boolean,
+        outgoing: Boolean, threadID: Long, isOriginalMissing: Boolean, glide: GlideRequests
     ) {
         // Reduce the max body text view line count to 2 if this is a group thread because
         // we'll be showing the author text view and we don't want the overall quote view height
@@ -124,7 +126,71 @@ class QuoteView : LinearLayout {
         }
         binding.quoteViewAuthorTextView.isVisible = thread.isGroupRecipient
         // Body
-        binding.quoteViewBodyTextView.text = if (isOpenGroupInvitation) resources.getString(R.string.open_group_invitation_view__open_group_invitation) else MentionUtilities.highlightMentions((body ?: "").toSpannable(), threadID, context)
+        binding.quoteViewBodyTextView.text = when {
+            isOpenGroupInvitation -> {
+                resources.getString(R.string.open_group_invitation_view__open_group_invitation)
+            }
+            isPayment -> {
+                //Payment Tag
+                var amount = ""
+                var direction = ""
+                try {
+                    val mainObject: JSONObject = JSONObject(body)
+                    val uniObject = mainObject.getJSONObject("kind")
+                    amount = uniObject.getString("amount")
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
+                direction = if (outgoing) {
+                    context.getString(R.string.payment_sent)
+                } else {
+                    context.getString(R.string.payment_received)
+                }
+                resources.getString(R.string.reply_payment_card_message,direction,amount)
+            }
+            else -> {
+                var bodyText=""
+                if(body!=null && body.isNotEmpty()){
+                    var type = ""
+                    try {
+                        val mainObject: JSONObject = JSONObject(body)
+                        val uniObject = mainObject.getJSONObject("kind")
+                        type = uniObject.getString("@type")
+                    } catch (e: JSONException) {
+                        e.printStackTrace()
+                    }
+                    when (type) {
+                        "OpenGroupInvitation" -> {
+                            bodyText = resources.getString(R.string.open_group_invitation_view__open_group_invitation)
+                        }
+                        "Payment" -> {
+                            //Payment Tag
+                            var amount = ""
+                            var direction = ""
+                            try {
+                                val mainObject: JSONObject = JSONObject(body)
+                                val uniObject = mainObject.getJSONObject("kind")
+                                amount = uniObject.getString("amount")
+                            } catch (e: JSONException) {
+                                e.printStackTrace()
+                            }
+                            direction = if (outgoing) {
+                                context.getString(R.string.payment_sent)
+                            } else {
+                                context.getString(R.string.payment_received)
+                            }
+                            bodyText = resources.getString(R.string.reply_payment_card_message,direction,amount)
+                        }
+                        else -> {
+                            bodyText = MentionUtilities.highlightMentions((body ?: "").toSpannable(), threadID, context)
+                        }
+                    }
+                }else{
+                    bodyText = MentionUtilities.highlightMentions((body ?: "").toSpannable(), threadID, context)
+                }
+                bodyText
+            }
+        }
         binding.quoteViewBodyTextView.setTextColor(getTextColor(isOutgoingMessage))
         // Accent line / attachment preview
         val hasAttachments = (attachments != null && attachments.asAttachments().isNotEmpty()) && !isOriginalMissing

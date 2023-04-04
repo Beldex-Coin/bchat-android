@@ -425,6 +425,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         fun hasBoundService(): Boolean
         val connectionStatus: Wallet.ConnectionStatus?
         fun setWalletPin()
+        fun forceUpdate(requireActivity: Context)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -528,6 +529,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 }
             }
         }
+        listenerCallback!!.forceUpdate(requireActivity())
         showBlockProgressBar(thread)
 
         binding.conversationExpandableArrow.setOnClickListener {
@@ -564,6 +566,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             } else{
                 binding.blockProgressBar.visibility = View.GONE
                 binding.syncStatusLayout.visibility = View.GONE
+                binding.inChatWalletDetails.visibility = View.GONE
                 blockProgressBarVisible = false
             }
         }

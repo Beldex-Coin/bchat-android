@@ -423,6 +423,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         //Wallet
         fun hasBoundService(): Boolean
         val connectionStatus: Wallet.ConnectionStatus?
+        fun setWalletPin()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -1038,27 +1039,31 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun inChatBDXOptions() {
-        val dialog = android.app.AlertDialog.Builder(requireActivity())
-        val inflater = layoutInflater
-        val dialogView = inflater.inflate(R.layout.pay_as_you_chat, null)
-        dialog.setView(dialogView)
+        if (TextSecurePreferences.getWalletEntryPassword(requireActivity()) != null) {
+            val dialog = android.app.AlertDialog.Builder(requireActivity())
+            val inflater = layoutInflater
+            val dialogView = inflater.inflate(R.layout.pay_as_you_chat, null)
+            dialog.setView(dialogView)
 
-        val okButton = dialogView.findViewById<Button>(R.id.okButton)
-        val cancelButton = dialogView.findViewById<Button>(R.id.cancelButton)
-        val enableInstruction = dialogView.findViewById<TextView>(R.id.payAsYouChatEnable_Instruction)
-        val alert = dialog.create()
-        alert.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        alert.setCanceledOnTouchOutside(false)
-        alert.show()
-        val sourceString = "Enable pay as you chat from <b>My Account -> Chat Settings -> Pay As You Chat</b> to use this option"
-        enableInstruction.text = Html.fromHtml(sourceString)
-        okButton.setOnClickListener {
-            val intent = Intent(requireActivity(), ChatSettingsActivity::class.java)
-            requireActivity().startActivity(intent)
-            alert.dismiss()
-        }
-        cancelButton.setOnClickListener {
-            alert.dismiss()
+            val okButton = dialogView.findViewById<Button>(R.id.okButton)
+            val cancelButton = dialogView.findViewById<Button>(R.id.cancelButton)
+            val enableInstruction = dialogView.findViewById<TextView>(R.id.payAsYouChatEnable_Instruction)
+            val alert = dialog.create()
+            alert.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            alert.setCanceledOnTouchOutside(false)
+            alert.show()
+            val sourceString = "Enable pay as you chat from <b>My Account -> Chat Settings -> Pay As You Chat</b> to use this option"
+            enableInstruction.text = Html.fromHtml(sourceString)
+            okButton.setOnClickListener {
+                val intent = Intent(requireActivity(), ChatSettingsActivity::class.java)
+                requireActivity().startActivity(intent)
+                alert.dismiss()
+            }
+            cancelButton.setOnClickListener {
+                alert.dismiss()
+            }
+        } else {
+            listenerCallback!!.setWalletPin()
         }
     }
 

@@ -577,6 +577,13 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }
     }
 
+    private var setUpWalletPinActivityResultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                Toast.makeText(this, "Wallet pin already created", Toast.LENGTH_SHORT).show()
+            }
+        }
+
     override fun showNotificationSettings() {
         val intent = Intent(this, NotificationSettingsActivity::class.java)
         push(intent)
@@ -1979,6 +1986,31 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 TextSecurePreferences.callFiatCurrencyApi(this,false)
                 super.onBackPressed()
             }
+        }
+    }
+
+    override fun setWalletPin() {
+        val walletName = getWalletName(this)
+        val walletPassword = getWalletPassword(this)
+        if (walletName != null && walletPassword != null) {
+            val lockManager: LockManager<CustomPinActivity> =
+                LockManager.getInstance() as LockManager<CustomPinActivity>
+            lockManager.enableAppLock(this, CustomPinActivity::class.java)
+            val intent = Intent(this, CustomPinActivity::class.java)
+            if (TextSecurePreferences.getWalletEntryPassword(this) != null) {
+                intent.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN)
+                intent.putExtra("change_pin", false)
+                intent.putExtra("send_authentication", false)
+                setUpWalletPinActivityResultLauncher.launch(intent)
+            } else {
+                intent.putExtra(AppLock.EXTRA_TYPE, AppLock.ENABLE_PINLOCK)
+                intent.putExtra("change_pin", false)
+                intent.putExtra("send_authentication", false)
+                setUpWalletPinActivityResultLauncher.launch(intent)
+            }
+        } else {
+            val intent = Intent(this, WalletInfoActivity::class.java)
+            push(intent)
         }
     }
 

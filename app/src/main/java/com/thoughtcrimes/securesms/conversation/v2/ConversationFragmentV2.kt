@@ -137,6 +137,7 @@ import org.json.JSONObject
 import timber.log.Timber
 import java.lang.ClassCastException
 import java.lang.NumberFormatException
+import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.concurrent.Executor
 
@@ -2998,7 +2999,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }*/
         val daemonHeight: Long = wallet.daemonBlockChainHeight
         val walletHeight: Long = wallet.blockChainHeight
-        val walletSyncPercentage: Long = ((100 * walletHeight) / daemonHeight)
+        val df = DecimalFormat("#.##")
+        val walletSyncPercentage = ((100.00 * walletHeight.toDouble()) / daemonHeight)
 
         Log.d("Beldex", "isOnline 0  ${CheckOnline.isOnline(requireContext())}")
         if(CheckOnline.isOnline(requireContext())) {
@@ -3035,7 +3037,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     Log.d("Beldex","App crash issue value of height n height $n")
                     Log.d("Beldex","App crash issue value of height n firstBlock $firstBlock")
                     setProgress(x)
-                    binding.valueOfWallet.text = "$walletHeight/$daemonHeight ($walletSyncPercentage%)"
+                    binding.valueOfWallet.text = "$walletHeight/$daemonHeight (${df.format(walletSyncPercentage)}%)"
                     //WalletFragment Functionality
                     /*ivSynced.setVisibility(View.GONE);
                     binding.filterTransactionsIcon.isClickable = false
@@ -3062,7 +3064,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                             R.color.green_color
                         )
                     )
-                    binding.valueOfWallet.text = "$walletHeight/$daemonHeight ($walletSyncPercentage%)"
+                    binding.valueOfWallet.text = "$walletHeight/$daemonHeight (${df.format(walletSyncPercentage)}%)"
                     //SteveJosephh21
                     setProgress(-2)
                     //WalletFragment Functionality

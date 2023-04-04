@@ -408,7 +408,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private var walletSynchronized:Boolean = false
     private var blockProgressBarVisible:Boolean = false
 
-    
+
     interface Listener {
         fun getConversationViewModel(): ConversationViewModel.AssistedFactory
         fun gettextSecurePreferences(): TextSecurePreferences
@@ -477,7 +477,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         messageToScrollAuthor.set(requireArguments().getParcelable<Address>(SCROLL_MESSAGE_AUTHOR))
 
         if (!thread.isGroupRecipient && thread.hasApprovedMe()) {
-           senderBeldexAddress =  getBeldexAddress(thread.address)
+            senderBeldexAddress =  getBeldexAddress(thread.address)
         }
         //AsyncGetUnlockedBalance(listenerCallback).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
         setUpRecyclerView()
@@ -996,16 +996,16 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 binding.inputBar.linkPreview
             )
         } else {
-           /* if (binding.inputBar.text.length > 4096) {
-                Toast.makeText(
-                    requireActivity(),
-                    "Text limit exceed: Maximum limit of messages is 4096 characters",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else {
-                sendTextOnlyMessage()
-            }*/
-                //if (TextSecurePreferences.isPayAsYouChat(requireActivity()) && !recipient.isOpenGroupRecipient && !recipient.isClosedGroupRecipient && blockProgressBarVisible)
+            /* if (binding.inputBar.text.length > 4096) {
+                 Toast.makeText(
+                     requireActivity(),
+                     "Text limit exceed: Maximum limit of messages is 4096 characters",
+                     Toast.LENGTH_SHORT
+                 ).show()
+             } else {
+                 sendTextOnlyMessage()
+             }*/
+            //if (TextSecurePreferences.isPayAsYouChat(requireActivity()) && !recipient.isOpenGroupRecipient && !recipient.isClosedGroupRecipient && blockProgressBarVisible)
             if (blockProgressBarVisible) {
                 if (binding.inputBar.text.matches(Regex("^[0-9]*\\.?[0-9]*\$"))) {
                     if (binding.syncStatus.text == getString(R.string.status_synchronized)) {
@@ -1411,6 +1411,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             .setNegativeButton(android.R.string.cancel, null)
             .setPositiveButton(R.string.RecipientPreferenceActivity_block) { _, _ ->
                 viewModel.block()
+                val thread = threadDb.getRecipientForThreadId(viewModel.threadId)
+                showBlockProgressBar(thread)
                 if (deleteThread) {
                     viewModel.deleteThread()
                     //finish()
@@ -1433,6 +1435,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             .setNegativeButton(android.R.string.cancel, null)
             .setPositiveButton(R.string.ConversationActivity_unblock) { _, _ ->
                 viewModel.unblock()
+                val thread = threadDb.getRecipientForThreadId(viewModel.threadId)
+                showBlockProgressBar(thread)
             }.show()
 
         //New Line
@@ -1999,9 +2003,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         binding.blockedBanner.isVisible = recipient.isBlocked
         binding.blockedBanner.setOnClickListener { viewModel.unblock() }
         binding.unblockButton.setOnClickListener {
+            viewModel.unblock()
             val thread = threadDb.getRecipientForThreadId(viewModel.threadId)
             showBlockProgressBar(thread)
-            viewModel.unblock()
         }
     }
 
@@ -2091,7 +2095,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
             animation.start()
         }
-       binding.inputBarRecordingView?.hide()
+        binding.inputBarRecordingView?.hide()
     }
 
     private fun isIncomingMessageRequestThread(): Boolean {
@@ -2494,7 +2498,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             animation.addUpdateListener { animator ->
                 mentionCandidatesView.alpha = animator.animatedValue as Float
                 if (animator.animatedFraction == 1.0f) {
-                   binding.additionalContentContainer?.removeAllViews()
+                    binding.additionalContentContainer?.removeAllViews()
                 }
             }
             animation.start()
@@ -2535,6 +2539,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             .setMessage(resources.getString(R.string.message_requests_accept_message))
             .setPositiveButton(R.string.accept) { _, _ ->
                 acceptMessageRequest()
+                val thread = threadDb.getRecipientForThreadId(viewModel.threadId)
+                showBlockProgressBar(thread)
             }
             .setNegativeButton(R.string.cancel) { _, _ ->
                 // Do nothing
@@ -2625,7 +2631,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         txData.destinationAddress = senderBeldexAddress
         if (getCleanAmountString(getBDXAmount()).equals(
                 Wallet.getDisplayAmount(totalFunds)))
-                {
+        {
             val amount = (totalFunds - 10485760)// 10485760 == 050000000
             val bdx = getCleanAmountString(getBDXAmount())
             if (bdx != null) {
@@ -2643,15 +2649,15 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 txData.amount = 0L
             }
         }
-         txData.userNotes = UserNotes("-")
+        txData.userNotes = UserNotes("-")
         if(TextSecurePreferences.getFeePriority(requireActivity())==0){
             txData.priority = PendingTransaction.Priority.Priority_Slow
         }else{
             txData.priority = PendingTransaction.Priority.Priority_Flash
         }
-         Log.d("Beldex","Value of txData amount ${txData.amount}")
-         Log.d("Beldex","Value of txData destination address ${txData.destinationAddress}")
-         Log.d("Beldex","Value of txData priority ${txData.priority}")
+        Log.d("Beldex","Value of txData amount ${txData.amount}")
+        Log.d("Beldex","Value of txData destination address ${txData.destinationAddress}")
+        Log.d("Beldex","Value of txData priority ${txData.priority}")
         txData.mixin = MIXIN
         //Important
         val lockManager: LockManager<CustomPinActivity> =
@@ -2678,7 +2684,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun createTransactionFailed(errorText: String?) {
-         hideProgress()
+        hideProgress()
         //sendButtonEnabled()
         showAlert(getString(R.string.send_create_tx_error_title), errorText!!)
     }
@@ -2687,7 +2693,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         // ignore txTag - the app flow ensures this is the correct tx
         Log.d("onTransactionCreated Status_Ok", "----")
         Log.d("Beldex","pending transaction called 1")
-         hideProgress()
+        hideProgress()
         if (isResume) {
             this.pendingTransaction = pendingTransaction
             refreshTransactionDetails()
@@ -2768,22 +2774,22 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
 
 
-   /* inner class AsyncGetUnlockedBalance(val wallet: Listener?) :
-        AsyncTaskCoroutine<Executor?, Boolean?>() {
-        override fun onPreExecute() {
-            super.onPreExecute()
+    /* inner class AsyncGetUnlockedBalance(val wallet: Listener?) :
+         AsyncTaskCoroutine<Executor?, Boolean?>() {
+         override fun onPreExecute() {
+             super.onPreExecute()
 
-        }
+         }
 
-        override fun doInBackground(vararg params: Executor?): Boolean {
-            totalFunds = wallet!!.totalFunds
-            return true
-        }
+         override fun doInBackground(vararg params: Executor?): Boolean {
+             totalFunds = wallet!!.totalFunds
+             return true
+         }
 
-        override fun onPostExecute(result: Boolean?) {
+         override fun onPostExecute(result: Boolean?) {
 
-        }
-    }*/
+         }
+     }*/
 
     private fun getCleanAmountString(enteredAmount: String): String? {
         return try {
@@ -2824,8 +2830,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         refreshTransactionDetails()
         if (pendingTransaction == null && !inProgress) {
             Log.d("Beldex","pending transaction called 2")
-           /* binding.sendButton.isEnabled=false
-            binding.sendButton.isClickable=false*/
+            /* binding.sendButton.isEnabled=false
+             binding.sendButton.isClickable=false*/
             showProgress()
             Log.d("Beldex","value of txData $txData")
             prepareSend(txData)
@@ -2872,7 +2878,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     fun transactionFinished(){
-       //sendButtonEnabled()
+        //sendButtonEnabled()
         listenerCallback!!.onBackPressedFun()
     }
 

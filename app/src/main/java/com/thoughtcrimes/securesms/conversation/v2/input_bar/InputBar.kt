@@ -191,11 +191,13 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
             setOf( binding.inputBarEditText, attachmentsButton ).forEach { it.isVisible = true }
             microphoneButton.isVisible = text.isEmpty()
             sendButton.isVisible = text.isNotEmpty()
+            binding.noLongerParticipantTextView.isVisible = false
         } else {
             cancelQuoteDraft(2)
             cancelLinkPreviewDraft(2)
             val views = setOf( binding.inputBarEditText, attachmentsButton, microphoneButton, sendButton )
             views.forEach { it.isVisible = false }
+            binding.noLongerParticipantTextView.isVisible = true
         }
     }
     /*Hales63*/

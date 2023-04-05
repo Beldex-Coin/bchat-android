@@ -2063,6 +2063,21 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             val group = groupDb.getGroup(recipient.address.toGroupString()).orNull()
             val isActive = (group?.isActive == true)
             binding.inputBar.showInput = isActive
+            val params: RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            if(isActive){
+                params.setMargins(15, 0, 15, 15)
+                binding.inputBarCard.radius=10F
+            }else{
+                params.addRule(RelativeLayout.ALIGN_PARENT_START)
+                params.addRule(RelativeLayout.ALIGN_PARENT_END)
+                params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+                params.setMargins(0, 0, 0, 0)
+                binding.inputBarCard.radius=0F
+            }
+            binding.inputBarCard.layoutParams = params
         } else {
             binding.inputBar.showInput = true
         }

@@ -199,6 +199,17 @@
           "description":"- Fixed crashes from wallet beta release"
         }
       ]
+    },
+    {
+      "title": "2.0.4",
+      "descriptions": [
+        {
+          "description":"- Added support for inchat payment card"
+        },
+        {
+          "description":"- Fixed reply preview of social group invitation"
+        }
+      ]
     }
   ]
 }

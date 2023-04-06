@@ -35,6 +35,7 @@ import com.beldex.libsignal.utilities.toHexString
 import com.thoughtcrimes.securesms.ApplicationContext
 import com.thoughtcrimes.securesms.MuteDialog
 import com.thoughtcrimes.securesms.components.ProfilePictureView
+import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.conversation.v2.utilities.NotificationUtils
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
 import com.thoughtcrimes.securesms.data.NodeInfo
@@ -70,6 +71,19 @@ class HomeFragment : Fragment(),ConversationClickListener,
     NewConversationButtonSetViewDelegate,
     LoaderManager.LoaderCallbacks<Cursor>,
     GlobalSearchInputLayout.GlobalSearchInputLayoutListener{
+
+    //Shortcut launcher
+    companion object{
+        @JvmStatic
+        fun newInstance(threadId: Long, address: Address?,shortcut:Boolean) =
+            HomeFragment().apply {
+                arguments = Bundle().apply {
+                    putLong(ConversationFragmentV2.THREAD_ID, threadId)
+                    putParcelable(ConversationFragmentV2.ADDRESS, address)
+                    putBoolean(ConversationFragmentV2.SHORTCUT_LAUNCHER,shortcut)
+                }
+            }
+    }
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var glide: GlideRequests
@@ -174,6 +188,9 @@ class HomeFragment : Fragment(),ConversationClickListener,
     override fun onDetach() {
         super.onDetach()
     }
+
+    //Shortcut launcher
+    var shortcut: Boolean =false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -352,6 +369,14 @@ class HomeFragment : Fragment(),ConversationClickListener,
             .registerReceiver(broadcastReceiver, IntentFilter("blockedContactsChanged"))
         activityCallback?.callLifeCycleScope(binding.recyclerView,binding.globalSearchInputLayout,(activity as HomeActivity).mmsSmsDatabase,globalSearchAdapter,publicKey,binding.profileButton,binding.drawerProfileName,binding.drawerProfileIcon)
 
+        //Shortcut launcher
+        if(arguments?.getBoolean(ConversationFragmentV2.SHORTCUT_LAUNCHER,false) == true && !shortcut){
+            shortcut = true
+            activityCallback?.callConversationScreen(requireArguments().getLong(
+                ConversationFragmentV2.THREAD_ID,-1L),requireArguments().getParcelable<Address>(
+                ConversationFragmentV2.ADDRESS
+            ))
+        }
     }
 
 
@@ -922,6 +947,8 @@ class HomeFragment : Fragment(),ConversationClickListener,
         //Wallet
         fun hasBoundService(): Boolean
         val connectionStatus: Wallet.ConnectionStatus?
+        //Shortcut launcher
+        fun callConversationScreen(threadId: Long, address: Address?)
     }
 
     fun dispatchTouchEvent() {

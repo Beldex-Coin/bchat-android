@@ -367,6 +367,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         const val SCROLL_MESSAGE_ID = "scroll_message_id"
         const val SCROLL_MESSAGE_AUTHOR = "scroll_message_author"
         const val HEX_ENCODED_PUBLIC_KEY="hex_encode_public_key"
+        //Shortcut launcher
+        const val SHORTCUT_LAUNCHER ="shortcut_launcher"
 
         // Request codes
         const val PICK_DOCUMENT = 2
@@ -2063,21 +2065,20 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             val group = groupDb.getGroup(recipient.address.toGroupString()).orNull()
             val isActive = (group?.isActive == true)
             binding.inputBar.showInput = isActive
-            val params: RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
             if(isActive){
-                params.setMargins(15, 0, 15, 15)
                 binding.inputBarCard.radius=10F
             }else{
+                val params: RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
                 params.addRule(RelativeLayout.ALIGN_PARENT_START)
                 params.addRule(RelativeLayout.ALIGN_PARENT_END)
                 params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
                 params.setMargins(0, 0, 0, 0)
                 binding.inputBarCard.radius=0F
+                binding.inputBarCard.layoutParams = params
             }
-            binding.inputBarCard.layoutParams = params
         } else {
             binding.inputBar.showInput = true
         }

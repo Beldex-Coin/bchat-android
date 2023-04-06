@@ -170,10 +170,19 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
 
         if(intent.getBooleanExtra(SHORTCUT_LAUNCHER,false)){
+            //Shortcut launcher
             val extras = Bundle()
             extras.putParcelable(ConversationFragmentV2.ADDRESS,intent.getParcelableExtra(ConversationFragmentV2.ADDRESS))
             extras.putLong(ConversationFragmentV2.THREAD_ID, intent.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
-            replaceFragment(ConversationFragmentV2(), null, extras)
+            extras.putBoolean(ConversationFragmentV2.SHORTCUT_LAUNCHER,true)
+            val homeFragment: Fragment = HomeFragment()
+            homeFragment.arguments = extras
+            supportFragmentManager.beginTransaction()
+                .add(
+                    R.id.activity_home_frame_layout_container,
+                    homeFragment,
+                    HomeFragment::class.java.name
+                ).commit()
         }else {
             val homeFragment: Fragment = HomeFragment()
             supportFragmentManager.beginTransaction()
@@ -198,6 +207,13 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             TextSecurePreferences.setAirdropAnimationStatus(this,false)
             launchSuccessLottieDialog()
         }*/
+    }
+
+    override fun callConversationScreen(threadId: Long, address: Address?) {
+        val extras = Bundle()
+        extras.putParcelable(ConversationFragmentV2.ADDRESS,address)
+        extras.putLong(ConversationFragmentV2.THREAD_ID, threadId)
+        replaceFragment(ConversationFragmentV2(), null, extras)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

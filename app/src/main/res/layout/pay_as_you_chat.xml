@@ -13,19 +13,20 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="30dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="10dp"
         android:orientation="vertical"
         tools:ignore="MissingConstraints">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:orientation="vertical">
 
             <ImageView
+                android:id="@+id/payAsYouChatLogo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -41,18 +42,18 @@
                 android:justificationMode="inter_word"
                 android:text="@string/pay_as_you_chat"
                 android:textColor="@color/text"
-                android:textSize="16dp"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/payAsYouChatEnable_Instruction"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:textAlignment="center"
                 android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="2dp"
                 android:fontFamily="@font/open_sans_medium"
-                android:gravity="center"
                 android:justificationMode="inter_word"
                 android:textColor="@color/text" />
 
@@ -65,7 +66,7 @@
 
             <Button
                 android:id="@+id/cancelButton"
-                style="@style/Widget.Bchat.Button.Common.UnimportantFilled.New"
+                style="@style/Widget.Bchat.Button.Common.ProminentFilled.Cancel"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/medium_button_height"
                 android:layout_marginStart="15dp"

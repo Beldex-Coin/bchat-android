@@ -87,6 +87,13 @@
         <item name="android:drawableTint" tools:ignore="NewApi">?android:textColorPrimary</item>
     </style>
 
+    <style name="Widget.Bchat.Button.Common.ProminentFilled.Cancel">
+        <item name="android:fontFamily">@font/open_sans_semi_bold</item>
+        <item name="android:background">@drawable/unimportant_filled_button_medium_background_new</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:drawableTint" tools:ignore="NewApi">?android:textColorPrimary</item>
+    </style>
+
     <style name="Widget.Bchat.Button.Common.ProminentFilled_Blue">
         <item name="android:fontFamily">@font/open_sans_semi_bold</item>
         <item name="android:background">@drawable/prominent_filled_button_medium_background_blue</item>

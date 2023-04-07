@@ -202,4 +202,5 @@
     <color name="scan_qr_code_background">#24242F</color>
     <color name="beta_icon">#aaaaaa</color>
     <color name="receive_payment_card_background">#128B17</color>
+    <color name="copy_link_background">#525264</color>
 </resources>

@@ -127,4 +127,5 @@
     <color name="scan_qr_code_background">#EAEAEA</color>
     <color name="beta_icon">#797984</color>
     <color name="receive_payment_card_background">#128B17</color>
+    <color name="copy_link_background">#FCFCFC</color>
 </resources>

@@ -884,7 +884,7 @@
     <string name="dialog_open_url_title" translatable="false">Open URL?</string>
     <string name="dialog_open_url_explanation" translatable="false">Are you sure you want to open %s?</string>
     <string name="open" translatable="false">Open</string>
-    <string name="copy_url" translatable="false">Copy URL</string>
+    <string name="copy_link" translatable="false">Copy Link</string>
 
     <string name="dialog_link_preview_title" translatable="false">Enable Link Previews?</string>
     <string name="dialog_link_preview_explanation" translatable="false">Enabling link previews will show previews for URLs you send and receive. This can be useful, but BChat will need to contact linked websites to generate previews. You can always disable link previews in BChat\'s settings.</string>
@@ -1361,5 +1361,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="payment_sent" translatable="false">Payment Sent</string>
     <string name="payment_received" translatable="false">Payment Received</string>
     <string name="reply_payment_card_message" translatable="false">%1s : %2s BDX</string>
+    <string name="open_link" translatable="false">Open Link</string>
 
 </resources>

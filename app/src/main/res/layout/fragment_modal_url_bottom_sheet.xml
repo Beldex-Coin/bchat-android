@@ -1,57 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:behavior_hideable="true"
-    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+    android:background="@drawable/bchat_id_text_view_background"
     android:gravity="center_horizontal"
-    android:paddingTop="@dimen/large_spacing">
+    android:orientation="vertical"
+    android:paddingTop="@dimen/large_spacing"
+    app:behavior_hideable="true"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end">
+
+        <ImageView
+            android:id="@+id/cancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/ic_close"
+            android:textAlignment="viewEnd" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/openURLTitleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/open_sans_bold"
         android:text="@string/dialog_open_url_title"
         android:textColor="@color/text"
-        android:textStyle="bold"
-        android:textSize="@dimen/large_font_size" />
+        android:textSize="@dimen/large_font_size"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/openURLExplanationTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/dialog_open_url_explanation"
-        android:paddingHorizontal="@dimen/medium_spacing"
-        android:textColor="@color/text"
-        android:textSize="@dimen/small_font_size"
         android:layout_margin="@dimen/large_spacing"
-        android:textAlignment="center" />
+        android:fontFamily="@font/open_sans_regular"
+        android:paddingHorizontal="@dimen/medium_spacing"
+        android:text="@string/dialog_open_url_explanation"
+        android:textAlignment="center"
+        android:textColor="@color/text"
+        android:textSize="@dimen/small_font_size" />
 
-    <TextView
-        android:id="@+id/openURLButton"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/BottomSheetActionItem"
-        android:text="@string/open"
-        />
+        android:layout_marginStart="@dimen/massive_spacing"
+        android:layout_marginEnd="@dimen/massive_spacing"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/prominent_filled_button_medium_background"
+        android:gravity="center"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/copyButton"
+        <TextView
+            android:id="@+id/openURLButton"
+            style="@style/BottomSheetActionItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/open_sans_medium"
+            android:text="@string/open_link"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_external_link" />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/BottomSheetActionItem"
-        android:text="@string/copy_url"
-        />
+        android:layout_marginStart="@dimen/massive_spacing"
+        android:layout_marginEnd="@dimen/massive_spacing"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/copy_link_background"
+        android:gravity="center"
+        android:orientation="horizontal">
 
-    <TextView
-        android:textColor="@color/destructive"
-        android:id="@+id/cancelButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/BottomSheetActionItem"
-        android:text="@string/cancel"
-        />
+        <TextView
+            android:id="@+id/copyButton"
+            style="@style/BottomSheetActionItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/open_sans_medium"
+            android:text="@string/copy_link"
+            android:textAlignment="center"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/copy_icon" />
+    </LinearLayout>
 
 </LinearLayout>

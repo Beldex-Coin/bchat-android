@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.annotation.ColorInt
 import com.beldex.libbchat.messaging.utilities.UpdateMessageData
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.database.model.MessageRecord
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewPaymentCardBinding
@@ -33,6 +34,10 @@ class PaymentCardView : LinearLayout {
         this.data = data
         val iconID = R.drawable.ic_beldex_white_logo
         with(binding){
+            val fontSize = TextSecurePreferences.getChatFontSize(context)
+            binding.paymentCardViewBdxAmountTextView.textSize = fontSize!!.toFloat()
+            binding.paymentCardViewBdxTextView.textSize = fontSize.toFloat()
+            binding.paymentCardViewMessageTextView.textSize = fontSize.toFloat()
             paymentCardViewBdxIconImageView.setImageResource(iconID)
             paymentCardViewBdxAmountTextView.text = data.amount
             paymentCardViewMessageTextView.text = if(message.isOutgoing) resources.getString(R.string.payment_success_message) else resources.getString(R.string.payment_received_message)

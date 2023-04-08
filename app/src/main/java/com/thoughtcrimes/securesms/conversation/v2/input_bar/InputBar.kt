@@ -219,8 +219,8 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         binding.inChatBDX.isVisible = !status
     }
 
-    fun showPayAsYouChatBDXIcon(thread: Recipient) {
-        if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked) {
+    fun showPayAsYouChatBDXIcon(thread: Recipient,reportIssueId:String) {
+        if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && reportIssueId!=thread.address.toString()) {
             binding.payAsYouChatLayout.visibility = View.VISIBLE
         }else{
             binding.payAsYouChatLayout.visibility = View.GONE

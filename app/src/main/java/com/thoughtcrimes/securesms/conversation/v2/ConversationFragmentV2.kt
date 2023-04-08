@@ -548,7 +548,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 binding.conversationExpandableArrow.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
             }
         }
-        binding.inputBar.showPayAsYouChatBDXIcon(thread)
+        binding.inputBar.showPayAsYouChatBDXIcon(thread,HomeActivity.reportIssueBChatID)
 
         showBalance(Helper.getDisplayAmount(0),Helper.getDisplayAmount(0),walletSynchronized)
 
@@ -566,7 +566,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     private fun showBlockProgressBar(thread: Recipient?) {
         if (thread != null) {
-            if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && TextSecurePreferences.isPayAsYouChat(requireActivity()) && thread.isApproved) {
+            if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && TextSecurePreferences.isPayAsYouChat(requireActivity()) && thread.isApproved && HomeActivity.reportIssueBChatID!=thread.address.toString()) {
                 binding.blockProgressBar.visibility = View.VISIBLE
                 binding.syncStatusLayout.visibility = View.VISIBLE
                 blockProgressBarVisible = true

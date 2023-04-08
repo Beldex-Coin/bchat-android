@@ -126,8 +126,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     private var appUpdateManager: AppUpdateManager? = null
     private val IMMEDIATE_APP_UPDATE_REQ_CODE = 124
 
-    private val reportIssueBChatID = "bdb890a974a25ef50c64cc4e3270c4c49c7096c433b8eecaf011c1ad000e426813"
-
     companion object{
         const val SHORTCUT_LAUNCHER = "short_cut_launcher"
 
@@ -136,6 +134,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         var REQUEST_PW = "pw"
         var REQUEST_FINGERPRINT_USED = "fingerprint"
         var REQUEST_STREETMODE = "streetmode"
+        //val reportIssueBChatID = "bdb890a974a25ef50c64cc4e3270c4c49c7096c433b8eecaf011c1ad000e426813" //Mainnet
+        val reportIssueBChatID = "bd21c8c3179975fa082f221323ae47d44bf38b8f6e39f530c2d07ce7ad4892682d" //Testnet
     }
 
     //Wallet

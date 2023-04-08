@@ -60,7 +60,7 @@
                     android:layout_height="match_parent"
                     android:fontFamily="@font/open_sans_bold"
                     android:maxLines="2"
-                    android:textAlignment="textEnd"
+                    android:gravity="center|end"
                     android:textColor="@color/white"
                     android:textSize="@dimen/large_font_size"
                     android:textStyle="bold"

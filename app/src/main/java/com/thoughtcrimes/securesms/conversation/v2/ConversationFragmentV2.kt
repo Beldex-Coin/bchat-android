@@ -369,6 +369,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         const val HEX_ENCODED_PUBLIC_KEY="hex_encode_public_key"
         //Shortcut launcher
         const val SHORTCUT_LAUNCHER ="shortcut_launcher"
+        //SetDataAndType
+        const val URI = "uri"
+        const val TYPE = "type"
 
         // Request codes
         const val PICK_DOCUMENT = 2
@@ -428,6 +431,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         val connectionStatus: Wallet.ConnectionStatus?
         fun setWalletPin()
         fun forceUpdate(requireActivity: Context)
+        //SetDataAndType
+        fun passSharedMessageToConversationScreen(thread: Recipient)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -1613,7 +1618,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         binding.profilePictureView.update(recipient)
         binding.layoutConversation.setOnClickListener()
         {
-            ConversationMenuHelper.showAllMedia(requireActivity(), recipient)
+            ConversationMenuHelper.showAllMedia(recipient, listenerCallback)
         }
         binding.backToHomeBtn.setOnClickListener{
             listenerCallback?.walletOnBackPressed()
@@ -1700,8 +1705,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun restoreDraftIfNeeded() {
-        val mediaURI = requireActivity().intent.data
-        val mediaType = AttachmentManager.MediaType.from(requireActivity().intent.type)
+        //SetDataAndType
+        val mediaURI = requireArguments().getParcelable<Uri>(URI)
+        val mediaType = AttachmentManager.MediaType.from(requireArguments().getString(TYPE))
+        Log.d("mediaURI-> uri ",mediaURI.toString())
+        Log.d("mediaURI-> type ",mediaType.toString())
         if (mediaURI != null && mediaType != null) {
             if (AttachmentManager.MediaType.IMAGE == mediaType || AttachmentManager.MediaType.GIF == mediaType || AttachmentManager.MediaType.VIDEO == mediaType) {
                 val media = Media(
@@ -1744,9 +1752,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 })
                 return
             }
-        } else if (requireActivity().intent.hasExtra(Intent.EXTRA_TEXT)) {
+        } else if (!requireArguments().getCharSequence(Intent.EXTRA_TEXT).isNullOrEmpty()) {
             val dataTextExtra =
-                requireActivity().intent.getCharSequenceExtra(Intent.EXTRA_TEXT) ?: ""
+                requireArguments().getCharSequence(Intent.EXTRA_TEXT) ?: ""
             binding.inputBar.text = dataTextExtra.toString()
         } else {
             viewModel.getDraft()?.let { text ->
@@ -1869,7 +1877,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
         }
         return  viewModel.recipient?.let { recipient ->
-            ConversationMenuHelper.onOptionItemSelected(requireActivity(),this, item, recipient)
+            ConversationMenuHelper.onOptionItemSelected(requireActivity(),this, item, recipient,listenerCallback)
         } ?: false
     }
 

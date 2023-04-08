@@ -1,6 +1,5 @@
 package com.thoughtcrimes.securesms.conversation.v2.menus
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.graphics.BitmapFactory
 import android.graphics.PorterDuff
@@ -18,10 +17,8 @@ import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
-import com.beldex.libbchat.messaging.messages.control.ExpirationTimerUpdate
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.messaging.sending_receiving.leave
-import com.beldex.libbchat.utilities.Contact
 import com.beldex.libbchat.utilities.ExpirationUtil
 import com.beldex.libbchat.utilities.GroupUtil.doubleDecodeGroupID
 import com.beldex.libbchat.utilities.TextSecurePreferences
@@ -31,7 +28,6 @@ import com.beldex.libsignal.utilities.guava.Optional
 import com.beldex.libsignal.utilities.toHexString
 import com.thoughtcrimes.securesms.*
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
-import com.thoughtcrimes.securesms.contacts.ContactSelectionListItem
 import com.thoughtcrimes.securesms.contacts.SelectContactsActivity
 import com.thoughtcrimes.securesms.conversation.v2.utilities.NotificationUtils
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
@@ -148,10 +144,11 @@ object ConversationMenuHelper {
         context: Context,
         fragmentV2: ConversationFragmentV2,
         item: MenuItem,
-        thread: Recipient
+        thread: Recipient,
+        listenerCallback: ConversationFragmentV2.Listener?
     ): Boolean {
         when (item.itemId) {
-            R.id.menu_view_all_media -> { showAllMedia(context, thread) }
+            R.id.menu_view_all_media -> { showAllMedia(thread,listenerCallback) }
             R.id.menu_search -> { search(fragmentV2) }
             R.id.menu_add_shortcut -> { addShortcut(context, thread) }
             R.id.menu_expiring_messages -> { showExpiringMessagesDialog(fragmentV2, thread) }
@@ -274,11 +271,9 @@ object ConversationMenuHelper {
 
 
 
-    fun showAllMedia(context: Context, thread: Recipient) {
-        val intent = Intent(context, MediaOverviewActivity::class.java)
-        intent.putExtra(MediaOverviewActivity.ADDRESS_EXTRA, thread.address)
-        val activity = context as AppCompatActivity
-        activity.startActivity(intent)
+    fun showAllMedia(thread: Recipient,listenerCallback: ConversationFragmentV2.Listener?) {
+        //SetDataAndType
+        listenerCallback?.passSharedMessageToConversationScreen(thread)
     }
 
     private fun search(context: ConversationFragmentV2) {

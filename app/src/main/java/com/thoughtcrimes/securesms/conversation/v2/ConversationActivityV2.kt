@@ -424,7 +424,7 @@ class ConversationActivityV2 : PassphraseRequiredActionBarActivity(), InputBarDe
         actionBarBinding.profilePictureView.update(recipient)
         actionBarBinding.layoutConversation.setOnClickListener()
         {
-            ConversationMenuHelper.showAllMedia(this, recipient)
+            //ConversationMenuHelper.showAllMedia(this, recipient, listenerCallback)
         }
 
     }

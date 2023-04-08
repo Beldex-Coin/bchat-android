@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.content.*
 import android.database.Cursor
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -375,7 +376,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
             activityCallback?.callConversationScreen(requireArguments().getLong(
                 ConversationFragmentV2.THREAD_ID,-1L),requireArguments().getParcelable<Address>(
                 ConversationFragmentV2.ADDRESS
-            ))
+            ),requireArguments().getParcelable<Uri>(ConversationFragmentV2.URI),requireArguments().getString(ConversationFragmentV2.TYPE),requireArguments().getCharSequence(Intent.EXTRA_TEXT))
         }
     }
 
@@ -948,7 +949,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
         fun hasBoundService(): Boolean
         val connectionStatus: Wallet.ConnectionStatus?
         //Shortcut launcher
-        fun callConversationScreen(threadId: Long, address: Address?)
+        fun callConversationScreen(threadId: Long, address: Address?, uri: Uri?, type: String?, extraText: CharSequence?)
     }
 
     fun dispatchTouchEvent() {

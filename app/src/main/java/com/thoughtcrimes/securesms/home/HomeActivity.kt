@@ -58,6 +58,7 @@ import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.tasks.Task
+import com.thoughtcrimes.securesms.MediaOverviewActivity
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.components.ProfilePictureView
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
@@ -175,6 +176,12 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             extras.putParcelable(ConversationFragmentV2.ADDRESS,intent.getParcelableExtra(ConversationFragmentV2.ADDRESS))
             extras.putLong(ConversationFragmentV2.THREAD_ID, intent.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
             extras.putBoolean(ConversationFragmentV2.SHORTCUT_LAUNCHER,true)
+
+            //SetDataAndType
+            extras.putParcelable(ConversationFragmentV2.URI,intent.getParcelableExtra(ConversationFragmentV2.URI))
+            extras.putString(ConversationFragmentV2.TYPE,intent.getStringExtra(ConversationFragmentV2.TYPE))
+            extras.putCharSequence(Intent.EXTRA_TEXT,intent.getCharSequenceExtra(Intent.EXTRA_TEXT))
+
             val homeFragment: Fragment = HomeFragment()
             homeFragment.arguments = extras
             supportFragmentManager.beginTransaction()
@@ -209,10 +216,13 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }*/
     }
 
-    override fun callConversationScreen(threadId: Long, address: Address?) {
+    override fun callConversationScreen(threadId: Long, address: Address?, uri: Uri?, type: String?, extraText: CharSequence?) {
         val extras = Bundle()
         extras.putParcelable(ConversationFragmentV2.ADDRESS,address)
         extras.putLong(ConversationFragmentV2.THREAD_ID, threadId)
+        extras.putParcelable(ConversationFragmentV2.URI,uri)
+        extras.putString(ConversationFragmentV2.TYPE,type)
+        extras.putCharSequence(Intent.EXTRA_TEXT,extraText)
         replaceFragment(ConversationFragmentV2(), null, extras)
     }
 
@@ -2027,6 +2037,33 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         } else {
             val intent = Intent(this, WalletInfoActivity::class.java)
             push(intent)
+        }
+    }
+
+    //SetDataAndType
+    override fun passSharedMessageToConversationScreen(thread:Recipient) {
+        val intent = Intent(this, MediaOverviewActivity::class.java)
+        intent.putExtra(MediaOverviewActivity.ADDRESS_EXTRA, thread.address)
+        passSharedMessageToConversationScreen.launch(intent)
+    }
+    private val passSharedMessageToConversationScreen = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            if(result.data!=null){
+                val extras = Bundle()
+                Log.d("result->threadId ","${result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1)}")
+                Log.d("result->uri ","${result.data!!.getParcelableExtra<Uri>(ConversationFragmentV2.URI)}")
+                Log.d("result->type ","${result.data!!.getStringExtra(ConversationFragmentV2.TYPE)}")
+                Log.d("result->extraText ","${result.data!!.getCharSequenceExtra(Intent.EXTRA_TEXT)}")
+
+                extras.putParcelable(ConversationFragmentV2.ADDRESS, result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
+                extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
+                extras.putParcelable(ConversationFragmentV2.URI,result.data!!.getParcelableExtra<Uri>(ConversationFragmentV2.URI))
+                extras.putString(ConversationFragmentV2.TYPE,result.data!!.getStringExtra(ConversationFragmentV2.TYPE))
+                extras.putCharSequence(Intent.EXTRA_TEXT,result.data!!.getCharSequenceExtra(Intent.EXTRA_TEXT))
+                //Shortcut launcher
+                extras.putBoolean(ConversationFragmentV2.SHORTCUT_LAUNCHER,true)
+                replaceFragment(HomeFragment(),null,extras)
+            }
         }
     }
 

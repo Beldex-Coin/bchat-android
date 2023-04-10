@@ -548,7 +548,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 binding.conversationExpandableArrow.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
             }
         }
-        binding.inputBar.showPayAsYouChatBDXIcon(thread,HomeActivity.reportIssueBChatID)
+        callShowPayAsYouChatBDXIcon(thread)
 
         showBalance(Helper.getDisplayAmount(0),Helper.getDisplayAmount(0),walletSynchronized)
 
@@ -563,9 +563,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
         val thread = threadDb.getRecipientForThreadId(viewModel.threadId)
         showBlockProgressBar(thread)
-        if (thread != null) {
-            binding.inputBar.showPayAsYouChatBDXIcon(thread,HomeActivity.reportIssueBChatID)
-        }
+        callShowPayAsYouChatBDXIcon(thread)
         if(TextSecurePreferences.isPayAsYouChat(requireActivity())){
             if(binding.inputBar.text!!.isNotEmpty() && binding.inputBar.text.matches(Regex("^[0-9]*\\.?[0-9]*\$"))){
                 binding.inputBar.showPayAsYouChatBDXIcon(true)
@@ -574,6 +572,12 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
         }else{
             binding.inputBar.showPayAsYouChatBDXIcon(false)
+        }
+    }
+
+    private fun callShowPayAsYouChatBDXIcon(thread: Recipient?) {
+        if (thread != null) {
+            binding.inputBar.showPayAsYouChatBDXIcon(thread,HomeActivity.reportIssueBChatID)
         }
     }
 
@@ -1557,6 +1561,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             val threadRecipient = viewModel.recipient ?: return@runOnUiThread
             if (threadRecipient.isContactRecipient) {
                 binding.blockedBanner.isVisible = threadRecipient.isBlocked
+                callShowPayAsYouChatBDXIcon(threadRecipient)
+                showBlockProgressBar(threadRecipient)
             }
             //New Line v32
             setUpMessageRequestsBar()
@@ -2028,6 +2034,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         binding.blockedBannerTextView.text =
             resources.getString(R.string.activity_conversation_blocked_banner_text, name)
         binding.blockedBanner.isVisible = recipient.isBlocked
+        callShowPayAsYouChatBDXIcon(recipient)
+        showBlockProgressBar(recipient)
         binding.blockedBanner.setOnClickListener { viewModel.unblock() }
         binding.unblockButton.setOnClickListener {
             viewModel.unblock()

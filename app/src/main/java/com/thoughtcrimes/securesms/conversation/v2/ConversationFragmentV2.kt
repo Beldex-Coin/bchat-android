@@ -556,12 +556,25 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     override fun onResume() {
         super.onResume()
+        Log.d("ConversationFragmentV2-> ","onResume()")
         ApplicationContext.getInstance(requireActivity()).messageNotifier.setVisibleThread(viewModel.threadId)
         val recipient = viewModel.recipient ?: return
         threadDb.markAllAsRead(viewModel.threadId, recipient.isOpenGroupRecipient)
 
         val thread = threadDb.getRecipientForThreadId(viewModel.threadId)
         showBlockProgressBar(thread)
+        if (thread != null) {
+            binding.inputBar.showPayAsYouChatBDXIcon(thread,HomeActivity.reportIssueBChatID)
+        }
+        if(TextSecurePreferences.isPayAsYouChat(requireActivity())){
+            if(binding.inputBar.text!!.isNotEmpty() && binding.inputBar.text.matches(Regex("^[0-9]*\\.?[0-9]*\$"))){
+                binding.inputBar.showPayAsYouChatBDXIcon(true)
+            }else{
+                binding.inputBar.showPayAsYouChatBDXIcon(false)
+            }
+        }else{
+            binding.inputBar.showPayAsYouChatBDXIcon(false)
+        }
     }
 
     private fun showBlockProgressBar(thread: Recipient?) {

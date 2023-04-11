@@ -1089,8 +1089,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             alert.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             alert.setCanceledOnTouchOutside(false)
             alert.show()
-            val sourceString = "Enable pay as you chat from <b>My Account -> Chat Settings -> Pay As You Chat</b> to use this option"
-            enableInstruction.text = Html.fromHtml(sourceString)
+            if(TextSecurePreferences.isPayAsYouChat(requireActivity())){
+                enableInstruction.text = Html.fromHtml("To disable pay as you chat, go to <b>My Account -> Chat Settings -> Pay As You Chat</b> to use this option")
+            }else{
+                enableInstruction.text = Html.fromHtml("Enable pay as you chat from <b>My Account -> Chat Settings -> Pay As You Chat</b> to use this option")
+            }
             okButton.setOnClickListener {
                 val intent = Intent(requireActivity(), ChatSettingsActivity::class.java)
                 requireActivity().startActivity(intent)

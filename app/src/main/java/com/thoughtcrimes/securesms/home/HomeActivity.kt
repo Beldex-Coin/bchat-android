@@ -1287,9 +1287,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                     synced = true
                     //WalletFragment Functionality --
                     when (currentFragment) {
-                        is HomeFragment -> {
-                            runOnUiThread(currentFragment::onSynced)
-                        }
                         is ConversationFragmentV2 -> {
                             runOnUiThread(currentFragment::onSynced)
                         }
@@ -1302,9 +1299,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             runOnUiThread {
                 //WalletFragment Functionality --
                 when (currentFragment) {
-                    is HomeFragment -> {
-                        currentFragment.onRefreshed(wallet,full)
-                    }
                     is ConversationFragmentV2 -> {
                         currentFragment.onRefreshed(wallet,full)
                     }
@@ -1326,9 +1320,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         try {
             //WalletFragment Functionality --
             when (val currentFragment = getCurrentFragment()) {
-                is HomeFragment -> {
-                    runOnUiThread { currentFragment.setProgress(text) }
-                }
                 is ConversationFragmentV2 -> {
                     runOnUiThread { currentFragment.setProgress(text) }
                 }
@@ -1348,9 +1339,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             try {
                 //WalletFragment Functionality --
                 when (val currentFragment = getCurrentFragment()) {
-                    is HomeFragment -> {
-                        currentFragment.setProgress(n)
-                    }
                     is ConversationFragmentV2 -> {
                         currentFragment.setProgress(n)
                     }
@@ -1489,11 +1477,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             runOnUiThread {
                 //WalletFragment Functionality --
                 when (currentFragment) {
-                    is HomeFragment -> {
-                        Log.d("Beldex", "Wallet start called 7  $currentFragment")
-                        Log.d("Beldex", "Wallet start called 8 ")
-                        currentFragment.onLoaded()
-                    }
                     is ConversationFragmentV2 -> {
                         Log.d("Beldex", "Wallet start called 7  $currentFragment")
                         Log.d("Beldex", "Wallet start called 8 ")

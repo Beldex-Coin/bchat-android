@@ -6,6 +6,7 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.*
+import android.content.ClipboardManager
 import android.content.Context.CLIPBOARD_SERVICE
 import android.content.pm.PackageManager
 import android.content.res.Resources
@@ -19,8 +20,7 @@ import android.os.*
 import android.telephony.PhoneStateListener
 import android.telephony.TelephonyCallback
 import android.telephony.TelephonyManager
-import android.text.Html
-import android.text.TextUtils
+import android.text.*
 import android.util.Log
 import android.util.Pair
 import android.util.TypedValue
@@ -566,7 +566,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         showBlockProgressBar(thread)
         callShowPayAsYouChatBDXIcon(thread)
         if(TextSecurePreferences.isPayAsYouChat(requireActivity())){
-            if(binding.inputBar.text!!.isNotEmpty() && binding.inputBar.text.matches(Regex("^[0-9]*\\.?[0-9]*\$"))){
+            if(binding.inputBar.text!!.isNotEmpty() && binding.inputBar.text.matches(Regex("^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$"))){
                 binding.inputBar.showPayAsYouChatBDXIcon(true)
             }else{
                 binding.inputBar.showPayAsYouChatBDXIcon(false)
@@ -1044,13 +1044,29 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
              }*/
             //if (TextSecurePreferences.isPayAsYouChat(requireActivity()) && !recipient.isOpenGroupRecipient && !recipient.isClosedGroupRecipient && blockProgressBarVisible)
             if (blockProgressBarVisible) {
-                if (binding.inputBar.text.matches(Regex("^[0-9]*\\.?[0-9]*\$"))) {
-                    if (binding.syncStatus.text == getString(R.string.status_synchronized)) {
-                        sendBDX()
+                if (binding.inputBar.text.matches(Regex("(^[0-9]{0,4}\\.?[0-9]{0,4})\$"))) {
+                    if (CheckOnline.isOnline(requireActivity())) {
+                        if (binding.syncStatus.text == getString(R.string.status_synchronized)) {
+                            if (validateBELDEXAmount(binding.inputBar.text)) {
+                                sendBDX()
+                            } else {
+                                Toast.makeText(
+                                    requireActivity(),
+                                    R.string.beldex_amount_valid_error_message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        } else {
+                            Toast.makeText(
+                                requireActivity(),
+                                "Blocks are syncing wait until finished",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     } else {
                         Toast.makeText(
                             requireActivity(),
-                            "Blocks are syncing wait until finished",
+                            R.string.please_check_your_internet_connection,
                             Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -1061,6 +1077,29 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 callSendTextOnlyMessage()
             }
         }
+    }
+
+    private fun validateBELDEXAmount(amount: String): Boolean {
+        val maxValue = 18446744.073709551616
+        val value = amount.replace(',', '.')
+        val regExp = "^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$"
+        var isValid = false
+
+        if (value.matches(Regex(regExp))) {
+            if (value == ".") {
+                isValid = false
+            } else {
+                isValid = try {
+                    val dValue = value.toDouble()
+                    (dValue > 0)
+                } catch (e: java.lang.Exception) {
+                    false
+                }
+            }
+        } else {
+            isValid = false
+        }
+        return isValid
     }
 
     fun callSendTextOnlyMessage(){
@@ -1847,7 +1886,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             binding.inputBar.addTextChangedListener(object : SimpleTextWatcher() {
                 override fun onTextChanged(text: String?) {
                     if(TextSecurePreferences.isPayAsYouChat(requireActivity())){
-                        if(text!!.isNotEmpty() && text.matches(Regex("^[0-9]*\\.?[0-9]*\$"))){
+                        if(text!!.isNotEmpty() && text.matches(Regex("^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$"))){
                             binding.inputBar.showPayAsYouChatBDXIcon(true)
                         }else{
                             binding.inputBar.showPayAsYouChatBDXIcon(false)

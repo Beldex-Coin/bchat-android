@@ -447,9 +447,9 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         binding.beldexAmountEditTxtLayout.editText?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable) {
                 //binding.beldexAmountEditTxtLayout.error = null
-                binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.bchat_id_text_view_background)
+               /* binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.bchat_id_text_view_background)
                 binding.beldexAmountErrorMessage.visibility = View.GONE
-                binding.beldexAmountErrorMessage.text = ""
+                binding.beldexAmountErrorMessage.text = ""*/
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -458,6 +458,9 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                     if (s.isNotEmpty()) {
                         Log.d("Beldex", "Price -> $price")
                         if(validateBELDEXAmount(s.toString())) {
+                            binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.bchat_id_text_view_background)
+                            binding.beldexAmountErrorMessage.visibility = View.GONE
+                            binding.beldexAmountErrorMessage.text = ""
                             val bdx = getCleanAmountString(s.toString())
                             val amount: BigDecimal = if (bdx != null) {
                                 BigDecimal(bdx.toDouble()).multiply(BigDecimal(price))
@@ -698,10 +701,10 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     private fun validateBELDEXAmount(amount:String):Boolean {
         val maxValue = 18446744.073709551616
         val value = amount.replace(',', '.')
-        val regExp ="^([0-9]+([.][0-9]{0,12})?|[.][0-9]{1,12})\$|ALL".toRegex()
+        val regExp ="^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$"
         var isValid =false
 
-        if (regExp.containsMatchIn(value)) {
+        if (value.matches(Regex(regExp))) {
             /*if (value == "ALL") {
                 isValid = true
             } */
@@ -713,7 +716,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                     /*val availableBalanceDouble = Helper.getDisplayAmount(availableBalance).toDouble()
                     Log.d("Available balance->1 ","$dValue,${availableBalanceDouble}")
                     (dValue <= availableBalanceDouble && dValue <= maxValue && dValue > 0)*/
-                    (dValue <= maxValue && dValue > 0)
+                    (dValue > 0)
                 } catch (e:Exception) {
                     false
                 }

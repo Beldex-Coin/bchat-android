@@ -136,6 +136,7 @@ import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
 import java.lang.ClassCastException
+import java.lang.IllegalStateException
 import java.lang.NumberFormatException
 import java.text.DecimalFormat
 import java.text.NumberFormat
@@ -573,6 +574,14 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }else{
             binding.inputBar.showPayAsYouChatBDXIcon(false)
         }
+        //Minimized app
+        if(onTransactionProgress){
+            onTransactionProgress = false
+            hideProgress()
+            refreshTransactionDetails()
+            //Continuously Transaction
+            this.pendingTransaction = null
+        }
     }
 
     private fun callShowPayAsYouChatBDXIcon(thread: Recipient?) {
@@ -598,7 +607,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     override fun onPause() {
         endActionMode()
-        Log.d("Beldex", "OnPause called")
+        Log.d("ConversationFragmentV2-> ","onPause()")
         ApplicationContext.getInstance(requireActivity()).messageNotifier.setVisibleThread(-1)
         viewModel.saveDraft(binding.inputBar.text.trim())
         val recipient = viewModel.recipient ?: return  super.onPause()
@@ -2726,7 +2735,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             requireActivity().supportFragmentManager.findFragmentByTag("transaction_progressbar_tag")
         if (transactionLoadingBar != null) {
             val df: DialogFragment = transactionLoadingBar as DialogFragment
-            df.dismiss()
+            try {
+                df.dismiss()
+            } catch (e: IllegalStateException) {
+                return
+            }
         }
         //  sendButtonEnabled()
         showAlert(getString(R.string.send_create_tx_error_title), errorText!!)
@@ -2779,13 +2792,21 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     var inProgress = false
+    //Minimized app
+    var onTransactionProgress = false
 
     private fun hideProgress() {
         val transactionLoadingBar: Fragment? =
             requireActivity().supportFragmentManager.findFragmentByTag("transaction_progressbar_tag")
         if (transactionLoadingBar != null) {
             val df: DialogFragment = transactionLoadingBar as DialogFragment
-            df.dismiss()
+            try {
+                df.dismiss()
+            } catch (e: IllegalStateException) {
+                //Minimized app
+                onTransactionProgress = true
+                return
+            }
         }
         inProgress = false
     }
@@ -2814,10 +2835,26 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                         txData.destinationAddress
                     )
                 }catch(e: IndexOutOfBoundsException){
-                    Toast.makeText(requireContext(),getString(R.string.please_try_again_later),Toast.LENGTH_SHORT).show()
+                    e.message?.let { Log.d("ConversationFragmentV2->", it) }
                 }
             }
-            InChatSend(pendingTransaction!!,txData, this).show(requireActivity().supportFragmentManager,"")
+            try {
+                if(pendingTransaction!!.firstTxId !=null) {
+                    InChatSend(
+                        pendingTransaction!!,
+                        txData,
+                        this
+                    ).show(requireActivity().supportFragmentManager, "")
+                }
+            }catch(e:IllegalStateException){
+                //Minimized app
+                onTransactionProgress = true
+                return
+            }catch(e: IndexOutOfBoundsException){
+                //Minimized app
+                hideProgress()
+                Toast.makeText(requireContext(),getString(R.string.please_try_again_later),Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

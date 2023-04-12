@@ -11,7 +11,6 @@ import com.thoughtcrimes.securesms.data.*
 import com.thoughtcrimes.securesms.model.PendingTransaction
 import com.thoughtcrimes.securesms.wallet.send.interfaces.SendConfirm
 import com.thoughtcrimes.securesms.wallet.utils.ThemeHelper
-import com.thoughtcrimes.securesms.wallet.widget.Toolbar
 import io.beldex.bchat.R
 import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity
 
@@ -31,7 +30,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import com.google.gson.GsonBuilder
 import com.thoughtcrimes.securesms.conversation.v2.TransactionLoadingBar
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.home.HomeActivity
@@ -42,24 +40,16 @@ import com.thoughtcrimes.securesms.util.BChatThreadPoolExecutor
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.wallet.*
 import com.thoughtcrimes.securesms.wallet.utils.OpenAliasHelper
-import com.thoughtcrimes.securesms.wallet.utils.common.FiatCurrencyPrice
-import com.thoughtcrimes.securesms.wallet.utils.common.fetchPriceFor
 import com.thoughtcrimes.securesms.wallet.utils.helper.ServiceHelper
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
 import io.beldex.bchat.databinding.FragmentSendBinding
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.Response
-import org.intellij.lang.annotations.RegExp
 import java.lang.ClassCastException
 import java.lang.NumberFormatException
 import java.util.*
 import timber.log.Timber
-import java.io.IOException
 import java.lang.Exception
-import java.lang.Math.abs
 import java.math.BigDecimal
 import java.util.concurrent.Executor
 

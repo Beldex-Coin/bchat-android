@@ -1129,9 +1129,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             alert.setCanceledOnTouchOutside(false)
             alert.show()
             if(TextSecurePreferences.isPayAsYouChat(requireActivity())){
-                enableInstruction.text = Html.fromHtml("To disable pay as you chat, go to <b>My Account -> Chat Settings -> Pay As You Chat</b> to use this option")
+                enableInstruction.text = fromHtml("To disable pay as you chat, go to <b>My Account -> Chat Settings -> Pay As You Chat</b> to use this option")
             }else{
-                enableInstruction.text = Html.fromHtml("Enable pay as you chat from <b>My Account -> Chat Settings -> Pay As You Chat</b> to use this option")
+                enableInstruction.text = fromHtml("Enable pay as you chat from <b>My Account -> Chat Settings -> Pay As You Chat</b> to use this option")
             }
             okButton.setOnClickListener {
                 val intent = Intent(requireActivity(), ChatSettingsActivity::class.java)
@@ -1143,6 +1143,14 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
         } else {
             listenerCallback!!.setWalletPin()
+        }
+    }
+
+    private fun fromHtml(source: String?): Spanned? {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Html.fromHtml(source, Html.FROM_HTML_MODE_LEGACY)
+        } else {
+            Html.fromHtml(source)
         }
     }
 
@@ -2728,7 +2736,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     //Payment Tag
     override fun sendBDX() {
         val txData: TxData = getTxData()
+        senderBeldexAddress?.let { Log.d("SenderBeldexAddress->", it) }
         txData.destinationAddress = senderBeldexAddress
+        txData.destinationAddress?.let { Log.d("SenderBeldexAddress txData->", it) }
         if (getCleanAmountString(getBDXAmount()).equals(
                 Wallet.getDisplayAmount(totalFunds)))
         {

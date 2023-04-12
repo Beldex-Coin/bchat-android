@@ -114,6 +114,7 @@ import kotlin.math.sqrt
 import androidx.lifecycle.Observer
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.contacts.SelectContactsActivity
+import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.data.PendingTx
 import com.thoughtcrimes.securesms.data.TxData
 import com.thoughtcrimes.securesms.data.UserNotes
@@ -434,6 +435,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         fun forceUpdate(requireActivity: Context)
         //SetDataAndType
         fun passSharedMessageToConversationScreen(thread: Recipient)
+        fun getNode(): NodeInfo?
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -552,6 +554,15 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         callShowPayAsYouChatBDXIcon(thread)
 
         showBalance(Helper.getDisplayAmount(0),Helper.getDisplayAmount(0),walletSynchronized)
+
+        if(listenerCallback!!.getNode() == null) {
+            setProgress("Failed to connect node")
+            setProgress(101)
+            binding.syncStatus.setTextColor(ContextCompat.getColor(requireActivity().applicationContext, R.color.red))
+            binding.blockProgressBar.indeterminateDrawable.setColorFilter(
+                resources.getColor(R.color.red),
+                android.graphics.PorterDuff.Mode.SRC_OVER)
+        }
 
     }
 

@@ -511,6 +511,15 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
         })
         binding.transactionList.isNestedScrollingEnabled = false
 
+        if(activityCallback!!.getNode() == null){
+            setProgress("Failed to connect node")
+            setProgress(101)
+            binding.syncStatus.setTextColor(ContextCompat.getColor(requireActivity().applicationContext, R.color.red))
+            binding.progressBar.indeterminateDrawable.setColorFilter(
+                resources.getColor(R.color.red),
+                android.graphics.PorterDuff.Mode.SRC_OVER)
+        }
+
         //      int count =  adapter.getItemCount();
 //      Timber.d ("Adapter count %s", adapter.getItemCount());
 //        anchorBehavior.setHideable(count == 0);

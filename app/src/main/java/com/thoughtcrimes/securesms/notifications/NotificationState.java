@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.beldex.libsignal.utilities.Log;
@@ -153,8 +155,12 @@ public class NotificationState {
     intent.putExtra(ConversationFragmentV2.ADDRESS, recipient.getAddress());
     intent.putExtra(ConversationFragmentV2.THREAD_ID, (long)threads.toArray()[0]);
     intent.putExtra(HomeActivity.SHORTCUT_LAUNCHER,true); //- New
-    intent.setData((Uri.parse("custom://"+System.currentTimeMillis())));
-    //return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    Bundle bundle = new Bundle();
+    bundle.putParcelable(ConversationFragmentV2.URI,Uri.parse("custom://"+System.currentTimeMillis()));
+    intent.putExtras(bundle);
+    //intent.setData((Uri.parse("custom://"+System.currentTimeMillis())));
+
+    //return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT); //
     int intentFlags = PendingIntent.FLAG_UPDATE_CURRENT;
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
       intentFlags |= PendingIntent.FLAG_MUTABLE;

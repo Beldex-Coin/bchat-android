@@ -231,12 +231,16 @@ class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
 
     private fun createPrivateChat(hexEncodedPublicKey: String) {
         val recipient = Recipient.from(this, Address.fromSerialized(hexEncodedPublicKey), false)
+        val bundle = Bundle()
+        bundle.putParcelable(ConversationFragmentV2.URI,intent.data)
+        bundle.putString(ConversationFragmentV2.TYPE,intent.type)
         val returnIntent = Intent()
         returnIntent.putExtra(ConversationFragmentV2.ADDRESS, recipient.address)
-        returnIntent.setDataAndType(intent.data, intent.type)
+        //returnIntent.setDataAndType(intent.data, intent.type)
         val existingThread =
             DatabaseComponent.get(this).threadDatabase().getThreadIdIfExistsFor(recipient)
         returnIntent.putExtra(ConversationFragmentV2.THREAD_ID, existingThread)
+        returnIntent.putExtras(bundle)
         setResult(RESULT_OK, returnIntent)
         finish()
     }
@@ -247,12 +251,16 @@ class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
             val hexEncodedPublicKey = result.data!!.getStringExtra(ConversationFragmentV2.HEX_ENCODED_PUBLIC_KEY)
             if(hexEncodedPublicKey!=null) {
                 val recipient = Recipient.from(this, Address.fromSerialized(hexEncodedPublicKey), false)
+                val bundle = Bundle()
+                bundle.putParcelable(ConversationFragmentV2.URI,result.data!!.getParcelableExtra(ConversationFragmentV2.URI))
+                bundle.putString(ConversationFragmentV2.TYPE,result.data!!.getStringExtra(ConversationFragmentV2.TYPE))
                 val returnIntent = Intent()
                 returnIntent.putExtra(ConversationFragmentV2.ADDRESS, recipient.address)
-                returnIntent.setDataAndType(intent.data, intent.type)
+                //returnIntent.setDataAndType(intent.data, intent.type)
                 val existingThread =
                     DatabaseComponent.get(this).threadDatabase().getThreadIdIfExistsFor(recipient)
                 returnIntent.putExtra(ConversationFragmentV2.THREAD_ID, existingThread)
+                returnIntent.putExtras(bundle)
                 setResult(RESULT_OK, returnIntent)
                 finish()
             }

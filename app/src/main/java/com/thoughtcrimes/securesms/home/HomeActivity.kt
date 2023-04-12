@@ -61,6 +61,7 @@ import com.google.android.play.core.tasks.Task
 import com.thoughtcrimes.securesms.MediaOverviewActivity
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.components.ProfilePictureView
+import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.conversation.v2.ConversationViewModel
 import com.thoughtcrimes.securesms.conversation.v2.messages.VoiceMessageViewDelegate
@@ -568,6 +569,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             val extras = Bundle()
             extras.putParcelable(ConversationFragmentV2.ADDRESS,result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
             extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
+            extras.putParcelable(ConversationFragmentV2.URI,result.data!!.getParcelableExtra(ConversationFragmentV2.URI))
+            extras.putString(ConversationFragmentV2.TYPE,result.data!!.getStringExtra(ConversationFragmentV2.TYPE))
             replaceFragment(ConversationFragmentV2(), null, extras)
         }
     }
@@ -630,6 +633,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             val extras = Bundle()
             extras.putParcelable(ConversationFragmentV2.ADDRESS,result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
             extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
+            extras.putParcelable(ConversationFragmentV2.URI,result.data!!.getParcelableExtra(ConversationFragmentV2.URI))
+            extras.putString(ConversationFragmentV2.TYPE,result.data!!.getStringExtra(ConversationFragmentV2.TYPE))
             replaceFragment(ConversationFragmentV2(), null, extras)
         }
     }
@@ -663,6 +668,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             val extras = Bundle()
             extras.putParcelable(ConversationFragmentV2.ADDRESS,result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
             extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
+            extras.putParcelable(ConversationFragmentV2.URI,result.data!!.getParcelableExtra(ConversationFragmentV2.URI))
+            extras.putString(ConversationFragmentV2.TYPE,result.data!!.getStringExtra(ConversationFragmentV2.TYPE))
             replaceFragment(ConversationFragmentV2(), null, extras)
         }
     }
@@ -727,6 +734,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         val existingThread =
             DatabaseComponent.get(this).threadDatabase().getThreadIdIfExistsFor(recipient)
         extras.putLong(ConversationFragmentV2.THREAD_ID,existingThread)
+        extras.putParcelable(ConversationFragmentV2.URI,intent.data)
+        extras.putString(ConversationFragmentV2.TYPE,intent.type)
         replaceFragment(ConversationFragmentV2(), null, extras)
     }
 

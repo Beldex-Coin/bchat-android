@@ -405,8 +405,10 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             val extras = Bundle()
             extras.putParcelable(ConversationFragmentV2.ADDRESS, result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
             extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
+            extras.putParcelable(ConversationFragmentV2.URI,result.data!!.getParcelableExtra(ConversationFragmentV2.URI))
             val returnIntent = Intent()
-            returnIntent.setDataAndType(intent.data,intent.type)
+            returnIntent.putExtra(ConversationFragmentV2.TYPE,result.data!!.getStringArrayExtra(ConversationFragmentV2.TYPE))
+            //returnIntent.setDataAndType(intent.data,intent.type)
             returnIntent.putExtras(extras)
             setResult(RESULT_OK, returnIntent)
             finish() //-

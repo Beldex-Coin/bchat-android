@@ -290,7 +290,6 @@ class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
             extras.putParcelable(ConversationFragmentV2.ADDRESS, result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
             extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
             val returnIntent = Intent()
-            returnIntent.setDataAndType(intent.data, intent.type)
             returnIntent.putExtras(extras)
             setResult(RESULT_OK, returnIntent)
             finish()

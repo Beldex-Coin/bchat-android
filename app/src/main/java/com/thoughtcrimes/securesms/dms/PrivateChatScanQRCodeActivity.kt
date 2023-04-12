@@ -146,9 +146,13 @@ class PrivateChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
     }
 
     private fun createPrivateChat(hexEncodedPublicKey: String) {
+        val bundle = Bundle()
+        bundle.putParcelable(ConversationFragmentV2.URI,intent.data)
+        bundle.putString(ConversationFragmentV2.TYPE,intent.type)
         val returnIntent = Intent()
         returnIntent.putExtra(ConversationFragmentV2.HEX_ENCODED_PUBLIC_KEY, hexEncodedPublicKey)
-        returnIntent.setDataAndType(intent.data, intent.type)
+        //returnIntent.setDataAndType(intent.data, intent.type)
+        returnIntent.putExtras(bundle)
         setResult(RESULT_OK, returnIntent)
         finish()
     }

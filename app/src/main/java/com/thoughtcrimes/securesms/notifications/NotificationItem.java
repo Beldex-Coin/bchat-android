@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -81,7 +82,10 @@ public class NotificationItem {
 
     intent.putExtra(ConversationFragmentV2.THREAD_ID, threadId);
     intent.putExtra(HomeActivity.SHORTCUT_LAUNCHER,true); //- New
-    intent.setData((Uri.parse("custom://"+System.currentTimeMillis())));
+    Bundle bundle = new Bundle();
+    bundle.putParcelable(ConversationFragmentV2.URI,Uri.parse("custom://"+System.currentTimeMillis()));
+    intent.putExtras(bundle);
+    //intent.setData((Uri.parse("custom://"+System.currentTimeMillis())));
 
 
 

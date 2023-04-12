@@ -370,14 +370,6 @@ class HomeFragment : Fragment(),ConversationClickListener,
             .registerReceiver(broadcastReceiver, IntentFilter("blockedContactsChanged"))
         activityCallback?.callLifeCycleScope(binding.recyclerView,binding.globalSearchInputLayout,(activity as HomeActivity).mmsSmsDatabase,globalSearchAdapter,publicKey,binding.profileButton,binding.drawerProfileName,binding.drawerProfileIcon)
 
-        //Shortcut launcher
-        if(arguments?.getBoolean(ConversationFragmentV2.SHORTCUT_LAUNCHER,false) == true && !shortcut){
-            shortcut = true
-            activityCallback?.callConversationScreen(requireArguments().getLong(
-                ConversationFragmentV2.THREAD_ID,-1L),requireArguments().getParcelable<Address>(
-                ConversationFragmentV2.ADDRESS
-            ),requireArguments().getParcelable<Uri>(ConversationFragmentV2.URI),requireArguments().getString(ConversationFragmentV2.TYPE),requireArguments().getCharSequence(Intent.EXTRA_TEXT))
-        }
     }
 
 
@@ -577,6 +569,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
     override fun onResume() {
         super.onResume()
         setupCallActionBar()
+        pingSelectedNode()
         ApplicationContext.getInstance(requireActivity().applicationContext).messageNotifier.setHomeScreenVisible(true)
         if (TextSecurePreferences.getLocalNumber(requireActivity().applicationContext) == null) {
             return; } // This can be the case after a secondary device is auto-cleared
@@ -607,7 +600,14 @@ class HomeFragment : Fragment(),ConversationClickListener,
             TextSecurePreferences.setUnBlockStatus(requireActivity().applicationContext, false)
         }
 
-        pingSelectedNode()
+        //Shortcut launcher
+        if(arguments?.getBoolean(ConversationFragmentV2.SHORTCUT_LAUNCHER,false) == true && !shortcut){
+            shortcut = true
+            activityCallback?.callConversationScreen(requireArguments().getLong(
+                ConversationFragmentV2.THREAD_ID,-1L),requireArguments().getParcelable<Address>(
+                ConversationFragmentV2.ADDRESS
+            ),requireArguments().getParcelable<Uri>(ConversationFragmentV2.URI),requireArguments().getString(ConversationFragmentV2.TYPE),requireArguments().getCharSequence(Intent.EXTRA_TEXT))
+        }
     }
 
     override fun onPause() {

@@ -1044,48 +1044,36 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 binding.inputBar.linkPreview
             )
         } else {
-            /* if (binding.inputBar.text.length > 4096) {
-                 Toast.makeText(
-                     requireActivity(),
-                     "Text limit exceed: Maximum limit of messages is 4096 characters",
-                     Toast.LENGTH_SHORT
-                 ).show()
-             } else {
-                 sendTextOnlyMessage()
-             }*/
-            //if (TextSecurePreferences.isPayAsYouChat(requireActivity()) && !recipient.isOpenGroupRecipient && !recipient.isClosedGroupRecipient && blockProgressBarVisible)
-            if (blockProgressBarVisible) {
-                if (binding.inputBar.text.matches(Regex("(^[0-9]{0,4}\\.?[0-9]{0,4})\$"))) {
-                    if (CheckOnline.isOnline(requireActivity())) {
-                        if (binding.syncStatus.text == getString(R.string.status_synchronized)) {
-                            if (validateBELDEXAmount(binding.inputBar.text)) {
-                                sendBDX()
-                            } else {
-                                Toast.makeText(
-                                    requireActivity(),
-                                    R.string.beldex_amount_valid_error_message,
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        } else {
+            if (CheckOnline.isOnline(requireActivity())) {
+                if (blockProgressBarVisible) {
+                    when {
+                        binding.syncStatus.text != getString(R.string.status_synchronized) -> {
                             Toast.makeText(
                                 requireActivity(),
-                                "Blocks are syncing wait until finished",
+                                "Blocks are syncing wait until your wallet is fully synchronized",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
-                    } else {
-                        Toast.makeText(
-                            requireActivity(),
-                            R.string.please_check_your_internet_connection,
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        validateBELDEXAmount(binding.inputBar.text) -> {
+                            sendBDX()
+                        }
+                        else -> {
+                            Toast.makeText(
+                                requireActivity(),
+                                R.string.beldex_amount_valid_error_message,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 } else {
                     callSendTextOnlyMessage()
                 }
             } else {
-                callSendTextOnlyMessage()
+                Toast.makeText(
+                    requireActivity(),
+                    R.string.please_check_your_internet_connection,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
@@ -1113,7 +1101,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         return isValid
     }
 
-    fun callSendTextOnlyMessage(){
+    private fun callSendTextOnlyMessage(){
         if (binding.inputBar.text.length > 4096) {
             Toast.makeText(
                 requireActivity(),

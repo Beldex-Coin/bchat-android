@@ -556,7 +556,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         showBalance(Helper.getDisplayAmount(0),Helper.getDisplayAmount(0),walletSynchronized)
 
         if(listenerCallback!!.getNode() == null) {
-            setProgress("Failed to connect node")
+            setProgress("Failed to connect to node")
             setProgress(101)
             binding.syncStatus.setTextColor(ContextCompat.getColor(requireActivity().applicationContext, R.color.red))
             binding.blockProgressBar.indeterminateDrawable.setColorFilter(
@@ -1053,6 +1053,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             if (CheckOnline.isOnline(requireActivity())) {
                 if (blockProgressBarVisible) {
                     when {
+                        binding.inputBar.text!!.isNotEmpty() && !binding.inputBar.text.matches(Regex("^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$")) -> {
+                            callSendTextOnlyMessage()
+                        }
                         binding.syncStatus.text != getString(R.string.status_synchronized) -> {
                             Toast.makeText(
                                 requireActivity(),

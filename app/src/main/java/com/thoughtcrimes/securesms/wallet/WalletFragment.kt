@@ -512,7 +512,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
         binding.transactionList.isNestedScrollingEnabled = false
 
         if(activityCallback!!.getNode() == null){
-            setProgress("Failed to connect node")
+            setProgress("Failed to connect to node")
             setProgress(101)
             binding.syncStatus.setTextColor(ContextCompat.getColor(requireActivity().applicationContext, R.color.red))
             binding.progressBar.indeterminateDrawable.setColorFilter(

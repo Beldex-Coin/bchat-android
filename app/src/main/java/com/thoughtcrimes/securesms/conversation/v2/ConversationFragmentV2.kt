@@ -592,6 +592,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             refreshTransactionDetails()
             //Continuously Transaction
             this.pendingTransaction = null
+            this.pendingTx = null
         }
     }
 
@@ -617,6 +618,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun onPause() {
+        //Continuously loading progress bar
+        if(inProgress) {
+            hideProgress()
+        }
+
         endActionMode()
         Log.d("ConversationFragmentV2-> ","onPause()")
         ApplicationContext.getInstance(requireActivity()).messageNotifier.setVisibleThread(-1)
@@ -2982,10 +2988,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     fun send() {
         commitTransaction()
-        requireActivity().runOnUiThread { TransactionLoadingBar().show(
-            requireActivity().supportFragmentManager,
-            "transaction_progressbar_tag"
-        ) }
+        showProgress()
     }
 
     private fun commitTransaction() {

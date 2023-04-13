@@ -465,7 +465,6 @@ class VisibleMessageContentView : LinearLayout {
 
             // replace URLSpans with ModalURLSpans
             body.getSpans<URLSpan>(0, body.length).toList().forEach { urlSpan ->
-                //val updatedUrl = urlSpan.url.let { HttpUrl.parse(it).toString() }4
                 val updatedUrl = urlSpan.url.let { it.toHttpUrlOrNull().toString() }
                 val replacementSpan = ModalURLSpan(updatedUrl) { url ->
                     val activity = context as AppCompatActivity

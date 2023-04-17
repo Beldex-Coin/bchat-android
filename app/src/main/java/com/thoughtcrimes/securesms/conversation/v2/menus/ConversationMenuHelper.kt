@@ -71,7 +71,7 @@ object ConversationMenuHelper {
             }
         }
         // One-on-one chat menu (options that should only be present for one-on-one chats)
-        if (thread.isContactRecipient) {
+        if (thread.isContactRecipient && thread.hasApprovedMe()) {
             if (thread.isBlocked) {
                 inflater.inflate(R.menu.menu_conversation_unblock, menu)
             } else {
@@ -87,10 +87,12 @@ object ConversationMenuHelper {
             inflater.inflate(R.menu.menu_conversation_open_group, menu)
         }
         // Muting
-        if (thread.isMuted) {
-            inflater.inflate(R.menu.menu_conversation_muted, menu)
-        } else {
-            inflater.inflate(R.menu.menu_conversation_unmuted, menu)
+        if(thread.hasApprovedMe()) {
+            if (thread.isMuted) {
+                inflater.inflate(R.menu.menu_conversation_muted, menu)
+            } else {
+                inflater.inflate(R.menu.menu_conversation_unmuted, menu)
+            }
         }
 
         if (thread.isGroupRecipient && !thread.isMuted) {

@@ -844,13 +844,19 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     }
 
     var inProgress = false
+    //Minimized app
+    var onTransactionProgress = false
 
     private fun hideProgress() {
         val prev: Fragment? =
             requireActivity().supportFragmentManager.findFragmentByTag("transaction_progressbar_tag")
         if (prev != null) {
             val df: DialogFragment = prev as DialogFragment
-            df.dismiss()
+            try {
+                df.dismiss()
+            } catch (e: IllegalStateException) {
+                return
+            }
         }
         inProgress = false
     }
@@ -923,8 +929,24 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                     "Flash priority is set as the default fee.\\nGo to setting to change the transaction priority."
             }
         }*/
+        //Minimized app
+        if(onTransactionProgress){
+            onTransactionProgress = false
+            hideProgress()
+            refreshTransactionDetails()
+            //Continuously Transaction
+            this.pendingTransaction = null
+            this.pendingTx = null
+        }
     }
 
+    override fun onPause() {
+        //Continuously loading progress bar
+        if(inProgress) {
+            hideProgress()
+        }
+        super.onPause()
+    }
     // QR Scan Stuff
     fun processScannedData(barcodeData: BarcodeData?) {
         activityCallback?.setBarcodeData(barcodeData)
@@ -1025,7 +1047,11 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
             requireActivity().supportFragmentManager.findFragmentByTag("transaction_progressbar_tag")
         if (prev != null) {
             val df: DialogFragment = prev as DialogFragment
-            df.dismiss()
+            try {
+                df.dismiss()
+            } catch (e: java.lang.IllegalStateException) {
+                return
+            }
         }
         sendButtonEnabled()
         showAlert(getString(R.string.send_create_tx_error_title), errorText!!)
@@ -1072,10 +1098,22 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                         txData.destinationAddress
                     )
                 }catch(e: IndexOutOfBoundsException){
-                    Toast.makeText(requireContext(),getString(R.string.please_try_again_later),Toast.LENGTH_SHORT).show()
+                    e.message?.let { Log.d("SendFragment->", it) }
                 }
             }
-            SendConfirmDialog(pendingTransaction!!,txData, this).show(requireActivity().supportFragmentManager,"")
+            try {
+                if(pendingTransaction!!.firstTxId !=null) {
+                    SendConfirmDialog(pendingTransaction!!,txData, this).show(requireActivity().supportFragmentManager,"")
+                }
+            }catch(e: java.lang.IllegalStateException){
+                //Minimized app
+                onTransactionProgress = true
+                return
+            }catch(e: IndexOutOfBoundsException){
+                //Minimized app
+                hideProgress()
+                Toast.makeText(requireContext(),getString(R.string.please_try_again_later),Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -1086,10 +1124,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
     fun send() {
         commitTransaction()
-        requireActivity().runOnUiThread { requireActivity().runOnUiThread { TransactionLoadingBar().show(
-            requireActivity().supportFragmentManager,
-            "transaction_progressbar_tag"
-        ) } }
+        showProgress()
     }
 
     fun transactionFinished(){

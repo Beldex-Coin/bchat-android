@@ -108,6 +108,8 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
   public static final String CAPTION_EXTRA        = "caption";
   public static final String OUTGOING_EXTRA       = "outgoing";
   public static final String LEFT_IS_RECENT_EXTRA = "left_is_recent";
+  //
+  public static final String ALBUM_THUMBNAIL_VIEW = "album_thumbnail_view";
 
   private View                  rootContainer;
   private ViewPager             mediaPager;
@@ -126,6 +128,9 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
   private GestureDetector       clickDetector;
   private MediaPreviewViewModel viewModel;
   private ViewPagerListener     viewPagerListener;
+
+  //
+  private boolean               albumThumbnailView;
 
   private int restartItem = -1;
 
@@ -160,7 +165,8 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
               .putExtra(DATE_EXTRA, mms.getTimestamp())
               .putExtra(SIZE_EXTRA, slide.asAttachment().getSize())
               .putExtra(CAPTION_EXTRA, slide.getCaption().orNull())
-              .putExtra(LEFT_IS_RECENT_EXTRA, false);
+              .putExtra(LEFT_IS_RECENT_EXTRA, false)
+              .putExtra(ALBUM_THUMBNAIL_VIEW,true);
     }
     return previewIntent;
   }
@@ -318,6 +324,8 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
     initialCaption   = getIntent().getStringExtra(CAPTION_EXTRA);
     leftIsRecent     = getIntent().getBooleanExtra(LEFT_IS_RECENT_EXTRA, false);
     restartItem      = -1;
+    //
+    albumThumbnailView = getIntent().getBooleanExtra(ALBUM_THUMBNAIL_VIEW,false);
 
     if (address != null) {
       conversationRecipient = Recipient.from(this, address, true);
@@ -433,7 +441,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
       Intent composeIntent = new Intent(this, ShareActivity.class);
       composeIntent.putExtra(Intent.EXTRA_STREAM, mediaItem.uri);
       composeIntent.setType(mediaItem.type);
-      composeIntent.putExtra(ShareActivity.MEDIA_PREVIEW_PAGE,true);
+      composeIntent.putExtra(ShareActivity.MEDIA_PREVIEW_PAGE, !albumThumbnailView);
       resultLauncher.launch(composeIntent);
     }
   }

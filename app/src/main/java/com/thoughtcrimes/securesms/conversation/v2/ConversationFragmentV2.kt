@@ -1063,6 +1063,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
+                        senderBeldexAddress == null || senderBeldexAddress!!.isEmpty() -> {
+                            Toast.makeText(
+                                requireActivity(),
+                                R.string.invalid_destination_address,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                         validateBELDEXAmount(binding.inputBar.text) -> {
                             sendBDX()
                         }

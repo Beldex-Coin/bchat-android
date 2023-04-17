@@ -1363,5 +1363,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="reply_payment_card_message" translatable="false">%1s : %2s BDX</string>
     <string name="open_link" translatable="false">Open Link</string>
     <string name="initiating_transaction" translatable="false">Initiating Transaction..</string>
+    <string name="invalid_destination_address" translatable="false">Invalid destination address</string>
 
 </resources>

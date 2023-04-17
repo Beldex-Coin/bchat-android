@@ -689,24 +689,18 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     }
 
     private fun validateBELDEXAmount(amount:String):Boolean {
-        val maxValue = 18446744.073709551616
+        val maxValue = 150000000.00000
         val value = amount.replace(',', '.')
         val regExp ="^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$"
         var isValid =false
 
         if (value.matches(Regex(regExp))) {
-            /*if (value == "ALL") {
-                isValid = true
-            } */
             if (value == ".") {
                 isValid = false
             } else {
                 isValid = try {
                     val dValue = value.toDouble()
-                    /*val availableBalanceDouble = Helper.getDisplayAmount(availableBalance).toDouble()
-                    Log.d("Available balance->1 ","$dValue,${availableBalanceDouble}")
-                    (dValue <= availableBalanceDouble && dValue <= maxValue && dValue > 0)*/
-                    (dValue > 0)
+                    (dValue <= maxValue && dValue > 0)
                 } catch (e:Exception) {
                     false
                 }

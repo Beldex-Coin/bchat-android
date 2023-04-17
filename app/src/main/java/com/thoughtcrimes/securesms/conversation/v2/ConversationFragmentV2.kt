@@ -1088,7 +1088,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun validateBELDEXAmount(amount: String): Boolean {
-        val maxValue = 18446744.073709551616
+        val maxValue = 150000000.00000
         val value = amount.replace(',', '.')
         val regExp = "^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$"
         var isValid = false
@@ -1099,7 +1099,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             } else {
                 isValid = try {
                     val dValue = value.toDouble()
-                    (dValue > 0)
+                    (dValue <= maxValue && dValue > 0)
                 } catch (e: java.lang.Exception) {
                     false
                 }

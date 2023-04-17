@@ -488,6 +488,10 @@ class HomeFragment : Fragment(),ConversationClickListener,
         binding.searchBarLayout.setOnClickListener {
             onBackPressed()
         }
+        binding.searchBarBackButton.setOnClickListener {
+            binding.globalSearchInputLayout.onFocus()
+            binding.globalSearchInputLayout.clearSearch(true)
+        }
 
         binding.searchToolbar.isVisible = isShown
         binding.searchViewCard.isVisible = !isShown

@@ -37,8 +37,9 @@
     <TextView
         android:fontFamily="@font/open_sans_bold"
         android:id="@+id/seed_permission_important_subTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textAlignment="center"
         android:text="@string/never_share_your_seed_with_anyone"
         android:textSize="@dimen/medium_font_size"
         app:layout_constraintLeft_toLeftOf="parent"

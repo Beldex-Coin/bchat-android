@@ -1364,5 +1364,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="open_link" translatable="false">Open Link</string>
     <string name="initiating_transaction" translatable="false">Initiating Transaction..</string>
     <string name="invalid_destination_address" translatable="false">Invalid destination address</string>
+    <string name="search_people_and_groups" translatable="false">Search people and groups</string>
 
 </resources>

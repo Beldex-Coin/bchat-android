@@ -31,7 +31,7 @@
             android:contentDescription="@string/SearchToolbar_search" />
         <EditText
             android:fontFamily="@font/open_sans_medium"
-            android:hint="@string/global_search_messages"
+            android:hint="@string/search_people_and_groups"
             android:imeOptions="actionSearch"
             android:id="@+id/search_input"
             android:paddingHorizontal="@dimen/small_spacing"

@@ -260,7 +260,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:fontFamily="@font/open_sans_medium"
-                        android:text="Search people and groups"
+                        android:text="@string/search_people_and_groups"
                         android:textColor="@color/home_search_icon_and_hint" />
                 </RelativeLayout>
             </LinearLayout>

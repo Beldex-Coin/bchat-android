@@ -303,18 +303,18 @@ class HomeFragment : Fragment(),ConversationClickListener,
             binding.drawerLayout.openDrawer(GravityCompat.END)
         }
         binding.drawerCloseIcon.setOnClickListener { binding.drawerLayout.closeDrawer(GravityCompat.END) }
-        val activeUiMode = UiModeUtilities.getUserSelectedUiMode(requireActivity().applicationContext)
+        val activeUiMode = UiModeUtilities.getUserSelectedUiMode(requireActivity())
         Log.d("beldex", "activeUiMode $activeUiMode")
         binding.drawerAppearanceToggleButton.isChecked = activeUiMode == UiMode.NIGHT
 
         binding.drawerAppearanceToggleButton.setOnClickListener{
             if(binding.drawerAppearanceToggleButton.isChecked){
                 val uiMode = UiMode.values()[1]
-                UiModeUtilities.setUserSelectedUiMode(requireActivity().applicationContext, uiMode)
+                UiModeUtilities.setUserSelectedUiMode(requireActivity(), uiMode)
             }
             else{
                 val uiMode = UiMode.values()[0]
-                UiModeUtilities.setUserSelectedUiMode(requireActivity().applicationContext, uiMode)
+                UiModeUtilities.setUserSelectedUiMode(requireActivity(), uiMode)
             }
         }
         binding.drawerQrcodeImg.setOnClickListener {

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -76,6 +77,11 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
     fun setProgress(text: String?) {
         if(text==getString(R.string.reconnecting) || text==getString(R.string.status_wallet_connecting)){
            binding.syncStatusIcon.visibility=View.GONE
+        }
+        if(text==getString(R.string.reconnecting) || text == getString(R.string.status_wallet_loading) || text == getString(R.string.status_wallet_connecting)){
+            binding.syncStatus.setTextColor(ContextCompat.getColor(requireActivity().applicationContext, R.color.green_color))
+            binding.progressBar.indeterminateDrawable.setColorFilter(ContextCompat.getColor(requireActivity().applicationContext,R.color.green_color),
+                PorterDuff.Mode.SRC_OVER)
         }
         syncText = text
         binding.syncStatus.text = text
@@ -516,7 +522,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
             setProgress(101)
             binding.syncStatus.setTextColor(ContextCompat.getColor(requireActivity().applicationContext, R.color.red))
             binding.progressBar.indeterminateDrawable.setColorFilter(
-                resources.getColor(R.color.red),
+                ContextCompat.getColor(requireActivity().applicationContext,R.color.red),
                 android.graphics.PorterDuff.Mode.SRC_OVER)
         }
 

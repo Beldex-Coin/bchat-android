@@ -11,9 +11,7 @@ import android.content.Context.CLIPBOARD_SERVICE
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.database.Cursor
-import android.graphics.Color
-import android.graphics.Rect
-import android.graphics.Typeface
+import android.graphics.*
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.*
@@ -560,8 +558,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             setProgress(101)
             binding.syncStatus.setTextColor(ContextCompat.getColor(requireActivity().applicationContext, R.color.red))
             binding.blockProgressBar.indeterminateDrawable.setColorFilter(
-                resources.getColor(R.color.red),
-                android.graphics.PorterDuff.Mode.SRC_OVER)
+                ContextCompat.getColor(requireActivity().applicationContext,R.color.red),
+                PorterDuff.Mode.SRC_OVER)
         }
 
     }
@@ -3049,6 +3047,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         /*if(text==getString(R.string.reconnecting) || text==getString(R.string.status_wallet_connecting)){
            binding.syncStatusIcon.visibility=View.GONE
         }*/
+        if(text==getString(R.string.reconnecting) || text == getString(R.string.status_wallet_loading) || text == getString(R.string.status_wallet_connecting)){
+            binding.syncStatus.setTextColor(ContextCompat.getColor(requireActivity().applicationContext, R.color.green_color))
+            binding.blockProgressBar.indeterminateDrawable.setColorFilter(ContextCompat.getColor(requireActivity().applicationContext,R.color.green_color),PorterDuff.Mode.SRC_OVER)
+        }
         syncText = text
         binding.syncStatus.text = text
     }

@@ -908,6 +908,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
                             R.color.green_color
                         )
                     )
+                    setProgress(-2)
 //                ivSynced.setVisibility(View.VISIBLE);
                     binding.filterTransactionsIcon.isClickable =
                         true //default = adapter!!.itemCount > 0

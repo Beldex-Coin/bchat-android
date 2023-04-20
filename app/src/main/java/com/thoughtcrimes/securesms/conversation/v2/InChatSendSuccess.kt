@@ -16,6 +16,8 @@ class InChatSendSuccess(
 
         with(binding) {
             okButton.setOnClickListener {
+                context.pendingTransaction = null
+                context.pendingTx = null
                 dismiss()
             }
         }

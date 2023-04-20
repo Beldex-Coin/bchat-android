@@ -1378,11 +1378,34 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         val messageIterator = sortedMessages.iterator()
         while (messageIterator.hasNext()) {
             val message = messageIterator.next()
-            val body = MentionUtilities.highlightMentions(
+            var body = MentionUtilities.highlightMentions(
                 message.body,
                 viewModel.threadId,
                 requireActivity()
             )
+            if(message.isPayment){
+                Log.d("QuoteModel->1","${message.body}")
+                //Payment Tag
+                var amount = ""
+                var direction = ""
+                try {
+                    val mainObject: JSONObject = JSONObject(message.body)
+                    val uniObject = mainObject.getJSONObject("kind")
+                    amount = uniObject.getString("amount")
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
+                direction = if (message.isOutgoing) {
+                    resources.getString(R.string.payment_sent)
+                } else {
+                    resources.getString(R.string.payment_received)
+                }
+                body = resources.getString(R.string.reply_payment_card_message,direction,amount)
+            }else if(message.isOpenGroupInvitation){
+                Log.d("QuoteModel->2","${message.body}")
+                body = resources.getString(R.string.ThreadRecord_open_group_invitation)
+            }
+
             if (TextUtils.isEmpty(body)) {
                 continue
             }
@@ -1406,6 +1429,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (TextUtils.isEmpty(result)) {
             return
         }
+
         val manager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         manager.setPrimaryClip(ClipData.newPlainText("Message Content", result))
         Toast.makeText(requireActivity(), R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()

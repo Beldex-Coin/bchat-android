@@ -5,7 +5,9 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -111,6 +113,13 @@ public class ChatsPreferenceFragment extends ListSummaryPreferenceFragment {
 
     public TrimLengthValidationListener() {
       EditTextPreference preference = findPreference(TextSecurePreferences.THREAD_TRIM_LENGTH);
+      assert preference != null;
+      preference.setOnBindEditTextListener(new EditTextPreference.OnBindEditTextListener() {
+        @Override
+        public void onBindEditText(@NonNull EditText editText) {
+          editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED);
+        }
+      });
       onPreferenceChange(preference, preference.getText());
     }
 

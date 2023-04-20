@@ -572,8 +572,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         threadDb.markAllAsRead(viewModel.threadId, recipient.isOpenGroupRecipient)
 
         val thread = threadDb.getRecipientForThreadId(viewModel.threadId)
-        showBlockProgressBar(thread)
-        callShowPayAsYouChatBDXIcon(thread)
+        if(thread != null) {
+            showBlockProgressBar(thread)
+            callShowPayAsYouChatBDXIcon(thread)
+        }
         if(TextSecurePreferences.isPayAsYouChat(requireActivity())){
             if(binding.inputBar.text!!.isNotEmpty() && binding.inputBar.text.matches(Regex("^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$"))){
                 binding.inputBar.showPayAsYouChatBDXIcon(true)
@@ -1062,11 +1064,21 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                             ).show()
                         }
                         senderBeldexAddress == null || senderBeldexAddress!!.isEmpty() -> {
-                            Toast.makeText(
-                                requireActivity(),
-                                R.string.invalid_destination_address,
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            val thread = threadDb.getRecipientForThreadId(viewModel.threadId)
+                            if (thread != null) {
+                                senderBeldexAddress = getBeldexAddress(thread.address)
+                                if(senderBeldexAddress != null || senderBeldexAddress!!.isNotEmpty()){
+                                    if(validateBELDEXAmount(binding.inputBar.text)) {
+                                        sendBDX()
+                                    }else{
+                                        Toast.makeText(requireActivity(), R.string.beldex_amount_valid_error_message, Toast.LENGTH_SHORT).show()
+                                    }
+                                }else{
+                                    Toast.makeText(requireActivity(), R.string.invalid_destination_address, Toast.LENGTH_SHORT).show()
+                                }
+                            }else {
+                                Toast.makeText(requireActivity(), R.string.invalid_destination_address, Toast.LENGTH_SHORT).show()
+                            }
                         }
                         validateBELDEXAmount(binding.inputBar.text) -> {
                             sendBDX()
@@ -1536,7 +1548,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             .setPositiveButton(R.string.RecipientPreferenceActivity_block) { _, _ ->
                 viewModel.block()
                 val thread = threadDb.getRecipientForThreadId(viewModel.threadId)
-                showBlockProgressBar(thread)
+                if(thread != null) {
+                    showBlockProgressBar(thread)
+                }
                 if (deleteThread) {
                     viewModel.deleteThread()
                     //finish()
@@ -1560,7 +1574,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             .setPositiveButton(R.string.ConversationActivity_unblock) { _, _ ->
                 viewModel.unblock()
                 val thread = threadDb.getRecipientForThreadId(viewModel.threadId)
-                showBlockProgressBar(thread)
+                if(thread != null) {
+                    showBlockProgressBar(thread)
+                }
             }.show()
 
         //New Line
@@ -2136,7 +2152,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         binding.unblockButton.setOnClickListener {
             viewModel.unblock()
             val thread = threadDb.getRecipientForThreadId(viewModel.threadId)
-            showBlockProgressBar(thread)
+            if(thread != null) {
+                showBlockProgressBar(thread)
+            }
         }
     }
 
@@ -2685,7 +2703,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             .setPositiveButton(R.string.accept) { _, _ ->
                 acceptMessageRequest()
                 val thread = threadDb.getRecipientForThreadId(viewModel.threadId)
-                showBlockProgressBar(thread)
+                if(thread != null) {
+                    showBlockProgressBar(thread)
+                }
             }
             .setNegativeButton(R.string.cancel) { _, _ ->
                 // Do nothing

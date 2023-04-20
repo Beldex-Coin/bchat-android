@@ -148,9 +148,7 @@ class ConversationView : LinearLayout {
     }
 
     private fun getUserDisplayName(recipient: Recipient): String? {
-        if (recipient.address.toString() == HomeActivity.reportIssueBChatID) {
-            isReportIssueID = true
-        }
+        isReportIssueID = recipient.address.toString() == reportIssueBChatID
         return when {
             recipient.isLocalNumber -> {
                 context.getString(R.string.note_to_self)

@@ -489,11 +489,21 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         if (fragment is SendFragment || fragment is ReceiveFragment || fragment is ScannerFragment || fragment is WalletScannerFragment || fragment is WalletFragment || fragment is ConversationFragmentV2) {
             if (!(fragment as OnBackPressedListener).onBackPressed()) {
                 TextSecurePreferences.callFiatCurrencyApi(this,false)
-                super.onBackPressed()
+                try {
+                    super.onBackPressed()
+                }catch(e : IllegalStateException){
+                    replaceHomeFragment()
+                }
             }
         }else if(fragment is HomeFragment){
             backToHome(fragment)
         }
+    }
+
+    private fun replaceHomeFragment(){
+        val homeFragment: Fragment = HomeFragment()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.activity_home_frame_layout_container, homeFragment, HomeFragment::class.java.name).commit()
     }
 
     private fun backToHome(fragment: HomeFragment?) {
@@ -2002,7 +2012,11 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         if (fragment is SendFragment || fragment is ReceiveFragment || fragment is ScannerFragment || fragment is WalletScannerFragment || fragment is WalletFragment || fragment is ConversationFragmentV2) {
             if (!(fragment as OnBackPressedListener).onBackPressed()) {
                 TextSecurePreferences.callFiatCurrencyApi(this,false)
-                super.onBackPressed()
+                try {
+                    super.onBackPressed()
+                }catch(e : IllegalStateException){
+                    replaceHomeFragment()
+                }
             }
         }
     }

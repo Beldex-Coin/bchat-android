@@ -62,7 +62,7 @@ object ConversationMenuHelper {
                 val actionView = item.actionView
                 val iconView = actionView.findViewById<ImageView>(R.id.menu_badge_icon)
                 val badgeView = actionView.findViewById<TextView>(R.id.expiration_badge)
-                @ColorInt val color = context.resources.getColorWithID(R.color.text, context.theme)
+                @ColorInt val color = fragmentV2.resources.getColorWithID(R.color.text, context.theme)
                 iconView.colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY)
                 badgeView.text = ExpirationUtil.getExpirationAbbreviatedDisplayValue(context, thread.expireMessages)
                 actionView.setOnClickListener { onOptionsItemSelected(item) }

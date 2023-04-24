@@ -607,11 +607,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     private var setUpWalletPinActivityResultLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                Toast.makeText(this, "Wallet pin already created", Toast.LENGTH_SHORT).show()
-            }
-        }
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {}
 
     override fun showNotificationSettings() {
         val intent = Intent(this, NotificationSettingsActivity::class.java)

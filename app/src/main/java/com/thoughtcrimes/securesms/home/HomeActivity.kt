@@ -1956,6 +1956,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     private fun onWalletReconnect(node: NodeInfo?, UseSSL: Boolean, isLightWallet: Boolean) {
+        val currentWallet = getCurrentFragment()
         if (CheckOnline.isOnline(this)) {
             if (getWallet() != null) {
                 val isOnline =
@@ -1963,12 +1964,15 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 if (isOnline) {
                     synced = false
                     setNode(node)
-                    val walletFragment = getWalletFragment()
-                    walletFragment.setProgress(getString(R.string.reconnecting))
-                    walletFragment.setProgress(101)
-                    invalidateOptionsMenu()
+                    if(currentWallet is WalletFragment) {
+                        currentWallet.setProgress(getString(R.string.reconnecting))
+                        currentWallet.setProgress(101)
+                        invalidateOptionsMenu()
+                    }
                 } else {
-                    getWalletFragment().setProgress(R.string.failed_connected_to_the_node)
+                    if(currentWallet is WalletFragment) {
+                        currentWallet.setProgress(R.string.failed_connected_to_the_node)
+                    }
                 }
             } else {
                 Toast.makeText(this, "Wait for connection..", Toast.LENGTH_SHORT)

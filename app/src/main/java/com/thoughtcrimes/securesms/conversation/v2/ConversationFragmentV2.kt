@@ -559,7 +559,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             binding.syncStatus.setTextColor(ContextCompat.getColor(requireActivity().applicationContext, R.color.red))
             binding.blockProgressBar.indeterminateDrawable.setColorFilter(
                 ContextCompat.getColor(requireActivity().applicationContext,R.color.red),
-                PorterDuff.Mode.SRC_OVER)
+                PorterDuff.Mode.SRC_IN)
         }
 
     }
@@ -3093,7 +3093,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }*/
         if(text==getString(R.string.reconnecting) || text == getString(R.string.status_wallet_loading) || text == getString(R.string.status_wallet_connecting)){
             binding.syncStatus.setTextColor(ContextCompat.getColor(requireActivity().applicationContext, R.color.green_color))
-            binding.blockProgressBar.indeterminateDrawable.setColorFilter(ContextCompat.getColor(requireActivity().applicationContext,R.color.green_color),PorterDuff.Mode.SRC_OVER)
+            binding.blockProgressBar.indeterminateDrawable.setColorFilter(ContextCompat.getColor(requireActivity().applicationContext,R.color.green_color),PorterDuff.Mode.SRC_IN)
         }
         syncText = text
         binding.syncStatus.text = text

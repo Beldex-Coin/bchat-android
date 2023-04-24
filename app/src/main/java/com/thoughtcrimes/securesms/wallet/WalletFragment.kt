@@ -81,7 +81,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
         if(text==getString(R.string.reconnecting) || text == getString(R.string.status_wallet_loading) || text == getString(R.string.status_wallet_connecting)){
             binding.syncStatus.setTextColor(ContextCompat.getColor(requireActivity().applicationContext, R.color.green_color))
             binding.progressBar.indeterminateDrawable.setColorFilter(ContextCompat.getColor(requireActivity().applicationContext,R.color.green_color),
-                PorterDuff.Mode.SRC_OVER)
+                PorterDuff.Mode.SRC_IN)
         }
         syncText = text
         binding.syncStatus.text = text
@@ -523,7 +523,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
             binding.syncStatus.setTextColor(ContextCompat.getColor(requireActivity().applicationContext, R.color.red))
             binding.progressBar.indeterminateDrawable.setColorFilter(
                 ContextCompat.getColor(requireActivity().applicationContext,R.color.red),
-                android.graphics.PorterDuff.Mode.SRC_OVER)
+                android.graphics.PorterDuff.Mode.SRC_IN)
         }
 
         //      int count =  adapter.getItemCount();

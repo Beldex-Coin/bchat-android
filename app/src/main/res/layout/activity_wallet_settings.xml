@@ -69,7 +69,7 @@
                         android:maxLines="1"
                         android:textSize="11sp"
                         android:fontFamily="@font/open_sans_regular"
-                        android:text="publicnode2.rpcnode.stream"
+                        tools:text="publicnode2.rpcnode.stream"
                         android:layout_height="wrap_content"/>
                 </LinearLayout>
                 <ImageView

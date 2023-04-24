@@ -180,7 +180,7 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         val parts = getNode().split(":")
         if (CheckOnline.isOnline(this)) {
             //Hales
-            if (parts[0] != null) {
+            if (parts[0] != "null") {
                 binding.currentNodeTextViewValue.text = parts[0]
             } else {
                 binding.currentNodeTextViewValue.text = getString(R.string.waiting_for_connection)

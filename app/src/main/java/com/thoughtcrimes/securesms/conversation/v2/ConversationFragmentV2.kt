@@ -1983,7 +1983,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             val openGroup = beldexThreadDb.getOpenGroupChat(viewModel.threadId)
             if (openGroup != null) {
                 val userCount = beldexApiDb.getUserCount(openGroup.room, openGroup.server) ?: 0
-                binding.conversationSubtitleView.text = requireActivity().getString(R.string.ConversationActivity_member_count, userCount)
+                try {
+                    binding.conversationSubtitleView.text = requireActivity().getString(R.string.ConversationActivity_member_count, userCount)
+                }catch(ex: IllegalStateException){
+                    Timber.w(ex.message)
+                }
             } else {
                 binding.conversationSubtitleView.isVisible = false
             }

@@ -6,6 +6,7 @@ import com.thoughtcrimes.securesms.data.NodeInfo;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -25,10 +26,14 @@ public class NodePinger {
     static public void execute(Collection<NodeInfo> nodes, final Listener listener) {
         final ExecutorService exeService = Executors.newFixedThreadPool(NUM_THREADS);
         List<Callable<Boolean>> taskList = new ArrayList<>();
-        for (NodeInfo node : nodes) {
-            Log.d("Beldex","Node list majorversion5 ");
+        try {
+            for (NodeInfo node : nodes) {
+                Log.d("Beldex", "Node list majorversion5 ");
 
-            taskList.add(() -> node.testRpcService(listener));
+                taskList.add(() -> node.testRpcService(listener));
+            }
+        } catch(ConcurrentModificationException ex){
+            Timber.w(ex);
         }
 
         try {

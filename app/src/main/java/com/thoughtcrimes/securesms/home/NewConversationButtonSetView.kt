@@ -251,13 +251,19 @@ class NewConversationButtonSetView : RelativeLayout {
         mainButtonLayoutParams.bottomMargin = bottomMargin.toInt()
 
         bchatButtonTitle.setOnClickListener {
-            delegate?.createNewPrivateChat(); collapse()
+            if(isExpanded) {
+                delegate?.createNewPrivateChat(); collapse()
+            }
         }
         secretGroupButtonTitle.setOnClickListener {
-            delegate?.createNewSecretGroup(); collapse()
+            if(isExpanded) {
+                delegate?.createNewSecretGroup(); collapse()
+            }
         }
         socialGroupButtonTitle.setOnClickListener {
-            delegate?.joinSocialGroup(); collapse()
+            if(isExpanded) {
+                delegate?.joinSocialGroup(); collapse()
+            }
         }
     }
     // endregion

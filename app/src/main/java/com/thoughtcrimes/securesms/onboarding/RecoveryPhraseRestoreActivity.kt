@@ -72,38 +72,27 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable) {
-                var count : Int = 1
+                var numberOfInputWords = 0
 
                 if(s.toString().isNotEmpty())
 
-                    for(i in 0..s.toString().length-1){
+                numberOfInputWords = s.toString().trim().split("\\s+".toRegex()).size
+                binding.recoveryPhraseCountWord.text = "$numberOfInputWords/25"
 
-                        if(s.toString()[i].toString() == " "){
-                            count++
-                        }
-
-                        if(i > 1 && s.toString()[i-1].toString() == " " && s.toString()[i].toString() == " "){
-                            count--
-                        }
-
-                    }
-                binding.recoveryPhraseCountWord.text = "$count/25"
-
-                if (count >= 25){
+                if (numberOfInputWords > 25){
                     filter = InputFilter.LengthFilter(binding.mnemonicEditText.text.toString().length)
                     binding.mnemonicEditText.filters = arrayOf<InputFilter>(filter ?: return)
                 }
                 else if (filter != null) {
                     binding.mnemonicEditText.filters = arrayOfNulls(0)
                     filter = null
-
                 }
             }
         })
 
         binding.clearButton.setOnClickListener {
             binding.mnemonicEditText.text.clear()
-            binding.recoveryPhraseCountWord.text= "0/25"
+            binding.recoveryPhraseCountWord.text = "0/25"
         }
 
        /* binding.recoveryPhrasePasteIcon?.setOnClickListener {
@@ -130,7 +119,7 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
 
     // region Interaction
     private fun restore() {
-        val mnemonic = binding.mnemonicEditText.text.toString()
+        val mnemonic = binding.mnemonicEditText.text.toString().trimStart().trimEnd()
         try {
             val loadFileContents: (String) -> String = { fileName ->
                 MnemonicUtilities.loadFileContents(this, fileName)

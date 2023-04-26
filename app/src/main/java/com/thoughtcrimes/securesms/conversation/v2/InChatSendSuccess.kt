@@ -18,6 +18,7 @@ class InChatSendSuccess(
             okButton.setOnClickListener {
                 context.pendingTransaction = null
                 context.pendingTx = null
+                context.transactionInProgress = false
                 dismiss()
             }
         }

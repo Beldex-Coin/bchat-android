@@ -490,7 +490,13 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             if (!(fragment as OnBackPressedListener).onBackPressed()) {
                 TextSecurePreferences.callFiatCurrencyApi(this,false)
                 try {
-                    super.onBackPressed()
+                    if (fragment is ConversationFragmentV2) {
+                        if (!fragment.transactionInProgress) {
+                            super.onBackPressed()
+                        }
+                    } else {
+                        super.onBackPressed()
+                    }
                 }catch(e : IllegalStateException){
                     replaceHomeFragment()
                 }
@@ -1656,9 +1662,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         TODO("Not yet implemented")
     }
 
-    private fun getWalletFragment(): WalletFragment {
-        return supportFragmentManager.findFragmentByTag(WalletFragment::class.java.name) as WalletFragment
-    }
 
     private fun startWalletService() {
         val walletName = getWalletName(this)

@@ -413,6 +413,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private var unlockedBalance: Long = 0
     private var walletSynchronized:Boolean = false
     private var blockProgressBarVisible:Boolean = false
+    var transactionInProgress = false
 
 
     interface Listener {
@@ -2796,6 +2797,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     //Payment Tag
     override fun sendBDX() {
+        transactionInProgress = true
         val txData: TxData = getTxData()
         senderBeldexAddress?.let { Log.d("SenderBeldexAddress->", it) }
         txData.destinationAddress = senderBeldexAddress
@@ -2897,6 +2899,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             requireActivity(), R.style.backgroundColor
         )
         builder.setCancelable(true).setTitle(title).setMessage(message).create().show()
+        transactionInProgress = false
     }
 
     fun disposeTransaction() {

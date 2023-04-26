@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -51,6 +52,8 @@ public class AppProtectionPreferenceFragment extends CorrectedPreferenceFragment
 
     //New Line
     this.findPreference(TextSecurePreferences.CALL_NOTIFICATIONS_ENABLED).setOnPreferenceChangeListener(new CallToggleListener(this, this::setCall));
+
+    this.findPreference(TextSecurePreferences.SCREEN_SECURITY_PREF).setOnPreferenceChangeListener(new ScreenSecurityListener());
 
     initializeVisibility();
   }
@@ -143,6 +146,20 @@ public class AppProtectionPreferenceFragment extends CorrectedPreferenceFragment
       Intent intent = new Intent(getContext(), KeyCachingService.class);
       intent.setAction(KeyCachingService.LOCK_TOGGLED_EVENT);
       getContext().startService(intent);
+      return true;
+    }
+  }
+
+  private class ScreenSecurityListener implements Preference.OnPreferenceChangeListener {
+    @Override
+    public boolean onPreferenceChange(Preference preference, Object newValue) {
+      boolean enabled = (Boolean)newValue;
+      TextSecurePreferences.setScreenSecurityPreference(getContext(),enabled);
+      if (TextSecurePreferences.isScreenSecurityEnabled(getContext())) {
+        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+      } else {
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
+      }
       return true;
     }
   }

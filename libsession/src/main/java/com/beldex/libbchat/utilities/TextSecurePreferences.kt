@@ -102,6 +102,7 @@ interface TextSecurePreferences {
     fun isPasswordDisabled(): Boolean
     fun setPasswordDisabled(disabled: Boolean)
     fun isScreenSecurityEnabled(): Boolean
+    fun setScreenSecurityPreference(status: Boolean)
     fun getLastVersionCode(): Int
     fun setLastVersionCode(versionCode: Int)
     fun isPassphraseTimeoutEnabled(): Boolean
@@ -767,6 +768,11 @@ interface TextSecurePreferences {
         @JvmStatic
         fun isScreenSecurityEnabled(context: Context): Boolean {
             return getBooleanPreference(context, SCREEN_SECURITY_PREF, true)
+        }
+
+        @JvmStatic
+        fun setScreenSecurityPreference(context: Context,status:Boolean) {
+            setBooleanPreference(context, SCREEN_SECURITY_PREF,status)
         }
 
         fun getLastVersionCode(context: Context): Int {
@@ -1693,6 +1699,10 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun isScreenSecurityEnabled(): Boolean {
         return getBooleanPreference(TextSecurePreferences.SCREEN_SECURITY_PREF, true)
+    }
+
+    override fun setScreenSecurityPreference(status:Boolean) {
+        setBooleanPreference(TextSecurePreferences.SCREEN_SECURITY_PREF, status)
     }
 
     override fun getLastVersionCode(): Int {

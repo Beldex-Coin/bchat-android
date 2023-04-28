@@ -7,6 +7,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -74,6 +76,7 @@ public class NodeFragment extends Fragment
     private ProgressDialog progressBar;
 
     Button testButton;
+    Button addButton;
 
     public interface Listener {
         File getStorageRoot();
@@ -625,7 +628,24 @@ public class NodeFragment extends Fragment
             editDialog.setOnShowListener(new DialogInterface.OnShowListener() {
                 @Override
                 public void onShow(final DialogInterface dialog) {
+                    etNodeHost.getEditText().addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+                            testButton.setEnabled(!etNodeHost.getEditText().getText().toString().isEmpty());
+                        }
+                    });
                     testButton = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_NEUTRAL);
+                    testButton.setEnabled(false);
                     testButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -638,8 +658,8 @@ public class NodeFragment extends Fragment
                         }
                     });
 
-                    Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
-                    button.setOnClickListener(new View.OnClickListener() {
+                    addButton = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                    addButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             Log.d("Beldex","Value of NodeIsTested " +TextSecurePreferences.getNodeIsTested(requireContext()));

@@ -113,8 +113,8 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
 
     // region Updating
     override fun inputBarEditTextContentChanged(text: CharSequence) {
-        sendButton.isVisible = text.isNotEmpty()
-        microphoneButton.isVisible = text.isEmpty()
+        sendButton.isVisible = text.isNotEmpty() && text.isNotBlank()
+        microphoneButton.isVisible = text.isEmpty() || text.isBlank()
         delegate?.inputBarEditTextContentChanged(text)
     }
 
@@ -189,8 +189,8 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
     private fun showOrHideInputIfNeeded() {
         if (showInput) {
             setOf( binding.inputBarEditText, attachmentsButton ).forEach { it.isVisible = true }
-            microphoneButton.isVisible = text.isEmpty()
-            sendButton.isVisible = text.isNotEmpty()
+            microphoneButton.isVisible = text.isEmpty() || text.isBlank()
+            sendButton.isVisible = text.isNotEmpty() && text.isNotBlank()
             binding.noLongerParticipantTextView.isVisible = false
         } else {
             cancelQuoteDraft(2)

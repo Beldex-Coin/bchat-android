@@ -338,6 +338,9 @@
             android:maxHeight="5dp"
             android:minHeight="5dp"
             android:visibility="gone"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@color/page_background"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -362,7 +365,9 @@
                 android:textAlignment="center"
                 android:textColor="@color/green_color"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:clickable="true"
+                android:focusable="true"/>
 
             <ImageView
                 android:id="@+id/conversation_expandable_arrow"
@@ -380,7 +385,9 @@
             android:layout_below="@id/syncStatusLayout"
             android:visibility="gone"
             android:background="@color/page_background"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:clickable="true"
+            android:focusable="true">
 
             <LinearLayout
                 android:layout_width="match_parent"

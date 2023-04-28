@@ -1366,5 +1366,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="invalid_destination_address" translatable="false">Invalid destination address</string>
     <string name="search_people_and_groups" translatable="false">Search people and groups</string>
     <string name="you_can_t_send_messages_to_this_group_because_you_re_no_longer_a_participant" translatable="false">You can\'t send messages to this group because you\'re no longer a participant.</string>
+    <string name="empty_message_toast" translatable="false">Can\'t send empty message</string>
 
 </resources>

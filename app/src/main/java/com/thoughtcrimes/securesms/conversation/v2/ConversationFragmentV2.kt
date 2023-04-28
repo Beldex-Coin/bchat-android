@@ -1054,6 +1054,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             if (CheckOnline.isOnline(requireActivity())) {
                 if (blockProgressBarVisible) {
                     when {
+                        binding.inputBar.text!!.trim().isEmpty() -> {
+                            Toast.makeText(
+                                requireActivity(),
+                                R.string.empty_message_toast,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                         binding.inputBar.text!!.isNotEmpty() && !binding.inputBar.text.matches(Regex("^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$")) -> {
                             callSendTextOnlyMessage()
                         }

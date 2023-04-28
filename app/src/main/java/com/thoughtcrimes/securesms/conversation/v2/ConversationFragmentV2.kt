@@ -1955,7 +1955,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             binding.inputBar.addTextChangedListener(object : SimpleTextWatcher() {
                 override fun onTextChanged(text: String?) {
                     if(TextSecurePreferences.isPayAsYouChat(requireActivity())){
-                        if(text!!.isNotEmpty() && text.matches(Regex("^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$"))){
+                        if(text!!.isNotEmpty() && text.matches(Regex("^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$")) && binding.inputBar.quote == null){
                             binding.inputBar.showPayAsYouChatBDXIcon(true)
                         }else{
                             binding.inputBar.showPayAsYouChatBDXIcon(false)

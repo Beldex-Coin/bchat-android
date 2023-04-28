@@ -486,7 +486,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     override fun onBackPressed() {
         val fragment: Fragment? = getCurrentFragment()
-        if (fragment is SendFragment || fragment is ReceiveFragment || fragment is ScannerFragment || fragment is WalletScannerFragment || fragment is WalletFragment || fragment is ConversationFragmentV2) {
+        if (fragment is ConversationFragmentV2 || fragment is SendFragment || fragment is ReceiveFragment || fragment is ScannerFragment || fragment is WalletScannerFragment || fragment is WalletFragment) {
             if (!(fragment as OnBackPressedListener).onBackPressed()) {
                 TextSecurePreferences.callFiatCurrencyApi(this,false)
                 try {
@@ -2012,7 +2012,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     override fun walletOnBackPressed(){
         val fragment: Fragment = getCurrentFragment()!!
-        if (fragment is SendFragment || fragment is ReceiveFragment || fragment is ScannerFragment || fragment is WalletScannerFragment || fragment is WalletFragment || fragment is ConversationFragmentV2) {
+        if (fragment is ConversationFragmentV2 || fragment is SendFragment || fragment is ReceiveFragment || fragment is ScannerFragment || fragment is WalletScannerFragment || fragment is WalletFragment) {
             if (!(fragment as OnBackPressedListener).onBackPressed()) {
                 TextSecurePreferences.callFiatCurrencyApi(this,false)
                 try {

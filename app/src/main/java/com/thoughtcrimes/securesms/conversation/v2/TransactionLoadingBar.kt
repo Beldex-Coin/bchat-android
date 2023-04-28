@@ -14,7 +14,7 @@ class TransactionLoadingBar : BaseDialog() {
     override fun setContentView(builder: AlertDialog.Builder) {
         binding =
             ActivityTransactionLoadingBarBinding.inflate(LayoutInflater.from(requireContext()))
-        binding.transactionProgressText.text = fromHtml("Please <b>don\'t close this window,</b> attend calls, or navigate to another app until the transaction gets initiated")
+        binding.transactionProgressText.text = fromHtml("Please <b>don\'t close this window</b> or attend calls or navigate to another app until the transaction gets initiated")
         builder.setView(binding.root)
         isCancelable = false
     }

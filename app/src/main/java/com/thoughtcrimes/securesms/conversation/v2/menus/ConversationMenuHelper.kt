@@ -71,7 +71,7 @@ object ConversationMenuHelper {
             }
         }
         // One-on-one chat menu (options that should only be present for one-on-one chats)
-        if (thread.isContactRecipient && thread.hasApprovedMe()) {
+        if (thread.isContactRecipient && thread.hasApprovedMe() && !thread.isLocalNumber) {
             if (thread.isBlocked) {
                 inflater.inflate(R.menu.menu_conversation_unblock, menu)
             } else {
@@ -87,7 +87,7 @@ object ConversationMenuHelper {
             inflater.inflate(R.menu.menu_conversation_open_group, menu)
         }
         // Muting
-        if(thread.hasApprovedMe()) {
+        if(thread.hasApprovedMe() && !thread.isLocalNumber) {
             if (thread.isMuted) {
                 inflater.inflate(R.menu.menu_conversation_muted, menu)
             } else {
@@ -100,7 +100,7 @@ object ConversationMenuHelper {
         }
 
         //SteveJosephh21
-        if (!thread.isGroupRecipient && thread.hasApprovedMe()) {
+        if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isLocalNumber) {
             inflater.inflate(R.menu.menu_conversation_call, menu)
         }
 

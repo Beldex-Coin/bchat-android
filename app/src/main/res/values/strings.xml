@@ -1353,7 +1353,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="pay_as_you_chat" translatable="false">Pay As You Chat</string>
     <string name="subtitle_balance" translatable="false">Balance :</string>
     <string name="subtitle_unlocked_balance" translatable="false">Unlocked Balance :</string>
-    <string name="subtitle_remote" translatable="false">Remote :</string>
+    <string name="subtitle_current_height" translatable="false">Current Height :</string>
     <string name="subtitle_wallet" translatable="false">Wallet :</string>
     <string name="bdx" translatable="false">BDX</string>
     <string name="payment_success_message" translatable="false">Sent Successfully</string>

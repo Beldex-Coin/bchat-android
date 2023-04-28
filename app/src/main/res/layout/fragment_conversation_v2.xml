@@ -458,7 +458,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/open_sans_medium"
-                    android:text="@string/subtitle_remote"
+                    android:text="@string/subtitle_current_height"
                     android:textColor="@color/text"
                     android:textStyle="bold"
                     android:textSize="16sp" />

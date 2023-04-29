@@ -779,7 +779,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (listenerCallback!!.gettextSecurePreferences().isLinkPreviewsEnabled()) {
             linkPreviewViewModel.onTextChanged(requireActivity(), inputBarText, 0, 0)
         }
-        showOrHideMentionCandidatesIfNeeded(newContent)
+        val recipient = viewModel.recipient ?: return
+        if (recipient.isGroupRecipient) {
+            showOrHideMentionCandidatesIfNeeded(newContent)
+        }
         if (LinkPreviewUtil.findWhitelistedUrls(newContent.toString()).isNotEmpty()
             && !listenerCallback!!.gettextSecurePreferences()
                 .isLinkPreviewsEnabled() && !listenerCallback!!.gettextSecurePreferences()

@@ -803,6 +803,9 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
             dates.add(result)
             calendar.add(Calendar.DATE, 1)
         }
+        val calendarEndDate: Calendar = GregorianCalendar()
+        calendarEndDate.time = endDate
+        dates.add(calendarEndDate.time)
         return dates
     }
 

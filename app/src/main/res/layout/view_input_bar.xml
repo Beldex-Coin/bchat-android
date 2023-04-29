@@ -66,7 +66,7 @@
                 android:adjustViewBounds="true"
                 android:layout_gravity="center_vertical"
                 app:layout_constraintDimensionRatio="1:1"
-                app:lottie_fileName="coin.json"
+                app:lottie_fileName="pay_as_you_chat_coin.json"
                 app:lottie_loop="true"
                 app:lottie_speed="1"
                 app:lottie_autoPlay="true"

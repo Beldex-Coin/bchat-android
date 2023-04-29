@@ -142,16 +142,28 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
                 }
             }
 
-            feePriorityLayout.setOnClickListener {
-                openFeePriorityDialogBox()
+            feePriorityLayout.setOnClickListener { view ->
+                synchronized(view) {
+                    view.isEnabled = false
+                    openFeePriorityDialogBox()
+                    view.postDelayed({ view.isEnabled = true }, 500L)
+                }
             }
 
-            decimalsLayout.setOnClickListener {
-                openDecimalsDialogBox()
+            decimalsLayout.setOnClickListener { view ->
+                synchronized(view) {
+                    view.isEnabled = false
+                    openDecimalsDialogBox()
+                    view.postDelayed({ view.isEnabled = true }, 500L)
+                }
             }
 
-            currencyLayout.setOnClickListener {
-                openCurrencyDialogBox()
+            currencyLayout.setOnClickListener { view ->
+                synchronized(view) {
+                    view.isEnabled = false
+                    openCurrencyDialogBox()
+                    view.postDelayed({ view.isEnabled = true }, 500L)
+                }
             }
 
             saveRecipientAddressSwitchCompat.setOnClickListener {

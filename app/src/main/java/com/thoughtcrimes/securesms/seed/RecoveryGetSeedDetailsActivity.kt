@@ -157,20 +157,18 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
 
             restoreSeedWalletName.imeOptions = restoreSeedWalletName.imeOptions or 16777216 // Always use incognito keyboard
             restoreSeedWalletName.setOnEditorActionListener(
-                TextView.OnEditorActionListener { _, actionID, event ->
+                TextView.OnEditorActionListener { _, actionID, _ ->
                     if (actionID == EditorInfo.IME_ACTION_SEARCH ||
-                        actionID == EditorInfo.IME_ACTION_DONE ||
-                        (event.action == KeyEvent.ACTION_DOWN &&
-                                event.keyCode == KeyEvent.KEYCODE_ENTER)
+                        actionID == EditorInfo.IME_ACTION_DONE
                     ) {
                         register()
                         return@OnEditorActionListener true
                     }
                     false
                 })
-            binding.restoreSeedWalletRestoreHeight.addTextChangedListener(object : TextWatcher {
+            restoreSeedWalletRestoreHeight.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable) {
-                    if (binding.restoreSeedWalletRestoreHeight.text.toString().length == 9) {
+                    if (restoreSeedWalletRestoreHeight.text.toString().length == 9) {
                         Toast.makeText(
                             this@RecoveryGetSeedDetailsActivity,
                             R.string.enter_a_valid_height,
@@ -191,6 +189,16 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
                 ) {
                 }
             })
+            restoreSeedWalletRestoreHeight.setOnEditorActionListener(
+                TextView.OnEditorActionListener { _, actionID, _ ->
+                    if (actionID == EditorInfo.IME_ACTION_SEARCH ||
+                        actionID == EditorInfo.IME_ACTION_DONE
+                    ) {
+                        register()
+                        return@OnEditorActionListener true
+                    }
+                    false
+                })
             restoreSeedRestoreButton.setOnClickListener { register() }
         }
 

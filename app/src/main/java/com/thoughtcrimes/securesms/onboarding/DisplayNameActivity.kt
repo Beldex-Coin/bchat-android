@@ -54,11 +54,9 @@ class DisplayNameActivity : BaseActionBarActivity() {
             displayNameEditText.imeOptions =
                 displayNameEditText.imeOptions or 16777216 // Always use incognito keyboard
             displayNameEditText.setOnEditorActionListener(
-                TextView.OnEditorActionListener { _, actionID, event ->
+                TextView.OnEditorActionListener { _, actionID, _ ->
                     if (actionID == EditorInfo.IME_ACTION_SEARCH ||
-                        actionID == EditorInfo.IME_ACTION_DONE ||
-                        (event.action == KeyEvent.ACTION_DOWN &&
-                                event.keyCode == KeyEvent.KEYCODE_ENTER)
+                        actionID == EditorInfo.IME_ACTION_DONE
                     ) {
                         register()
                         return@OnEditorActionListener true

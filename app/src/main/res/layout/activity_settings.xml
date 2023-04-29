@@ -280,6 +280,8 @@
                                         android:paddingTop="12dp"
                                         android:paddingBottom="12dp"
                                         android:textAlignment="center"
+                                        android:maxLines="1"
+                                        android:inputType="text"
                                         android:visibility="invisible" />
 
                                     <LinearLayout

@@ -497,6 +497,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         setUpLinkPreviewObserver()
         restoreDraftIfNeeded()
         setUpUiStateObserver()
+        setMediaControlForReportIssue()
 
         binding.scrollToBottomButton.setOnClickListener {
 
@@ -1917,6 +1918,12 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
     }
 
+    private fun setMediaControlForReportIssue() {
+        val recipient = viewModel.recipient ?: return
+        if (recipient.address.toString() == HomeActivity.reportIssueBChatID) {
+            binding.inputBar.showMediaControls = true
+        }
+    }
     private fun updateUnreadCountIndicator() {
         val binding = binding ?: return
         val formattedUnreadCount = if (unreadCount < 10000) unreadCount.toString() else "9999+"
@@ -2241,7 +2248,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     /*Hales63*/
     private fun setUpMessageRequestsBar() {
-        binding.inputBar.showMediaControls = !isOutgoingMessageRequestThread()
+        val recipient = viewModel.recipient ?: return
+        if (recipient.address.toString() != HomeActivity.reportIssueBChatID) {
+            binding.inputBar.showMediaControls = !isOutgoingMessageRequestThread()
+        }
         binding.messageRequestBar.isVisible = isIncomingMessageRequestThread()
         binding.acceptMessageRequestButton.setOnClickListener {
             acceptAlertDialog()

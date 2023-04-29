@@ -1099,7 +1099,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                             ).show()
                         }
                     }
-                } else {
+                }else if(binding.inputBar.text!!.trim().isEmpty()){
+                    Toast.makeText(requireActivity(), R.string.empty_message_toast, Toast.LENGTH_SHORT).show()
+                }else {
                     callSendTextOnlyMessage()
                 }
             } else {

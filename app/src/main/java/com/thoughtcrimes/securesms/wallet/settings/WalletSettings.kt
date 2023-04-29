@@ -134,8 +134,12 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
                 push(intent)
             }
 
-            displayBalanceAsLayout.setOnClickListener {
-                openDisplayBalanceAsDialogBox()
+            displayBalanceAsLayout.setOnClickListener { view ->
+                synchronized(view) {
+                    view.isEnabled = false
+                    openDisplayBalanceAsDialogBox()
+                    view.postDelayed({ view.isEnabled = true }, 500L)
+                }
             }
 
             feePriorityLayout.setOnClickListener {

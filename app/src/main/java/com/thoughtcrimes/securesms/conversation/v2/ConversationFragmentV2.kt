@@ -605,7 +605,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     private fun showBlockProgressBar(thread: Recipient?) {
         if (thread != null) {
-            if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && TextSecurePreferences.isPayAsYouChat(requireActivity()) && thread.isApproved && HomeActivity.reportIssueBChatID!=thread.address.toString()) {
+            if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && TextSecurePreferences.isPayAsYouChat(requireActivity()) && thread.isApproved && HomeActivity.reportIssueBChatID!=thread.address.toString() && !thread.isLocalNumber) {
                 binding.blockProgressBar.visibility = View.VISIBLE
                 binding.syncStatusLayout.visibility = View.VISIBLE
                 blockProgressBarVisible = true

@@ -44,6 +44,7 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
     private var selectedCurrencyIndex:Int = 30
     var nodeItem: NodeInfo? = null
     private val SELECTED_NODE_PREFS_NAME = "selected_node"
+    private var status = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setUpActionBarBchatLogo("Wallet Settings",false)
@@ -120,8 +121,8 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
                 TextSecurePreferences.setSendAddressDisable(this@WalletSettings,true)
                 val intent = Intent(this@WalletSettings, AddressBookActivity::class.java)
                 push(intent)
-               /* intent.putExtra(AppLock.EXTRA_TYPE, AppLock.ENABLE_PINLOCK)
-                push(intent)*/
+                /* intent.putExtra(AppLock.EXTRA_TYPE, AppLock.ENABLE_PINLOCK)
+                 push(intent)*/
             }
             changePinLayout.setOnClickListener {
                 TextSecurePreferences.setChangePin(this@WalletSettings,true)
@@ -136,33 +137,45 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
 
             displayBalanceAsLayout.setOnClickListener { view ->
                 synchronized(view) {
-                    view.isEnabled = false
-                    openDisplayBalanceAsDialogBox()
-                    view.postDelayed({ view.isEnabled = true }, 500L)
+                    if(status) {
+                        status = false
+                        view.isEnabled = false
+                        openDisplayBalanceAsDialogBox()
+                        view.postDelayed({ view.isEnabled = true }, 500L)
+                    }
                 }
             }
 
             feePriorityLayout.setOnClickListener { view ->
                 synchronized(view) {
-                    view.isEnabled = false
-                    openFeePriorityDialogBox()
-                    view.postDelayed({ view.isEnabled = true }, 500L)
+                    if(status) {
+                        status = false
+                        view.isEnabled = false
+                        openFeePriorityDialogBox()
+                        view.postDelayed({ view.isEnabled = true }, 500L)
+                    }
                 }
             }
 
             decimalsLayout.setOnClickListener { view ->
                 synchronized(view) {
-                    view.isEnabled = false
-                    openDecimalsDialogBox()
-                    view.postDelayed({ view.isEnabled = true }, 500L)
+                    if(status) {
+                        status = false
+                        view.isEnabled = false
+                        openDecimalsDialogBox()
+                        view.postDelayed({ view.isEnabled = true }, 500L)
+                    }
                 }
             }
 
             currencyLayout.setOnClickListener { view ->
                 synchronized(view) {
-                    view.isEnabled = false
-                    openCurrencyDialogBox()
-                    view.postDelayed({ view.isEnabled = true }, 500L)
+                    if(status) {
+                        status = false
+                        view.isEnabled = false
+                        openCurrencyDialogBox()
+                        view.postDelayed({ view.isEnabled = true }, 500L)
+                    }
                 }
             }
 
@@ -219,6 +232,7 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         val close = dialog.findViewById(R.id.closeDialogBox) as ImageView
         close.setOnClickListener {
             dialog.dismiss()
+            status = true
         }
 
         walletSubOptionsList.layoutManager = LinearLayoutManager(this)
@@ -241,6 +255,7 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         val close = dialog.findViewById(R.id.closeDialogBox) as ImageView
         close.setOnClickListener {
             dialog.dismiss()
+            status = true
         }
 
         walletSubOptionsList.layoutManager = LinearLayoutManager(this)
@@ -263,6 +278,7 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         val close = dialog.findViewById(R.id.closeDialogBox) as ImageView
         close.setOnClickListener {
             dialog.dismiss()
+            status = true
         }
 
         walletSubOptionsList.layoutManager = LinearLayoutManager(this)
@@ -322,6 +338,7 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         val close = dialog.findViewById(R.id.closeDialogBox) as ImageView
         close.setOnClickListener {
             dialog.dismiss()
+            status = true
         }
         val searchText = dialog.findViewById(R.id.searchTextEditText) as EditText
 
@@ -363,6 +380,7 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
             }
         }
         dialog.dismiss()
+        status = true
     }
 
     override fun onItemClicks(view: View?, position: Int, option: Int) {
@@ -395,6 +413,7 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
             }
         }
         dialog.dismiss()
+        status = true
     }
 
     fun filter(text: String?, arrayList: ArrayList<String>) {

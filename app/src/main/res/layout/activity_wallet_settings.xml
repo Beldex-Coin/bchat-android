@@ -108,10 +108,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:paddingTop="20dp"
-                    android:paddingStart="15dp"
-                    android:paddingEnd="15dp"
-                    android:paddingBottom="20dp">
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="20dp">
                     <TextView
                         android:id="@+id/displayBalanceAsTitle"
                         android:layout_width="0dp"
@@ -133,9 +133,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:paddingStart="15dp"
-                    android:paddingEnd="15dp"
-                    android:paddingBottom="20dp">
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="20dp">
                     <TextView
                         android:id="@+id/decimalsTitle"
                         android:layout_width="0dp"
@@ -157,10 +157,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:paddingStart="15dp"
-                    android:paddingEnd="15dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
                     android:visibility="gone"
-                    android:paddingBottom="20dp">
+                    android:layout_marginBottom="20dp">
                     <TextView
                         android:id="@+id/enableFiatCurrencyConversionTitle"
                         android:layout_width="0dp"
@@ -180,9 +180,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:paddingStart="15dp"
-                    android:paddingEnd="15dp"
-                    android:paddingBottom="20dp">
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="20dp">
                     <TextView
                         android:id="@+id/currencyTitle"
                         android:layout_width="0dp"
@@ -204,9 +204,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:paddingStart="15dp"
-                    android:paddingEnd="15dp"
-                    android:paddingBottom="20dp">
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="20dp">
                     <TextView
                         android:id="@+id/feePriorityTitle"
                         android:layout_width="0dp"
@@ -228,9 +228,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:paddingStart="15dp"
-                    android:paddingEnd="15dp"
-                    android:paddingBottom="20dp">
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="20dp">
                     <TextView
                         android:id="@+id/saveRecipeintAddressTitle"
                         android:layout_width="0dp"

@@ -760,7 +760,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (actionMode == null) { // Nothing should be selected if this is the case
             adapter.toggleSelection(message, position)
             this.actionMode =
-                requireActivity().startActionMode(actionModeCallback, ActionMode.TYPE_PRIMARY)
+                this.activity?.startActionMode(actionModeCallback, ActionMode.TYPE_PRIMARY)
         } else {
             adapter.toggleSelection(message, position)
             actionModeCallback.updateActionModeMenu(actionMode.menu)
@@ -957,7 +957,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     override fun startRecordingVoiceMessage() {
         if (Permissions.hasAll(requireActivity(), Manifest.permission.RECORD_AUDIO)) {
             showVoiceMessageUI()
-            requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            this.activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             audioRecorder.startRecording()
             stopAudioHandler.postDelayed(
                 stopVoiceMessageRecordingTask,
@@ -1174,7 +1174,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
             okButton.setOnClickListener {
                 val intent = Intent(requireActivity(), ChatSettingsActivity::class.java)
-                requireActivity().startActivity(intent)
+                this.activity?.startActivity(intent)
                 alert.dismiss()
             }
             cancelButton.setOnClickListener {
@@ -1239,7 +1239,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     override fun sendVoiceMessage() {
         hideVoiceMessageUI()
-        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        this.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         val future = audioRecorder.stopRecording()
         stopAudioHandler.removeCallbacks(stopVoiceMessageRecordingTask)
         future.addListener(object : ListenableFuture.Listener<Pair<Uri, Long>> {
@@ -1269,7 +1269,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     override fun cancelVoiceMessage() {
         hideVoiceMessageUI()
-        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        this.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         audioRecorder.stopRecording()
         stopAudioHandler.removeCallbacks(stopVoiceMessageRecordingTask)
     }
@@ -1630,7 +1630,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 ApplicationContext.getInstance(requireActivity()).expiringMessageManager
             expiringMessageManager.setExpirationTimer(message)
             MessageSender.send(message, thread.address)
-            requireActivity().invalidateOptionsMenu()
+            this.activity?.invalidateOptionsMenu()
         }
     }
 
@@ -1660,7 +1660,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         binding.searchBottomBar.visibility = View.GONE
         binding.inputBar.visibility = View.VISIBLE
         adapter.onSearchQueryUpdated(null)
-        requireActivity().invalidateOptionsMenu()
+        this.activity?.invalidateOptionsMenu()
     }
 
     fun onSearchQueryUpdated(query: String) {
@@ -1692,7 +1692,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
             //New Line v32
             setUpMessageRequestsBar()
-            requireActivity().invalidateOptionsMenu()
+            this.activity?.invalidateOptionsMenu()
             updateSubtitle()
             showOrHideInputIfNeeded()
             binding.profilePictureView.update(recipient)
@@ -1997,14 +1997,14 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     )
                 )
             } else {
-                binding.conversationSubtitleView.text = requireActivity().getString(R.string.ConversationActivity_muted_forever)
+                binding.conversationSubtitleView.text = getString(R.string.ConversationActivity_muted_forever)
             }
         } else if (recipient.isGroupRecipient) {
             val openGroup = beldexThreadDb.getOpenGroupChat(viewModel.threadId)
             if (openGroup != null) {
                 val userCount = beldexApiDb.getUserCount(openGroup.room, openGroup.server) ?: 0
                 try {
-                    binding.conversationSubtitleView.text = requireActivity().getString(R.string.ConversationActivity_member_count, userCount)
+                    binding.conversationSubtitleView.text = getString(R.string.ConversationActivity_member_count, userCount)
                 }catch(ex: IllegalStateException){
                     Timber.w(ex.message)
                 }
@@ -2132,7 +2132,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             callPermissionDialog.setView(callPermissionDialogView)
             callPermissionDialogView.findViewById<TextView>(R.id.settingsDialogBoxButton).setOnClickListener{
                 val intent = Intent(requireActivity(), PrivacySettingsActivity::class.java)
-                requireActivity().startActivity(intent)
+                this.activity?.startActivity(intent)
                 callPermissionDialog.dismiss()
             }
             callPermissionDialogView.findViewById<TextView>(R.id.cancelDialogBoxButton).setOnClickListener{

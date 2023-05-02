@@ -22,6 +22,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.FitCenter;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.thoughtcrimes.securesms.components.GlideBitmapListeningTarget;
 import com.thoughtcrimes.securesms.components.GlideDrawableListeningTarget;
 import com.thoughtcrimes.securesms.components.TransferControlView;
@@ -55,7 +56,7 @@ public class ThumbnailView extends FrameLayout {
   private static final int    MIN_HEIGHT = 2;
   private static final int    MAX_HEIGHT = 3;
 
-  private ImageView       image;
+  private ShapeableImageView image;
   private View            playOverlay;
   private ProgressBar loadIndicator;
   private OnClickListener parentClickListener;

@@ -23,7 +23,6 @@ class LoadingActivity : AppCompatActivity() {
     }
 
     private fun checkServiceRunning(){
-        Log.d("Service Running Status ", WalletService.Running.toString())
         if(!WalletService.Running){
             Handler(Looper.getMainLooper()).postDelayed({
                 val walletName = TextSecurePreferences.getWalletName(this)

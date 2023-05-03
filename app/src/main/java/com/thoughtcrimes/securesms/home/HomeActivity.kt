@@ -135,8 +135,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         var REQUEST_PW = "pw"
         var REQUEST_FINGERPRINT_USED = "fingerprint"
         var REQUEST_STREETMODE = "streetmode"
-        //val reportIssueBChatID = "bdb890a974a25ef50c64cc4e3270c4c49c7096c433b8eecaf011c1ad000e426813" //Mainnet
-        val reportIssueBChatID = "bd21c8c3179975fa082f221323ae47d44bf38b8f6e39f530c2d07ce7ad4892682d" //Testnet
+        val reportIssueBChatID = "bdb890a974a25ef50c64cc4e3270c4c49c7096c433b8eecaf011c1ad000e426813" //Mainnet
+        //val reportIssueBChatID = "bd21c8c3179975fa082f221323ae47d44bf38b8f6e39f530c2d07ce7ad4892682d" //Testnet
     }
 
     //Wallet
@@ -1857,8 +1857,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 // The height entered by user
                 getWallet()!!.restoreHeight = restoreHeight
                 getWallet()!!.rescanBlockchainAsync()
+                Log.d("Beldex","Restore Height 2 ${getWallet()!!.restoreHeight}")
             }
-            android.util.Log.d("Beldex","Restore Height 2 ${getWallet()!!.restoreHeight}")
             synced = false
             if(currentWallet is WalletFragment){
                 currentWallet.unsync()

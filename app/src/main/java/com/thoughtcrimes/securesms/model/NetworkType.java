@@ -18,7 +18,7 @@ public enum NetworkType {
     }
 
     public int getValue() {
-        return 1;
+        return value;
     }//value
 
     private int value;

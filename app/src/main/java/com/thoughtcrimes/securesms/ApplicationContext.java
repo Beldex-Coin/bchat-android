@@ -506,7 +506,7 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
     // endregion
 
     static public NetworkType getNetworkType() {
-        switch ("devnet") {
+        switch ("mainnet") {
             case "mainnet":
                 return NetworkType.NetworkType_Mainnet;
             case "stagenet":

@@ -339,8 +339,12 @@ public class WalletService extends Service {
                                 showProgress(10);
                                 Wallet.Status walletStatus = start(walletId, walletPw);
                                 if (observer != null) {
-                                    Log.d("Beldex","Value of observer if " + observer);
-                                    observer.onWalletStarted(walletStatus);
+                                    try {
+                                        Log.d("Beldex", "Value of observer if " + observer);
+                                        observer.onWalletStarted(walletStatus);
+                                    }catch (NullPointerException ex){
+                                        Log.d("Exception", ex.toString());
+                                    }
                                 }
                                 else {
                                     Log.d("Beldex","Value of observer else ");

@@ -605,17 +605,24 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun showBlockProgressBar(thread: Recipient?) {
-        if (thread != null) {
-            if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && TextSecurePreferences.isPayAsYouChat(requireActivity()) && thread.isApproved && HomeActivity.reportIssueBChatID!=thread.address.toString() && !thread.isLocalNumber) {
-                binding.blockProgressBar.visibility = View.VISIBLE
-                binding.syncStatusLayout.visibility = View.VISIBLE
-                blockProgressBarVisible = true
-            } else{
-                binding.blockProgressBar.visibility = View.GONE
-                binding.syncStatusLayout.visibility = View.GONE
-                binding.inChatWalletDetails.visibility = View.GONE
-                blockProgressBarVisible = false
+        try {
+            if (thread != null) {
+                if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && TextSecurePreferences.isPayAsYouChat(
+                        requireActivity()
+                    ) && thread.isApproved && HomeActivity.reportIssueBChatID != thread.address.toString() && !thread.isLocalNumber
+                ) {
+                    binding.blockProgressBar.visibility = View.VISIBLE
+                    binding.syncStatusLayout.visibility = View.VISIBLE
+                    blockProgressBarVisible = true
+                } else {
+                    binding.blockProgressBar.visibility = View.GONE
+                    binding.syncStatusLayout.visibility = View.GONE
+                    binding.inChatWalletDetails.visibility = View.GONE
+                    blockProgressBarVisible = false
+                }
             }
+        }catch(ex:IllegalStateException){
+            Log.d("Exception",ex.toString())
         }
     }
 
@@ -3120,12 +3127,16 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         /*if(text==getString(R.string.reconnecting) || text==getString(R.string.status_wallet_connecting)){
            binding.syncStatusIcon.visibility=View.GONE
         }*/
-        if(text==getString(R.string.reconnecting) || text == getString(R.string.status_wallet_loading) || text == getString(R.string.status_wallet_connecting)){
-            binding.syncStatus.setTextColor(ContextCompat.getColor(requireActivity().applicationContext, R.color.green_color))
-            binding.blockProgressBar.indeterminateDrawable.setColorFilter(ContextCompat.getColor(requireActivity().applicationContext,R.color.green_color),PorterDuff.Mode.SRC_IN)
+        try {
+            if (text == getString(R.string.reconnecting) || text == getString(R.string.status_wallet_loading) || text == getString(R.string.status_wallet_connecting)) {
+                binding.syncStatus.setTextColor(ContextCompat.getColor(requireActivity().applicationContext, R.color.green_color))
+                binding.blockProgressBar.indeterminateDrawable.setColorFilter(ContextCompat.getColor(requireActivity().applicationContext, R.color.green_color), PorterDuff.Mode.SRC_IN)
+            }
+            syncText = text
+            binding.syncStatus.text = text
+        }catch(ex:IllegalStateException){
+            Log.d("Exception",ex.toString())
         }
-        syncText = text
-        binding.syncStatus.text = text
     }
 
     fun setProgress(n: Int) {

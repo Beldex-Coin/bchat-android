@@ -142,7 +142,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
 
     @SuppressLint("ResourceType")
     fun onSynced() {
-        if (!activityCallback?.isWatchOnly!!) {
+        if (!activityCallback?.isWatchOnly!! && walletSynchronized) {
             binding.sendCardViewButton.isEnabled = true
             binding.sendCardViewButton.setBackgroundResource(R.drawable.send_card_enabled_background)
             binding.sendCardViewButtonText.setTextColor(ContextCompat.getColor(requireActivity(),R.color.white))
@@ -562,11 +562,23 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
                 })
         )*/
 
-        binding.sendCardViewButton.setOnClickListener{ v: View? ->
-            activityCallback!!.onSendRequest(v)
+        binding.sendCardViewButton.setOnClickListener { v: View? ->
+            if (v != null) {
+                synchronized(v) {
+                    v.isEnabled = false
+                    activityCallback!!.onSendRequest(v)
+                    v.postDelayed({ v.isEnabled = true }, 500L)
+                }
+            }
         }
-        binding.receiveCardViewButton.setOnClickListener{ v: View? ->
-            activityCallback!!.onWalletReceive(v)
+        binding.receiveCardViewButton.setOnClickListener { v: View? ->
+            if (v != null) {
+                synchronized(v) {
+                    v.isEnabled = false
+                    activityCallback!!.onWalletReceive(v)
+                    v.postDelayed({ v.isEnabled = true }, 500L)
+                }
+            }
         }
 
         if (activityCallback!!.isSynced) {
@@ -1104,6 +1116,14 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
                 else -> {
                     binding.tvBalance.text = balance
                 }
+            }
+            //SteveJosephh21
+            if (!activityCallback?.isWatchOnly!!) {
+                binding.sendCardViewButton.isEnabled = true
+                binding.sendCardViewButton.setBackgroundResource(R.drawable.send_card_enabled_background)
+                binding.sendCardViewButtonText.setTextColor(ContextCompat.getColor(requireActivity(),R.color.white))
+                binding.scanQrCodeImg.isEnabled = true
+                binding.scanQrCodeImg.setImageResource(R.drawable.ic_scan_qr)
             }
         }
         //Update Fiat Currency

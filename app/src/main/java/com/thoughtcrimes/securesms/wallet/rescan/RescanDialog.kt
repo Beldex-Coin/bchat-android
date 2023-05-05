@@ -1,6 +1,8 @@
 package com.thoughtcrimes.securesms.wallet.rescan
 
 import android.app.DatePickerDialog
+import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
@@ -10,6 +12,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import android.widget.Toolbar
 import androidx.fragment.app.DialogFragment
@@ -245,6 +248,13 @@ class RescanDialog(val context: HomeActivity, private val daemonBlockChainHeight
         Log.d("Beldex","Restore Height --> $height")
 
         return height
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        val imm: InputMethodManager = binding.restoreSeedWalletRestoreHeight.context
+            .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        if (imm.isActive) imm.hideSoftInputFromWindow(binding.restoreSeedWalletRestoreHeight.windowToken, 0)
+        super.onDismiss(dialog)
     }
 
 }

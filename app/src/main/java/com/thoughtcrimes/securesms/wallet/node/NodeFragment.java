@@ -73,7 +73,7 @@ public class NodeFragment extends Fragment
 
     private Listener activityCallback;
 
-    private ProgressDialog progressBar;
+    ProgressDialog progressBar;
 
     Button testButton;
     Button addButton;
@@ -645,7 +645,7 @@ public class NodeFragment extends Fragment
                         }
                     });
                     testButton = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_NEUTRAL);
-                    testButton.setEnabled(false);
+                    testButton.setEnabled(!etNodeHost.getEditText().getText().toString().isEmpty());
                     testButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -726,7 +726,9 @@ public class NodeFragment extends Fragment
                 if (editDialog != null) {
                     showTestResult();
                     testButton.setEnabled(true);
-                    progressBar.dismiss();
+                    if(progressBar !=null) {
+                        progressBar.dismiss();
+                    }
                 }
                 if (shutdown) {
                     if (nodeBackup == null) {

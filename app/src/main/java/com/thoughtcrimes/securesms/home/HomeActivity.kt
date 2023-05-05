@@ -172,7 +172,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
 
         if(intent.getBooleanExtra(SHORTCUT_LAUNCHER,false)){
-            //Shortcut launcher
+           //Shortcut launcher
+            intent.removeExtra(SHORTCUT_LAUNCHER)
             val extras = Bundle()
             extras.putParcelable(ConversationFragmentV2.ADDRESS,intent.getParcelableExtra(ConversationFragmentV2.ADDRESS))
             extras.putLong(ConversationFragmentV2.THREAD_ID, intent.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))

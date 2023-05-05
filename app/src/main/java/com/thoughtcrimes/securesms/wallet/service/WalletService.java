@@ -645,9 +645,13 @@ public class WalletService extends Service {
         setObserver(null); // in case it was not reset already
         if (listener != null) {
             listener.stop();
-            Wallet myWallet = getWallet();
-            Timber.d("stop() closing");
-            myWallet.close();
+            try {
+                Wallet myWallet = getWallet();
+                Timber.d("stop() closing");
+                myWallet.close();
+            } catch (Exception e) {
+                Log.d("WalletService", e.toString());
+            }
             Timber.d("stop() closed");
             listener = null;
         }

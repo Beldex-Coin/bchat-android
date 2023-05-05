@@ -172,7 +172,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
 
         if(intent.getBooleanExtra(SHORTCUT_LAUNCHER,false)){
-            //Shortcut launcher
+           //Shortcut launcher
+            intent.removeExtra(SHORTCUT_LAUNCHER)
             val extras = Bundle()
             extras.putParcelable(ConversationFragmentV2.ADDRESS,intent.getParcelableExtra(ConversationFragmentV2.ADDRESS))
             extras.putLong(ConversationFragmentV2.THREAD_ID, intent.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
@@ -1400,10 +1401,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             runOnUiThread {
                 //dismissProgressDialog()
                 val status = pendingTransaction.status
-                Log.d("onTransactionCreated:","$status")
-                Log.d("transaction status 1 i %s", status.toString())
                 if (status !== PendingTransaction.Status.Status_Ok) {
-                    Log.d("onTransactionCreated not Status_Ok","-")
                     val errorText = pendingTransaction.errorString
                     getWallet()!!.disposePendingTransaction()
                     if(currentFragment is ConversationFragmentV2){
@@ -1412,9 +1410,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                         currentFragment.onCreateTransactionFailed(errorText)
                     }
                 } else {
-                    Log.d("transaction status 1 ii %s", status.toString())
-                    Log.d("onTransactionCreated Status_Ok","-")
-                    if(currentFragment is ConversationFragmentV2){
+                     if(currentFragment is ConversationFragmentV2){
                         currentFragment.onTransactionCreated("txTag", pendingTransaction)
                     }else if(currentFragment is SendFragment){
                         currentFragment.onTransactionCreated("txTag", pendingTransaction)
@@ -1487,7 +1483,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }
         if (walletStatus == null || Wallet.ConnectionStatus.ConnectionStatus_Connected !== walletStatus.connectionStatus) {
             Log.d("Beldex","WalletActivity finished called")
-            finish()
+            /*finish()*/
         } else {
             Log.d("Beldex", "Wallet start called 7 1 ")
             haveWallet = true
@@ -1565,25 +1561,15 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         get() = streetMode > 0
 
     override fun onPrepareSend(tag: String?, txData: TxData?) {
-        android.util.Log.d("Beldex","pending transaction called 4")
         if (mIsBound) { // no point in talking to unbound service
-            android.util.Log.d("Beldex","pending transaction called 5")
             var intent: Intent? = null
             if(intent==null) {
-                android.util.Log.d("Beldex","pending transaction called 6")
                 intent = Intent(applicationContext, WalletService::class.java)
                 intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_TX)
                 intent.putExtra(WalletService.REQUEST_CMD_TX_DATA, txData)
                 intent.putExtra(WalletService.REQUEST_CMD_TX_TAG, tag)
-                android.util.Log.d("Beldex","pending transaction called 7")
                 startService(intent)
-                android.util.Log.d("Beldex","pending transaction called 8")
-                Timber.d("CREATE TX request sent")
             }
-            //Important
-            /*if (getWallet()!!.deviceType === Wallet.Device.Device_Ledger) showLedgerProgressDialog(
-                LedgerProgressDialog.TYPE_SEND
-            )*/
         } else {
             Timber.e("Service not bound")
         }

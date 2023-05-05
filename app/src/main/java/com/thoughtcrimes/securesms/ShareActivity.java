@@ -228,8 +228,8 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
   private void createConversation(long threadId, Address address, int distributionType, boolean mediaPreviewPage) {
     final Intent intent = getBaseShareIntent(HomeActivity.class);
     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-    intent.putExtra(ConversationActivityV2.ADDRESS, address);
-    intent.putExtra(ConversationActivityV2.THREAD_ID, threadId);
+    intent.putExtra(ConversationFragmentV2.ADDRESS, address);
+    intent.putExtra(ConversationFragmentV2.THREAD_ID, threadId);
 
     isPassingAlongMedia = true;
     Log.d("share->address ",""+address);

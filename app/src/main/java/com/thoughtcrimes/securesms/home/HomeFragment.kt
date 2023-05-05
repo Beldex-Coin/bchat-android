@@ -190,8 +190,6 @@ class HomeFragment : Fragment(),ConversationClickListener,
         super.onDetach()
     }
 
-    //Shortcut launcher
-    var shortcut: Boolean =false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -605,8 +603,8 @@ class HomeFragment : Fragment(),ConversationClickListener,
         }
 
         //Shortcut launcher
-        if(arguments?.getBoolean(ConversationFragmentV2.SHORTCUT_LAUNCHER,false) == true && !shortcut){
-            shortcut = true
+        if(arguments?.getBoolean(ConversationFragmentV2.SHORTCUT_LAUNCHER,false) == true){
+            arguments?.remove(ConversationFragmentV2.SHORTCUT_LAUNCHER)
             activityCallback?.callConversationScreen(requireArguments().getLong(
                 ConversationFragmentV2.THREAD_ID,-1L),requireArguments().getParcelable<Address>(
                 ConversationFragmentV2.ADDRESS

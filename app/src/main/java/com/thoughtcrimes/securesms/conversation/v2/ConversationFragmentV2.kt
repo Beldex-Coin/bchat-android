@@ -2897,8 +2897,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     override fun transactionCreated(txTag: String?, pendingTransaction: PendingTransaction?) {
         // ignore txTag - the app flow ensures this is the correct tx
-        Log.d("onTransactionCreated Status_Ok", "----")
-        Log.d("Beldex","pending transaction called 1")
         hideProgress()
         if (isResume) {
             this.pendingTransaction = pendingTransaction
@@ -2915,11 +2913,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     fun onCreateTransactionFailed(errorText: String?) {
-        //Important
-        /*val confirm: SendConfirm? = getSendConfirm()
-        if (confirm != null) {
-            confirm.createTransactionFailed(errorText)
-        }*/
         createTransactionFailed(errorText)
     }
 
@@ -2965,24 +2958,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun refreshTransactionDetails() {
-        Timber.d("refreshTransactionDetails()")
-        Log.d("Beldex","refreshTransactionDetails called value of pending transaction $pendingTransaction")
         if (pendingTransaction != null) {
-            Log.d("Beldex","refreshTransactionDetails called 1")
             val txData: TxData = getTxData()
-            //Insert Recipient Address
-            if(TextSecurePreferences.getSaveRecipientAddress(requireActivity())) {
-                val insertRecipientAddress =
-                    DatabaseComponent.get(requireActivity()).bchatRecipientAddressDatabase()
-                try {
-                    insertRecipientAddress.insertRecipientAddress(
-                        pendingTransaction!!.firstTxId,
-                        txData.destinationAddress
-                    )
-                }catch(e: IndexOutOfBoundsException){
-                    e.message?.let { Log.d("ConversationFragmentV2->", it) }
-                }
-            }
             try {
                 if(pendingTransaction!!.firstTxId !=null) {
                     InChatSend(
@@ -3045,43 +3022,40 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
 
     private fun onResumeFragment(){
-        Timber.d("onResumeFragment()")
         Helper.hideKeyboard(activity)
         isResume = true
-
-        //val txData: TxData = getTxData()
-        //tvTxAddress.setText(txData.destinationAddress)
-        //val notes: UserNotes = getTxData().userNotes
-        /*if (notes != null && notes.note.isNotEmpty()) {
-            //tvTxNotes.setText(notes.note)
-            //fragmentSendConfirmNotesLinearLayout.setVisibility(View.VISIBLE)
-        } else {
-            //fragmentSendConfirmNotesLinearLayout.setVisibility(View.GONE)
-        }*/
         refreshTransactionDetails()
         if (pendingTransaction == null && !inProgress) {
-            Log.d("Beldex","pending transaction called 2")
-            /* binding.sendButton.isEnabled=false
-             binding.sendButton.isClickable=false*/
             showProgress()
-            Log.d("Beldex","value of txData $txData")
             prepareSend(txData)
         }
     }
 
     private fun prepareSend(txData: TxData?) {
-        Log.d("Beldex","pending transaction called 3")
         listenerCallback!!.onPrepareSend(null, txData)
     }
 
     fun send() {
         commitTransaction()
+        //Insert Recipient Address
+        if(TextSecurePreferences.getSaveRecipientAddress(requireActivity())) {
+            val insertRecipientAddress =
+                DatabaseComponent.get(requireActivity()).bchatRecipientAddressDatabase()
+            try {
+                if (pendingTransaction!!.firstTxId != null) {
+                    insertRecipientAddress.insertRecipientAddress(
+                        pendingTransaction!!.firstTxId,
+                        txData.destinationAddress
+                    )
+                }
+            }catch(e: IndexOutOfBoundsException){
+                e.message?.let { Log.d("ConversationFragmentV2->", it) }
+            }
+        }
         showProgress()
     }
 
     private fun commitTransaction() {
-        Timber.d("REALLY SEND")
-        //disableNavigation() // committed - disable all navigation
         listenerCallback!!.onSend(txData.userNotes)
         committedTx = pendingTx
     }
@@ -3095,10 +3069,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     //If Transaction successfully completed after call this function
     fun onTransactionSent(txId: String?) {
         hideProgress()
-        //Important
-        Timber.d("txid=%s", txId)
-        //activityCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
-        Log.d("Beldex","Transaction Completed")
         //Payment Tag
         viewModel.sentPayment(sendBDXAmount.toString(),txId,viewModel.recipient)
         processMessageRequestApproval()

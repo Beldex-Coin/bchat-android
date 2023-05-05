@@ -140,11 +140,6 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     }
 
     fun onCreateTransactionFailed(errorText: String?) {
-        //Important
-        /*val confirm: SendConfirm? = getSendConfirm()
-        if (confirm != null) {
-            confirm.createTransactionFailed(errorText)
-        }*/
         createTransactionFailed(errorText)
     }
 
@@ -181,18 +176,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
     // callbacks from send service
     fun onTransactionCreated(txTag: String?, pendingTransaction: PendingTransaction?) {
-        //Important
-       /* val confirm = getSendConfirm()
-        if (confirm != null) {
-            pendingTx = PendingTx(pendingTransaction)
-            confirm.transactionCreated(txTag, pendingTransaction)
-        } else {
-            // not in confirm fragment => dispose & move on
-            disposeTransaction()
-        }*/
-        Log.d("onTransactionCreated Status_Ok","--")
         pendingTx = PendingTx(pendingTransaction)
-        Log.d("onTransactionCreated Status_Ok","---")
         transactionCreated(txTag, pendingTransaction)
     }
 
@@ -204,21 +188,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     //If Transaction successfully completed after call this function
     fun onTransactionSent(txId: String?) {
         hideProgress()
-        //Important
-        Timber.d("txid=%s", txId)
-        //activityCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
-        Log.d("Beldex","Transaction Completed")
         SendSuccessDialog(this).show(requireActivity().supportFragmentManager,"")
-       /* val builder = AlertDialog.Builder(
-            requireContext(), R.style.BChatAlertDialog
-        )
-        builder.setTitle(requireContext().getString(R.string.transaction_completed))
-        builder.setPositiveButton(android.R.string.ok) { dialog: DialogInterface?, _: Int ->
-            sendButtonEnabled()
-            dialog!!.dismiss()
-        }
-        builder.setNegativeButton(android.R.string.cancel, null)
-        builder.show()*/
     }
 
     var committedTx: PendingTx? = null
@@ -227,9 +197,6 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     fun onSendTransactionFailed(error: String?) {
         Timber.d("error=%s", error)
         committedTx = null
-        /*val confirm = getSendConfirm()
-        confirm?.sendFailed(getString(R.string.status_transaction_failed, error))
-        enableNavigation()*/
         sendFailed(getString(R.string.status_transaction_failed, error))
     }
 
@@ -264,8 +231,6 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
     private val resultLaunchers = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            /* // There are no request codes
-             val data: Intent? = result.data*/
             onResumeFragment()
         }
     }
@@ -864,19 +829,8 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     }
 
     private fun onResumeFragment(){
-        Timber.d("onResumeFragment()")
         Helper.hideKeyboard(activity)
         isResume = true
-
-        //val txData: TxData = getTxData()
-        //tvTxAddress.setText(txData.destinationAddress)
-        //val notes: UserNotes = getTxData().userNotes
-        /*if (notes != null && notes.note.isNotEmpty()) {
-            //tvTxNotes.setText(notes.note)
-            //fragmentSendConfirmNotesLinearLayout.setVisibility(View.VISIBLE)
-        } else {
-            //fragmentSendConfirmNotesLinearLayout.setVisibility(View.GONE)
-        }*/
         refreshTransactionDetails()
         if (pendingTransaction == null && !inProgress) {
             binding.sendButton.isEnabled=false
@@ -1066,7 +1020,6 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
     override fun transactionCreated(txTag: String?, pendingTransaction: PendingTransaction?) {
         // ignore txTag - the app flow ensures this is the correct tx
-        Log.d("onTransactionCreated Status_Ok","----")
         hideProgress()
         if (isResume) {
             this.pendingTransaction = pendingTransaction
@@ -1082,19 +1035,6 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         Timber.d("refreshTransactionDetails()")
         if (pendingTransaction != null) {
             val txData: TxData = getTxData()
-            //Insert Recipient Address
-            if(TextSecurePreferences.getSaveRecipientAddress(requireActivity())) {
-                val insertRecipientAddress =
-                    DatabaseComponent.get(requireActivity()).bchatRecipientAddressDatabase()
-                try {
-                    insertRecipientAddress.insertRecipientAddress(
-                        pendingTransaction!!.firstTxId,
-                        txData.destinationAddress
-                    )
-                }catch(e: IndexOutOfBoundsException){
-                    e.message?.let { Log.d("SendFragment->", it) }
-                }
-            }
             try {
                 if(pendingTransaction!!.firstTxId !=null) {
                     SendConfirmDialog(pendingTransaction!!,txData, this).show(requireActivity().supportFragmentManager,"")
@@ -1118,6 +1058,20 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
     fun send() {
         commitTransaction()
+        //Insert Recipient Address
+        if(TextSecurePreferences.getSaveRecipientAddress(requireActivity())) {
+            val insertRecipientAddress =
+                DatabaseComponent.get(requireActivity()).bchatRecipientAddressDatabase()
+            try {
+                if(pendingTransaction!!.firstTxId != null)
+                insertRecipientAddress.insertRecipientAddress(
+                    pendingTransaction!!.firstTxId,
+                    txData.destinationAddress
+                )
+            }catch(e: IndexOutOfBoundsException){
+                e.message?.let { Log.d("SendFragment->", it) }
+            }
+        }
         showProgress()
     }
 
@@ -1128,7 +1082,6 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
     private fun commitTransaction() {
         Timber.d("REALLY SEND")
-        //disableNavigation() // committed - disable all navigation
         activityCallback!!.onSend(txData.userNotes)
         committedTx = pendingTx
     }

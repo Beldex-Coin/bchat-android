@@ -43,7 +43,6 @@ import com.beldex.libsignal.utilities.Log;
 import com.thoughtcrimes.securesms.components.SearchToolbar;
 import com.thoughtcrimes.securesms.contacts.ContactSelectionListFragment;
 import com.thoughtcrimes.securesms.contacts.ContactSelectionListLoader.DisplayMode;
-import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2;
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2;
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent;
 import com.thoughtcrimes.securesms.home.HomeActivity;

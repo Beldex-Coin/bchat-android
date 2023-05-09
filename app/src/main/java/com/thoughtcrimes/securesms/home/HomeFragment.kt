@@ -93,12 +93,6 @@ class HomeFragment : Fragment(),ConversationClickListener,
     private var viewModel : CallViewModel? =null // by viewModels<CallViewModel>()
     private val CALLDURATIONFORMAT = "HH:mm:ss"
 
-    private var syncText: String? = null
-    private var syncProgress = -1
-    private var firstBlock: Long = 0
-    private var balance: Long = 0
-    private val formatter = NumberFormat.getInstance()
-
     private val publicKey: String
         get() = TextSecurePreferences.getLocalNumber(requireActivity().applicationContext)!!
 
@@ -210,7 +204,6 @@ class HomeFragment : Fragment(),ConversationClickListener,
 
         //New Line
         val notification = TextSecurePreferences.isNotificationsEnabled(requireActivity().applicationContext)
-        Log.d("NotificationLog", notification.toString())
         viewModel = ViewModelProvider(requireActivity()).get(CallViewModel::class.java)
 
         // Set up Glide
@@ -235,19 +228,13 @@ class HomeFragment : Fragment(),ConversationClickListener,
                     1 -> {
                         // # My Wallet Activity
                         if(CheckOnline.isOnline(requireActivity().applicationContext)) {
-                            Log.d("Beldex","isOnline value ${CheckOnline.isOnline(requireActivity().applicationContext)}")
                             activityCallback?.openMyWallet()
                         }
                         else {
-                            Log.d("Beldex","isOnline value ${CheckOnline.isOnline(requireActivity().applicationContext)}")
                             Toast.makeText(requireActivity().applicationContext,getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
                         }
                     }
                     2 -> {
-                        //New Line
-                        val notification =
-                            TextSecurePreferences.isNotificationsEnabled(requireActivity().applicationContext)
-                        Log.d("NotificationLog1", notification.toString())
                         // # Notification Activity
                         activityCallback?.showNotificationSettings()
                     }
@@ -267,10 +254,6 @@ class HomeFragment : Fragment(),ConversationClickListener,
                         // # Recovery Seed Activity
                         activityCallback?.showSeed()
                     }
-                    /* 6 -> {
-                         // # Recovery Key Activity
-                         showKeys()
-                     }*/
                     7 -> {
                         // # Support
                         activityCallback?.sendMessageToSupport()
@@ -302,7 +285,6 @@ class HomeFragment : Fragment(),ConversationClickListener,
         }
         binding.drawerCloseIcon.setOnClickListener { binding.drawerLayout.closeDrawer(GravityCompat.END) }
         val activeUiMode = UiModeUtilities.getUserSelectedUiMode(requireActivity())
-        Log.d("beldex", "activeUiMode $activeUiMode")
         binding.drawerAppearanceToggleButton.isChecked = activeUiMode == UiMode.NIGHT
 
         binding.drawerAppearanceToggleButton.setOnClickListener{
@@ -329,20 +311,6 @@ class HomeFragment : Fragment(),ConversationClickListener,
         }
         binding.bchatToolbar.disableClipping()
 
-        //Comment-->
-        /*// Set up seed reminder view
-        val hasViewedSeed = TextSecurePreferences.getHasViewedSeed(this)
-        if (!hasViewedSeed) {
-            binding.seedReminderView.isVisible = true
-            binding.seedReminderView.title =
-                SpannableString("You're almost finished! 80%") // Intentionally not yet translated
-            binding.seedReminderView.subtitle =
-                resources.getString(R.string.view_seed_reminder_subtitle_1)
-            binding.seedReminderView.setProgress(80, false)
-            binding.seedReminderView.delegate = this@HomeActivity
-        } else {
-            binding.seedReminderView.isVisible = false
-        }*/
         setupMessageRequestsBanner()
         setupHeaderImage()
         // Set up recycler view
@@ -404,9 +372,6 @@ class HomeFragment : Fragment(),ConversationClickListener,
             .setMessage("Once they are hidden, you can access them from Settings > Message Requests")
             .setPositiveButton(R.string.yes) { _, _ ->
                 (activity as HomeActivity).textSecurePreferences.setHasHiddenMessageRequests()
-                /*//New Line
-                textSecurePreferences.setHasShowMessageRequests(false)*/
-
                 setupMessageRequestsBanner()
                 LoaderManager.getInstance(this).restartLoader(0, null, this)
             }
@@ -415,7 +380,6 @@ class HomeFragment : Fragment(),ConversationClickListener,
             }.show()
 
         //SteveJosephh21
-
         val message: TextView = dialog.findViewById(android.R.id.message)
         val messageFace: Typeface = Typeface.createFromAsset(requireActivity().assets, "fonts/open_sans_medium.ttf")
         message.typeface = messageFace
@@ -469,7 +433,6 @@ class HomeFragment : Fragment(),ConversationClickListener,
         val isDayUiMode = UiModeUtilities.isDayUiMode(requireActivity())
         val headerTint = if (isDayUiMode) R.color.black else R.color.white
         binding.bchatHeaderImage.setTextColor(getColor(requireActivity().applicationContext,headerTint))
-        //binding.bchatHeaderImage.setColorFilter(getColor(headerTint))
     }
 
     override fun onInputFocusChanged(hasFocus: Boolean) {
@@ -505,47 +468,10 @@ class HomeFragment : Fragment(),ConversationClickListener,
                 it
             )
         }
-        //Comment-->
-        /*binding.seedReminderView.isVisible =
-            !TextSecurePreferences.getHasViewedSeed(this) && !isShown*/
-
         binding.gradientView.isVisible = !isShown
         binding.globalSearchRecycler.isVisible = isShown
         binding.newConversationButtonSet.isVisible = !isShown
     }
-
-    /*//New Line
-    private fun setupMessageRequestsBanner() {
-        val messageRequestCount = threadDb.unapprovedConversationCount
-        // Set up message requests
-        if (messageRequestCount > 0 && !textSecurePreferences.hasHiddenMessageRequests()) {
-            //New Line
-            textSecurePreferences.setHasShowMessageRequests(true)
-        }
-
-        //New Line
-        if(textSecurePreferences.hasShowMessageRequests()) {
-            with(ViewMessageRequestBannerBinding.inflate(layoutInflater)) {
-                unreadCountTextView.text = messageRequestCount.toString()
-                if(messageRequestCount>0) {
-                    timestampTextView.text = DateUtils.getDisplayFormattedTimeSpanString(
-                        this@HomeActivity,
-                        Locale.getDefault(),
-                        threadDb.latestUnapprovedConversationTimestamp
-                    )
-                }
-                root.setOnClickListener { showMessageRequests() }
-                expandMessageRequest.setOnClickListener{ showMessageRequests() }
-                root.setOnLongClickListener { hideMessageRequests(); true }
-                root.layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
-                homeAdapter.headerView = root
-                homeAdapter.notifyItemChanged(0)
-            }
-        } else {
-            homeAdapter.headerView = null
-        }
-    }*/
-
 
     override fun onCreateLoader(id: Int, bundle: Bundle?): Loader<Cursor> {
         return HomeLoader(requireActivity().applicationContext)
@@ -559,13 +485,6 @@ class HomeFragment : Fragment(),ConversationClickListener,
 
     override fun onLoaderReset(cursor: Loader<Cursor>) {
         homeAdapter.changeCursor(null)
-    }
-
-    private fun checkInternetConnectivity() {
-        if (OnionRequestAPI.paths.isEmpty()) {
-            Toast.makeText(requireActivity().applicationContext, getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT)
-                .show();
-        }
     }
 
     override fun onResume() {
@@ -582,13 +501,6 @@ class HomeFragment : Fragment(),ConversationClickListener,
         //New Line
         binding.drawerProfileIcon.recycle()
         binding.drawerProfileIcon.update()
-        //checkInternetConnectivity()
-
-        //Comment-->
-        /*val hasViewedSeed = TextSecurePreferences.getHasViewedSeed(this)
-        if (hasViewedSeed) {
-            binding.seedReminderView.isVisible = false
-        }*/
 
         if (TextSecurePreferences.getConfigurationMessageSynced(requireActivity().applicationContext)) {
             lifecycleScope.launch(Dispatchers.IO) {
@@ -614,12 +526,10 @@ class HomeFragment : Fragment(),ConversationClickListener,
 
     override fun onPause() {
         super.onPause()
-        Log.d("Beldex","HomeActivity() onPause called")
         ApplicationContext.getInstance(requireActivity().applicationContext).messageNotifier.setHomeScreenVisible(false)
     }
 
     override fun onDestroy() {
-        Log.d("Beldex","onDestroy in Home")
         val broadcastReceiver = this.broadcastReceiver
         if (broadcastReceiver != null) {
             LocalBroadcastManager.getInstance(requireActivity().applicationContext).unregisterReceiver(broadcastReceiver)
@@ -627,9 +537,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
         super.onDestroy()
 
     }
-    // endregion
 
-    // region Updating
     private fun updateEmptyState() {
         val threadCount = (binding.recyclerView.adapter as HomeAdapter).itemCount
         binding.emptyStateContainer.isVisible = threadCount == 0 && binding.recyclerView.isVisible
@@ -656,9 +564,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
         binding.drawerProfileIcon.recycle()
         binding.drawerProfileIcon.update()
     }
-    // endregion
 
-    // region Interaction
     fun onBackPressed() {
         if (binding.globalSearchRecycler.isVisible) {
             binding.globalSearchInputLayout.clearSearch(true)
@@ -957,20 +863,12 @@ class HomeFragment : Fragment(),ConversationClickListener,
     fun dispatchTouchEvent() {
         if (binding.newConversationButtonSet.isExpanded) {
             binding.newConversationButtonSet.collapse()
-        } else {
-            //binding.newConversationButtonSet.collapse()
         }
     }
 
     fun pingSelectedNode() {
-        Log.d("Beldex","Value of current node loadFav pinSelec")
         val PING_SELECTED = 0
         val FIND_BEST = 1
-        /*if(TextSecurePreferences.getDaemon(requireActivity())) {
-             AsyncFindBestNode(PING_SELECTED, FIND_BEST).execute<Int>(FIND_BEST)
-         }else{
-             AsyncFindBestNode(PING_SELECTED, FIND_BEST).execute<Int>(PING_SELECTED)
-         }*/
         AsyncFindBestNode(PING_SELECTED, FIND_BEST).execute<Int>(PING_SELECTED)
     }
 
@@ -978,34 +876,21 @@ class HomeFragment : Fragment(),ConversationClickListener,
         AsyncTaskCoroutine<Int?, NodeInfo?>() {
         override fun onPreExecute() {
             super.onPreExecute()
-            //pbNode.setVisibility(View.VISIBLE)
-            //showProgressDialogWithTitle("Connecting to Remote Node");
-            //llNode.setVisibility(View.INVISIBLE)
         }
 
         override fun doInBackground(vararg params: Int?): NodeInfo? {
-            Log.d("Beldex","called AsyncFindBestNode")
-
             val favourites: Set<NodeInfo?> = activityCallback!!.getOrPopulateFavourites()
             var selectedNode: NodeInfo?
-            Log.d("Beldex","selected node 1 $favourites")
             if (params[0] == FIND_BEST) {
-                Log.d("Beldex","called AsyncFindBestNode 1")
                 selectedNode = autoselect(favourites)
-                Log.d("Beldex","selected node 2 $selectedNode")
             } else if (params[0] == PING_SELECTED) {
-                Log.d("Beldex","called AsyncFindBestNode 2")
                 selectedNode = activityCallback!!.getNode()
-                Log.d("Beldex","selected node 3 $selectedNode")
-                Log.d("Beldex","called AsyncFindBestNode 2 ${selectedNode?.host}")
-
                 if (!activityCallback!!.getFavouriteNodes().contains(selectedNode))
                     selectedNode = null // it's not in the favourites (any longer)
                 if (selectedNode == null)
-                    Log.d("Beldex","selected node 4 $selectedNode")
+                    Log.d("Beldex","selected node $selectedNode")
                 for (node in favourites) {
                     if (node!!.isSelected) {
-                        Log.d("Beldex","selected node 5 $node")
                         selectedNode = node
                         break
                     }
@@ -1013,19 +898,16 @@ class HomeFragment : Fragment(),ConversationClickListener,
                 if (selectedNode == null) { // autoselect
                     selectedNode = autoselect(favourites)
                 } else {
-                    //Steve Josephh21 //BCA-402
+                    //Steve Josephh21
                     if(selectedNode!=null) {
-                        Log.d("Beldex", "selected node 6 $selectedNode")
                         selectedNode!!.testRpcService()
                     }
                 }
             } else throw IllegalStateException()
             return if (selectedNode != null && selectedNode.isValid) {
-                Log.d("Testing-->12", "true")
                 activityCallback!!.setNode(selectedNode)
                 selectedNode
             } else {
-                Log.d("Testing-->13", "true")
                 activityCallback!!.setNode(null)
                 null
             }
@@ -1046,5 +928,5 @@ class HomeFragment : Fragment(),ConversationClickListener,
         return nodeList[rnd]
     }
 
-
 }
+//endregion

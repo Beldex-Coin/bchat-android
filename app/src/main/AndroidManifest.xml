@@ -127,11 +127,6 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thoughtcrimes.securesms.wallet.WalletActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
-        <activity
             android:name="com.thoughtcrimes.securesms.contacts.BlockedContactActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
@@ -440,18 +435,6 @@
             <meta-data
                 android:name="android.service.chooser.chooser_target_service"
                 android:value=".service.DirectShareService" />
-        </activity>
-        <activity
-            android:name="com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2"
-            android:exported="false"
-            android:parentActivityName="com.thoughtcrimes.securesms.home.HomeActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
-            android:windowSoftInputMode="adjustResize">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.thoughtcrimes.securesms.home.HomeActivity"
-                android:windowSoftInputMode="adjustResize" />
         </activity>
         <activity
             android:name="com.thoughtcrimes.securesms.conversation.v2.MessageDetailActivity"

@@ -14,13 +14,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import android.widget.Toolbar
 import androidx.fragment.app.DialogFragment
 import com.thoughtcrimes.securesms.home.HomeActivity
-import com.thoughtcrimes.securesms.preferences.ClearAllDataDialog
-import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.wallet.CheckOnline
-import com.thoughtcrimes.securesms.wallet.WalletActivity
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.RescanDialogBinding
 import timber.log.Timber

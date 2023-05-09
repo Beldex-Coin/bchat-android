@@ -3,11 +3,8 @@ package com.thoughtcrimes.securesms.wallet.settings
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
@@ -121,8 +118,6 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
                 TextSecurePreferences.setSendAddressDisable(this@WalletSettings,true)
                 val intent = Intent(this@WalletSettings, AddressBookActivity::class.java)
                 push(intent)
-                /* intent.putExtra(AppLock.EXTRA_TYPE, AppLock.ENABLE_PINLOCK)
-                 push(intent)*/
             }
             changePinLayout.setOnClickListener {
                 TextSecurePreferences.setChangePin(this@WalletSettings,true)
@@ -189,23 +184,11 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
                 }
             }
             saveRecipientAddressSwitchCompat.isChecked = TextSecurePreferences.getSaveRecipientAddress(this@WalletSettings)
-
-            /*enableFiatCurrencyConversionSwitchCompat.setOnClickListener {
-                if(TextSecurePreferences.getFiatCurrencyCheckedStatus(this@WalletSettings)){
-                    TextSecurePreferences.setFiatCurrencyCheckedStatus(this@WalletSettings,false)
-                    enableFiatCurrencyConversionSwitchCompat.isChecked = TextSecurePreferences.getFiatCurrencyCheckedStatus(this@WalletSettings)
-                }else{
-                    TextSecurePreferences.setFiatCurrencyCheckedStatus(this@WalletSettings,true)
-                    enableFiatCurrencyConversionSwitchCompat.isChecked = TextSecurePreferences.getFiatCurrencyCheckedStatus(this@WalletSettings)
-                }
-            }
-            enableFiatCurrencyConversionSwitchCompat.isChecked = TextSecurePreferences.getFiatCurrencyCheckedStatus(this@WalletSettings)*/
         }
     }
 
     override fun onResume() {
         super.onResume()
-        /*binding.currentNodeTextViewValue.text = getNode()?.host.toString()*/
         val parts = getNode().split(":")
         if (CheckOnline.isOnline(this)) {
             //Hales
@@ -288,43 +271,6 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         dialog.show()
     }
 
-    /*private fun openDecimalsDialogBox() {
-        dialog = Dialog(this@WalletSettings)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCancelable(false)
-        dialog.setContentView(R.layout.wallet_sub_options_search_list)
-        dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent);
-        dialog.window!!.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
-        val dialogBoxTitle = dialog.findViewById(R.id.dialogBoxTitle) as TextView
-        dialogBoxTitle.text = "Decimals"
-        val walletSubOptionsList = dialog.findViewById(R.id.walletSubOptionsListRecyclerView) as RecyclerView
-        val close = dialog.findViewById(R.id.closeDialogBox) as ImageView
-        close.setOnClickListener {
-            dialog.dismiss()
-        }
-        val searchText = dialog.findViewById(R.id.searchTextEditText) as EditText
-
-        searchText.addTextChangedListener(object : TextWatcher {
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-            }
-
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-            }
-
-            override fun afterTextChanged(s: Editable) {
-                // filter your list from your input
-                filter(s.toString(),decimalsList)
-                //you can use runnable postDelayed like 500 ms to delay search text
-            }
-        })
-
-        walletSubOptionsList.layoutManager = LinearLayoutManager(this)
-        walletSubOptionsSearchListItemAdapter = WalletSubOptionsSearchListItemAdapter(this, decimalsList,selectedDecimalIndex,2)
-        walletSubOptionsSearchListItemAdapter.setClickListener(this)
-        walletSubOptionsList.adapter = walletSubOptionsSearchListItemAdapter
-        dialog.show()
-    }*/
-
     private fun openCurrencyDialogBox() {
         dialog = Dialog(this@WalletSettings)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -384,26 +330,6 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
     }
 
     override fun onItemClicks(view: View?, position: Int, option: Int) {
-        /*if(option==2){
-            binding.decimalsDescription.text = walletSubOptionsSearchListItemAdapter.getItem(position)
-            TextSecurePreferences.setDecimals(this,walletSubOptionsSearchListItemAdapter.getItem(position))
-            for(i in 0 until decimalsList.size){
-                if(decimalsList[i]==binding.decimalsDescription.text.toString()){
-                    selectedDecimalIndex=i
-                }
-            }
-            dialog.dismiss()
-        }
-        else{
-            binding.currencyDescription.text = walletSubOptionsSearchListItemAdapter.getItem(position)
-            TextSecurePreferences.setCurrency(this,walletSubOptionsSearchListItemAdapter.getItem(position))
-            for(i in 0 until currencyList.size){
-                if(currencyList[i]==binding.currencyDescription.text.toString()){
-                    selectedCurrencyIndex=i
-                }
-            }
-            dialog.dismiss()
-        }*/
         binding.currencyDescription.text = walletSubOptionsSearchListItemAdapter.getItem(position)
         TextSecurePreferences.setCurrency(this,walletSubOptionsSearchListItemAdapter.getItem(position))
         TextSecurePreferences.changeCurrency(this,true)
@@ -429,15 +355,8 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         walletSubOptionsSearchListItemAdapter.updateList(temp)
     }
 
-    /*fun getNode(): NodeInfo? {
-        val selectedNodeId = getSelectedNodeId()
-        Log.d("WalletSettings",selectedNodeId.toString())
-        return NodeInfo.fromString(selectedNodeId)
-    }*/
-
     fun getNode(): String {
         val selectedNodeId = getSelectedNodeId()
-        Log.d("WalletSettings",selectedNodeId.toString())
         return selectedNodeId.toString()
     }
 
@@ -456,6 +375,5 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         }
         super.onBackPressed()
     }
-
-
 }
+//endregion

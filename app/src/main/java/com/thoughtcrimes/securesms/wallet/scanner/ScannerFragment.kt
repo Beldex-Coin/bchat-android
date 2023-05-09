@@ -10,11 +10,9 @@ import com.google.zxing.BarcodeFormat
 import com.google.zxing.Result
 import com.thoughtcrimes.securesms.home.HomeActivity
 import com.thoughtcrimes.securesms.wallet.OnBackPressedListener
-import com.thoughtcrimes.securesms.wallet.widget.Toolbar
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.FragmentScannerBinding
 import me.dm7.barcodescanner.zxing.ZXingScannerView
-import timber.log.Timber
 import java.lang.ClassCastException
 
 class ScannerFragment: Fragment(), ZXingScannerView.ResultHandler,OnBackPressedListener {
@@ -34,8 +32,6 @@ class ScannerFragment: Fragment(), ZXingScannerView.ResultHandler,OnBackPressedL
     ): View? {
         binding = FragmentScannerBinding.inflate(inflater,container,false)
         (activity as HomeActivity).setSupportActionBar(binding.toolbar)
-        Timber.d("onCreateView")
-
         binding.exitButton.setOnClickListener {
             onScannedListener?.walletOnBackPressed()
         }
@@ -44,7 +40,6 @@ class ScannerFragment: Fragment(), ZXingScannerView.ResultHandler,OnBackPressedL
 
     override fun onResume() {
         super.onResume()
-        Timber.d("onResume")
         binding.mScannerView.setResultHandler(this)
         binding.mScannerView.startCamera()
     }
@@ -78,11 +73,6 @@ class ScannerFragment: Fragment(), ZXingScannerView.ResultHandler,OnBackPressedL
             1000)
     }
 
-    override fun onPause() {
-        super.onPause()
-        Timber.d("onPause")
-       /* mScannerView!!.stopCamera()*/
-    }
     override fun onStop() {
         super.onStop()
         binding.mScannerView.stopCamera();
@@ -104,4 +94,5 @@ class ScannerFragment: Fragment(), ZXingScannerView.ResultHandler,OnBackPressedL
         return false
     }
 }
+//endregion
 

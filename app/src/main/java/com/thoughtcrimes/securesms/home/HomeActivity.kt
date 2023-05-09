@@ -61,7 +61,6 @@ import com.google.android.play.core.tasks.Task
 import com.thoughtcrimes.securesms.MediaOverviewActivity
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.components.ProfilePictureView
-import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.conversation.v2.ConversationViewModel
 import com.thoughtcrimes.securesms.conversation.v2.messages.VoiceMessageViewDelegate
@@ -131,10 +130,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         const val SHORTCUT_LAUNCHER = "short_cut_launcher"
 
         var REQUEST_URI = "uri"
-        var REQUEST_ID = "id"
-        var REQUEST_PW = "pw"
-        var REQUEST_FINGERPRINT_USED = "fingerprint"
-        var REQUEST_STREETMODE = "streetmode"
         val reportIssueBChatID = "bdb890a974a25ef50c64cc4e3270c4c49c7096c433b8eecaf011c1ad000e426813" //Mainnet
         //val reportIssueBChatID = "bd21c8c3179975fa082f221323ae47d44bf38b8f6e39f530c2d07ce7ad4892682d" //Testnet
     }
@@ -546,27 +541,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 setBarcodeData(null)
                 fragment!!.onBackPressed()
                 finish()
-               /* val dialog: AlertDialog.Builder =
-                    AlertDialog.Builder(this, R.style.BChatAlertDialog_Exit)
-                dialog.setTitle(getString(R.string.app_exit_alert))
-
-                dialog.setPositiveButton(R.string.exit) { _, _ ->
-                    if (CheckOnline.isOnline(this)) {
-                        onDisposeRequest()
-                    }
-                    setBarcodeData(null)
-                    fragment!!.onBackPressed()
-                    finish()
-                }
-                dialog.setNegativeButton(R.string.cancel) { _, _ ->
-                    // Do nothing
-                }
-                val alert: AlertDialog = dialog.create()
-                alert.show()
-                alert.getButton(DialogInterface.BUTTON_NEGATIVE)
-                    .setTextColor(ContextCompat.getColor(this, R.color.text))
-                alert.getButton(DialogInterface.BUTTON_POSITIVE)
-                    .setTextColor(ContextCompat.getColor(this, R.color.alert_ok))*/
             }
         }
     }
@@ -733,14 +707,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     override fun sendMessageToSupport() {
-        /*val recipient = Recipient.from(this, Address.fromSerialized(reportIssueBChatID), false)
-        val intent = Intent(this, ConversationActivityV2::class.java)
-        intent.putExtra(ConversationActivityV2.ADDRESS, recipient.address)
-        intent.setDataAndType(getIntent().data, getIntent().type)
-        val existingThread =
-            DatabaseComponent.get(this).threadDatabase().getThreadIdIfExistsFor(recipient)
-        intent.putExtra(ConversationActivityV2.THREAD_ID, existingThread)
-        startActivity(intent)*/
         val recipient = Recipient.from(this, Address.fromSerialized(reportIssueBChatID), false)
         val extras = Bundle()
         extras.putParcelable(ConversationFragmentV2.ADDRESS, recipient.address)
@@ -814,10 +780,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     private fun getCurrentFragment(): Fragment? {
         return supportFragmentManager.findFragmentById(R.id.activity_home_frame_layout_container)
-    }
-
-    private fun getHomeFragment(): HomeFragment? {
-        return supportFragmentManager.findFragmentById(R.id.activity_home_frame_layout_container) as HomeFragment?
     }
 
     override fun passGlobalSearchAdapterModelMessageValue(
@@ -894,18 +856,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             // cast its IBinder to a concrete class and directly access it.
             mBoundService = (service as WalletService.WalletServiceBinder).service
             mBoundService!!.setObserver(this@HomeActivity)
-            /*val extras = intent.extras
-            if (extras != null) {
-                val walletId = extras.getString(WalletActivity.REQUEST_ID)
-                if (walletId != null) {
-                    //setTitle(walletId, getString(R.string.status_wallet_connecting));
-                    //Important
-                    //setTitle(getString(R.string.status_wallet_connecting), "")
-                    *//* setTitle(getString(R.string.my_wallet))*//*
-                }
-            }*/
             updateProgress()
-            Timber.d("CONNECTED")
+            Log.d("CONNECTED","")
         }
 
         override fun onServiceDisconnected(className: ComponentName) {
@@ -914,10 +866,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             // Because it is running in our same process, we should never
             // see this happen.
             mBoundService = null
-            //setTitle(getString(R.string.wallet_activity_name), getString(R.string.status_wallet_disconnected));
-            //Important
-            //setTitle(getString(R.string.status_wallet_disconnected), "")
-            /*setTitle(getString(R.string.my_wallet))*/
             Log.d("DISCONNECTED", "")
         }
     }
@@ -927,7 +875,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         // class name because we want a specific service implementation that
         // we know will be running in our own process (and thus won't be
         // supporting component replacement by other applications).
-        Log.d("Beldex","isOnline 7 ${CheckOnline.isOnline(this)}, $walletName , $walletPassword")
+        Log.d("Beldex","value of walletName & walletPassword $walletName , $walletPassword")
         if (CheckOnline.isOnline(this)) {
             var intent: Intent? = null
             if(intent==null) {
@@ -944,18 +892,11 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     private fun updateProgress() {
-        Log.d("Beldex","mConnection called updateProgress() 1")
         if (hasBoundService()) {
-            Log.d("Beldex","mConnection called updateProgress() 2")
-            Log.d("Beldex","mConnection called updateProgress() 2 1 $mBoundService")
+            Log.d("Beldex","mConnection called updateProgress()")
             onProgress(mBoundService!!.progressText)
             onProgress(mBoundService!!.progressValue)
         }
-        //No internet
-        /* else{
-             onProgress("Failed to node")
-             onProgress(0)
-         }*/
     }
 
 //////////////////////////////////////////
@@ -968,14 +909,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     override fun forceUpdate(context: Context) {
-        Log.d("Beldex","forceUpdate()")
         try {
             if(getWallet()!=null) {
-                Log.d("Beldex","forceUpdate() if")
-                Log.d("TransactionList", "full = true -1")
                 onRefreshed(getWallet(), true)
             }else{
-                Log.d("Beldex","forceUpdate() else")
                 if(!CheckOnline.isOnline(this)) {
                     Toast.makeText(
                         context,
@@ -1012,7 +949,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     private var synced = false
-    private var streetmode = false
 
     override val isSynced: Boolean
         get() = synced
@@ -1027,7 +963,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     override fun onWalletReceive(view: View?) {
         replaceFragment(ReceiveFragment(), null, null)
-        Timber.d("ReceiveFragment placed")
     }
 
     var haveWallet = false
@@ -1069,11 +1004,11 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     override fun setFavouriteNodes(nodes: MutableCollection<NodeInfo>?) {
-        Timber.d("adding %d nodes", nodes!!.size)
         favouriteNodes.clear()
-        for (node in nodes) {
-            /*Log.d("adding %s %b", node, node.isFavourite)*/
-            if (node.isFavourite) favouriteNodes.add(node)
+        if (nodes != null) {
+            for (node in nodes) {
+                if (node.isFavourite) favouriteNodes.add(node)
+            }
         }
         saveFavourites()
     }
@@ -1086,7 +1021,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     private fun saveFavourites() {
-        Timber.d("SAVE")
         val editor = getSharedPreferences(
             NODES_PREFS_NAME,
             MODE_PRIVATE
@@ -1096,21 +1030,17 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         for (info in favouriteNodes) {
             val nodeString = info.toNodeString()
             editor.putString(i.toString(), nodeString)
-            Timber.d("saved %d:%s", i, nodeString)
             i++
         }
         editor.apply()
     }
 
     private fun addFavourite(nodeString: String): NodeInfo? {
-        Log.d("Beldex","Value of current node loadFav called AddFav 1")
         val nodeInfo = NodeInfo.fromString(nodeString)
         if (nodeInfo != null) {
-            Log.d("Beldex","Value of current node loadFav called AddFav 2")
-            nodeInfo.setFavourite(true)
+            nodeInfo.isFavourite = true
             favouriteNodes.add(nodeInfo)
         } else Timber.w("nodeString invalid: %s", nodeString)
-        Log.d("Beldex","Value of current node loadFav called AddFav 3")
         return nodeInfo
     }
 
@@ -1124,7 +1054,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     private fun saveSelectedNode() { // save only if changed
         val nodeInfo = getNode()
-        Log.d("Beldex","Value of getNode ${nodeInfo?.host}")
         val selectedNodeId = getSelectedNodeId()
         if (nodeInfo != null) {
             if (!nodeInfo.toNodeString().equals(selectedNodeId)) saveSelectedNode(nodeInfo)
@@ -1146,81 +1075,11 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         editor.apply()
     }
 
-    private fun loadFavourites() {
-        Timber.d("loadFavourites")
-        Log.d("Beldex","Value of current node loadFav called")
-        favouriteNodes.clear()
-        val selectedNodeId = getSelectedNodeId()
-        Log.d("Beldex"," Value of current node selectedNodeID $selectedNodeId")
-        val storedNodes = getSharedPreferences(NODES_PREFS_NAME, MODE_PRIVATE).all
-
-        for (nodeEntry in storedNodes.entries) {
-            Log.d("Beldex","Value of current node loadFav called 1")
-            if (nodeEntry != null) { // just in case, ignore possible future errors
-                Log.d("Beldex","Value of current node loadFav called 2")
-                val nodeId = nodeEntry.value as String
-                val addedNode: NodeInfo = addFavourite(nodeId)!!
-                if (addedNode != null) {
-                    Log.d("Beldex","Value of current node loadFav called 3 nodeId $nodeId")
-                    Log.d("Beldex","Value of current node loadFav called 3 selectedNodeId $selectedNodeId")
-                    if (nodeId == selectedNodeId) {
-                        Log.d("Beldex","Value of current node loadFav called 3.1 if")
-                        addedNode.isSelected = true
-                    }
-                }
-            }
-        }
-        if (storedNodes.isEmpty()) { // try to load legacy list & remove it (i.e. migrate the data once)
-            Log.d("Beldex","Value of current node loadFav called 4")
-            val sharedPref = getPreferences(MODE_PRIVATE)
-            when (WalletManager.getInstance().networkType) {
-                NetworkType.NetworkType_Mainnet -> {
-                    Log.d("Beldex","Value of current node loadFav called 5")
-                    loadLegacyList(
-                        sharedPref.getString(
-                            PREF_DAEMON_MAINNET,
-                            null
-                        )
-                    )
-                    sharedPref.edit().remove(PREF_DAEMON_MAINNET)
-                        .apply()
-                }
-                NetworkType.NetworkType_Stagenet -> {
-                    Log.d("Beldex","Value of current node loadFav called 6")
-                    loadLegacyList(
-                        sharedPref.getString(
-                            PREF_DAEMON_STAGENET,
-                            null
-                        )
-                    )
-                    sharedPref.edit()
-                        .remove(PREF_DAEMON_STAGENET).apply()
-                }
-                NetworkType.NetworkType_Testnet -> {
-                    Log.d("Beldex","Value of current node loadFav called 7")
-                    loadLegacyList(
-                        sharedPref.getString(
-                            PREF_DAEMON_TESTNET,
-                            null
-                        )
-                    )
-                    sharedPref.edit().remove(PREF_DAEMON_TESTNET)
-                        .apply()
-                }
-                else -> throw IllegalStateException("unsupported net " + WalletManager.getInstance().networkType)
-            }
-        }
-    }
-
     override fun getNode(): NodeInfo? {
         return if(TextSecurePreferences.getDaemon(this)){
             TextSecurePreferences.changeDaemon(this,false)
             val selectedNodeId = getSelectedNodeId()
             val nodeInfo = NodeInfo.fromString(selectedNodeId)
-            Log.d("Beldex","value of node 1 $selectedNodeId")
-            Log.d("Beldex","value of node 2 $nodeInfo")
-
-
             nodeInfo
         }else {
             node
@@ -1228,19 +1087,14 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     override fun setNode(node: NodeInfo?) {
-        Log.d("Beldex", "Value of current Setnode called in WalletActivity ${node?.host}")
         setNode(node, true)
     }
 
     private fun setNode(node: NodeInfo?, save: Boolean) {
-        Log.d("Beldex","Value of getNode in WalletActivity ${getNode()?.host}")
-        Log.d("Beldex","Value of current node in WalletActivity ${node?.host}")
-        Log.d("Beldex","Value of current node in WalletActivity 1 ${this.node?.host}")
         if (node !== this.node) {
             require(!(node != null && node.networkType !== WalletManager.getInstance().networkType)) { "network type does not match" }
             this.node = node
             for (nodeInfo in favouriteNodes) {
-                Log.d("Testing-->14 ","${node.toString()}")
                 nodeInfo.isSelected = nodeInfo === node
             }
             WalletManager.getInstance().setDaemon(node)
@@ -1248,10 +1102,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
             //SteveJosephh21
             startWalletService()
-        }//No Internet
-        /*else{
-
-        }*/
+        }
     }
 
     private fun checkServiceRunning(): Boolean {
@@ -1264,22 +1115,11 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     override fun onNodePrefs() {
-        Timber.d("node prefs")
         if (checkServiceRunning()) return
-        startNodeFragment()
     }
 
-    private fun startNodeFragment() {
-        //Important
-        //replaceFragment(NodeFragment(), null, null)
-        Timber.d("NodeFragment placed")
-    }
 
     override fun callFinishActivity() {
-        /*if(CheckOnline.isOnline(this)) {
-            onDisposeRequest()
-        }
-        onBackPressed()*/ //-
     }
 
 ///////////////////////////
@@ -1289,29 +1129,19 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     private var numAccounts = -1
 
     override fun onRefreshed(wallet: Wallet?, full: Boolean): Boolean {
-        Timber.d("onRefreshed()")
-        //runOnUiThread { if (getWallet() != null) updateAccountsBalance() }
         if (numAccounts != wallet!!.numAccounts) {
             numAccounts = wallet.numAccounts
-            //runOnUiThread { this.updateAccountsList() }
         }
         try {
-            Log.d("Beldex","mConnection onRefreshed called ")
             //WalletFragment Functionality --
             val currentFragment = getCurrentFragment()
             if (wallet.isSynchronized) {
-                Log.d("Beldex","mConnection onRefreshed called 1")
-                //releaseWakeLock(RELEASE_WAKE_LOCK_DELAY) // the idea is to stay awake until synced
                 if (!synced) { // first sync
-                    Log.d("Beldex","mConnection onRefreshed called 2")
                     onProgress(-2)//onProgress(-1)
                     saveWallet() // save on first sync
                     synced = true
                     //WalletFragment Functionality --
                     when (currentFragment) {
-                        is ConversationFragmentV2 -> {
-                            runOnUiThread(currentFragment::onSynced)
-                        }
                         is WalletFragment -> {
                             runOnUiThread(currentFragment::onSynced)
                         }
@@ -1331,9 +1161,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             }
             return true
         } catch (ex: ClassCastException) {
-            // not in wallet fragment (probably send monero)
             Timber.d(ex.localizedMessage)
-            // keep calm and carry on
         }
         return false
     }
@@ -1350,9 +1178,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 }
             }
         } catch (ex: ClassCastException) {
-            // not in wallet fragment (probably send beldex)
             Timber.d(ex.localizedMessage)
-            // keep calm and carry on
         }
     }
 
@@ -1369,9 +1195,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                     }
                 }
             } catch (ex: ClassCastException) {
-                // not in wallet fragment (probably send monero)
                 Timber.d(ex.localizedMessage)
-                // keep calm and carry on
             }
         }
     }
@@ -1399,7 +1223,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             //WalletFragment Functionality --
             val currentFragment = getCurrentFragment()
             runOnUiThread {
-                //dismissProgressDialog()
                 val status = pendingTransaction.status
                 if (status !== PendingTransaction.Status.Status_Ok) {
                     val errorText = pendingTransaction.errorString
@@ -1453,7 +1276,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     override fun onWalletStarted(walletStatus: Wallet.Status?) {
-        Log.d("Beldex", "Wallet start called 7 0 ")
         runOnUiThread {
             dismissProgressDialog()
             if (walletStatus == null) {
@@ -1470,7 +1292,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                         getString(R.string.status_wallet_connect_wrong_version),
                         Toast.LENGTH_LONG
                     ).show() }else if (!walletStatus.isOk) {
-                    Timber.d("Not Ok %s", walletStatus.toString())
                     if(walletStatus.errorString.isNotEmpty()) {
                         Toast.makeText(
                             this@HomeActivity,
@@ -1485,23 +1306,14 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             Log.d("Beldex","WalletActivity finished called")
             /*finish()*/
         } else {
-            Log.d("Beldex", "Wallet start called 7 1 ")
             haveWallet = true
             invalidateOptionsMenu()
-            Log.d("Beldex", "Wallet start called 7 2 ")
             //WalletFragment Functionality --
             val currentFragment = getCurrentFragment()
             runOnUiThread {
                 //WalletFragment Functionality --
                 when (currentFragment) {
-                    is ConversationFragmentV2 -> {
-                        Log.d("Beldex", "Wallet start called 7  $currentFragment")
-                        Log.d("Beldex", "Wallet start called 8 ")
-                        currentFragment.onLoaded()
-                    }
                     is WalletFragment -> {
-                        Log.d("Beldex", "Wallet start called 7  $currentFragment")
-                        Log.d("Beldex", "Wallet start called 8 ")
                         currentFragment.onLoaded()
                     }
                 }
@@ -1523,7 +1335,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     override fun onScanned(qrCode: String?): Boolean {
         // #gurke
         val bcData = BarcodeData.fromString(qrCode)
-        Log.d("Beldex","Value of barcode 1 $bcData")
         return if (bcData != null) {
             popFragmentStack(null)
             Timber.d("AAA")
@@ -1535,14 +1346,12 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     override fun setOnBarcodeScannedListener(onUriScannedListener: OnUriScannedListener?) {
-        Log.d("Beldex","Value of barcode 6 onUriScannedListener called")
         this.onUriScannedListener = onUriScannedListener
     }
 
     /// QR scanner callbacks
     override fun onScan() {
         if (Helper.getCameraPermission(this)) {
-            Log.d("Beldex","Called onScan")
             startWalletScanFragment()
         } else {
             Timber.i("Waiting for permissions")
@@ -1612,12 +1421,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     override fun setOnUriScannedListener(onUriScannedListener: OnUriScannedListener?) {
-        Log.d("Beldex","Value of barcode 5 onUriScannedListener called")
         this.onUriScannedListener = onUriScannedListener
     }
 
     override fun setOnUriWalletScannedListener(onUriWalletScannedListener: OnUriWalletScannedListener?) {
-        Log.d("Beldex","Value of barcode 6 onUriScannedListener called")
         this.onUriWalletScannedListener = onUriWalletScannedListener
     }
 
@@ -1630,7 +1437,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     override fun popBarcodeData(): BarcodeData? {
-        Timber.d("POPPED")
         val data = barcodeData!!
         barcodeData = null
         return data
@@ -1656,34 +1462,11 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             // acquireWakeLock()
             // we can set the streetmode height AFTER opening the wallet
             if (CheckOnline.isOnline(this)) {
-                Log.d("Beldex", "isOnline 5 if")
                 connectWalletService(walletName, walletPassword)
             }
-            else {
-                Log.d("Beldex","isOnline 5 else")
-            }
-        }
-        else{
+        } else {
             finish()
         }
-        /*val extras = intent.extras
-        if (extras != null) {
-            // acquireWakeLock()
-            val walletId = extras.getString(HomeActivity.REQUEST_ID)
-            // we can set the streetmode height AFTER opening the wallet
-            requestStreetMode = extras.getBoolean(HomeActivity.REQUEST_STREETMODE)
-            password = extras.getString(HomeActivity.REQUEST_PW)
-            uri = extras.getString(HomeActivity.REQUEST_URI)
-            if (CheckOnline.isOnline(this)) {
-                Log.d("Beldex", "isOnline 5 if")
-                connectWalletService(walletId, password)
-            }
-            else {
-                Log.d("Beldex","isOnline 5 else")
-            }
-        }else {
-            finish()
-        }*/
     }
 
     override fun onBackPressedFun() {
@@ -1697,9 +1480,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     override fun onWalletScan(view: View?) {
         if (Helper.getCameraPermission(this)) {
             val extras = Bundle()
-            Log.d("Beldex","Called onWalletScan")
             replaceFragment(WalletScannerFragment(), null, extras)
-            //startScanFragment()
         } else {
             Timber.i("Waiting for permissions")
         }
@@ -1708,10 +1489,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     override fun onWalletScanned(qrCode: String?): Boolean {
         // #gurke
         val bcData = BarcodeData.fromString(qrCode)
-        Log.d("Beldex","Value of barcode 1 onWalletScanned $bcData")
         return if (bcData != null) {
             popFragmentStack(null)
-            Timber.d("AAA")
             onUriWalletScanned(bcData)
             true
         } else {
@@ -1721,8 +1500,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     //SecureActivity
     override fun onUriScanned(barcodeData: BarcodeData?) {
-        Log.d("Beldex","Value of barcode 2 $onUriScannedListener")
-
         var processed = false
         if (onUriScannedListener != null) {
 
@@ -1731,13 +1508,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         if (!processed || onUriScannedListener == null) {
             Toast.makeText(this, getString(R.string.nfc_tag_read_what), Toast.LENGTH_LONG).show()
         }
-
-
     }
 
     fun onUriWalletScanned(barcodeData: BarcodeData?) {
         var processed = false
-        Log.d("Beldex","value of onUriWalletScannedListener $onUriWalletScannedListener")
         if (onUriWalletScannedListener != null) {
 
             processed = onUriWalletScannedListener!!.onUriWalletScanned(barcodeData)
@@ -1749,15 +1523,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     override fun onResume() {
         super.onResume()
-        Log.d("Beldex","Value of change daemon ${TextSecurePreferences.getDaemon(this)}")
         Timber.d("onResume()-->")
-        // wait for WalletService to finish
-        //Important
-        /*if (WalletService.Running && progressDialog == null) {
-            // and show a progress dialog, but only if there isn't one already
-            //AsyncWaitForService().execute()
-             AsyncWaitForService(this).execute<Int>()
-        }*/
         //Important
         //if (!Ledger.isConnected()) attachLedger()
         if(!CheckOnline.isOnline(this)){
@@ -1767,12 +1533,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     private fun stopWalletService() {
         disconnectWalletService()
-        //releaseWakeLock()
     }
 
     private fun disconnectWalletService() {
         if (mIsBound) {
-            Log.d("Beldex","mIsBound called if ")
             // Detach our existing connection.
             mBoundService!!.setObserver(null)
             unbindService(mConnection)
@@ -1821,7 +1585,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        Timber.d("onRequestPermissionsResult()")
         if (requestCode == Helper.PERMISSIONS_REQUEST_CAMERA) { // If request is cancelled, the result arrays are empty.
             if (grantResults.size > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED
@@ -1836,14 +1599,12 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     fun onWalletRescan(restoreHeight: Long) {
         try {
-          /*  val walletFragment = getWalletFragment()*/
             val currentWallet = getCurrentFragment()
 
             if(getWallet()!=null) {
                 // The height entered by user
                 getWallet()!!.restoreHeight = restoreHeight
                 getWallet()!!.rescanBlockchainAsync()
-                Log.d("Beldex","Restore Height 2 ${getWallet()!!.restoreHeight}")
             }
             synced = false
             if(currentWallet is WalletFragment){
@@ -1852,7 +1613,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             }
         } catch (ex: java.lang.ClassCastException) {
             Timber.d(ex.localizedMessage)
-            // keep calm and carry on
         }
     }
 
@@ -1867,15 +1627,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     override fun setTitle(titleId: Int) {
 
     }
-
-    /* override fun setTitle(title: String?) {
-         Timber.d("setTitle:%s.", title)
-         binding.toolbar.setTitle(title)
-     }
-
-     override fun setTitle(title: String?, subtitle: String?) {
-         binding.toolbar.setTitle(title, subtitle)
-     }*/
 
     override fun callToolBarRescan(){
         val dialog: AlertDialog.Builder = AlertDialog.Builder(this, R.style.BChatAlertDialog_Syncing_Option)
@@ -1933,21 +1684,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             }
             alertDialog.dismiss()
         }
-
-        // set dialog message
-        /*if(CheckOnline.isOnline(this)) {
-            if(getWallet()!=null) {
-                if (getWallet()!!.daemonBlockChainHeight != null) {
-                    RescanDialog(this, getWallet()!!.daemonBlockChainHeight).show(
-                        supportFragmentManager,
-                        ""
-                    )
-                }
-            }
-            //onWalletRescan()
-        }else{
-            Toast.makeText(this@WalletActivity,getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
-        }*/
     }
 
     private fun onWalletReconnect(node: NodeInfo?, UseSSL: Boolean, isLightWallet: Boolean) {
@@ -2045,11 +1781,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         if (result.resultCode == Activity.RESULT_OK) {
             if(result.data!=null){
                 val extras = Bundle()
-                Log.d("result->threadId ","${result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1)}")
-                Log.d("result->uri ","${result.data!!.getParcelableExtra<Uri>(ConversationFragmentV2.URI)}")
-                Log.d("result->type ","${result.data!!.getStringExtra(ConversationFragmentV2.TYPE)}")
-                Log.d("result->extraText ","${result.data!!.getCharSequenceExtra(Intent.EXTRA_TEXT)}")
-
                 extras.putParcelable(ConversationFragmentV2.ADDRESS, result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
                 extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
                 extras.putParcelable(ConversationFragmentV2.URI,result.data!!.getParcelableExtra<Uri>(ConversationFragmentV2.URI))
@@ -2061,5 +1792,5 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             }
         }
     }
-
 }
+//endregion

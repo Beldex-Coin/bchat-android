@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.beldex.libbchat.utilities.TextSecurePreferences;
-import com.thoughtcrimes.securesms.wallet.WalletActivity;
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLockActivity;
 
 import io.beldex.bchat.R;
@@ -22,48 +21,6 @@ public class CustomPinActivity extends AppLockActivity {
 
     @Override
     public void showForgotDialog() {
-       /* Resources res = getResources();
-        // Create the builder with required paramaters - Context, Title, Positive Text
-        CustomDialog.Builder builder = new CustomDialog.Builder(this,
-                res.getString(R.string.activity_dialog_title),
-                res.getString(R.string.activity_dialog_accept));
-        builder.content(res.getString(R.string.activity_dialog_content));
-        builder.negativeText(res.getString(R.string.activity_dialog_decline));
-
-        //Set theme
-        builder.darkTheme(false);
-        builder.typeface(Typeface.SANS_SERIF);
-        builder.positiveColor(res.getColor(R.color.light_blue_500)); // int res, or int colorRes parameter versions available as well.
-        builder.negativeColor(res.getColor(R.color.light_blue_500));
-        builder.rightToLeft(false); // Enables right to left positioning for languages that may require so.
-        builder.titleAlignment(BaseDialog.Alignment.CENTER);
-        builder.buttonAlignment(BaseDialog.Alignment.CENTER);
-        builder.setButtonStacking(false);
-
-        //Set text sizes
-        builder.titleTextSize((int) res.getDimension(R.dimen.activity_dialog_title_size));
-        builder.contentTextSize((int) res.getDimension(R.dimen.activity_dialog_content_size));
-        builder.positiveButtonTextSize((int) res.getDimension(R.dimen.activity_dialog_positive_button_size));
-        builder.negativeButtonTextSize((int) res.getDimension(R.dimen.activity_dialog_negative_button_size));
-
-        //Build the dialog.
-        CustomDialog customDialog = builder.build();
-        customDialog.setCanceledOnTouchOutside(false);
-        customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        customDialog.setClickListener(new CustomDialog.ClickListener() {
-            @Override
-            public void onConfirmClick() {
-                Toast.makeText(getApplicationContext(), "Yes", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onCancelClick() {
-                Toast.makeText(getApplicationContext(), "Cancel", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // Show the dialog.
-        customDialog.show();*/
     }
 
     @Override
@@ -118,7 +75,6 @@ public class CustomPinActivity extends AppLockActivity {
                 appLockActivity.finish();
                 if(status){
                     showWalletFragment();
-                    //getWalletValuesFromSharedPreferences(customPinActivity); //-
                 }
             }
         });
@@ -132,41 +88,6 @@ public class CustomPinActivity extends AppLockActivity {
         TextSecurePreferences.setTransactionsByDateStatus(this,false);
         Intent returnIntent = new Intent();
         setResult(Activity.RESULT_OK,returnIntent);
-    }
-
-    private void getWalletValuesFromSharedPreferences(CustomPinActivity customPinActivity){
-        String walletName = TextSecurePreferences.getWalletName(customPinActivity);
-        String walletPassword = TextSecurePreferences.getWalletPassword(customPinActivity);
-        if (walletName != null && walletPassword !=null) {
-            startWallet(walletName, walletPassword,  false,  false);
-        }
-    }
-
-    private void startWallet(
-            String walletName, String walletPassword,
-            Boolean fingerprintUsed, Boolean streetmode) {
-        String REQUEST_ID = "id";
-        String REQUEST_PW = "pw";
-        String REQUEST_FINGERPRINT_USED = "fingerprint";
-        String REQUEST_STREETMODE = "streetmode";
-        String REQUEST_URI = "uri";
-
-        Log.d("startWallet()","");
-        TextSecurePreferences.callFiatCurrencyApi(this,true);
-        TextSecurePreferences.setIncomingTransactionStatus(this, true);
-        TextSecurePreferences.setOutgoingTransactionStatus(this, true);
-        TextSecurePreferences.setTransactionsByDateStatus(this,false);
-        Intent intent =new Intent(this, WalletActivity.class);
-        intent.putExtra(REQUEST_ID, walletName);
-        intent.putExtra(REQUEST_PW, walletPassword);
-        intent.putExtra(REQUEST_FINGERPRINT_USED, fingerprintUsed);
-        intent.putExtra(REQUEST_STREETMODE, streetmode);
-        //Important
-        /*if (uri != null) {
-            intent.putExtra(REQUEST_URI, uri)
-            uri = null // use only once
-        }*/
-        startActivity(intent);
     }
 
     @Override

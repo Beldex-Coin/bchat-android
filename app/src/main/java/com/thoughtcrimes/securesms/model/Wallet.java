@@ -1,7 +1,5 @@
 package com.thoughtcrimes.securesms.model;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -125,11 +123,6 @@ public class Wallet {
         this.handle = handle;
     }
 
-    Wallet(long handle, int accountIndex) {
-        this.handle = handle;
-        this.accountIndex = accountIndex;
-    }
-
     @RequiredArgsConstructor
     @Getter
     public enum Device {
@@ -225,9 +218,6 @@ public class Wallet {
 
     public native int nettype();
 
-//TODO virtual void hardForkInfo(uint8_t &version, uint64_t &earliest_height) const = 0;
-//TODO virtual bool useForkRules(uint8_t version, int64_t early_blocks) const = 0;
-
     public native String getIntegratedAddress(String payment_id);
 
     public native String getSecretViewKey();
@@ -253,7 +243,6 @@ public class Wallet {
 
     public native String getFilename();
 
-    //    virtual std::string keysFilename() const = 0;
     public boolean init(long upper_transaction_size_limit) {
         return initJ(WalletManager.getInstance().getDaemonAddress(), upper_transaction_size_limit,
                 WalletManager.getInstance().getDaemonUsername(),
@@ -263,15 +252,9 @@ public class Wallet {
     private native boolean initJ(String daemon_address, long upper_transaction_size_limit,
                                  String daemon_username, String daemon_password);
 
-//    virtual bool createWatchOnly(const std::string &path, const std::string &password, const std::string &language) const = 0;
-//    virtual void setRefreshFromBlockHeight(uint64_t refresh_from_block_height) = 0;
-
     public native void setRestoreHeight(long height);
 
     public native long getRestoreHeight();
-
-    //    virtual void setRecoveringFromSeed(bool recoveringFromSeed) = 0;
-//    virtual bool connectToDaemon() = 0;
 
     public ConnectionStatus getConnectionStatus() {
         int s = getConnectionStatusJ();
@@ -279,9 +262,6 @@ public class Wallet {
     }
 
     private native int getConnectionStatusJ();
-
-//TODO virtual void setTrustedDaemon(bool arg) = 0;
-//TODO virtual bool trustedDaemon() const = 0;
 
     public long getBalance() {
         return getBalance(accountIndex);
@@ -354,10 +334,6 @@ public class Wallet {
         rescanBlockchainAsyncJ();
     }
 
-//TODO virtual void setAutoRefreshInterval(int millis) = 0;
-//TODO virtual int autoRefreshInterval() const = 0;
-
-
     private PendingTransaction pendingTransaction = null;
 
     public PendingTransaction getPendingTransaction() {
@@ -412,37 +388,24 @@ public class Wallet {
 
     private native long createSweepUnmixableTransactionJ();
 
-//virtual UnsignedTransaction * loadUnsignedTx(const std::string &unsigned_filename) = 0;
-//virtual bool submitTransaction(const std::string &fileName) = 0;
-
     public native void disposeTransaction(PendingTransaction pendingTransaction);
-
-//virtual bool exportKeyImages(const std::string &filename) = 0;
-//virtual bool importKeyImages(const std::string &filename) = 0;
-
-
-//virtual TransactionHistory * history() const = 0;
 
     private TransactionHistory history = null;
 
     public TransactionHistory getHistory() {
         if (history == null) {
             history = new TransactionHistory(getHistoryJ(), accountIndex);
-            Log.d("Beldex","value of history"+ history.getAll().toArray());
         }
-        Log.d("Beldex","value of history 1"+ history.getAll().toArray());
         return history;
     }
 
     private native long getHistoryJ();
 
     public void refreshHistory() {
-        Log.d("Beldex","refresh size in Wallet class"+this.getAddress().toString());
         getHistory().refreshWithNotes(this);
     }
 
     public double belDexAmountToDouble(int amount){
-        Log.d("amount-->"," "+amount);
       return (double) amount / 1000000000;
     }
 
@@ -456,30 +419,17 @@ public class Wallet {
 
     private native int estimateTransactionFeeJ(int priorityRaw, int recipients);//int recipients = 1
 
-//virtual AddressBook * addressBook() const = 0;
-//virtual void setListener(WalletListener *) = 0;
-
     private native long setListenerJ(WalletListener listener);
 
     public void setListener(WalletListener listener) {
         this.listenerHandle = setListenerJ(listener);
     }
 
-    //public native int getDefaultMixin();
-
-    //public native void setDefaultMixin(int mixin);
-
     public native boolean setUserNote(String txid, String note);
 
     public native String getUserNote(String txid);
 
     public native String getTxKey(String txid);
-
-//virtual std::string signMessage(const std::string &message) = 0;
-//virtual bool verifySignedMessage(const std::string &message, const std::string &addres, const std::string &signature) const = 0;
-
-//virtual bool parse_uri(const std::string &uri, std::string &address, std::string &payment_id, uint64_t &tvAmount, std::string &tx_description, std::string &recipient_name, std::vector<std::string> &unknown_parameters, std::string &error) = 0;
-//virtual bool rescanSpent() = 0;
 
     private static final String NEW_ACCOUNT_NAME = "Untitled account"; // src/wallet/wallet2.cpp:941
 
@@ -561,3 +511,4 @@ public class Wallet {
     public native boolean reConnectToDaemon(Node node, boolean useSSL, boolean isLightWallet);
 
 }
+//endregion

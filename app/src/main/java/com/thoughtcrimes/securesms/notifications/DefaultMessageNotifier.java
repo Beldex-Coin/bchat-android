@@ -41,7 +41,6 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.thoughtcrimes.securesms.ApplicationContext;
 import com.thoughtcrimes.securesms.contactshare.ContactUtil;
-import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2;
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2;
 import com.thoughtcrimes.securesms.conversation.v2.utilities.MentionManagerUtilities;
 import com.thoughtcrimes.securesms.conversation.v2.utilities.MentionUtilities;

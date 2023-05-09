@@ -11,14 +11,11 @@ import android.os.Bundle
 import android.os.Environment
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.widget.ShareActionProvider
-import androidx.core.content.FileProvider
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
@@ -35,14 +32,11 @@ import com.thoughtcrimes.securesms.util.FileProviderUtil
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.wallet.OnBackPressedListener
 import com.thoughtcrimes.securesms.wallet.utils.ThemeHelper
-import com.thoughtcrimes.securesms.wallet.widget.Toolbar
-import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityReceiveBinding
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 import java.lang.ClassCastException
 import java.util.HashMap
 
@@ -66,7 +60,6 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
     private var logo: Bitmap? = null
     private val isLoaded = false
     var listenerCallback: Listener? = null
-    private val shareActionProvider: ShareActionProvider? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,7 +68,7 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
             param2 = it.getString(ARG_PARAM2)
         }
         val transform = MaterialContainerTransform()
-        transform.drawingViewId = R.id.fragment_container
+        transform.drawingViewId = R.id.activity_home_frame_layout_container
         transform.duration = resources.getInteger(R.integer.tx_item_transition_duration).toLong()
         transform.setAllContainerColors(
             ThemeHelper.getThemedColor(
@@ -88,22 +81,6 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
     interface Listener {
         fun walletOnBackPressed() //-
     }
-
-    override fun onResume() {
-        super.onResume()
-        /*listenerCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
-        listenerCallback!!.setTitle(getString(R.string.activity_receive_page_title))*/
-    }
-
-    /*override fun onDetach() {
-        Timber.d("onDetach()")
-        if (wallet != null && isMyWallet) {
-            wallet.close()
-            wallet = null
-            isMyWallet = false
-        }
-        super.onDetach()
-    }*/
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -123,9 +100,6 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
     ): View? {
         binding = ActivityReceiveBinding.inflate(layoutInflater,container,false)
         (activity as HomeActivity).setSupportActionBar(binding.toolbar)
-        //listenerCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
-        //listenerCallback!!.setTitle(getString(R.string.activity_receive_page_title))
-
         binding.walletAddressReceive.text = IdentityKeyUtil.retrieve(requireActivity(),IdentityKeyUtil.IDENTITY_W_ADDRESS_PREF)
         generateQr()
 
@@ -215,36 +189,22 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
     }
 
     private fun generateQr() {
-        Log.d("Beldex","generateQR fun called")
-        Timber.d("A-> GENQR")
         val address: String = binding.walletAddressReceive.text.toString()
         val notes: String = ""
         val bdxAmount: String = binding.amountEditTextReceive.text.toString()
-        Log.d("beldex", "generateQR value of  $bdxAmount, $notes, $address")
-        //        if ((bdxAmount == null) || !Wallet.isAddressValid(address)) {
-//            clearQR();
-//            Timber.d("CLEARQR");
-//            return;
-//        }
         bcData = BarcodeData(Crypto.BDX, address, notes, bdxAmount)
 
         val size: Int = Math.max(200, 200)
         val qr = generate(bcData!!.uriString, size, size)
-        Log.d("Beldex","generateQR value of qr $qr")
         if (qr != null) {
             setQR(qr)
-            Timber.d("A-> SETQR")
-            //by hales
-            /* etDummy.requestFocus()*/
             Helper.hideKeyboard(activity)
         }
     }
 
-    fun setQR(qr: Bitmap?) {
+    private fun setQR(qr: Bitmap?) {
         binding.qrCodeReceive.setImageBitmap(qr)
         qrValid = true
-        //by hales
-        /* setShareIntent()*/
         binding.qrCodeReceive.visibility(View.GONE)
     }
 
@@ -259,7 +219,6 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
         canvas.save()
         val sx = 0.2f * qrSize / logoSize
         canvas.scale(sx, sx, qrSize / 2f, qrSize / 2f)
-        //canvas.drawBitmap(logo, (qrSize - logoSize) / 2f, (qrSize - logoSize) / 2f, null);
         canvas.restore()
         return logoBitmap
     }
@@ -272,34 +231,26 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
     }
 
     private fun reGenerateQr() {
-        Timber.d("B->GENQR")
         val address: String = binding.walletAddressReceive.text.toString()
         val notes: String = ""
         val bdxAmount: String = binding.amountEditTextReceive.text.toString()
-        Timber.d("%s/%s/%s", bdxAmount, notes, address)
         if (!Wallet.isAddressValid(address)) {
-
             clearQR()
-            Timber.d("B-> CLEARQR")
             return
         }
         bcData = BarcodeData(Crypto.BDX, address, notes, bdxAmount)
         val size: Int = Math.max(binding.qrCodeReceive.width, binding.qrCodeReceive.height)
         val qr = generate(bcData!!.uriString, size, size)
-        Timber.d("QR COde -> %s", qr)
         if (qr != null) {
             setQR(qr)
-            Timber.d("B-> SETQR")
         }
     }
 
-    fun clearQR() {
+    private fun clearQR() {
         if (qrValid) {
             binding.qrCodeReceive.setImageBitmap(null)
             qrValid = false
-            //by hales
-            /* setShareIntent()*/
-            if (isLoaded)  binding.qrCodeReceive.setVisibility(View.VISIBLE)
+            if (isLoaded) binding.qrCodeReceive.visibility = View.VISIBLE
         }
     }
 
@@ -325,47 +276,7 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
         )
     }
 
-
-    private fun getShareIntent(): Intent? {
-        val imagePath = File(requireActivity().cacheDir, "images")
-        val png = File(imagePath, "QR.png")
-        val contentUri = FileProvider.getUriForFile(
-            requireActivity(),
-            BuildConfig.APPLICATION_ID.toString() + ".fileprovider",
-            png
-        )
-        if (contentUri != null) {
-            val shareIntent = Intent()
-            shareIntent.action = Intent.ACTION_SEND
-            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION) // temp permission for receiving app to read this file
-            shareIntent.setDataAndType(contentUri, requireActivity().contentResolver.getType(contentUri))
-            shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri)
-            shareIntent.putExtra(Intent.EXTRA_TEXT, bcData!!.uriString)
-            return shareIntent
-        }
-        return null
-    }
-    private fun saveQrCode() {
-        check(qrValid) { "trying to save null qr code!" }
-        val cachePath = File(requireActivity().cacheDir, "images")
-        if (!cachePath.exists()) check(cachePath.mkdirs()) { "cannot create images folder" }
-        val png = File(cachePath, "QR.png")
-        try {
-            val stream = FileOutputStream(png)
-            val qrBitmap = (binding.qrCodeReceive.drawable as BitmapDrawable).bitmap
-            qrBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-            stream.close()
-        } catch (ex: IOException) {
-            Timber.e(ex)
-            // make sure we don't share an old qr code
-            check(png.delete()) { "cannot delete old qr code" }
-            // if we manage to delete it, the URI points to nothing and the user gets a toast with the error
-        }
-    }
-
-
     override fun onPause() {
-        Timber.d("onPause()")
         Helper.hideKeyboard(activity)
         super.onPause()
     }
@@ -374,3 +285,4 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
         return false
     }
 }
+//endregion

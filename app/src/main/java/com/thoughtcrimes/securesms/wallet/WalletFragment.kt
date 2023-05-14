@@ -674,7 +674,19 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
     private fun refreshBalance(synchronized: Boolean) {
         val amountBdx: Double = Helper.getDecimalAmount(unlockedBalance).toDouble()
         val amountFullBdx: Double = Helper.getDecimalAmount(balance).toDouble()
-        showBalance(Helper.getFormattedAmount(amountBdx, true),synchronized,Helper.getFormattedAmount(amountFullBdx, true))
+        if(amountFullBdx > 0.0) {
+            showBalance(
+                Helper.getFormattedAmount(amountBdx, true),
+                true,
+                Helper.getFormattedAmount(amountFullBdx, true)
+            )
+        }else{
+            showBalance(
+                Helper.getFormattedAmount(amountBdx, true),
+                synchronized,
+                Helper.getFormattedAmount(amountFullBdx, true)
+            )
+        }
     }
 
     private fun hideDisplayBalance(){

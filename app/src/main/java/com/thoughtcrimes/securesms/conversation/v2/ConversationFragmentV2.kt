@@ -3107,11 +3107,19 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private fun refreshBalance(synchronized: Boolean) {
         val unlockedBalance: Double = Helper.getDecimalAmount(unlockedBalance).toDouble()
         val balance: Double = Helper.getDecimalAmount(balance).toDouble()
-        showBalance(
-            Helper.getFormattedAmount(balance, true),
-            Helper.getFormattedAmount(unlockedBalance, true),
-            synchronized
-        )
+        if(balance > 0.0){
+            showBalance(
+                Helper.getFormattedAmount(balance, true),
+                Helper.getFormattedAmount(unlockedBalance, true),
+                true
+            )
+        }else{
+            showBalance(
+                Helper.getFormattedAmount(balance, true),
+                Helper.getFormattedAmount(unlockedBalance, true),
+                synchronized
+            )
+        }
     }
 
     private fun showBalance(walletBalance: String?, walletUnlockedBalance: String?, synchronized:Boolean){

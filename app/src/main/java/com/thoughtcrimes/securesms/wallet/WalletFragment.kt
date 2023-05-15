@@ -173,6 +173,8 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
 
     override fun onResume() {
         super.onResume()
+        binding.sendCardViewButton.isClickable= true
+        binding.sendCardViewButton.isClickable= true
         if(TextSecurePreferences.getDisplayBalanceAs(requireActivity())==2) {
             hideDisplayBalance()
         }else{
@@ -326,23 +328,15 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
                 android.graphics.PorterDuff.Mode.SRC_IN)
         }
 
+        binding.sendCardViewButton.isClickable= true
+        binding.sendCardViewButton.isClickable= true
         binding.sendCardViewButton.setOnClickListener { v: View? ->
-            if (v != null) {
-                synchronized(v) {
-                    v.isEnabled = false
-                    activityCallback!!.onSendRequest(v)
-                    v.postDelayed({ v.isEnabled = true }, 500L)
-                }
-            }
+            binding.sendCardViewButton.isClickable= false
+            activityCallback!!.onSendRequest(v)
         }
         binding.receiveCardViewButton.setOnClickListener { v: View? ->
-            if (v != null) {
-                synchronized(v) {
-                    v.isEnabled = false
-                    activityCallback!!.onWalletReceive(v)
-                    v.postDelayed({ v.isEnabled = true }, 500L)
-                }
-            }
+            binding.receiveCardViewButton.isClickable= false
+            activityCallback!!.onWalletReceive(v)
         }
 
         if (activityCallback!!.isSynced) {
@@ -761,6 +755,8 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
                     R.string.fiat_currency,
                     0.00,
                     TextSecurePreferences.getCurrency(requireActivity()).toString())
+            }catch(e:IllegalStateException){
+                Log.d("FiatCurrency Exception: ",e.message.toString())
             }
         }
     }

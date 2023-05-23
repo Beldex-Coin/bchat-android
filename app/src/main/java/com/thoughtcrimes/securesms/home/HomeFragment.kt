@@ -491,7 +491,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
         super.onResume()
         setupCallActionBar()
         pingSelectedNode()
-        ApplicationContext.getInstance(requireActivity().applicationContext).messageNotifier.setHomeScreenVisible(true)
+        ApplicationContext.getInstance(requireActivity().applicationContext).messageNotifier.setHomeScreenVisible(false)
         if (TextSecurePreferences.getLocalNumber(requireActivity().applicationContext) == null) {
             return; } // This can be the case after a secondary device is auto-cleared
         IdentityKeyUtil.checkUpdate(requireActivity().applicationContext)
@@ -522,11 +522,6 @@ class HomeFragment : Fragment(),ConversationClickListener,
                 ConversationFragmentV2.ADDRESS
             ),requireArguments().getParcelable<Uri>(ConversationFragmentV2.URI),requireArguments().getString(ConversationFragmentV2.TYPE),requireArguments().getCharSequence(Intent.EXTRA_TEXT))
         }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        ApplicationContext.getInstance(requireActivity().applicationContext).messageNotifier.setHomeScreenVisible(false)
     }
 
     override fun onDestroy() {
@@ -723,7 +718,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
         val threadID = thread.threadId
         val recipient = thread.recipient
         val message = if (recipient.isGroupRecipient) {
-            val group = (activity as HomeActivity).groupDatabase.getGroup(recipient.address.toString()).orNull()
+            val group = (activity as HomeActivity).groupDb.getGroup(recipient.address.toString()).orNull()
             if (group != null && group.admins.map { it.toString() }
                     .contains(TextSecurePreferences.getLocalNumber(requireActivity()))) {
                 "Because you are the creator of this group it will be deleted for everyone. This cannot be undone."

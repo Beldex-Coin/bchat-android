@@ -637,7 +637,6 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     // QR Scan Stuff
     fun processScannedData(barcodeData: BarcodeData?) {
         activityCallback?.setBarcodeData(barcodeData)
-        if (isResume) processScannedData()
     }
 
     private fun processScannedData() {

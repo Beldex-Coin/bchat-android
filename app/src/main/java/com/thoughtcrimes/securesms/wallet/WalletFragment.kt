@@ -261,7 +261,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
         }
 
         override fun onPostExecute(result: Boolean?) {
-            refreshBalance(wallet.isSynchronized)
+             refreshBalance(wallet.isSynchronized)
         }
     }
 
@@ -454,7 +454,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
             popupMenu.show()
         }
         binding.scanQrCodeImg.setOnClickListener {
-            onScanListener?.onWalletScan(view)
+                onScanListener?.onWalletScan(view)
         }
 
         binding.toolBarRescan.setOnClickListener {
@@ -565,7 +565,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
     }
 
     private var firstBlock: Long = 0
-    private var unlockedBalance: Long = 0
+    private var unlockedBalance: Long = -1
     private var balance: Long = 0
     private var accountIdx = -1
 
@@ -729,7 +729,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
                 }
             }
             //SteveJosephh21
-            if (!activityCallback?.isWatchOnly!!) {
+            if (!activityCallback?.isWatchOnly!! && activityCallback!!.isSynced) {
                 binding.sendCardViewButton.isEnabled = true
                 binding.sendCardViewButton.setBackgroundResource(R.drawable.send_card_enabled_background)
                 binding.sendCardViewButtonText.setTextColor(ContextCompat.getColor(requireActivity(),R.color.white))
@@ -765,6 +765,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
         if(mContext!=null) {
             when {
                 TextSecurePreferences.getDisplayBalanceAs(mContext!!) == 2 -> {
+                    binding.fetchBalanceStatus.visibility =View.GONE
                     hideDisplayBalance()
                 }
                 TextSecurePreferences.getDisplayBalanceAs(mContext!!) == 0 -> {
@@ -773,9 +774,27 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
                     showSelectedDecimalBalance(fullBalance!!, synchronized)
                 }
                 else -> {
-                    walletAvailableBalance = balance
-                    walletSynchronized = synchronized
-                    showSelectedDecimalBalance(balance!!, synchronized)
+                    if(unlockedBalance.toString() == "-1"){
+                        binding.fetchBalanceStatus.visibility =View.VISIBLE
+                        when {
+                            TextSecurePreferences.getDecimals(requireActivity()) == "2 - Two (0.00)" -> {
+                                binding.tvBalance.text = "-.--"
+                            }
+                            TextSecurePreferences.getDecimals(requireActivity()) == "3 - Three (0.000)" -> {
+                                binding.tvBalance.text = "-.---"
+                            }
+                            TextSecurePreferences.getDecimals(requireActivity()) == "0 - Zero (000)" -> {
+                                binding.tvBalance.text = "-"
+                            }
+                            else -> {
+                                binding.tvBalance.text = "-.----"
+                            }
+                        }
+                    }else {
+                        walletAvailableBalance = balance
+                        walletSynchronized = synchronized
+                        showSelectedDecimalBalance(balance!!, synchronized)
+                    }
                 }
             }
         }

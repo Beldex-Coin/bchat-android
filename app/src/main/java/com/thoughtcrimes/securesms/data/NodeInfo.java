@@ -54,7 +54,6 @@ public class  NodeInfo extends Node {
     private boolean selecting = false;
 
     public void clear() {
-        Log.d("Beldex","node clear called");
         height = 0;
         majorVersion = 0;
         responseTime = Double.MAX_VALUE;
@@ -78,34 +77,27 @@ public class  NodeInfo extends Node {
 
 
     public int getResponseCode() {
-        Log.d("Beldex","Node List responseCode" + responseCode);
         return responseCode;
     }
 
-    public Long getHeight()
-    {
-        Log.d("Beldex","Node List height" + height);
+    public Long getHeight() {
         return height;
     }
 
     public int getMajorVersion() {
-        Log.d("Beldex","Node List majorVersion" + majorVersion);
         return majorVersion;
     }
 
 
     public Boolean isTested(){
-        Log.d("Beldex","Node List tested" + tested);
         return tested;
     }
 
     public Long getTimestamp(){
-        Log.d("Beldex","Node List timestamp" + timestamp);
         return timestamp;
     }
-    public Double getResponseTime()
-    {
-        Log.d("Beldex","Node List responseTime" + responseTime);
+
+    public Double getResponseTime() {
         return responseTime;
     }
 
@@ -120,10 +112,6 @@ public class  NodeInfo extends Node {
 
 
 
-   /* @Override
-    public String getUsername() {
-        return super.getUsername();
-    }*/
     public boolean isSelecting() {
         return selecting;
     }
@@ -173,7 +161,6 @@ public class  NodeInfo extends Node {
     }
 
     public boolean isValid() {
-        Log.d("Beldex","majorVersion %s "+ majorVersion);
         return isSuccessful() && (majorVersion >= MIN_MAJOR_VERSION) && (responseTime < Double.MAX_VALUE);
     }
 
@@ -201,7 +188,6 @@ public class  NodeInfo extends Node {
         height = anotherNode.height;
         timestamp = anotherNode.timestamp;
         majorVersion = anotherNode.majorVersion;
-        Log.d("Beldex","majorVersion " + majorVersion);
         responseTime = anotherNode.responseTime;
         responseCode = anotherNode.responseCode;
     }
@@ -229,10 +215,6 @@ public class  NodeInfo extends Node {
     public static final double PING_BAD = HTTP_TIMEOUT;
 
     public boolean testRpcService() {
-        Timber.d("Testing-->8");
-        Log.d("Beldex","Node list majorversion3 "+ majorVersion);
-        Log.d("Beldex","Node list rpcPort "+ rpcPort);
-
         return testRpcService(rpcPort);
     }
     public boolean testIsMainnet(){
@@ -242,12 +224,8 @@ public class  NodeInfo extends Node {
         Timber.d("Testing %s", toNodeString());
         clear();
         try {
-            Log.d("Beldex","Node list Test 1");
-            Timber.d("Testing-->1");
             OkHttpClient client = OkHttpHelper.getEagerClient();
             if (!getUsername().isEmpty()) {
-                Log.d("Beldex","Node list Test 2");
-                Timber.d("Testing-->2");
                 final DigestAuthenticator authenticator =
                         new DigestAuthenticator(new Credentials(getUsername(), getPassword()));
                 final Map<String, CachingAuthenticator> authCache = new ConcurrentHashMap<>();
@@ -256,7 +234,6 @@ public class  NodeInfo extends Node {
                         .addInterceptor(new AuthenticationCacheInterceptor(authCache))
                         .build();
             }
-            Log.d("Beldex","Node list Test 3");
             HttpUrl url = new HttpUrl.Builder()
                     .scheme("http")
                     .host(getHostAddress())
@@ -274,13 +251,11 @@ public class  NodeInfo extends Node {
                     final JSONObject json = new JSONObject(response.body().string());
                     final JSONObject result = json.getJSONObject("result");
                     boolean isMainnet_node = result.getBoolean("mainnet");
-                    Log.d("Beldex", "Value of getInfo methode isMainnet  is" + isMainnet_node);
                     return isMainnet_node;
                 }
 
             }
         } catch (IOException | JSONException ex) {
-            Timber.d("Testing-->5");
             Timber.d(ex);
         } finally {
             Timber.d("Testing-->6");
@@ -291,9 +266,6 @@ public class  NodeInfo extends Node {
 
 
     public boolean testRpcService(NodePinger.Listener listener) {
-        Timber.d("Testing-->9");
-        Log.d("Beldex","Node list majorversion2 "+ majorVersion);
-        Log.d("Beldex","Node list rpc port "+ rpcPort);
         boolean result = testRpcService(rpcPort);
         if (listener != null)
             listener.publish(this);
@@ -301,15 +273,10 @@ public class  NodeInfo extends Node {
     }
 
     private boolean testRpcService(int port) {
-        Timber.d("Testing %s", toNodeString());
         clear();
         try {
-            Log.d("Beldex","Node list Test 1");
-            Timber.d("Testing-->1");
             OkHttpClient client = OkHttpHelper.getEagerClient();
             if (!getUsername().isEmpty()) {
-                Log.d("Beldex","Node list Test 2");
-                Timber.d("Testing-->2");
                 final DigestAuthenticator authenticator =
                         new DigestAuthenticator(new Credentials(getUsername(), getPassword()));
                 final Map<String, CachingAuthenticator> authCache = new ConcurrentHashMap<>();
@@ -318,7 +285,6 @@ public class  NodeInfo extends Node {
                         .addInterceptor(new AuthenticationCacheInterceptor(authCache))
                         .build();
             }
-            Log.d("Beldex","Node list Test 3");
             HttpUrl url = new HttpUrl.Builder()
                     .scheme("http")
                     .host(getHostAddress())
@@ -328,25 +294,14 @@ public class  NodeInfo extends Node {
             final RequestBody reqBody = RequestBody
                     .create(MediaType.parse("application/json"),
                             "{\"jsonrpc\":\"2.0\",\"id\":\"0\",\"method\":\"getlastblockheader\"}");
-            Log.d("Beldex","Node list value of url "+ url);
-            Log.d("Beldex","Node list value of reqbody "+ reqBody.toString());
             Request request = OkHttpHelper.getPostRequest(url, reqBody);
-            Log.d("Beldex","Node list value of request "+ request.body().toString());
             long ta = System.nanoTime();
-            Log.d("Beldex","Node list value of response "+ client.newCall(request).execute());
             try (Response response = client.newCall(request).execute()) {
-                Log.d("Beldex","Node list Test 4");
-                Timber.d("Testing-->3");
                 responseTime = (System.nanoTime() - ta) / 1000000.0;
                 responseCode = response.code();
-                Log.d("Beldex","Node list value of response 1 "+ response.code());
                 if (response.isSuccessful()) {
-                    Log.d("Beldex","Node list Test 5");
-                    Timber.d("Testing-->4");
                     ResponseBody respBody = response.body(); // closed through Response object
                     if ((respBody != null) && (respBody.contentLength() < 2000)) { // sanity check
-                        Timber.d("Testing-->11");
-                        Log.d("Beldex","Node list Test 6");
                         final JSONObject json = new JSONObject(respBody.string());
                         String rpcVersion = json.getString("jsonrpc");
                        /* if (!RPC_VERSION.equals(rpcVersion))
@@ -355,22 +310,16 @@ public class  NodeInfo extends Node {
                         /*if (!result.has("credits")) // introduced in monero v0.15.0
                             return false;*/
                         final JSONObject header = result.getJSONObject("block_header");
-                        Log.d("Beldex","Node list Test 7");
                         height = header.getLong("height");
                         timestamp = header.getLong("timestamp");
                         majorVersion = header.getInt("major_version");
-                        Log.d("Beldex","Node list majorversion1 "+ majorVersion);
                         return true; // success
                     }
                 }
             }
         } catch (IOException | JSONException ex) {
-            Log.d("Beldex","Node list catch 1 "+ ex);
-            Timber.d("Testing-->5");
             Timber.d(ex);
         } finally {
-            Log.d("Beldex","Node list catch 2 ");
-            Timber.d("Testing-->6");
             tested = true;
         }
         return false;
@@ -380,11 +329,9 @@ public class  NodeInfo extends Node {
 
     public boolean findRpcService() {
         // if already have an rpcPort, use that
-        Timber.d("Testing-->7");
         if (rpcPort > 0) return testRpcService(rpcPort);
         // otherwise try to find one
         for (int port : TEST_PORTS) {
-            Timber.d("Testing-->8");
             if (testRpcService(port)) { // found a service
                 this.rpcPort = port;
                 return true;

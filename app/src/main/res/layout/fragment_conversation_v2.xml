@@ -364,7 +364,7 @@
                 android:layout_weight="1"
                 android:textAlignment="center"
                 android:textColor="@color/green_color"
-                android:textSize="16sp"
+                android:textSize="12sp"
                 android:textStyle="bold"
                 android:clickable="true"
                 android:focusable="true"/>

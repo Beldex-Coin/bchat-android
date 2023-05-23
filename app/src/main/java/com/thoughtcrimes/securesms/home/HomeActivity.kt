@@ -116,11 +116,29 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     @Inject
     lateinit var recipientDatabase: RecipientDatabase
     @Inject
-    lateinit var groupDatabase: GroupDatabase
+    lateinit var groupDb: GroupDatabase
     @Inject
     lateinit var textSecurePreferences: TextSecurePreferences
     @Inject
     lateinit var viewModelFactory: ConversationViewModel.AssistedFactory
+
+    @Inject
+    lateinit var beldexThreadDb: BeldexThreadDatabase
+
+    @Inject
+    lateinit var bchatContactDb: BchatContactDatabase
+
+    @Inject
+    lateinit var beldexApiDb: BeldexAPIDatabase
+
+    @Inject
+    lateinit var smsDb: SmsDatabase
+
+    @Inject
+    lateinit var mmsDb: MmsDatabase
+
+    @Inject
+    lateinit var beldexMessageDb: BeldexMessageDatabase
 
     //New Line App Update
     private var appUpdateManager: AppUpdateManager? = null

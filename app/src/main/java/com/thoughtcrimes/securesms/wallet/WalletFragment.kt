@@ -174,7 +174,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
     override fun onResume() {
         super.onResume()
         binding.sendCardViewButton.isClickable= true
-        binding.sendCardViewButton.isClickable= true
+        binding.receiveCardViewButton.isClickable= true
         if(TextSecurePreferences.getDisplayBalanceAs(requireActivity())==2) {
             hideDisplayBalance()
         }else{
@@ -329,7 +329,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
         }
 
         binding.sendCardViewButton.isClickable= true
-        binding.sendCardViewButton.isClickable= true
+        binding.receiveCardViewButton.isClickable= true
         binding.sendCardViewButton.setOnClickListener { v: View? ->
             binding.sendCardViewButton.isClickable= false
             activityCallback!!.onSendRequest(v)

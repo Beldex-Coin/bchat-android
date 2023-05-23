@@ -140,58 +140,19 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.concurrent.Executor
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [ConversationFragmentV2.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     InputBarRecordingViewDelegate, AttachmentManager.AttachmentListener,
     ConversationActionModeCallbackDelegate, VisibleMessageContentViewDelegate,
     RecipientModifiedListener,
     SearchBottomBar.EventListener, LoaderManager.LoaderCallbacks<Cursor>,
     ConversationMenuHelper.ConversationMenuListener, OnBackPressedListener,SendConfirm {
-    // TODO: Rename and change types of parameters
 
     private var param2: String? = null
 
     lateinit var binding: FragmentConversationV2Binding
-
-    @Inject
-    lateinit var threadDb: ThreadDatabase
-
-    @Inject
-    lateinit var mmsSmsDb: MmsSmsDatabase
-
-    @Inject
-    lateinit var beldexThreadDb: BeldexThreadDatabase
-
-    @Inject
-    lateinit var bchatContactDb: BchatContactDatabase
-
-    @Inject
-    lateinit var groupDb: GroupDatabase
-
-    @Inject
-    lateinit var beldexApiDb: BeldexAPIDatabase
-
-    @Inject
-    lateinit var smsDb: SmsDatabase
-
-    @Inject
-    lateinit var mmsDb: MmsDatabase
-
-    @Inject
-    lateinit var beldexMessageDb: BeldexMessageDatabase
-
-
-    @Inject
-    lateinit var recipientDatabase: RecipientDatabase
 
     private val screenWidth = Resources.getSystem().displayMetrics.widthPixels
     private val linkPreviewViewModel: LinkPreviewViewModel by lazy {
@@ -210,7 +171,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (threadId == -1L) {
             requireArguments().getParcelable<Address>(ADDRESS)?.let { address ->
                 val recipient = Recipient.from(requireActivity(), address, false)
-                threadId = threadDb.getOrCreateThreadIdFor(recipient)
+                threadId = (activity as HomeActivity).threadDb.getOrCreateThreadIdFor(recipient)
             }
         }
         listenerCallback!!.getConversationViewModel().create(threadId!!)
@@ -281,7 +242,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     /*Hales63*/
     private val adapter by lazy {
-        val cursor = mmsSmsDb.getConversation(viewModel.threadId, !isIncomingMessageRequestThread())
+        val cursor = (activity as HomeActivity).mmsSmsDatabase.getConversation(viewModel.threadId, !isIncomingMessageRequestThread())
         val adapter = ConversationAdapter(
             requireActivity(),
             cursor,
@@ -340,15 +301,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private val messageToScrollAuthor = AtomicReference<Address?>(null)
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ConversationFragmentV2.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             ConversationFragmentV2().apply {
@@ -457,23 +409,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         super.onViewCreated(view, savedInstanceState)
 
         searchViewModel = ViewModelProvider(requireActivity()).get(SearchViewModel::class.java)
-        val databaseHelper =
-            DatabaseComponent.get(requireActivity().applicationContext).openHelper()
         audioRecorder = AudioRecorder(requireActivity().applicationContext)
-        threadDb = ThreadDatabase(requireActivity().applicationContext, databaseHelper)
-        mmsSmsDb = MmsSmsDatabase(requireActivity().applicationContext, databaseHelper)
-        beldexThreadDb = BeldexThreadDatabase(requireActivity().applicationContext, databaseHelper)
-        bchatContactDb = BchatContactDatabase(requireActivity().applicationContext, databaseHelper)
-        groupDb = GroupDatabase(requireActivity().applicationContext, databaseHelper)
-        beldexApiDb = BeldexAPIDatabase(requireActivity().applicationContext, databaseHelper)
-        bchatContactDb = BchatContactDatabase(requireActivity().applicationContext, databaseHelper)
-        smsDb = SmsDatabase(requireActivity().applicationContext, databaseHelper)
-        mmsDb = MmsDatabase(requireActivity().applicationContext, databaseHelper)
-        beldexMessageDb =
-            BeldexMessageDatabase(requireActivity().applicationContext, databaseHelper)
-        recipientDatabase = RecipientDatabase(requireContext().applicationContext, databaseHelper)
 
-        val thread = threadDb.getRecipientForThreadId(viewModel.threadId)
+        val thread = (activity as HomeActivity).threadDb.getRecipientForThreadId(viewModel.threadId)
         if (thread == null) {
             Toast.makeText(requireActivity(), "This thread has been deleted.", Toast.LENGTH_LONG)
                 .show()
@@ -508,7 +446,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
         }
 
-        unreadCount = mmsSmsDb.getUnreadCount(viewModel.threadId)
+        unreadCount = (activity as HomeActivity).mmsSmsDatabase.getUnreadCount(viewModel.threadId)
         updateUnreadCountIndicator()
         setUpTypingObserver()
         setUpRecipientObserver()
@@ -524,14 +462,19 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
         viewModel.recipient?.let { recipient ->
             if (recipient.isOpenGroupRecipient) {
-                val openGroup = beldexThreadDb.getOpenGroupChat(viewModel.threadId)
-                if (openGroup == null) {
-                    Toast.makeText(
-                        requireContext(),
-                        "This thread has been deleted.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    //return finish()
+                try {
+                    val openGroup =
+                        (activity as HomeActivity).beldexThreadDb.getOpenGroupChat(viewModel.threadId)
+                    if (openGroup == null) {
+                        Toast.makeText(
+                            requireContext(),
+                            "This thread has been deleted.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        //return finish()
+                    }
+                }catch(ex:NullPointerException){
+                    Log.d("Exception ",ex.message.toString())
                 }
             }
         }
@@ -566,9 +509,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         super.onResume()
         ApplicationContext.getInstance(requireActivity()).messageNotifier.setVisibleThread(viewModel.threadId)
         val recipient = viewModel.recipient ?: return
-        threadDb.markAllAsRead(viewModel.threadId, recipient.isOpenGroupRecipient)
+        (activity as HomeActivity).threadDb.markAllAsRead(viewModel.threadId, recipient.isOpenGroupRecipient)
 
-        val thread = threadDb.getRecipientForThreadId(viewModel.threadId)
+        val thread = (activity as HomeActivity).threadDb.getRecipientForThreadId(viewModel.threadId)
         if(thread != null) {
             showBlockProgressBar(thread)
             callShowPayAsYouChatBDXIcon(thread)
@@ -1054,7 +997,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                             ).show()
                         }
                         senderBeldexAddress == null || senderBeldexAddress!!.isEmpty() -> {
-                            val thread = threadDb.getRecipientForThreadId(viewModel.threadId)
+                            val thread = (activity as HomeActivity).threadDb.getRecipientForThreadId(viewModel.threadId)
                             if (thread != null) {
                                 senderBeldexAddress = getBeldexAddress(thread.address)
                                 if(senderBeldexAddress != null || senderBeldexAddress!!.isNotEmpty()){
@@ -1259,7 +1202,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             return
         }
         val allSentByCurrentUser = messages.all { it.isOutgoing }
-        val allHasHash = messages.all { beldexMessageDb.getMessageServerHash(it.id) != null }
+        val allHasHash = messages.all { (activity as HomeActivity).beldexMessageDb.getMessageServerHash(it.id) != null }
         if (recipient.isOpenGroupRecipient) {
             val messageCount = messages.size
             val builder = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog)
@@ -1536,7 +1479,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             .setNegativeButton(android.R.string.cancel, null)
             .setPositiveButton(R.string.RecipientPreferenceActivity_block) { _, _ ->
                 viewModel.block()
-                val thread = threadDb.getRecipientForThreadId(viewModel.threadId)
+                val thread = (activity as HomeActivity).threadDb.getRecipientForThreadId(viewModel.threadId)
                 if(thread != null) {
                     showBlockProgressBar(thread)
                 }
@@ -1561,7 +1504,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             .setNegativeButton(android.R.string.cancel, null)
             .setPositiveButton(R.string.ConversationActivity_unblock) { _, _ ->
                 viewModel.unblock()
-                val thread = threadDb.getRecipientForThreadId(viewModel.threadId)
+                val thread = (activity as HomeActivity).threadDb.getRecipientForThreadId(viewModel.threadId)
                 if(thread != null) {
                     showBlockProgressBar(thread)
                 }
@@ -1590,13 +1533,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     override fun showExpiringMessagesDialog(thread: Recipient) {
         if (thread.isClosedGroupRecipient) {
-            val group = groupDb.getGroup(thread.address.toGroupString()).orNull()
+            val group = (activity as HomeActivity).groupDb.getGroup(thread.address.toGroupString()).orNull()
             if (group?.isActive == false) {
                 return
             }
         }
         ExpirationDialog.show(requireActivity(), thread.expireMessages) { expirationTime: Int ->
-            recipientDatabase.setExpireMessages(thread, expirationTime)
+            (activity as HomeActivity).recipientDatabase.setExpireMessages(thread, expirationTime)
             val message = ExpirationTimerUpdate(expirationTime)
             message.recipient = thread.address.serialize()
             message.sentTimestamp = System.currentTimeMillis()
@@ -1969,16 +1912,25 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 binding.conversationSubtitleView.text = getString(R.string.ConversationActivity_muted_forever)
             }
         } else if (recipient.isGroupRecipient) {
-            val openGroup = beldexThreadDb.getOpenGroupChat(viewModel.threadId)
-            if (openGroup != null) {
-                val userCount = beldexApiDb.getUserCount(openGroup.room, openGroup.server) ?: 0
-                try {
-                    binding.conversationSubtitleView.text = getString(R.string.ConversationActivity_member_count, userCount)
-                }catch(ex: IllegalStateException){
-                    Timber.w(ex.message)
+            try {
+                val openGroup =
+                    (activity as HomeActivity).beldexThreadDb.getOpenGroupChat(viewModel.threadId)
+                if (openGroup != null) {
+                    val userCount = (activity as HomeActivity).beldexApiDb.getUserCount(
+                        openGroup.room,
+                        openGroup.server
+                    ) ?: 0
+                    try {
+                        binding.conversationSubtitleView.text =
+                            getString(R.string.ConversationActivity_member_count, userCount)
+                    } catch (ex: IllegalStateException) {
+                        Timber.w(ex.message)
+                    }
+                } else {
+                    binding.conversationSubtitleView.isVisible = false
                 }
-            } else {
-                binding.conversationSubtitleView.isVisible = false
+            }catch(ex:NullPointerException){
+                Log.d("Exception ",ex.message.toString())
             }
         } else {
             binding.conversationSubtitleView.isVisible = false
@@ -2113,9 +2065,15 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun getLatestOpenGroupInfoIfNeeded() {
-        val openGroup = beldexThreadDb.getOpenGroupChat(viewModel.threadId) ?: return
-        OpenGroupAPIV2.getMemberCount(openGroup.room, openGroup.server)
-            .successUi { updateSubtitle() }
+        try {
+            val openGroup =
+                (activity as HomeActivity).beldexThreadDb.getOpenGroupChat(viewModel.threadId)
+                    ?: return
+            OpenGroupAPIV2.getMemberCount(openGroup.room, openGroup.server)
+                .successUi { updateSubtitle() }
+        }catch(ex:NullPointerException){
+            Log.d("Exception ",ex.message.toString())
+        }
     }
 
     private fun setUpBlockedBanner() {
@@ -2124,7 +2082,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             return
         }
         val bchatID = recipient.address.toString()
-        val contact = bchatContactDb.getContactWithBchatID(bchatID)
+        val contact = (activity as HomeActivity).bchatContactDb.getContactWithBchatID(bchatID)
         val name = contact?.displayName(Contact.ContactContext.REGULAR) ?: bchatID
         binding.blockedBannerTextView.text =
             resources.getString(R.string.activity_conversation_blocked_banner_text, name)
@@ -2134,7 +2092,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         binding.blockedBanner.setOnClickListener { viewModel.unblock() }
         binding.unblockButton.setOnClickListener {
             viewModel.unblock()
-            val thread = threadDb.getRecipientForThreadId(viewModel.threadId)
+            val thread = (activity as HomeActivity).threadDb.getRecipientForThreadId(viewModel.threadId)
             if(thread != null) {
                 showBlockProgressBar(thread)
             }
@@ -2161,7 +2119,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
 
     private fun scrollToFirstUnreadMessageIfNeeded() {
-        val lastSeenTimestamp = threadDb.getLastSeenAndHasSent(viewModel.threadId).first()
+        val lastSeenTimestamp = (activity as HomeActivity).threadDb.getLastSeenAndHasSent(viewModel.threadId).first()
         val lastSeenItemPosition = adapter.findLastSeenItemPosition(lastSeenTimestamp) ?: return
         if (lastSeenItemPosition <= 3) {
             return
@@ -2188,7 +2146,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private fun showOrHideInputIfNeeded() {
         val recipient = viewModel.recipient
         if (recipient != null && recipient.isClosedGroupRecipient) {
-            val group = groupDb.getGroup(recipient.address.toGroupString()).orNull()
+            val group = (activity as HomeActivity).groupDb.getGroup(recipient.address.toGroupString()).orNull()
             val isActive = (group?.isActive == true)
             binding.inputBar.showInput = isActive
             if(isActive){
@@ -2247,8 +2205,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         return !recipient.isGroupRecipient &&
                 !recipient.isApproved &&
                 !recipient.isLocalNumber &&
-                !threadDb.getLastSeenAndHasSent(viewModel.threadId).second() &&
-                threadDb.getMessageCount(viewModel.threadId) > 0
+                !(activity as HomeActivity).threadDb.getLastSeenAndHasSent(viewModel.threadId).second() &&
+                (activity as HomeActivity).threadDb.getMessageCount(viewModel.threadId) > 0
     }
 
     private fun isOutgoingMessageRequestThread(): Boolean {
@@ -2413,7 +2371,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             toggleAttachmentOptions()
         }
         // Put the message in the database
-        message.id = mmsDb.insertMessageOutbox(outgoingTextMessage, viewModel.threadId, false) { }
+        message.id = (activity as HomeActivity).mmsDb.insertMessageOutbox(outgoingTextMessage, viewModel.threadId, false) { }
         // Send it
         MessageSender.send(message, recipient.address, attachments, quote, linkPreview)
         // Send a typing stopped message
@@ -2453,7 +2411,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         currentMentionStartIndex = -1
         mentions.clear()
         // Put the message in the database
-        message.id = smsDb.insertMessageOutbox(
+        message.id = (activity as HomeActivity).smsDb.insertMessageOutbox(
             viewModel.threadId,
             outgoingTextMessage,
             false,
@@ -2549,7 +2507,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     private fun jumpToMessage(author: Address, timestamp: Long, onMessageNotFound: Runnable?) {
         SimpleTask.run(lifecycle, {
-            mmsSmsDb.getMessagePositionInConversation(viewModel.threadId, timestamp, author)
+            (activity as HomeActivity).mmsSmsDatabase.getMessagePositionInConversation(viewModel.threadId, timestamp, author)
         }) { p: Int -> moveToMessagePosition(p, onMessageNotFound) }
     }
 
@@ -2675,7 +2633,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             .setMessage(resources.getString(R.string.message_requests_accept_message))
             .setPositiveButton(R.string.accept) { _, _ ->
                 acceptMessageRequest()
-                val thread = threadDb.getRecipientForThreadId(viewModel.threadId)
+                val thread = (activity as HomeActivity).threadDb.getRecipientForThreadId(viewModel.threadId)
                 if(thread != null) {
                     showBlockProgressBar(thread)
                 }
@@ -2753,7 +2711,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun getBeldexAddress(address: Address): String {
-        val contact = bchatContactDb.getContactWithBchatID(address.toString())
+        val contact = (activity as HomeActivity).bchatContactDb.getContactWithBchatID(address.toString())
         val beldexAddress =
             contact?.displayBeldexAddress(Contact.ContactContext.REGULAR) ?: address.toString()
         return beldexAddress

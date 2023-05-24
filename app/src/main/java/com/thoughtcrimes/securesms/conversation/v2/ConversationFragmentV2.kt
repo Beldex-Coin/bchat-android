@@ -1080,34 +1080,41 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun inChatBDXOptions() {
-        if (TextSecurePreferences.getWalletEntryPassword(requireActivity()) != null) {
-            val dialog = android.app.AlertDialog.Builder(requireActivity())
-            val inflater = layoutInflater
-            val dialogView = inflater.inflate(R.layout.pay_as_you_chat, null)
-            dialog.setView(dialogView)
+        try {
+            if (TextSecurePreferences.getWalletEntryPassword(requireActivity()) != null) {
+                val dialog = android.app.AlertDialog.Builder(requireActivity())
+                val inflater = layoutInflater
+                val dialogView = inflater.inflate(R.layout.pay_as_you_chat, null)
+                dialog.setView(dialogView)
 
-            val okButton = dialogView.findViewById<Button>(R.id.okButton)
-            val cancelButton = dialogView.findViewById<Button>(R.id.cancelButton)
-            val enableInstruction = dialogView.findViewById<TextView>(R.id.payAsYouChatEnable_Instruction)
-            val alert = dialog.create()
-            alert.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            alert.setCanceledOnTouchOutside(false)
-            alert.show()
-            if(TextSecurePreferences.isPayAsYouChat(requireActivity())){
-                enableInstruction.text = fromHtml("To disable pay as you chat, go to <b>My Account -> Chat Settings -> Pay As You Chat</b> to use this option")
-            }else{
-                enableInstruction.text = fromHtml("Enable pay as you chat from <b>My Account -> Chat Settings -> Pay As You Chat</b> to use this option")
+                val okButton = dialogView.findViewById<Button>(R.id.okButton)
+                val cancelButton = dialogView.findViewById<Button>(R.id.cancelButton)
+                val enableInstruction =
+                    dialogView.findViewById<TextView>(R.id.payAsYouChatEnable_Instruction)
+                val alert = dialog.create()
+                alert.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                alert.setCanceledOnTouchOutside(false)
+                alert.show()
+                if (TextSecurePreferences.isPayAsYouChat(requireActivity())) {
+                    enableInstruction.text =
+                        fromHtml("To disable pay as you chat, go to <b>My Account -> Chat Settings -> Pay As You Chat</b> to use this option")
+                } else {
+                    enableInstruction.text =
+                        fromHtml("Enable pay as you chat from <b>My Account -> Chat Settings -> Pay As You Chat</b> to use this option")
+                }
+                okButton.setOnClickListener {
+                    val intent = Intent(requireActivity(), ChatSettingsActivity::class.java)
+                    this.activity?.startActivity(intent)
+                    alert.dismiss()
+                }
+                cancelButton.setOnClickListener {
+                    alert.dismiss()
+                }
+            } else {
+                listenerCallback!!.setWalletPin()
             }
-            okButton.setOnClickListener {
-                val intent = Intent(requireActivity(), ChatSettingsActivity::class.java)
-                this.activity?.startActivity(intent)
-                alert.dismiss()
-            }
-            cancelButton.setOnClickListener {
-                alert.dismiss()
-            }
-        } else {
-            listenerCallback!!.setWalletPin()
+        } catch (exception: Exception) {
+            Log.d("Beldex", "PayAsYouChat exception $exception")
         }
     }
 

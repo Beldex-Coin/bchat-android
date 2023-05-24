@@ -130,6 +130,7 @@ import com.thoughtcrimes.securesms.wallet.send.interfaces.SendConfirm
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
+import kotlinx.coroutines.withContext
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
@@ -426,7 +427,17 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             senderBeldexAddress =  getBeldexAddress(thread.address)
         }
 
-        setUpRecyclerView()
+        lifecycleScope.launch(Dispatchers.IO) {
+            unreadCount = (activity as HomeActivity).mmsSmsDatabase.getUnreadCount(viewModel.threadId)
+            withContext(Dispatchers.Main) {
+                setUpRecyclerView()
+                setUpTypingObserver()
+                setUpRecipientObserver()
+                getLatestOpenGroupInfoIfNeeded()
+                setUpSearchResultObserver()
+                scrollToFirstUnreadMessageIfNeeded()
+            }
+        }
         setUpToolBar()
         setUpInputBar()
         setUpLinkPreviewObserver()
@@ -446,16 +457,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
         }
 
-        unreadCount = (activity as HomeActivity).mmsSmsDatabase.getUnreadCount(viewModel.threadId)
         updateUnreadCountIndicator()
-        setUpTypingObserver()
-        setUpRecipientObserver()
         updateSubtitle()
-        getLatestOpenGroupInfoIfNeeded()
         setUpBlockedBanner()
         binding.searchBottomBar.setEventListener(this)
-        setUpSearchResultObserver()
-        scrollToFirstUnreadMessageIfNeeded()
         showOrHideInputIfNeeded()
         /*Hales63*/
         setUpMessageRequestsBar()
@@ -471,7 +476,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                             "This thread has been deleted.",
                             Toast.LENGTH_LONG
                         ).show()
-                        //return finish()
+                        return backToHome()
                     }
                 }catch(ex:NullPointerException){
                     Log.d("Exception ",ex.message.toString())

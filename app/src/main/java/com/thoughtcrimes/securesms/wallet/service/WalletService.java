@@ -457,7 +457,6 @@ public class WalletService extends Service {
                 Wallet.Status walletStatus = aWallet.getFullStatus();
                 if (!walletStatus.isOk()) {
                     Toast.makeText(getApplicationContext(),getString(R.string.please_try_after_some_time),Toast.LENGTH_SHORT).show();
-                    observer.onWalletFinish();
                     return walletStatus;
                 }
             }

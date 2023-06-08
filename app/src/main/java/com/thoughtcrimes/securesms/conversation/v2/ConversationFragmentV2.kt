@@ -606,15 +606,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                         selectedEvent?.let { selectedView?.onContentClick(it) }
                     }
                 }
-            } // New Line Social Group Receiver Voice Message
-            else if (contact?.isTrusted == null && selectedMessageRecord?.isOutgoing == false) {
-                val actionMode = this.actionMode
-                if (actionMode == null) {
-                    if (selectedEvent != null && selectedView != null) {
-                        selectedEvent?.let { selectedView?.onContentClick(it) }
-                    }
-                }
-
             }
             if (selectedMessageRecord?.isOutgoing != null) {
                 if (selectedMessageRecord?.isOutgoing!!) {
@@ -629,10 +620,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
         }
         super.onPause()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     override fun onAttach(context: Context) {
@@ -786,11 +773,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
         }
         when (requestCode) {
-            ConversationFragmentV2.PICK_DOCUMENT -> {
+            PICK_DOCUMENT -> {
                 val uri = intent?.data ?: return
                 prepMediaForSending(uri, AttachmentManager.MediaType.DOCUMENT).addListener(mediaPreppedListener)
             }
-            ConversationFragmentV2.PICK_GIF -> {
+            PICK_GIF -> {
                 intent ?: return
                 val uri = intent.data ?: return
                 val type = AttachmentManager.MediaType.GIF
@@ -798,8 +785,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 val height = intent.getIntExtra(GiphyActivity.EXTRA_HEIGHT, 0)
                 prepMediaForSending(uri, type, width, height).addListener(mediaPreppedListener)
             }
-            ConversationFragmentV2.PICK_FROM_LIBRARY,
-            ConversationFragmentV2.TAKE_PHOTO -> {
+            PICK_FROM_LIBRARY,
+            TAKE_PHOTO -> {
                 intent ?: return
                 val body = intent.getStringExtra(MediaSendActivity.EXTRA_MESSAGE)
                 val media = intent.getParcelableArrayListExtra<Media>(
@@ -848,7 +835,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 }
                 sendAttachments(slideDeck.asAttachments(), body)
             }
-            ConversationFragmentV2.INVITE_CONTACTS -> {
+            INVITE_CONTACTS -> {
                 if (viewModel.recipient?.isOpenGroupRecipient != true) { return }
                 val extras = intent?.extras ?: return
                 if (!intent.hasExtra(SelectContactsActivity.selectedContactsKey)) { return }

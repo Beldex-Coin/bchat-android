@@ -1167,6 +1167,17 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
     }
 
+    private fun toolTip(){
+        if(!binding.tooltip.isVisible)
+        {
+            binding.tooltip.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                Html.fromHtml("<p><b>Balance : 9.89654086</b></p><p><b>Unlocked Balance : 9.89654086</b></p><p>Wallet : <b>1709092/1709092(100.0%)</b></p>", Html.FROM_HTML_MODE_COMPACT)
+            } else {
+                Html.fromHtml("<p><b>Balance : 9.89654086</b></p><p><b>Unlocked Balance : 9.89654086</b></p><p>Wallet : <b>1709092/1709092(100.0%)</b></p>")
+            }
+        }
+    }
+
     private fun fromHtml(source: String?): Spanned? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             Html.fromHtml(source, Html.FROM_HTML_MODE_LEGACY)

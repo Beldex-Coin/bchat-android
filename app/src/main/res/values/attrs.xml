@@ -341,4 +341,41 @@
         <attr name="rv_zoomScale" format="float" />
 
     </declare-styleable>
+
+    <declare-styleable name="SlideToActView">
+        <attr name="text" format="string" />
+        <attr name="text_size" format="dimension" />
+        <attr name="text_style" format="enum">
+            <enum name="normal" value="0" />
+            <enum name="bold" value="1" />
+            <enum name="italic" value="2" />
+        </attr>
+        <attr name="area_margin" format="dimension" />
+        <attr name="icon_margin" format="dimension" />
+        <attr name="send_icon_margin" format="dimension"/>
+        <attr name="inner_color" format="color" />
+        <attr name="outer_color" format="color" />
+        <attr name="image_color" format="color" />
+        <attr name="text_color" format="color" />
+        <attr name="border_radius" format="dimension" />
+        <attr name="slider_height" format="dimension" />
+        <attr name="animation_duration" format="integer" />
+        <attr name="bump_vibration" format="integer" />
+        <attr name="slider_locked" format="boolean" />
+        <attr name="slider_reversed" format="boolean" />
+        <attr name="slider_icon" format="reference" />
+        <attr name="slider_icon_color" format="color" />
+        <attr name="rotate_icon" format="boolean" />
+        <attr name="animate_completion" format="boolean" />
+        <attr name="text_appearance" format="reference" />
+        <attr name="send_image_icon" format="reference" />
+        <attr name="complete_icon" format="reference" />
+        <attr name="state_complete" format="boolean" />
+        <attr name="bounce_on_start" format="boolean" />
+        <attr name="bounce_duration" format="integer" />
+        <attr name="bounce_repeat" format="integer" />
+    </declare-styleable>
+    <declare-styleable name="SlideToActViewTheme">
+        <attr name="slideToActViewStyle" format="reference" />
+    </declare-styleable>
 </resources>

@@ -124,6 +124,7 @@ import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.preferences.ChatSettingsActivity
 import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
 import com.thoughtcrimes.securesms.service.WebRtcCallService
+import com.thoughtcrimes.securesms.util.slidetoact.SlideToActView
 import com.thoughtcrimes.securesms.wallet.CheckOnline
 import com.thoughtcrimes.securesms.wallet.OnBackPressedListener
 import com.thoughtcrimes.securesms.wallet.send.interfaces.SendConfirm
@@ -140,6 +141,8 @@ import java.lang.NumberFormatException
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.concurrent.Executor
+import com.thoughtcrimes.securesms.util.slidetoact.SlideToActView.OnSlideCompleteListener
+
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -350,7 +353,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     var pendingTx: PendingTx? = null
     private var totalFunds: Long = 0
     val MIXIN = 0
-    private var isResume:Boolean = false
+    private var isResume: Boolean = false
     private val CLEAN_FORMAT = "%." + Helper.BDX_DECIMALS.toString() + "f"
     var committedTx: PendingTx? = null
 
@@ -359,10 +362,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private var firstBlock: Long = 0
     private var balance: Long = 0
     private val formatter = NumberFormat.getInstance()
-    private var walletAvailableBalance: String? =null
+    private var walletAvailableBalance: String? = null
     private var unlockedBalance: Long = 0
-    private var walletSynchronized:Boolean = false
-    private var blockProgressBarVisible:Boolean = false
+    private var walletSynchronized: Boolean = false
+    private var blockProgressBarVisible: Boolean = false
     var transactionInProgress = false
 
 
@@ -382,6 +385,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         val connectionStatus: Wallet.ConnectionStatus?
         fun setWalletPin()
         fun forceUpdate(requireActivity: Context)
+
         //SetDataAndType
         fun passSharedMessageToConversationScreen(thread: Recipient)
         fun getNode(): NodeInfo?
@@ -424,11 +428,12 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         messageToScrollAuthor.set(requireArguments().getParcelable<Address>(SCROLL_MESSAGE_AUTHOR))
 
         if (!thread.isGroupRecipient && thread.hasApprovedMe()) {
-            senderBeldexAddress =  getBeldexAddress(thread.address)
+            senderBeldexAddress = getBeldexAddress(thread.address)
         }
 
         lifecycleScope.launch(Dispatchers.IO) {
-            unreadCount = (activity as HomeActivity).mmsSmsDatabase.getUnreadCount(viewModel.threadId)
+            unreadCount =
+                (activity as HomeActivity).mmsSmsDatabase.getUnreadCount(viewModel.threadId)
             withContext(Dispatchers.Main) {
                 setUpRecyclerView()
                 setUpTypingObserver()
@@ -478,8 +483,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                         ).show()
                         return backToHome()
                     }
-                }catch(ex:NullPointerException){
-                    Log.d("Exception ",ex.message.toString())
+                } catch (ex: NullPointerException) {
+                    Log.d("Exception ", ex.message.toString())
                 }
             }
         }
@@ -497,41 +502,119 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
         callShowPayAsYouChatBDXIcon(thread)
 
-        showBalance(Helper.getDisplayAmount(0),Helper.getDisplayAmount(0),walletSynchronized)
+        showBalance(Helper.getDisplayAmount(0), Helper.getDisplayAmount(0), walletSynchronized)
 
-        if(listenerCallback!!.getNode() == null) {
+        if (listenerCallback!!.getNode() == null) {
             setProgress("Failed to connect to node")
             setProgress(101)
-            binding.syncStatus.setTextColor(ContextCompat.getColor(requireActivity().applicationContext, R.color.red))
+            binding.syncStatus.setTextColor(
+                ContextCompat.getColor(
+                    requireActivity().applicationContext,
+                    R.color.red
+                )
+            )
             binding.blockProgressBar.indeterminateDrawable.setColorFilter(
-                ContextCompat.getColor(requireActivity().applicationContext,R.color.red),
-                PorterDuff.Mode.SRC_IN)
+                ContextCompat.getColor(requireActivity().applicationContext, R.color.red),
+                PorterDuff.Mode.SRC_IN
+            )
         }
 
+        binding.slideToPayButton.onSlideCompleteListener = object : OnSlideCompleteListener {
+            override fun onSlideComplete(view: SlideToActView) {
+                binding.slideToPayButton.setCompleted(false, true)
+                if (CheckOnline.isOnline(requireActivity())) {
+                    if (blockProgressBarVisible) {
+                        when {
+                            binding.syncStatus.text != getString(R.string.status_synchronized) -> {
+                                Toast.makeText(
+                                    requireActivity(),
+                                    "Blocks are syncing wait until your wallet is fully synchronized",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                            senderBeldexAddress == null || senderBeldexAddress!!.isEmpty() -> {
+                                val thread =
+                                    (activity as HomeActivity).threadDb.getRecipientForThreadId(
+                                        viewModel.threadId
+                                    )
+                                if (thread != null) {
+                                    senderBeldexAddress = getBeldexAddress(thread.address)
+                                    if (senderBeldexAddress != null || senderBeldexAddress!!.isNotEmpty()) {
+                                        if (validateBELDEXAmount(binding.inputBar.text)) {
+                                            sendBDX()
+                                        } else {
+                                            Toast.makeText(
+                                                requireActivity(),
+                                                R.string.beldex_amount_valid_error_message,
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    } else {
+                                        Toast.makeText(
+                                            requireActivity(),
+                                            R.string.invalid_destination_address,
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                } else {
+                                    Toast.makeText(
+                                        requireActivity(),
+                                        R.string.invalid_destination_address,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+                            validateBELDEXAmount(binding.inputBar.text) -> {
+                                sendBDX()
+                            }
+                            else -> {
+                                Toast.makeText(
+                                    requireActivity(),
+                                    R.string.beldex_amount_valid_error_message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
+                } else {
+                    Toast.makeText(
+                        requireActivity(),
+                        R.string.please_check_your_internet_connection,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
     }
 
     override fun onResume() {
         super.onResume()
         ApplicationContext.getInstance(requireActivity()).messageNotifier.setVisibleThread(viewModel.threadId)
         val recipient = viewModel.recipient ?: return
-        (activity as HomeActivity).threadDb.markAllAsRead(viewModel.threadId, recipient.isOpenGroupRecipient)
+        (activity as HomeActivity).threadDb.markAllAsRead(
+            viewModel.threadId,
+            recipient.isOpenGroupRecipient
+        )
 
         val thread = (activity as HomeActivity).threadDb.getRecipientForThreadId(viewModel.threadId)
-        if(thread != null) {
+        if (thread != null) {
             showBlockProgressBar(thread)
             callShowPayAsYouChatBDXIcon(thread)
         }
-        if(TextSecurePreferences.isPayAsYouChat(requireActivity())){
-            if(binding.inputBar.text!!.isNotEmpty() && binding.inputBar.text.matches(Regex("^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$"))){
+        if (TextSecurePreferences.isPayAsYouChat(requireActivity())) {
+            if (binding.inputBar.text!!.isNotEmpty() && binding.inputBar.text.matches(Regex("^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$"))) {
+                binding.slideToPayButton.isVisible = true
                 binding.inputBar.showPayAsYouChatBDXIcon(true)
-            }else{
+            } else {
+                binding.slideToPayButton.isVisible = false
                 binding.inputBar.showPayAsYouChatBDXIcon(false)
             }
-        }else{
+        } else {
+            binding.slideToPayButton.isVisible = false
             binding.inputBar.showPayAsYouChatBDXIcon(false)
         }
         //Minimized app
-        if(onTransactionProgress){
+        if (onTransactionProgress) {
             onTransactionProgress = false
             hideProgress()
             refreshTransactionDetails()
@@ -543,7 +626,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     private fun callShowPayAsYouChatBDXIcon(thread: Recipient?) {
         if (thread != null) {
-            binding.inputBar.showPayAsYouChatBDXIcon(thread,HomeActivity.reportIssueBChatID)
+            binding.inputBar.showPayAsYouChatBDXIcon(thread, HomeActivity.reportIssueBChatID)
         }
     }
 
@@ -564,21 +647,21 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     blockProgressBarVisible = false
                 }
             }
-        }catch(ex:IllegalStateException){
-            Log.d("Exception",ex.toString())
+        } catch (ex: IllegalStateException) {
+            Log.d("Exception", ex.toString())
         }
     }
 
     override fun onPause() {
         //Continuously loading progress bar
-        if(inProgress) {
+        if (inProgress) {
             hideProgress()
         }
 
         endActionMode()
         ApplicationContext.getInstance(requireActivity()).messageNotifier.setVisibleThread(-1)
         viewModel.saveDraft(binding.inputBar.text.trim())
-        val recipient = viewModel.recipient ?: return  super.onPause()
+        val recipient = viewModel.recipient ?: return super.onPause()
         /*Hales63*/ // New Line
         if (TextSecurePreferences.getPlayerStatus(requireActivity())) {
             TextSecurePreferences.setPlayerStatus(requireActivity(), false)
@@ -707,7 +790,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun inputBarEditTextContentChanged(newContent: CharSequence) {
-        val inputBarText =binding.inputBar?.text ?: return
+        val inputBarText = binding.inputBar?.text ?: return
         if (listenerCallback!!.gettextSecurePreferences().isLinkPreviewsEnabled()) {
             linkPreviewViewModel.onTextChanged(requireActivity(), inputBarText, 0, 0)
         }
@@ -755,7 +838,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         allButtons.forEach { it.snIsEnabled = isShowingAttachmentOptions }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         Permissions.onRequestPermissionsResult(this, requestCode, permissions, grantResults)
     }
@@ -769,13 +856,19 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
 
             override fun onFailure(e: ExecutionException?) {
-                Toast.makeText(requireActivity(), R.string.activity_conversation_attachment_prep_failed, Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    requireActivity(),
+                    R.string.activity_conversation_attachment_prep_failed,
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
         when (requestCode) {
             PICK_DOCUMENT -> {
                 val uri = intent?.data ?: return
-                prepMediaForSending(uri, AttachmentManager.MediaType.DOCUMENT).addListener(mediaPreppedListener)
+                prepMediaForSending(uri, AttachmentManager.MediaType.DOCUMENT).addListener(
+                    mediaPreppedListener
+                )
             }
             PICK_GIF -> {
                 intent ?: return
@@ -790,7 +883,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 intent ?: return
                 val body = intent.getStringExtra(MediaSendActivity.EXTRA_MESSAGE)
                 val media = intent.getParcelableArrayListExtra<Media>(
-                    MediaSendActivity.EXTRA_MEDIA) ?: return
+                    MediaSendActivity.EXTRA_MEDIA
+                ) ?: return
                 val slideDeck = SlideDeck()
                 for (item in media) {
                     when {
@@ -829,17 +923,25 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                             )
                         }
                         else -> {
-                            Log.d("Beldex", "Asked to send an unexpected media type: '" + item.mimeType + "'. Skipping.")
+                            Log.d(
+                                "Beldex",
+                                "Asked to send an unexpected media type: '" + item.mimeType + "'. Skipping."
+                            )
                         }
                     }
                 }
                 sendAttachments(slideDeck.asAttachments(), body)
             }
             INVITE_CONTACTS -> {
-                if (viewModel.recipient?.isOpenGroupRecipient != true) { return }
+                if (viewModel.recipient?.isOpenGroupRecipient != true) {
+                    return
+                }
                 val extras = intent?.extras ?: return
-                if (!intent.hasExtra(SelectContactsActivity.selectedContactsKey)) { return }
-                val selectedContacts = extras.getStringArray(SelectContactsActivity.selectedContactsKey)!!
+                if (!intent.hasExtra(SelectContactsActivity.selectedContactsKey)) {
+                    return
+                }
+                val selectedContacts =
+                    extras.getStringArray(SelectContactsActivity.selectedContactsKey)!!
                 val recipients = selectedContacts.map { contact ->
                     Recipient.from(requireActivity(), Address.fromSerialized(contact), true)
                 }
@@ -969,57 +1071,17 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             )
         } else {
             if (CheckOnline.isOnline(requireActivity())) {
-                if (blockProgressBarVisible) {
-                    when {
-                        binding.inputBar.text!!.trim().isEmpty() -> {
-                            Toast.makeText(
-                                requireActivity(),
-                                R.string.empty_message_toast,
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                        binding.inputBar.text!!.isNotEmpty() && !binding.inputBar.text.matches(Regex("^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$")) -> {
-                            callSendTextOnlyMessage()
-                        }
-                        binding.syncStatus.text != getString(R.string.status_synchronized) -> {
-                            Toast.makeText(
-                                requireActivity(),
-                                "Blocks are syncing wait until your wallet is fully synchronized",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                        senderBeldexAddress == null || senderBeldexAddress!!.isEmpty() -> {
-                            val thread = (activity as HomeActivity).threadDb.getRecipientForThreadId(viewModel.threadId)
-                            if (thread != null) {
-                                senderBeldexAddress = getBeldexAddress(thread.address)
-                                if(senderBeldexAddress != null || senderBeldexAddress!!.isNotEmpty()){
-                                    if(validateBELDEXAmount(binding.inputBar.text)) {
-                                        sendBDX()
-                                    }else{
-                                        Toast.makeText(requireActivity(), R.string.beldex_amount_valid_error_message, Toast.LENGTH_SHORT).show()
-                                    }
-                                }else{
-                                    Toast.makeText(requireActivity(), R.string.invalid_destination_address, Toast.LENGTH_SHORT).show()
-                                }
-                            }else {
-                                Toast.makeText(requireActivity(), R.string.invalid_destination_address, Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                        validateBELDEXAmount(binding.inputBar.text) -> {
-                            sendBDX()
-                        }
-                        else -> {
-                            Toast.makeText(
-                                requireActivity(),
-                                R.string.beldex_amount_valid_error_message,
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                when {
+                    binding.inputBar.text!!.trim().isEmpty() -> {
+                        Toast.makeText(
+                            requireActivity(),
+                            R.string.empty_message_toast,
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
-                }else if(binding.inputBar.text!!.trim().isEmpty()){
-                    Toast.makeText(requireActivity(), R.string.empty_message_toast, Toast.LENGTH_SHORT).show()
-                }else {
-                    callSendTextOnlyMessage()
+                    else -> {
+                        callSendTextOnlyMessage()
+                    }
                 }
             } else {
                 Toast.makeText(
@@ -1054,7 +1116,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         return isValid
     }
 
-    private fun callSendTextOnlyMessage(){
+    private fun callSendTextOnlyMessage() {
         if (binding.inputBar.text.length > 4096) {
             Toast.makeText(
                 requireActivity(),
@@ -1141,8 +1203,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun handleVoiceMessageUIHidden() {
-        val inputBar =binding.inputBar ?: return
-        val inputBarCard =binding.inputBarCard ?: return
+        val inputBar = binding.inputBar ?: return
+        val inputBarCard = binding.inputBarCard ?: return
         //New Line
         inputBar.visibility = View.VISIBLE
 
@@ -1201,7 +1263,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             return
         }
         val allSentByCurrentUser = messages.all { it.isOutgoing }
-        val allHasHash = messages.all { (activity as HomeActivity).beldexMessageDb.getMessageServerHash(it.id) != null }
+        val allHasHash =
+            messages.all { (activity as HomeActivity).beldexMessageDb.getMessageServerHash(it.id) != null }
         if (recipient.isOpenGroupRecipient) {
             val messageCount = messages.size
             val builder = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog)
@@ -1329,7 +1392,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 viewModel.threadId,
                 requireActivity()
             )
-            if(message.isPayment){
+            if (message.isPayment) {
                 //Payment Tag
                 var amount = ""
                 var direction = ""
@@ -1345,8 +1408,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 } else {
                     resources.getString(R.string.payment_received)
                 }
-                body = resources.getString(R.string.reply_payment_card_message,direction,amount)
-            }else if(message.isOpenGroupInvitation){
+                body = resources.getString(R.string.reply_payment_card_message, direction, amount)
+            } else if (message.isOpenGroupInvitation) {
                 body = resources.getString(R.string.ThreadRecord_open_group_invitation)
             }
 
@@ -1478,8 +1541,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             .setNegativeButton(android.R.string.cancel, null)
             .setPositiveButton(R.string.RecipientPreferenceActivity_block) { _, _ ->
                 viewModel.block()
-                val thread = (activity as HomeActivity).threadDb.getRecipientForThreadId(viewModel.threadId)
-                if(thread != null) {
+                val thread =
+                    (activity as HomeActivity).threadDb.getRecipientForThreadId(viewModel.threadId)
+                if (thread != null) {
                     showBlockProgressBar(thread)
                 }
                 if (deleteThread) {
@@ -1503,8 +1567,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             .setNegativeButton(android.R.string.cancel, null)
             .setPositiveButton(R.string.ConversationActivity_unblock) { _, _ ->
                 viewModel.unblock()
-                val thread = (activity as HomeActivity).threadDb.getRecipientForThreadId(viewModel.threadId)
-                if(thread != null) {
+                val thread =
+                    (activity as HomeActivity).threadDb.getRecipientForThreadId(viewModel.threadId)
+                if (thread != null) {
                     showBlockProgressBar(thread)
                 }
             }.show()
@@ -1532,7 +1597,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     override fun showExpiringMessagesDialog(thread: Recipient) {
         if (thread.isClosedGroupRecipient) {
-            val group = (activity as HomeActivity).groupDb.getGroup(thread.address.toGroupString()).orNull()
+            val group =
+                (activity as HomeActivity).groupDb.getGroup(thread.address.toGroupString()).orNull()
             if (group?.isActive == false) {
                 return
             }
@@ -1680,16 +1746,20 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         {
             ConversationMenuHelper.showAllMedia(recipient, listenerCallback)
         }
-        binding.backToHomeBtn.setOnClickListener{
+        binding.backToHomeBtn.setOnClickListener {
             listenerCallback?.walletOnBackPressed()
         }
 
     }
 
-    private fun backToHome(){
+    private fun backToHome() {
         val homeFragment: Fragment = HomeFragment()
         requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.activity_home_frame_layout_container, homeFragment, HomeFragment::class.java.name).commit()
+            .replace(
+                R.id.activity_home_frame_layout_container,
+                homeFragment,
+                HomeFragment::class.java.name
+            ).commit()
     }
 
     private fun setUpInputBar() {
@@ -1842,6 +1912,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             binding.inputBar.showMediaControls = true
         }
     }
+
     private fun updateUnreadCountIndicator() {
         val binding = binding ?: return
         val formattedUnreadCount = if (unreadCount < 10000) unreadCount.toString() else "9999+"
@@ -1874,13 +1945,15 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     )
                 }
             })
-        }else{
+        } else {
             binding.inputBar.addTextChangedListener(object : SimpleTextWatcher() {
                 override fun onTextChanged(text: String?) {
-                    if(TextSecurePreferences.isPayAsYouChat(requireActivity())){
-                        if(text!!.isNotEmpty() && text.matches(Regex("^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$")) && binding.inputBar.quote == null){
+                    if (TextSecurePreferences.isPayAsYouChat(requireActivity())) {
+                        if (text!!.isNotEmpty() && text.matches(Regex("^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$")) && binding.inputBar.quote == null) {
+                            binding.slideToPayButton.isVisible = true
                             binding.inputBar.showPayAsYouChatBDXIcon(true)
-                        }else{
+                        } else {
+                            binding.slideToPayButton.isVisible = false
                             binding.inputBar.showPayAsYouChatBDXIcon(false)
                         }
                     }
@@ -1908,7 +1981,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     )
                 )
             } else {
-                binding.conversationSubtitleView.text = getString(R.string.ConversationActivity_muted_forever)
+                binding.conversationSubtitleView.text =
+                    getString(R.string.ConversationActivity_muted_forever)
             }
         } else if (recipient.isGroupRecipient) {
             try {
@@ -1928,8 +2002,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 } else {
                     binding.conversationSubtitleView.isVisible = false
                 }
-            }catch(ex:NullPointerException){
-                Log.d("Exception ",ex.message.toString())
+            } catch (ex: NullPointerException) {
+                Log.d("Exception ", ex.message.toString())
             }
         } else {
             binding.conversationSubtitleView.isVisible = false
@@ -1942,7 +2016,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         } else if (item.itemId == R.id.menu_call) {
             val recipient = viewModel.recipient ?: return false
             if (recipient.isContactRecipient && recipient.isBlocked) {
-                BlockedDialog(recipient).show(requireActivity().supportFragmentManager, "Blocked Dialog")
+                BlockedDialog(recipient).show(
+                    requireActivity().supportFragmentManager,
+                    "Blocked Dialog"
+                )
             } else {
                 if (Helper.getPhoneStatePermission(requireActivity())) {
                     isMenuCall()
@@ -1951,8 +2028,14 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 }
             }
         }
-        return  viewModel.recipient?.let { recipient ->
-            ConversationMenuHelper.onOptionItemSelected(requireActivity(),this, item, recipient,listenerCallback)
+        return viewModel.recipient?.let { recipient ->
+            ConversationMenuHelper.onOptionItemSelected(
+                requireActivity(),
+                this,
+                item,
+                recipient,
+                listenerCallback
+            )
         } ?: false
     }
 
@@ -2028,7 +2111,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
 
         } else {
-            Toast.makeText(requireActivity().applicationContext, "Check your Internet", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                requireActivity().applicationContext,
+                "Check your Internet",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -2037,17 +2124,20 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (!TextSecurePreferences.isCallNotificationsEnabled(context)) {
             //SteveJosephh22
             val factory = LayoutInflater.from(context)
-            val callPermissionDialogView: View = factory.inflate(R.layout.call_permissions_dialog_box, null)
+            val callPermissionDialogView: View =
+                factory.inflate(R.layout.call_permissions_dialog_box, null)
             val callPermissionDialog = AlertDialog.Builder(requireActivity()).create()
             callPermissionDialog.setView(callPermissionDialogView)
-            callPermissionDialogView.findViewById<TextView>(R.id.settingsDialogBoxButton).setOnClickListener{
-                val intent = Intent(requireActivity(), PrivacySettingsActivity::class.java)
-                this.activity?.startActivity(intent)
-                callPermissionDialog.dismiss()
-            }
-            callPermissionDialogView.findViewById<TextView>(R.id.cancelDialogBoxButton).setOnClickListener{
-                callPermissionDialog.dismiss()
-            }
+            callPermissionDialogView.findViewById<TextView>(R.id.settingsDialogBoxButton)
+                .setOnClickListener {
+                    val intent = Intent(requireActivity(), PrivacySettingsActivity::class.java)
+                    this.activity?.startActivity(intent)
+                    callPermissionDialog.dismiss()
+                }
+            callPermissionDialogView.findViewById<TextView>(R.id.cancelDialogBoxButton)
+                .setOnClickListener {
+                    callPermissionDialog.dismiss()
+                }
             callPermissionDialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
             callPermissionDialog.show()
             return
@@ -2070,8 +2160,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     ?: return
             OpenGroupAPIV2.getMemberCount(openGroup.room, openGroup.server)
                 .successUi { updateSubtitle() }
-        }catch(ex:NullPointerException){
-            Log.d("Exception ",ex.message.toString())
+        } catch (ex: NullPointerException) {
+            Log.d("Exception ", ex.message.toString())
         }
     }
 
@@ -2091,8 +2181,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         binding.blockedBanner.setOnClickListener { viewModel.unblock() }
         binding.unblockButton.setOnClickListener {
             viewModel.unblock()
-            val thread = (activity as HomeActivity).threadDb.getRecipientForThreadId(viewModel.threadId)
-            if(thread != null) {
+            val thread =
+                (activity as HomeActivity).threadDb.getRecipientForThreadId(viewModel.threadId)
+            if (thread != null) {
                 showBlockProgressBar(thread)
             }
         }
@@ -2118,7 +2209,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
 
     private fun scrollToFirstUnreadMessageIfNeeded() {
-        val lastSeenTimestamp = (activity as HomeActivity).threadDb.getLastSeenAndHasSent(viewModel.threadId).first()
+        val lastSeenTimestamp =
+            (activity as HomeActivity).threadDb.getLastSeenAndHasSent(viewModel.threadId).first()
         val lastSeenItemPosition = adapter.findLastSeenItemPosition(lastSeenTimestamp) ?: return
         if (lastSeenItemPosition <= 3) {
             return
@@ -2145,12 +2237,14 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private fun showOrHideInputIfNeeded() {
         val recipient = viewModel.recipient
         if (recipient != null && recipient.isClosedGroupRecipient) {
-            val group = (activity as HomeActivity).groupDb.getGroup(recipient.address.toGroupString()).orNull()
+            val group =
+                (activity as HomeActivity).groupDb.getGroup(recipient.address.toGroupString())
+                    .orNull()
             val isActive = (group?.isActive == true)
             binding.inputBar.showInput = isActive
-            if(isActive){
-                binding.inputBarCard.radius=10F
-            }else{
+            if (isActive) {
+                binding.inputBarCard.radius = 10F
+            } else {
                 val params: RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
@@ -2159,7 +2253,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 params.addRule(RelativeLayout.ALIGN_PARENT_END)
                 params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
                 params.setMargins(0, 0, 0, 0)
-                binding.inputBarCard.radius=0F
+                binding.inputBarCard.radius = 0F
                 binding.inputBarCard.layoutParams = params
             }
         } else {
@@ -2186,8 +2280,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun hideVoiceMessageUI() {
-        val chevronImageView =binding.inputBarRecordingView?.chevronImageView ?: return
-        val slideToCancelTextView =binding.inputBarRecordingView?.slideToCancelTextView ?: return
+        val chevronImageView = binding.inputBarRecordingView?.chevronImageView ?: return
+        val slideToCancelTextView = binding.inputBarRecordingView?.slideToCancelTextView ?: return
         listOf(chevronImageView, slideToCancelTextView).forEach { view ->
             val animation = ValueAnimator.ofObject(FloatEvaluator(), view.translationX, 0.0f)
             animation.duration = 250L
@@ -2204,7 +2298,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         return !recipient.isGroupRecipient &&
                 !recipient.isApproved &&
                 !recipient.isLocalNumber &&
-                !(activity as HomeActivity).threadDb.getLastSeenAndHasSent(viewModel.threadId).second() &&
+                !(activity as HomeActivity).threadDb.getLastSeenAndHasSent(viewModel.threadId)
+                    .second() &&
                 (activity as HomeActivity).threadDb.getMessageCount(viewModel.threadId) > 0
     }
 
@@ -2283,7 +2378,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun expandVoiceMessageLockView() {
-        val lockView =binding.inputBarRecordingView?.lockView ?: return
+        val lockView = binding.inputBarRecordingView?.lockView ?: return
         val animation = ValueAnimator.ofObject(FloatEvaluator(), lockView.scaleX, 1.10f)
         animation.duration = 250L
         animation.addUpdateListener { animator ->
@@ -2294,7 +2389,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun collapseVoiceMessageLockView() {
-        val lockView =binding.inputBarRecordingView?.lockView ?: return
+        val lockView = binding.inputBarRecordingView?.lockView ?: return
         val animation = ValueAnimator.ofObject(FloatEvaluator(), lockView.scaleX, 1.0f)
         animation.duration = 250L
         animation.addUpdateListener { animator ->
@@ -2327,7 +2422,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 ) else it.individualRecipient.address
             //Payment Tag
             var quoteBody = it.body
-            if(it.isPayment){
+            if (it.isPayment) {
                 //Payment Tag
                 var amount = ""
                 var direction = ""
@@ -2343,8 +2438,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 } else {
                     resources.getString(R.string.payment_received)
                 }
-                quoteBody = resources.getString(R.string.reply_payment_card_message,direction,amount)
-            }else if(it.isOpenGroupInvitation){
+                quoteBody =
+                    resources.getString(R.string.reply_payment_card_message, direction, amount)
+            } else if (it.isOpenGroupInvitation) {
                 quoteBody = resources.getString(R.string.ThreadRecord_open_group_invitation)
             }
             QuoteModel(it.dateSent, sender, quoteBody, false, quotedAttachments)
@@ -2370,7 +2466,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             toggleAttachmentOptions()
         }
         // Put the message in the database
-        message.id = (activity as HomeActivity).mmsDb.insertMessageOutbox(outgoingTextMessage, viewModel.threadId, false) { }
+        message.id = (activity as HomeActivity).mmsDb.insertMessageOutbox(
+            outgoingTextMessage,
+            viewModel.threadId,
+            false
+        ) { }
         // Send it
         MessageSender.send(message, recipient.address, attachments, quote, linkPreview)
         // Send a typing stopped message
@@ -2506,7 +2606,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     private fun jumpToMessage(author: Address, timestamp: Long, onMessageNotFound: Runnable?) {
         SimpleTask.run(lifecycle, {
-            (activity as HomeActivity).mmsSmsDatabase.getMessagePositionInConversation(viewModel.threadId, timestamp, author)
+            (activity as HomeActivity).mmsSmsDatabase.getMessagePositionInConversation(
+                viewModel.threadId,
+                timestamp,
+                author
+            )
         }) { p: Int -> moveToMessagePosition(p, onMessageNotFound) }
     }
 
@@ -2600,7 +2704,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun showOrUpdateMentionCandidatesIfNeeded(query: String = "") {
-        val additionalContentContainer =binding.additionalContentContainer ?: return
+        val additionalContentContainer = binding.additionalContentContainer ?: return
         val recipient = viewModel.recipient ?: return
         if (!isShowingMentionCandidatesView) {
             additionalContentContainer.removeAllViews()
@@ -2632,8 +2736,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             .setMessage(resources.getString(R.string.message_requests_accept_message))
             .setPositiveButton(R.string.accept) { _, _ ->
                 acceptMessageRequest()
-                val thread = (activity as HomeActivity).threadDb.getRecipientForThreadId(viewModel.threadId)
-                if(thread != null) {
+                val thread =
+                    (activity as HomeActivity).threadDb.getRecipientForThreadId(viewModel.threadId)
+                if (thread != null) {
                     showBlockProgressBar(thread)
                 }
             }
@@ -2710,7 +2815,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun getBeldexAddress(address: Address): String {
-        val contact = (activity as HomeActivity).bchatContactDb.getContactWithBchatID(address.toString())
+        val contact =
+            (activity as HomeActivity).bchatContactDb.getContactWithBchatID(address.toString())
         val beldexAddress =
             contact?.displayBeldexAddress(Contact.ContactContext.REGULAR) ?: address.toString()
         return beldexAddress
@@ -2723,8 +2829,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         txData.destinationAddress = senderBeldexAddress
         txData.destinationAddress?.let { Log.d("SenderBeldexAddress txData->", it) }
         if (getCleanAmountString(getBDXAmount()).equals(
-                Wallet.getDisplayAmount(totalFunds)))
-        {
+                Wallet.getDisplayAmount(totalFunds)
+            )
+        ) {
             val amount = (totalFunds - 10485760)// 10485760 == 050000000
             val bdx = getCleanAmountString(getBDXAmount())
             if (bdx != null) {
@@ -2743,9 +2850,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
         }
         txData.userNotes = UserNotes("-")
-        if(TextSecurePreferences.getFeePriority(requireActivity())==0){
+        if (TextSecurePreferences.getFeePriority(requireActivity()) == 0) {
             txData.priority = PendingTransaction.Priority.Priority_Slow
-        }else{
+        } else {
             txData.priority = PendingTransaction.Priority.Priority_Flash
         }
         txData.mixin = MIXIN
@@ -2818,6 +2925,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     var inProgress = false
+
     //Minimized app
     var onTransactionProgress = false
 
@@ -2849,21 +2957,25 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (pendingTransaction != null) {
             val txData: TxData = getTxData()
             try {
-                if(pendingTransaction!!.firstTxId !=null) {
+                if (pendingTransaction!!.firstTxId != null) {
                     InChatSend(
                         pendingTransaction!!,
                         txData,
                         this
                     ).show(requireActivity().supportFragmentManager, "")
                 }
-            }catch(e:IllegalStateException){
+            } catch (e: IllegalStateException) {
                 //Minimized app
                 onTransactionProgress = true
                 return
-            }catch(e: IndexOutOfBoundsException){
+            } catch (e: IndexOutOfBoundsException) {
                 //Minimized app
                 hideProgress()
-                Toast.makeText(requireContext(),getString(R.string.please_try_again_later),Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.please_try_again_later),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
@@ -2881,13 +2993,14 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
     }
 
-    private val resultLaunchers = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            onResumeFragment()
+    private val resultLaunchers =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                onResumeFragment()
+            }
         }
-    }
 
-    private fun onResumeFragment(){
+    private fun onResumeFragment() {
         Helper.hideKeyboard(activity)
         isResume = true
         refreshTransactionDetails()
@@ -2904,7 +3017,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     fun send() {
         commitTransaction()
         //Insert Recipient Address
-        if(TextSecurePreferences.getSaveRecipientAddress(requireActivity())) {
+        if (TextSecurePreferences.getSaveRecipientAddress(requireActivity())) {
             val insertRecipientAddress =
                 DatabaseComponent.get(requireActivity()).bchatRecipientAddressDatabase()
             try {
@@ -2914,7 +3027,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                         txData.destinationAddress
                     )
                 }
-            }catch(e: IndexOutOfBoundsException){
+            } catch (e: IndexOutOfBoundsException) {
                 e.message?.let { Log.d("ConversationFragmentV2->", it) }
             }
         }
@@ -2936,22 +3049,35 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     fun onTransactionSent(txId: String?) {
         hideProgress()
         //Payment Tag
-        viewModel.sentPayment(sendBDXAmount.toString(),txId,viewModel.recipient)
+        viewModel.sentPayment(sendBDXAmount.toString(), txId, viewModel.recipient)
         processMessageRequestApproval()
-        InChatSendSuccess(this).show(requireActivity().supportFragmentManager,"")
+        InChatSendSuccess(this).show(requireActivity().supportFragmentManager, "")
     }
 
     fun setProgress(text: String?) {
         //WalletFragment Functionality
         try {
-            if (text == getString(R.string.reconnecting) || text == getString(R.string.status_wallet_loading) || text == getString(R.string.status_wallet_connecting)) {
-                binding.syncStatus.setTextColor(ContextCompat.getColor(requireActivity().applicationContext, R.color.green_color))
-                binding.blockProgressBar.indeterminateDrawable.setColorFilter(ContextCompat.getColor(requireActivity().applicationContext, R.color.green_color), PorterDuff.Mode.SRC_IN)
+            if (text == getString(R.string.reconnecting) || text == getString(R.string.status_wallet_loading) || text == getString(
+                    R.string.status_wallet_connecting
+                )
+            ) {
+                binding.syncStatus.setTextColor(
+                    ContextCompat.getColor(
+                        requireActivity().applicationContext,
+                        R.color.green_color
+                    )
+                )
+                binding.blockProgressBar.indeterminateDrawable.setColorFilter(
+                    ContextCompat.getColor(
+                        requireActivity().applicationContext,
+                        R.color.green_color
+                    ), PorterDuff.Mode.SRC_IN
+                )
             }
             syncText = text
             binding.syncStatus.text = text
-        }catch(ex:IllegalStateException){
-            Log.d("Exception",ex.toString())
+        } catch (ex: IllegalStateException) {
+            Log.d("Exception", ex.toString())
         }
     }
 
@@ -2967,10 +3093,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 binding.blockProgressBar.progress = n
                 binding.blockProgressBar.isVisible = blockProgressBarVisible
             }
-            n==-2 -> {
+            n == -2 -> {
                 binding.blockProgressBar.isVisible = blockProgressBarVisible
                 binding.blockProgressBar.isIndeterminate = false
-                binding.blockProgressBar.progress=100
+                binding.blockProgressBar.progress = 100
             }
             else -> { // <0
                 binding.blockProgressBar.visibility = View.GONE
@@ -2999,23 +3125,26 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         val walletHeight: Long = wallet.blockChainHeight
         val df = DecimalFormat("#.##")
         val walletSyncPercentage = ((100.00 * walletHeight.toDouble()) / daemonHeight)
-        if(CheckOnline.isOnline(requireContext())) {
+        if (CheckOnline.isOnline(requireContext())) {
             balance = wallet.balance
             val sync: String
             check(listenerCallback!!.hasBoundService()) { "WalletService not bound." }
             val daemonConnected: Wallet.ConnectionStatus = listenerCallback!!.connectionStatus!!
             if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
                 if (!wallet.isSynchronized) {
-                    ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(true)
+                    ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(
+                        true
+                    )
                     val n = daemonHeight - walletHeight
                     sync = formatter.format(n) + " " + getString(R.string.status_remaining)
                     if (firstBlock == 0L) {
                         firstBlock = walletHeight
                     }
-                    var x = (100 - Math.round(100f * n / (1f * daemonHeight  - firstBlock))).toInt()
+                    var x = (100 - Math.round(100f * n / (1f * daemonHeight - firstBlock))).toInt()
                     if (x == 0) x = 101 // indeterminate
                     setProgress(x)
-                    binding.valueOfWallet.text = "$walletHeight/$daemonHeight (${df.format(walletSyncPercentage)}%)"
+                    binding.valueOfWallet.text =
+                        "$walletHeight/$daemonHeight (${df.format(walletSyncPercentage)}%)"
                     binding.syncStatus.setTextColor(
                         ContextCompat.getColor(
                             requireActivity().applicationContext,
@@ -3024,7 +3153,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     )
                     binding.valueOfRemote.text = wallet.daemonBlockChainHeight.toString()
                 } else {
-                    ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(false)
+                    ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(
+                        false
+                    )
                     binding.valueOfRemote.text = wallet.daemonBlockChainHeight.toString()
                     sync =
                         getString(R.string.status_synchronized)
@@ -3034,7 +3165,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                             R.color.green_color
                         )
                     )
-                    binding.valueOfWallet.text = "$walletHeight/$daemonHeight (${df.format(walletSyncPercentage)}%)"
+                    binding.valueOfWallet.text =
+                        "$walletHeight/$daemonHeight (${df.format(walletSyncPercentage)}%)"
                     //SteveJosephh21
                     setProgress(-2)
                 }
@@ -3049,8 +3181,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 )
             }
             setProgress(sync)
-        }
-        else {
+        } else {
             setProgress(getString(R.string.no_node_connection))
             binding.syncStatus.setTextColor(
                 ContextCompat.getColor(
@@ -3064,13 +3195,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private fun refreshBalance(synchronized: Boolean) {
         val unlockedBalance: Double = Helper.getDecimalAmount(unlockedBalance).toDouble()
         val balance: Double = Helper.getDecimalAmount(balance).toDouble()
-        if(balance > 0.0){
+        if (balance > 0.0) {
             showBalance(
                 Helper.getFormattedAmount(balance, true),
                 Helper.getFormattedAmount(unlockedBalance, true),
                 true
             )
-        }else{
+        } else {
             showBalance(
                 Helper.getFormattedAmount(balance, true),
                 Helper.getFormattedAmount(unlockedBalance, true),
@@ -3079,8 +3210,12 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
     }
 
-    private fun showBalance(walletBalance: String?, walletUnlockedBalance: String?, synchronized:Boolean){
-        if(mContext!=null) {
+    private fun showBalance(
+        walletBalance: String?,
+        walletUnlockedBalance: String?,
+        synchronized: Boolean
+    ) {
+        if (mContext != null) {
             if (!synchronized) {
                 when {
                     TextSecurePreferences.getDecimals(requireActivity()) == "2 - Two (0.00)" -> {
@@ -3150,8 +3285,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         override fun doInBackground(vararg params: Executor?): Boolean {
             try {
                 unlockedBalance = wallet.unlockedBalance
-            }catch (e: Exception){
-                Log.d("WalletFragment",e.toString())
+            } catch (e: Exception) {
+                Log.d("WalletFragment", e.toString())
             }
             return true
         }

@@ -203,4 +203,6 @@
     <color name="beta_icon">#aaaaaa</color>
     <color name="receive_payment_card_background">#128B17</color>
     <color name="copy_link_background">#525264</color>
+    <color name="slidetoact_white">#FFFFFF</color>
+    <color name="slidetoact_defaultAccent">#FF4081</color>
 </resources>

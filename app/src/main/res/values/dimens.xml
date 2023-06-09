@@ -150,4 +150,8 @@
 
     <dimen name="small_radial_size">24dp</dimen>
 
+    <dimen name="slidetoact_default_area_margin">8dp</dimen>
+    <dimen name="slidetoact_default_icon_margin">16dp</dimen>
+    <dimen name="slidetoact_default_send_icon_margin">16dp</dimen>
+    <dimen name="slidetoact_default_text_size">16sp</dimen>
 </resources>

@@ -581,7 +581,7 @@ class SlideToActView @JvmOverloads constructor(
         // Image drawing
         mImage.alpha = (255 * mPositionPercInv).toInt()
         mImage.setBounds(
-            (mAreaWidth/2)+143,
+            (mAreaWidth-mAreaHeight)+20,
             mSendIconMargin,
             mAreaWidth - mSendIconMargin - mActualAreaWidth,
             mAreaHeight - mSendIconMargin

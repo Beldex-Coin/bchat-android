@@ -218,6 +218,7 @@
             android:visibility="gone"
             app:arrowAlignmentOffset="32dp"
             android:layout_alignParentBottom="true"
+            android:fontFamily="@font/open_sans_medium"
             android:justificationMode="inter_word"/>
 
         <androidx.cardview.widget.CardView
@@ -389,158 +390,13 @@
                 android:textStyle="bold"
                 android:clickable="true"
                 android:focusable="true"/>
-
-            <ImageView
-                android:id="@+id/conversation_expandable_arrow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginEnd="10dp"
-                android:src="@drawable/ic_baseline_keyboard_arrow_down_24" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/in_chat_wallet_Details"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/syncStatusLayout"
-            android:visibility="gone"
-            android:background="@color/page_background"
-            android:orientation="vertical"
-            android:clickable="true"
-            android:focusable="true">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginBottom="10dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/subTitle_balance"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans_medium"
-                    android:text="@string/subtitle_balance"
-                    android:textColor="@color/green_color"
-                    android:textStyle="bold"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/value_of_balance"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/open_sans_medium"
-                    android:textColor="@color/text"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/small_font_size" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginBottom="10dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/subTitle_Unlocked_balance"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans_medium"
-                    android:text="@string/subtitle_unlocked_balance"
-                    android:textColor="@color/send_message_background"
-                    android:textStyle="bold"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/value_of_unlocked_balance"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/open_sans_medium"
-                    android:textColor="@color/text"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/small_font_size" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginBottom="10dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/subTitle_Remote"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans_medium"
-                    android:text="@string/subtitle_current_height"
-                    android:textColor="@color/text"
-                    android:textStyle="bold"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/value_of_remote"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/open_sans_medium"
-                    android:textColor="@color/text"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/small_font_size" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginBottom="10dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/subTitle_Wallet"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans_medium"
-                    android:text="@string/subtitle_wallet"
-                    android:textColor="@color/text"
-                    android:textStyle="bold"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/value_of_Wallet"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/open_sans_medium"
-                    android:textColor="@color/text"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/small_font_size" />
-            </LinearLayout>
-
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/blockedBanner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/in_chat_wallet_Details"
+            android:layout_below="@id/syncStatusLayout"
             android:background="@color/page_background"
             android:gravity="center"
             android:orientation="vertical"

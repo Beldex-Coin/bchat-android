@@ -367,6 +367,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private var walletSynchronized: Boolean = false
     private var blockProgressBarVisible: Boolean = false
     var transactionInProgress = false
+    var valueOfBalance = "--"
+    var valueOfUnLockedBalance = "--"
+    var valueOfWallet = "--"
 
 
     interface Listener {
@@ -491,15 +494,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         listenerCallback!!.forceUpdate(requireActivity())
         showBlockProgressBar(thread)
 
-        binding.conversationExpandableArrow.setOnClickListener {
-            if (!binding.inChatWalletDetails.isVisible) {
-                binding.inChatWalletDetails.visibility = View.VISIBLE
-                binding.conversationExpandableArrow.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
-            } else if (binding.inChatWalletDetails.isVisible) {
-                binding.inChatWalletDetails.visibility = View.GONE
-                binding.conversationExpandableArrow.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
-            }
-        }
         callShowPayAsYouChatBDXIcon(thread)
 
         showBalance(Helper.getDisplayAmount(0), Helper.getDisplayAmount(0), walletSynchronized)
@@ -643,7 +637,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 } else {
                     binding.blockProgressBar.visibility = View.GONE
                     binding.syncStatusLayout.visibility = View.GONE
-                    binding.inChatWalletDetails.visibility = View.GONE
                     blockProgressBarVisible = false
                 }
             }
@@ -1167,13 +1160,21 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
     }
 
-    private fun toolTip(){
-        if(!binding.tooltip.isVisible)
-        {
-            binding.tooltip.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                Html.fromHtml("<p><b>Balance : 9.89654086</b></p><p><b>Unlocked Balance : 9.89654086</b></p><p>Wallet : <b>1709092/1709092(100.0%)</b></p>", Html.FROM_HTML_MODE_COMPACT)
-            } else {
-                Html.fromHtml("<p><b>Balance : 9.89654086</b></p><p><b>Unlocked Balance : 9.89654086</b></p><p>Wallet : <b>1709092/1709092(100.0%)</b></p>")
+    override fun walletDetailsUI() {
+        binding.tooltip.isVisible = !binding.tooltip.isVisible
+        toolTip()
+    }
+
+    private fun toolTip() {
+        when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> {
+                binding.tooltip.text =
+                    Html.fromHtml("<p> <b>Balance : $valueOfBalance </b> </p> <br /> <p><b>Unlocked Balance : $valueOfUnLockedBalance</b> </p> <br /> <p>Wallet :  $valueOfWallet </p>",
+                        Html.FROM_HTML_MODE_COMPACT)
+            }
+            else -> {
+                binding.tooltip.text =
+                    Html.fromHtml("<p> <b>Balance : $valueOfBalance </b> </p> <br /> <p> <b>Unlocked Balance : $valueOfUnLockedBalance</b> </p> <br /> <p>Wallet : $valueOfWallet </p>")
             }
         }
     }
@@ -3126,7 +3127,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 }
             }
         }
-        binding.valueOfRemote.text = wallet.daemonBlockChainHeight.toString()
         updateStatus(wallet)
     }
 
@@ -3154,20 +3154,17 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     var x = (100 - Math.round(100f * n / (1f * daemonHeight - firstBlock))).toInt()
                     if (x == 0) x = 101 // indeterminate
                     setProgress(x)
-                    binding.valueOfWallet.text =
-                        "$walletHeight/$daemonHeight (${df.format(walletSyncPercentage)}%)"
+                    valueOfWallet = "$walletHeight/$daemonHeight (${df.format(walletSyncPercentage)}%)"
                     binding.syncStatus.setTextColor(
                         ContextCompat.getColor(
                             requireActivity().applicationContext,
                             R.color.green_color
                         )
                     )
-                    binding.valueOfRemote.text = wallet.daemonBlockChainHeight.toString()
                 } else {
                     ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(
                         false
                     )
-                    binding.valueOfRemote.text = wallet.daemonBlockChainHeight.toString()
                     sync =
                         getString(R.string.status_synchronized)
                     binding.syncStatus.setTextColor(
@@ -3176,7 +3173,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                             R.color.green_color
                         )
                     )
-                    binding.valueOfWallet.text =
+                    valueOfWallet =
                         "$walletHeight/$daemonHeight (${df.format(walletSyncPercentage)}%)"
                     //SteveJosephh21
                     setProgress(-2)
@@ -3201,6 +3198,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 )
             )
         }
+        toolTip()
     }
 
     private fun refreshBalance(synchronized: Boolean) {
@@ -3230,54 +3228,55 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             if (!synchronized) {
                 when {
                     TextSecurePreferences.getDecimals(requireActivity()) == "2 - Two (0.00)" -> {
-                        binding.valueOfBalance.text = "-.--"
-                        binding.valueOfUnlockedBalance.text = "-.--"
+                        valueOfBalance = "-.--"
+                        valueOfUnLockedBalance = "-.--"
                     }
                     TextSecurePreferences.getDecimals(requireActivity()) == "3 - Three (0.000)" -> {
-                        binding.valueOfBalance.text = "-.---"
-                        binding.valueOfUnlockedBalance.text = "-.---"
+                        valueOfBalance = "-.---"
+                        valueOfUnLockedBalance = "-.---"
                     }
                     TextSecurePreferences.getDecimals(requireActivity()) == "0 - Zero (000)" -> {
-                        binding.valueOfBalance.text = "-"
-                        binding.valueOfUnlockedBalance.text = "-"
+                        valueOfBalance = "-"
+                        valueOfUnLockedBalance = "-"
                     }
                     else -> {
-                        binding.valueOfBalance.text = "-.----"
-                        binding.valueOfUnlockedBalance.text = "-.----"
+                        valueOfBalance = "-.----"
+                        valueOfUnLockedBalance = "-.----"
                     }
                 }
             } else {
                 when {
                     TextSecurePreferences.getDecimals(requireActivity()) == "2 - Two (0.00)" -> {
-                        binding.valueOfBalance.text =
+                        valueOfBalance =
                             String.format("%.2f", walletBalance!!.replace(",", "").toDouble())
-                        binding.valueOfUnlockedBalance.text = String.format(
+                        valueOfUnLockedBalance = String.format(
                             "%.2f",
                             walletUnlockedBalance!!.replace(",", "").toDouble()
                         )
                     }
                     TextSecurePreferences.getDecimals(requireActivity()) == "3 - Three (0.000)" -> {
-                        binding.valueOfBalance.text =
+                        valueOfBalance =
                             String.format("%.3f", walletBalance!!.replace(",", "").toDouble())
-                        binding.valueOfUnlockedBalance.text = String.format(
+                        valueOfUnLockedBalance = String.format(
                             "%.3f",
                             walletUnlockedBalance!!.replace(",", "").toDouble()
                         )
                     }
                     TextSecurePreferences.getDecimals(requireActivity()) == "0 - Zero (000)" -> {
-                        binding.valueOfBalance.text =
+                        valueOfBalance =
                             String.format("%.0f", walletBalance!!.replace(",", "").toDouble())
-                        binding.valueOfUnlockedBalance.text = String.format(
+                        valueOfUnLockedBalance = String.format(
                             "%.0f",
                             walletUnlockedBalance!!.replace(",", "").toDouble()
                         )
                     }
                     else -> {
-                        binding.valueOfBalance.text = walletBalance
+                        valueOfBalance = walletBalance!!
                     }
                 }
             }
         }
+        toolTip()
     }
 
     inner class AsyncGetUnlockedBalance(val wallet: Wallet) :

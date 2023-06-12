@@ -669,39 +669,25 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             TextSecurePreferences.setPlayerStatus(requireActivity(), false)
             val contactDB = DatabaseComponent.get(requireActivity()).bchatContactDatabase()
             val contact = contactDB.getContactWithBchatID(recipient.address.toString())
-            if (contact?.isTrusted != null) {
-                if (contact.isTrusted) {
-                    val actionMode = this.actionMode
-                    if (actionMode == null) {
-                        if (selectedEvent != null && selectedView != null) {
-                            selectedEvent?.let { selectedView?.onContentClick(it) }
-                            if (selectedMessageRecord?.isOutgoing != null) {
-                                if (selectedMessageRecord?.isOutgoing!!) {
-                                    selectedEvent?.let { selectedView?.onContentClick(it) }
-                                }
-                            }
-                        }
-                    }
+            val actionMode = this.actionMode
+            if (contact?.isTrusted != null && contact.isTrusted && actionMode == null && selectedEvent != null && selectedView != null) {
+                selectedEvent?.let {
+                    selectedView?.onContentClick(it)
                 }
-
-            } else if (contact?.isTrusted == null && selectedMessageRecord?.isOutgoing == false) {
-                val actionMode = this.actionMode
-                if (actionMode == null) {
-                    if (selectedEvent != null && selectedView != null) {
+                if (selectedMessageRecord?.isOutgoing != null) {
+                    if (selectedMessageRecord?.isOutgoing!!) {
                         selectedEvent?.let { selectedView?.onContentClick(it) }
                     }
                 }
-            }
-            if (selectedMessageRecord?.isOutgoing != null) {
-                if (selectedMessageRecord?.isOutgoing!!) {
-                    val actionMode = this.actionMode
-                    if (actionMode == null) {
-                        if (selectedEvent != null && selectedView != null) {
-                            selectedEvent?.let { selectedView?.onContentClick(it) }
-                        }
-                    }
+            } else if (contact?.isTrusted == null && selectedMessageRecord?.isOutgoing == false && actionMode == null && selectedEvent != null && selectedView != null) {
+                selectedEvent?.let {
+                    selectedView?.onContentClick(it)
                 }
-
+            }
+            if (selectedMessageRecord?.isOutgoing != null && selectedMessageRecord?.isOutgoing!! && actionMode == null && selectedEvent != null && selectedView != null) {
+                selectedEvent?.let {
+                    selectedView?.onContentClick(it)
+                }
             }
         }
         super.onPause()

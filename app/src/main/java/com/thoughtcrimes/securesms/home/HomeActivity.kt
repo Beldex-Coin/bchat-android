@@ -490,9 +490,13 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
         if (event?.action === MotionEvent.ACTION_DOWN) {
             val touch = PointF(event.x, event.y)
-            val homeFragment: Fragment? = getCurrentFragment()
-            if((homeFragment is HomeFragment)) {
-                homeFragment.dispatchTouchEvent()
+            when (val currentFragment: Fragment? = getCurrentFragment()) {
+                is HomeFragment -> {
+                    currentFragment.dispatchTouchEvent()
+                }
+                is ConversationFragmentV2 -> {
+                    currentFragment.dispatchTouchEvent()
+                }
             }
         }
         return super.dispatchTouchEvent(event)

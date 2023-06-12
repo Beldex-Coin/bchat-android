@@ -370,6 +370,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     var valueOfBalance = "--"
     var valueOfUnLockedBalance = "--"
     var valueOfWallet = "--"
+    var tooltipIsVisible = false
+    var dispatchTouched = false
 
 
     interface Listener {
@@ -1168,8 +1170,30 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun walletDetailsUI() {
-        binding.tooltip.isVisible = !binding.tooltip.isVisible
+        when {
+            binding.tooltip.isVisible -> {
+                binding.tooltip.visibility = View.GONE
+                tooltipIsVisible = false
+            }
+            dispatchTouched -> {
+                dispatchTouched = false
+            }
+            else -> {
+                binding.tooltip.visibility = View.VISIBLE
+                tooltipIsVisible = true
+            }
+        }
         toolTip()
+    }
+
+    fun dispatchTouchEvent() {
+        if (tooltipIsVisible) {
+            binding.tooltip.visibility = View.GONE
+            tooltipIsVisible = false
+            dispatchTouched = true
+        } else {
+            dispatchTouched = false
+        }
     }
 
     private fun toolTip() {

@@ -124,9 +124,11 @@ class RescanDialog(val context: HomeActivity, private val daemonBlockChainHeight
             }
             dialogCurrentBlockHeight.text=daemonBlockChainHeight.toString()
 
+            binding.dialogCurrentBlockHeight.inputType = InputType.TYPE_CLASS_NUMBER
+
             binding.restoreSeedWalletRestoreHeight.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable) {
-                    if (binding.restoreSeedWalletRestoreHeight.text.toString().length == 9) {
+                    if (binding.restoreSeedWalletRestoreHeight.text.trim().toString().length == 9) {
                         Toast.makeText(
                             context,
                             R.string.enter_a_valid_height,
@@ -162,7 +164,7 @@ class RescanDialog(val context: HomeActivity, private val daemonBlockChainHeight
 
             rescanButton.setOnClickListener {
                 if(CheckOnline.isOnline(context)) {
-                    val restoreHeight = binding.restoreSeedWalletRestoreHeight.text.toString()
+                    val restoreHeight = binding.restoreSeedWalletRestoreHeight.text.trim().toString()
                     val restoreFromDate = binding.restoreSeedWalletRestoreDate.text.toString()
                     //SteveJosephh21
                     when {

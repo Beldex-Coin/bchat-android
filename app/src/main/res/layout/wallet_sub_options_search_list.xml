@@ -57,7 +57,7 @@
                         android:id="@+id/searchTextEditText"
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:hint="Search Decimals"
+                        android:hint="@string/search_currency"
                         android:layout_marginStart="10dp"
                         android:background="@android:color/transparent"
                         android:layout_height="40dp"/>

@@ -439,7 +439,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 (activity as HomeActivity).mmsSmsDatabase.getUnreadCount(viewModel.threadId)
             withContext(Dispatchers.Main) {
                 setUpRecyclerView()
-                setUpTypingObserver()
+                setUpTypingObserver(thread)
                 setUpRecipientObserver()
                 getLatestOpenGroupInfoIfNeeded()
                 setUpSearchResultObserver()
@@ -597,15 +597,15 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
         if (TextSecurePreferences.isPayAsYouChat(requireActivity())) {
             if (binding.inputBar.text!!.isNotEmpty() && binding.inputBar.text.matches(Regex("^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$"))) {
-                binding.slideToPayButton.isVisible = true
                 binding.inputBar.showPayAsYouChatBDXIcon(true)
+                showPayWithSlide(thread,true)
             } else {
-                binding.slideToPayButton.isVisible = false
                 binding.inputBar.showPayAsYouChatBDXIcon(false)
+                showPayWithSlide(thread,false)
             }
         } else {
-            binding.slideToPayButton.isVisible = false
             binding.inputBar.showPayAsYouChatBDXIcon(false)
+            showPayWithSlide(thread,false)
         }
         //Minimized app
         if (onTransactionProgress) {
@@ -615,6 +615,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             //Continuously Transaction
             this.pendingTransaction = null
             this.pendingTx = null
+        }
+    }
+    private fun showPayWithSlide(thread: Recipient?, status: Boolean) {
+        if (thread != null && !thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && HomeActivity.reportIssueBChatID!=thread.address.toString() && !thread.isLocalNumber && status) {
+            binding.slideToPayButton.visibility = View.VISIBLE
+        }else{
+            binding.slideToPayButton.visibility = View.GONE
         }
     }
 
@@ -1938,7 +1945,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         binding.unreadCountIndicator.isVisible = (unreadCount != 0)
     }
 
-    private fun setUpTypingObserver() {
+    private fun setUpTypingObserver(thread: Recipient) {
         ApplicationContext.getInstance(requireActivity()).typingStatusRepository.getTypists(
             viewModel.threadId
         ).observe(requireActivity()) { state ->
@@ -1955,22 +1962,27 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     ApplicationContext.getInstance(requireActivity()).typingStatusSender.onTypingStarted(
                         viewModel.threadId
                     )
+                    checkInputBarTextOnTextChanged(text,thread)
                 }
             })
         } else {
             binding.inputBar.addTextChangedListener(object : SimpleTextWatcher() {
                 override fun onTextChanged(text: String?) {
-                    if (TextSecurePreferences.isPayAsYouChat(requireActivity())) {
-                        if (text!!.isNotEmpty() && text.matches(Regex("^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$")) && binding.inputBar.quote == null) {
-                            binding.slideToPayButton.isVisible = true
-                            binding.inputBar.showPayAsYouChatBDXIcon(true)
-                        } else {
-                            binding.slideToPayButton.isVisible = false
-                            binding.inputBar.showPayAsYouChatBDXIcon(false)
-                        }
-                    }
+                   checkInputBarTextOnTextChanged(text,thread)
                 }
             })
+        }
+    }
+
+    private fun checkInputBarTextOnTextChanged(text: String?,thread: Recipient){
+        if (TextSecurePreferences.isPayAsYouChat(requireActivity())) {
+            if (text!!.isNotEmpty() && text.matches(Regex("^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$")) && binding.inputBar.quote == null) {
+                binding.inputBar.showPayAsYouChatBDXIcon(true)
+                showPayWithSlide(thread,true)
+            } else {
+                binding.inputBar.showPayAsYouChatBDXIcon(false)
+                showPayWithSlide(thread,false)
+            }
         }
     }
 

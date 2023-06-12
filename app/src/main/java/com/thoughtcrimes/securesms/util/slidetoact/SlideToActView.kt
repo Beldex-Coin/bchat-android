@@ -824,7 +824,11 @@ class SlideToActView @JvmOverloads constructor(
                     onSlideToActAnimationEventListener?.onSlideCompleteAnimationEnded(
                         this@SlideToActView
                     )
-                    onSlideCompleteListener?.onSlideComplete(this@SlideToActView)
+                    try {
+                        onSlideCompleteListener?.onSlideComplete(this@SlideToActView)
+                    }catch(ex: IllegalStateException){
+                        Log.d("Exception: ",ex.message.toString())
+                    }
                 }
 
                 override fun onAnimationRepeat(p0: Animator) {

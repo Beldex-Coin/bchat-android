@@ -347,7 +347,7 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         for (d in arrayList) {
             //or use .equal(text) with you want equal match
             //use .toLowerCase() for better matches
-            if (d.lowercase().contains(text!!)) {
+            if (d.lowercase().contains(text!!.lowercase())) {
                 temp.add(d)
             }
         }

@@ -138,8 +138,10 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
         nameTextViewContainer.visibility = View.VISIBLE
         nameEditTextContainer.visibility = View.INVISIBLE
         var newNickName: String? = null
-        if (nicknameEditText.text.isNotEmpty()) {
+        if (nicknameEditText.text.trim().isNotEmpty()) {
             newNickName = nicknameEditText.text.toString()
+        }else{
+            Toast.makeText(context,R.string.enter_a_valid_nickname,Toast.LENGTH_SHORT).show()
         }
         val publicKey = recipient.address.serialize()
         val contactDB = DatabaseComponent.get(requireContext()).bchatContactDatabase()

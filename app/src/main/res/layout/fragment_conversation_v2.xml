@@ -219,7 +219,9 @@
             app:arrowAlignmentOffset="32dp"
             android:layout_alignParentBottom="true"
             android:fontFamily="@font/open_sans_medium"
-            android:justificationMode="inter_word"/>
+            android:justificationMode="inter_word"
+            android:clickable="true"
+            android:focusable="true"/>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/inputBarCard"
@@ -568,7 +570,7 @@
             app:inner_color="@color/green_color"
             app:outer_color="@color/input_bar_background"
             app:slider_icon_color="@color/text"
-            app:text="Swipe to send BDX"
+            app:text="@string/slide_to_send_bdx"
             app:slider_height="50dp"
             app:slider_locked="false"
             android:layout_alignParentBottom="true"

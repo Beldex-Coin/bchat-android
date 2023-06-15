@@ -86,14 +86,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         // In Chat BDX
         binding.inChatBDX.setOnClickListener { delegate?.walletDetailsUI() }
 
-        binding.inChatBDXAnimation.setOnClickListener{
-            delegate?.walletDetailsUI() }
-
         binding.inChatBDX.setOnLongClickListener {
-            delegate?.inChatBDXOptions()
-            true
-        }
-        binding.inChatBDXAnimation.setOnLongClickListener {
             delegate?.inChatBDXOptions()
             true
         }
@@ -226,10 +219,6 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
     }
 
     //Payment Tag
-    fun showPayAsYouChatBDXIcon(status:Boolean){
-        binding.inChatBDXAnimation.isVisible = status
-        binding.inChatBDX.isVisible = !status
-    }
 
     fun showPayAsYouChatBDXIcon(thread: Recipient,reportIssueId:String) {
         if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && reportIssueId!=thread.address.toString() && !thread.isLocalNumber) {
@@ -237,6 +226,52 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         }else{
             binding.payAsYouChatLayout.visibility = View.GONE
         }
+    }
+
+    fun showProgressBar(status:Boolean){
+        binding.blockProgressBar.isVisible = status
+    }
+
+    fun showFailedProgressBar(status: Boolean){
+        binding.failedBlockProgressBar.isVisible = status
+        binding.failedBlockProgressBar.progress = 0
+    }
+
+    fun setProgress(progress:Int){
+        binding.blockProgressBar.progress = progress
+    }
+
+    fun setDrawableProgressBar(context: Context,type: Boolean) {
+        if(TextSecurePreferences.isPayAsYouChat(context)) {
+            if (type) {
+                binding.failedBlockProgressBar.isVisible = type
+                binding.failedBlockProgressBar.progress = 100
+                binding.blockProgressBar.isVisible = !type
+                binding.blockProgressBar.progress = 0
+            } else {
+                binding.blockProgressBar.isVisible = !type
+                binding.blockProgressBar.progress = 100
+                binding.failedBlockProgressBar.isVisible = type
+                binding.failedBlockProgressBar.progress = 0
+            }
+        }else{
+            binding.failedBlockProgressBar.isVisible = false
+            binding.failedBlockProgressBar.progress = 0
+        }
+    }
+    fun setDrawableProgressBar(type: Boolean) {
+        if (type) {
+            binding.failedBlockProgressBar.isVisible = type
+            binding.failedBlockProgressBar.progress = 100
+            binding.blockProgressBar.isVisible = !type
+            binding.blockProgressBar.progress = 0
+        } else {
+            binding.blockProgressBar.isVisible = !type
+            binding.blockProgressBar.progress = 100
+            binding.failedBlockProgressBar.isVisible = type
+            binding.failedBlockProgressBar.progress = 0
+        }
+
     }
     // endregion
 }

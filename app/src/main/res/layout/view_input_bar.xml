@@ -49,30 +49,48 @@
             android:layout_height="@dimen/input_bar_button_expanded_size"
             android:layout_toStartOf="@id/microphoneOrSendButtonContainer"
             android:gravity="center"
-            android:layout_centerVertical="true"
-            android:orientation="horizontal">
+            android:layout_centerVertical="true">
 
             <ImageView
                 android:id="@+id/inChatBDX"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:layout_margin="10dp"
                 android:src="@drawable/ic_in_chat_bdx" />
-
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/inChatBDXAnimation"
-                android:layout_width="28.203dp"
-                android:layout_height="28.203dp"
-                android:adjustViewBounds="true"
-                android:layout_gravity="center_vertical"
-                app:layout_constraintDimensionRatio="1:1"
-                app:lottie_fileName="pay_as_you_chat_coin.json"
-                app:lottie_loop="true"
-                app:lottie_speed="1"
-                app:lottie_autoPlay="true"
+            <ProgressBar
+                android:id="@+id/blockProgressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:progressDrawable="@drawable/green_circular_progress_bar"
+                android:background="@drawable/circle_shape"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminate="false"
                 android:visibility="gone"
-                app:lottie_enableMergePathsForKitKatAndAbove="true"
-                tools:ignore="ContentDescription" />
+                android:layout_margin="5dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:max="100"/>
+            <ProgressBar
+                android:id="@+id/failedBlockProgressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:progressDrawable="@drawable/red_circular_progress_bar"
+                android:background="@drawable/circle_shape"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminate="false"
+                android:visibility="gone"
+                android:layout_margin="5dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:max="100"/>
         </RelativeLayout>
 
         <RelativeLayout

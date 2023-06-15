@@ -1370,4 +1370,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="slide_to_send_bdx" translatable="false">Slide to send BDX</string>
     <string name="search_currency" translatable="false">Search Currency</string>
     <string name="enter_a_valid_nickname" translatable="false">Enter a valid nickname</string>
+    <string name="failed_to_connect_to_node" translatable="false">Failed to connect to node</string>
 </resources>

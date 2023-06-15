@@ -501,7 +501,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         showBalance(Helper.getDisplayAmount(0), Helper.getDisplayAmount(0), walletSynchronized)
 
         if (listenerCallback!!.getNode() == null) {
-            setProgress("Failed to connect to node")
+            setProgress(getString(R.string.failed_to_connect_to_node))
             setProgress(101)
             binding.syncStatus.setTextColor(
                 ContextCompat.getColor(
@@ -509,10 +509,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     R.color.red
                 )
             )
-            binding.blockProgressBar.indeterminateDrawable.setColorFilter(
-                ContextCompat.getColor(requireActivity().applicationContext, R.color.red),
-                PorterDuff.Mode.SRC_IN
-            )
+            binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext,true)
         }
 
         binding.slideToPayButton.onSlideCompleteListener = object : OnSlideCompleteListener {
@@ -599,14 +596,16 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
         if (TextSecurePreferences.isPayAsYouChat(requireActivity())) {
             if (binding.inputBar.text!!.isNotEmpty() && binding.inputBar.text.matches(Regex("^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$"))) {
-                binding.inputBar.showPayAsYouChatBDXIcon(true)
                 showPayWithSlide(thread,true)
             } else {
-                binding.inputBar.showPayAsYouChatBDXIcon(false)
                 showPayWithSlide(thread,false)
             }
+            if(syncText == getString(R.string.failed_to_connect_to_node) || syncText == getString(R.string.failed_connected_to_the_node)|| syncText == getString(R.string.no_node_connection)){
+                binding.inputBar.setDrawableProgressBar(true)
+            }else{
+                binding.inputBar.setDrawableProgressBar(false)
+            }
         } else {
-            binding.inputBar.showPayAsYouChatBDXIcon(false)
             showPayWithSlide(thread,false)
         }
         //Minimized app
@@ -640,11 +639,12 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                         requireActivity()
                     ) && thread.isApproved && HomeActivity.reportIssueBChatID != thread.address.toString() && !thread.isLocalNumber
                 ) {
-                    binding.blockProgressBar.visibility = View.VISIBLE
+                    binding.inputBar.showProgressBar(true)
                     binding.syncStatusLayout.visibility = View.VISIBLE
                     blockProgressBarVisible = true
                 } else {
-                    binding.blockProgressBar.visibility = View.GONE
+                    binding.inputBar.showFailedProgressBar(false)
+                    binding.inputBar.showProgressBar(false)
                     binding.syncStatusLayout.visibility = View.GONE
                     blockProgressBarVisible = false
                 }
@@ -1987,10 +1987,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private fun checkInputBarTextOnTextChanged(text: String?,thread: Recipient){
         if (TextSecurePreferences.isPayAsYouChat(requireActivity())) {
             if (text!!.isNotEmpty() && text.matches(Regex("^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$")) && binding.inputBar.quote == null) {
-                binding.inputBar.showPayAsYouChatBDXIcon(true)
                 showPayWithSlide(thread,true)
             } else {
-                binding.inputBar.showPayAsYouChatBDXIcon(false)
                 showPayWithSlide(thread,false)
             }
         }
@@ -2914,7 +2912,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 return
             }
         }
-        //sendButtonEnabled()
         showAlert(getString(R.string.send_create_tx_error_title), errorText!!)
     }
 
@@ -3101,12 +3098,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                         R.color.green_color
                     )
                 )
-                binding.blockProgressBar.indeterminateDrawable.setColorFilter(
-                    ContextCompat.getColor(
-                        requireActivity().applicationContext,
-                        R.color.green_color
-                    ), PorterDuff.Mode.SRC_IN
-                )
+                binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext,false)
             }
             syncText = text
             binding.syncStatus.text = text
@@ -3119,21 +3111,21 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         syncProgress = n
         when {
             n > 100 -> {
-                binding.blockProgressBar.isIndeterminate = true
-                binding.blockProgressBar.isVisible = blockProgressBarVisible
+                //binding.blockProgressBar.isIndeterminate = true
+                binding.inputBar.showProgressBar(blockProgressBarVisible)
             }
             n >= 0 -> {
-                binding.blockProgressBar.isIndeterminate = false
-                binding.blockProgressBar.progress = n
-                binding.blockProgressBar.isVisible = blockProgressBarVisible
+                //binding.blockProgressBar.isIndeterminate = false
+                binding.inputBar.setProgress(n)//binding.blockProgressBar.progress = n
+                binding.inputBar.showProgressBar(blockProgressBarVisible)
             }
             n == -2 -> {
-                binding.blockProgressBar.isVisible = blockProgressBarVisible
-                binding.blockProgressBar.isIndeterminate = false
-                binding.blockProgressBar.progress = 100
+                binding.inputBar.showProgressBar(blockProgressBarVisible)
+                //binding.blockProgressBar.isIndeterminate = false
+                binding.inputBar.setProgress(100)
             }
             else -> { // <0
-                binding.blockProgressBar.visibility = View.GONE
+                binding.inputBar.showProgressBar(false)
             }
         }
     }
@@ -3195,6 +3187,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                             R.color.green_color
                         )
                     )
+                    binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext,false)
                     valueOfWallet =
                         "$walletHeight/$daemonHeight (${df.format(walletSyncPercentage)}%)"
                     //SteveJosephh21
@@ -3209,6 +3202,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                         R.color.red
                     )
                 )
+                binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext,true)
             }
             setProgress(sync)
         } else {
@@ -3219,6 +3213,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     R.color.red
                 )
             )
+            binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, true)
         }
         toolTip()
     }

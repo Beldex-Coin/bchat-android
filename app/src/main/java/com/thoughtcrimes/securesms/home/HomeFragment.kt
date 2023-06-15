@@ -11,6 +11,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -522,6 +523,13 @@ class HomeFragment : Fragment(),ConversationClickListener,
                 ConversationFragmentV2.ADDRESS
             ),requireArguments().getParcelable<Uri>(ConversationFragmentV2.URI),requireArguments().getString(ConversationFragmentV2.TYPE),requireArguments().getCharSequence(Intent.EXTRA_TEXT))
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.hideSoftInputFromWindow(binding.globalSearchInputLayout.windowToken, 0)
+        binding.globalSearchInputLayout.clearFocus()
     }
 
     override fun onDestroy() {

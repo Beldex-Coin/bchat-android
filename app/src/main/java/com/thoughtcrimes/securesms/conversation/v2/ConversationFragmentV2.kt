@@ -1052,35 +1052,30 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             )
             return
         }
-        val binding = binding ?: return
-        if (binding.inputBar.linkPreview != null || binding.inputBar.quote != null) {
-            sendAttachments(
-                listOf(),
-                getMessageBody(),
-                binding.inputBar.quote,
-                binding.inputBar.linkPreview
-            )
-        } else {
-            if (CheckOnline.isOnline(requireActivity())) {
-                when {
-                    binding.inputBar.text!!.trim().isEmpty() -> {
-                        Toast.makeText(
-                            requireActivity(),
-                            R.string.empty_message_toast,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                    else -> {
-                        callSendTextOnlyMessage()
-                    }
-                }
-            } else {
+        if (CheckOnline.isOnline(requireActivity())) {
+            val binding = binding ?: return
+            if (binding.inputBar.text.trim().isEmpty()) {
                 Toast.makeText(
                     requireActivity(),
-                    R.string.please_check_your_internet_connection,
+                    R.string.empty_message_toast,
                     Toast.LENGTH_SHORT
                 ).show()
+            }else if (binding.inputBar.linkPreview != null || binding.inputBar.quote != null) {
+                sendAttachments(
+                    listOf(),
+                    getMessageBody(),
+                    binding.inputBar.quote,
+                    binding.inputBar.linkPreview
+                )
+            }else {
+                callSendTextOnlyMessage()
             }
+        } else {
+            Toast.makeText(
+                requireActivity(),
+                R.string.please_check_your_internet_connection,
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 

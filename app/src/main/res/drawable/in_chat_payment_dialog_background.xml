@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <solid android:color="@color/default_dialog_background_color_inset" />
+
+    <corners android:radius="@dimen/dialog_corner_radius" />
+
+</shape>

@@ -205,4 +205,8 @@
     <color name="copy_link_background">#525264</color>
     <color name="slidetoact_white">#FFFFFF</color>
     <color name="slidetoact_defaultAccent">#FF4081</color>
+    <color name="in_chat_address_background">#47475E</color>
+    <color name="in_chat_payment_field">#383848</color>
+    <color name="in_chat_payment_dialog_background">#272733</color>
+    <color name="in_chat_amount_divider">#4E4E67</color>
 </resources>

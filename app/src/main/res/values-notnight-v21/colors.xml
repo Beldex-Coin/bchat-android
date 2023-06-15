@@ -128,4 +128,8 @@
     <color name="beta_icon">#797984</color>
     <color name="receive_payment_card_background">#128B17</color>
     <color name="copy_link_background">#FCFCFC</color>
+    <color name="in_chat_address_background">#FFFFFF</color>
+    <color name="in_chat_payment_field">#EDEDED</color>
+    <color name="in_chat_payment_dialog_background">#FFFFFF</color>
+    <color name="in_chat_amount_divider">#C9C9C9</color>
 </resources>

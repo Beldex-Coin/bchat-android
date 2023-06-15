@@ -145,6 +145,7 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.concurrent.Executor
 import com.thoughtcrimes.securesms.util.slidetoact.SlideToActView.OnSlideCompleteListener
+import com.thoughtcrimes.securesms.webrtc.NetworkChangeReceiver
 
 
 private const val ARG_PARAM1 = "param1"
@@ -375,6 +376,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     var valueOfWallet = "--"
     var tooltipIsVisible = false
     var dispatchTouched = false
+    private var networkChangedReceiver: NetworkChangeReceiver? = null
+    private var isNetworkAvailable = true
 
 
     interface Listener {
@@ -437,6 +440,12 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
         if (!thread.isGroupRecipient && thread.hasApprovedMe()) {
             senderBeldexAddress = getBeldexAddress(thread.address)
+        }
+
+        networkChangedReceiver = NetworkChangeReceiver(::networkChange)
+        networkChangedReceiver!!.register(requireContext())
+        if (isNetworkAvailable) {
+            binding.networkStatusLayout.visibility = View.GONE
         }
 
         lifecycleScope.launch(Dispatchers.IO) {
@@ -506,12 +515,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (listenerCallback!!.getNode() == null) {
             setProgress(getString(R.string.failed_to_connect_to_node))
             setProgress(101)
-            binding.syncStatus.setTextColor(
-                ContextCompat.getColor(
-                    requireActivity().applicationContext,
-                    R.color.red
-                )
-            )
             binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext,true)
         }
 
@@ -521,7 +524,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 if (CheckOnline.isOnline(requireActivity())) {
                     if (blockProgressBarVisible) {
                         when {
-                            binding.syncStatus.text != getString(R.string.status_synchronized) -> {
+                            syncText != getString(R.string.status_synchronized) -> {
                                 Toast.makeText(
                                     requireActivity(),
                                     "Blocks are syncing wait until your wallet is fully synchronized",
@@ -624,6 +627,29 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             this.pendingTx = null
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        isNetworkAvailable = false
+        networkChangedReceiver?.unregister(requireContext())
+        networkChangedReceiver = null
+    }
+
+    private fun networkChange(networkAvailable: Boolean) {
+        isNetworkAvailable = networkAvailable
+        if (networkAvailable) {
+            binding.connectedStatus.text = getString(R.string.connected)
+            binding.networkStatusImage.setImageResource(R.drawable.ic_connected)
+            Handler(Looper.getMainLooper()).postDelayed({
+                binding.networkStatusLayout.visibility = View.GONE
+            }, 3000)
+        } else {
+            binding.networkStatusLayout.visibility = View.VISIBLE
+            binding.connectedStatus.text = getString(R.string.try_to_connect)
+            binding.networkStatusImage.setImageResource(R.drawable.ic_try_to_connect)
+        }
+    }
+
     private fun showPayWithSlide(thread: Recipient?, status: Boolean) {
         if (thread != null && !thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && HomeActivity.reportIssueBChatID!=thread.address.toString() && !thread.isLocalNumber && status) {
             binding.slideToPayButton.visibility = View.VISIBLE
@@ -646,12 +672,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     ) && thread.isApproved && HomeActivity.reportIssueBChatID != thread.address.toString() && !thread.isLocalNumber
                 ) {
                     binding.inputBar.showProgressBar(true)
-                    binding.syncStatusLayout.visibility = View.VISIBLE
                     blockProgressBarVisible = true
                 } else {
                     binding.inputBar.showFailedProgressBar(false)
                     binding.inputBar.showProgressBar(false)
-                    binding.syncStatusLayout.visibility = View.GONE
                     blockProgressBarVisible = false
                 }
             }
@@ -2874,7 +2898,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         val recyclerViewLayoutParams =
             binding.conversationRecyclerView.layoutParams as RelativeLayout.LayoutParams
         recyclerViewLayoutParams.topMargin = toPx(
-            57,
+            5,
             resources
         ) // The height of the social group guidelines view is hardcoded to this
         binding.conversationRecyclerView.layoutParams = recyclerViewLayoutParams
@@ -3140,16 +3164,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     R.string.status_wallet_connecting
                 )
             ) {
-                binding.syncStatus.setTextColor(
-                    ContextCompat.getColor(
-                        requireActivity().applicationContext,
-                        R.color.green_color
-                    )
-                )
-                binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext,false)
+                binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false)
             }
             syncText = text
-            binding.syncStatus.text = text
         } catch (ex: IllegalStateException) {
             Log.d("Exception", ex.toString())
         }
@@ -3216,49 +3233,26 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     var x = (100 - Math.round(100f * n / (1f * daemonHeight - firstBlock))).toInt()
                     if (x == 0) x = 101 // indeterminate
                     valueOfWallet = "${df.format(walletSyncPercentage)}%"
-                    binding.syncStatus.setTextColor(
-                        ContextCompat.getColor(
-                            requireActivity().applicationContext,
-                            R.color.green_color
-                        )
-                    )
                 } else {
                     ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(
                         false
                     )
                     sync =
                         getString(R.string.status_synchronized)
-                    binding.syncStatus.setTextColor(
-                        ContextCompat.getColor(
-                            requireActivity().applicationContext,
-                            R.color.green_color
-                        )
-                    )
-                    binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext,false)
-                   valueOfWallet = "${df.format(walletSyncPercentage)}%"
+                    binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext,
+                        false)
+                    valueOfWallet = "${df.format(walletSyncPercentage)}%"
                     //SteveJosephh21
                     setProgress(-2)
                 }
             } else {
                 sync = getString(R.string.failed_connected_to_the_node)
                 setProgress(-1)
-                binding.syncStatus.setTextColor(
-                    ContextCompat.getColor(
-                        requireActivity().applicationContext,
-                        R.color.red
-                    )
-                )
                 binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext,true)
             }
             setProgress(sync)
         } else {
             setProgress(getString(R.string.no_node_connection))
-            binding.syncStatus.setTextColor(
-                ContextCompat.getColor(
-                    requireActivity().applicationContext,
-                    R.color.red
-                )
-            )
             binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, true)
         }
         toolTip()

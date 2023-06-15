@@ -752,7 +752,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private fun handleSwipeToReply(message: MessageRecord, position: Int) {
         //New Line
         val params = binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
-        params.bottomMargin = 400
+        params.bottomMargin = 16
         val recipient = viewModel.recipient ?: return
         binding.inputBar.draftQuote(recipient, message, glide)
     }
@@ -1556,7 +1556,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         val recipient = viewModel.recipient ?: return
         //New Line
         val params = binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
-        params.bottomMargin = 400
+        params.bottomMargin = 16
 
         binding.inputBar.draftQuote(recipient, messages.first(), glide)
         endActionMode()
@@ -1842,7 +1842,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     //New Line
                     val params =
                         binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
-                    params.bottomMargin = 440
+                    params.bottomMargin = 20
 
                     binding.inputBar.draftLinkPreview()
                 }
@@ -1850,7 +1850,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     //New Line
                     val params =
                         binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
-                    params.bottomMargin = 440
+                    params.bottomMargin = 20
 
                     binding.inputBar.updateLinkPreviewDraft(glide, previewState.linkPreview.get())
                 }
@@ -1858,7 +1858,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     //New Line
                     val params =
                         binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
-                    params.bottomMargin = 220
+                    params.bottomMargin = 16
 
                     binding.inputBar.cancelLinkPreviewDraft(2)
                 }
@@ -2488,7 +2488,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         binding.inputBar.text = ""
         //New Line
         val params = binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
-        params.bottomMargin = 220
+        params.bottomMargin = 16
 
         binding.inputBar.cancelQuoteDraft(2)
         binding.inputBar.cancelLinkPreviewDraft(2)
@@ -2538,7 +2538,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         binding.inputBar.text = ""
         //New Line
         val params = binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
-        params.bottomMargin = 220
+        params.bottomMargin = 16
 
         binding.inputBar.cancelQuoteDraft(2)
         binding.inputBar.cancelLinkPreviewDraft(2)

@@ -2917,8 +2917,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     override fun createTransactionFailed(errorText: String?) {
         hideProgress()
-        //sendButtonEnabled()
-        showAlert(getString(R.string.send_create_tx_error_title), errorText!!)
+        if(getString(R.string.invalid_destination_address) == errorText!!){
+            showAlert(getString(R.string.send_create_tx_error_title), getString(R.string.receiver_address_is_not_available))
+        }else{
+            showAlert(getString(R.string.send_create_tx_error_title), errorText)
+        }
     }
 
     override fun transactionCreated(txTag: String?, pendingTransaction: PendingTransaction?) {

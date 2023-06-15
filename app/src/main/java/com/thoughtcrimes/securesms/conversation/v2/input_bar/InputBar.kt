@@ -2,6 +2,7 @@ package com.thoughtcrimes.securesms.conversation.v2.input_bar
 
 import android.content.Context
 import android.content.res.Resources
+import android.graphics.Typeface
 import android.net.Uri
 import android.text.TextWatcher
 import android.util.AttributeSet
@@ -26,6 +27,7 @@ import com.thoughtcrimes.securesms.database.model.MmsMessageRecord
 import com.thoughtcrimes.securesms.util.toDp
 import com.thoughtcrimes.securesms.util.toPx
 import com.thoughtcrimes.securesms.mms.GlideRequests
+import com.thoughtcrimes.securesms.util.getColorWithID
 
 
 class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, LinkPreviewDraftViewDelegate{
@@ -229,6 +231,19 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
     fun showPayAsYouChatBDXIcon(status:Boolean){
         binding.inChatBDXAnimation.isVisible = status
         binding.inChatBDX.isVisible = !status
+    }
+
+    fun setTextColor(status: Boolean){
+        if(status) {
+            val face = Typeface.createFromAsset(context!!.assets,
+                    "fonts/open_sans_bold.ttf")
+            binding.inputBarEditText.setTextColor(context.resources.getColorWithID(R.color.button_green,
+                context.theme))
+            binding.inputBarEditText.typeface = face
+        }else{
+            binding.inputBarEditText.setTextColor(context.resources.getColorWithID(R.color.text,
+                context.theme))
+        }
     }
 
     fun showPayAsYouChatBDXIcon(thread: Recipient,reportIssueId:String) {

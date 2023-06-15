@@ -600,13 +600,16 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (TextSecurePreferences.isPayAsYouChat(requireActivity())) {
             if (binding.inputBar.text!!.isNotEmpty() && binding.inputBar.text.matches(Regex("^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$"))) {
                 binding.inputBar.showPayAsYouChatBDXIcon(true)
+                binding.inputBar.setTextColor(true)
                 showPayWithSlide(thread,true)
             } else {
                 binding.inputBar.showPayAsYouChatBDXIcon(false)
+                binding.inputBar.setTextColor(false)
                 showPayWithSlide(thread,false)
             }
         } else {
             binding.inputBar.showPayAsYouChatBDXIcon(false)
+            binding.inputBar.setTextColor(false)
             showPayWithSlide(thread,false)
         }
         //Minimized app
@@ -1988,9 +1991,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (TextSecurePreferences.isPayAsYouChat(requireActivity())) {
             if (text!!.isNotEmpty() && text.matches(Regex("^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$")) && binding.inputBar.quote == null) {
                 binding.inputBar.showPayAsYouChatBDXIcon(true)
+                binding.inputBar.setTextColor(true)
                 showPayWithSlide(thread,true)
             } else {
                 binding.inputBar.showPayAsYouChatBDXIcon(false)
+                binding.inputBar.setTextColor(false)
                 showPayWithSlide(thread,false)
             }
         }

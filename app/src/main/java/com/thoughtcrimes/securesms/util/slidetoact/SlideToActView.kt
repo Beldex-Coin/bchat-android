@@ -156,7 +156,7 @@ class SlideToActView @JvmOverloads constructor(
     var iconColor: Int = 0
         set(value) {
             field = value
-            DrawableCompat.setTint(mDrawableArrow, value)
+            //DrawableCompat.setTint(mDrawableArrow, value)
             invalidate()
         }
 
@@ -168,7 +168,7 @@ class SlideToActView @JvmOverloads constructor(
             if (field != 0) {
                 ResourcesCompat.getDrawable(context.resources, value, context.theme)?.let {
                     mDrawableArrow = it
-                    DrawableCompat.setTint(it, iconColor)
+                    //DrawableCompat.setTint(it, iconColor)
                 }
                 invalidate()
             }
@@ -413,7 +413,7 @@ class SlideToActView @JvmOverloads constructor(
 
                 sliderIcon = getResourceId(
                     R.styleable.SlideToActView_slider_icon,
-                    R.drawable.ic_beldex_white_logo
+                    R.drawable.slide_with_pay_coin
                 )
 
                 // For icon color. check if the `slide_icon_color` is set.

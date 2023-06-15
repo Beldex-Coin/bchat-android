@@ -749,6 +749,7 @@
         <item name="inner_color">?android:colorBackground</item>
         <item name="outer_color">?colorAccent</item>
         <item name="slider_locked">false</item>
+        <item name="image_color">@color/green_color</item>
     </style>
 
 </resources>

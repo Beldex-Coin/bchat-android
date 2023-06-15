@@ -353,28 +353,13 @@
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="-12dp"
             android:visibility="gone" />
-        <ProgressBar
-            android:id="@+id/blockProgressBar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:indeterminate="false"
-            android:maxHeight="5dp"
-            android:minHeight="5dp"
-            android:visibility="gone"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="@color/page_background"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
             android:id="@+id/syncStatusLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="15dp"
             android:background="@color/page_background"
             android:orientation="horizontal">
 
@@ -565,7 +550,7 @@
             app:area_margin="8dp"
             app:icon_margin="0dp"
             app:send_icon_margin="12dp"
-            app:image_color="#9797B2"
+            app:image_color="@color/green_color"
             app:text_size="14sp"
             app:inner_color="@color/green_color"
             app:outer_color="@color/input_bar_background"

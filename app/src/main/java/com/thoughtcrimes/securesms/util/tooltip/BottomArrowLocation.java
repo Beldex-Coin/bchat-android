@@ -21,7 +21,7 @@ class BottomArrowLocation implements ArrowLocation {
         float middle = ArrowAlignmentHelper.calculateArrowMidPoint(view, rectF);
 
         view.getTooltipPath().moveTo(middle, view.getHeight());
-        int arrowDx = view.getArrowWidth() / 2;
+        int arrowDx = view.getArrowWidth() ;
         view.getTooltipPath().lineTo(middle - arrowDx, rectF.bottom);
         view.getTooltipPath().lineTo(middle + arrowDx, rectF.bottom);
         view.getTooltipPath().close();

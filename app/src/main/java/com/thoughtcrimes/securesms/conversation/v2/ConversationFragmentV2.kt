@@ -18,6 +18,7 @@ import android.telephony.PhoneStateListener
 import android.telephony.TelephonyCallback
 import android.telephony.TelephonyManager
 import android.text.*
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.util.Pair
 import android.util.TypedValue
@@ -25,9 +26,11 @@ import android.view.*
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.ColorInt
 import androidx.annotation.DimenRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
@@ -1181,17 +1184,58 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun toolTip() {
-        when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> {
-                binding.tooltip.text =
-                    Html.fromHtml("<p> <b>Balance : $valueOfBalance </b> </p> <br /> <p><b>Unlocked Balance : $valueOfUnLockedBalance</b> </p> <br /> <p>Wallet :  $valueOfWallet </p>",
-                        Html.FROM_HTML_MODE_COMPACT)
-            }
-            else -> {
-                binding.tooltip.text =
-                    Html.fromHtml("<p> <b>Balance : $valueOfBalance </b> </p> <br /> <p> <b>Unlocked Balance : $valueOfUnLockedBalance</b> </p> <br /> <p>Wallet : $valueOfWallet </p>")
+        checkIfFragmentAttached {
+            if (TextSecurePreferences.isPayAsYouChat(requireContext())) {
+                when {
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> {
+                        if (valueOfWallet != "100%") {
+                            binding.tooltip.text =
+                                Html.fromHtml("<p>Wallet Synchronizing <b> $valueOfWallet </b> </p>",
+                                    Html.FROM_HTML_MODE_COMPACT)
+                        } else {
+                            binding.tooltip.text =
+                                Html.fromHtml("<p> <b>Balance : $valueOfBalance </b> </p> <br /> <p><b>Unlocked Balance : $valueOfUnLockedBalance</b> </p> <br /> <p>Wallet :  $valueOfWallet </p>",
+                                    Html.FROM_HTML_MODE_COMPACT)
+                        }
+                        tooltipStyle()
+                    }
+                    else -> {
+                        if (valueOfWallet != "100%") {
+                            binding.tooltip.text =
+                                Html.fromHtml("<p> Wallet Synchronizing <b> $valueOfWallet</b> </p>")
+                        } else {
+                            binding.tooltip.text =
+                                Html.fromHtml("<p> <b>Balance : $valueOfBalance </b> </p> <br /> <p><b>Unlocked Balance : $valueOfUnLockedBalance</b> </p> <br /> <p>Wallet :  $valueOfWallet </p>")
+                        }
+                        tooltipStyle()
+                    }
+                }
+            } else {
+                val explanation = resources.getString(R.string.hold_to_enable_option)
+                val spannable = SpannableStringBuilder(explanation)
+                val face =
+                    Typeface.createFromAsset(requireContext().assets, "fonts/open_sans_bold.ttf")
+                val color = ResourcesCompat.getColor(requireContext().resources,
+                    R.color.node_status, requireContext().theme)
+                spannable.setSpan(ForegroundColorSpan(color),
+                    14,
+                    30,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                binding.tooltip.typeface = face
+                binding.tooltip.text = spannable
             }
         }
+    }
+
+    private fun tooltipStyle() {
+        val face =
+            Typeface.createFromAsset(requireContext().assets,
+                "fonts/open_sans_medium.ttf")
+        @ColorInt val color =
+            requireContext().resources.getColorWithID(R.color.text,
+                requireContext().theme)
+        binding.tooltip.setTextColor(color)
+        binding.tooltip.typeface = face
     }
 
     private fun fromHtml(source: String?): Spanned? {
@@ -2912,6 +2956,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 return
             }
         }
+        //sendButtonEnabled()
         showAlert(getString(R.string.send_create_tx_error_title), errorText!!)
     }
 
@@ -3170,8 +3215,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     }
                     var x = (100 - Math.round(100f * n / (1f * daemonHeight - firstBlock))).toInt()
                     if (x == 0) x = 101 // indeterminate
-                    setProgress(x)
-                    valueOfWallet = "$walletHeight/$daemonHeight (${df.format(walletSyncPercentage)}%)"
+                    valueOfWallet = "${df.format(walletSyncPercentage)}%"
                     binding.syncStatus.setTextColor(
                         ContextCompat.getColor(
                             requireActivity().applicationContext,
@@ -3191,8 +3235,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                         )
                     )
                     binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext,false)
-                    valueOfWallet =
-                        "$walletHeight/$daemonHeight (${df.format(walletSyncPercentage)}%)"
+                   valueOfWallet = "${df.format(walletSyncPercentage)}%"
                     //SteveJosephh21
                     setProgress(-2)
                 }
@@ -3323,6 +3366,12 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
         override fun onPostExecute(result: Boolean?) {
             refreshBalance(wallet.isSynchronized)
+        }
+    }
+
+    private fun checkIfFragmentAttached(operation: Context.() -> Unit) {
+        if (isAdded && context != null) {
+            operation(requireContext())
         }
     }
 }

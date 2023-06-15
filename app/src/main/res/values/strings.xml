@@ -1373,4 +1373,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="in_chat_amount" translatable="false">Amount</string>
     <string name="failed_to_connect_to_node" translatable="false">Failed to connect to node</string>
     <string name="receiver_address_is_not_available" translatable="false">Receiver address is not available</string>
+    <string name="hold_to_enable_option" translatable="false">Hold to Enable Pay as you chat</string>
 </resources>

@@ -256,7 +256,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         binding.blockProgressBar.progress = progress
     }
 
-    fun setDrawableProgressBar(context: Context,type: Boolean) {
+    fun setDrawableProgressBar(context: Context, type: Boolean,syncStatus: String) {
         if(TextSecurePreferences.isPayAsYouChat(context)) {
             if (type) {
                 binding.failedBlockProgressBar.isVisible = type
@@ -265,7 +265,9 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
                 binding.blockProgressBar.progress = 0
             } else {
                 binding.blockProgressBar.isVisible = !type
-                binding.blockProgressBar.progress = 100
+                if(syncStatus == "100%" && syncStatus != "--") {
+                    binding.blockProgressBar.progress = 100
+                }
                 binding.failedBlockProgressBar.isVisible = type
                 binding.failedBlockProgressBar.progress = 0
             }
@@ -274,7 +276,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
             binding.failedBlockProgressBar.progress = 0
         }
     }
-    fun setDrawableProgressBar(type: Boolean) {
+    fun showDrawableProgressBar(type: Boolean,syncStatus:String) {
         if (type) {
             binding.failedBlockProgressBar.isVisible = type
             binding.failedBlockProgressBar.progress = 100
@@ -282,11 +284,12 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
             binding.blockProgressBar.progress = 0
         } else {
             binding.blockProgressBar.isVisible = !type
-            binding.blockProgressBar.progress = 100
+            if (syncStatus == "100%" && syncStatus != "--") {
+                binding.blockProgressBar.progress = 100
+            }
             binding.failedBlockProgressBar.isVisible = type
             binding.failedBlockProgressBar.progress = 0
         }
-
     }
     // endregion
 }

@@ -515,7 +515,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (listenerCallback!!.getNode() == null) {
             setProgress(getString(R.string.failed_to_connect_to_node))
             setProgress(101)
-            binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext,true)
+            binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext,true,valueOfWallet)
         }
 
         binding.slideToPayButton.onSlideCompleteListener = object : OnSlideCompleteListener {
@@ -609,9 +609,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 showPayWithSlide(thread,false)
             }
             if(syncText == getString(R.string.failed_to_connect_to_node) || syncText == getString(R.string.failed_connected_to_the_node)|| syncText == getString(R.string.no_node_connection)){
-                binding.inputBar.setDrawableProgressBar(true)
+                binding.inputBar.showDrawableProgressBar(true,valueOfWallet)
             }else{
-                binding.inputBar.setDrawableProgressBar(false)
+                binding.inputBar.showDrawableProgressBar(false,valueOfWallet)
             }
         } else {
             binding.inputBar.setTextColor(false)
@@ -3164,7 +3164,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     R.string.status_wallet_connecting
                 )
             ) {
-                binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false)
+                binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false,valueOfWallet)
             }
             syncText = text
         } catch (ex: IllegalStateException) {
@@ -3232,6 +3232,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     }
                     var x = (100 - Math.round(100f * n / (1f * daemonHeight - firstBlock))).toInt()
                     if (x == 0) x = 101 // indeterminate
+                    setProgress(x)
                     valueOfWallet = "${df.format(walletSyncPercentage)}%"
                 } else {
                     ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(
@@ -3239,8 +3240,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     )
                     sync =
                         getString(R.string.status_synchronized)
-                    binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext,
-                        false)
+                    binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false,valueOfWallet)
                     valueOfWallet = "${df.format(walletSyncPercentage)}%"
                     //SteveJosephh21
                     setProgress(-2)
@@ -3248,12 +3248,12 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             } else {
                 sync = getString(R.string.failed_connected_to_the_node)
                 setProgress(-1)
-                binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext,true)
+                binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext,true,valueOfWallet)
             }
             setProgress(sync)
         } else {
             setProgress(getString(R.string.no_node_connection))
-            binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, true)
+            binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, true,valueOfWallet)
         }
         toolTip()
     }

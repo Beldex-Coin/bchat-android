@@ -6,11 +6,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.google.android.material.transition.MaterialContainerTransform
 import com.thoughtcrimes.securesms.data.*
 import com.thoughtcrimes.securesms.model.PendingTransaction
 import com.thoughtcrimes.securesms.wallet.send.interfaces.SendConfirm
-import com.thoughtcrimes.securesms.wallet.utils.ThemeHelper
 import io.beldex.bchat.R
 import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity
 
@@ -164,20 +162,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val transform = MaterialContainerTransform()
-        transform.drawingViewId = R.id.activity_home_frame_layout_container
-        transform.duration = resources.getInteger(R.integer.tx_item_transition_duration).toLong()
-        transform.setAllContainerColors(
-            ThemeHelper.getThemedColor(
-                context,
-                android.R.attr.colorBackground
-            )
-        )
-        sharedElementEnterTransition = transform
-
     }
-
     companion object {
         @JvmStatic
         fun newInstance(uri: String?): SendFragment {

@@ -25,7 +25,6 @@ import androidx.core.view.get
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import com.google.android.material.transition.MaterialElevationScale
 import com.thoughtcrimes.securesms.ApplicationContext
 import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.home.HomeActivity
@@ -53,7 +52,7 @@ import java.text.SimpleDateFormat
 import java.util.concurrent.Executor
 
 
-class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,OnBackPressedListener {
+class WalletFragment : Fragment(),OnBackPressedListener {
 
     private var adapter: TransactionInfoAdapter? = null
     private val formatter = NumberFormat.getInstance()
@@ -187,8 +186,6 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
             }
         }
 
-        exitTransition = null
-        reenterTransition = null
         setProgress(syncProgress)
         setProgress(syncText)
         showReceive()
@@ -309,7 +306,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
         binding.scanQrCodeImg.setImageResource(R.drawable.ic_wallet_scan_qr_disable)
         showBalance(Helper.getDisplayAmount(0),walletSynchronized,Helper.getDisplayAmount(0))
 
-        adapter = TransactionInfoAdapter(activity, this)
+        adapter = TransactionInfoAdapter(activity)
         binding.transactionList.adapter = adapter
         adapter!!.registerAdapterDataObserver(object : AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
@@ -550,9 +547,7 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        postponeEnterTransition()
         view.viewTreeObserver.addOnPreDrawListener {
-            startPostponedEnterTransition()
             true
         }
     }
@@ -889,18 +884,6 @@ class WalletFragment : Fragment(), TransactionInfoAdapter.OnInteractionListener,
         updateStatus(wallet)
     }
 
-    // Callbacks from TransactionInfoAdapter
-    override fun onInteraction(view: View?, infoItem: TransactionInfo?) {
-        val exitTransition = MaterialElevationScale(false)
-        exitTransition.duration =
-            resources.getInteger(R.integer.tx_item_transition_duration).toLong()
-        setExitTransition(exitTransition)
-        val reenterTransition = MaterialElevationScale(true)
-        reenterTransition.duration =
-            resources.getInteger(R.integer.tx_item_transition_duration).toLong()
-        setReenterTransition(reenterTransition)
-        //activityCallback!!.onTxDetailsRequest(view, infoItem)
-    }
 
     override fun onBackPressed(): Boolean {
         return false

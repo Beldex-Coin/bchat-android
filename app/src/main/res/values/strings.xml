@@ -994,9 +994,6 @@
     <string name="seed_permission_important_confirmTitle" translatable="false">Check your surroundings to ensure no one is overlooking. Do you want to proceed?</string>
     <string name="seed_permission_important_confirmButton" translatable="false">Yes, I\'m Safe.</string>
     <string name="mnemonic_edit_text_hint" translatable="false">Enter your recovery seed to restore your account.</string>
-    <string name="keys_permission_important_subTitle" translatable="false">Never share your restore key with anyone!</string>
-    <string name="keys_permission_important_description" translatable="false">Your key can be used to restore your account. Never share it with anyone or store a digital copy of it. Never enter your restore key in any other website or application other than BChat or the Beldex official wallet.</string>
-    <string name="keys_permission_important_confirmTitle" translatable="false">Check your surroundings and ensure no one is overlooking. Do you want to proceed?</string>
     <string name="password_screen_description_content" translatable="false">Enter your four digit pin to unlock your account</string>
     <string name="check_password_description_content_seed" translatable="false">Enter your password to view your seed. Write it down on paper.</string>
     <string name="check_password_description_content_keys" translatable="false">Enter your password to view your restore key. Write it down on paper.</string>

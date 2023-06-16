@@ -70,7 +70,6 @@ import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.dms.CreateNewPrivateChatActivity
 import com.thoughtcrimes.securesms.groups.CreateClosedGroupActivity
 import com.thoughtcrimes.securesms.groups.JoinPublicChatNewActivity
-import com.thoughtcrimes.securesms.keys.KeysPermissionActivity
 import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
 import com.thoughtcrimes.securesms.model.*
 import com.thoughtcrimes.securesms.seed.SeedPermissionActivity
@@ -650,11 +649,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     override fun showSeed() {
         val intent = Intent(this, SeedPermissionActivity::class.java)
-        show(intent)
-    }
-
-    override fun showKeys() {
-        val intent = Intent(this, KeysPermissionActivity::class.java)
         show(intent)
     }
 

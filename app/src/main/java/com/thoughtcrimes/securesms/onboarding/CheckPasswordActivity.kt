@@ -17,7 +17,6 @@ import io.beldex.bchat.databinding.ActivityCheckPasswordBinding
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.BaseActionBarActivity
 import com.thoughtcrimes.securesms.keyboard.CustomKeyboardView
-import com.thoughtcrimes.securesms.keys.ShowKeysActivity
 import com.thoughtcrimes.securesms.seed.ShowSeedActivity
 import com.thoughtcrimes.securesms.util.push
 import com.thoughtcrimes.securesms.util.setUpActionBarBchatLogo
@@ -142,9 +141,6 @@ class CheckPasswordActivity : BaseActionBarActivity() {
                 finish()
             }
             else -> {
-                val intent = Intent(this, ShowKeysActivity::class.java)
-                push(intent)
-                finish()
             }
         }
 

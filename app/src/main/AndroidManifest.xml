@@ -221,16 +221,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
-            android:name="com.thoughtcrimes.securesms.keys.ShowKeysActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
-        <activity
-            android:name="com.thoughtcrimes.securesms.keys.KeysPermissionActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
-        <activity
             android:name="com.thoughtcrimes.securesms.seed.ShowSeedActivity"
             android:exported="false"
             android:screenOrientation="portrait"

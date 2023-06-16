@@ -248,11 +248,11 @@ public class  NodeInfo extends Node {
             try  (Response response = client.newCall(request_1).execute()) {
                 if(response.isSuccessful())
                 if (response.body() != null) {
-                    final JSONObject json = new JSONObject(response.body().string());
-                    final JSONObject result = json.getJSONObject("result");
+                        final JSONObject json = new JSONObject(response.body().string());
+                        final JSONObject result = json.getJSONObject("result");
                     boolean isMainnet_node = result.getBoolean("mainnet");
                     return isMainnet_node;
-                }
+                    }
 
             }
         } catch (IOException | JSONException ex) {

@@ -829,7 +829,6 @@ class HomeFragment : Fragment(),ConversationClickListener,
         fun showPrivacySettings()
         fun showQRCode()
         fun showSeed()
-        fun showKeys()
         fun showAbout()
         fun showPath()
         fun showMessageRequests()

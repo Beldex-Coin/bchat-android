@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Typeface
 import android.net.Uri
+import android.os.SystemClock
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.KeyEvent
@@ -56,6 +57,8 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
     val attachmentButtonsContainerHeight: Int
         get() = binding.attachmentsButtonContainer.height
 
+    private var mLastClickTime: Long = 0
+
     private val attachmentsButton by lazy { InputBarButton(context, R.drawable.ic_attach, isMessageBox = true) }
     private val microphoneButton by lazy { InputBarButton(context, R.drawable.ic_microphone, isMessageBox = true) }
     private val sendButton by lazy { InputBarButton(context, R.drawable.ic_send, true, isMessageBox = true) }
@@ -70,7 +73,13 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         // Attachments button
         binding.attachmentsButtonContainer.addView(attachmentsButton)
         attachmentsButton.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
-        attachmentsButton.onPress = { toggleAttachmentOptions() }
+        attachmentsButton.isMotionEventSplittingEnabled = false
+        attachmentsButton.onPress = {
+            if (SystemClock.elapsedRealtime() - mLastClickTime >= 500){
+                mLastClickTime = SystemClock.elapsedRealtime();
+                toggleAttachmentOptions()
+            }
+        }
         // Microphone button
         binding.microphoneOrSendButtonContainer.addView(microphoneButton)
         microphoneButton.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)

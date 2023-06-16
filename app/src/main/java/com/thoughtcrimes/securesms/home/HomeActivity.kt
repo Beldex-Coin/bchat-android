@@ -1487,7 +1487,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 connectWalletService(walletName, walletPassword)
             }
         } else {
-            finish()
+            val intent = Intent(this, WalletInfoActivity::class.java)
+            push(intent)
         }
     }
 

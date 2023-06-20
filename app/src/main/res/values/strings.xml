@@ -1375,4 +1375,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="try_to_connect" translatable="false">Try to connect</string>
     <string name="please_enter_your_four_digit_pin" translatable="false">Please enter your 4 digit PIN.</string>
     <string name="invalid_password" translatable="false">Invalid Password.</string>
+    <string name="please_copy_and_save_your_seed" translatable="false">Please copy and save your seed</string>
+    <string name="please_copy_the_seed_and_save_it" translatable="false">Please copy the seed and save it</string>
 </resources>

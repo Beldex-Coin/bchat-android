@@ -23,6 +23,7 @@ import com.thoughtcrimes.securesms.util.setUpActionBarBchatLogo
 
 class RecoveryPhraseActivity : BaseActionBarActivity() {
     private lateinit var binding: ActivityRecoveryPhraseBinding
+    var copiedSeed = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,23 +48,23 @@ class RecoveryPhraseActivity : BaseActionBarActivity() {
                     );
             }
             registerButton.setOnClickListener() {
-                if (!registerButton.isEnabled) {
-                    //registerButton.isEnabled=true
+                if (!copiedSeed) {
                     Toast.makeText(
                         this@RecoveryPhraseActivity,
-                        "Please copy and save your seed",
+                       R.string.please_copy_and_save_your_seed,
                         Toast.LENGTH_SHORT
                     ).show()
                 } else {
                     Toast.makeText(
                         this@RecoveryPhraseActivity,
-                        "Please copy the seed and save it",
+                        R.string.please_copy_the_seed_and_save_it,
                         Toast.LENGTH_SHORT
                     ).show()
                     homepage()
                 }
             }
             recoveryPhraseCopyIcon.setOnClickListener() {
+                copiedSeed = true
                 copySeed()
             }
             shareBtn.setOnClickListener() {

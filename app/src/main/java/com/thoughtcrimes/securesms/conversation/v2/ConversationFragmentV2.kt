@@ -602,10 +602,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
         if (TextSecurePreferences.isPayAsYouChat(requireActivity())) {
             if (binding.inputBar.text!!.isNotEmpty() && binding.inputBar.text.matches(Regex("^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$"))) {
-                binding.inputBar.setTextColor(true)
+                binding.inputBar.setTextColor(thread,HomeActivity.reportIssueBChatID,true)
                 showPayWithSlide(thread,true)
             } else {
-                binding.inputBar.setTextColor(false)
+                binding.inputBar.setTextColor(thread,HomeActivity.reportIssueBChatID,false)
                 showPayWithSlide(thread,false)
             }
             if(syncText == getString(R.string.failed_to_connect_to_node) || syncText == getString(R.string.failed_connected_to_the_node)|| syncText == getString(R.string.no_node_connection)){
@@ -614,7 +614,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 binding.inputBar.showDrawableProgressBar(false,valueOfWallet)
             }
         } else {
-            binding.inputBar.setTextColor(false)
+            binding.inputBar.setTextColor(thread,HomeActivity.reportIssueBChatID,false)
             showPayWithSlide(thread,false)
         }
         //Minimized app
@@ -2053,10 +2053,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private fun checkInputBarTextOnTextChanged(text: String?,thread: Recipient){
         if (TextSecurePreferences.isPayAsYouChat(requireActivity())) {
             if (text!!.isNotEmpty() && text.matches(Regex("^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$")) && binding.inputBar.quote == null) {
-                binding.inputBar.setTextColor(true)
+                binding.inputBar.setTextColor(thread,HomeActivity.reportIssueBChatID,true)
                 showPayWithSlide(thread,true)
             } else {
-                binding.inputBar.setTextColor(false)
+                binding.inputBar.setTextColor(thread,HomeActivity.reportIssueBChatID,false)
                 showPayWithSlide(thread,false)
             }
         }

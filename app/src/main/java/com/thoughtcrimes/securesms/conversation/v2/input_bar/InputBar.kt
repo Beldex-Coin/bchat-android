@@ -231,16 +231,19 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
 
     //Payment Tag
 
-    fun setTextColor(status: Boolean){
-        if(status) {
-            val face = Typeface.createFromAsset(context!!.assets,
+    fun setTextColor(thread: Recipient?, reportIssueId: String, status: Boolean) {
+        if (!thread?.isGroupRecipient!! && thread.hasApprovedMe() && !thread.isBlocked && reportIssueId != thread.address.toString() && !thread.isLocalNumber) {
+            if (status) {
+                val face = Typeface.createFromAsset(context!!.assets,
                     "fonts/open_sans_bold.ttf")
-            binding.inputBarEditText.setTextColor(context.resources.getColorWithID(R.color.button_green,
-                context.theme))
-            binding.inputBarEditText.typeface = face
-        }else{
-            binding.inputBarEditText.setTextColor(context.resources.getColorWithID(R.color.text,
-                context.theme))
+                binding.inputBarEditText.setTextColor(context.resources.getColorWithID(R.color.button_green,
+                    context.theme))
+                binding.inputBarEditText.typeface = face
+            } else {
+                setEditTextStyleNormal()
+            }
+        } else {
+            setEditTextStyleNormal()
         }
     }
 
@@ -299,6 +302,14 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
             binding.failedBlockProgressBar.isVisible = type
             binding.failedBlockProgressBar.progress = 0
         }
+    }
+
+    private fun setEditTextStyleNormal(){
+        val face = Typeface.createFromAsset(context!!.assets,
+            "fonts/open_sans_medium.ttf")
+        binding.inputBarEditText.setTextColor(context.resources.getColorWithID(R.color.text,
+            context.theme))
+        binding.inputBarEditText.typeface = face
     }
     // endregion
 }

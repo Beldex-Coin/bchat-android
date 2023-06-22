@@ -58,6 +58,9 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         get() = binding.attachmentsButtonContainer.height
 
     private var mLastClickTime: Long = 0
+    private var inChatBDXButtonLastClickTime: Long = 0
+    private var inChatBDXButtonLastLongClickTime: Long = 0
+    private var sendButtonLastClickTime: Long = 0
 
     private val attachmentsButton by lazy { InputBarButton(context, R.drawable.ic_attach, isMessageBox = true) }
     private val microphoneButton by lazy { InputBarButton(context, R.drawable.ic_microphone, isMessageBox = true) }
@@ -76,7 +79,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         attachmentsButton.isMotionEventSplittingEnabled = false
         attachmentsButton.onPress = {
             if (SystemClock.elapsedRealtime() - mLastClickTime >= 500){
-                mLastClickTime = SystemClock.elapsedRealtime();
+                mLastClickTime = SystemClock.elapsedRealtime()
                 toggleAttachmentOptions()
             }
         }
@@ -91,14 +94,27 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         binding.microphoneOrSendButtonContainer.addView(sendButton)
         sendButton.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
         sendButton.isVisible = false
-        sendButton.onUp = { delegate?.sendMessage() }
+        sendButton.onUp = {
+            if (SystemClock.elapsedRealtime() - sendButtonLastClickTime >= 500){
+                sendButtonLastClickTime = SystemClock.elapsedRealtime()
+                delegate?.sendMessage()
+            }
+        }
         // Edit text
         binding.inputBarEditText.delegate = this
         // In Chat BDX
-        binding.inChatBDX.setOnClickListener { delegate?.walletDetailsUI() }
+        binding.inChatBDX.setOnClickListener {
+            if (SystemClock.elapsedRealtime() - inChatBDXButtonLastClickTime >= 500){
+                inChatBDXButtonLastClickTime = SystemClock.elapsedRealtime()
+                delegate?.walletDetailsUI()
+            }
+        }
 
         binding.inChatBDX.setOnLongClickListener {
-            delegate?.inChatBDXOptions()
+            if (SystemClock.elapsedRealtime() - inChatBDXButtonLastLongClickTime >= 500){
+                inChatBDXButtonLastLongClickTime = SystemClock.elapsedRealtime()
+                delegate?.inChatBDXOptions()
+            }
             true
         }
 

@@ -66,6 +66,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     val INTEGRATED_ADDRESS_LENGTH = 106
     private var resolvingOA = false
     private var totalFunds: Long = 0
+    private var calledUnlockedBalance: Boolean = false
 
 
     fun newInstance(listener: Listener): SendFragment? {
@@ -188,8 +189,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     ): View? {
         binding = FragmentSendBinding.inflate(inflater, container, false)
         (activity as HomeActivity).setSupportActionBar(binding.toolbar)
-
-        AsyncGetUnlockedBalance(activityCallback).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+        calledUnlockedBalance = true
         binding.currencyTextView.text = TextSecurePreferences.getCurrency(requireActivity()).toString()
         price = if(TextSecurePreferences.getCurrencyAmount(requireActivity())!=null){
             TextSecurePreferences.getCurrencyAmount(requireActivity())!!.toDouble()
@@ -609,6 +609,10 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
             //Continuously Transaction
             this.pendingTransaction = null
             this.pendingTx = null
+        }
+        if(calledUnlockedBalance) {
+            calledUnlockedBalance = false
+            AsyncGetUnlockedBalance(activityCallback).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
         }
     }
 

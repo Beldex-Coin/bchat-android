@@ -1,8 +1,10 @@
 package com.beldex.libsignal.utilities
 
 import java.util.concurrent.*
+import android.os.Process
 
 object ThreadUtils {
+    const val PRIORITY_IMPORTANT_BACKGROUND_THREAD = Process.THREAD_PRIORITY_DEFAULT + Process.THREAD_PRIORITY_LESS_FAVORABLE
     val executorPool = Executors.newCachedThreadPool()
 
     @JvmStatic

@@ -1377,4 +1377,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="invalid_password" translatable="false">Invalid Password.</string>
     <string name="please_copy_and_save_your_seed" translatable="false">Please copy and save your seed</string>
     <string name="please_copy_the_seed_and_save_it" translatable="false">Please copy the seed and save it</string>
+    <string name="dialog_title_setup_pin_" translatable="false">Setup Pin</string>
+    <string name="dialog_setup_button" translatable="false">Setup</string>
+    <string name="dialog_message_for_set_wallet_pin" translatable="false">Please set up wallet pin to enable pay as you chat feature.</string>
 </resources>

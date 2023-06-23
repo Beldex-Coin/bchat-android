@@ -394,7 +394,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         //Wallet
         fun hasBoundService(): Boolean
         val connectionStatus: Wallet.ConnectionStatus?
-        fun setWalletPin()
         fun forceUpdate(requireActivity: Context)
 
         //SetDataAndType
@@ -1143,7 +1142,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     override fun inChatBDXOptions() {
         try {
-            if (TextSecurePreferences.getWalletEntryPassword(requireActivity()) != null) {
                 val dialog = android.app.AlertDialog.Builder(requireActivity())
                 val inflater = layoutInflater
                 val dialogView = inflater.inflate(R.layout.pay_as_you_chat, null)
@@ -1172,9 +1170,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 cancelButton.setOnClickListener {
                     alert.dismiss()
                 }
-            } else {
-                listenerCallback!!.setWalletPin()
-            }
         } catch (exception: Exception) {
             Log.d("Beldex", "PayAsYouChat exception $exception")
         }

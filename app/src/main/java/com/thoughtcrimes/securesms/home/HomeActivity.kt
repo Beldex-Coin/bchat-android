@@ -1763,30 +1763,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }
     }
 
-    override fun setWalletPin() {
-        val walletName = getWalletName(this)
-        val walletPassword = getWalletPassword(this)
-        if (walletName != null && walletPassword != null) {
-            val lockManager: LockManager<CustomPinActivity> =
-                LockManager.getInstance() as LockManager<CustomPinActivity>
-            lockManager.enableAppLock(this, CustomPinActivity::class.java)
-            val intent = Intent(this, CustomPinActivity::class.java)
-            if (TextSecurePreferences.getWalletEntryPassword(this) != null) {
-                intent.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN)
-                intent.putExtra("change_pin", false)
-                intent.putExtra("send_authentication", false)
-                setUpWalletPinActivityResultLauncher.launch(intent)
-            } else {
-                intent.putExtra(AppLock.EXTRA_TYPE, AppLock.ENABLE_PINLOCK)
-                intent.putExtra("change_pin", false)
-                intent.putExtra("send_authentication", false)
-                setUpWalletPinActivityResultLauncher.launch(intent)
-            }
-        } else {
-            val intent = Intent(this, WalletInfoActivity::class.java)
-            push(intent)
-        }
-    }
 
     //SetDataAndType
     override fun passSharedMessageToConversationScreen(thread:Recipient) {

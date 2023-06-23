@@ -38,6 +38,7 @@ import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.lang.ClassCastException
+import java.lang.Exception
 import java.util.HashMap
 
 
@@ -80,7 +81,16 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
         binding.amountEditTextReceive.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
                 if (binding.amountEditTextReceive.text.isNotEmpty()) {
-                    reGenerateQr()
+                    if(validateBELDEXAmount(s.toString())) {
+                        binding.amountEditTextReceive.setBackgroundResource(R.drawable.bchat_id_text_view_background)
+                        binding.beldexAmountErrorMessage.visibility = View.GONE
+                        binding.beldexAmountErrorMessage.text = ""
+                        reGenerateQr()
+                    }else{
+                        binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.error_view_background)
+                        binding.beldexAmountErrorMessage.visibility =View.VISIBLE
+                        binding.beldexAmountErrorMessage.text=getString(R.string.beldex_amount_valid_error_message)
+                    }
                 } else {
                     generateQr()
                 }
@@ -229,6 +239,29 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
                 resources.getString(R.string.fragment_view_my_qr_code_share_title)
             )
         )
+    }
+
+    private fun validateBELDEXAmount(amount:String):Boolean {
+        val maxValue = 150000000.00000
+        val value = amount.replace(',', '.')
+        val regExp ="^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$"
+        var isValid = false
+
+        isValid = if (value.matches(Regex(regExp))) {
+            if (value == ".") {
+                false
+            } else {
+                try {
+                    val dValue = value.toDouble()
+                    (dValue <= maxValue && dValue > 0)
+                } catch (e: Exception) {
+                    false
+                }
+            }
+        } else {
+            false
+        }
+        return isValid
     }
 
     override fun onPause() {

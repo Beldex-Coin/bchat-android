@@ -14,7 +14,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
@@ -28,7 +27,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
-import com.beldex.libbchat.mnode.OnionRequestAPI
 import com.beldex.libbchat.utilities.*
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
@@ -66,8 +64,8 @@ import kotlinx.coroutines.*
 import org.apache.commons.lang3.time.DurationFormatUtils
 import java.io.IOException
 import java.lang.IllegalStateException
-import java.text.NumberFormat
 import java.util.*
+import android.view.MotionEvent
 
 class HomeFragment : Fragment(),ConversationClickListener,
     NewConversationButtonSetViewDelegate,
@@ -200,6 +198,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
         return binding.root
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -297,6 +296,9 @@ class HomeFragment : Fragment(),ConversationClickListener,
                 val uiMode = UiMode.values()[0]
                 UiModeUtilities.setUserSelectedUiMode(requireActivity(), uiMode)
             }
+        }
+        binding.drawerAppearanceToggleButton.setOnTouchListener { _, event ->
+            event.actionMasked == MotionEvent.ACTION_MOVE
         }
         binding.drawerQrcodeImg.setOnClickListener {
             activityCallback?.showQRCode()

@@ -61,6 +61,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
     private var inChatBDXButtonLastClickTime: Long = 0
     private var inChatBDXButtonLastLongClickTime: Long = 0
     private var sendButtonLastClickTime: Long = 0
+    private var microPhoneButtonLastLongClickTime: Long = 0
 
     private val attachmentsButton by lazy { InputBarButton(context, R.drawable.ic_attach, isMessageBox = true) }
     private val microphoneButton by lazy { InputBarButton(context, R.drawable.ic_microphone, isMessageBox = true) }
@@ -86,7 +87,12 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         // Microphone button
         binding.microphoneOrSendButtonContainer.addView(microphoneButton)
         microphoneButton.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
-        microphoneButton.onLongPress = { startRecordingVoiceMessage() }
+        microphoneButton.onLongPress = {
+            if (SystemClock.elapsedRealtime() - microPhoneButtonLastLongClickTime >= 1000 && SystemClock.elapsedRealtime() - sendButtonLastClickTime >= 1000){
+                microPhoneButtonLastLongClickTime = SystemClock.elapsedRealtime()
+                startRecordingVoiceMessage()
+            }
+        }
         microphoneButton.onMove = { delegate?.onMicrophoneButtonMove(it) }
         microphoneButton.onCancel = { delegate?.onMicrophoneButtonCancel(it) }
         microphoneButton.onUp = { delegate?.onMicrophoneButtonUp(it) }

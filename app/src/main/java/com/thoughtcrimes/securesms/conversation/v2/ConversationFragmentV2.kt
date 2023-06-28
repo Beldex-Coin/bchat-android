@@ -2331,26 +2331,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     private fun showOrHideInputIfNeeded() {
         val recipient = viewModel.recipient
-        if (recipient != null && recipient.isClosedGroupRecipient) {
-            val group =
-                (activity as HomeActivity).groupDb.getGroup(recipient.address.toGroupString())
-                    .orNull()
+        if (recipient != null && recipient.isClosedGroupRecipient && mContext != null) {
+            val group = (activity as HomeActivity).groupDb.getGroup(recipient.address.toGroupString()).orNull()
             val isActive = (group?.isActive == true)
             binding.inputBar.showInput = isActive
-            if (isActive) {
-                binding.inputBarCard.radius = 10F
-            } else {
-                val params: RelativeLayout.LayoutParams = RelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                )
-                params.addRule(RelativeLayout.ALIGN_PARENT_START)
-                params.addRule(RelativeLayout.ALIGN_PARENT_END)
-                params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
-                params.setMargins(0, 0, 0, 0)
-                binding.inputBarCard.radius = 0F
-                binding.inputBarCard.layoutParams = params
-            }
         } else {
             binding.inputBar.showInput = true
         }

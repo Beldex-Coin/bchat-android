@@ -243,9 +243,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onUpdateProfileEvent(event: ProfilePictureModifiedEvent) {
         if (event.recipient.isLocalNumber) {
-            val homeFragment:HomeFragment = supportFragmentManager.findFragmentById(R.id.activity_home_frame_layout_container) as HomeFragment
-            if(homeFragment!=null) {
-                homeFragment.updateProfileButton()
+            val currentFragment = getCurrentFragment()
+            if(currentFragment is HomeFragment) {
+                currentFragment.updateProfileButton()
             }
         }
     }
@@ -1555,7 +1555,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     private fun disconnectWalletService() {
         if (mIsBound) {
             // Detach our existing connection.
-            mBoundService!!.setObserver(null)
+            if(mBoundService != null){
+                mBoundService!!.setObserver(null)
+            }
             unbindService(mConnection)
             mIsBound = false
             Timber.d("UNBOUND")

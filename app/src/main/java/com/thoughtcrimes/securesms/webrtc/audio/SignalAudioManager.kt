@@ -35,9 +35,9 @@ class SignalAudioManager(private val context: Context,
                          private val androidAudioManager: AudioManagerCompat) {
 
     private var commandAndControlThread: HandlerThread? = HandlerThread("call-audio", ThreadUtils.PRIORITY_IMPORTANT_BACKGROUND_THREAD).apply { start() }
-    private var handler: SignalAudioHandler? = SignalAudioHandler(commandAndControlThread!!.looper)
+    private var handler: SignalAudioHandler = SignalAudioHandler(commandAndControlThread!!.looper)
 
-    private var signalBluetoothManager: SignalBluetoothManager = SignalBluetoothManager(context, this, androidAudioManager, handler!!)
+    private var signalBluetoothManager: SignalBluetoothManager = SignalBluetoothManager(context, this, androidAudioManager, handler)
 
     private var state: State = State.UNINITIALIZED
 
@@ -64,7 +64,7 @@ class SignalAudioManager(private val context: Context,
     private var wiredHeadsetReceiver: WiredHeadsetReceiver? = null
 
     fun handleCommand(command: AudioManagerCommand) {
-        handler?.post {
+        handler.post {
             when (command) {
                 is AudioManagerCommand.Initialize -> initialize()
                 is AudioManagerCommand.UpdateAudioDeviceState -> updateAudioDeviceState()
@@ -108,7 +108,7 @@ class SignalAudioManager(private val context: Context,
     }
 
     fun shutdown() {
-        handler!!.post {
+        handler.post {
             stop(false)
             if (commandAndControlThread != null) {
                 Log.i(TAG, "Shutting down command and control")
@@ -172,7 +172,7 @@ class SignalAudioManager(private val context: Context,
     }
 
     private fun updateAudioDeviceState() {
-        handler!!.assertHandlerThread()
+        handler.assertHandlerThread()
 
         Log.i(
             TAG,
@@ -362,7 +362,7 @@ class SignalAudioManager(private val context: Context,
             val pluggedIn = intent.getIntExtra("state", 0) == 1
             val hasMic = intent.getIntExtra("microphone", 0) == 1
 
-            handler?.post { onWiredHeadsetChange(pluggedIn, hasMic) }
+            handler.post { onWiredHeadsetChange(pluggedIn, hasMic) }
         }
     }
 

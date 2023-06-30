@@ -171,6 +171,7 @@ class CreatePasswordActivity : BaseActionBarActivity() {
 
 
     private fun callRecoveryPhrasePage() {
+        TextSecurePreferences.setCopiedSeed(this,true)
         //New Line AirDrop
         TextSecurePreferences.setAirdropAnimationStatus(this,true)
 

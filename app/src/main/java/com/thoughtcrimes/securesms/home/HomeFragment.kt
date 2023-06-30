@@ -525,6 +525,21 @@ class HomeFragment : Fragment(),ConversationClickListener,
                 ConversationFragmentV2.ADDRESS
             ),requireArguments().getParcelable<Uri>(ConversationFragmentV2.URI),requireArguments().getString(ConversationFragmentV2.TYPE),requireArguments().getCharSequence(Intent.EXTRA_TEXT))
         }
+        if(!TextSecurePreferences.isCopiedSeed(requireActivity().applicationContext)){
+            showSaveYourSeedDialog()
+        }
+    }
+
+    private fun showSaveYourSeedDialog(){
+        try {
+            activityCallback?.let {
+                SaveYourSeedDialogBox(
+                    it
+                ).show(requireActivity().supportFragmentManager, "")
+            }
+        } catch (exception: Exception) {
+            android.util.Log.d("Beldex", "Save your seed dialog box exception $exception")
+        }
     }
 
     override fun onPause() {

@@ -101,6 +101,7 @@ class RecoveryPhraseActivity : BaseActionBarActivity() {
     }
 
     private fun copySeed() {
+        TextSecurePreferences.setCopiedSeed(this,true)
         val seed = binding.bChatSeedTextView?.text.toString()
         val clipboard = this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("Seed", seed)

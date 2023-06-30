@@ -260,9 +260,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                 if(binding.beldexAmountEditTxtLayout.editText!!.isFocused) {
                     if (s.isNotEmpty()) {
                         if(validateBELDEXAmount(s.toString())) {
-                            binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.bchat_id_text_view_background)
-                            binding.beldexAmountErrorMessage.visibility = View.GONE
-                            binding.beldexAmountErrorMessage.text = ""
+                            hideErrorMessage()
                             val bdx = getCleanAmountString(s.toString())
                             val amount: BigDecimal = if (bdx != null) {
                                 BigDecimal(bdx.toDouble()).multiply(BigDecimal(price))
@@ -276,6 +274,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                             binding.beldexAmountErrorMessage.text=getString(R.string.beldex_amount_valid_error_message)
                         }
                     } else {
+                        hideErrorMessage()
                         binding.currencyEditText.text="0.00"
                     }
                 }
@@ -313,6 +312,12 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
         return binding.root
 
+    }
+
+    private fun hideErrorMessage(){
+        binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.bchat_id_text_view_background)
+        binding.beldexAmountErrorMessage.visibility = View.GONE
+        binding.beldexAmountErrorMessage.text = ""
     }
 
     private fun createTransactionIfPossible(){

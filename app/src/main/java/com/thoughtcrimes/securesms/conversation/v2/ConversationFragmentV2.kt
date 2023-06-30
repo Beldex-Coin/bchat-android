@@ -2208,7 +2208,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         } else {
             Toast.makeText(
                 requireActivity().applicationContext,
-                "Check your Internet",
+                getString(R.string.please_check_your_internet_connection),
                 Toast.LENGTH_SHORT
             ).show()
         }
@@ -2694,6 +2694,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun handleRecyclerViewScrolled() {
+        Log.d("handleRecyclerViewScrolled","$isScrolledToBottom")
         val binding = binding ?: return
         val wasTypingIndicatorVisibleBefore = binding.typingIndicatorViewContainer.isVisible
         binding.typingIndicatorViewContainer.isVisible =

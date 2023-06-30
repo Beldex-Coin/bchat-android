@@ -82,9 +82,7 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
             override fun afterTextChanged(s: Editable) {
                 if (binding.amountEditTextReceive.text.isNotEmpty()) {
                     if(validateBELDEXAmount(s.toString())) {
-                        binding.amountEditTextReceive.setBackgroundResource(R.drawable.bchat_id_text_view_background)
-                        binding.beldexAmountErrorMessage.visibility = View.GONE
-                        binding.beldexAmountErrorMessage.text = ""
+                        hideErrorMessage()
                         reGenerateQr()
                     }else{
                         binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.error_view_background)
@@ -92,6 +90,7 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
                         binding.beldexAmountErrorMessage.text=getString(R.string.beldex_amount_valid_error_message)
                     }
                 } else {
+                    hideErrorMessage()
                     generateQr()
                 }
             }
@@ -117,6 +116,12 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
         }
 
         return binding.root
+    }
+
+    private fun hideErrorMessage(){
+        binding.amountEditTextReceive.setBackgroundResource(R.drawable.bchat_id_text_view_background)
+        binding.beldexAmountErrorMessage.visibility = View.GONE
+        binding.beldexAmountErrorMessage.text = ""
     }
 
     private fun copyYourBeldexAddress() {

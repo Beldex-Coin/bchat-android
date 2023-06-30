@@ -80,7 +80,12 @@ object ConversationMenuHelper {
         }
         // Secret group menu (options that should only be present in secret groups)
         if (thread.isClosedGroupRecipient) {
-            inflater.inflate(R.menu.menu_conversation_closed_group, menu)
+            val groupPublicKey = doubleDecodeGroupID(thread.address.toString()).toHexString()
+            val isClosedGroup =
+                DatabaseComponent.get(context).beldexAPIDatabase().isClosedGroup(groupPublicKey)
+            if (isClosedGroup) {
+                inflater.inflate(R.menu.menu_conversation_closed_group, menu)
+            }
         }
         // Social group menu
         if (isOpenGroup) {

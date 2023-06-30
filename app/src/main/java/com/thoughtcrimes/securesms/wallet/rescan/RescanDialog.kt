@@ -117,6 +117,7 @@ class RescanDialog(val context: HomeActivity, private val daemonBlockChainHeight
                     1 -> {
                         binding.restoreSeedWalletRestoreDate.text = ""
                         binding.restoreSeedWalletRestoreHeight.setText("")
+                        binding.restoreSeedWalletRestoreHeight.isFocusable = false
                         dismiss()
                     }
                     else -> Timber.e("Button " + type + "pressed - how can this be?")

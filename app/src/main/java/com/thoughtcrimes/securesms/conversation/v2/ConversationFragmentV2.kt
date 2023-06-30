@@ -2903,7 +2903,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     //Payment Tag
     override fun sendBDX() {
-        transactionInProgress = true
         val txData: TxData = getTxData()
         txData.destinationAddress = senderBeldexAddress
         txData.destinationAddress?.let { Log.d("SenderBeldexAddress txData->", it) }
@@ -3085,6 +3084,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private fun onResumeFragment() {
         Helper.hideKeyboard(activity)
         isResume = true
+        transactionInProgress = true
         refreshTransactionDetails()
         if (pendingTransaction == null && !inProgress) {
             showProgress()

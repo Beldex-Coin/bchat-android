@@ -1341,8 +1341,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
         <item quantity="other">and %d others</item>
     </plurals>
     <string name="unblock_selected" translatable="false">Unblock Selected</string>
-    <string name="call_alert_while_ringing" translatable="false">BChat call won\'t allow ,Because your phone call ringing</string>
-    <string name="call_alert_while_on_going" translatable="false">BChat call won\'t allow ,Because your phone call is on going</string>
+    <string name="call_alert" translatable="false">You\'re already on call</string>
     <string name="please_connect_to_other_node" translatable="false">Please connect to other node</string>
     <string name="please_try_after_some_time" translatable="false">Please try after some time</string>
     <string name="conversation_transition_name" translatable="false">conversation_transition</string>
@@ -1382,5 +1381,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="dialog_message_for_set_wallet_pin" translatable="false">Please set up wallet pin to enable pay as you chat feature.</string>
     <string name="save_your_seed" translatable="false">Save your seed</string>
     <string name="save_your_seed_message" translatable="false">You haven\'t copied the seed phrase. Kindly copy and save the seed. Only your seed can be used to recover your account.</string>
-    <string name="record_voice_restriction" translatable="false">Can\'t record voice messages during a BChat call.</string>
+    <string name="joined_social_group_successfully" translatable="false">Joined %s successfully</string>
 </resources>

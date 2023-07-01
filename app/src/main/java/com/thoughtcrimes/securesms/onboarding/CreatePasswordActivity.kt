@@ -171,7 +171,6 @@ class CreatePasswordActivity : BaseActionBarActivity() {
 
 
     private fun callRecoveryPhrasePage() {
-        TextSecurePreferences.setCopiedSeed(this,true)
         //New Line AirDrop
         TextSecurePreferences.setAirdropAnimationStatus(this,true)
 
@@ -188,6 +187,7 @@ class CreatePasswordActivity : BaseActionBarActivity() {
     }
 
     private fun callHomePage() {
+        TextSecurePreferences.setCopiedSeed(this,true)
         //New Line AirDrop
         TextSecurePreferences.setAirdropAnimationStatus(this,true)
 

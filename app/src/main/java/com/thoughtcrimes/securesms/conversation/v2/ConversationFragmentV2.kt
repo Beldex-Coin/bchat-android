@@ -2177,14 +2177,14 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                                     TelephonyManager.CALL_STATE_RINGING -> {
                                         Toast.makeText(
                                             requireActivity().applicationContext,
-                                            getString(R.string.call_alert_while_ringing),
+                                            getString(R.string.call_alert),
                                             Toast.LENGTH_SHORT
                                         ).show()
                                     }
                                     TelephonyManager.CALL_STATE_OFFHOOK -> {
                                         Toast.makeText(
                                             requireActivity().applicationContext,
-                                            getString(R.string.call_alert_while_on_going),
+                                            getString(R.string.call_alert),
                                             Toast.LENGTH_SHORT
                                         ).show()
 
@@ -2206,14 +2206,14 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                                 TelephonyManager.CALL_STATE_RINGING -> {
                                     Toast.makeText(
                                         requireActivity().applicationContext,
-                                        getString(R.string.call_alert_while_ringing),
+                                        getString(R.string.call_alert),
                                         Toast.LENGTH_SHORT
                                     ).show()
                                 }
                                 TelephonyManager.CALL_STATE_OFFHOOK -> {
                                     Toast.makeText(
                                         requireActivity().applicationContext,
-                                        getString(R.string.call_alert_while_on_going),
+                                        getString(R.string.call_alert),
                                         Toast.LENGTH_SHORT
                                     ).show()
 

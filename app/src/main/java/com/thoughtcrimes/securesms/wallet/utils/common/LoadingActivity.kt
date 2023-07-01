@@ -8,6 +8,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.thoughtcrimes.securesms.ApplicationContext
 import com.thoughtcrimes.securesms.home.HomeActivity
 import io.beldex.bchat.databinding.ActivityLoadingBinding
 import timber.log.Timber
@@ -19,6 +20,7 @@ class LoadingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoadingBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        ApplicationContext.getInstance(this).messageNotifier.setHomeScreenVisible(true)
         checkServiceRunning()
     }
 

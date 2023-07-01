@@ -168,7 +168,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
     }
 
     private fun startRecordingVoiceMessage() {
-        delegate?.startRecordingVoiceMessage()
+            delegate?.startRecordingVoiceMessage()
     }
 
     // Drafting quotes and drafting link previews is mutually exclusive, i.e. you can't draft

@@ -95,7 +95,7 @@ class DefaultConversationRepository @Inject constructor(
         val openGroup = beldexThreadDb.getOpenGroupChat(threadId)
         Log.d("Beldex","open group $openGroup")
         return openGroup?.room == "bchat" || openGroup?.room == "beldex"
-                || openGroup?.room == "crypto"  || openGroup?.room == "masternode"
+                || openGroup?.room == "crypto"  || openGroup?.room == "masternode" || openGroup?.room == "belnet"
     }
 
     override fun getRecipientForThreadId(threadId: Long): Recipient? {

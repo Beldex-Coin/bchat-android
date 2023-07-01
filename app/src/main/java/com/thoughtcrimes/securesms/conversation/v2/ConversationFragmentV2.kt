@@ -145,6 +145,7 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.concurrent.Executor
 import com.thoughtcrimes.securesms.util.slidetoact.SlideToActView.OnSlideCompleteListener
+import com.thoughtcrimes.securesms.webrtc.CallViewModel
 import com.thoughtcrimes.securesms.webrtc.NetworkChangeReceiver
 
 
@@ -378,6 +379,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     var dispatchTouched = false
     private var networkChangedReceiver: NetworkChangeReceiver? = null
     private var isNetworkAvailable = true
+    private var callViewModel : CallViewModel? =null
 
 
     interface Listener {
@@ -583,6 +585,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 }
             }
         }
+        callViewModel = ViewModelProvider(requireActivity()).get(CallViewModel::class.java)
     }
 
     override fun onResume() {
@@ -991,23 +994,27 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun startRecordingVoiceMessage() {
-        if (Permissions.hasAll(requireActivity(), Manifest.permission.RECORD_AUDIO)) {
-            showVoiceMessageUI()
-            this.activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            audioRecorder.startRecording()
-            stopAudioHandler.postDelayed(
-                stopVoiceMessageRecordingTask,
-                60000
-            ) // Limit voice messages to 1 minute each
-        } else {
-            Permissions.with(this)
-                .request(Manifest.permission.RECORD_AUDIO)
-                .withRationaleDialog(
-                    getString(R.string.ConversationActivity_to_send_audio_messages_allow_signal_access_to_your_microphone),
-                    R.drawable.ic_microphone_permission
-                )
-                .withPermanentDenialDialog(getString(R.string.ConversationActivity_signal_requires_the_microphone_permission_in_order_to_send_audio_messages))
-                .execute()
+        if(callViewModel?.callStartTime == -1L) {
+            if (Permissions.hasAll(requireActivity(), Manifest.permission.RECORD_AUDIO)) {
+                showVoiceMessageUI()
+                this.activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                audioRecorder.startRecording()
+                stopAudioHandler.postDelayed(
+                    stopVoiceMessageRecordingTask,
+                    60000
+                ) // Limit voice messages to 1 minute each
+            } else {
+                Permissions.with(this)
+                    .request(Manifest.permission.RECORD_AUDIO)
+                    .withRationaleDialog(
+                        getString(R.string.ConversationActivity_to_send_audio_messages_allow_signal_access_to_your_microphone),
+                        R.drawable.ic_microphone_permission
+                    )
+                    .withPermanentDenialDialog(getString(R.string.ConversationActivity_signal_requires_the_microphone_permission_in_order_to_send_audio_messages))
+                    .execute()
+            }
+        }else{
+            Toast.makeText(requireActivity(),getString(R.string.record_voice_restriction),Toast.LENGTH_SHORT).show()
         }
     }
 

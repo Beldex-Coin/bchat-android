@@ -186,6 +186,20 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         listenerCallback!!.getConversationViewModel().create(threadId!!)
     }
 
+    private fun callViewModel():Recipient?{
+         val viewModels: ConversationViewModel by viewModels {
+            threadId = requireArguments().getLong(THREAD_ID,-1L)
+            if (threadId == -1L) {
+                requireArguments().getParcelable<Address>(ADDRESS)?.let { address ->
+                    val recipient = Recipient.from(requireActivity(), address, false)
+                    threadId = (activity as HomeActivity).threadDb.getOrCreateThreadIdFor(recipient)
+                }
+            }
+            listenerCallback!!.getConversationViewModel().create(threadId!!)
+        }
+        return viewModels.recipient
+    }
+
     private var actionMode: ActionMode? = null
 
     //Hales63
@@ -1077,7 +1091,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun sendMessage() {
-        val recipient = viewModel.recipient ?: return
+        val recipient = viewModel.recipient ?: callViewModel() ?: return
         if (recipient.isContactRecipient && recipient.isBlocked) {
             BlockedDialog(recipient).show(
                 requireActivity().supportFragmentManager,

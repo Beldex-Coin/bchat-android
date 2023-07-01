@@ -112,6 +112,7 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 import androidx.lifecycle.Observer
+import com.beldex.libbchat.utilities.isScrolledToBottom
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.contacts.SelectContactsActivity
 import com.thoughtcrimes.securesms.data.NodeInfo
@@ -221,15 +222,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
 
     private val isScrolledToBottom: Boolean
-        get() {
-            val position = layoutManager.findFirstCompletelyVisibleItemPosition()
-            return position == 0
-        }
+        get() = binding.conversationRecyclerView.isScrolledToBottom ?: true
 
-    private val layoutManager: LinearLayoutManager
-        get() {
-            return binding.conversationRecyclerView.layoutManager as LinearLayoutManager
-        }
+    private val layoutManager: LinearLayoutManager?
+        get() { return binding.conversationRecyclerView.layoutManager as LinearLayoutManager? }
 
 
     private val seed by lazy {
@@ -468,13 +464,24 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
         binding.scrollToBottomButton.setOnClickListener {
 
-            val layoutManager =
-                binding.conversationRecyclerView.layoutManager ?: return@setOnClickListener
+            val layoutManager = (binding.conversationRecyclerView.layoutManager as? LinearLayoutManager) ?: return@setOnClickListener
 
             if (layoutManager.isSmoothScrolling) {
                 binding.conversationRecyclerView.scrollToPosition(0)
             } else {
-                binding.conversationRecyclerView.smoothScrollToPosition(0)
+                // It looks like 'smoothScrollToPosition' will actually load all intermediate items in
+                // order to do the scroll, this can be very slow if there are a lot of messages so
+                // instead we check the current position and if there are more than 10 items to scroll
+                // we jump instantly to the 10th item and scroll from there (this should happen quick
+                // enough to give a similar scroll effect without having to load everything)
+                val position = layoutManager!!.findFirstVisibleItemPosition()
+                if (position > 10) {
+                    binding.conversationRecyclerView.scrollToPosition(10)
+                }
+
+                binding.conversationRecyclerView.post {
+                    binding.conversationRecyclerView.smoothScrollToPosition(0)
+                }
             }
         }
 
@@ -1094,6 +1101,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     binding.inputBar.linkPreview
                 )
             }else {
+                Log.d("SendMessage ","5")
                 callSendTextOnlyMessage()
             }
         } else {
@@ -1814,6 +1822,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 handleRecyclerViewScrolled()
             }
         })
+
+        binding.conversationRecyclerView.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            showScrollToBottomButtonIfApplicable()
+        }
     }
 
     private fun setUpToolBar() {
@@ -2694,7 +2706,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun handleRecyclerViewScrolled() {
-        Log.d("handleRecyclerViewScrolled","$isScrolledToBottom")
         val binding = binding ?: return
         val wasTypingIndicatorVisibleBefore = binding.typingIndicatorViewContainer.isVisible
         binding.typingIndicatorViewContainer.isVisible =
@@ -2703,9 +2714,14 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (isTypingIndicatorVisibleAfter != wasTypingIndicatorVisibleBefore) {
             inputBarHeightChanged(binding.inputBar.height)
         }
-        binding.scrollToBottomButton.isVisible = !isScrolledToBottom
-        unreadCount = min(unreadCount, layoutManager.findFirstVisibleItemPosition())
+        showScrollToBottomButtonIfApplicable()
+        val firstVisiblePosition = layoutManager?.findFirstVisibleItemPosition() ?: -1
+        unreadCount = min(unreadCount, firstVisiblePosition).coerceAtLeast(0)
         updateUnreadCountIndicator()
+    }
+
+    private fun showScrollToBottomButtonIfApplicable() {
+        binding.scrollToBottomButton.isVisible = !isScrolledToBottom && adapter.itemCount > 0
     }
 
     private fun moveToMessagePosition(position: Int, onMessageNotFound: Runnable?) {

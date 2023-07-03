@@ -222,6 +222,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         binding.airdropIcon.setOnClickListener { callAirdropUrl() }*/
         appUpdateManager = AppUpdateManagerFactory.create(applicationContext)
         checkUpdate()
+        loadFavouritesWithNetwork()
 
         /*if(TextSecurePreferences.getAirdropAnimationStatus(this)) {
             //New Line AirDrop
@@ -1005,12 +1006,11 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     override fun getOrPopulateFavourites(): MutableSet<NodeInfo> {
-        Log.d("Beldex","getOrPopulateFavourites() fun called ${DefaultNodes.values()}")
         if (favouriteNodes.isEmpty()) {
             for (node in DefaultNodes.values()) {
                 val nodeInfo = NodeInfo.fromString(node.uri)
                 if (nodeInfo != null) {
-                    nodeInfo.setFavourite(true)
+                    nodeInfo.isFavourite = true
                     favouriteNodes.add(nodeInfo)
                 }
             }
@@ -1784,6 +1784,48 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 //Shortcut launcher
                 extras.putBoolean(ConversationFragmentV2.SHORTCUT_LAUNCHER,true)
                 replaceFragment(HomeFragment(),null,extras)
+            }
+        }
+    }
+
+    private fun loadFavouritesWithNetwork() {
+        Helper.runWithNetwork {
+            loadFavourites()
+            true
+        }
+    }
+
+    private fun loadFavourites() {
+        favouriteNodes.clear()
+        val selectedNodeId = getSelectedNodeId()
+        val storedNodes = getSharedPreferences(NODES_PREFS_NAME, MODE_PRIVATE).all
+        for (nodeEntry in storedNodes.entries) {
+            if (nodeEntry != null) { // just in case, ignore possible future errors
+                val nodeId = nodeEntry.value as String
+                val addedNode = addFavourite(nodeId)
+                if (addedNode != null) {
+                    if (nodeId == selectedNodeId) {
+                        addedNode.isSelected = true
+                    }
+                }
+            }
+        }
+        if (storedNodes.isEmpty()) { // try to load legacy list & remove it (i.e. migrate the data once)
+            val sharedPref = getPreferences(MODE_PRIVATE)
+            when (WalletManager.getInstance().networkType) {
+                NetworkType.NetworkType_Mainnet -> {
+                    loadLegacyList(sharedPref.getString(PREF_DAEMON_MAINNET, null))
+                    sharedPref.edit().remove(PREF_DAEMON_MAINNET).apply()
+                }
+                NetworkType.NetworkType_Stagenet -> {
+                    loadLegacyList(sharedPref.getString(PREF_DAEMON_STAGENET, null))
+                    sharedPref.edit().remove(PREF_DAEMON_STAGENET).apply()
+                }
+                NetworkType.NetworkType_Testnet -> {
+                    loadLegacyList(sharedPref.getString(PREF_DAEMON_TESTNET, null))
+                    sharedPref.edit().remove(PREF_DAEMON_TESTNET).apply()
+                }
+                else -> throw java.lang.IllegalStateException("unsupported net " + WalletManager.getInstance().networkType)
             }
         }
     }

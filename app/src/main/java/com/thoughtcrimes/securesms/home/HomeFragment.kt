@@ -904,8 +904,6 @@ class HomeFragment : Fragment(),ConversationClickListener,
                 selectedNode = autoselect(favourites)
             } else if (params[0] == PING_SELECTED) {
                 selectedNode = activityCallback!!.getNode()
-                if (!activityCallback!!.getFavouriteNodes().contains(selectedNode))
-                    selectedNode = null // it's not in the favourites (any longer)
                 if (selectedNode == null)
                     Log.d("Beldex","selected node $selectedNode")
                 for (node in favourites) {

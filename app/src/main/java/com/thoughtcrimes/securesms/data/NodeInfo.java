@@ -1,5 +1,6 @@
 package com.thoughtcrimes.securesms.data;
 
+import android.os.NetworkOnMainThreadException;
 import android.util.Log;
 
 import com.burgstaller.okhttp.AuthenticationCacheInterceptor;
@@ -66,6 +67,8 @@ public class  NodeInfo extends Node {
         try {
             return new NodeInfo(nodeString);
         } catch (IllegalArgumentException ex) {
+            return null;
+        } catch (NetworkOnMainThreadException ex){
             return null;
         }
     }

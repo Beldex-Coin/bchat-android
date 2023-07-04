@@ -100,6 +100,8 @@ class RescanDialog(val context: HomeActivity, private val daemonBlockChainHeight
         dates["2023-03"] = 2022950
         dates["2023-04"] = 2112950
         dates["2023-05"] = 2199950
+        dates["2023-06"] = 2289269
+        dates["2023-07"] = 2363143
 
         // create an OnDateSetListener
         val dateSetListener =

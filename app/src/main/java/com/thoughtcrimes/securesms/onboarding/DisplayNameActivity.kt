@@ -73,6 +73,7 @@ class DisplayNameActivity : BaseActionBarActivity() {
 
     override fun onResume() {
         super.onResume()
+        binding.registerButton.isEnabled = true
         //New Line
         if (CheckOnline.isOnline(this)) {
             pingSelectedNode()
@@ -268,6 +269,7 @@ class DisplayNameActivity : BaseActionBarActivity() {
                 removeWallet()
             }
         }
+        binding.registerButton.isEnabled = false
 
         val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(binding.displayNameEditText.windowToken, 0)

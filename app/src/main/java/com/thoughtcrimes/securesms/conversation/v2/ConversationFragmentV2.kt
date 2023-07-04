@@ -145,6 +145,7 @@ import java.util.concurrent.Executor
 import com.thoughtcrimes.securesms.util.slidetoact.SlideToActView.OnSlideCompleteListener
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
 import com.thoughtcrimes.securesms.webrtc.NetworkChangeReceiver
+import java.io.FileNotFoundException
 
 
 private const val ARG_PARAM1 = "param1"
@@ -895,7 +896,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         val mediaPreppedListener = object : ListenableFuture.Listener<Boolean> {
 
             override fun onSuccess(result: Boolean?) {
-                sendAttachments(attachmentManager.buildSlideDeck().asAttachments(), null)
+                if(result == true) {
+                    sendAttachments(attachmentManager.buildSlideDeck().asAttachments(), null)
+                }else{
+                    Toast.makeText(requireActivity().applicationContext, R.string.MediaSendActivity_an_item_was_removed_because_it_exceeded_the_size_limit, Toast.LENGTH_LONG).show()
+                }
             }
 
             override fun onFailure(e: ExecutionException?) {

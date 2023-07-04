@@ -54,9 +54,6 @@ import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment
 import com.beldex.libbchat.messaging.sending_receiving.link_preview.LinkPreview
 import com.beldex.libbchat.messaging.sending_receiving.quotes.QuoteModel
-import com.beldex.libbchat.utilities.Address
-import com.beldex.libbchat.utilities.MediaTypes
-import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.concurrent.SimpleTask
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libbchat.utilities.recipients.RecipientModifiedListener
@@ -112,7 +109,7 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 import androidx.lifecycle.Observer
-import com.beldex.libbchat.utilities.isScrolledToBottom
+import com.beldex.libbchat.utilities.*
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.contacts.SelectContactsActivity
 import com.thoughtcrimes.securesms.data.NodeInfo
@@ -200,6 +197,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
         return viewModels.recipient
     }
+
+    private val hexEncodedPublicKey: String
+        get() {
+            return TextSecurePreferences.getLocalNumber(requireContext())!!
+        }
 
     private var actionMode: ActionMode? = null
 
@@ -1563,7 +1565,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun copyBchatID(messages: Set<MessageRecord>) {
-        val bchatID = messages.first().individualRecipient.address.toString()
+        val bchatID = if(messages.first().isOutgoing){
+            hexEncodedPublicKey
+        }else{
+            messages.first().individualRecipient.address.toString()
+        }
         val clip = ClipData.newPlainText("BChat ID", bchatID)
         val manager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         manager.setPrimaryClip(clip)

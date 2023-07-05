@@ -169,6 +169,11 @@ class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.chatURLEditText.isFocusable = false
+    }
+
     // region Updating
     private fun showLoader() {
         binding.loader.visibility = View.VISIBLE

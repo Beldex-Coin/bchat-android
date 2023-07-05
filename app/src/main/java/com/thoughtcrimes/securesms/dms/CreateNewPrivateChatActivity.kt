@@ -156,6 +156,11 @@ class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
         }
 
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.publicKeyEditText.isFocusable = false
+    }
     // endregion
 
     private fun handleIsKeyboardShowingChanged() {

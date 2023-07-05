@@ -86,6 +86,11 @@ class CreateClosedGroupActivity : PassphraseRequiredActionBarActivity(), LoaderM
         LoaderManager.getInstance(this).initLoader(0, null, this)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.nameEditText.isFocusable = false
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_done, menu)
         return members.isNotEmpty() && !isLoading

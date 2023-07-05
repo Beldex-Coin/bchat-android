@@ -1368,33 +1368,33 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun sendVoiceMessage() {
-        hideVoiceMessageUI()
-        this.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        val future = audioRecorder.stopRecording()
-        stopAudioHandler.removeCallbacks(stopVoiceMessageRecordingTask)
-        future.addListener(object : ListenableFuture.Listener<Pair<Uri, Long>> {
+            hideVoiceMessageUI()
+            this.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            val future = audioRecorder.stopRecording()
+            stopAudioHandler.removeCallbacks(stopVoiceMessageRecordingTask)
+            future.addListener(object : ListenableFuture.Listener<Pair<Uri, Long>> {
 
-            override fun onSuccess(result: Pair<Uri, Long>) {
-                val audioSlide = AudioSlide(
-                    requireActivity(),
-                    result.first,
-                    result.second,
-                    MediaTypes.AUDIO_AAC,
-                    true
-                )
-                val slideDeck = SlideDeck()
-                slideDeck.addSlide(audioSlide)
-                sendAttachments(slideDeck.asAttachments(), null)
-            }
+                override fun onSuccess(result: Pair<Uri, Long>) {
+                    val audioSlide = AudioSlide(
+                        requireActivity(),
+                        result.first,
+                        result.second,
+                        MediaTypes.AUDIO_AAC,
+                        true
+                    )
+                    val slideDeck = SlideDeck()
+                    slideDeck.addSlide(audioSlide)
+                    sendAttachments(slideDeck.asAttachments(), null)
+                }
 
-            override fun onFailure(e: ExecutionException) {
-                Toast.makeText(
-                    requireActivity(),
-                    R.string.ConversationActivity_unable_to_record_audio,
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-        })
+                override fun onFailure(e: ExecutionException) {
+                    Toast.makeText(
+                        requireActivity(),
+                        R.string.ConversationActivity_unable_to_record_audio,
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            })
     }
 
     override fun cancelVoiceMessage() {
@@ -3284,14 +3284,15 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     if (x == 0) x = 101 // indeterminate
                     setProgress(x)
                     valueOfWallet = "${df.format(walletSyncPercentage)}%"
+                    binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false,valueOfWallet)
                 } else {
                     ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(
                         false
                     )
                     sync =
-                        getString(R.string.status_synchronized)
-                    binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false,valueOfWallet)
+                    getString(R.string.status_synchronized)
                     valueOfWallet = "${df.format(walletSyncPercentage)}%"
+                    binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false,valueOfWallet)
                     //SteveJosephh21
                     setProgress(-2)
                 }

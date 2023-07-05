@@ -1243,26 +1243,37 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             if (TextSecurePreferences.isPayAsYouChat(requireContext())) {
                 when {
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> {
-                        if (valueOfWallet != "100%") {
-                            binding.tooltip.text =
-                                Html.fromHtml("<p>Wallet Synchronizing <b> $valueOfWallet </b> </p>",
-                                    Html.FROM_HTML_MODE_COMPACT)
-                        } else {
-                            binding.tooltip.text =
-                                Html.fromHtml("<p> <b>Balance : $valueOfBalance </b> </p> <br /> <p><b>Unlocked Balance : $valueOfUnLockedBalance</b> </p> <br /> <p>Wallet :  $valueOfWallet </p>",
-                                    Html.FROM_HTML_MODE_COMPACT)
+                        when {
+                            valueOfWallet == "--" -> {
+                                binding.tooltip.text = getString(R.string.failed_to_connect)
+                                failedToConnectToolTipStyle()
+                            }
+                            valueOfWallet != "100%" -> {
+                                binding.tooltip.text = Html.fromHtml("<p>Wallet Synchronizing <b> $valueOfWallet </b> </p>", Html.FROM_HTML_MODE_COMPACT)
+                                tooltipStyle()
+                            }
+                            else -> {
+                                binding.tooltip.text = Html.fromHtml("<p> <b>Balance : $valueOfBalance </b> </p> <br /> <p><b>Unlocked Balance : $valueOfUnLockedBalance</b> </p> <br /> <p>Wallet :  $valueOfWallet </p>", Html.FROM_HTML_MODE_COMPACT)
+                                tooltipStyle()
+                            }
                         }
-                        tooltipStyle()
                     }
                     else -> {
-                        if (valueOfWallet != "100%") {
-                            binding.tooltip.text =
-                                Html.fromHtml("<p> Wallet Synchronizing <b> $valueOfWallet</b> </p>")
-                        } else {
-                            binding.tooltip.text =
-                                Html.fromHtml("<p> <b>Balance : $valueOfBalance </b> </p> <br /> <p><b>Unlocked Balance : $valueOfUnLockedBalance</b> </p> <br /> <p>Wallet :  $valueOfWallet </p>")
+                        when {
+                            valueOfWallet == "--" -> {
+                                binding.tooltip.text = getString(R.string.failed_to_connect)
+                                failedToConnectToolTipStyle()
+                            }
+                            valueOfWallet != "100%" -> {
+                                binding.tooltip.text = Html.fromHtml("<p> Wallet Synchronizing <b> $valueOfWallet</b> </p>")
+                                tooltipStyle()
+                            }
+                            else -> {
+                                binding.tooltip.text = Html.fromHtml("<p> <b>Balance : $valueOfBalance </b> </p> <br /> <p><b>Unlocked Balance : $valueOfUnLockedBalance</b> </p> <br /> <p>Wallet :  $valueOfWallet </p>")
+                                tooltipStyle()
+                            }
                         }
-                        tooltipStyle()
+
                     }
                 }
             } else {
@@ -1288,6 +1299,17 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 "fonts/open_sans_medium.ttf")
         @ColorInt val color =
             requireContext().resources.getColorWithID(R.color.text,
+                requireContext().theme)
+        binding.tooltip.setTextColor(color)
+        binding.tooltip.typeface = face
+    }
+
+    private fun failedToConnectToolTipStyle() {
+        val face =
+            Typeface.createFromAsset(requireContext().assets,
+                "fonts/open_sans_medium.ttf")
+        @ColorInt val color =
+            requireContext().resources.getColorWithID(R.color.red,
                 requireContext().theme)
         binding.tooltip.setTextColor(color)
         binding.tooltip.typeface = face
@@ -3276,11 +3298,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             } else {
                 sync = getString(R.string.failed_connected_to_the_node)
                 setProgress(-1)
+                valueOfWallet ="--"
                 binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext,true,valueOfWallet)
             }
             setProgress(sync)
         } else {
             setProgress(getString(R.string.no_node_connection))
+            valueOfWallet ="--"
             binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, true,valueOfWallet)
         }
         toolTip()

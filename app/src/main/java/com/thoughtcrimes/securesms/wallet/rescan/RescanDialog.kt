@@ -154,6 +154,7 @@ class RescanDialog(val context: HomeActivity, private val daemonBlockChainHeight
             })
             //SteveJosephh21
             restoreSeedWalletRestoreDate.setOnClickListener {
+                keyboardDismiss()
                 restoreSeedWalletRestoreDate.inputType = InputType.TYPE_NULL;
                 val datePickerDialog = DatePickerDialog(context,
                     dateSetListener,
@@ -212,6 +213,11 @@ class RescanDialog(val context: HomeActivity, private val daemonBlockChainHeight
         return binding.root
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.restoreSeedWalletRestoreHeight.isFocusable = false
+    }
+
     private fun updateDateInView() {
         val myFormat = "yyyy-MM-dd" // mention the format you need
         val sdf = SimpleDateFormat(myFormat, Locale.US)
@@ -251,10 +257,15 @@ class RescanDialog(val context: HomeActivity, private val daemonBlockChainHeight
         return height
     }
 
-    override fun onDismiss(dialog: DialogInterface) {
+    private fun keyboardDismiss() {
         val imm: InputMethodManager = binding.restoreSeedWalletRestoreHeight.context
             .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        if (imm.isActive) imm.hideSoftInputFromWindow(binding.restoreSeedWalletRestoreHeight.windowToken, 0)
+        if (imm.isActive) imm.hideSoftInputFromWindow(binding.restoreSeedWalletRestoreHeight.windowToken,
+            0)
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        keyboardDismiss()
         super.onDismiss(dialog)
     }
 

@@ -656,6 +656,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     override fun onDestroy() {
         super.onDestroy()
+        cancelVoiceMessage()
         isNetworkAvailable = false
         networkChangedReceiver?.unregister(requireContext())
         networkChangedReceiver = null

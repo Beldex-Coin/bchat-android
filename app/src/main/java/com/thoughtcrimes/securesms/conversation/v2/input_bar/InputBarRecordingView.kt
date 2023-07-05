@@ -42,6 +42,8 @@ class InputBarRecordingView : RelativeLayout {
     val recordButtonOverlay: RelativeLayout
         get() = binding.recordButtonOverlay
 
+    var isTimerRunning = false
+
     constructor(context: Context) : super(context) { initialize() }
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) { initialize() }
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) { initialize() }
@@ -53,6 +55,7 @@ class InputBarRecordingView : RelativeLayout {
     }
 
     fun show() {
+        isTimerRunning = true
         startTimestamp = Date().time
         binding.recordButtonOverlayImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_microphone, context.theme))
         binding.inputBarCancelButton.alpha = 0.0f
@@ -86,6 +89,7 @@ class InputBarRecordingView : RelativeLayout {
         }
         animation.start()
         delegate?.handleVoiceMessageUIHidden()
+        isTimerRunning = false
     }
 
     private fun animateDotView() {
@@ -130,9 +134,11 @@ class InputBarRecordingView : RelativeLayout {
     }
 
     private fun updateTimer() {
-        val duration = (Date().time - startTimestamp) / 1000L
-        binding.recordingViewDurationTextView.text = DateUtils.formatElapsedTime(duration)
-        snHandler.postDelayed({ updateTimer() }, 500)
+        if(isTimerRunning) {
+            val duration = (Date().time - startTimestamp) / 1000L
+            binding.recordingViewDurationTextView.text = DateUtils.formatElapsedTime(duration)
+            snHandler.postDelayed({ updateTimer() }, 500)
+        }
     }
 
     fun lock() {

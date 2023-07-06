@@ -17,6 +17,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import com.beldex.libbchat.avatars.AvatarHelper
 import io.beldex.bchat.R
@@ -36,6 +37,7 @@ import com.thoughtcrimes.securesms.avatar.AvatarSelection
 import com.thoughtcrimes.securesms.changelog.ChangeLogActivity
 import com.thoughtcrimes.securesms.contacts.BlockedContactActivity
 import com.thoughtcrimes.securesms.contacts.blocked.BlockedContactsActivity
+import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
 import com.thoughtcrimes.securesms.home.PathActivity
 import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
@@ -394,7 +396,23 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
 
     private fun showQRCode() {
         val intent = Intent(this, ShowQRCodeWithScanQRCodeActivity::class.java)
-        push(intent)
+        showQRCodeWithScanQRCodeActivityResultLauncher.launch(intent)
+    }
+
+    private var showQRCodeWithScanQRCodeActivityResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val extras = Bundle()
+            extras.putParcelable(ConversationFragmentV2.ADDRESS, result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
+            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
+            extras.putParcelable(ConversationFragmentV2.URI,result.data!!.getParcelableExtra(ConversationFragmentV2.URI))
+            val returnIntent = Intent()
+            returnIntent.putExtra(ConversationFragmentV2.TYPE,result.data!!.getStringArrayExtra(ConversationFragmentV2.TYPE))
+            //returnIntent.setDataAndType(intent.data,intent.type)
+            returnIntent.putExtras(extras)
+            setResult(RESULT_OK, returnIntent)
+            finish() //-
+        }
     }
 
     private fun showEditProfilePictureUI() {

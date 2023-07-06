@@ -4,12 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
@@ -19,7 +16,6 @@ import com.thoughtcrimes.securesms.data.Node;
 import com.thoughtcrimes.securesms.data.NodeInfo;
 import com.thoughtcrimes.securesms.model.NetworkType;
 import com.thoughtcrimes.securesms.model.WalletManager;
-import com.thoughtcrimes.securesms.service.KeyCachingService;
 import com.thoughtcrimes.securesms.util.Helper;
 import com.thoughtcrimes.securesms.util.NodePinger;
 import com.thoughtcrimes.securesms.wallet.node.NodeFragment;
@@ -71,7 +67,6 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
         Fragment nodeFragment = new NodeFragment();
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.nodeList_frame, nodeFragment, NodeFragment.class.getName()).commit();
-        Timber.d("fragment added");
     }
 
     @Override
@@ -105,7 +100,6 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
     }
 
     private void loadFavourites() {
-        Timber.d("loadFavourites");
         favouriteNodes.clear();
         final String selectedNodeId = getSelectedNodeId();
         Map<String, ?> storedNodes = getSharedPreferences(NODES_PREFS_NAME, Context.MODE_PRIVATE).getAll();
@@ -146,8 +140,7 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
         if (nodeInfo != null) {
             nodeInfo.setFavourite(true);
             favouriteNodes.add(nodeInfo);
-        } else
-            Timber.w("nodeString invalid: %s", nodeString);
+        }
         return nodeInfo;
     }
 
@@ -165,15 +158,6 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
         pingSelectedNode();
     }
 
-  /*  @Override
-    public void replaceFragment(Fragment fragment) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.nodeList_frame, fragment)
-                .addToBackStack(null)
-                .commit();
-    }*/
-
     public void pingSelectedNode() {
         new AsyncFindBestNode().execute(AsyncFindBestNode.PING_SELECTED);
     }
@@ -185,8 +169,6 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            //pbNode.setVisibility(View.VISIBLE);
-            //llNode.setVisibility(View.INVISIBLE);
         }
 
         @Override
@@ -222,31 +204,12 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
 
         @Override
         protected void onPostExecute(NodeInfo result) {
-         /*   if (!isAdded()) return;*/
-            //pbNode.setVisibility(View.INVISIBLE);
-            //llNode.setVisibility(View.VISIBLE);
-            if (result != null) {
-                Timber.d("found a good node %s", result.toString());
-                showNode(result);
-            } /*else {
-                //tvNodeName.setText(getResources().getText(R.string.node_create_hint));
-                // tvNodeName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-                // tvNodeAddress.setText(null);
-                //tvNodeAddress.setVisibility(View.GONE);
-            }*/
         }
 
         @Override
         protected void onCancelled(NodeInfo result) { //TODO: cancel this on exit from fragment
             Timber.d("cancelled with %s", result);
         }
-    }
-
-    private void showNode(NodeInfo nodeInfo) {
-        //tvNodeName.setText(nodeInfo.getName());
-        //tvNodeName.setCompoundDrawablesWithIntrinsicBounds(NodeInfoAdapter.getPingIcon(nodeInfo), 0, 0, 0);
-        //Helper.showTimeDifference(tvNodeAddress, nodeInfo.getTimestamp());
-        //tvNodeAddress.setVisibility(View.VISIBLE);
     }
 
     private NodeInfo autoselect(Set<NodeInfo> nodes) {
@@ -275,7 +238,6 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
 
     @Override
     public Set<NodeInfo> getFavouriteNodes() {
-        Log.d("Beldex", "Node list %s" + favouriteNodes);
         return favouriteNodes;
     }
 
@@ -296,10 +258,8 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
 
     @Override
     public void setFavouriteNodes(Collection<NodeInfo> nodes) {
-        Timber.d("adding %d nodes", nodes.size());
         favouriteNodes.clear();
         for (NodeInfo node : nodes) {
-            Timber.d("adding %s %b", node, node.isFavourite());
             if (node.isFavourite()) {
                 favouriteNodes.add(node);
             }
@@ -308,14 +268,12 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
     }
 
     private void saveFavourites() {
-        Timber.d("SAVE");
         SharedPreferences.Editor editor = getSharedPreferences(NODES_PREFS_NAME, Context.MODE_PRIVATE).edit();
         editor.clear();
         int i = 1;
         for (Node info : favouriteNodes) {
             final String nodeString = info.toNodeString();
             editor.putString(Integer.toString(i), nodeString);
-            Timber.d("saved %d:%s", i, nodeString);
             i++;
         }
         editor.apply();
@@ -346,7 +304,6 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
     }
 
     private void saveSelectedNode() { // save only if changed
-        Log.d("Beldex","Value of getNode NodeActivity "+ getNode());
         final NodeInfo nodeInfo = getNode();
         final String selectedNodeId = getSelectedNodeId();
         if (nodeInfo != null) {
@@ -373,3 +330,4 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
 
     }
 }
+//endregion

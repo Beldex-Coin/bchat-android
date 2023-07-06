@@ -280,6 +280,8 @@
                                         android:paddingTop="12dp"
                                         android:paddingBottom="12dp"
                                         android:textAlignment="center"
+                                        android:maxLines="1"
+                                        android:inputType="text"
                                         android:visibility="invisible" />
 
                                     <LinearLayout
@@ -535,7 +537,7 @@
                     android:layout_width="0dp"
                     android:layout_height="@dimen/medium_button_height"
                     android:layout_weight="1"
-                    android:text="Copy" />
+                    android:text="@string/copy" />
 
                 <Button
                     android:id="@+id/shareButton1"

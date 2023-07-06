@@ -16,7 +16,7 @@ public enum DefaultNodes {
     BELDEX("explorer.beldex.io:19091");
 
     //Testnet
-/*    BELDEX("38.242.196.72:19095"),
+    /*BELDEX("38.242.196.72:19095"),
     BELDEX1("154.26.139.105:19095");*/
 
     @Getter

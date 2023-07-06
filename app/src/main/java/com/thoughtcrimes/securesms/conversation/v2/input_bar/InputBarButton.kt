@@ -99,10 +99,10 @@ class InputBarButton : RelativeLayout {
         result
     }
 
-    constructor(context: Context) : super(context) { throw IllegalAccessException("Use InputBarButton(context:iconID:) instead.") }
+   /* constructor(context: Context) : super(context) { throw IllegalAccessException("Use InputBarButton(context:iconID:) instead.") }
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) { throw IllegalAccessException("Use InputBarButton(context:iconID:) instead.") }
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) { throw IllegalAccessException("Use InputBarButton(context:iconID:) instead.") }
-
+*/
     constructor(context: Context, @DrawableRes iconID: Int, isSendButton: Boolean = false,
         hasOpaqueBackground: Boolean = false, isGIFButton: Boolean = false, isMessageBox:Boolean = false) : super(context) {
         this.isMessageBox= isMessageBox

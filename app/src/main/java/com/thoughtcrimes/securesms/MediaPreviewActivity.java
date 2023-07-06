@@ -18,6 +18,7 @@ package com.thoughtcrimes.securesms;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -44,6 +45,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -66,6 +69,7 @@ import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libbchat.utilities.recipients.RecipientModifiedListener;
 import com.beldex.libsignal.utilities.Log;
 import com.thoughtcrimes.securesms.components.MediaView;
+import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2;
 import com.thoughtcrimes.securesms.database.MediaDatabase.MediaRecord;
 import com.thoughtcrimes.securesms.database.loaders.PagingMediaLoader;
 import com.thoughtcrimes.securesms.database.model.MmsMessageRecord;
@@ -104,6 +108,8 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
   public static final String CAPTION_EXTRA        = "caption";
   public static final String OUTGOING_EXTRA       = "outgoing";
   public static final String LEFT_IS_RECENT_EXTRA = "left_is_recent";
+  //
+  public static final String ALBUM_THUMBNAIL_VIEW = "album_thumbnail_view";
 
   private View                  rootContainer;
   private ViewPager             mediaPager;
@@ -122,6 +128,9 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
   private GestureDetector       clickDetector;
   private MediaPreviewViewModel viewModel;
   private ViewPagerListener     viewPagerListener;
+
+  //
+  private boolean               albumThumbnailView;
 
   private int restartItem = -1;
 
@@ -156,7 +165,8 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
               .putExtra(DATE_EXTRA, mms.getTimestamp())
               .putExtra(SIZE_EXTRA, slide.asAttachment().getSize())
               .putExtra(CAPTION_EXTRA, slide.getCaption().orNull())
-              .putExtra(LEFT_IS_RECENT_EXTRA, false);
+              .putExtra(LEFT_IS_RECENT_EXTRA, false)
+              .putExtra(ALBUM_THUMBNAIL_VIEW,true);
     }
     return previewIntent;
   }
@@ -314,6 +324,8 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
     initialCaption   = getIntent().getStringExtra(CAPTION_EXTRA);
     leftIsRecent     = getIntent().getBooleanExtra(LEFT_IS_RECENT_EXTRA, false);
     restartItem      = -1;
+    //
+    albumThumbnailView = getIntent().getBooleanExtra(ALBUM_THUMBNAIL_VIEW,false);
 
     if (address != null) {
       conversationRecipient = Recipient.from(this, address, true);
@@ -403,6 +415,25 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
     startActivity(intent);
   }
 
+  //SetDataAndType
+  ActivityResultLauncher resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result->{
+    if (result.getResultCode() == Activity.RESULT_OK) {
+      Bundle extras = new Bundle();
+      assert result.getData() != null;
+      extras.putParcelable(ConversationFragmentV2.ADDRESS,result.getData().getParcelableExtra(ConversationFragmentV2.ADDRESS));
+      extras.putLong(ConversationFragmentV2.THREAD_ID, result.getData().getLongExtra(ConversationFragmentV2.THREAD_ID,-1));
+      Log.d("MediaPreviewActivity->uri",""+result.getData().getParcelableExtra(ConversationFragmentV2.URI));
+      Log.d("MediaPreviewActivity->type",""+result.getData().getStringExtra(ConversationFragmentV2.TYPE));
+      extras.putParcelable(ConversationFragmentV2.URI,result.getData().getParcelableExtra(ConversationFragmentV2.URI));
+      Intent intent = new Intent();
+      intent.putExtra(Intent.EXTRA_TEXT,result.getData().getCharSequenceExtra(Intent.EXTRA_TEXT));
+      intent.putExtra(ConversationFragmentV2.TYPE,result.getData().getStringExtra(ConversationFragmentV2.TYPE));
+      intent.putExtras(extras);
+      setResult(RESULT_OK,intent);
+      finish();
+    }
+  });
+
   private void forward() {
     MediaItem mediaItem = getCurrentMediaItem();
 
@@ -410,7 +441,8 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
       Intent composeIntent = new Intent(this, ShareActivity.class);
       composeIntent.putExtra(Intent.EXTRA_STREAM, mediaItem.uri);
       composeIntent.setType(mediaItem.type);
-      startActivity(composeIntent);
+      composeIntent.putExtra(ShareActivity.MEDIA_PREVIEW_PAGE, !albumThumbnailView);
+      resultLauncher.launch(composeIntent);
     }
   }
 

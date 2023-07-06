@@ -46,8 +46,8 @@ public class ShortcutLauncherActivity extends AppCompatActivity {
 
     Address          address   = Address.fromSerialized(serializedAddress);
     Recipient        recipient = Recipient.from(this, address, true);
-    TaskStackBuilder backStack = TaskStackBuilder.create(this)
-                                                 .addNextIntent(new Intent(this, HomeActivity.class));
+    TaskStackBuilder backStack = TaskStackBuilder.create(this);
+                                                 //.addNextIntent(new Intent(this, HomeActivity.class));
 
     CommunicationActions.startConversation(this, recipient, null, backStack);
     finish();

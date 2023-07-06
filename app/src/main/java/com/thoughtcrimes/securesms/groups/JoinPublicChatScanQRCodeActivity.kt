@@ -26,7 +26,7 @@ import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.PublicKeyValidation
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
-import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
+import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.dms.PrivateChatScanQRCodeActivity
 import com.thoughtcrimes.securesms.qr.ScanListener
 import com.thoughtcrimes.securesms.util.*
@@ -106,8 +106,6 @@ class JoinPublicChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
 
     override fun onBackPressed() {
         super.onBackPressed()
-        val intent = Intent(this, JoinPublicChatNewActivity::class.java)
-        push(intent)
         finish()
     }
 
@@ -173,7 +171,7 @@ class JoinPublicChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
                 ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(this@JoinPublicChatScanQRCodeActivity)
                 withContext(Dispatchers.Main) {
                     val recipient = Recipient.from(this@JoinPublicChatScanQRCodeActivity, Address.fromSerialized(groupID), false)
-                    openConversationActivity(this@JoinPublicChatScanQRCodeActivity, threadID, recipient)
+                    openConversationActivity(threadID, recipient)
                     finish()
                 }
             } catch (e: Exception) {
@@ -189,11 +187,11 @@ class JoinPublicChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
     // endregion
 
     // region Convenience
-    private fun openConversationActivity(context: Context, threadId: Long, recipient: Recipient) {
-        val intent = Intent(context, ConversationActivityV2::class.java)
-        intent.putExtra(ConversationActivityV2.THREAD_ID, threadId)
-        intent.putExtra(ConversationActivityV2.ADDRESS, recipient.address)
-        context.startActivity(intent)
+    private fun openConversationActivity(threadId: Long, recipient: Recipient) {
+        val returnIntent = Intent()
+        returnIntent.putExtra(ConversationFragmentV2.THREAD_ID,threadId)
+        returnIntent.putExtra(ConversationFragmentV2.ADDRESS,recipient.address)
+        setResult(RESULT_OK, returnIntent)
     }
     // endregion
 }

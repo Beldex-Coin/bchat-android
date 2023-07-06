@@ -11,6 +11,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.isVisible
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import io.beldex.bchat.databinding.ViewGlobalSearchInputBinding
@@ -73,9 +74,15 @@ class GlobalSearchInputLayout @JvmOverloads constructor(
         }
     }
 
+    fun onFocus(){
+        binding.searchInput.requestFocus()
+    }
+
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            binding.searchClear.isVisible = s.toString().isNotEmpty()
+    }
 
     override fun afterTextChanged(s: Editable?) {
         _query.value = s?.toString()

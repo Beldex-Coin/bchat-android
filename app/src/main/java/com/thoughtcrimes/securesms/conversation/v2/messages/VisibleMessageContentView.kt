@@ -37,12 +37,12 @@ import com.thoughtcrimes.securesms.database.model.MessageRecord
 import com.thoughtcrimes.securesms.database.model.SmsMessageRecord
 import com.thoughtcrimes.securesms.mms.GlideRequests
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
 import com.thoughtcrimes.securesms.conversation.v2.ModalUrlBottomSheet
 import com.thoughtcrimes.securesms.conversation.v2.utilities.MentionUtilities
 import com.thoughtcrimes.securesms.conversation.v2.utilities.ModalURLSpan
 import com.thoughtcrimes.securesms.conversation.v2.utilities.TextUtilities.getIntersectedModalSpans
 import com.thoughtcrimes.securesms.database.model.MmsMessageRecord
+import com.thoughtcrimes.securesms.home.HomeActivity
 import com.thoughtcrimes.securesms.mms.PartAuthority
 import com.thoughtcrimes.securesms.util.*
 import io.beldex.bchat.R
@@ -90,25 +90,8 @@ class VisibleMessageContentView : LinearLayout {
         searchQuery: String?,
         contactIsTrusted: Boolean
     ) {
-        //New Line
-        /* val sender = message.individualRecipient
-         val senderBchatID = sender.address.serialize()
-         //val threadID = message.threadId
-         //val thread = threadDb.getRecipientForThreadId(threadID) ?: return
-         val contact = DatabaseComponent.get(context).bchatContactDatabase().getContactWithBchatID(senderBchatID)
-         val isGroupThread = thread.isGroupRecipient
-         // Show profile picture and sender name if this is a group thread AND
-         // the message is incoming
-         if (isGroupThread && !message.isOutgoing) {
-             binding.senderNameTextView.isVisible = isStartOfMessageCluster
-             val context = if (thread.isOpenGroupRecipient) Contact.ContactContext.OPEN_GROUP else Contact.ContactContext.REGULAR
-             binding.senderNameTextView.text = contact?.displayName(context) ?: senderBchatID
-         } else {
-             binding.senderNameTextView.visibility = View.GONE
-         }*/
         // Background
-        val background =
-            getBackground(message.isOutgoing, isStartOfMessageCluster, isEndOfMessageCluster)
+        val background = getBackground(message.isOutgoing, isStartOfMessageCluster, isEndOfMessageCluster)
         val colorID = if (message.isOutgoing) {
             if (message.isFailed) {
                 R.attr.message_sent_background_transparent_color
@@ -168,9 +151,7 @@ class VisibleMessageContentView : LinearLayout {
         binding.documentView.isVisible =
             contactIsTrusted && message is MmsMessageRecord && message.slideDeck.documentSlide != null
         binding.albumThumbnailView.isVisible = mediaThumbnailMessage
-        Log.d("DataMessage 1->",message.isOpenGroupInvitation.toString())
         binding.openGroupInvitationView.isVisible = message.isOpenGroupInvitation
-        Log.d("DataMessage 2->",message.isPayment.toString())
         //Payment Tag
         binding.paymentCardView.isVisible = message.isPayment
 
@@ -179,14 +160,6 @@ class VisibleMessageContentView : LinearLayout {
         if (message is MmsMessageRecord && message.quote != null) {
             binding.quoteView.isVisible = true
             val quote = message.quote!!
-            // The max content width is the max message bubble size - 2 times the horizontal padding - 2
-            // times the horizontal margin. This unfortunately has to be calculated manually
-            // here to get the layout right.
-            val maxContentWidth =
-                (maxWidth - 2 * resources.getDimension(R.dimen.medium_spacing) - 2 * toPx(
-                    16,
-                    resources
-                )).roundToInt()
             val quoteText = if (quote.isOriginalMissing) {
                 context.getString(R.string.QuoteView_original_missing)
             } else {
@@ -206,122 +179,129 @@ class VisibleMessageContentView : LinearLayout {
             }
         }
 
-        if (message is MmsMessageRecord && message.linkPreviews.isNotEmpty()) {
-            binding.linkPreviewView.bind(
-                message,
-                glide,
-                isStartOfMessageCluster,
-                isEndOfMessageCluster
-            )
-            onContentClick.add { event -> binding.linkPreviewView.calculateHit(event) }
-            // Body text view is inside the link preview for layout convenience
-        } else if (message is MmsMessageRecord && message.slideDeck.audioSlide != null) {
-            hideBody = true
-            // Audio attachment
-            if (contactIsTrusted || message.isOutgoing) {
-                binding.voiceMessageView.indexInAdapter = indexInAdapter
-                binding.voiceMessageView.delegate = context as? ConversationActivityV2
-                binding.voiceMessageView.bind(
+        when {
+            message is MmsMessageRecord && message.linkPreviews.isNotEmpty() -> {
+                binding.linkPreviewView.bind(
                     message,
+                    glide,
                     isStartOfMessageCluster,
                     isEndOfMessageCluster
                 )
-                // We have to use onContentClick (rather than a click listener directly on the voice
-                // message view) so as to not interfere with all the other gestures.
-                onContentClick.add { binding.voiceMessageView.togglePlayback() }
-                onContentDoubleTap = { binding.voiceMessageView.handleDoubleTap() }
-            } else {
-                // TODO: move this out to its own area
-                binding.untrustedView.bind(
-                    UntrustedAttachmentView.AttachmentType.AUDIO,
-                    VisibleMessageContentView.getTextColor(context, message)
-                )
-                onContentClick.add { binding.untrustedView.showTrustDialog(message.individualRecipient) }
+                onContentClick.add { event -> binding.linkPreviewView.calculateHit(event) }
+                // Body text view is inside the link preview for layout convenience
             }
-        } else if (message is MmsMessageRecord && message.slideDeck.documentSlide != null) {
-            hideBody = true
-            // Document attachment
-            if (contactIsTrusted || message.isOutgoing) {
-                binding.documentView.bind(
+            message is MmsMessageRecord && message.slideDeck.audioSlide != null -> {
+                hideBody = true
+                // Audio attachment
+                if (contactIsTrusted || message.isOutgoing) {
+                    binding.voiceMessageView.indexInAdapter = indexInAdapter
+                    binding.voiceMessageView.delegate = context as? HomeActivity
+                    binding.voiceMessageView.bind(
+                        message,
+                        isStartOfMessageCluster,
+                        isEndOfMessageCluster
+                    )
+                    // We have to use onContentClick (rather than a click listener directly on the voice
+                    // message view) so as to not interfere with all the other gestures.
+                    onContentClick.add { binding.voiceMessageView.togglePlayback() }
+                    onContentDoubleTap = { binding.voiceMessageView.handleDoubleTap() }
+                } else {
+                    // TODO: move this out to its own area
+                    binding.untrustedView.bind(
+                        UntrustedAttachmentView.AttachmentType.AUDIO,
+                        VisibleMessageContentView.getTextColor(context, message)
+                    )
+                    onContentClick.add { binding.untrustedView.showTrustDialog(message.individualRecipient) }
+                }
+            }
+            message is MmsMessageRecord && message.slideDeck.documentSlide != null -> {
+                hideBody = true
+                // Document attachment
+                if (contactIsTrusted || message.isOutgoing) {
+                    binding.documentView.bind(
+                        message,
+                        VisibleMessageContentView.getTextColor(context, message)
+                    )
+                    //New Line
+                    binding.documentView.setOnClickListener {
+                        if (message.slideDeck.documentSlide!!.uri != null) {
+                            val intent = Intent(Intent.ACTION_VIEW)
+                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            intent.setDataAndType(
+                                PartAuthority.getAttachmentPublicUri(message.slideDeck.documentSlide!!.uri),
+                                message.slideDeck.documentSlide!!.contentType
+                            )
+                            try {
+                                context.startActivity(intent)
+                            } catch (anfe: ActivityNotFoundException) {
+                                Log.w(
+                                    StickyHeaderGridLayoutManager.TAG,
+                                    "No activity existed to view the media."
+                                )
+                                Toast.makeText(
+                                    context,
+                                    R.string.ConversationItem_unable_to_open_media,
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "Please wait until file downloaded",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                } else {
+                    binding.untrustedView.bind(
+                        UntrustedAttachmentView.AttachmentType.DOCUMENT,
+                        VisibleMessageContentView.getTextColor(context, message)
+                    )
+                    onContentClick.add { binding.untrustedView.showTrustDialog(message.individualRecipient) }
+                }
+            }
+            message is MmsMessageRecord && message.slideDeck.asAttachments().isNotEmpty() -> {
+                /*
+             *    Images / Video attachment
+             */
+                if (contactIsTrusted || message.isOutgoing) {
+                    // isStart and isEnd of cluster needed for calculating the mask for full bubble image groups
+                    // bind after add view because views are inflated and calculated during bind
+                    binding.albumThumbnailView.bind(
+                        glideRequests = glide,
+                        message = message,
+                        isStart = isStartOfMessageCluster,
+                        isEnd = isEndOfMessageCluster
+                    )
+                    onContentClick.add { event ->
+                        binding.albumThumbnailView.calculateHitObject(event, message, thread)
+                    }
+                } else {
+                    hideBody = true
+                    binding.albumThumbnailView.clearViews()
+                    binding.untrustedView.bind(
+                        UntrustedAttachmentView.AttachmentType.MEDIA,
+                        VisibleMessageContentView.getTextColor(context, message)
+                    )
+                    onContentClick.add { binding.untrustedView.showTrustDialog(message.individualRecipient) }
+                }
+            }
+            message.isOpenGroupInvitation -> {
+                hideBody = true
+                binding.openGroupInvitationView.bind(
                     message,
                     VisibleMessageContentView.getTextColor(context, message)
                 )
-                //New Line
-                binding.documentView.setOnClickListener {
-                    if (message.slideDeck.documentSlide!!.uri != null) {
-                        val intent = Intent(Intent.ACTION_VIEW)
-                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                        intent.setDataAndType(
-                            PartAuthority.getAttachmentPublicUri(message.slideDeck.documentSlide!!.uri),
-                            message.slideDeck.documentSlide!!.contentType
-                        )
-                        try {
-                            context.startActivity(intent)
-                        } catch (anfe: ActivityNotFoundException) {
-                            Log.w(
-                                StickyHeaderGridLayoutManager.TAG,
-                                "No activity existed to view the media."
-                            )
-                            Toast.makeText(
-                                context,
-                                R.string.ConversationItem_unable_to_open_media,
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                    } else {
-                        Toast.makeText(
-                            context,
-                            "Please wait until file downloaded",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            } else {
-                binding.untrustedView.bind(
-                    UntrustedAttachmentView.AttachmentType.DOCUMENT,
-                    VisibleMessageContentView.getTextColor(context, message)
-                )
-                onContentClick.add { binding.untrustedView.showTrustDialog(message.individualRecipient) }
+                onContentClick.add { binding.openGroupInvitationView.joinOpenGroup() }
             }
-        } else if (message is MmsMessageRecord && message.slideDeck.asAttachments().isNotEmpty()) {
-            /*
-             *    Images / Video attachment
-             */
-            if (contactIsTrusted || message.isOutgoing) {
-                // isStart and isEnd of cluster needed for calculating the mask for full bubble image groups
-                // bind after add view because views are inflated and calculated during bind
-                binding.albumThumbnailView.bind(
-                    glideRequests = glide,
-                    message = message,
-                    isStart = isStartOfMessageCluster,
-                    isEnd = isEndOfMessageCluster
-                )
-                onContentClick.add { event ->
-                    binding.albumThumbnailView.calculateHitObject(event, message, thread)
-                }
-            } else {
+            message.isPayment -> { //Payment Tag
                 hideBody = true
-                binding.albumThumbnailView.clearViews()
-                binding.untrustedView.bind(
-                    UntrustedAttachmentView.AttachmentType.MEDIA,
+                binding.paymentCardView.bind(
+                    message,
                     VisibleMessageContentView.getTextColor(context, message)
                 )
-                onContentClick.add { binding.untrustedView.showTrustDialog(message.individualRecipient) }
+                //onContentClick.add { binding.openGroupInvitationView.joinOpenGroup() }
             }
-        } else if (message.isOpenGroupInvitation) {
-            hideBody = true
-            binding.openGroupInvitationView.bind(
-                message,
-                VisibleMessageContentView.getTextColor(context, message)
-            )
-            onContentClick.add { binding.openGroupInvitationView.joinOpenGroup() }
-        }else if (message.isPayment) { //Payment Tag
-            hideBody = true
-            binding.paymentCardView.bind(
-                message,
-                VisibleMessageContentView.getTextColor(context, message)
-            )
-            //onContentClick.add { binding.openGroupInvitationView.joinOpenGroup() }
         }
 
         binding.bodyTextView.isVisible = message.body.isNotEmpty() && !hideBody
@@ -465,7 +445,6 @@ class VisibleMessageContentView : LinearLayout {
 
             // replace URLSpans with ModalURLSpans
             body.getSpans<URLSpan>(0, body.length).toList().forEach { urlSpan ->
-                //val updatedUrl = urlSpan.url.let { HttpUrl.parse(it).toString() }4
                 val updatedUrl = urlSpan.url.let { it.toHttpUrlOrNull().toString() }
                 val replacementSpan = ModalURLSpan(updatedUrl) { url ->
                     val activity = context as AppCompatActivity

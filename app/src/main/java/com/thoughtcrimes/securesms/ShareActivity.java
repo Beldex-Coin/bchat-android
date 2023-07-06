@@ -43,8 +43,9 @@ import com.beldex.libsignal.utilities.Log;
 import com.thoughtcrimes.securesms.components.SearchToolbar;
 import com.thoughtcrimes.securesms.contacts.ContactSelectionListFragment;
 import com.thoughtcrimes.securesms.contacts.ContactSelectionListLoader.DisplayMode;
-import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2;
+import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2;
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent;
+import com.thoughtcrimes.securesms.home.HomeActivity;
 import com.thoughtcrimes.securesms.mms.PartAuthority;
 import com.thoughtcrimes.securesms.providers.BlobProvider;
 import com.thoughtcrimes.securesms.util.MediaUtil;
@@ -68,6 +69,8 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
   public static final String EXTRA_THREAD_ID          = "thread_id";
   public static final String EXTRA_ADDRESS_MARSHALLED = "address_marshalled";
   public static final String EXTRA_DISTRIBUTION_TYPE  = "distribution_type";
+  //SetDataAndType
+  public static final String MEDIA_PREVIEW_PAGE ="media_preview_page";
 
 
   private ContactSelectionListFragment contactsFragment;
@@ -216,27 +219,40 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
       contactsFragment.getView().setVisibility(View.VISIBLE);
       progressWheel.setVisibility(View.GONE);
     } else {
-      createConversation(threadId, address, distributionType);
+      Log.d("mediaPreviewPage->handleResolvedMedia ","true");
+      createConversation(threadId, address, distributionType,true);
     }
   }
 
-  private void createConversation(long threadId, Address address, int distributionType) {
-    final Intent intent = getBaseShareIntent(ConversationActivityV2.class);
-    intent.putExtra(ConversationActivityV2.ADDRESS, address);
-    intent.putExtra(ConversationActivityV2.THREAD_ID, threadId);
+  private void createConversation(long threadId, Address address, int distributionType, boolean mediaPreviewPage) {
+    final Intent intent = getBaseShareIntent(HomeActivity.class);
+    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+    intent.putExtra(ConversationFragmentV2.ADDRESS, address);
+    intent.putExtra(ConversationFragmentV2.THREAD_ID, threadId);
 
     isPassingAlongMedia = true;
-    startActivity(intent);
+    Log.d("share->address ",""+address);
+    Log.d("share->threadId ",""+threadId);
+    if(!mediaPreviewPage){
+      Log.d("mediaPreviewPage-> ","true");
+      intent.putExtra(HomeActivity.SHORTCUT_LAUNCHER,true);
+      startActivity(intent);
+    }else {
+      Log.d("mediaPreviewPage-> ","false");
+      setResult(RESULT_OK, intent);
+      finish();
+    }
   }
 
   private Intent getBaseShareIntent(final @NonNull Class<?> target) {
     final Intent           intent       = new Intent(this, target);
 
     if (resolvedExtra != null) {
-      intent.setDataAndType(resolvedExtra, mimeType);
+      intent.putExtra(ConversationFragmentV2.URI,resolvedExtra);
+      intent.putExtra(ConversationFragmentV2.TYPE,mimeType);
     } else if (resolvedPlaintext != null) {
       intent.putExtra(Intent.EXTRA_TEXT, resolvedPlaintext);
-      intent.setType("text/plain");
+      intent.putExtra(ConversationFragmentV2.TYPE,"text/plain");
     }
 
     return intent;
@@ -254,7 +270,10 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
   public void onContactSelected(String number) {
     Recipient recipient = Recipient.from(this, Address.fromExternal(this, number), true);
     long existingThread = DatabaseComponent.get(this).threadDatabase().getThreadIdIfExistsFor(recipient);
-    createConversation(existingThread, recipient.getAddress(), DistributionTypes.DEFAULT);
+    //SetDataAndType
+    boolean   mediaPreviewPage = getIntent().getBooleanExtra(MEDIA_PREVIEW_PAGE,false);
+    Log.d("mediaPreviewPage->onContactSelected ",""+mediaPreviewPage);
+    createConversation(existingThread, recipient.getAddress(), DistributionTypes.DEFAULT, mediaPreviewPage);
   }
 
   @Override

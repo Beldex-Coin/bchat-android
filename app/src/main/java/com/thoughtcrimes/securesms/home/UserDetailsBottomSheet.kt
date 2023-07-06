@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,7 +20,6 @@ import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
-import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
 import com.thoughtcrimes.securesms.database.ThreadDatabase
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.mms.GlideApp
@@ -37,6 +35,23 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
     companion object {
         const val ARGUMENT_PUBLIC_KEY = "publicKey"
         const val ARGUMENT_THREAD_ID = "threadId"
+    }
+
+    interface UserDetailsBottomSheetListener{
+        fun callConversationFragmentV2(address: Address, threadId: Long)
+    }
+
+    var activityCallback: UserDetailsBottomSheetListener? = null
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is UserDetailsBottomSheetListener) {
+            activityCallback = context
+        } else {
+            throw ClassCastException(
+                context.toString()
+                        + " must implement Listener"
+            )
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -97,13 +112,14 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
             }
             messageButton.setOnClickListener {
                 val threadId = MessagingModuleConfiguration.shared.storage.getThreadId(recipient)
-                val intent = Intent(
+                /*val intent = Intent(
                     context,
                     ConversationActivityV2::class.java
                 )
                 intent.putExtra(ConversationActivityV2.ADDRESS, recipient.address)
                 intent.putExtra(ConversationActivityV2.THREAD_ID, threadId ?: -1)
-                startActivity(intent)
+                startActivity(intent)*/
+                activityCallback?.callConversationFragmentV2(recipient.address,threadId?:-1)
                 dismiss()
             }
         }
@@ -122,8 +138,10 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
         nameTextViewContainer.visibility = View.VISIBLE
         nameEditTextContainer.visibility = View.INVISIBLE
         var newNickName: String? = null
-        if (nicknameEditText.text.isNotEmpty()) {
+        if (nicknameEditText.text.trim().isNotEmpty()) {
             newNickName = nicknameEditText.text.toString()
+        }else{
+            Toast.makeText(context,R.string.enter_a_valid_nickname,Toast.LENGTH_SHORT).show()
         }
         val publicKey = recipient.address.serialize()
         val contactDB = DatabaseComponent.get(requireContext()).bchatContactDatabase()

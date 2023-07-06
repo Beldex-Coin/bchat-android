@@ -889,18 +889,11 @@ Java_com_thoughtcrimes_securesms_model_Wallet_createTransactionJ(JNIEnv *env, jo
     Wallet::Wallet *wallet = getHandle<Wallet::Wallet>(env, instance);
     uint32_t subaddr_account = account_index;
     std::set<uint32_t> subaddr_indices = {};
-    LOGD("Java_com_thoughtcrimes_securesms_model_Wallet_createTransactionJ before createTransaction");
-    LOGD("Java_com_thoughtcrimes_securesms_model_Wallet_createTransactionJ amount %ld subaddr_account %d",amount,subaddr_account);
-
     Wallet::PendingTransaction *tx = wallet->createTransaction(_dst_addr,
                                                                amount,
                                                                priority,
                                                                subaddr_account,
                                                                subaddr_indices);
-    LOGD("Java_com_thoughtcrimes_securesms_model_Wallet_createTransactionJ after createTransaction pointer %ld", reinterpret_cast<jlong>(tx));
-    if (!tx){
-        LOGD("No TX pointer found");
-    }
     env->ReleaseStringUTFChars(dst_addr, _dst_addr);
     env->ReleaseStringUTFChars(payment_id, _payment_id);
     return reinterpret_cast<jlong>(tx);

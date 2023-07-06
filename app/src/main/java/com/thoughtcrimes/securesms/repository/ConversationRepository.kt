@@ -1,12 +1,12 @@
 package com.thoughtcrimes.securesms.repository
 
 import com.beldex.libbchat.database.MessageDataProvider
-import com.beldex.libbchat.messaging.messages.visible.Payment
 import com.beldex.libbchat.messaging.messages.Destination
 import com.beldex.libbchat.messaging.messages.control.MessageRequestResponse
 import com.beldex.libbchat.messaging.messages.control.UnsendRequest
 import com.beldex.libbchat.messaging.messages.signal.OutgoingTextMessage
 import com.beldex.libbchat.messaging.messages.visible.OpenGroupInvitation
+import com.beldex.libbchat.messaging.messages.visible.Payment
 import com.beldex.libbchat.messaging.messages.visible.VisibleMessage
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
@@ -95,7 +95,7 @@ class DefaultConversationRepository @Inject constructor(
         val openGroup = beldexThreadDb.getOpenGroupChat(threadId)
         Log.d("Beldex","open group $openGroup")
         return openGroup?.room == "bchat" || openGroup?.room == "beldex"
-                || openGroup?.room == "crypto"  || openGroup?.room == "masternode"
+                || openGroup?.room == "crypto"  || openGroup?.room == "masternode" || openGroup?.room == "belnet"
     }
 
     override fun getRecipientForThreadId(threadId: Long): Recipient? {

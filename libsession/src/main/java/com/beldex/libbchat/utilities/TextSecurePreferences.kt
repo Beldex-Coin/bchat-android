@@ -102,6 +102,7 @@ interface TextSecurePreferences {
     fun isPasswordDisabled(): Boolean
     fun setPasswordDisabled(disabled: Boolean)
     fun isScreenSecurityEnabled(): Boolean
+    fun setScreenSecurityPreference(status: Boolean)
     fun getLastVersionCode(): Int
     fun setLastVersionCode(versionCode: Int)
     fun isPassphraseTimeoutEnabled(): Boolean
@@ -239,6 +240,9 @@ interface TextSecurePreferences {
     fun getCallisActive(): Boolean
 
     fun getChatFontSize(): String?
+    fun isPayAsYouChat(): Boolean
+    fun setCopiedSeed(status: Boolean)
+    fun isCopiedSeed():Boolean
 
 
     companion object {
@@ -348,6 +352,8 @@ interface TextSecurePreferences {
         const val NODE_IS_MAINNET = "node_is_mainnet"
         const val CALL_IS_ACTIVE = "call_is_active"
         const val CHAT_FONT_SIZE =  "chat_font_size"
+        const val PAY_AS_YOU_CHAT_PREF = "pref_pay_as_you_chat"
+        const val COPIED_SEED = "copied_seed"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -765,6 +771,11 @@ interface TextSecurePreferences {
         @JvmStatic
         fun isScreenSecurityEnabled(context: Context): Boolean {
             return getBooleanPreference(context, SCREEN_SECURITY_PREF, true)
+        }
+
+        @JvmStatic
+        fun setScreenSecurityPreference(context: Context,status:Boolean) {
+            setBooleanPreference(context, SCREEN_SECURITY_PREF,status)
         }
 
         fun getLastVersionCode(context: Context): Int {
@@ -1318,6 +1329,21 @@ interface TextSecurePreferences {
             return getStringPreference(context, CHAT_FONT_SIZE, "16")
         }
 
+        @JvmStatic
+        fun isPayAsYouChat(context: Context): Boolean {
+            return getBooleanPreference(context, PAY_AS_YOU_CHAT_PREF, false)
+        }
+
+        @JvmStatic
+        fun setCopiedSeed(context: Context,status: Boolean) {
+            setBooleanPreference(context, COPIED_SEED, status)
+        }
+
+        @JvmStatic
+        fun isCopiedSeed(context: Context):Boolean {
+            return getBooleanPreference(context, COPIED_SEED, true)
+        }
+
     }
 }
 
@@ -1686,6 +1712,10 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun isScreenSecurityEnabled(): Boolean {
         return getBooleanPreference(TextSecurePreferences.SCREEN_SECURITY_PREF, true)
+    }
+
+    override fun setScreenSecurityPreference(status:Boolean) {
+        setBooleanPreference(TextSecurePreferences.SCREEN_SECURITY_PREF, status)
     }
 
     override fun getLastVersionCode(): Int {
@@ -2145,6 +2175,18 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun getChatFontSize(): String? {
         return getStringPreference(TextSecurePreferences.CHAT_FONT_SIZE,"16")
+    }
+
+    override fun isPayAsYouChat(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.PAY_AS_YOU_CHAT_PREF, false)
+    }
+
+    override fun setCopiedSeed(status: Boolean) {
+        setBooleanPreference(TextSecurePreferences.COPIED_SEED,status)
+    }
+
+    override fun isCopiedSeed(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.COPIED_SEED,true)
     }
 
 

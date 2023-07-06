@@ -29,6 +29,7 @@ import android.widget.Toast
 import com.beldex.libsignal.utilities.Log
 import com.thoughtcrimes.securesms.BaseActionBarActivity
 import com.thoughtcrimes.securesms.service.KeyCachingService
+import io.beldex.bchat.R
 
 
 class PasswordActivity : BaseActionBarActivity() {
@@ -47,7 +48,6 @@ class PasswordActivity : BaseActionBarActivity() {
         setContentView(binding.root)
         setUpActionBarBchatLogo("Password")
 
-        android.util.Log.d("SplashScreenActivity-->","OK2")
         //  Start and bind to the KeyCachingService instance.
         val bindIntent = Intent(this, KeyCachingService::class.java)
         startService(bindIntent)
@@ -79,19 +79,7 @@ class PasswordActivity : BaseActionBarActivity() {
                     validatePassword(s.toString(),false)
                 }
             })
-            //Important
-            /*passwordButton.setOnClickListener() {
-                validatePassword(userPinEditTxt.text.toString(),true)
-            }
 
-            customKeyboardView.registerEditText(
-                CustomKeyboardView.KeyboardType.NUMBER,
-                binding.userPinEditTxt
-            )
-            if (binding.userPinEditTxt.requestFocus()) {
-                //keyboard.isExpanded=true
-                //window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-            }*/
             binding.userPinEditTxt.requestFocus()
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
             val ic: InputConnection = binding.userPinEditTxt.onCreateInputConnection(EditorInfo())
@@ -117,12 +105,40 @@ class PasswordActivity : BaseActionBarActivity() {
 
     private fun validatePassword(pin: String, validation: Boolean) {
         val userPassword = TextSecurePreferences.getMyPassword(this@PasswordActivity)
+        when {
+            pin.isEmpty() -> {
+                binding.userPinEditTxtLayout.isErrorEnabled=false
+                if(validation) {
+                    Toast.makeText(
+                        this,
+                        getString(R.string.please_enter_your_four_digit_pin),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+            pin.length<4 -> {
+                if(validation) {
+                    binding.userPinEditTxtLayout.isErrorEnabled=true
+                    binding.userPinEditTxtLayout.error = getString(R.string.invalid_password)
+                }else{
+                    binding.userPinEditTxtLayout.isErrorEnabled=false
+                }
+            }
+            userPassword != pin -> {
+                binding.userPinEditTxtLayout.isErrorEnabled=true
+                binding.userPinEditTxtLayout.error = getString(R.string.invalid_password)
+            }
+            userPassword == pin -> {
+                validateSuccess()
+            }
+            else -> {}
+        }
         if(pin.isEmpty()){
             binding.userPinEditTxtLayout.isErrorEnabled=false
             if(validation) {
                 Toast.makeText(
                     this,
-                    "Please enter your 4 digit PIN.",
+                    getString(R.string.please_enter_your_four_digit_pin),
                     Toast.LENGTH_LONG
                 ).show()
             }
@@ -130,13 +146,13 @@ class PasswordActivity : BaseActionBarActivity() {
         else if(pin.length<4){
             if(validation) {
                 binding.userPinEditTxtLayout.isErrorEnabled=true
-                binding.userPinEditTxtLayout.error = "Invalid Password."
+                binding.userPinEditTxtLayout.error = getString(R.string.invalid_password)
             }else{
                 binding.userPinEditTxtLayout.isErrorEnabled=false
             }
         }else if (userPassword != pin) {
             binding.userPinEditTxtLayout.isErrorEnabled=true
-            binding.userPinEditTxtLayout.error = "Invalid Password."
+            binding.userPinEditTxtLayout.error = getString(R.string.invalid_password)
         }else if (userPassword == pin) {
             validateSuccess()
         }
@@ -200,15 +216,6 @@ class PasswordActivity : BaseActionBarActivity() {
         val intent = Intent(this, HomeActivity::class.java)
         push(intent)
     }
-
-    //Important
-    /*override fun onBackPressed() {
-        if (binding.customKeyboardView!!.isExpanded) {
-            binding.customKeyboardView!!.translateLayout()
-        } else {
-            super.onBackPressed()
-        }
-    }*/
 
     override fun onBackPressed() {
             super.onBackPressed()

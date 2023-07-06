@@ -158,6 +158,11 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
         })
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        edtGroupName.isFocusable = false
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_edit_closed_group, menu)
         return allMembers.isNotEmpty() && !isLoading

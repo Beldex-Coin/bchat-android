@@ -96,11 +96,6 @@ class LinkPreviewView : LinearLayout {
             openURL()
             return
         }
-        // intersectedModalSpans should only be a list of one item
-        val hitSpans = bodyTextView.getIntersectedModalSpans(hitRect)
-        hitSpans.iterator().forEach { span ->
-            span.onClick(bodyTextView)
-        }
     }
 
     fun openURL() {

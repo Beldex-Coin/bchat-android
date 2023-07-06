@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/inputBarLinearLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -34,7 +35,7 @@
             android:layout_height="40dp"
             android:layout_centerInParent="true"
             android:layout_marginStart="64dp"
-            android:layout_marginEnd="64dp"
+            android:layout_toStartOf="@id/payAsYouChatLayout"
             android:background="@null"
             android:gravity="center_vertical"
             android:fontFamily="@font/open_sans_medium"
@@ -43,12 +44,75 @@
             android:textSize="@dimen/small_font_size" />
 
         <RelativeLayout
+            android:id="@+id/payAsYouChatLayout"
+            android:layout_width="@dimen/input_bar_button_expanded_size"
+            android:layout_height="@dimen/input_bar_button_expanded_size"
+            android:layout_toStartOf="@id/microphoneOrSendButtonContainer"
+            android:gravity="center"
+            android:layout_centerVertical="true">
+
+            <ImageView
+                android:id="@+id/inChatBDX"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:layout_margin="10dp"
+                android:src="@drawable/ic_in_chat_bdx" />
+            <ProgressBar
+                android:id="@+id/blockProgressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:progressDrawable="@drawable/green_circular_progress_bar"
+                android:background="@drawable/circle_shape"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminate="false"
+                android:visibility="gone"
+                android:layout_margin="5dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:max="100"/>
+            <ProgressBar
+                android:id="@+id/failedBlockProgressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:progressDrawable="@drawable/red_circular_progress_bar"
+                android:background="@drawable/circle_shape"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminate="false"
+                android:visibility="gone"
+                android:layout_margin="5dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:max="100"/>
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/microphoneOrSendButtonContainer"
             android:layout_width="@dimen/input_bar_button_expanded_size"
             android:layout_height="@dimen/input_bar_button_expanded_size"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/small_spacing" />
+        <TextView
+            android:fontFamily="@font/open_sans_medium"
+            android:id="@+id/noLongerParticipantTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text"
+            android:textAlignment="center"
+            android:layout_margin="5dp"
+            android:visibility="gone"
+            android:text="@string/you_can_t_send_messages_to_this_group_because_you_re_no_longer_a_participant"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"/>
 
     </RelativeLayout>
 

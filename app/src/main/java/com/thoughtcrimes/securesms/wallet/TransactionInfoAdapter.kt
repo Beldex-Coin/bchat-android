@@ -31,7 +31,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?)  :
+class TransactionInfoAdapter(context: Context?)  :
     RecyclerView.Adapter<TransactionInfoAdapter.ViewHolder>() {
     private val DATETIME_FORMATTER = SimpleDateFormat("dd-MM-yyyy HH:mm")
 
@@ -40,12 +40,8 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
     private var pendingColour = 0
     private var failedColour = 0
 
-    interface OnInteractionListener {
-        fun onInteraction(view: View?, item: TransactionInfo?)
-    }
 
     var infoItems: ArrayList<TransactionInfo>? = null
-    private var listener: OnInteractionListener? = null
 
     private var context: Context? = null
 
@@ -56,7 +52,6 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
         pendingColour = ContextCompat.getColor(context, R.color.tx_pending)
         failedColour = ContextCompat.getColor(context, R.color.tx_failed)
         infoItems = ArrayList()
-        this.listener = listener
         val cal = Calendar.getInstance()
         val tz = cal.timeZone //get the local time zone.
         this.DATETIME_FORMATTER.timeZone = tz
@@ -102,31 +97,26 @@ class TransactionInfoAdapter(context: Context?, listener: OnInteractionListener?
     ) {
         holder.bind(position)
 
-        holder.itemView.setOnClickListener{
-            if (listener != null) {
-            Log.d("Beldex","Transaction list issue value of holder otemviewType ${holder.itemViewType}")
-            Log.d("Beldex","Transaction list issue value of holder RecyclerView position  ${RecyclerView.NO_POSITION}")
-               /* if (holder.itemViewType != RecyclerView.NO_POSITION) { */// Check if an item was deleted, but the user clicked it before the UI removed it
-                    if(holder.transactionDetailsLayout.visibility==View.GONE) {
-                        holder.transactionDetailsLayout.visibility = View.VISIBLE
-                        holder.tvAddressTitle.visibility = View.VISIBLE
-                        if(DatabaseComponent.get(context!!).bchatRecipientAddressDatabase().getRecipientAddress(holder.infoItem!!.hash)!=null) {
-                            holder.tvAddress.text = DatabaseComponent.get(context!!).bchatRecipientAddressDatabase()
-                                .getRecipientAddress(holder.infoItem!!.hash)
-                        }//infoItem!!.address
-                        else{
-                            holder.tvAddressTitle.visibility = View.GONE
-                            holder.tvAddress.text=""
-                        }
-                        holder.expandableArrow.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
-                    }else{
-                        holder.transactionDetailsLayout.visibility = View.GONE
-                        holder.expandableArrow.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
-                    }
-                    //Important
-                    //listener!!.onInteraction(view, infoItems!!.get(position))
+        holder.itemView.setOnClickListener {
+            if (holder.transactionDetailsLayout.visibility == View.GONE) {
+                holder.transactionDetailsLayout.visibility = View.VISIBLE
+                holder.tvAddressTitle.visibility = View.VISIBLE
+                if (DatabaseComponent.get(context!!).bchatRecipientAddressDatabase()
+                        .getRecipientAddress(holder.infoItem!!.hash) != null
+                ) {
+                    holder.tvAddress.text =
+                        DatabaseComponent.get(context!!).bchatRecipientAddressDatabase()
+                            .getRecipientAddress(holder.infoItem!!.hash)
+                }//infoItem!!.address
+                else {
+                    holder.tvAddressTitle.visibility = View.GONE
+                    holder.tvAddress.text = ""
                 }
-           // }
+                holder.expandableArrow.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
+            } else {
+                holder.transactionDetailsLayout.visibility = View.GONE
+                holder.expandableArrow.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
+            }
         }
     }
 

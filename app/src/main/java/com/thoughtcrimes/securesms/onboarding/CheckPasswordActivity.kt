@@ -17,7 +17,6 @@ import io.beldex.bchat.databinding.ActivityCheckPasswordBinding
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.BaseActionBarActivity
 import com.thoughtcrimes.securesms.keyboard.CustomKeyboardView
-import com.thoughtcrimes.securesms.keys.ShowKeysActivity
 import com.thoughtcrimes.securesms.seed.ShowSeedActivity
 import com.thoughtcrimes.securesms.util.push
 import com.thoughtcrimes.securesms.util.setUpActionBarBchatLogo
@@ -40,19 +39,22 @@ class CheckPasswordActivity : BaseActionBarActivity() {
 
 
         with(binding) {
-            if (page == 1) {
-                checkPasswordDescriptionTextView.text =
-                    resources.getString(R.string.check_password_description_content_seed)
-                checkPasswordDescriptionsTextView.typeface= Typeface.DEFAULT_BOLD
-            }
-            else if (page == 2) {
-                checkPasswordDescriptionTextView.text =
-                    resources.getString(R.string.checkPasswordDescriptionTextView)
-                checkPasswordDescriptionsTextView.typeface= Typeface.DEFAULT_BOLD
-                checkPasswordDescriptionsTextView.visibility=View.VISIBLE
-            } else {
-                checkPasswordDescriptionTextView.text =
-                    resources.getString(R.string.check_password_description_content_keys)
+            when (page) {
+                1 -> {
+                    checkPasswordDescriptionTextView.text =
+                        resources.getString(R.string.check_password_description_content_seed)
+                    checkPasswordDescriptionsTextView.typeface= Typeface.DEFAULT_BOLD
+                }
+                2 -> {
+                    checkPasswordDescriptionTextView.text =
+                        resources.getString(R.string.checkPasswordDescriptionTextView)
+                    checkPasswordDescriptionsTextView.typeface= Typeface.DEFAULT_BOLD
+                    checkPasswordDescriptionsTextView.visibility=View.VISIBLE
+                }
+                else -> {
+                    checkPasswordDescriptionTextView.text =
+                        resources.getString(R.string.check_password_description_content_keys)
+                }
             }
             userPinEditTxt.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
@@ -71,18 +73,6 @@ class CheckPasswordActivity : BaseActionBarActivity() {
                 }
             })
 
-            //Important
-            /*continueButton.setOnClickListener() {
-                validatePassword(userPinEditTxt.text.toString())
-            }
-            binding.customKeyboardView.registerEditText(
-                CustomKeyboardView.KeyboardType.NUMBER,
-                binding.userPinEditTxt
-            )
-            if (binding.userPinEditTxt.requestFocus()) {
-                //keyboard.isExpanded=true
-                //window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-            }*/
             binding.userPinEditTxt.requestFocus()
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
             val ic: InputConnection = binding.userPinEditTxt.onCreateInputConnection(EditorInfo())
@@ -108,57 +98,51 @@ class CheckPasswordActivity : BaseActionBarActivity() {
 
     private fun validatePassword(pin: String,validation:Boolean) {
         val userPassword = TextSecurePreferences.getMyPassword(this@CheckPasswordActivity)
-        if (pin.isEmpty()) {
-            binding.userPinEditTxtLayout.isErrorEnabled = false
-            if(validation) {
-                Toast.makeText(
-                    this,
-                    "Please enter your 4 digit PIN.",
-                    Toast.LENGTH_LONG
-                ).show()
+        when{
+            pin.isEmpty() -> {
+                binding.userPinEditTxtLayout.isErrorEnabled = false
+                if (validation) {
+                    Toast.makeText(
+                        this,
+                        getString(R.string.please_enter_your_four_digit_pin),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
-        } else if (pin.length < 4) {
-            if(validation) {
-                binding.userPinEditTxtLayout.isErrorEnabled=true
-                binding.userPinEditTxtLayout.error = "Invalid Password."
-            }else{
-                binding.userPinEditTxtLayout.isErrorEnabled=false
+            pin.length < 4 -> {
+                if(validation) {
+                    binding.userPinEditTxtLayout.isErrorEnabled=true
+                    binding.userPinEditTxtLayout.error = getString(R.string.invalid_password)
+                }else{
+                    binding.userPinEditTxtLayout.isErrorEnabled=false
+                }
             }
-        } else if (userPassword != pin) {
-            binding.userPinEditTxtLayout.isErrorEnabled = true
-            binding.userPinEditTxtLayout.error = "Invalid Password."
-        } else if (userPassword == pin) {
-            validateSuccess(page)
+            userPassword != pin -> {
+                binding.userPinEditTxtLayout.isErrorEnabled = true
+                binding.userPinEditTxtLayout.error = getString(R.string.invalid_password)
+            }
+            userPassword == pin -> {
+                validateSuccess(page)
+            }
+            else -> {}
         }
     }
 
     private fun validateSuccess(page: Int) {
-        if (page == 1) {
-            val intent = Intent(this, ShowSeedActivity::class.java)
-            push(intent)
-            finish()
-        }
-        else if (page == 2) {
-            val intent = Intent(this, WalletInfoSeedActivity::class.java)
-            push(intent)
-            finish()
-        }else {
-            val intent = Intent(this, ShowKeysActivity::class.java)
-            push(intent)
-            finish()
+        when (page) {
+            1 -> {
+                val intent = Intent(this, ShowSeedActivity::class.java)
+                push(intent)
+                finish()
+            }
+            2 -> {
+                val intent = Intent(this, WalletInfoSeedActivity::class.java)
+                push(intent)
+                finish()
+            }
+            else -> {
+            }
         }
 
-    }
-
-    //Important
-    /*override fun onBackPressed() {
-        if (binding.customKeyboardView!!.isExpanded) {
-            binding.customKeyboardView!!.translateLayout()
-        } else {
-            super.onBackPressed()
-        }
-    }*/
-    override fun onBackPressed() {
-            super.onBackPressed()
     }
 }

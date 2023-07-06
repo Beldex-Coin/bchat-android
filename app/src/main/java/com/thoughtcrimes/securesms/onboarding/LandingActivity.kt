@@ -18,6 +18,7 @@ class LandingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val binding = ActivityLandingBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        TextSecurePreferences.setCopiedSeed(this,false)
         with(binding) {
             fakeChatView.startAnimating()
             registerButton.setOnClickListener() { register() }

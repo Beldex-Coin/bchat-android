@@ -40,9 +40,9 @@
 <!--               mainnet
         <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">127.0.0.1</domain>
-    </domain-config>
+<domain-config cleartextTrafficPermitted="true">
+    <domain includeSubdomains="true">127.0.0.1</domain>
+</domain-config>
     <domain-config cleartextTrafficPermitted="false">
         <domain includeSubdomains="false">publicnode5.rpcnode.stream</domain>
         <trust-anchors>
@@ -63,16 +63,16 @@
     </domain-config>
     <domain-config cleartextTrafficPermitted="false">
         <domain includeSubdomains="false">publicnode3.rpcnode.stream</domain>
-        <trust-anchors>
-            <certificates src="@raw/publicnode3"/>
-        </trust-anchors>
-    </domain-config>
-    <domain-config cleartextTrafficPermitted="false">
+    <trust-anchors>
+        <certificates src="@raw/publicnode3"/>
+    </trust-anchors>
+</domain-config>
+<domain-config cleartextTrafficPermitted="false">
         <domain includeSubdomains="false">publicnode4.rpcnode.stream</domain>
-        <trust-anchors>
+    <trust-anchors>
             <certificates src="@raw/publicnode4"/>
-        </trust-anchors>
-    </domain-config>
+    </trust-anchors>
+</domain-config>
 
 </network-security-config> -->
 

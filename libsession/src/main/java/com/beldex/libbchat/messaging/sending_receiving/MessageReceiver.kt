@@ -1,6 +1,7 @@
 package com.beldex.libbchat.messaging.sending_receiving
 
 
+import android.util.Log
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.messages.Message
 import com.beldex.libbchat.messaging.messages.control.*
@@ -120,6 +121,11 @@ object MessageReceiver {
         message.openGroupServerMessageID = openGroupServerID
         // Validate
         var isValid = message.isValid()
+        Log.d("DataMessage message body-> ",message.sentTimestamp.toString())
+        Log.d("DataMessage message body1-> ",message.receivedTimestamp.toString())
+        Log.d("DataMessage isValid-> ",isValid.toString())
+        Log.d("DataMessage message-> ",(message is VisibleMessage).toString())
+        Log.d("DataMessage attachmentCount-> ",proto.dataMessage.attachmentsCount.toString())
         if (message is VisibleMessage && !isValid && proto.dataMessage.attachmentsCount != 0) { isValid = true }
         if (!isValid) { throw Error.InvalidMessage }
         // If the message failed to process the first time around we retry it later (if the error is retryable). In this case the timestamp

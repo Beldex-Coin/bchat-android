@@ -112,8 +112,11 @@ public class CursorList<T> implements List<T>, ObservableContent {
 
   @Override
   public T get(int i) {
-    cursor.moveToPosition(i);
-    return modelBuilder.build(cursor);
+    if(!cursor.isClosed()) {
+      cursor.moveToPosition(i);
+      return modelBuilder.build(cursor);
+    }
+    return null;
   }
 
   @Override

@@ -34,7 +34,6 @@ import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.PublicKeyValidation
 import com.thoughtcrimes.securesms.BaseActionBarActivity
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
-import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
 import com.thoughtcrimes.securesms.util.ConfigurationMessageUtilities
 import com.thoughtcrimes.securesms.util.ScanQRCodeWrapperFragment
 import com.thoughtcrimes.securesms.util.ScanQRCodeWrapperFragmentDelegate
@@ -138,10 +137,10 @@ class JoinPublicChatActivity : PassphraseRequiredActionBarActivity(), ScanQRCode
 
     // region Convenience
     private fun openConversationActivity(context: Context, threadId: Long, recipient: Recipient) {
-        val intent = Intent(context, ConversationActivityV2::class.java)
+       /* val intent = Intent(context, ConversationActivityV2::class.java)
         intent.putExtra(ConversationActivityV2.THREAD_ID, threadId)
         intent.putExtra(ConversationActivityV2.ADDRESS, recipient.address)
-        context.startActivity(intent)
+        context.startActivity(intent)*/
     }
     // endregion
 }

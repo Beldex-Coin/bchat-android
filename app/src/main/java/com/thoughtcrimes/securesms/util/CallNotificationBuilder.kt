@@ -14,7 +14,6 @@ import com.beldex.libbchat.utilities.recipients.Recipient
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.notifications.NotificationChannels
 import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
-import com.thoughtcrimes.securesms.preferences.SettingsActivity
 import com.thoughtcrimes.securesms.service.WebRtcCallService
 import io.beldex.bchat.R
 

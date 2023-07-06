@@ -14,6 +14,7 @@ import com.thoughtcrimes.securesms.dependencies.DatabaseComponent;
 import com.thoughtcrimes.securesms.providers.BlobProvider;
 import com.thoughtcrimes.securesms.providers.PartProvider;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -54,6 +55,8 @@ public class PartAuthority {
       default:             return context.getContentResolver().openInputStream(uri);
       }
     } catch (SecurityException se) {
+      throw new IOException(se);
+    } catch(FileNotFoundException se){
       throw new IOException(se);
     }
   }

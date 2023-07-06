@@ -7,6 +7,7 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import net.sqlcipher.database.DatabaseObjectNotClosedException;
 import net.sqlcipher.database.SQLiteDatabase;
 
 import com.beldex.libbchat.messaging.sending_receiving.attachments.DatabaseAttachment;
@@ -66,10 +67,14 @@ public class MediaDatabase extends Database {
   }
 
   public Cursor getGalleryMediaForThread(long threadId) {
-    SQLiteDatabase database = databaseHelper.getReadableDatabase();
-    Cursor cursor = database.rawQuery(GALLERY_MEDIA_QUERY, new String[]{threadId+""});
-    setNotifyConverationListeners(cursor, threadId);
-    return cursor;
+    try {
+      SQLiteDatabase database = databaseHelper.getReadableDatabase();
+      Cursor cursor = database.rawQuery(GALLERY_MEDIA_QUERY, new String[]{threadId + ""});
+      setNotifyConverationListeners(cursor, threadId);
+      return cursor;
+    }catch(DatabaseObjectNotClosedException ex){
+      return null;
+    }
   }
 
   public void subscribeToMediaChanges(@NonNull ContentObserver observer) {
@@ -81,10 +86,14 @@ public class MediaDatabase extends Database {
   }
 
   public Cursor getDocumentMediaForThread(long threadId) {
-    SQLiteDatabase database = databaseHelper.getReadableDatabase();
-    Cursor cursor = database.rawQuery(DOCUMENT_MEDIA_QUERY, new String[]{threadId+""});
-    setNotifyConverationListeners(cursor, threadId);
-    return cursor;
+    try {
+      SQLiteDatabase database = databaseHelper.getReadableDatabase();
+      Cursor cursor = database.rawQuery(DOCUMENT_MEDIA_QUERY, new String[]{threadId + ""});
+      setNotifyConverationListeners(cursor, threadId);
+      return cursor;
+    }catch(DatabaseObjectNotClosedException ex){
+      return null;
+    }
   }
 
   public static class MediaRecord {

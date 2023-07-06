@@ -41,7 +41,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.thoughtcrimes.securesms.ApplicationContext;
 import com.thoughtcrimes.securesms.contactshare.ContactUtil;
-import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2;
+import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2;
 import com.thoughtcrimes.securesms.conversation.v2.utilities.MentionManagerUtilities;
 import com.thoughtcrimes.securesms.conversation.v2.utilities.MentionUtilities;
 import com.thoughtcrimes.securesms.database.MessagingDatabase;
@@ -53,6 +53,7 @@ import com.thoughtcrimes.securesms.database.model.MessageRecord;
 import com.thoughtcrimes.securesms.database.model.MmsMessageRecord;
 import com.thoughtcrimes.securesms.database.model.Quote;
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent;
+import com.thoughtcrimes.securesms.home.HomeActivity;
 import com.thoughtcrimes.securesms.mms.SlideDeck;
 import com.thoughtcrimes.securesms.service.KeyCachingService;
 import com.thoughtcrimes.securesms.util.BchatMetaProtocol;
@@ -66,8 +67,6 @@ import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libsignal.utilities.Log;
 import com.beldex.libsignal.utilities.Util;
-
-
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -142,9 +141,11 @@ public class DefaultMessageNotifier implements MessageNotifier {
         .notify((int)threadId, builder.build());
     }*/
     if (visibleThread != threadId) {
-      Intent intent = new Intent(context, ConversationActivityV2.class);
-      intent.putExtra(ConversationActivityV2.ADDRESS, recipient.getAddress());
-      intent.putExtra(ConversationActivityV2.THREAD_ID, threadId);
+      Log.d("visibleThread","true");
+      Intent intent = new Intent(context, HomeActivity.class);
+      intent.putExtra(ConversationFragmentV2.ADDRESS, recipient.getAddress());
+      intent.putExtra(ConversationFragmentV2.THREAD_ID, threadId);
+      intent.putExtra(HomeActivity.SHORTCUT_LAUNCHER,true); //- New
       intent.setData((Uri.parse("custom://" + System.currentTimeMillis())));
 
       FailedNotificationBuilder builder = new FailedNotificationBuilder(context, TextSecurePreferences.getNotificationPrivacy(context), intent);

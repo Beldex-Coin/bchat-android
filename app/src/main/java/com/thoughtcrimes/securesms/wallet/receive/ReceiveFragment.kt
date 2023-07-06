@@ -11,14 +11,11 @@ import android.os.Bundle
 import android.os.Environment
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.widget.ShareActionProvider
-import androidx.core.content.FileProvider
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
@@ -29,83 +26,36 @@ import com.jakewharton.rxbinding3.view.visibility
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
 import com.thoughtcrimes.securesms.data.BarcodeData
 import com.thoughtcrimes.securesms.data.Crypto
+import com.thoughtcrimes.securesms.home.HomeActivity
 import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.util.FileProviderUtil
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.wallet.OnBackPressedListener
 import com.thoughtcrimes.securesms.wallet.utils.ThemeHelper
-import com.thoughtcrimes.securesms.wallet.widget.Toolbar
-import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityReceiveBinding
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 import java.lang.ClassCastException
+import java.lang.Exception
 import java.util.HashMap
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [ReceiveFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ReceiveFragment : Fragment(), OnBackPressedListener {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
     private lateinit var binding: ActivityReceiveBinding
     private var bcData: BarcodeData? = null
     private var qrValid = false
     private var logo: Bitmap? = null
     private val isLoaded = false
-    var listenerCallback: ReceiveFragment.Listener? = null
-    private val shareActionProvider: ShareActionProvider? = null
+    var listenerCallback: Listener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-        val transform = MaterialContainerTransform()
-        transform.drawingViewId = R.id.fragment_container
-        transform.duration = resources.getInteger(R.integer.tx_item_transition_duration).toLong()
-        transform.setAllContainerColors(
-            ThemeHelper.getThemedColor(
-                context,
-                android.R.attr.colorBackground
-            )
-        )
-        sharedElementEnterTransition = transform
     }
     interface Listener {
-        fun setToolbarButton(type: Int)
-        fun setTitle(title: String?)
-        fun setSubtitle(subtitle: String?)
-
+        fun walletOnBackPressed() //-
     }
-
-    override fun onResume() {
-        super.onResume()
-        /*listenerCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
-        listenerCallback!!.setTitle(getString(R.string.activity_receive_page_title))*/
-    }
-
-    /*override fun onDetach() {
-        Timber.d("onDetach()")
-        if (wallet != null && isMyWallet) {
-            wallet.close()
-            wallet = null
-            isMyWallet = false
-        }
-        super.onDetach()
-    }*/
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -124,17 +74,23 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
         savedInstanceState: Bundle?
     ): View? {
         binding = ActivityReceiveBinding.inflate(layoutInflater,container,false)
-        listenerCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
-        listenerCallback!!.setTitle(getString(R.string.activity_receive_page_title))
-
+        (activity as HomeActivity).setSupportActionBar(binding.toolbar)
         binding.walletAddressReceive.text = IdentityKeyUtil.retrieve(requireActivity(),IdentityKeyUtil.IDENTITY_W_ADDRESS_PREF)
         generateQr()
 
         binding.amountEditTextReceive.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
                 if (binding.amountEditTextReceive.text.isNotEmpty()) {
-                    reGenerateQr()
+                    if(validateBELDEXAmount(s.toString())) {
+                        hideErrorMessage()
+                        reGenerateQr()
+                    }else{
+                        binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.error_view_background)
+                        binding.beldexAmountErrorMessage.visibility =View.VISIBLE
+                        binding.beldexAmountErrorMessage.text=getString(R.string.beldex_amount_valid_error_message)
+                    }
                 } else {
+                    hideErrorMessage()
                     generateQr()
                 }
             }
@@ -155,28 +111,19 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
             copyYourBeldexAddress()
         }
 
+        binding.exitButton.setOnClickListener {
+            listenerCallback?.walletOnBackPressed()
+        }
+
         return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ReceiveFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ReceiveFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    private fun hideErrorMessage(){
+        binding.amountEditTextReceive.setBackgroundResource(R.drawable.bchat_id_text_view_background)
+        binding.beldexAmountErrorMessage.visibility = View.GONE
+        binding.beldexAmountErrorMessage.text = ""
     }
+
     private fun copyYourBeldexAddress() {
         val clipboard = requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("Beldex Address", binding.walletAddressReceive.text.toString())
@@ -212,36 +159,22 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
     }
 
     private fun generateQr() {
-        Log.d("Beldex","generateQR fun called")
-        Timber.d("A-> GENQR")
         val address: String = binding.walletAddressReceive.text.toString()
         val notes: String = ""
         val bdxAmount: String = binding.amountEditTextReceive.text.toString()
-        Log.d("beldex", "generateQR value of  $bdxAmount, $notes, $address")
-        //        if ((bdxAmount == null) || !Wallet.isAddressValid(address)) {
-//            clearQR();
-//            Timber.d("CLEARQR");
-//            return;
-//        }
         bcData = BarcodeData(Crypto.BDX, address, notes, bdxAmount)
 
         val size: Int = Math.max(200, 200)
         val qr = generate(bcData!!.uriString, size, size)
-        Log.d("Beldex","generateQR value of qr $qr")
         if (qr != null) {
             setQR(qr)
-            Timber.d("A-> SETQR")
-            //by hales
-            /* etDummy.requestFocus()*/
             Helper.hideKeyboard(activity)
         }
     }
 
-    fun setQR(qr: Bitmap?) {
+    private fun setQR(qr: Bitmap?) {
         binding.qrCodeReceive.setImageBitmap(qr)
         qrValid = true
-        //by hales
-        /* setShareIntent()*/
         binding.qrCodeReceive.visibility(View.GONE)
     }
 
@@ -256,7 +189,6 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
         canvas.save()
         val sx = 0.2f * qrSize / logoSize
         canvas.scale(sx, sx, qrSize / 2f, qrSize / 2f)
-        //canvas.drawBitmap(logo, (qrSize - logoSize) / 2f, (qrSize - logoSize) / 2f, null);
         canvas.restore()
         return logoBitmap
     }
@@ -269,34 +201,26 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
     }
 
     private fun reGenerateQr() {
-        Timber.d("B->GENQR")
         val address: String = binding.walletAddressReceive.text.toString()
         val notes: String = ""
         val bdxAmount: String = binding.amountEditTextReceive.text.toString()
-        Timber.d("%s/%s/%s", bdxAmount, notes, address)
         if (!Wallet.isAddressValid(address)) {
-
             clearQR()
-            Timber.d("B-> CLEARQR")
             return
         }
         bcData = BarcodeData(Crypto.BDX, address, notes, bdxAmount)
         val size: Int = Math.max(binding.qrCodeReceive.width, binding.qrCodeReceive.height)
         val qr = generate(bcData!!.uriString, size, size)
-        Timber.d("QR COde -> %s", qr)
         if (qr != null) {
             setQR(qr)
-            Timber.d("B-> SETQR")
         }
     }
 
-    fun clearQR() {
+    private fun clearQR() {
         if (qrValid) {
             binding.qrCodeReceive.setImageBitmap(null)
             qrValid = false
-            //by hales
-            /* setShareIntent()*/
-            if (isLoaded)  binding.qrCodeReceive.setVisibility(View.VISIBLE)
+            if (isLoaded) binding.qrCodeReceive.visibility = View.VISIBLE
         }
     }
 
@@ -322,47 +246,30 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
         )
     }
 
+    private fun validateBELDEXAmount(amount:String):Boolean {
+        val maxValue = 150000000.00000
+        val value = amount.replace(',', '.')
+        val regExp ="^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$"
+        var isValid = false
 
-    private fun getShareIntent(): Intent? {
-        val imagePath = File(requireActivity().cacheDir, "images")
-        val png = File(imagePath, "QR.png")
-        val contentUri = FileProvider.getUriForFile(
-            requireActivity(),
-            BuildConfig.APPLICATION_ID.toString() + ".fileprovider",
-            png
-        )
-        if (contentUri != null) {
-            val shareIntent = Intent()
-            shareIntent.action = Intent.ACTION_SEND
-            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION) // temp permission for receiving app to read this file
-            shareIntent.setDataAndType(contentUri, requireActivity().contentResolver.getType(contentUri))
-            shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri)
-            shareIntent.putExtra(Intent.EXTRA_TEXT, bcData!!.uriString)
-            return shareIntent
+        isValid = if (value.matches(Regex(regExp))) {
+            if (value == ".") {
+                false
+            } else {
+                try {
+                    val dValue = value.toDouble()
+                    (dValue <= maxValue && dValue > 0)
+                } catch (e: Exception) {
+                    false
+                }
+            }
+        } else {
+            false
         }
-        return null
+        return isValid
     }
-    private fun saveQrCode() {
-        check(qrValid) { "trying to save null qr code!" }
-        val cachePath = File(requireActivity().cacheDir, "images")
-        if (!cachePath.exists()) check(cachePath.mkdirs()) { "cannot create images folder" }
-        val png = File(cachePath, "QR.png")
-        try {
-            val stream = FileOutputStream(png)
-            val qrBitmap = (binding.qrCodeReceive.drawable as BitmapDrawable).bitmap
-            qrBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-            stream.close()
-        } catch (ex: IOException) {
-            Timber.e(ex)
-            // make sure we don't share an old qr code
-            check(png.delete()) { "cannot delete old qr code" }
-            // if we manage to delete it, the URI points to nothing and the user gets a toast with the error
-        }
-    }
-
 
     override fun onPause() {
-        Timber.d("onPause()")
         Helper.hideKeyboard(activity)
         super.onPause()
     }
@@ -371,3 +278,4 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
         return false
     }
 }
+//endregion

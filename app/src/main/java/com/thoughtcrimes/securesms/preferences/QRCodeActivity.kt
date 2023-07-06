@@ -7,19 +7,13 @@ import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityQrCodeBinding
 import io.beldex.bchat.databinding.FragmentViewMyQrCodeBinding
-import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import com.beldex.libbchat.utilities.recipients.Recipient
-import com.beldex.libsignal.utilities.PublicKeyValidation
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
-import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
-import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.util.*
 import java.io.File
 import java.io.FileOutputStream
@@ -48,7 +42,7 @@ class QRCodeActivity : PassphraseRequiredActionBarActivity(), ScanQRCodeWrapperF
     }
 
     fun createPrivateChatIfPossible(hexEncodedPublicKey: String) {
-        if (!PublicKeyValidation.isValid(hexEncodedPublicKey)) { return Toast.makeText(this, R.string.invalid_bchat_id, Toast.LENGTH_SHORT).show() }
+       /* if (!PublicKeyValidation.isValid(hexEncodedPublicKey)) { return Toast.makeText(this, R.string.invalid_bchat_id, Toast.LENGTH_SHORT).show() }
         val recipient = Recipient.from(this, Address.fromSerialized(hexEncodedPublicKey), false)
         val intent = Intent(this, ConversationActivityV2::class.java)
         intent.putExtra(ConversationActivityV2.ADDRESS, recipient.address)
@@ -56,7 +50,7 @@ class QRCodeActivity : PassphraseRequiredActionBarActivity(), ScanQRCodeWrapperF
         val existingThread = DatabaseComponent.get(this).threadDatabase().getThreadIdIfExistsFor(recipient)
         intent.putExtra(ConversationActivityV2.THREAD_ID, existingThread)
         startActivity(intent)
-        finish()
+        finish()*/
     }
     // endregion
 }

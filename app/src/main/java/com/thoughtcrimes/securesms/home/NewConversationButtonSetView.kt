@@ -244,6 +244,7 @@ class NewConversationButtonSetView : RelativeLayout {
         socialGroupButtonLayoutParams.addRule(ALIGN_PARENT_BOTTOM, TRUE)
         socialGroupButtonLayoutParams.bottomMargin = bottomMargin.toInt()
         // Set up main button
+        mainButton.x =mainButton.x+12.0F
         addView(mainButton)
         val mainButtonLayoutParams = mainButton.layoutParams as LayoutParams
         mainButtonLayoutParams.addRule(ALIGN_PARENT_END, TRUE)
@@ -251,13 +252,42 @@ class NewConversationButtonSetView : RelativeLayout {
         mainButtonLayoutParams.bottomMargin = bottomMargin.toInt()
 
         bchatButtonTitle.setOnClickListener {
-            delegate?.createNewPrivateChat(); collapse()
+            if(isExpanded) {
+                delegate?.createNewPrivateChat(); collapse()
+            }
         }
         secretGroupButtonTitle.setOnClickListener {
-            delegate?.createNewSecretGroup(); collapse()
+            if(isExpanded) {
+                delegate?.createNewSecretGroup(); collapse()
+            }
         }
         socialGroupButtonTitle.setOnClickListener {
-            delegate?.joinSocialGroup(); collapse()
+            if(isExpanded) {
+                delegate?.joinSocialGroup(); collapse()
+            }
+        }
+        mainButton.setOnClickListener {
+            if(isExpanded){
+                collapse()
+            }else {
+                isExpanded = true
+                expand()
+            }
+        }
+        bchatButton.setOnClickListener {
+            if(isExpanded) {
+                delegate?.createNewPrivateChat(); collapse()
+            }
+        }
+        secretGroupButton.setOnClickListener {
+            if(isExpanded) {
+                delegate?.createNewSecretGroup(); collapse()
+            }
+        }
+        socialGroupButton.setOnClickListener {
+            if(isExpanded) {
+                delegate?.joinSocialGroup(); collapse()
+            }
         }
     }
     // endregion
@@ -272,9 +302,6 @@ class NewConversationButtonSetView : RelativeLayout {
             MotionEvent.ACTION_DOWN -> {
                 if (isExpanded) {
                     if (mainButton.contains(touch)) { collapse() }
-                } else {
-                    isExpanded = true
-                    expand()
                 }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK)
@@ -311,9 +338,9 @@ class NewConversationButtonSetView : RelativeLayout {
                     this.collapse()
                 }
                 if (distanceFromMainButtonCenter > (minDragDistance + mainButton.collapsedSize / 2)) {
-                    if (bchatButton.contains(touch) || touch.isLeftOf(bchatButton, dragMargin)) { delegate?.createNewPrivateChat(); collapse() }
-                    else if (secretGroupButton.contains(touch)) { delegate?.createNewSecretGroup(); collapse() }
-                    else if (socialGroupButton.contains(touch) || touch.isAbove(socialGroupButton, dragMargin)) { delegate?.joinSocialGroup(); collapse() }
+                    if (bchatButton.contains(touch) || touch.isLeftOf(bchatButton, dragMargin)) { }
+                    else if (secretGroupButton.contains(touch)) {}
+                    else if (socialGroupButton.contains(touch) || touch.isAbove(socialGroupButton, dragMargin)) {}
                     else { collapse() }
                 } else {
                     val currentPosition = PointF(mainButton.x, mainButton.y)

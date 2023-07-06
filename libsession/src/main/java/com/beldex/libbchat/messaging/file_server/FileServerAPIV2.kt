@@ -34,8 +34,8 @@ object FileServerAPIV2 {
     const val server = "http://fs1.rpcnode.stream"
 
     //Testnet
-    /*private const val serverPublicKey = "51a8cd2e8a2c7e012d2ed4e0a24b5ed26f6f4f5b89e0d9d9c8856a5fd7140314"
-    const val server = "http://13.233.252.86"*/
+    /*private const val serverPublicKey = "decc13c0a80cdd44926226f20b86c85525b001d9ab9850c95b281aa67ffebf6a"
+    const val server = "http://fileserver.rpcnode.stream"*/
     const val maxFileSize = 10_000_000 // 10 MB
 
     /**

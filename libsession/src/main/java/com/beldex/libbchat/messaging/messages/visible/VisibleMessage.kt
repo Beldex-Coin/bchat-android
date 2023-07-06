@@ -26,10 +26,10 @@ class VisibleMessage : Message()  {
     var profile: Profile? = null
     var openGroupInvitation: OpenGroupInvitation? = null
     var beldexAddress:String?= null
-
-    override val isSelfSendValid: Boolean = true
     //Payment Tag
     var payment: Payment? = null
+
+    override val isSelfSendValid: Boolean = true
 
     // region Validation
     override fun isValid(): Boolean {

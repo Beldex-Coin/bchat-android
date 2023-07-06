@@ -689,7 +689,11 @@ public class AttachmentDatabase extends Database {
     long           uniqueId = System.currentTimeMillis();
 
     if (attachment.getDataUri() != null) {
-      dataInfo = setAttachmentData(attachment.getDataUri());
+      try {
+        dataInfo = setAttachmentData(attachment.getDataUri());
+      }catch(MmsException e){
+        Log.d("Exception : ","File Not Found");
+      }
       //-Log.d(TAG, "Wrote part to file: " + dataInfo.file.getAbsolutePath());
     }
 

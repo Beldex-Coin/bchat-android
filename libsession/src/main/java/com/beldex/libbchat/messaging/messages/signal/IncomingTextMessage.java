@@ -133,27 +133,27 @@ public class IncomingTextMessage implements Parcelable {
     return new IncomingTextMessage(sender, 1, message.getSentTimestamp(), message.getText(), group, expiresInMillis, false);
   }
 
-  public static IncomingTextMessage fromOpenGroupInvitation(OpenGroupInvitation openGroupInvitation, Address sender, Long sentTimestamp)
+  public static IncomingTextMessage fromOpenGroupInvitation(OpenGroupInvitation openGroupInvitation, Address sender, Long sentTimestamp,long expiresInMillis)
   {
     String url = openGroupInvitation.getUrl();
     String name = openGroupInvitation.getName();
     if (url == null || name == null) { return null; }
     // FIXME: Doing toJSON() to get the body here is weird
     String body = UpdateMessageData.Companion.buildOpenGroupInvitation(url, name).toJSON();
-    IncomingTextMessage incomingTextMessage = new IncomingTextMessage(sender, 1, sentTimestamp, body, Optional.absent(), 0, false);
+    IncomingTextMessage incomingTextMessage = new IncomingTextMessage(sender, 1, sentTimestamp, body, Optional.absent(), expiresInMillis, false);
     incomingTextMessage.isOpenGroupInvitation = true;
     return incomingTextMessage;
   }
 
   //Payment Tag
-  public static IncomingTextMessage fromPayment(Payment payment, Address sender, Long sentTimestamp)
+  public static IncomingTextMessage fromPayment(Payment payment, Address sender, Long sentTimestamp,long expiresInMillis)
   {
     String amount = payment.getAmount();
     String txnId = payment.getTxnId();
     if (amount == null || txnId == null) { return null; }
     // FIXME: Doing toJSON() to get the body here is weird
     String body = UpdateMessageData.Companion.buildPayment(amount, txnId).toJSON();
-    IncomingTextMessage incomingTextMessage = new IncomingTextMessage(sender, 1, sentTimestamp, body, Optional.absent(), 0, false);
+    IncomingTextMessage incomingTextMessage = new IncomingTextMessage(sender, 1, sentTimestamp, body, Optional.absent(), expiresInMillis, false);
     incomingTextMessage.isPayment = true;
     return incomingTextMessage;
   }

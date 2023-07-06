@@ -29,6 +29,8 @@ class SendConfirmDialog(
 
             cancelButton.setOnClickListener {
                 context.sendButtonEnabled()
+                context.pendingTransaction = null
+                context.pendingTx = null
                 dismiss()
             }
             okButton.setOnClickListener {
@@ -43,6 +45,6 @@ class SendConfirmDialog(
         }
 
         builder.setView(binding.root)
-        builder.setCancelable(false)
+        isCancelable = false
     }
 }

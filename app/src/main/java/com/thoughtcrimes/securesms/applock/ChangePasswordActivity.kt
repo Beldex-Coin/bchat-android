@@ -28,7 +28,7 @@ class ChangePasswordActivity : BaseActionBarActivity() {
         setUpActionBarBchatLogo("Change Password")
         binding = ActivityChangePasswordBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val oldpassword = TextSecurePreferences.getMyPassword(this)
+        val oldPassword = TextSecurePreferences.getMyPassword(this)
         with(binding)
         {
             binding.keyboard1?.buttonEnter?.setOnClickListener()
@@ -36,70 +36,58 @@ class ChangePasswordActivity : BaseActionBarActivity() {
                 val oldEnteredPassword = oldPasswordEditTxt.text.toString()
                 val newEnteredPassword = newPasswordEditTxt.text.toString()
 
-                if (oldpassword == newEnteredPassword) {
-                    /*Toast.makeText(this@ChangePasswordActivity, "Both are Same", Toast.LENGTH_LONG)
-                        .show()*/
-                    newPasswordEditTxtLayout.isErrorEnabled = true
-                    newPasswordEditTxtLayout.error = "Both are Same"
-                } else if (oldEnteredPassword.isEmpty()) {
-                    //oldPasswordEditTxt.error = "Must set your Old PIN."
-                    oldPasswordEditTxtLayout.isErrorEnabled = false
-                    Toast.makeText(
-                        this@ChangePasswordActivity,
-                        "Must set your Old PIN.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                } else if (oldpassword != oldEnteredPassword) {
-                    /* Toast.makeText(
-                         this@ChangePasswordActivity,
-                         "Invalid old password",
-                         Toast.LENGTH_LONG
-                     ).show()*/
-                    oldPasswordEditTxtLayout.isErrorEnabled = true
-                    oldPasswordEditTxtLayout.error = "Invalid old password"
-                } else if (newEnteredPassword.isEmpty()) {
-                    //newPasswordEditTxt.error = "Must set your New PIN."
-                    oldPasswordEditTxtLayout.isErrorEnabled = false
-                    newPasswordEditTxtLayout.isErrorEnabled = false
-                    Toast.makeText(
-                        this@ChangePasswordActivity,
-                        "Must set your New PIN.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                } else if (newEnteredPassword.length < 4) {
-                    //newPasswordEditTxt.error = "Please enter 4 digit PIN."
-                    oldPasswordEditTxtLayout.isErrorEnabled = false
-                    newPasswordEditTxtLayout.isErrorEnabled = true
-                    newPasswordEditTxtLayout.error = "Please enter 4 digit PIN."
-                } else if (oldEnteredPassword != newEnteredPassword) {
-                    TextSecurePreferences.setMyPassword(
-                        this@ChangePasswordActivity,
-                        newPasswordEditTxt.text.toString()
-                    )
-                    Toast.makeText(
-                        this@ChangePasswordActivity,
-                        "Password Changes Successfully",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    oldPasswordEditTxt.text.clear()
-                    newPasswordEditTxt.text.clear()
-                    finish()
+                when {
+                    oldPassword != oldEnteredPassword -> {
+                        oldPasswordEditTxtLayout.isErrorEnabled = true
+                        oldPasswordEditTxtLayout.error = "Invalid old password"
+                        newPasswordEditTxtLayout.isErrorEnabled = false
+                    }
+                    oldEnteredPassword.isEmpty() -> {
+                        oldPasswordEditTxtLayout.isErrorEnabled = false
+                        Toast.makeText(
+                            this@ChangePasswordActivity,
+                            "Must set your Old PIN.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                    oldEnteredPassword == newEnteredPassword -> {
+                        if(oldPassword == oldEnteredPassword){
+                            oldPasswordEditTxtLayout.isErrorEnabled = false
+                        }
+                        newPasswordEditTxtLayout.isErrorEnabled = true
+                        newPasswordEditTxtLayout.error = "Both are Same"
+                    }
+                    newEnteredPassword.isEmpty() -> {
+                        oldPasswordEditTxtLayout.isErrorEnabled = false
+                        newPasswordEditTxtLayout.isErrorEnabled = false
+                        Toast.makeText(
+                            this@ChangePasswordActivity,
+                            "Must set your New PIN.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                    newEnteredPassword.length < 4 -> {
+                        oldPasswordEditTxtLayout.isErrorEnabled = false
+                        newPasswordEditTxtLayout.isErrorEnabled = true
+                        newPasswordEditTxtLayout.error = "Please enter 4 digit PIN."
+                    }
+                    oldEnteredPassword != newEnteredPassword -> {
+                        TextSecurePreferences.setMyPassword(
+                            this@ChangePasswordActivity,
+                            newPasswordEditTxt.text.toString()
+                        )
+                        Toast.makeText(
+                            this@ChangePasswordActivity,
+                            "Password Changed Successfully",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        oldPasswordEditTxt.text.clear()
+                        newPasswordEditTxt.text.clear()
+                        finish()
+                    }
                 }
             }
         }
-        //Important
-        /*binding.customKeyboardView.registerEditText(
-            CustomKeyboardView.KeyboardType.NUMBER,
-            binding.oldPasswordEditTxt
-        )
-        binding.customKeyboardView.registerEditText(
-            CustomKeyboardView.KeyboardType.NUMBER,
-            binding.newPasswordEditTxt
-        )
-        if (binding.oldPasswordEditTxt.requestFocus()) {
-            //keyboard.isExpanded=true
-            //window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-        }*/
         binding.oldPasswordEditTxt.requestFocus()
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
         val ic: InputConnection = binding.oldPasswordEditTxt.onCreateInputConnection(EditorInfo())
@@ -158,15 +146,6 @@ class ChangePasswordActivity : BaseActionBarActivity() {
             }
         })
     }
-
-    //Important
-    /*override fun onBackPressed() {
-        if (binding.customKeyboardView.isExpanded) {
-            binding.customKeyboardView.translateLayout()
-        } else {
-            super.onBackPressed()
-        }
-    }*/
     override fun onBackPressed() {
         super.onBackPressed()
     }

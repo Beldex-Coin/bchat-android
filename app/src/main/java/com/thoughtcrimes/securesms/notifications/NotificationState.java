@@ -4,13 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2;
 import com.beldex.libsignal.utilities.Log;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libbchat.utilities.recipients.Recipient.*;
-import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2;
+import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2;
+import com.thoughtcrimes.securesms.home.HomeActivity;
+
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -146,12 +149,18 @@ public class NotificationState {
     return PendingIntent.getBroadcast(context, 0, intent, intentFlags);
   }
   public PendingIntent getQuickReplyIntent(Context context, Recipient recipient) {
+    android.util.Log.d("Notification","false");
     if (threads.size() != 1) throw new AssertionError("We only support replies to single thread notifications! " + threads.size());
-    Intent     intent           = new Intent(context, ConversationActivityV2.class);
-    intent.putExtra(ConversationActivityV2.ADDRESS, recipient.getAddress());
-    intent.putExtra(ConversationActivityV2.THREAD_ID, (long)threads.toArray()[0]);
-    intent.setData((Uri.parse("custom://"+System.currentTimeMillis())));
-    //return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    Intent     intent           = new Intent(context, HomeActivity.class);
+    intent.putExtra(ConversationFragmentV2.ADDRESS, recipient.getAddress());
+    intent.putExtra(ConversationFragmentV2.THREAD_ID, (long)threads.toArray()[0]);
+    intent.putExtra(HomeActivity.SHORTCUT_LAUNCHER,true); //- New
+    Bundle bundle = new Bundle();
+    bundle.putParcelable(ConversationFragmentV2.URI,Uri.parse("custom://"+System.currentTimeMillis()));
+    intent.putExtras(bundle);
+    //intent.setData((Uri.parse("custom://"+System.currentTimeMillis())));
+
+    //return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT); //
     int intentFlags = PendingIntent.FLAG_UPDATE_CURRENT;
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
       intentFlags |= PendingIntent.FLAG_MUTABLE;

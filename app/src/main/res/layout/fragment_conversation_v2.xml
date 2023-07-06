@@ -1,0 +1,578 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/contentView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:transitionName="@string/conversation_transition_name"
+    tools:context="com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/conversationFragment_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?colorPrimary">
+
+        <ImageButton
+            android:id="@+id/back_to_home_Btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="30dp"
+            android:background="@android:color/transparent"
+            android:padding="4dp"
+            android:src="@drawable/ic_back" />
+
+        <LinearLayout
+            android:id="@+id/layout_conversation"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.thoughtcrimes.securesms.components.ProfilePictureView
+                android:id="@+id/profilePictureView"
+                android:layout_width="@dimen/medium_profile_picture_size"
+                android:layout_height="@dimen/medium_profile_picture_size" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-2dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/conversationTitleView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="User"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/very_large_font_size"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/muteIconImageView"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="4dp"
+                        android:alpha="0.6"
+                        android:src="@drawable/ic_outline_notifications_off_24"
+                        android:visibility="gone"
+                        app:tint="@color/text"
+                        tools:visibility="visible" />
+
+                    <TextView
+                        android:id="@+id/conversationSubtitleView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:alpha="0.6"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/open_sans_regular"
+                        android:maxLines="1"
+                        android:text="Muted"
+                        android:textColor="@color/text"
+                        android:textSize="@dimen/very_small_font_size" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.appcompat.widget.Toolbar>
+    <!--   <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal"
+           android:id="@+id/layout_conversation"
+           android:gravity="center_vertical">
+
+       <com.thoughtcrimes.securesms.components.ProfilePictureView
+           android:id="@+id/profilePictureView"
+           android:layout_width="@dimen/medium_profile_picture_size"
+           android:layout_height="@dimen/medium_profile_picture_size" />
+
+       <LinearLayout
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="-2dp"
+           android:orientation="vertical">
+
+           <TextView
+               android:id="@+id/conversationTitleView"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginStart="12dp"
+               android:text="User"
+               android:textColor="@color/text"
+               android:textStyle="bold"
+               android:textSize="@dimen/very_large_font_size"
+               android:maxLines="1"
+               android:ellipsize="end" />
+
+           <LinearLayout
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginStart="12dp"
+               android:orientation="horizontal"
+               android:gravity="center_vertical">
+
+               <ImageView
+                   android:id="@+id/muteIconImageView"
+                   android:layout_width="14dp"
+                   android:layout_height="14dp"
+                   android:layout_marginEnd="4dp"
+                   android:layout_gravity="center"
+                   android:src="@drawable/ic_outline_notifications_off_24"
+                   app:tint="@color/text"
+                   android:alpha="0.6"
+                   android:visibility="gone"
+                   tools:visibility="visible"/>
+
+               <TextView
+                   android:fontFamily="@font/open_sans_regular"
+                   android:id="@+id/conversationSubtitleView"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="Muted"
+                   android:textColor="@color/text"
+                   android:alpha="0.6"
+                   android:textSize="@dimen/very_small_font_size"
+                   android:maxLines="1"
+                   android:ellipsize="end" />
+
+           </LinearLayout>
+
+       </LinearLayout>
+       </LinearLayout>-->
+    <!--   <LinearLayout
+           android:id="@+id/conversation_banner_container"
+           android:layout_width="0dp"
+           android:layout_height="wrap_content"
+           android:orientation="vertical"
+          >
+       &lt;!&ndash;<ViewStub
+           android:id="@+id/voice_note_player_stub"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:inflatedId="@+id/voice_note_player"
+           android:layout="@layout/activity_voice_note_player_view" />&ndash;&gt;
+       </LinearLayout>-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <com.thoughtcrimes.securesms.conversation.ChatWallpaperImageView
+            android:id="@+id/contentImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/chat_wallpaper" />
+
+        <com.thoughtcrimes.securesms.conversation.v2.components.OpenGroupGuidelinesView
+            android:id="@+id/openGroupGuidelinesView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/networkStatusLayout"
+            android:background="@color/page_background"
+            android:visibility="gone" />
+
+        <com.thoughtcrimes.securesms.conversation.v2.ConversationRecyclerView
+            android:id="@+id/conversationRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/openGroupGuidelinesView"
+            android:layout_above="@+id/typingIndicatorViewContainer" />
+
+        <com.thoughtcrimes.securesms.conversation.v2.components.TypingIndicatorViewContainer
+            android:id="@+id/typingIndicatorViewContainer"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:layout_above="@+id/messageRequestBar1"
+            android:visibility="gone" />
+
+        <com.thoughtcrimes.securesms.util.tooltip.TooltipView
+            android:id="@+id/tooltip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            app:tooltipColor="@color/input_bar_background"
+            app:anchoredView="@id/inputBarCard"
+            android:layout_marginBottom="5dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="60dp"
+            app:arrowLocation="bottom"
+            app:arrowAlignment="end"
+            app:arrowWidth="10dp"
+            app:arrowHeight="10dp"
+            app:cornerRadius="5dp"
+            android:elevation="10dp"
+            android:visibility="gone"
+            app:arrowAlignmentOffset="32dp"
+            android:layout_above="@id/inputBarCard"
+            android:fontFamily="@font/open_sans_medium"
+            android:justificationMode="inter_word"
+            android:clickable="true"
+            android:focusable="true"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/inputBarCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
+            app:cardCornerRadius="10dp">
+
+            <com.thoughtcrimes.securesms.conversation.v2.input_bar.InputBar
+                android:id="@+id/inputBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true" />
+        </androidx.cardview.widget.CardView>
+
+
+        <com.thoughtcrimes.securesms.conversation.v2.search.SearchBottomBar
+            android:id="@+id/searchBottomBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:visibility="gone" />
+
+        <FrameLayout
+            android:id="@+id/additionalContentContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/conversationRecyclerView" />
+
+        <LinearLayout
+            android:id="@+id/attachmentOptionsContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/slideToPayButton"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="@dimen/small_spacing"
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:id="@+id/cameraButtonContainer"
+                android:layout_width="@dimen/input_bar_button_expanded_size"
+                android:layout_height="@dimen/input_bar_button_expanded_size"
+                android:layout_marginStart="15dp"
+                android:alpha="0" />
+
+            <RelativeLayout
+                android:id="@+id/libraryButtonContainer"
+                android:layout_width="@dimen/input_bar_button_expanded_size"
+                android:layout_height="@dimen/input_bar_button_expanded_size"
+                android:layout_marginStart="8dp"
+                android:alpha="0" />
+
+            <RelativeLayout
+                android:id="@+id/documentButtonContainer"
+                android:layout_width="@dimen/input_bar_button_expanded_size"
+                android:layout_height="@dimen/input_bar_button_expanded_size"
+                android:layout_marginStart="8dp"
+                android:alpha="0" />
+
+            <RelativeLayout
+                android:id="@+id/gifButtonContainer"
+                android:layout_width="@dimen/input_bar_button_expanded_size"
+                android:layout_height="@dimen/input_bar_button_expanded_size"
+                android:layout_marginStart="8dp"
+                android:alpha="0"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/scrollToBottomButton"
+            android:layout_width="30dp"
+            android:layout_height="40dp"
+            android:layout_above="@+id/inputBarCard"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="32dp"
+            android:visibility="gone">
+
+            <RelativeLayout
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/view_scroll_to_bottom_button_background">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_down" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/unreadCountIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/rounded_rectangle"
+                android:backgroundTint="@color/conversation_unread_count_indicator_background"
+                android:maxWidth="40dp"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp">
+
+                <TextView
+                    android:id="@+id/unreadCountTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="8"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/very_small_font_size" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <com.thoughtcrimes.securesms.conversation.v2.input_bar.InputBarRecordingView
+            android:id="@+id/inputBarRecordingView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="-12dp"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/networkStatusLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/page_background"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/connectedStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:textAlignment="center"
+                android:textColor="@color/text"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/networkStatusImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_connected" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/blockedBanner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/networkStatusLayout"
+            android:background="@color/page_background"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <TextView
+                android:id="@+id/blockedBannerTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/open_sans_semi_bold"
+                android:textColor="@color/text"
+                android:textSize="@dimen/small_font_size"
+                android:textStyle="bold"
+                tools:text="Person is blocked. Unblock them?" />
+
+            <Button
+                android:id="@+id/unblockButton"
+                style="@style/Widget.Bchat.Button.Common.ProminentFilled_ClearData_WhiteText"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/open_sans_medium"
+                android:paddingStart="30dp"
+                android:paddingEnd="30dp"
+                android:text="@string/ConversationActivity_unblock" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/messageRequestBar1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/inputBarCard"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="70dp"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:ignore="NotSibling"
+            tools:visibility="visible">
+
+            <TextView
+                android:id="@+id/sendAcceptsTextView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/medium_spacing"
+                android:alpha="0.6"
+                android:gravity="center_horizontal"
+                android:text="@string/message_requests_send_notice"
+                android:textColor="@color/text"
+                android:textSize="@dimen/small_font_size" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/medium_spacing"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/acceptMessageRequestButton1"
+                    style="@style/Widget.Bchat.Button.Dialog.Unimportant"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/medium_button_height"
+                    android:layout_weight="1"
+                    android:text="@string/accept" />
+
+                <Button
+                    android:id="@+id/declineMessageRequestButton1"
+                    style="@style/Widget.Bchat.Button.Dialog.Destructive"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/medium_button_height"
+                    android:layout_marginStart="@dimen/medium_spacing"
+                    android:layout_weight="1"
+                    android:text="@string/decline" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/inputBarCard"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="70dp"
+            app:cardBackgroundColor="@color/card_color"
+            app:cardCornerRadius="5dp">
+
+            <LinearLayout
+                android:id="@+id/messageRequestBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/inputBarCard"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:ignore="NotSibling"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/messageRequestBlock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingHorizontal="@dimen/massive_spacing"
+                    android:paddingVertical="@dimen/small_spacing"
+                    android:text="@string/activity_conversation_block_user"
+                    android:textColor="@color/destructive"
+                    android:textSize="@dimen/text_size"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/sendAcceptsTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/medium_spacing"
+                    android:alpha="0.6"
+                    android:fontFamily="@font/open_sans_regular"
+                    android:gravity="center_horizontal"
+                    android:text="@string/message_requests_send_notice"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/small_font_size" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/medium_spacing"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/declineMessageRequestButton"
+                        style="@style/Widget.Bchat.Button.Common.ProminentFilled_ClearData_WhiteText"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/medium_button_height"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/open_sans_medium"
+                        android:text="@string/decline" />
+
+                    <Button
+                        android:id="@+id/acceptMessageRequestButton"
+                        style="@style/Widget.Bchat.Button.Common.ProminentFilled"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/medium_button_height"
+                        android:layout_marginStart="@dimen/medium_spacing"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/open_sans_medium"
+                        android:text="@string/accept" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+        <com.thoughtcrimes.securesms.util.slidetoact.SlideToActView
+            android:id="@+id/slideToPayButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/inputBarCard"
+            app:area_margin="8dp"
+            app:icon_margin="0dp"
+            app:send_icon_margin="12dp"
+            app:image_color="@color/green_color"
+            app:text_size="14sp"
+            app:inner_color="@color/green_color"
+            app:outer_color="@color/input_bar_background"
+            app:slider_icon_color="@color/text"
+            app:text="@string/slide_to_send_bdx"
+            app:slider_height="50dp"
+            app:slider_locked="false"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="70dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="70dp"
+            android:layout_marginEnd="70dp"
+            android:visibility="gone"/>
+    </RelativeLayout>
+
+
+</LinearLayout>

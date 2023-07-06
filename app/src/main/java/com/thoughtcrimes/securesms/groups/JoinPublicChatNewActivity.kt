@@ -2,6 +2,7 @@ package com.thoughtcrimes.securesms.groups
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -30,17 +31,16 @@ import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.PublicKeyValidation
 import com.thoughtcrimes.securesms.BaseActionBarActivity
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
-import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
 import com.thoughtcrimes.securesms.util.ConfigurationMessageUtilities
 import com.thoughtcrimes.securesms.util.State
-import com.thoughtcrimes.securesms.util.push
 import java.util.*
 import android.text.Editable
 import android.text.InputType
 
 import android.text.TextWatcher
 import android.view.inputmethod.EditorInfo
-
+import androidx.activity.result.contract.ActivityResultContracts
+import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 
 class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
     private lateinit var binding: ActivityJoinPublicChatNewBinding
@@ -165,9 +165,13 @@ class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
 
         binding.scanQRCode.setOnClickListener {
             val intent = Intent(this, JoinPublicChatScanQRCodeActivity::class.java)
-            push(intent)
-            finish()
+            joinPublicChatScanQRCodeActivityResultLauncher.launch(intent)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.chatURLEditText.isFocusable = false
     }
 
     // region Updating
@@ -262,7 +266,7 @@ class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
                 ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(this@JoinPublicChatNewActivity)
                 withContext(Dispatchers.Main) {
                     val recipient = Recipient.from(this@JoinPublicChatNewActivity, Address.fromSerialized(groupID), false)
-                    openConversationActivity(this@JoinPublicChatNewActivity, threadID, recipient)
+                    openConversationActivity(threadID, recipient)
                     finish()
                 }
             } catch (e: Exception) {
@@ -276,11 +280,25 @@ class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
         }
     }
 
-    private fun openConversationActivity(context: Context, threadId: Long, recipient: Recipient) {
-        val intent = Intent(context, ConversationActivityV2::class.java)
-        intent.putExtra(ConversationActivityV2.THREAD_ID, threadId)
-        intent.putExtra(ConversationActivityV2.ADDRESS, recipient.address)
-        context.startActivity(intent)
+    private fun openConversationActivity(threadId: Long, recipient: Recipient) {
+        val returnIntent = Intent()
+        returnIntent.putExtra(ConversationFragmentV2.THREAD_ID,threadId)
+        returnIntent.putExtra(ConversationFragmentV2.ADDRESS,recipient.address)
+        setResult(RESULT_OK, returnIntent)
+    }
+
+    private var joinPublicChatScanQRCodeActivityResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val extras = Bundle()
+            extras.putParcelable(ConversationFragmentV2.ADDRESS, result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
+            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
+            val returnIntent = Intent()
+            returnIntent.putExtras(extras)
+            setResult(RESULT_OK, returnIntent)
+            finish()
+        }
     }
 
    /* private val viewModel: DefaultGroupsViewModel by lazy {

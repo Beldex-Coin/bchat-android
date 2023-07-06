@@ -186,7 +186,7 @@ class QuoteView : LinearLayout {
                         }
                     }
                 }else{
-                    bodyText = MentionUtilities.highlightMentions((body ?: "").toSpannable(), threadID, context)
+                   bodyText = MentionUtilities.highlightMentions((body ?: "").toSpannable(), threadID, context)
                 }
                 bodyText
             }

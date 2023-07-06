@@ -8,11 +8,11 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.Result
+import com.thoughtcrimes.securesms.home.HomeActivity
 import com.thoughtcrimes.securesms.wallet.OnBackPressedListener
-import com.thoughtcrimes.securesms.wallet.widget.Toolbar
 import io.beldex.bchat.R
+import io.beldex.bchat.databinding.FragmentScannerBinding
 import me.dm7.barcodescanner.zxing.ZXingScannerView
-import timber.log.Timber
 import java.lang.ClassCastException
 
 class ScannerFragment: Fragment(), ZXingScannerView.ResultHandler,OnBackPressedListener {
@@ -20,30 +20,28 @@ class ScannerFragment: Fragment(), ZXingScannerView.ResultHandler,OnBackPressedL
 
     interface OnWalletScannedListener {
         fun onWalletScanned(qrCode: String?): Boolean
-        fun setToolbarButton(type: Int)
-        fun setTitle(title: String?)
-
+        fun walletOnBackPressed() //-
     }
 
-    private var mScannerView: ZXingScannerView? = null
+    lateinit var binding:FragmentScannerBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Timber.d("onCreateView")
-        mScannerView = ZXingScannerView(activity)
-        return mScannerView
+        binding = FragmentScannerBinding.inflate(inflater,container,false)
+        (activity as HomeActivity).setSupportActionBar(binding.toolbar)
+        binding.exitButton.setOnClickListener {
+            onScannedListener?.walletOnBackPressed()
+        }
+        return binding.root
     }
 
     override fun onResume() {
         super.onResume()
-        Timber.d("onResume")
-        mScannerView!!.setResultHandler(this)
-        mScannerView!!.startCamera()
-        onScannedListener!!.setTitle(getString(R.string.activity_scan_page_title))
-        onScannedListener!!.setToolbarButton(Toolbar.BUTTON_BACK)
+        binding.mScannerView.setResultHandler(this)
+        binding.mScannerView.startCamera()
     }
 
     override fun handleResult(rawResult: Result) {
@@ -58,7 +56,7 @@ class ScannerFragment: Fragment(), ZXingScannerView.ResultHandler,OnBackPressedL
                 ).show()
                 val handler = Handler()
                 handler.postDelayed(
-                    { mScannerView!!.resumeCameraPreview(this) },
+                    { binding.mScannerView.resumeCameraPreview(this) },
                     1000
                 )
             }
@@ -71,18 +69,13 @@ class ScannerFragment: Fragment(), ZXingScannerView.ResultHandler,OnBackPressedL
         // * I don't know why this is the case but I don't have the time to figure out.
         val handler = Handler()
         handler.postDelayed(
-            { mScannerView!!.resumeCameraPreview(this) },
+            { binding.mScannerView.resumeCameraPreview(this) },
             1000)
     }
 
-    override fun onPause() {
-        super.onPause()
-        Timber.d("onPause")
-       /* mScannerView!!.stopCamera()*/
-    }
     override fun onStop() {
         super.onStop()
-        mScannerView!!.stopCamera();
+        binding.mScannerView.stopCamera();
     }
 
     override fun onAttach(context: Context) {
@@ -101,4 +94,5 @@ class ScannerFragment: Fragment(), ZXingScannerView.ResultHandler,OnBackPressedL
         return false
     }
 }
+//endregion
 

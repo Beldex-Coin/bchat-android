@@ -210,6 +210,35 @@
           "description":"- Fixed reply preview of social group invitation"
         }
       ]
+    },
+    {
+      "title": "2.1.0",
+      "descriptions": [
+        {
+          "description":"- Feature Pay as you chat"
+        },
+        {
+          "description":"- Fixed issue in add node feature"
+        },
+        {
+          "description":"- Fixed multiple ANR and Crash issues"
+        },
+        {
+          "description":"- Fixed crash while adding media"
+        },
+        {
+          "description":"- Fixed alignment issues in UI for different screen sizes"
+        },
+        {
+          "description":"- Fixed Crash caused due opening notification when messages are getting restored"
+        },
+        {
+          "description":"- Updated settings and validation in Secret group"
+        },
+        {
+          "description":"- Improved UI and Content"
+        }
+      ]
     }
   ]
 }

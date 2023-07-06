@@ -34,9 +34,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.utilities.guava.Optional
-import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
 import com.thoughtcrimes.securesms.conversation.v2.input_bar.InputBar
 import com.thoughtcrimes.securesms.home.HomeActivity
+import com.thoughtcrimes.securesms.mms.GlideApp
 
 
 @RunWith(AndroidJUnit4::class)
@@ -46,7 +46,7 @@ class HomeActivityTests {
     @get:Rule
     var activityRule = ActivityScenarioRule(HomeActivity::class.java)
 
-    private val activityMonitor = Instrumentation.ActivityMonitor(ConversationActivityV2::class.java.name, null, false)
+    private val activityMonitor = Instrumentation.ActivityMonitor(HomeActivity::class.java.name, null, false)
 
     @Before
     fun setUp() {
@@ -62,7 +62,7 @@ class HomeActivityTests {
         // assume in chat activity
         onView(allOf(isDescendantOfA(withId(R.id.inputBar)),withId(R.id.inputBarEditText))).perform(ViewActions.replaceText(messageToSend))
         if (linkPreview != null) {
-            val activity = activityMonitor.waitForActivity() as ConversationActivityV2
+            val activity = activityMonitor.waitForActivity() as HomeActivity
             val glide = GlideApp.with(activity)
             activity.findViewById<InputBar>(R.id.inputBar).updateLinkPreviewDraft(glide, linkPreview)
         }

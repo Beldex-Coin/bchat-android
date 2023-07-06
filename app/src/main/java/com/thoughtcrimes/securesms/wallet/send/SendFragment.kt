@@ -6,12 +6,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.google.android.material.transition.MaterialContainerTransform
 import com.thoughtcrimes.securesms.data.*
 import com.thoughtcrimes.securesms.model.PendingTransaction
 import com.thoughtcrimes.securesms.wallet.send.interfaces.SendConfirm
-import com.thoughtcrimes.securesms.wallet.utils.ThemeHelper
-import com.thoughtcrimes.securesms.wallet.widget.Toolbar
 import io.beldex.bchat.R
 import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity
 
@@ -29,9 +26,11 @@ import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.DialogFragment
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import com.google.gson.GsonBuilder
+import com.thoughtcrimes.securesms.conversation.v2.TransactionLoadingBar
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
+import com.thoughtcrimes.securesms.home.HomeActivity
 import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
 import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.model.WalletManager
@@ -39,24 +38,16 @@ import com.thoughtcrimes.securesms.util.BChatThreadPoolExecutor
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.wallet.*
 import com.thoughtcrimes.securesms.wallet.utils.OpenAliasHelper
-import com.thoughtcrimes.securesms.wallet.utils.common.FiatCurrencyPrice
-import com.thoughtcrimes.securesms.wallet.utils.common.fetchPriceFor
 import com.thoughtcrimes.securesms.wallet.utils.helper.ServiceHelper
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
 import io.beldex.bchat.databinding.FragmentSendBinding
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.Response
-import org.intellij.lang.annotations.RegExp
 import java.lang.ClassCastException
 import java.lang.NumberFormatException
 import java.util.*
 import timber.log.Timber
-import java.io.IOException
 import java.lang.Exception
-import java.lang.Math.abs
 import java.math.BigDecimal
 import java.util.concurrent.Executor
 
@@ -66,7 +57,6 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     val MIXIN = 0
 
     private var activityCallback: Listener? = null
-    private var barcodeData: BarcodeData? = null
     lateinit var binding: FragmentSendBinding
 
     private var isResume:Boolean = false
@@ -76,6 +66,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     val INTEGRATED_ADDRESS_LENGTH = 106
     private var resolvingOA = false
     private var totalFunds: Long = 0
+    private var calledUnlockedBalance: Boolean = false
 
 
     fun newInstance(listener: Listener): SendFragment? {
@@ -99,9 +90,6 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         fun onSend(notes: UserNotes?)
         fun onDisposeRequest()
         fun onFragmentDone()
-        fun setToolbarButton(type: Int)
-        fun setTitle(title: String?)
-        fun setSubtitle(subtitle: String?)
         fun setOnUriScannedListener(onUriScannedListener: OnUriScannedListener?)
         fun setOnUriWalletScannedListener(onUriWalletScannedListener: OnUriWalletScannedListener?)
         fun setBarcodeData(data: BarcodeData?)
@@ -110,62 +98,23 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
         fun popBarcodeData(): BarcodeData?
 
-        fun setMode(mode: WalletActivity.Mode?)
+        fun setMode(mode: HomeActivity.Mode?)
 
         fun getTxData(): TxData?
 
         fun onBackPressedFun()
+
+        fun walletOnBackPressed() //-
     }
-
-    var sendConfirmListener: SendConfirmListener? = null
-
-    interface SendConfirmListener {
-        fun getActivityCallback(): Listener?
-        val txData: TxData?
-
-        fun commitTransaction()
-        fun disposeTransaction()
-        //val mode: Mode?
-    }
-
-    var sendAddressListener: SendAddressListener? = null
-
-    interface SendAddressListener {
-        var barcodeData: BarcodeData?
-
-        fun popBarcodeData(): BarcodeData?
-
-        //Important
-        //fun setMode(mode: SendFragment.Mode?)
-        val txData: TxData?
-    }
-
     var onScanListener: OnScanListener? = null
-
     interface OnScanListener {
         fun onScan()
-
     }
 
     fun onCreateTransactionFailed(errorText: String?) {
-        //Important
-        /*val confirm: SendConfirm? = getSendConfirm()
-        if (confirm != null) {
-            confirm.createTransactionFailed(errorText)
-        }*/
         createTransactionFailed(errorText)
     }
 
-   /* fun getSendConfirm(): SendConfirm? {
-        //Important
-        *//*val fragment: SendWizardFragment = pagerAdapter.getFragment(SendFragment.SpendPagerAdapter.POS_CONFIRM)
-        return if (fragment is SendConfirm) {
-            fragment!!
-        } else {
-            null
-        }*//*
-        return null
-    }*/
    private fun openSomeActivityForResult() {
        TextSecurePreferences.setSendAddressDisable(requireContext(),false)
        val intent = Intent(context, AddressBookActivity::class.java)
@@ -176,7 +125,6 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         if (result.resultCode == Activity.RESULT_OK) {
             val data: Intent? = result.data
             val add = data?.getStringExtra("address_value")
-            Log.d("beldex","value of add $add")
             activityCallback?.setBarcodeData(null)
             if(add != null)
             {
@@ -189,18 +137,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
     // callbacks from send service
     fun onTransactionCreated(txTag: String?, pendingTransaction: PendingTransaction?) {
-        //Important
-       /* val confirm = getSendConfirm()
-        if (confirm != null) {
-            pendingTx = PendingTx(pendingTransaction)
-            confirm.transactionCreated(txTag, pendingTransaction)
-        } else {
-            // not in confirm fragment => dispose & move on
-            disposeTransaction()
-        }*/
-        Log.d("onTransactionCreated Status_Ok","--")
         pendingTx = PendingTx(pendingTransaction)
-        Log.d("onTransactionCreated Status_Ok","---")
         transactionCreated(txTag, pendingTransaction)
     }
 
@@ -212,21 +149,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     //If Transaction successfully completed after call this function
     fun onTransactionSent(txId: String?) {
         hideProgress()
-        //Important
-        Timber.d("txid=%s", txId)
-        activityCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
-        Log.d("Beldex","Transaction Completed")
         SendSuccessDialog(this).show(requireActivity().supportFragmentManager,"")
-       /* val builder = AlertDialog.Builder(
-            requireContext(), R.style.BChatAlertDialog
-        )
-        builder.setTitle(requireContext().getString(R.string.transaction_completed))
-        builder.setPositiveButton(android.R.string.ok) { dialog: DialogInterface?, _: Int ->
-            sendButtonEnabled()
-            dialog!!.dismiss()
-        }
-        builder.setNegativeButton(android.R.string.cancel, null)
-        builder.show()*/
     }
 
     var committedTx: PendingTx? = null
@@ -235,45 +158,25 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     fun onSendTransactionFailed(error: String?) {
         Timber.d("error=%s", error)
         committedTx = null
-        /*val confirm = getSendConfirm()
-        confirm?.sendFailed(getString(R.string.status_transaction_failed, error))
-        enableNavigation()*/
         sendFailed(getString(R.string.status_transaction_failed, error))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val transform = MaterialContainerTransform()
-        transform.drawingViewId = R.id.fragment_container
-        transform.duration = resources.getInteger(R.integer.tx_item_transition_duration).toLong()
-        transform.setAllContainerColors(
-            ThemeHelper.getThemedColor(
-                context,
-                android.R.attr.colorBackground
-            )
-        )
-        sharedElementEnterTransition = transform
-
     }
-
     companion object {
         @JvmStatic
         fun newInstance(uri: String?): SendFragment {
             val f = SendFragment()
             val args = Bundle()
-            args.putString(WalletActivity.REQUEST_URI, uri)
+            args.putString(HomeActivity.REQUEST_URI, uri)
             f.arguments = args
             return f
         }
-
-
     }
 
     private val resultLaunchers = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            /* // There are no request codes
-             val data: Intent? = result.data*/
             onResumeFragment()
         }
     }
@@ -285,74 +188,12 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentSendBinding.inflate(inflater, container, false)
-
-        AsyncGetUnlockedBalance(activityCallback).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
-        //Get Selected Fiat Currency Price
-        //if(TextSecurePreferences.getFiatCurrencyCheckedStatus(requireActivity())) {
-        /*val currency = TextSecurePreferences.getCurrency(requireActivity()).toString().lowercase()
-        fetchPriceFor(
-            TextSecurePreferences.getCurrency(requireActivity()).toString(),
-            object : Callback {
-                override fun onFailure(call: Call, e: IOException) {
-                    price = 0.0
-                }
-
-                override fun onResponse(call: Call, response: Response) {
-                    Log.d("Beldex", "Fiat ${response.isSuccessful}")
-                    if (response.isSuccessful) {
-                        val body = response.body?.string()
-                        val gson = GsonBuilder().create()
-                        when (currency) {
-                            "aud" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).aud
-                            "brl" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).brl
-                            "cad" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).cad
-                            "chf" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).chf
-                            "cny" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).cny
-                            "czk" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).czk
-                            "eur" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).eur
-                            "dkk" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).dkk
-                            "gbp" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).gbp
-                            "hkd" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).hkd
-                            "huf" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).huf
-                            "idr" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).idr
-                            "ils" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).ils
-                            "inr" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).inr
-                            "jpy" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).jpy
-                            "krw" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).krw
-                            "mxn" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).mxn
-                            "myr" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).myr
-                            "nok" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).nok
-                            "nzd" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).nzd
-                            "php" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).php
-                            "pln" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).pln
-                            "rub" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).rub
-                            "sek" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).sek
-                            "sgd" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).sgd
-                            "thb" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).thb
-                            "usd" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).usd
-                            "vef" -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).vef
-                            else -> price = gson.fromJson(body, FiatCurrencyPrice::class.java).zar
-                        }
-                        TextSecurePreferences.setCurrencyAmount(requireActivity(),price.toString())
-                        Log.d("Beldex", "Fiat if send screen -- ${price}")
-                    } else {
-                        TextSecurePreferences.setCurrencyAmount(requireActivity(),price.toString())
-                        price = if(TextSecurePreferences.getCurrencyAmount(requireActivity())!=null){
-                        TextSecurePreferences.getCurrencyAmount(requireActivity())!!.toDouble()
-                        }else{ 0.0}
-                        Log.d("Beldex", "Fiat else sebd screen -- ${price}")
-                    }
-                }
-            }
-        )*/
-        //}
+        (activity as HomeActivity).setSupportActionBar(binding.toolbar)
+        calledUnlockedBalance = true
         binding.currencyTextView.text = TextSecurePreferences.getCurrency(requireActivity()).toString()
         price = if(TextSecurePreferences.getCurrencyAmount(requireActivity())!=null){
             TextSecurePreferences.getCurrencyAmount(requireActivity())!!.toDouble()
         }else{ 0.00}
-        Log.d("Beldex","Fiat ${price}")
-
-
         binding.scanQrCode.setOnClickListener {
             if(!CheckOnline.isOnline(requireActivity())) {
                 Toast.makeText(requireActivity(), R.string.please_check_your_internet_connection, Toast.LENGTH_SHORT).show()
@@ -382,8 +223,6 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
             }
         binding.beldexAddressEditTxtLayout.editText?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable) {
-                Timber.d("AFTER: %s", editable.toString())
-                //binding.beldexAddressEditTxtLayout.error = null
                 binding.beldexAddressLayout.setBackgroundResource(R.drawable.bchat_id_text_view_background)
                 binding.beldexAddressErrorMessage.visibility = View.GONE
                 binding.beldexAddressErrorMessage.text=""
@@ -391,50 +230,21 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                 selectedCrypto = null
                 val address: String = binding.beldexAddressEditTxtLayout.editText?.text.toString().trim()
                 if (isIntegratedAddress(address)) {
-                    Timber.d("isIntegratedAddress")
                     possibleCryptos.add(Crypto.BDX)
                     selectedCrypto = Crypto.BDX
-                    //binding.beldexAddressEditTxtLayout.error = getString(R.string.info_paymentid_integrated)
                     binding.beldexAddressLayout.setBackgroundResource(R.drawable.error_view_background)
                     binding.beldexAddressErrorMessage.visibility = View.VISIBLE
                     binding.beldexAddressErrorMessage.text=getString(R.string.info_paymentid_integrated)
                     setMode(Mode.BDX)
                 } else if (isStandardAddress(address)) {
-                    Timber.d("isStandardAddress")
                     possibleCryptos.add(Crypto.BDX)
                     selectedCrypto = Crypto.BDX
                     setMode(Mode.BDX)
                 }
-               /* else{
-                    //binding.beldexAddressEditTxtLayout.error = getString(R.string.send_address_invalid)
-                    binding.beldexAddressLayout.setBackgroundResource(R.drawable.error_view_background)
-                    binding.beldexAddressErrorMessage.visibility = View.VISIBLE
-                    binding.beldexAddressErrorMessage.text=getString(R.string.send_address_invalid)
-                }*/
                 if (possibleCryptos.isEmpty()) {
                     Timber.d("other")
                     setMode(Mode.BDX)
                 }
-                /*if (!Helper.ALLOW_SHIFT) return
-                if (possibleCryptos.isEmpty()) {
-                    Timber.d("isBitcoinAddress")
-                    for (type in BitcoinAddressType.values()) {
-                        if (BitcoinAddressValidator.validate(address, type)) {
-                            possibleCryptos.add(Crypto.valueOf(type.name()))
-                        }
-                    }
-                    if (!possibleCryptos.isEmpty()) // found something in need of shifting!
-                        sendListener.setMode(Mode.BTC)
-                    if (possibleCryptos.size == 1) {
-                        selectedCrypto = possibleCryptos.toTypedArray().get(0) as Crypto
-                    }
-                }
-                if (possibleCryptos.isEmpty()) {
-                    Timber.d("other")
-                    tvXmrTo.setVisibility(View.INVISIBLE)
-                    setMode(Mode.BDX)
-                }
-                updateCryptoButtons(address.isEmpty())*/
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -443,93 +253,33 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
         binding.beldexAmountEditTxtLayout.editText?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable) {
-                //binding.beldexAmountEditTxtLayout.error = null
-                binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.bchat_id_text_view_background)
-                binding.beldexAmountErrorMessage.visibility = View.GONE
-                binding.beldexAmountErrorMessage.text = ""
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if(binding.beldexAmountEditTxtLayout.editText!!.isFocused) {
                     if (s.isNotEmpty()) {
-                        Log.d("Beldex", "Price -> $price")
                         if(validateBELDEXAmount(s.toString())) {
+                            hideErrorMessage()
                             val bdx = getCleanAmountString(s.toString())
                             val amount: BigDecimal = if (bdx != null) {
                                 BigDecimal(bdx.toDouble()).multiply(BigDecimal(price))
                             } else {
                                 BigDecimal(0L).multiply(BigDecimal(price))
                             }
-                            Log.d(
-                                "Beldex",
-                                "Price ->${
-                                    s.toString().toDouble()
-                                }   amount -> $amount   -->" + amount.toString()
-                            )
-                            //binding.currencyEditTxtLayout.editText!!.setText(String.format("%.4f", amount))
                             binding.currencyEditText.text = String.format("%.4f", amount)
-                        }/*else if(activityCallback!!.totalFunds==0L){
-                            if(calculateFiatCurrency(s.toString())) {
-                                val bdx = getCleanAmountString(s.toString())
-                                val amount: BigDecimal = if (bdx != null) {
-                                    BigDecimal(bdx.toDouble()).multiply(BigDecimal(price))
-                                } else {
-                                    BigDecimal(0L).multiply(BigDecimal(price))
-                                }
-                                Log.d(
-                                    "Beldex",
-                                    "Price ->${
-                                        s.toString().toDouble()
-                                    }   amount -> $amount   -->" + amount.toString()
-                                )
-                                //binding.currencyEditTxtLayout.editText!!.setText(String.format("%.4f", amount))
-                                binding.currencyEditText.text = String.format("%.4f", amount)
-                            }
-                        }*/else{
+                        }else{
                             binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.error_view_background)
                             binding.beldexAmountErrorMessage.visibility =View.VISIBLE
                             binding.beldexAmountErrorMessage.text=getString(R.string.beldex_amount_valid_error_message)
                         }
                     } else {
-                        //binding.currencyEditTxtLayout.editText!!.text.clear()
+                        hideErrorMessage()
                         binding.currencyEditText.text="0.00"
                     }
                 }
             }
         })
-
-        /*binding.currencyEditTxtLayout.editText?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(editable: Editable) {
-                binding.currencyEditTxtLayout.error = null
-                if(binding.currencyEditTxtLayout.editText!!.isFocused) {
-                    if (editable.isNotEmpty()) {
-                        val first = BigDecimal(editable.toString().toDouble())
-                        val second = BigDecimal(price)
-                        Log.d(
-                            "Beldex",
-                            "Price ->${
-                                editable.toString().toDouble()
-                            }   first -> $first   -->" + second
-                        )
-                        val amount: BigDecimal = first / second
-                        Log.d(
-                            "Beldex",
-                            "Price ->${
-                                editable.toString().toDouble()
-                            }   amount -> $amount   -->" + amount.toString()
-                        )
-                        binding.beldexAmountEditTxtLayout.editText!!.setText(String.format("%.4f", amount))
-                    } else {
-                        binding.beldexAmountEditTxtLayout.editText!!.text.clear()
-                    }
-                }
-            }
-
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-            }
-        })*/
 
         binding.beldexAmountEditTxtLayout.editText?.imeOptions =
             EditorInfo.IME_ACTION_DONE or 16777216 // Always use incognito keyboard
@@ -556,8 +306,18 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
             binding.estimatedFeeDescriptionTextView.text =getString(R.string.estimated_fee_description,"Flash")
         }
 
+        binding.exitButton.setOnClickListener {
+            activityCallback?.walletOnBackPressed()
+        }
+
         return binding.root
 
+    }
+
+    private fun hideErrorMessage(){
+        binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.bchat_id_text_view_background)
+        binding.beldexAmountErrorMessage.visibility = View.GONE
+        binding.beldexAmountErrorMessage.text = ""
     }
 
     private fun createTransactionIfPossible(){
@@ -588,10 +348,6 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                             (totalFunds - 10485760)// 10485760 == 050000000
                         val bdx =
                             getCleanAmountString(binding.beldexAmountEditTxtLayout.editText?.text.toString())
-                        Log.d(
-                            "If BDX Total Amount -> " + Wallet.getAmountFromString(bdx)
-                                .toString() + " " + bdx + "" + amount, "true"
-                        )
                         if (bdx != null) {
                             txData.amount = amount
                         } else {
@@ -600,10 +356,6 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                     } else {
                         val bdx =
                             getCleanAmountString(binding.beldexAmountEditTxtLayout.editText?.text.toString())
-                        Log.d(
-                            "Else BDX Total Amount -> " + Wallet.getAmountFromString(bdx)
-                                .toString() + " " + bdx, "true"
-                        )
                         if (bdx != null) {
                             txData.amount = Wallet.getAmountFromString(bdx)
                         } else {
@@ -621,7 +373,6 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                     binding.beldexAddressEditTxtLayout.editText?.text?.clear()
                     binding.beldexAmountEditTxtLayout.editText?.text?.clear()
                     binding.currencyEditText.text="0.00"
-                    //binding.currencyEditTxtLayout.editText?.text?.clear()
 
                     //Important
                     val lockManager: LockManager<CustomPinActivity> =
@@ -633,14 +384,10 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                     intent.putExtra("send_authentication", true)
                     resultLaunchers.launch(intent)
                 }else if(binding.beldexAmountEditTxtLayout.editText?.text!!.isEmpty()){
-                    Log.d("Beldex", "beldexAmountEditTxtLayout isEmpty()")
-                    //binding.beldexAmountEditTxtLayout.error = getString(R.string.beldex_amount_error_message)
                     binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.error_view_background)
                     binding.beldexAmountErrorMessage.visibility =View.VISIBLE
                     binding.beldexAmountErrorMessage.text=getString(R.string.beldex_amount_error_message)
                 }else if(binding.beldexAmountEditTxtLayout.editText?.text.toString()=="."){
-                    Log.d("Beldex", "beldexAmountEditTxtLayout isEmpty()")
-                    //binding.beldexAmountEditTxtLayout.error = getString(R.string.beldex_amount_error_message)
                     binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.error_view_background)
                     binding.beldexAmountErrorMessage.visibility =View.VISIBLE
                     binding.beldexAmountErrorMessage.text=getString(R.string.beldex_amount_valid_error_message)
@@ -648,7 +395,6 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                     if (binding.beldexAmountEditTxtLayout.editText!!.text.toString()
                             .toDouble() <= 0.00
                     ) {
-                        //binding.beldexAmountEditTxtLayout.error = getString(R.string.beldex_amount_valid_error_message)
                         binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.error_view_background)
                         binding.beldexAmountErrorMessage.visibility =View.VISIBLE
                         binding.beldexAmountErrorMessage.text=getString(R.string.beldex_amount_valid_error_message)
@@ -659,8 +405,6 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                             getString(R.string.beldex_amount_valid_error_message)
                     }
                 }else{
-                    Log.d("Beldex", "beldexAddressEditTxtLayout isEmpty()")
-                    //binding.beldexAddressEditTxtLayout.error = getString(R.string.beldex_address_error_message)
                     binding.beldexAddressLayout.setBackgroundResource(R.drawable.error_view_background)
                     binding.beldexAddressErrorMessage.visibility = View.VISIBLE
                     binding.beldexAddressErrorMessage.text=getString(R.string.beldex_address_error_message)
@@ -689,48 +433,16 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     }
 
     private fun validateBELDEXAmount(amount:String):Boolean {
-        val maxValue = 18446744.073709551616
+        val maxValue = 150000000.00000
         val value = amount.replace(',', '.')
-        val regExp ="^([0-9]+([.][0-9]{0,12})?|[.][0-9]{1,12})\$|ALL".toRegex()
-        var isValid =false
+        val regExp ="^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$"
+        var isValid = false
 
-        if (regExp.containsMatchIn(value)) {
-            /*if (value == "ALL") {
-                isValid = true
-            } */
+        isValid = if (value.matches(Regex(regExp))) {
             if (value == ".") {
-                isValid = false
+                false
             } else {
-                isValid = try {
-                    val dValue = value.toDouble()
-                    /*val availableBalanceDouble = Helper.getDisplayAmount(availableBalance).toDouble()
-                    Log.d("Available balance->1 ","$dValue,${availableBalanceDouble}")
-                    (dValue <= availableBalanceDouble && dValue <= maxValue && dValue > 0)*/
-                    (dValue <= maxValue && dValue > 0)
-                } catch (e:Exception) {
-                    false
-                }
-            }
-        } else {
-            isValid = false
-        }
-        return isValid
-    }
-
-    private fun calculateFiatCurrency(amount:String):Boolean {
-        val maxValue = 18446744.073709551616
-        val value = amount.replace(',', '.')
-        val regExp ="^([0-9]+([.][0-9]{0,12})?|[.][0-9]{1,12})\$|ALL".toRegex()
-        var isValid =false
-
-        if (regExp.containsMatchIn(value)) {
-            /*if (value == "ALL") {
-                isValid = true
-            } */
-            if (value == ".") {
-                isValid = false
-            } else {
-                isValid = try {
+                try {
                     val dValue = value.toDouble()
                     (dValue <= maxValue && dValue > 0)
                 } catch (e:Exception) {
@@ -738,17 +450,17 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                 }
             }
         } else {
-            isValid = false
+            false
         }
         return isValid
     }
 
     private fun calculateEstimatedFee(priority:Int): Double {
-        if(WalletManager.getInstance().wallet!=null) {
+        return if(WalletManager.getInstance().wallet!=null) {
             val wallet: Wallet = WalletManager.getInstance().wallet
-            return wallet.estimateTransactionFee(priority)
+            wallet.estimateTransactionFee(priority)
         }else{
-            return 0.00
+            0.00
         }
     }
 
@@ -774,12 +486,10 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     private fun checkAddress(): Boolean {
         val ok = checkAddressNoError()
         if (possibleCryptos.isEmpty()) {
-            //binding.beldexAddressEditTxtLayout.error = getString(R.string.send_address_invalid)
             binding.beldexAddressLayout.setBackgroundResource(R.drawable.error_view_background)
             binding.beldexAddressErrorMessage.visibility = View.VISIBLE
             binding.beldexAddressErrorMessage.text=getString(R.string.send_address_invalid)
         } else {
-            //binding.beldexAddressEditTxtLayout.error = null
             binding.beldexAddressLayout.setBackgroundResource(R.drawable.bchat_id_text_view_background)
             binding.beldexAddressErrorMessage.visibility = View.GONE
             binding.beldexAddressErrorMessage.text=""
@@ -797,9 +507,6 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     }
 
     private fun shakeAddress() {
-        //if(possibleCryptos.size==1)
-            //binding.beldexAddressEditTxtLayout.startAnimation(Helper.getShakeAnimation(context))
-            //binding.beldexAddressEditTxtLayout.error = getString(R.string.send_address_invalid)
             binding.beldexAddressLayout.setBackgroundResource(R.drawable.error_view_background)
             binding.beldexAddressErrorMessage.visibility = View.VISIBLE
             binding.beldexAddressErrorMessage.text=getString(R.string.send_address_invalid)
@@ -810,7 +517,6 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         activityCallback!!.popBarcodeData()
         if (dnsOA != null) {
             resolvingOA = true
-            //binding.beldexAddressEditTxtLayout.error = getString(R.string.send_address_resolve_openalias)
             binding.beldexAddressLayout.setBackgroundResource(R.drawable.error_view_background)
             binding.beldexAddressErrorMessage.visibility = View.VISIBLE
             binding.beldexAddressErrorMessage.text=getString(R.string.send_address_resolve_openalias)
@@ -820,55 +526,53 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                     var barcodeData = dataMap[Crypto.BDX]
                     if (barcodeData == null) barcodeData = dataMap[Crypto.BTC]
                     if (barcodeData != null) {
-                        Timber.d("Security=%s, %s", barcodeData.security.toString(), barcodeData.address)
                         processScannedData(barcodeData)
                     } else {
-                        //binding.beldexAddressEditTxtLayout.error = getString(R.string.send_address_not_openalias)
                         binding.beldexAddressLayout.setBackgroundResource(R.drawable.error_view_background)
                         binding.beldexAddressErrorMessage.visibility = View.VISIBLE
                         binding.beldexAddressErrorMessage.text=getString(R.string.send_address_not_openalias)
-                        Timber.d("NO BDX OPENALIAS TXT FOUND")
                     }
                 }
 
                 override fun onFailure() {
                     resolvingOA = false
-                    //binding.beldexAddressEditTxtLayout.error = getString(R.string.send_address_not_openalias)
                     binding.beldexAddressLayout.setBackgroundResource(R.drawable.error_view_background)
                     binding.beldexAddressErrorMessage.visibility = View.VISIBLE
                     binding.beldexAddressErrorMessage.text=getString(R.string.send_address_not_openalias)
-                    Timber.e("OA FAILED")
                 }
             })
-        } // else ignore
+        }
     }
 
     var inProgress = false
+    //Minimized app
+    var onTransactionProgress = false
 
     private fun hideProgress() {
-        binding.progressBar.visibility = View.GONE
+        val prev: Fragment? =
+            requireActivity().supportFragmentManager.findFragmentByTag("transaction_progressbar_tag")
+        if (prev != null) {
+            val df: DialogFragment = prev as DialogFragment
+            try {
+                df.dismiss()
+            } catch (e: IllegalStateException) {
+                return
+            }
+        }
         inProgress = false
     }
 
     private fun showProgress() {
-        binding.progressBar.visibility = View.VISIBLE
+        TransactionLoadingBar().show(
+            requireActivity().supportFragmentManager,
+            "transaction_progressbar_tag"
+        )
         inProgress = true
     }
 
     private fun onResumeFragment(){
-        Timber.d("onResumeFragment()")
         Helper.hideKeyboard(activity)
         isResume = true
-
-        //val txData: TxData = getTxData()
-        //tvTxAddress.setText(txData.destinationAddress)
-        //val notes: UserNotes = getTxData().userNotes
-        /*if (notes != null && notes.note.isNotEmpty()) {
-            //tvTxNotes.setText(notes.note)
-            //fragmentSendConfirmNotesLinearLayout.setVisibility(View.VISIBLE)
-        } else {
-            //fragmentSendConfirmNotesLinearLayout.setVisibility(View.GONE)
-        }*/
         refreshTransactionDetails()
         if (pendingTransaction == null && !inProgress) {
             binding.sendButton.isEnabled=false
@@ -901,34 +605,38 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
     override fun onResume() {
         super.onResume()
-        Timber.d("onResume")
-        activityCallback!!.setToolbarButton(Toolbar.BUTTON_BACK)
-        activityCallback!!.setTitle(getString(R.string.send))
         processScannedData()
-
-      /*  if(txData.priority.value != null) {
-            if (txData.priority.value == 1) {
-                binding.estimatedFeeDescriptionTextView.text =
-                    "Slow priority is set as the default fee.\\nGo to setting to change the transaction priority."
-            } else {
-                binding.estimatedFeeDescriptionTextView.text =
-                    "Flash priority is set as the default fee.\\nGo to setting to change the transaction priority."
-            }
-        }*/
+        //Minimized app
+        if(onTransactionProgress){
+            onTransactionProgress = false
+            hideProgress()
+            refreshTransactionDetails()
+            //Continuously Transaction
+            this.pendingTransaction = null
+            this.pendingTx = null
+        }
+        if(calledUnlockedBalance) {
+            calledUnlockedBalance = false
+            AsyncGetUnlockedBalance(activityCallback).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+        }
     }
 
+    override fun onPause() {
+        //Continuously loading progress bar
+        if(inProgress) {
+            hideProgress()
+        }
+        super.onPause()
+    }
     // QR Scan Stuff
     fun processScannedData(barcodeData: BarcodeData?) {
         activityCallback?.setBarcodeData(barcodeData)
-        if (isResume) processScannedData()
     }
 
     private fun processScannedData() {
         var barcodeData: BarcodeData? = activityCallback?.getBarcodeData()
         if (barcodeData != null) {
-            Timber.d("GOT DATA")
             if (!Helper.ALLOW_SHIFT && barcodeData.asset !== Crypto.BDX) {
-                Timber.d("BUT ONLY BDX SUPPORTED")
                 barcodeData = null
                 activityCallback?.setBarcodeData(barcodeData)
             }
@@ -936,8 +644,6 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                 activityCallback?.setBarcodeData(null)
                 binding.beldexAddressEditTxtLayout.editText?.setText(barcodeData.address)
                 binding.beldexAmountEditTxtLayout.editText?.setText(barcodeData.amount)
-
-                //---------------------------------------------------------------------------
                 possibleCryptos.clear()
                 selectedCrypto = null
                 if (barcodeData.isAmbiguous) {
@@ -946,30 +652,15 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                     possibleCryptos.add(barcodeData.asset)
                     selectedCrypto = barcodeData.asset
                 }
-                //if (Helper.ALLOW_SHIFT) updateCryptoButtons(false)
                 if (checkAddress()) {
                     if (barcodeData.security === BarcodeData.Security.OA_NO_DNSSEC) binding.beldexAddressEditTxtLayout.error =
                         getString(R.string.send_address_no_dnssec) else if (barcodeData.security === BarcodeData.Security.OA_DNSSEC) binding.beldexAddressEditTxtLayout.error =
                         getString(R.string.send_address_openalias)
                 }
-                //-------------------------------------------------------------------------//
             } else {
                 binding.beldexAddressEditTxtLayout.editText?.text?.clear()
                 binding.beldexAmountEditTxtLayout.editText?.text?.clear()
             }
-            //by hales
-            /*var scannedNotes = barcodeData.addressName
-            if (scannedNotes == null) {
-                scannedNotes = barcodeData.description
-            } else if (barcodeData.description != null) {
-                scannedNotes = scannedNotes + ": " + barcodeData.description
-            }*/
-            /*if (scannedNotes != null) {
-                etNotes.getEditText().setText(scannedNotes)
-            } else {
-                etNotes.getEditText().getText().clear()
-                etNotes.setError(null)
-            }*/
         } else Timber.d("barcodeData=null")
     }
 
@@ -993,8 +684,6 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                 Mode.BTC -> txData = TxDataBtc()
                 else -> throw IllegalArgumentException("Mode " + aMode.toString() + " unknown!")
             }
-            //Important
-            //view!!.post { pagerAdapter.notifyDataSetChanged() }
             Timber.d("New Mode = %s", mode.toString())
         }
     }
@@ -1013,7 +702,16 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     }
 
     override fun sendFailed(errorText: String?) {
-        binding.progressBar.visibility = View.INVISIBLE
+        val prev: Fragment? =
+            requireActivity().supportFragmentManager.findFragmentByTag("transaction_progressbar_tag")
+        if (prev != null) {
+            val df: DialogFragment = prev as DialogFragment
+            try {
+                df.dismiss()
+            } catch (e: java.lang.IllegalStateException) {
+                return
+            }
+        }
         sendButtonEnabled()
         showAlert(getString(R.string.send_create_tx_error_title), errorText!!)
     }
@@ -1033,7 +731,6 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
     override fun transactionCreated(txTag: String?, pendingTransaction: PendingTransaction?) {
         // ignore txTag - the app flow ensures this is the correct tx
-        Log.d("onTransactionCreated Status_Ok","----")
         hideProgress()
         if (isResume) {
             this.pendingTransaction = pendingTransaction
@@ -1046,23 +743,21 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     var pendingTransaction: PendingTransaction? = null
 
     private fun refreshTransactionDetails() {
-        Timber.d("refreshTransactionDetails()")
         if (pendingTransaction != null) {
             val txData: TxData = getTxData()
-            //Insert Recipient Address
-            if(TextSecurePreferences.getSaveRecipientAddress(requireActivity())) {
-                val insertRecipientAddress =
-                    DatabaseComponent.get(requireActivity()).bchatRecipientAddressDatabase()
-                try {
-                    insertRecipientAddress.insertRecipientAddress(
-                        pendingTransaction!!.firstTxId,
-                        txData.destinationAddress
-                    )
-                }catch(e: IndexOutOfBoundsException){
-                    Toast.makeText(requireContext(),getString(R.string.please_try_again_later),Toast.LENGTH_SHORT).show()
+            try {
+                if(pendingTransaction!!.firstTxId !=null) {
+                    SendConfirmDialog(pendingTransaction!!,txData, this).show(requireActivity().supportFragmentManager,"")
                 }
+            }catch(e: java.lang.IllegalStateException){
+                //Minimized app
+                onTransactionProgress = true
+                return
+            }catch(e: IndexOutOfBoundsException){
+                //Minimized app
+                hideProgress()
+                Toast.makeText(requireContext(),getString(R.string.please_try_again_later),Toast.LENGTH_SHORT).show()
             }
-            SendConfirmDialog(pendingTransaction!!,txData, this).show(requireActivity().supportFragmentManager,"")
         }
     }
 
@@ -1073,7 +768,21 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
     fun send() {
         commitTransaction()
-        requireActivity().runOnUiThread { binding.progressBar.visibility = View.VISIBLE }
+        //Insert Recipient Address
+        if(TextSecurePreferences.getSaveRecipientAddress(requireActivity())) {
+            val insertRecipientAddress =
+                DatabaseComponent.get(requireActivity()).bchatRecipientAddressDatabase()
+            try {
+                if(pendingTransaction!!.firstTxId != null)
+                insertRecipientAddress.insertRecipientAddress(
+                    pendingTransaction!!.firstTxId,
+                    txData.destinationAddress
+                )
+            }catch(e: IndexOutOfBoundsException){
+                e.message?.let { Log.d("SendFragment->", it) }
+            }
+        }
+        showProgress()
     }
 
     fun transactionFinished(){
@@ -1082,15 +791,12 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     }
 
     private fun commitTransaction() {
-        Timber.d("REALLY SEND")
-        //disableNavigation() // committed - disable all navigation
         activityCallback!!.onSend(txData.userNotes)
         committedTx = pendingTx
     }
 
     private fun dnsFromOpenAlias(openalias: String): String? {
         var openalias = openalias
-        Timber.d("checking openalias candidate %s", openalias)
         if (Patterns.DOMAIN_NAME.matcher(openalias).matches()) return openalias
         if (Patterns.EMAIL_ADDRESS.matcher(openalias).matches()) {
             openalias = openalias.replaceFirst("@".toRegex(), ".")
@@ -1103,3 +809,4 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         return false
     }
 }
+//endregion

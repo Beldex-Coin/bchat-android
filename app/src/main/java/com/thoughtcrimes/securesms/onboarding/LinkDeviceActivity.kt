@@ -71,7 +71,7 @@ class LinkDeviceActivity : BaseActionBarActivity(), ScanQRCodeWrapperFragmentDel
             continueWithSeed(seed)
         } catch (e: Exception) {
             Log.e("Beldex","Error getting seed from QR code", e)
-            Toast.makeText(this, "An error occurred.", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, R.string.invalid_qr_code, Toast.LENGTH_SHORT).show()
         }
     }
 

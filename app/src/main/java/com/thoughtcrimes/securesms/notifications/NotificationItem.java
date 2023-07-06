@@ -5,16 +5,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.TaskStackBuilder;
 
 
-import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2;
+import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2;
+import com.thoughtcrimes.securesms.home.HomeActivity;
 import com.thoughtcrimes.securesms.mms.SlideDeck;
-
-import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2;
 
 import com.beldex.libbchat.utilities.recipients.Recipient;
 
@@ -74,12 +75,17 @@ public class NotificationItem {
   }
 
   public PendingIntent getPendingIntent(Context context) {
-    Intent     intent           = new Intent(context, ConversationActivityV2.class);
+    Log.d("Notification","true");
+    Intent     intent           = new Intent(context, HomeActivity.class);
     Recipient  notifyRecipients = threadRecipient != null ? threadRecipient : conversationRecipient;
-    if (notifyRecipients != null) intent.putExtra(ConversationActivityV2.ADDRESS, notifyRecipients.getAddress());
+    if (notifyRecipients != null) intent.putExtra(ConversationFragmentV2.ADDRESS, notifyRecipients.getAddress());
 
-    intent.putExtra(ConversationActivityV2.THREAD_ID, threadId);
-    intent.setData((Uri.parse("custom://"+System.currentTimeMillis())));
+    intent.putExtra(ConversationFragmentV2.THREAD_ID, threadId);
+    intent.putExtra(HomeActivity.SHORTCUT_LAUNCHER,true); //- New
+    Bundle bundle = new Bundle();
+    bundle.putParcelable(ConversationFragmentV2.URI,Uri.parse("custom://"+System.currentTimeMillis()));
+    intent.putExtras(bundle);
+    //intent.setData((Uri.parse("custom://"+System.currentTimeMillis())));
 
 
 

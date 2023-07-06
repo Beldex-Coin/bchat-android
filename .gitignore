@@ -20,3 +20,7 @@ play
 app/.cxx
 app/build
 gradle
+hs_err_pid3132.log
+hs_err_pid15408.log
+replay_pid3132.log
+replay_pid15408.log

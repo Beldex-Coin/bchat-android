@@ -4,7 +4,6 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.database.Cursor
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -14,13 +13,12 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
-import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
+import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.database.ThreadDatabase
 import com.thoughtcrimes.securesms.database.model.ThreadRecord
 import com.thoughtcrimes.securesms.mms.GlideApp
 import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.util.ConfigurationMessageUtilities
-import com.thoughtcrimes.securesms.util.push
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityMessageRequestsBinding
 import javax.inject.Inject
@@ -75,9 +73,10 @@ class MessageRequestsActivity : PassphraseRequiredActionBarActivity(), Conversat
     }
 
     override fun onConversationClick(thread: ThreadRecord) {
-        val intent = Intent(this, ConversationActivityV2::class.java)
-        intent.putExtra(ConversationActivityV2.THREAD_ID, thread.threadId)
-        push(intent)
+        val returnIntent = Intent()
+        returnIntent.putExtra(ConversationFragmentV2.THREAD_ID,thread.threadId)
+        setResult(RESULT_OK, returnIntent)
+        finish()
     }
 
     override fun onBlockConversationClick(thread: ThreadRecord) {

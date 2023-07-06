@@ -4,7 +4,9 @@ import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.StyleSpan
+import android.util.Log
 import android.view.LayoutInflater
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import io.beldex.bchat.R
@@ -38,6 +40,11 @@ class JoinOpenGroupDialog(private val name: String, private val url: String) : B
         ThreadUtils.queue {
             OpenGroupManager.add(openGroup.server, openGroup.room, openGroup.serverPublicKey, activity)
             ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(activity)
+        }
+        try {
+            Toast.makeText(requireActivity().applicationContext, resources.getString(R.string.joined_social_group_successfully, name), Toast.LENGTH_SHORT).show()
+        }catch (ex:IllegalStateException){
+            Log.d("Exception",ex.message.toString())
         }
         dismiss()
     }

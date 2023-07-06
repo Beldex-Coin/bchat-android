@@ -66,6 +66,7 @@ class MessageSendJob(val message: Message, val destination: Destination) : Job {
             } // Wait for all attachments to upload before continuing
         }
         val promise = MessageSender.send(this.message, this.destination).success {
+            Log.d("DataMessage send -> ","successfully")
             this.handleSuccess()
         }.fail { exception ->
             var logStacktrace = true

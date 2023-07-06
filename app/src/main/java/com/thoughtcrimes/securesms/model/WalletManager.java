@@ -5,15 +5,9 @@ import android.util.Log;
 import com.thoughtcrimes.securesms.ApplicationContext;
 import com.thoughtcrimes.securesms.data.Node;
 import com.thoughtcrimes.securesms.util.RestoreHeight;
-import com.thoughtcrimes.securesms.ApplicationContext;
-import com.thoughtcrimes.securesms.data.Node;
-import com.thoughtcrimes.securesms.util.RestoreHeight;
 
 import java.io.File;
-import java.io.FilenameFilter;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import lombok.Getter;
 import timber.log.Timber;
@@ -73,25 +67,21 @@ public class WalletManager {
         if (getWallet() != wallet) {
             throw new IllegalStateException(wallet.getName() + " not under management!");
         }
-        Timber.d("Unmanaging %s", managedWallet.getName());
         managedWallet = null;
     }
 
     public Wallet createWallet(File aFile, String password, String language, long height) {
-        Log.d("Beldex","Value of netType " + getNetworkType().getValue());
         // for Mainnet
         long walletHandle = createWalletJ(aFile.getAbsolutePath(), password, language, getNetworkType().getValue());
 
         Wallet wallet = new Wallet(walletHandle);
         manageWallet(wallet);
         if (wallet.getStatus().isOk()) {
-            //wallet.getKeysFromAddress(wallet.getAddress().toString());
             // (Re-)Estimate restore height based on what we know
             final long oldHeight = wallet.getRestoreHeight();
             final long restoreHeight = 
                     (height > -1) ? height : RestoreHeight.getInstance().getHeight(new Date());
             wallet.setRestoreHeight(restoreHeight);
-            Timber.d("Changed Restore Height from %d to %d", oldHeight, wallet.getRestoreHeight());
             wallet.setPassword(password); // this rewrites the keys file (which contains the restore height)
         } else
             Timber.e(wallet.getStatus().toString());
@@ -99,20 +89,6 @@ public class WalletManager {
     }
 
     private native long createWalletJ(String path, String password, String language, int networkType);
-
-    //New Line
-    /*public Boolean getKeys(String address){
-        getViewKeyAndSpendKey(address);
-        return true;
-    }*/
-    //private native void getViewKeyAndSpendKey(String s);
-
-    public Wallet openAccount(String path, int accountIndex, String password) {
-        long walletHandle = openWalletJ(path, password, getNetworkType().getValue());
-        Wallet wallet = new Wallet(walletHandle, accountIndex);
-        manageWallet(wallet);
-        return wallet;
-    }
 
     public Wallet openWallet(String path, String password) {
         long walletHandle = openWalletJ(path, password, getNetworkType().getValue());
@@ -122,10 +98,6 @@ public class WalletManager {
     }
 
     private native long openWalletJ(String path, String password, int networkType);
-
-    public Wallet recoveryWallet(File aFile, String password, String mnemonic) {
-        return recoveryWallet(aFile, password, mnemonic, 0);
-    }
 
     public Wallet recoveryWallet(File aFile, String password, String mnemonic, long restoreHeight) {
         long walletHandle = recoveryWalletJ(aFile.getAbsolutePath(), password, mnemonic,
@@ -138,16 +110,6 @@ public class WalletManager {
     private native long recoveryWalletJ(String path, String password, String mnemonic,
                                         int networkType, long restoreHeight);
 
-    public Wallet createWalletWithKeys(File aFile, String password, String language, long restoreHeight,
-                                       String addressString, String viewKeyString, String spendKeyString) {
-        long walletHandle = createWalletFromKeysJ(aFile.getAbsolutePath(), password,
-                language, getNetworkType().getValue(), restoreHeight,
-                addressString, viewKeyString, spendKeyString);
-        Wallet wallet = new Wallet(walletHandle);
-        manageWallet(wallet);
-        return wallet;
-    }
-
     private native long createWalletFromKeysJ(String path, String password,
                                               String language,
                                               int networkType,
@@ -156,15 +118,6 @@ public class WalletManager {
                                               String viewKeyString,
                                               String spendKeyString);
 
-   /* public Wallet createWalletFromDevice(File aFile, String password, long restoreHeight,
-                                         String deviceName) {
-        long walletHandle = createWalletFromDeviceJ(aFile.getAbsolutePath(), password,
-                getNetworkType().getValue(), deviceName, restoreHeight,
-                Ledger.SUBADDRESS_LOOKAHEAD);
-        Wallet wallet = new Wallet(walletHandle);
-        manageWallet(wallet);
-        return wallet;
-    }*/
 
     private native long createWalletFromDeviceJ(String path, String password,
                                                 int networkType,
@@ -186,9 +139,6 @@ public class WalletManager {
         return closed;
     }
 
-    public boolean walletExists(File aFile) {
-        return walletExists(aFile.getAbsolutePath());
-    }
 
     public native boolean walletExists(String path);
 
@@ -198,14 +148,8 @@ public class WalletManager {
         return queryWalletDeviceJ(keys_file_name, password) >= 0;
     }
 
-    public Wallet.Device queryWalletDevice(String keys_file_name, String password) {
-        int device = queryWalletDeviceJ(keys_file_name, password);
-        return Wallet.Device.values()[device + 1]; // mapping is monero+1=android
-    }
-
     private native int queryWalletDeviceJ(String keys_file_name, String password);
 
-    //public native List<String> findWallets(String path); // this does not work - some error in boost
 
     public class WalletInfo implements Comparable<WalletInfo> {
         @Getter
@@ -224,29 +168,10 @@ public class WalletManager {
         }
     }
 
-    public List<WalletInfo> findWallets(File path) {
-        List<WalletInfo> wallets = new ArrayList<>();
-        Timber.d("Scanning: %s", path.getAbsolutePath());
-        File[] found = path.listFiles(new FilenameFilter() {
-            public boolean accept(File dir, String filename) {
-                return filename.endsWith(".keys");
-            }
-        });
-        for (int i = 0; i < found.length; i++) {
-            String filename = found[i].getName();
-            File f = new File(found[i].getParent(), filename.substring(0, filename.length() - 5)); // 5 is length of ".keys"+1
-            wallets.add(new WalletInfo(f));
-        }
-        return wallets;
-    }
-
-//TODO virtual bool checkPayment(const std::string &address, const std::string &txid, const std::string &txkey, const std::string &daemon_address, uint64_t &received, uint64_t &height, std::string &error) const = 0;
-
     private String daemonAddress = null;
     private final NetworkType networkType = ApplicationContext.getNetworkType();
 
     public NetworkType getNetworkType() {
-        Log.d("Beldex"," value of networkType 1" +networkType);
         return networkType;
     }
 
@@ -258,24 +183,18 @@ public class WalletManager {
                 throw new IllegalArgumentException("network type does not match");
             this.daemonUsername = node.getUsername();
             this.daemonPassword = node.getPassword();
-            Log.d("Testing-->16 %s", daemonAddress);
             setDaemonAddressJ(daemonAddress);
         } else {
-            Timber.d("Testing-->15");
             this.daemonAddress = null;
             this.daemonUsername = "";
             this.daemonPassword = "";
-            //setDaemonAddressJ(""); // don't disconnect as monero code blocks for many seconds!
-            //TODO: need to do something about that later
         }
     }
 
     public String getDaemonAddress() {
-
         if (daemonAddress == null) {
             throw new IllegalStateException("use setDaemon() to initialise daemon and net first!");
         }
-        Log.d("Daemon Address getDaemonAddress() ",""+daemonAddress);
         return this.daemonAddress;
     }
 
@@ -299,31 +218,14 @@ public class WalletManager {
 
     public native long getBlockchainTargetHeight();
 
-    //public native long getNetworkDifficulty();
-
-    //public native double getMiningHashRate();
-
     public native long getBlockTarget();
-
-    //public native boolean isMining();
-
-    //public native boolean startMining(String address, boolean background_mining, boolean ignore_battery);
-
-    //public native boolean stopMining();
 
     public native String resolveOpenAlias(String address, boolean dnssec_valid);
 
-//TODO static std::tuple<bool, std::string, std::string, std::string, std::string> checkUpdates(const std::string &software, const std::string &subdir);
-
     static public native void initLogger(String argv0, String defaultLogBaseName);
 
-    //TODO: maybe put these in an enum like in monero core - but why?
     static public int LOGLEVEL_SILENT = -1;
-    static public int LOGLEVEL_WARN = 0;
-    static public int LOGLEVEL_INFO = 1;
     static public int LOGLEVEL_DEBUG = 2;
-    static public int LOGLEVEL_TRACE = 3;
-    static public int LOGLEVEL_MAX = 4;
 
     static public native void setLogLevel(int level);
 
@@ -337,3 +239,4 @@ public class WalletManager {
 
     static public native String bChatVersion();
 }
+//endregion

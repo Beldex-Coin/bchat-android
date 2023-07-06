@@ -7,8 +7,8 @@ import android.view.MenuItem
 import io.beldex.bchat.R
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
 import com.thoughtcrimes.securesms.conversation.v2.ConversationAdapter
+import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.database.model.MediaMmsMessageRecord
 import com.thoughtcrimes.securesms.database.model.MessageRecord
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
@@ -38,7 +38,7 @@ class ConversationActionModeCallback(private val adapter: ConversationAdapter, p
             val allSentByCurrentUser = selectedItems.all { it.isOutgoing }
 
             // Remove this after the unsend request is enabled
-            if (!ConversationActivityV2.IS_UNSEND_REQUESTS_ENABLED) {
+            if (!ConversationFragmentV2.IS_UNSEND_REQUESTS_ENABLED) {
                 if (openGroup == null) { return true }
                 if (allSentByCurrentUser) { return true }
                 return OpenGroupAPIV2.isUserModerator(userPublicKey, openGroup.room, openGroup.server)

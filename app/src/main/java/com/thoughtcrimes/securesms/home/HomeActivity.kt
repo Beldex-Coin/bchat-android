@@ -1,123 +1,111 @@
 package com.thoughtcrimes.securesms.home
 
+import android.app.Activity
 import android.app.AlertDialog
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.database.Cursor
+import android.content.*
+import android.content.pm.PackageManager
+import android.graphics.Color
 import android.graphics.PointF
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
+import android.os.IBinder
 import android.provider.Settings
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.widget.Toast
+import android.widget.Button
 import androidx.activity.viewModels
-import androidx.core.os.bundleOf
-import androidx.core.view.GravityCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.loader.app.LoaderManager
-import androidx.loader.content.Loader
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityHomeBinding
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import com.beldex.libbchat.messaging.jobs.JobQueue
-import com.beldex.libbchat.messaging.sending_receiving.MessageSender
-import com.beldex.libbchat.utilities.Address
-import com.beldex.libbchat.utilities.GroupUtil
-import com.beldex.libbchat.utilities.ProfilePictureModifiedEvent
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import com.beldex.libsignal.utilities.ThreadUtils
-import com.beldex.libsignal.utilities.toHexString
-import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
-import com.thoughtcrimes.securesms.conversation.v2.utilities.NotificationUtils
-import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
-import com.thoughtcrimes.securesms.drawer.ClickListener
-import com.thoughtcrimes.securesms.drawer.NavigationItemModel
-import com.thoughtcrimes.securesms.drawer.NavigationRVAdapter
-import com.thoughtcrimes.securesms.drawer.RecyclerTouchListener
-import com.thoughtcrimes.securesms.groups.CreateClosedGroupActivity
 import com.thoughtcrimes.securesms.groups.OpenGroupManager
 import com.thoughtcrimes.securesms.home.search.GlobalSearchAdapter
 import com.thoughtcrimes.securesms.home.search.GlobalSearchInputLayout
 import com.thoughtcrimes.securesms.home.search.GlobalSearchViewModel
-import java.io.IOException
-import javax.inject.Inject
-import android.widget.CompoundButton
-import androidx.core.view.isVisible
-import com.beldex.libbchat.mnode.OnionRequestAPI
-import com.beldex.libbchat.utilities.recipients.Recipient
-import com.beldex.libsignal.utilities.Log
-import com.google.android.play.core.appupdate.AppUpdateManager
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.thoughtcrimes.securesms.ApplicationContext
-import com.thoughtcrimes.securesms.MuteDialog
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
-import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
 import com.thoughtcrimes.securesms.database.*
-import com.thoughtcrimes.securesms.database.model.ThreadRecord
-import com.thoughtcrimes.securesms.dms.CreateNewPrivateChatActivity
-import com.thoughtcrimes.securesms.groups.JoinPublicChatNewActivity
-import com.thoughtcrimes.securesms.keys.KeysPermissionActivity
-import com.thoughtcrimes.securesms.mms.GlideApp
-import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.onboarding.*
 import com.thoughtcrimes.securesms.preferences.*
-import com.thoughtcrimes.securesms.seed.SeedPermissionActivity
 import com.thoughtcrimes.securesms.util.*
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
-import com.google.android.play.core.install.model.UpdateAvailability
-import com.google.android.play.core.install.model.AppUpdateType
-import com.google.android.play.core.appupdate.AppUpdateInfo
-import com.google.android.play.core.tasks.Task
-import android.content.IntentSender.SendIntentException
-import android.graphics.Typeface
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import com.beldex.libbchat.utilities.Address
+import com.beldex.libbchat.utilities.ProfilePictureModifiedEvent
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getWalletName
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getWalletPassword
+import com.beldex.libbchat.utilities.recipients.Recipient
+import com.beldex.libsignal.utilities.Log
+import com.google.android.play.core.appupdate.AppUpdateInfo
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.UpdateAvailability
+import com.google.android.play.core.tasks.Task
+import com.thoughtcrimes.securesms.MediaOverviewActivity
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
-import com.thoughtcrimes.securesms.data.NodeInfo
+import com.thoughtcrimes.securesms.components.ProfilePictureView
+import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
+import com.thoughtcrimes.securesms.conversation.v2.ConversationViewModel
+import com.thoughtcrimes.securesms.conversation.v2.messages.VoiceMessageViewDelegate
+import com.thoughtcrimes.securesms.conversation.v2.utilities.BaseDialog
+import com.thoughtcrimes.securesms.data.*
+import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
+import com.thoughtcrimes.securesms.dms.CreateNewPrivateChatActivity
+import com.thoughtcrimes.securesms.groups.CreateClosedGroupActivity
+import com.thoughtcrimes.securesms.groups.JoinPublicChatNewActivity
 import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
-import com.thoughtcrimes.securesms.service.WebRtcCallService
-import com.thoughtcrimes.securesms.wallet.CheckOnline
+import com.thoughtcrimes.securesms.model.*
+import com.thoughtcrimes.securesms.seed.SeedPermissionActivity
+import com.thoughtcrimes.securesms.wallet.*
 import com.thoughtcrimes.securesms.wallet.info.WalletInfoActivity
 import com.thoughtcrimes.securesms.wallet.node.*
+import com.thoughtcrimes.securesms.wallet.receive.ReceiveFragment
+import com.thoughtcrimes.securesms.wallet.rescan.RescanDialog
+import com.thoughtcrimes.securesms.wallet.scanner.ScannerFragment
+import com.thoughtcrimes.securesms.wallet.scanner.WalletScannerFragment
+import com.thoughtcrimes.securesms.wallet.send.SendFragment
+import com.thoughtcrimes.securesms.wallet.service.WalletService
+import com.thoughtcrimes.securesms.wallet.settings.WalletSettings
+import com.thoughtcrimes.securesms.wallet.utils.LegacyStorageHelper
+import com.thoughtcrimes.securesms.wallet.utils.common.LoadingActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
-import com.thoughtcrimes.securesms.webrtc.CallViewModel
-import io.beldex.bchat.databinding.ViewMessageRequestBannerBinding
 import kotlinx.coroutines.*
-import org.apache.commons.lang3.time.DurationFormatUtils
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
+import timber.log.Timber
+import java.io.File
 import java.util.*
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class HomeActivity : PassphraseRequiredActionBarActivity(),
-    ConversationClickListener,
-    SeedReminderViewDelegate,
-    NewConversationButtonSetViewDelegate,
-    LoaderManager.LoaderCallbacks<Cursor>,
-    GlobalSearchInputLayout.GlobalSearchInputLayoutListener {
+class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDelegate,HomeFragment.HomeFragmentListener,ConversationFragmentV2.Listener,UserDetailsBottomSheet.UserDetailsBottomSheetListener,VoiceMessageViewDelegate, ActivityDispatcher,
+    WalletFragment.Listener, WalletService.Observer, WalletScannerFragment.OnScannedListener,SendFragment.OnScanListener,SendFragment.Listener,ReceiveFragment.Listener,WalletFragment.OnScanListener,
+    ScannerFragment.OnWalletScannedListener,WalletScannerFragment.Listener,NodeFragment.Listener{
 
     private lateinit var binding: ActivityHomeBinding
-    private lateinit var glide: GlideRequests
-    private var broadcastReceiver: BroadcastReceiver? = null
-    private var uiJob: Job? = null
-    private val viewModel by viewModels<CallViewModel>()
-    private val CALLDURATIONFORMAT = "HH:mm:ss"
+
+    private val globalSearchViewModel by viewModels<GlobalSearchViewModel>()
 
     @Inject
     lateinit var threadDb: ThreadDatabase
@@ -127,97 +115,62 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
     @Inject
     lateinit var recipientDatabase: RecipientDatabase
     @Inject
-    lateinit var groupDatabase: GroupDatabase
+    lateinit var groupDb: GroupDatabase
     @Inject
     lateinit var textSecurePreferences: TextSecurePreferences
+    @Inject
+    lateinit var viewModelFactory: ConversationViewModel.AssistedFactory
 
-    private val globalSearchViewModel by viewModels<GlobalSearchViewModel>()
+    @Inject
+    lateinit var beldexThreadDb: BeldexThreadDatabase
 
-    private val publicKey: String
-        get() = TextSecurePreferences.getLocalNumber(this)!!
+    @Inject
+    lateinit var bchatContactDb: BchatContactDatabase
 
-    /*Hales63*/
-    private val homeAdapter: HomeAdapter by lazy {
-        HomeAdapter(context = this, cursor = threadDb.approvedConversationList, listener = this)
-    }
+    @Inject
+    lateinit var beldexApiDb: BeldexAPIDatabase
 
-    private val toolbar: Toolbar? = null
+    @Inject
+    lateinit var smsDb: SmsDatabase
 
+    @Inject
+    lateinit var mmsDb: MmsDatabase
 
-    private var node1: NodeInfo? = null
-
-    private val favouriteNodeslist = mutableSetOf<NodeInfo>()
-    private val reportIssueBChatID = "bdb890a974a25ef50c64cc4e3270c4c49c7096c433b8eecaf011c1ad000e426813"
-    private val globalSearchAdapter = GlobalSearchAdapter { model ->
-        when (model) {
-            is GlobalSearchAdapter.Model.Message -> {
-                val threadId = model.messageResult.threadId
-                val timestamp = model.messageResult.receivedTimestampMs
-                val author = model.messageResult.messageRecipient.address
-
-                val intent = Intent(this, ConversationActivityV2::class.java)
-                intent.putExtra(ConversationActivityV2.THREAD_ID, threadId)
-                intent.putExtra(ConversationActivityV2.SCROLL_MESSAGE_ID, timestamp)
-                intent.putExtra(ConversationActivityV2.SCROLL_MESSAGE_AUTHOR, author)
-                push(intent)
-            }
-            is GlobalSearchAdapter.Model.SavedMessages -> {
-                val intent = Intent(this, ConversationActivityV2::class.java)
-                intent.putExtra(
-                    ConversationActivityV2.ADDRESS,
-                    Address.fromSerialized(model.currentUserPublicKey)
-                )
-                push(intent)
-            }
-            is GlobalSearchAdapter.Model.Contact -> {
-                val address = model.contact.bchatID
-
-                val intent = Intent(this, ConversationActivityV2::class.java)
-                intent.putExtra(ConversationActivityV2.ADDRESS, Address.fromSerialized(address))
-                push(intent)
-            }
-            is GlobalSearchAdapter.Model.GroupConversation -> {
-                val groupAddress = Address.fromSerialized(model.groupRecord.encodedId)
-                val threadId =
-                    threadDb.getThreadIdIfExistsFor(Recipient.from(this, groupAddress, false))
-                if (threadId >= 0) {
-                    val intent = Intent(this, ConversationActivityV2::class.java)
-                    intent.putExtra(ConversationActivityV2.THREAD_ID, threadId)
-                    push(intent)
-                }
-            }
-            else -> {
-                Log.d("Beldex", "callback with model: $model")
-            }
-        }
-    }
-
-    //New Line
-    private lateinit var adapter: NavigationRVAdapter
-
-    private var items = arrayListOf(
-        NavigationItemModel(R.drawable.ic_my_account, "My Account",0),
-        NavigationItemModel(R.drawable.ic_wallet, "My Wallet",R.drawable.ic_beta),
-        NavigationItemModel(R.drawable.ic_notifications, "Notification",0),
-        NavigationItemModel(R.drawable.ic_message_requests, "Message Requests",0),
-        NavigationItemModel(R.drawable.ic_privacy, "Privacy",0),
-        NavigationItemModel(R.drawable.ic_app_permissions, "App Permissions",0),
-        NavigationItemModel(R.drawable.ic_recovery_seed, "Recovery Seed",0),
-        NavigationItemModel(R.drawable.ic_report_issue,"Report Issue",0),
-        NavigationItemModel(R.drawable.ic_help, "Help",0),
-        NavigationItemModel(R.drawable.ic_invite, "Invite",0),
-        NavigationItemModel(R.drawable.ic_about, "About",0)
-    )
-
-    // NavigationItemModel(R.drawable.ic_recovery_key, "Recovery Key"),
-    private val hexEncodedPublicKey: String
-        get() {
-            return TextSecurePreferences.getLocalNumber(this)!!
-        }
+    @Inject
+    lateinit var beldexMessageDb: BeldexMessageDatabase
 
     //New Line App Update
     private var appUpdateManager: AppUpdateManager? = null
     private val IMMEDIATE_APP_UPDATE_REQ_CODE = 124
+
+    companion object{
+        const val SHORTCUT_LAUNCHER = "short_cut_launcher"
+
+        var REQUEST_URI = "uri"
+        val reportIssueBChatID = "bdb890a974a25ef50c64cc4e3270c4c49c7096c433b8eecaf011c1ad000e426813" //Mainnet
+        //val reportIssueBChatID = "bd21c8c3179975fa082f221323ae47d44bf38b8f6e39f530c2d07ce7ad4892682d" //Testnet
+    }
+
+    //Wallet
+    private var streetMode: Long = 0
+    private var uri: String? = null
+
+    //Node Connection
+    private val NODES_PREFS_NAME = "nodes"
+    private val SELECTED_NODE_PREFS_NAME = "selected_node"
+    private val PREF_DAEMON_TESTNET = "daemon_testnet"
+    private val PREF_DAEMON_STAGENET = "daemon_stagenet"
+    private val PREF_DAEMON_MAINNET = "daemon_mainnet"
+    private var favouriteNodes: MutableSet<NodeInfo> = HashSet<NodeInfo>()
+
+    private var node: NodeInfo? = null
+    private var onUriScannedListener: OnUriScannedListener? = null
+    private var onUriWalletScannedListener: OnUriWalletScannedListener? = null
+    private var barcodeData: BarcodeData? = null
+
+
+    private val useSSL: Boolean = false
+    private val isLightWallet:  Boolean = false
 
     // region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?, isReady: Boolean) {
@@ -225,176 +178,178 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         // Set content view
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        //New Line
-        val notification = TextSecurePreferences.isNotificationsEnabled(this)
-        Log.d("NotificationLog", notification.toString())
-        // Set custom toolbar
-        setSupportActionBar(binding.toolbar)
-        // Set up Glide
-        glide = GlideApp.with(this)
-        // Set up toolbar buttons
-        binding.profileButton.glide = glide
-        //binding.profileButton.setOnClickListener { openSettings() }
 
-        //New Line
-        // Setup Recyclerview's Layout
-        binding.navigationRv.layoutManager = LinearLayoutManager(this)
-        binding.navigationRv.setHasFixedSize(true)
-        updateAdapter(0)
-        // Add Item Touch Listener
-        binding.navigationRv.addOnItemTouchListener(RecyclerTouchListener(this, object :
-            ClickListener {
-            override fun onClick(view: View, position: Int) {
-                when (position) {
-                    0 -> {
-                        // # Account Activity
-                        openSettings()
-                    }
-                    1 -> {
-                        // # My Wallet Activity
-                        if(CheckOnline.isOnline(this@HomeActivity)) {
-                            Log.d("Beldex","isOnline value ${CheckOnline.isOnline(this@HomeActivity)}")
-                            openMyWallet()
-                        }
-                        else {
-                            Log.d("Beldex","isOnline value ${CheckOnline.isOnline(this@HomeActivity)}")
-                            Toast.makeText(this@HomeActivity,getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                    2 -> {
-                        //New Line
-                        val notification =
-                            TextSecurePreferences.isNotificationsEnabled(this@HomeActivity)
-                        Log.d("NotificationLog1", notification.toString())
-                        // # Notification Activity
-                        showNotificationSettings()
-                    }
-                    3 -> {
-                        // # Message Requests Activity
-                        showMessageRequests()
-                    }
-                    4 -> {
-                        // # Privacy Activity
-                        showPrivacySettings()
-                    }
-                    5 -> {
-                        // # App Permissions Activity
-                        val intent = Intent()
-                        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                        val uri = Uri.fromParts("package", this@HomeActivity.packageName, null)
-                        intent.data = uri
-                        push(intent)
-                    }
-                    6 -> {
-                        // # Recovery Seed Activity
-                        showSeed()
-                    }
-                    /* 6 -> {
-                         // # Recovery Key Activity
-                         showKeys()
-                     }*/
-                    7 -> {
-                        // # Support
-                        sendMessageToSupport()
-                    }
-                    8 -> {
-                        // # Help Activity
-                        help()
-                    }
-                    9 -> {
-                        // # Invite Activity
-                        sendInvitation()
-                    }
-                    10 -> {
-                        // # About Activity
-                        showAbout()
-                    }
-                }
-                // Don't highlight the 'Profile' and 'Like us on Facebook' item row
-                if (position != 6 && position != 4) {
-                    updateAdapter(position)
-                }
-                Handler().postDelayed({
-                    binding.drawerLayout.closeDrawer(GravityCompat.END)
-                }, 200)
-            }
-        }))
-        binding.profileButton.setOnClickListener {
-            binding.drawerLayout.openDrawer(GravityCompat.END)
-            /*val intent = Intent(this, CreatePasswordActivity::class.java)
-            show(intent)*/
+        //-Wallet
+        LegacyStorageHelper.migrateWallets(this)
+
+
+        if(intent.getBooleanExtra(SHORTCUT_LAUNCHER,false)){
+           //Shortcut launcher
+            intent.removeExtra(SHORTCUT_LAUNCHER)
+            val extras = Bundle()
+            extras.putParcelable(ConversationFragmentV2.ADDRESS,intent.getParcelableExtra(ConversationFragmentV2.ADDRESS))
+            extras.putLong(ConversationFragmentV2.THREAD_ID, intent.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
+            extras.putBoolean(ConversationFragmentV2.SHORTCUT_LAUNCHER,true)
+
+            //SetDataAndType
+            extras.putParcelable(ConversationFragmentV2.URI,intent.getParcelableExtra(ConversationFragmentV2.URI))
+            extras.putString(ConversationFragmentV2.TYPE,intent.getStringExtra(ConversationFragmentV2.TYPE))
+            extras.putCharSequence(Intent.EXTRA_TEXT,intent.getCharSequenceExtra(Intent.EXTRA_TEXT))
+
+            val homeFragment: Fragment = HomeFragment()
+            homeFragment.arguments = extras
+            supportFragmentManager.beginTransaction()
+                .add(
+                    R.id.activity_home_frame_layout_container,
+                    homeFragment,
+                    HomeFragment::class.java.name
+                ).commit()
+        }else {
+            val homeFragment: Fragment = HomeFragment()
+            supportFragmentManager.beginTransaction()
+                .add(
+                    R.id.activity_home_frame_layout_container,
+                    homeFragment,
+                    HomeFragment::class.java.name
+                ).commit()
         }
-        binding.drawerCloseIcon.setOnClickListener { binding.drawerLayout.closeDrawer(GravityCompat.END) }
-        val activeUiMode = UiModeUtilities.getUserSelectedUiMode(this)
-        Log.d("beldex", "activeUiMode $activeUiMode")
-        binding.drawerAppearanceToggleButton.isChecked = activeUiMode == UiMode.NIGHT
 
-        binding.drawerAppearanceToggleButton.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener() { compoundButton: CompoundButton, b: Boolean ->
-            if (b) {
-                val uiMode = UiMode.values()[1]
-                UiModeUtilities.setUserSelectedUiMode(this, uiMode)
-            } else {
-                val uiMode = UiMode.values()[0]
-                UiModeUtilities.setUserSelectedUiMode(this, uiMode)
-            }
-
-        })
-        binding.drawerQrcodeImg.setOnClickListener {
-            showQRCode()
-            Handler().postDelayed({
-                binding.drawerLayout.closeDrawer(GravityCompat.END)
-            }, 200)
-        }
-        binding.drawerProfileIcon.glide = glide
-        binding.drawerProfileId.text = "ID: $hexEncodedPublicKey"
-
-
-
-
-        binding.searchViewContainer.setOnClickListener {
-            binding.globalSearchInputLayout.requestFocus()
-        }
-        binding.bchatToolbar.disableClipping()
-
-        //Comment-->
-        /*// Set up seed reminder view
-        val hasViewedSeed = TextSecurePreferences.getHasViewedSeed(this)
-        if (!hasViewedSeed) {
-            binding.seedReminderView.isVisible = true
-            binding.seedReminderView.title =
-                SpannableString("You're almost finished! 80%") // Intentionally not yet translated
-            binding.seedReminderView.subtitle =
-                resources.getString(R.string.view_seed_reminder_subtitle_1)
-            binding.seedReminderView.setProgress(80, false)
-            binding.seedReminderView.delegate = this@HomeActivity
-        } else {
-            binding.seedReminderView.isVisible = false
-        }*/
-        /*Hales63*/
-        setupMessageRequestsBanner()
-        setupHeaderImage()
-        // Set up recycler view
-        binding.globalSearchInputLayout.listener = this
-        homeAdapter.setHasStableIds(true)
-        homeAdapter.glide = glide
-        binding.recyclerView.adapter = homeAdapter
-        binding.globalSearchRecycler.adapter = globalSearchAdapter
-        // Set up empty state view
-        binding.createNewPrivateChatButton.setOnClickListener { createNewPrivateChat() }
         IP2Country.configureIfNeeded(this@HomeActivity)
-        // This is a workaround for the fact that CursorRecyclerViewAdapter doesn't actually auto-update (even though it says it will)
-        LoaderManager.getInstance(this).restartLoader(0, null, this)
-        // Set up new conversation button set
-        binding.newConversationButtonSet.delegate = this
-        // Observe blocked contacts changed events
-        val broadcastReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                binding.recyclerView.adapter!!.notifyDataSetChanged()
+        EventBus.getDefault().register(this@HomeActivity)
+
+        //New Line App Update
+        /*binding.airdropIcon.setAnimation(R.raw.airdrop_animation_top)
+        binding.airdropIcon.setOnClickListener { callAirdropUrl() }*/
+        appUpdateManager = AppUpdateManagerFactory.create(applicationContext)
+        checkUpdate()
+        loadFavouritesWithNetwork()
+
+        /*if(TextSecurePreferences.getAirdropAnimationStatus(this)) {
+            //New Line AirDrop
+            TextSecurePreferences.setAirdropAnimationStatus(this,false)
+            launchSuccessLottieDialog()
+        }*/
+    }
+
+    override fun callConversationScreen(threadId: Long, address: Address?, uri: Uri?, type: String?, extraText: CharSequence?) {
+        val extras = Bundle()
+        extras.putParcelable(ConversationFragmentV2.ADDRESS,address)
+        extras.putLong(ConversationFragmentV2.THREAD_ID, threadId)
+        extras.putParcelable(ConversationFragmentV2.URI,uri)
+        extras.putString(ConversationFragmentV2.TYPE,type)
+        extras.putCharSequence(Intent.EXTRA_TEXT,extraText)
+        replaceFragment(ConversationFragmentV2(), null, extras)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onUpdateProfileEvent(event: ProfilePictureModifiedEvent) {
+        if (event.recipient.isLocalNumber) {
+            val currentFragment = getCurrentFragment()
+            if(currentFragment is HomeFragment) {
+                currentFragment.updateProfileButton()
             }
         }
-        this.broadcastReceiver = broadcastReceiver
-        LocalBroadcastManager.getInstance(this)
-            .registerReceiver(broadcastReceiver, IntentFilter("blockedContactsChanged"))
+    }
+
+    //New Line
+    /*private fun launchSuccessLottieDialog() {
+        val button = Button(this)
+        button.text = "Claim BDX"
+        button.setTextColor(Color.WHITE)
+        button.isAllCaps=false
+        val greenColor = ContextCompat.getColor(this, R.color.button_green)
+        val backgroundColor = ContextCompat.getColor(this, R.color.animation_popup_background)
+        button.backgroundTintList = ColorStateList.valueOf(greenColor)
+        val dialog: LottieDialog = LottieDialog(this)
+            .setAnimation(R.raw.airdrop_animation_dialog)
+            .setAnimationRepeatCount(LottieDialog.INFINITE)
+            .setAutoPlayAnimation(true)
+            .setDialogBackground(backgroundColor)
+            .setMessageColor(Color.WHITE)
+            .addActionButton(button)
+        dialog.show()
+        button.setOnClickListener {
+            callAirdropUrl()
+            dialog.dismiss()
+        }
+    }
+    private fun callAirdropUrl(){
+        try {
+            val url = "https://gleam.io/BT60O/bchat-launch-airdrop"
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(this, "Can't open URL", Toast.LENGTH_LONG).show()
+        }
+    }*/
+    //New Line App Update
+    private fun checkUpdate() {
+        val appUpdateInfoTask: Task<AppUpdateInfo> = appUpdateManager!!.appUpdateInfo
+        appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
+            ) {
+                startUpdateFlow(appUpdateInfo)
+            } else if (appUpdateInfo.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                startUpdateFlow(appUpdateInfo)
+            }
+        }
+    }
+
+    private fun startUpdateFlow(appUpdateInfo: AppUpdateInfo) {
+        try {
+            appUpdateManager!!.startUpdateFlowForResult(
+                appUpdateInfo,
+                AppUpdateType.IMMEDIATE,
+                this,
+                this.IMMEDIATE_APP_UPDATE_REQ_CODE
+            )
+        } catch (e: IntentSender.SendIntentException) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        //New Line App Update
+        if (requestCode == IMMEDIATE_APP_UPDATE_REQ_CODE) {
+            if (resultCode == PassphraseRequiredActionBarActivity.RESULT_CANCELED) {
+                Toast.makeText(
+                    applicationContext,
+                    "Update canceled by user! Result Code: $resultCode", Toast.LENGTH_LONG
+                ).show();
+            } else if (resultCode == PassphraseRequiredActionBarActivity.RESULT_OK) {
+                Toast.makeText(
+                    applicationContext,
+                    "Update success! Result Code: $resultCode",
+                    Toast.LENGTH_LONG
+                ).show();
+            } else {
+                Toast.makeText(
+                    applicationContext,
+                    "Update Failed! Result Code: $resultCode",
+                    Toast.LENGTH_LONG
+                ).show();
+                checkUpdate();
+            }
+        }
+
+        val fragment = supportFragmentManager.findFragmentById(R.id.activity_home_frame_layout_container)
+        if(fragment is ConversationFragmentV2) {
+            (fragment as ConversationFragmentV2).onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+    override fun callLifeCycleScope(
+        recyclerView: RecyclerView,
+        globalSearchInputLayout: GlobalSearchInputLayout,
+        mmsSmsDatabase: MmsSmsDatabase,
+        globalSearchAdapter: GlobalSearchAdapter,
+        publicKey: String,
+        profileButton: ProfilePictureView,
+        drawerProfileName: TextView,
+        drawerProfileIcon: ProfilePictureView
+    ) {
         lifecycleScope.launchWhenStarted {
             launch(Dispatchers.IO) {
                 // Double check that the long poller is up
@@ -405,13 +360,18 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                     ApplicationContext.getInstance(this@HomeActivity).typingStatusRepository.typingThreads.observe(
                         this@HomeActivity,
                         Observer<Set<Long>> { threadIDs ->
-                            val adapter = binding.recyclerView.adapter as HomeAdapter
+                            val adapter = recyclerView.adapter as HomeAdapter
                             adapter.typingThreadIDs = threadIDs ?: setOf()
                         })
-                    updateProfileButton()
+                    updateProfileButton(profileButton,drawerProfileName,drawerProfileIcon,publicKey)
                     TextSecurePreferences.events.filter { it == TextSecurePreferences.PROFILE_NAME_PREF }
                         .collect {
-                            updateProfileButton()
+                            updateProfileButton(
+                                profileButton,
+                                drawerProfileName,
+                                drawerProfileIcon,
+                                publicKey
+                            )
                         }
                 }
                 // Set up remaining components if needed
@@ -425,7 +385,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
             }
             // monitor the global search VM query
             launch {
-                binding.globalSearchInputLayout.query
+                globalSearchInputLayout.query
                     .onEach(globalSearchViewModel::postQuery)
                     .collect()
             }
@@ -482,395 +442,129 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                     }
 
                     val newData = contactResults + messageResults
-
                     globalSearchAdapter.setNewData(result.query, newData)
                 }
             }
         }
-        EventBus.getDefault().register(this@HomeActivity)
 
-        //New Line App Update
-        /*binding.airdropIcon.setAnimation(R.raw.airdrop_animation_top)
-        binding.airdropIcon.setOnClickListener { callAirdropUrl() }*/
-        appUpdateManager = AppUpdateManagerFactory.create(applicationContext)
-        checkUpdate()
 
-        /*if(TextSecurePreferences.getAirdropAnimationStatus(this)) {
-            //New Line AirDrop
-            TextSecurePreferences.setAirdropAnimationStatus(this,false)
-            launchSuccessLottieDialog()
-        }*/
     }
 
-
-    private fun setupCallActionBar() {
-
-        val startTimeNew = viewModel.callStartTime
-        if (startTimeNew == -1L) {
-            binding.toolbarCall.isVisible = false
-        } else {
-            binding.toolbarCall.isVisible = true
-            uiJob = lifecycleScope.launch {
-                launch {
-                    while (isActive) {
-                        val startTime = viewModel.callStartTime
-                        if (startTime == -1L) {
-                            binding.toolbarCall.isVisible = false
-                        } else {
-                            binding.toolbarCall.isVisible = true
-                            binding.callDurationCall.text = DurationFormatUtils.formatDuration(
-                                System.currentTimeMillis() - startTime,
-                                CALLDURATIONFORMAT
-                            )
-                        }
-
-                        delay(1_000)
-                    }
-                }
-            }
-        }
-        binding.hanUpCall.setOnClickListener {
-            startService(WebRtcCallService.hangupIntent(this))
-            binding.toolbarCall.isVisible = false
-            Toast.makeText(this, "Call ended", Toast.LENGTH_SHORT).show()
-        }
-        binding.toolbarCall.setOnClickListener {
-            val intent = Intent(this, WebRtcCallActivity::class.java)
-            push(intent)
-        }
+    override fun onConversationClick(threadId: Long) {
+        val extras = Bundle()
+        extras.putLong(ConversationFragmentV2.THREAD_ID, threadId)
+        replaceFragment(ConversationFragmentV2(), null, extras)
     }
 
-
-    //New Line
-    /*private fun launchSuccessLottieDialog() {
-        val button = Button(this)
-        button.text = "Claim BDX"
-        button.setTextColor(Color.WHITE)
-        button.isAllCaps=false
-        val greenColor = ContextCompat.getColor(this, R.color.button_green)
-        val backgroundColor = ContextCompat.getColor(this, R.color.animation_popup_background)
-        button.backgroundTintList = ColorStateList.valueOf(greenColor)
-        val dialog: LottieDialog = LottieDialog(this)
-            .setAnimation(R.raw.airdrop_animation_dialog)
-            .setAnimationRepeatCount(LottieDialog.INFINITE)
-            .setAutoPlayAnimation(true)
-            .setDialogBackground(backgroundColor)
-            .setMessageColor(Color.WHITE)
-            .addActionButton(button)
-        dialog.show()
-        button.setOnClickListener {
-            callAirdropUrl()
-            dialog.dismiss()
+    private fun replaceFragment(newFragment: Fragment, stackName: String?, extras: Bundle?) {
+        if (extras != null) {
+            newFragment.arguments = extras
         }
-    }
-    private fun callAirdropUrl(){
-        try {
-            val url = "https://gleam.io/BT60O/bchat-launch-airdrop"
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            startActivity(intent)
-        } catch (e: Exception) {
-            Toast.makeText(this, "Can't open URL", Toast.LENGTH_LONG).show()
-        }
-    }*/
-    //New Line App Update
-    private fun checkUpdate() {
-        val appUpdateInfoTask: Task<AppUpdateInfo> = appUpdateManager!!.appUpdateInfo
-        appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
-            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-                && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
-            ) {
-                startUpdateFlow(appUpdateInfo)
-            } else if (appUpdateInfo.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
-                startUpdateFlow(appUpdateInfo)
-            }
-        }
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.activity_home_frame_layout_container, newFragment)
+            .addToBackStack(stackName)
+            .commit()
     }
 
-    private fun startUpdateFlow(appUpdateInfo: AppUpdateInfo) {
-        try {
-            appUpdateManager!!.startUpdateFlowForResult(
-                appUpdateInfo,
-                AppUpdateType.IMMEDIATE,
-                this,
-                this.IMMEDIATE_APP_UPDATE_REQ_CODE
-            )
-        } catch (e: SendIntentException) {
-            e.printStackTrace()
-        }
+    private fun updateProfileButton(
+        profileButton: ProfilePictureView,
+        drawerProfileName: TextView,
+        drawerProfileIcon: ProfilePictureView,
+        publicKey: String
+    ) {
+        profileButton.publicKey = publicKey
+        profileButton.displayName = TextSecurePreferences.getProfileName(this)
+        profileButton.recycle()
+        profileButton.update()
+
+        //New Line
+        drawerProfileName.text = TextSecurePreferences.getProfileName(this)
+        drawerProfileIcon.publicKey = publicKey
+        drawerProfileIcon.displayName = TextSecurePreferences.getProfileName(this)
+        drawerProfileIcon.recycle()
+        drawerProfileIcon.update()
     }
 
     //Important
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
-        if (event?.getAction() === MotionEvent.ACTION_DOWN) {
+        if (event?.action === MotionEvent.ACTION_DOWN) {
             val touch = PointF(event.x, event.y)
-            if (binding.newConversationButtonSet.isExpanded) {
-                binding.newConversationButtonSet.collapse()
-            } else {
-                //binding.newConversationButtonSet.collapse()
+            when (val currentFragment: Fragment? = getCurrentFragment()) {
+                is HomeFragment -> {
+                    currentFragment.dispatchTouchEvent()
+                }
+                is ConversationFragmentV2 -> {
+                    currentFragment.dispatchTouchEvent()
+                }
             }
         }
         return super.dispatchTouchEvent(event)
     }
 
-    //New Line
-    private fun updateAdapter(highlightItemPos: Int) {
-        adapter = NavigationRVAdapter(items, highlightItemPos)
-        binding.navigationRv.adapter = adapter
-        adapter.notifyDataSetChanged()
-    }
-
-
-    private fun setupHeaderImage() {
-        val isDayUiMode = UiModeUtilities.isDayUiMode(this)
-        val headerTint = if (isDayUiMode) R.color.black else R.color.white
-        binding.bchatHeaderImage.setTextColor(getColor(headerTint))
-        //binding.bchatHeaderImage.setColorFilter(getColor(headerTint))
-    }
-
-    override fun onInputFocusChanged(hasFocus: Boolean) {
-        if (hasFocus) {
-            setSearchShown(true)
-        } else {
-            setSearchShown(!binding.globalSearchInputLayout.query.value.isNullOrEmpty())
-        }
-    }
-
-    private fun setSearchShown(isShown: Boolean) {
-        //New Line
-        binding.searchBarLayout.isVisible = isShown
-        binding.searchBarLayout.setOnClickListener {
-            onBackPressed()
-        }
-
-        binding.searchToolbar.isVisible = isShown
-        binding.searchViewCard.isVisible = !isShown
-        binding.bchatToolbar.isVisible = !isShown
-        binding.recyclerView.isVisible = !isShown
-        binding.emptyStateContainer.isVisible =
-            (binding.recyclerView.adapter as HomeAdapter).itemCount == 0 && binding.recyclerView.isVisible
-        binding.emptyStateContainerText.isVisible =
-            (binding.recyclerView.adapter as HomeAdapter).itemCount == 0 && binding.recyclerView.isVisible
-        val isDayUiMode = UiModeUtilities.isDayUiMode(this)
-        (if (isDayUiMode) R.drawable.ic_doodle_3_2 else R.drawable.ic_doodle_3_1).also {
-            binding.emptyStateImageView.setImageResource(
-                it
-            )
-        }
-        //Comment-->
-        /*binding.seedReminderView.isVisible =
-            !TextSecurePreferences.getHasViewedSeed(this) && !isShown*/
-
-        binding.gradientView.isVisible = !isShown
-        binding.globalSearchRecycler.isVisible = isShown
-        binding.newConversationButtonSet.isVisible = !isShown
-    }
-
-    /*Hales63*/
-    private fun setupMessageRequestsBanner() {
-        val messageRequestCount = threadDb.unapprovedConversationCount
-        // Set up message requests
-        if (messageRequestCount > 0 && !textSecurePreferences.hasHiddenMessageRequests()) {
-            with(ViewMessageRequestBannerBinding.inflate(layoutInflater)) {
-                unreadCountTextView.text = messageRequestCount.toString()
-                timestampTextView.text = DateUtils.getDisplayFormattedTimeSpanString(
-                    this@HomeActivity,
-                    Locale.getDefault(),
-                    threadDb.latestUnapprovedConversationTimestamp
-                )
-                root.setOnClickListener { showMessageRequests() }
-                expandMessageRequest.setOnClickListener { showMessageRequests() }
-                root.setOnLongClickListener { hideMessageRequests(); true }
-                root.layoutParams = RecyclerView.LayoutParams(
-                    RecyclerView.LayoutParams.MATCH_PARENT,
-                    RecyclerView.LayoutParams.WRAP_CONTENT
-                )
-                homeAdapter.headerView = root
-                homeAdapter.notifyItemChanged(0)
-            }
-        } else {
-            homeAdapter.headerView = null
-        }
-    }
-
-    /*//New Line
-    private fun setupMessageRequestsBanner() {
-        val messageRequestCount = threadDb.unapprovedConversationCount
-        // Set up message requests
-        if (messageRequestCount > 0 && !textSecurePreferences.hasHiddenMessageRequests()) {
-            //New Line
-            textSecurePreferences.setHasShowMessageRequests(true)
-        }
-
-        //New Line
-        if(textSecurePreferences.hasShowMessageRequests()) {
-            with(ViewMessageRequestBannerBinding.inflate(layoutInflater)) {
-                unreadCountTextView.text = messageRequestCount.toString()
-                if(messageRequestCount>0) {
-                    timestampTextView.text = DateUtils.getDisplayFormattedTimeSpanString(
-                        this@HomeActivity,
-                        Locale.getDefault(),
-                        threadDb.latestUnapprovedConversationTimestamp
-                    )
-                }
-                root.setOnClickListener { showMessageRequests() }
-                expandMessageRequest.setOnClickListener{ showMessageRequests() }
-                root.setOnLongClickListener { hideMessageRequests(); true }
-                root.layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
-                homeAdapter.headerView = root
-                homeAdapter.notifyItemChanged(0)
-            }
-        } else {
-            homeAdapter.headerView = null
-        }
-    }*/
-
-
-    override fun onCreateLoader(id: Int, bundle: Bundle?): Loader<Cursor> {
-        return HomeLoader(this@HomeActivity)
-    }
-
-    override fun onLoadFinished(loader: Loader<Cursor>, cursor: Cursor?) {
-        homeAdapter.changeCursor(cursor)
-        setupMessageRequestsBanner()
-        updateEmptyState()
-    }
-
-    override fun onLoaderReset(cursor: Loader<Cursor>) {
-        homeAdapter.changeCursor(null)
-    }
-
-    private fun checkInternetConnectivity() {
-        if (OnionRequestAPI.paths.isEmpty()) {
-            Toast.makeText(this, getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT)
-                .show();
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        setupCallActionBar()
-        ApplicationContext.getInstance(this).messageNotifier.setHomeScreenVisible(true)
-        if (TextSecurePreferences.getLocalNumber(this) == null) {
-            return; } // This can be the case after a secondary device is auto-cleared
-        IdentityKeyUtil.checkUpdate(this)
-        binding.profileButton.recycle() // clear cached image before update tje profilePictureView
-        binding.profileButton.update()
-
-        //New Line
-        binding.drawerProfileIcon.recycle()
-        binding.drawerProfileIcon.update()
-        //checkInternetConnectivity()
-
-        //Comment-->
-        /*val hasViewedSeed = TextSecurePreferences.getHasViewedSeed(this)
-        if (hasViewedSeed) {
-            binding.seedReminderView.isVisible = false
-        }*/
-
-        if (TextSecurePreferences.getConfigurationMessageSynced(this)) {
-            lifecycleScope.launch(Dispatchers.IO) {
-                ConfigurationMessageUtilities.syncConfigurationIfNeeded(this@HomeActivity)
-            }
-        }
-
-        /*Hales63*/
-        if (TextSecurePreferences.isUnBlocked(this)) {
-            homeAdapter.notifyDataSetChanged()
-            TextSecurePreferences.setUnBlockStatus(this, false)
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.d("Beldex","HomeActivity() onPause called")
-        ApplicationContext.getInstance(this).messageNotifier.setHomeScreenVisible(false)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == CreateClosedGroupActivity.closedGroupCreatedResultCode) {
-            createNewPrivateChat()
-        }
-
-        //New Line App Update
-        if (requestCode == IMMEDIATE_APP_UPDATE_REQ_CODE) {
-            if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(
-                    applicationContext,
-                    "Update canceled by user! Result Code: $resultCode", Toast.LENGTH_LONG
-                ).show();
-            } else if (resultCode == RESULT_OK) {
-                Toast.makeText(
-                    applicationContext,
-                    "Update success! Result Code: $resultCode",
-                    Toast.LENGTH_LONG
-                ).show();
-            } else {
-                Toast.makeText(
-                    applicationContext,
-                    "Update Failed! Result Code: $resultCode",
-                    Toast.LENGTH_LONG
-                ).show();
-                checkUpdate();
-            }
-        }
-    }
-
-    override fun onDestroy() {
-        Log.d("Beldex","onDestroy in Home")
-        val broadcastReceiver = this.broadcastReceiver
-        if (broadcastReceiver != null) {
-            LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver)
-        }
-        EventBus.getDefault().unregister(this)
-        super.onDestroy()
-
-    }
-    // endregion
-
-    // region Updating
-    private fun updateEmptyState() {
-        val threadCount = (binding.recyclerView.adapter as HomeAdapter).itemCount
-        binding.emptyStateContainer.isVisible = threadCount == 0 && binding.recyclerView.isVisible
-        binding.emptyStateContainerText.isVisible =
-            threadCount == 0 && binding.recyclerView.isVisible
-        val isDayUiMode = UiModeUtilities.isDayUiMode(this)
-        (if (isDayUiMode) R.drawable.ic_doodle_3_2 else R.drawable.ic_doodle_3_1).also {
-            binding.emptyStateImageView.setImageResource(
-                it
-            )
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onUpdateProfileEvent(event: ProfilePictureModifiedEvent) {
-        if (event.recipient.isLocalNumber) {
-            updateProfileButton()
-        }
-    }
-
-    private fun updateProfileButton() {
-        binding.profileButton.publicKey = publicKey
-        binding.profileButton.displayName = TextSecurePreferences.getProfileName(this)
-        binding.profileButton.recycle()
-        binding.profileButton.update()
-
-        //New Line
-        binding.drawerProfileName.text = TextSecurePreferences.getProfileName(this)
-        binding.drawerProfileIcon.publicKey = publicKey
-        binding.drawerProfileIcon.displayName = TextSecurePreferences.getProfileName(this)
-        binding.drawerProfileIcon.recycle()
-        binding.drawerProfileIcon.update()
-    }
-    // endregion
-
-    // region Interaction
     override fun onBackPressed() {
-        if (binding.globalSearchRecycler.isVisible) {
-            binding.globalSearchInputLayout.clearSearch(true)
-            return
+        val fragment: Fragment? = getCurrentFragment()
+        if (fragment is ConversationFragmentV2 || fragment is SendFragment || fragment is ReceiveFragment || fragment is ScannerFragment || fragment is WalletScannerFragment || fragment is WalletFragment) {
+            if (!(fragment as OnBackPressedListener).onBackPressed()) {
+                TextSecurePreferences.callFiatCurrencyApi(this,false)
+                try {
+                    if (fragment is ConversationFragmentV2) {
+                        if (!fragment.transactionInProgress) {
+                            super.onBackPressed()
+                        }
+                    } else {
+                        super.onBackPressed()
+                    }
+                }catch(e : IllegalStateException){
+                    replaceHomeFragment()
+                }
+            }
+        }else if(fragment is HomeFragment){
+            backToHome(fragment)
         }
-        super.onBackPressed()
+    }
+
+    private fun replaceHomeFragment(){
+        val homeFragment: Fragment = HomeFragment()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.activity_home_frame_layout_container, homeFragment, HomeFragment::class.java.name).commit()
+    }
+
+    private fun backToHome(fragment: HomeFragment?) {
+        when {
+            !synced -> {
+                val dialog: AlertDialog.Builder =
+                    AlertDialog.Builder(this, R.style.BChatAlertDialog_Wallet_Syncing_Exit_Alert)
+                dialog.setTitle(getString(R.string.wallet_syncing_alert_title))
+                dialog.setMessage(getString(R.string.wallet_syncing_alert_message))
+
+                dialog.setPositiveButton(R.string.exit) { _, _ ->
+                    if (CheckOnline.isOnline(this)) {
+                        onDisposeRequest()
+                    }
+                    setBarcodeData(null)
+                    fragment!!.onBackPressed()
+                    finish()
+                }
+                dialog.setNegativeButton(R.string.cancel) { _, _ ->
+                    // Do nothing
+                }
+                val alert: AlertDialog = dialog.create()
+                alert.show()
+                alert.getButton(DialogInterface.BUTTON_NEGATIVE)
+                    .setTextColor(ContextCompat.getColor(this, R.color.text))
+                alert.getButton(DialogInterface.BUTTON_POSITIVE)
+                    .setTextColor(ContextCompat.getColor(this, R.color.alert_ok))
+            }
+            else -> {
+                if (CheckOnline.isOnline(this)) {
+                    onDisposeRequest()
+                }
+                setBarcodeData(null)
+                fragment!!.onBackPressed()
+                finish()
+            }
+        }
     }
 
     override fun handleSeedReminderViewContinueButtonTapped() {
@@ -878,236 +572,23 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         show(intent)
     }
 
-    override fun onConversationClick(thread: ThreadRecord) {
-        val intent = Intent(this, ConversationActivityV2::class.java)
-        intent.putExtra(ConversationActivityV2.THREAD_ID, thread.threadId)
-        push(intent)
-    }
-
-    override fun onLongConversationClick(thread: ThreadRecord) {
-        val bottomSheet = ConversationOptionsBottomSheet()
-        bottomSheet.thread = thread
-        bottomSheet.onViewDetailsTapped = {
-            bottomSheet.dismiss()
-            val userDetailsBottomSheet = UserDetailsBottomSheet()
-            val bundle = bundleOf(
-                UserDetailsBottomSheet.ARGUMENT_PUBLIC_KEY to thread.recipient.address.toString(),
-                UserDetailsBottomSheet.ARGUMENT_THREAD_ID to thread.threadId
-            )
-            userDetailsBottomSheet.arguments = bundle
-            userDetailsBottomSheet.show(supportFragmentManager, userDetailsBottomSheet.tag)
-        }
-        bottomSheet.onBlockTapped = {
-            bottomSheet.dismiss()
-            if (!thread.recipient.isBlocked) {
-                blockConversation(thread)
-            }
-        }
-        bottomSheet.onUnblockTapped = {
-            bottomSheet.dismiss()
-            if (thread.recipient.isBlocked) {
-                unblockConversation(thread)
-            }
-        }
-        bottomSheet.onDeleteTapped = {
-            bottomSheet.dismiss()
-            deleteConversation(thread)
-        }
-        bottomSheet.onSetMuteTapped = { muted ->
-            bottomSheet.dismiss()
-            setConversationMuted(thread, muted)
-        }
-        bottomSheet.onNotificationTapped = {
-            bottomSheet.dismiss()
-            NotificationUtils.showNotifyDialog(this, thread.recipient) { notifyType ->
-                setNotifyType(thread, notifyType)
-            }
-        }
-        bottomSheet.onPinTapped = {
-            bottomSheet.dismiss()
-            setConversationPinned(thread.threadId, true)
-        }
-        bottomSheet.onUnpinTapped = {
-            bottomSheet.dismiss()
-            setConversationPinned(thread.threadId, false)
-        }
-        bottomSheet.onMarkAllAsReadTapped = {
-            bottomSheet.dismiss()
-            markAllAsRead(thread)
-        }
-        bottomSheet.show(supportFragmentManager, bottomSheet.tag)
-    }
-
-    private fun blockConversation(thread: ThreadRecord) {
-        val dialog = AlertDialog.Builder(this, R.style.BChatAlertDialog)
-            .setTitle(R.string.RecipientPreferenceActivity_block_this_contact_question)
-            .setMessage(R.string.RecipientPreferenceActivity_you_will_no_longer_receive_messages_and_calls_from_this_contact)
-            .setNegativeButton(android.R.string.cancel, null)
-            .setPositiveButton(R.string.RecipientPreferenceActivity_block) { dialog, _ ->
-                lifecycleScope.launch(Dispatchers.IO) {
-                    recipientDatabase.setBlocked(thread.recipient, true)
-                    withContext(Dispatchers.Main) {
-                        binding.recyclerView.adapter!!.notifyDataSetChanged()
-                        dialog.dismiss()
-                    }
-                }
-            }.show()
-        //New Line
-        val textView: TextView = dialog.findViewById(android.R.id.message)
-        val face: Typeface = Typeface.createFromAsset(assets, "fonts/open_sans_medium.ttf")
-        textView.typeface = face
-    }
-
-    private fun unblockConversation(thread: ThreadRecord) {
-        val dialog = AlertDialog.Builder(this, R.style.BChatAlertDialog)
-            .setTitle(R.string.RecipientPreferenceActivity_unblock_this_contact_question)
-            .setMessage(R.string.RecipientPreferenceActivity_you_will_once_again_be_able_to_receive_messages_and_calls_from_this_contact)
-            .setNegativeButton(android.R.string.cancel, null)
-            .setPositiveButton(R.string.RecipientPreferenceActivity_unblock) { dialog, _ ->
-                lifecycleScope.launch(Dispatchers.IO) {
-                    recipientDatabase.setBlocked(thread.recipient, false)
-                    withContext(Dispatchers.Main) {
-                        binding.recyclerView.adapter!!.notifyDataSetChanged()
-                        dialog.dismiss()
-                    }
-                }
-            }.show()
-
-        //New Line
-        val textView: TextView = dialog.findViewById(android.R.id.message)
-        val face: Typeface = Typeface.createFromAsset(assets, "fonts/open_sans_medium.ttf")
-        textView.typeface = face
-    }
-
-    private fun setConversationMuted(thread: ThreadRecord, isMuted: Boolean) {
-        if (!isMuted) {
-            lifecycleScope.launch(Dispatchers.IO) {
-                recipientDatabase.setMuted(thread.recipient, 0)
-                withContext(Dispatchers.Main) {
-                    binding.recyclerView.adapter!!.notifyDataSetChanged()
-                }
-            }
-        } else {
-            MuteDialog.show(this) { until: Long ->
-                lifecycleScope.launch(Dispatchers.IO) {
-                    recipientDatabase.setMuted(thread.recipient, until)
-                    withContext(Dispatchers.Main) {
-                        binding.recyclerView.adapter!!.notifyDataSetChanged()
-                    }
-                }
-            }
-        }
-    }
-
-    private fun setNotifyType(thread: ThreadRecord, newNotifyType: Int) {
-        lifecycleScope.launch(Dispatchers.IO) {
-            recipientDatabase.setNotifyType(thread.recipient, newNotifyType)
-            withContext(Dispatchers.Main) {
-                binding.recyclerView.adapter!!.notifyDataSetChanged()
-            }
-        }
-    }
-
-    private fun setConversationPinned(threadId: Long, pinned: Boolean) {
-        lifecycleScope.launch(Dispatchers.IO) {
-            threadDb.setPinned(threadId, pinned)
-            withContext(Dispatchers.Main) {
-                LoaderManager.getInstance(this@HomeActivity)
-                    .restartLoader(0, null, this@HomeActivity)
-            }
-        }
-    }
-
-    private fun markAllAsRead(thread: ThreadRecord) {
-        ThreadUtils.queue {
-            threadDb.markAllAsRead(thread.threadId, thread.recipient.isOpenGroupRecipient)
-        }
-    }
-
-    private fun deleteConversation(thread: ThreadRecord) {
-        val threadID = thread.threadId
-        val recipient = thread.recipient
-        val message = if (recipient.isGroupRecipient) {
-            val group = groupDatabase.getGroup(recipient.address.toString()).orNull()
-            if (group != null && group.admins.map { it.toString() }
-                    .contains(TextSecurePreferences.getLocalNumber(this))) {
-                "Because you are the creator of this group it will be deleted for everyone. This cannot be undone."
-            } else {
-                resources.getString(R.string.activity_home_leave_group_dialog_message)
-            }
-        } else {
-            resources.getString(R.string.activity_home_delete_conversation_dialog_message)
-        }
-        val dialog = AlertDialog.Builder(this, R.style.BChatAlertDialog)
-            .setMessage(message)
-            .setPositiveButton(R.string.yes) { _, _ ->
-                lifecycleScope.launch(Dispatchers.Main) {
-                    val context = this@HomeActivity as Context
-                    // Cancel any outstanding jobs
-                    DatabaseComponent.get(context).bchatJobDatabase()
-                        .cancelPendingMessageSendJobs(threadID)
-                    // Send a leave group message if this is an active closed group
-                    if (recipient.address.isClosedGroup && DatabaseComponent.get(context)
-                            .groupDatabase().isActive(recipient.address.toGroupString())
-                    ) {
-                        var isClosedGroup: Boolean
-                        var groupPublicKey: String?
-                        try {
-                            groupPublicKey =
-                                GroupUtil.doubleDecodeGroupID(recipient.address.toString())
-                                    .toHexString()
-                            isClosedGroup = DatabaseComponent.get(context).beldexAPIDatabase()
-                                .isClosedGroup(groupPublicKey)
-                        } catch (e: IOException) {
-                            groupPublicKey = null
-                            isClosedGroup = false
-                        }
-                        if (isClosedGroup) {
-                            MessageSender.explicitLeave(groupPublicKey!!, false)
-                        }
-                    }
-                    // Delete the conversation
-                    val v2OpenGroup =
-                        DatabaseComponent.get(this@HomeActivity).beldexThreadDatabase()
-                            .getOpenGroupChat(threadID)
-                    if (v2OpenGroup != null) {
-                        OpenGroupManager.delete(
-                            v2OpenGroup.server,
-                            v2OpenGroup.room,
-                            this@HomeActivity
-                        )
-                    } else {
-                        lifecycleScope.launch(Dispatchers.IO) {
-                            threadDb.deleteConversation(threadID)
-                        }
-                    }
-                    // Update the badge count
-                    ApplicationContext.getInstance(context).messageNotifier.updateNotification(
-                        context
-                    )
-                    // Notify the user
-                    val toastMessage =
-                        if (recipient.isGroupRecipient) R.string.MessageRecord_left_group else R.string.activity_home_conversation_deleted_message
-                    Toast.makeText(context, toastMessage, Toast.LENGTH_LONG).show()
-                }
-            }
-            .setNegativeButton(R.string.no) { _, _ ->
-                // Do nothing
-            }.show()
-
-        //New Line
-        val textView: TextView? = dialog.findViewById(android.R.id.message)
-        val face: Typeface = Typeface.createFromAsset(assets, "fonts/open_sans_medium.ttf")
-        textView!!.typeface = face
-    }
-
-    private fun openSettings() {
+    override fun openSettings() {
         val intent = Intent(this, SettingsActivity::class.java)
-        show(intent, isForResult = true)
+        callSettingsActivityResultLauncher.launch(intent)
     }
 
+    private var callSettingsActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val extras = Bundle()
+            extras.putParcelable(ConversationFragmentV2.ADDRESS,result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
+            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
+            extras.putParcelable(ConversationFragmentV2.URI,result.data!!.getParcelableExtra(ConversationFragmentV2.URI))
+            extras.putString(ConversationFragmentV2.TYPE,result.data!!.getStringExtra(ConversationFragmentV2.TYPE))
+            replaceFragment(ConversationFragmentV2(), null, extras)
+        }
+    }
 
-    private fun openMyWallet() {
+    override fun openMyWallet() {
         val walletName = TextSecurePreferences.getWalletName(this)
         val walletPassword = TextSecurePreferences.getWalletPassword(this)
         if (walletName != null && walletPassword !=null) {
@@ -1119,12 +600,12 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
                 intent.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN)
                 intent.putExtra("change_pin",false)
                 intent.putExtra("send_authentication",false)
-                push(intent)
+                customPinActivityResultLauncher.launch(intent)
             }else{
                 intent.putExtra(AppLock.EXTRA_TYPE, AppLock.ENABLE_PINLOCK)
                 intent.putExtra("change_pin",false)
                 intent.putExtra("send_authentication",false)
-                push(intent)
+                customPinActivityResultLauncher.launch(intent)
             }
         }else{
             val intent = Intent(this, WalletInfoActivity::class.java)
@@ -1132,43 +613,137 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         }
     }
 
-    /*private fun startWallet(
-        walletName:String, walletPassword:String,
-        fingerprintUsed:Boolean, streetmode:Boolean) {
-        val REQUEST_ID = "id"
-        val REQUEST_PW = "pw"
-        val REQUEST_FINGERPRINT_USED = "fingerprint"
-        val REQUEST_STREETMODE = "streetmode"
-        val REQUEST_URI = "uri"
+    private var customPinActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            replaceFragment(WalletFragment(), WalletFragment::class.java.name, null)
+        }
+    }
 
-        Timber.d("startWallet()");
-        TextSecurePreferences.setIncomingTransactionStatus(this, true)
-        TextSecurePreferences.setOutgoingTransactionStatus(this, true)
-        TextSecurePreferences.setTransactionsByDateStatus(this,false)
-        val intent = Intent(this, WalletActivity::class.java)
-        intent.putExtra(REQUEST_ID, walletName)
-        intent.putExtra(REQUEST_PW, walletPassword)
-        intent.putExtra(REQUEST_FINGERPRINT_USED, fingerprintUsed)
-        intent.putExtra(REQUEST_STREETMODE, streetmode)
-        //Important
-        *//*if (uri != null) {
-            intent.putExtra(REQUEST_URI, uri)
-            uri = null // use only once
-        }*//*
-        startActivity(intent)
-    }*/
+    private var setUpWalletPinActivityResultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {}
 
-    private fun showNotificationSettings() {
+    override fun showNotificationSettings() {
         val intent = Intent(this, NotificationSettingsActivity::class.java)
         push(intent)
     }
 
-    private fun showPrivacySettings() {
+    override fun showPrivacySettings() {
         val intent = Intent(this, PrivacySettingsActivity::class.java)
         push(intent)
     }
 
-    private fun sendInvitation() {
+    override fun showQRCode() {
+        val intent = Intent(this, ShowQRCodeWithScanQRCodeActivity::class.java)
+        showQRCodeWithScanQRCodeActivityResultLauncher.launch(intent)
+    }
+
+    private var showQRCodeWithScanQRCodeActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val extras = Bundle()
+            extras.putParcelable(ConversationFragmentV2.ADDRESS,result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
+            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
+            extras.putParcelable(ConversationFragmentV2.URI,result.data!!.getParcelableExtra(ConversationFragmentV2.URI))
+            extras.putString(ConversationFragmentV2.TYPE,result.data!!.getStringExtra(ConversationFragmentV2.TYPE))
+            replaceFragment(ConversationFragmentV2(), null, extras)
+        }
+    }
+
+    override fun showSeed() {
+        val intent = Intent(this, SeedPermissionActivity::class.java)
+        show(intent)
+    }
+
+    override fun showAbout() {
+        val intent = Intent(this, AboutActivity::class.java)
+        show(intent)
+    }
+
+    override fun showPath() {
+        val intent = Intent(this, PathActivity::class.java)
+        show(intent)
+    }
+
+    override fun createNewPrivateChat() {
+        val intent = Intent(this, CreateNewPrivateChatActivity::class.java)
+        createNewPrivateChatResultLauncher.launch(intent)
+    }
+    private var createNewPrivateChatResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val extras = Bundle()
+            extras.putParcelable(ConversationFragmentV2.ADDRESS,result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
+            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
+            extras.putParcelable(ConversationFragmentV2.URI,result.data!!.getParcelableExtra(ConversationFragmentV2.URI))
+            extras.putString(ConversationFragmentV2.TYPE,result.data!!.getStringExtra(ConversationFragmentV2.TYPE))
+            replaceFragment(ConversationFragmentV2(), null, extras)
+        }
+    }
+
+    override fun createNewSecretGroup() {
+        val intent = Intent(this,CreateClosedGroupActivity::class.java)
+        createClosedGroupActivityResultLauncher.launch(intent)
+    }
+
+    private var createClosedGroupActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val extras = Bundle()
+            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
+            extras.putParcelable(ConversationFragmentV2.ADDRESS,result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
+            replaceFragment(ConversationFragmentV2(), null, extras)
+        }
+        if (result.resultCode == CreateClosedGroupActivity.closedGroupCreatedResultCode) {
+            createNewPrivateChat()
+        }
+    }
+
+    override fun joinSocialGroup() {
+        val intent = Intent(this, JoinPublicChatNewActivity::class.java)
+        joinPublicChatNewActivityResultLauncher.launch(intent)
+    }
+
+    private var joinPublicChatNewActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val extras = Bundle()
+            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
+            extras.putParcelable(ConversationFragmentV2.ADDRESS,result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
+            replaceFragment(ConversationFragmentV2(), null, extras)
+        }
+    }
+
+    /*Hales63*/
+    override fun showMessageRequests() {
+        val intent = Intent(this, MessageRequestsActivity::class.java)
+        resultLauncher.launch(intent)
+    }
+
+    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val extras = Bundle()
+            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
+            replaceFragment(ConversationFragmentV2(), null, extras)
+        }
+    }
+
+    override fun sendMessageToSupport() {
+        val recipient = Recipient.from(this, Address.fromSerialized(reportIssueBChatID), false)
+        val extras = Bundle()
+        extras.putParcelable(ConversationFragmentV2.ADDRESS, recipient.address)
+        val existingThread =
+            DatabaseComponent.get(this).threadDatabase().getThreadIdIfExistsFor(recipient)
+        extras.putLong(ConversationFragmentV2.THREAD_ID,existingThread)
+        extras.putParcelable(ConversationFragmentV2.URI,intent.data)
+        extras.putString(ConversationFragmentV2.TYPE,intent.type)
+        replaceFragment(ConversationFragmentV2(), null, extras)
+    }
+
+    override fun help() {
+        val intent = Intent(Intent.ACTION_SENDTO)
+        intent.data = Uri.parse("mailto:") // only email apps should handle this
+        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("support@beldex.io"))
+        intent.putExtra(Intent.EXTRA_SUBJECT, "")
+        startActivity(intent)
+    }
+
+    override fun sendInvitation(hexEncodedPublicKey:String) {
         val intent = Intent()
         intent.action = Intent.ACTION_SEND
         val invitation =
@@ -1180,94 +755,1079 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),
         startActivity(chooser)
     }
 
-    //New Line
-    private fun help() {
-        val intent = Intent(Intent.ACTION_SENDTO)
-        intent.data = Uri.parse("mailto:") // only email apps should handle this
-        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("support@beldex.io"))
-        intent.putExtra(Intent.EXTRA_SUBJECT, "")
-        startActivity(intent)
-    }
-
-    private fun showQRCode() {
-        val intent = Intent(this, ShowQRCodeWithScanQRCodeActivity::class.java)
+    override fun toolBarCall() {
+        val intent = Intent(this, WebRtcCallActivity::class.java)
         push(intent)
     }
 
-    private fun showSeed() {
-        val intent = Intent(this, SeedPermissionActivity::class.java)
-        show(intent)
-    }
-
-    private fun showKeys() {
-        val intent = Intent(this, KeysPermissionActivity::class.java)
-        show(intent)
-    }
-
-    private fun showAbout() {
-        val intent = Intent(this, AboutActivity::class.java)
-        show(intent)
-    }
-
-    private fun sendMessageToSupport() {
-        val recipient = Recipient.from(this, Address.fromSerialized(reportIssueBChatID), false)
-        val intent = Intent(this, ConversationActivityV2::class.java)
-        intent.putExtra(ConversationActivityV2.ADDRESS, recipient.address)
-        intent.setDataAndType(getIntent().data, getIntent().type)
-        val existingThread =
-            DatabaseComponent.get(this).threadDatabase().getThreadIdIfExistsFor(recipient)
-        intent.putExtra(ConversationActivityV2.THREAD_ID, existingThread)
-        startActivity(intent)
-    }
-
-    private fun showPath() {
-        val intent = Intent(this, PathActivity::class.java)
-        show(intent)
-    }
-
-    override fun createNewPrivateChat() {
-        val intent = Intent(this, CreateNewPrivateChatActivity::class.java)
-        show(intent)
-    }
-
-    override fun createNewSecretGroup() {
-        val intent = Intent(this, CreateClosedGroupActivity::class.java)
-        show(intent, true)
-    }
-
-    override fun joinSocialGroup() {
-        val intent = Intent(this, JoinPublicChatNewActivity::class.java)
-        show(intent)
-
-    }
-
-    /*Hales63*/
-    private fun showMessageRequests() {
-        val intent = Intent(this, MessageRequestsActivity::class.java)
+    override fun callAppPermission() {
+        val intent = Intent()
+        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+        val uri = Uri.fromParts("package", this@HomeActivity.packageName, null)
+        intent.data = uri
         push(intent)
     }
 
-    private fun hideMessageRequests() {
-        val dialog = AlertDialog.Builder(this, R.style.BChatAlertDialog_New)
-            .setTitle("Hide message requests?")
-            .setMessage("Once they are hidden, you can access them from Settings > Message Requests")
-            .setPositiveButton(R.string.yes) { _, _ ->
-                textSecurePreferences.setHasHiddenMessageRequests()
-                /*//New Line
-                textSecurePreferences.setHasShowMessageRequests(false)*/
+    override fun onDestroy() {
+        EventBus.getDefault().unregister(this@HomeActivity)
 
-                setupMessageRequestsBanner()
-                LoaderManager.getInstance(this).restartLoader(0, null, this)
+        //Wallet
+        Timber.d("onDestroy")
+        dismissProgressDialog()
+        //Important
+        //unregisterDetachReceiver()
+        //Ledger.disconnect()
+
+        if(CheckOnline.isOnline(this)) {
+            if (mBoundService != null && getWallet() != null) {
+                saveWallet()
             }
-            .setNegativeButton(R.string.no) { _, _ ->
-                // Do nothing
-            }.show()
-
-        //SteveJosephh21
-
-        val message: TextView = dialog.findViewById(android.R.id.message)
-        val messageFace: Typeface = Typeface.createFromAsset(assets, "fonts/open_sans_medium.ttf")
-        message.typeface = messageFace
+        }
+        stopWalletService()
+        super.onDestroy()
     }
-    // endregion
+
+    override fun getConversationViewModel(): ConversationViewModel.AssistedFactory {
+        return viewModelFactory
+    }
+
+    override fun gettextSecurePreferences(): TextSecurePreferences {
+        return textSecurePreferences
+    }
+
+    private fun getCurrentFragment(): Fragment? {
+        return supportFragmentManager.findFragmentById(R.id.activity_home_frame_layout_container)
+    }
+
+    override fun passGlobalSearchAdapterModelMessageValue(
+        threadId: Long,
+        timestamp: Long,
+        author: Address
+    ) {
+        val extras = Bundle()
+        extras.putLong(ConversationFragmentV2.THREAD_ID,threadId)
+        extras.putLong(ConversationFragmentV2.SCROLL_MESSAGE_ID,timestamp)
+        extras.putParcelable(ConversationFragmentV2.SCROLL_MESSAGE_AUTHOR,author)
+        replaceFragment(ConversationFragmentV2(),null,extras)
+    }
+
+    override fun passGlobalSearchAdapterModelSavedMessagesValue(address: Address) {
+        val extras = Bundle()
+        extras.putParcelable(ConversationFragmentV2.ADDRESS,address)
+        replaceFragment(ConversationFragmentV2(),null,extras)
+    }
+
+    override fun passGlobalSearchAdapterModelContactValue(address: Address) {
+        val extras = Bundle()
+        extras.putParcelable(ConversationFragmentV2.ADDRESS,address)
+        replaceFragment(ConversationFragmentV2(),null,extras)
+    }
+
+    override fun passGlobalSearchAdapterModelGroupConversationValue(threadId: Long) {
+        val extras = Bundle()
+        extras.putLong(ConversationFragmentV2.THREAD_ID,threadId)
+        replaceFragment(ConversationFragmentV2(),null,extras)
+    }
+
+    override fun callConversationFragmentV2(address: Address, threadId: Long) {
+        val extras = Bundle()
+        extras.putParcelable(ConversationFragmentV2.ADDRESS,address)
+        extras.putLong(ConversationFragmentV2.THREAD_ID,threadId)
+        replaceFragment(ConversationFragmentV2(),null,extras)
+    }
+
+    override fun playVoiceMessageAtIndexIfPossible(indexInAdapter: Int) {
+        val fragment = supportFragmentManager.findFragmentById(R.id.activity_home_frame_layout_container)
+        if(fragment is ConversationFragmentV2) {
+            (fragment as ConversationFragmentV2).playVoiceMessageAtIndexIfPossible(indexInAdapter)
+        }
+    }
+
+    override fun getSystemService(name: String): Any? {
+        if (name == ActivityDispatcher.SERVICE) {
+            return this
+        }
+        return super.getSystemService(name)
+    }
+
+    override fun dispatchIntent(body: (Context) -> Intent?) {
+        val intent = body(this) ?: return
+        push(intent, false)
+    }
+
+    override fun showDialog(baseDialog: BaseDialog, tag: String?) {
+        baseDialog.show(supportFragmentManager, tag)
+    }
+
+    //Wallet
+
+    private var mBoundService: WalletService? = null
+    private var mIsBound = false
+
+    private val mConnection: ServiceConnection = object : ServiceConnection {
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+            // This is called when the connection with the service has been
+            // established, giving us the service object we can use to
+            // interact with the service.  Because we have bound to a explicit
+            // service that we know is running in our own process, we can
+            // cast its IBinder to a concrete class and directly access it.
+            mBoundService = (service as WalletService.WalletServiceBinder).service
+            mBoundService!!.setObserver(this@HomeActivity)
+            updateProgress()
+            Log.d("CONNECTED","")
+        }
+
+        override fun onServiceDisconnected(className: ComponentName) {
+            // This is called when the connection with the service has been
+            // unexpectedly disconnected -- that is, its process crashed.
+            // Because it is running in our same process, we should never
+            // see this happen.
+            mBoundService = null
+            Log.d("DISCONNECTED", "")
+        }
+    }
+
+    private fun connectWalletService(walletName: String?, walletPassword: String?) {
+        // Establish a connection with the service.  We use an explicit
+        // class name because we want a specific service implementation that
+        // we know will be running in our own process (and thus won't be
+        // supporting component replacement by other applications).
+        Log.d("Beldex","value of walletName & walletPassword $walletName , $walletPassword")
+        if (CheckOnline.isOnline(this)) {
+            var intent: Intent? = null
+            if(intent==null) {
+                intent = Intent(applicationContext, WalletService::class.java)
+                intent.putExtra(WalletService.REQUEST_WALLET, walletName)
+                intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_LOAD)
+                intent.putExtra(WalletService.REQUEST_CMD_LOAD_PW, walletPassword)
+                startService(intent)
+                bindService(intent, mConnection, BIND_AUTO_CREATE)
+                mIsBound = true
+                Timber.d("BOUND")
+            }
+        }
+    }
+
+    private fun updateProgress() {
+        if (hasBoundService()) {
+            Log.d("Beldex","mConnection called updateProgress()")
+            onProgress(mBoundService!!.progressText)
+            onProgress(mBoundService!!.progressValue)
+        }
+    }
+
+//////////////////////////////////////////
+// WalletFragment.Listener
+//////////////////////////////////////////
+
+    // refresh and return true if successful
+    override fun hasBoundService(): Boolean {
+        return mBoundService != null
+    }
+
+    override fun forceUpdate(context: Context) {
+        try {
+            if(getWallet()!=null) {
+                onRefreshed(getWallet(), true)
+            }else{
+                if(!CheckOnline.isOnline(this)) {
+                    Toast.makeText(
+                        context,
+                        getString(R.string.please_check_your_internet_connection),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        } catch (ex: IllegalStateException) {
+            Timber.e(ex.localizedMessage)
+        }
+    }
+
+    override val connectionStatus: Wallet.ConnectionStatus?
+        get() = mBoundService!!.connectionStatus
+    override val daemonHeight: Long
+        get() = mBoundService!!.daemonHeight
+
+    override fun onSendRequest(view: View?) {
+        if(CheckOnline.isOnline(this)) {
+            SendFragment.newInstance(uri)
+                .let { replaceFragment(it, null, null) }
+            uri = null // only use uri once
+        }else{
+            Toast.makeText(this, getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    override fun onTxDetailsRequest(view: View?, info: TransactionInfo?) {
+        //Important
+        /*val args = Bundle()
+        args.putParcelable(TxFragment.ARG_INFO, info)
+        replaceFragment(TxFragment(), null, args)*/
+    }
+
+    private var synced = false
+
+    override val isSynced: Boolean
+        get() = synced
+    override val streetModeHeight: Long
+        get() = streetMode
+    override val isWatchOnly: Boolean
+        get() = if(getWallet()!=null){getWallet()!!.isWatchOnly}else{false}
+
+    override fun getTxKey(txId: String?): String? {
+        return getWallet()!!.getTxKey(txId)
+    }
+
+    override fun onWalletReceive(view: View?) {
+        replaceFragment(ReceiveFragment(), null, null)
+    }
+
+    var haveWallet = false
+
+    override fun hasWallet(): Boolean {
+        return haveWallet
+    }
+
+    override fun getWallet(): Wallet? {
+        return if(mBoundService!=null) {
+            checkNotNull(mBoundService) { "WalletService not bound." }
+            mBoundService!!.wallet
+        }else{
+            null
+        }
+    }
+
+    override fun getStorageRoot(): File {
+        TODO("Not yet implemented")
+    }
+
+    override fun getFavouriteNodes(): MutableSet<NodeInfo> {
+        return favouriteNodes
+    }
+
+    override fun getOrPopulateFavourites(): MutableSet<NodeInfo> {
+        if (favouriteNodes.isEmpty()) {
+            for (node in DefaultNodes.values()) {
+                val nodeInfo = NodeInfo.fromString(node.uri)
+                if (nodeInfo != null) {
+                    nodeInfo.isFavourite = true
+                    favouriteNodes.add(nodeInfo)
+                }
+            }
+            saveFavourites()
+        }
+        return favouriteNodes
+    }
+
+    override fun setFavouriteNodes(nodes: MutableCollection<NodeInfo>?) {
+        favouriteNodes.clear()
+        if (nodes != null) {
+            for (node in nodes) {
+                if (node.isFavourite) favouriteNodes.add(node)
+            }
+        }
+        saveFavourites()
+    }
+
+    private fun getSelectedNodeId(): String? {
+        return getSharedPreferences(
+            SELECTED_NODE_PREFS_NAME,
+            MODE_PRIVATE
+        ).getString("0", null)
+    }
+
+    private fun saveFavourites() {
+        val editor = getSharedPreferences(
+            NODES_PREFS_NAME,
+            MODE_PRIVATE
+        ).edit()
+        editor.clear()
+        var i = 1
+        for (info in favouriteNodes) {
+            val nodeString = info.toNodeString()
+            editor.putString(i.toString(), nodeString)
+            i++
+        }
+        editor.apply()
+    }
+
+    private fun addFavourite(nodeString: String): NodeInfo? {
+        val nodeInfo = NodeInfo.fromString(nodeString)
+        if (nodeInfo != null) {
+            nodeInfo.isFavourite = true
+            favouriteNodes.add(nodeInfo)
+        } else Timber.w("nodeString invalid: %s", nodeString)
+        return nodeInfo
+    }
+
+    private fun loadLegacyList(legacyListString: String?) {
+        if (legacyListString == null) return
+        val nodeStrings = legacyListString.split(";".toRegex()).toTypedArray()
+        for (nodeString in nodeStrings) {
+            addFavourite(nodeString)
+        }
+    }
+
+    private fun saveSelectedNode() { // save only if changed
+        val nodeInfo = getNode()
+        val selectedNodeId = getSelectedNodeId()
+        if (nodeInfo != null) {
+            if (!nodeInfo.toNodeString().equals(selectedNodeId)) saveSelectedNode(nodeInfo)
+        } else {
+            if (selectedNodeId != null) saveSelectedNode(null)
+        }
+    }
+
+    private fun saveSelectedNode(nodeInfo: NodeInfo?) {
+        val editor = getSharedPreferences(
+            SELECTED_NODE_PREFS_NAME,
+            MODE_PRIVATE
+        ).edit()
+        if (nodeInfo == null) {
+            editor.clear()
+        } else {
+            editor.putString("0", getNode()!!.toNodeString())
+        }
+        editor.apply()
+    }
+
+    override fun getNode(): NodeInfo? {
+        return if(TextSecurePreferences.getDaemon(this)){
+            TextSecurePreferences.changeDaemon(this,false)
+            val selectedNodeId = getSelectedNodeId()
+            val nodeInfo = NodeInfo.fromString(selectedNodeId)
+            nodeInfo
+        }else {
+            node
+        }
+    }
+
+    override fun setNode(node: NodeInfo?) {
+        setNode(node, true)
+    }
+
+    private fun setNode(node: NodeInfo?, save: Boolean) {
+        if (node !== this.node) {
+            require(!(node != null && node.networkType !== WalletManager.getInstance().networkType)) { "network type does not match" }
+            this.node = node
+            for (nodeInfo in favouriteNodes) {
+                nodeInfo.isSelected = nodeInfo === node
+            }
+            WalletManager.getInstance().setDaemon(node)
+            if (save) saveSelectedNode()
+
+            //SteveJosephh21
+            startWalletService()
+        }
+    }
+
+    private fun checkServiceRunning(): Boolean {
+        return if (WalletService.Running) {
+            Toast.makeText(this, getString(R.string.service_busy), Toast.LENGTH_SHORT).show()
+            true
+        } else {
+            false
+        }
+    }
+
+    override fun onNodePrefs() {
+        if (checkServiceRunning()) return
+    }
+
+
+    override fun callFinishActivity() {
+    }
+
+///////////////////////////
+// WalletService.Observer
+///////////////////////////
+
+    private var numAccounts = -1
+
+    override fun onRefreshed(wallet: Wallet?, full: Boolean): Boolean {
+        if (numAccounts != wallet!!.numAccounts) {
+            numAccounts = wallet.numAccounts
+        }
+        try {
+            //WalletFragment Functionality --
+            val currentFragment = getCurrentFragment()
+            if (wallet.isSynchronized) {
+                if (!synced) { // first sync
+                    onProgress(-2)//onProgress(-1)
+                    saveWallet() // save on first sync
+                    synced = true
+                    //WalletFragment Functionality --
+                    when (currentFragment) {
+                        is WalletFragment -> {
+                            runOnUiThread(currentFragment::onSynced)
+                        }
+                    }
+                }
+            }
+            runOnUiThread {
+                //WalletFragment Functionality --
+                when (currentFragment) {
+                    is ConversationFragmentV2 -> {
+                        currentFragment.onRefreshed(wallet,full)
+                    }
+                    is WalletFragment -> {
+                        currentFragment.onRefreshed(wallet,full)
+                    }
+                }
+            }
+            return true
+        } catch (ex: ClassCastException) {
+            Timber.d(ex.localizedMessage)
+        }
+        return false
+    }
+
+    override fun onProgress(text: String?) {
+        try {
+            //WalletFragment Functionality --
+            when (val currentFragment = getCurrentFragment()) {
+                is ConversationFragmentV2 -> {
+                    runOnUiThread { currentFragment.setProgress(text) }
+                }
+                is WalletFragment -> {
+                    runOnUiThread { currentFragment.setProgress(text) }
+                }
+            }
+        } catch (ex: ClassCastException) {
+            Timber.d(ex.localizedMessage)
+        }
+    }
+
+    override fun onProgress(n: Int) {
+        runOnUiThread {
+            try {
+                //WalletFragment Functionality --
+                when (val currentFragment = getCurrentFragment()) {
+                    is ConversationFragmentV2 -> {
+                        currentFragment.setProgress(n)
+                    }
+                    is WalletFragment -> {
+                        currentFragment.setProgress(n)
+                    }
+                }
+            } catch (ex: ClassCastException) {
+                Timber.d(ex.localizedMessage)
+            }
+        }
+    }
+
+    override fun onWalletStored(success: Boolean) {
+        runOnUiThread {
+            if (success) {
+                Toast.makeText(
+                    this@HomeActivity,
+                    getString(R.string.status_wallet_unloaded),
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                Toast.makeText(
+                    this@HomeActivity,
+                    getString(R.string.status_wallet_unload_failed),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+    }
+
+    override fun onTransactionCreated(tag: String, pendingTransaction: PendingTransaction) {
+        try {
+            //WalletFragment Functionality --
+            val currentFragment = getCurrentFragment()
+            runOnUiThread {
+                val status = pendingTransaction.status
+                if (status !== PendingTransaction.Status.Status_Ok) {
+                    val errorText = pendingTransaction.errorString
+                    getWallet()!!.disposePendingTransaction()
+                    if(currentFragment is ConversationFragmentV2){
+                        currentFragment.onCreateTransactionFailed(errorText)
+                    }else if(currentFragment is SendFragment){
+                        currentFragment.onCreateTransactionFailed(errorText)
+                    }
+                } else {
+                     if(currentFragment is ConversationFragmentV2){
+                        currentFragment.onTransactionCreated("txTag", pendingTransaction)
+                    }else if(currentFragment is SendFragment){
+                        currentFragment.onTransactionCreated("txTag", pendingTransaction)
+                    }
+                }
+            }
+        } catch (ex: ClassCastException) {
+            // not in spend fragment
+            Timber.d(ex.localizedMessage)
+            // don't need the transaction any more
+            if(getWallet()!=null) {
+                getWallet()!!.disposePendingTransaction()
+            }
+        }
+    }
+
+    override fun onTransactionSent(txId: String?) {
+        try {
+            //WalletFragment Functionality --
+            val currentFragment = getCurrentFragment()
+            if(currentFragment is ConversationFragmentV2){
+                runOnUiThread { currentFragment.onTransactionSent(txId) }
+            }else if(currentFragment is SendFragment){
+                runOnUiThread { currentFragment.onTransactionSent(txId) }
+            }
+        } catch (ex: ClassCastException) {
+            // not in spend fragment
+            Timber.d(ex.localizedMessage)
+        }
+    }
+
+    override fun onSendTransactionFailed(error: String?) {
+        try {
+            val sendFragment = getCurrentFragment() as SendFragment?
+            runOnUiThread { sendFragment!!.onSendTransactionFailed(error) }
+        } catch (ex: ClassCastException) {
+            // not in spend fragment
+            Timber.d(ex.localizedMessage)
+        }
+    }
+
+    override fun onWalletStarted(walletStatus: Wallet.Status?) {
+        runOnUiThread {
+            dismissProgressDialog()
+            if (walletStatus == null) {
+                // guess what went wrong
+                Toast.makeText(
+                    this@HomeActivity,
+                    getString(R.string.status_wallet_connect_failed),
+                    Toast.LENGTH_LONG
+                ).show()
+            } else {
+                if (Wallet.ConnectionStatus.ConnectionStatus_WrongVersion === walletStatus.connectionStatus) {
+                    Toast.makeText(
+                        this@HomeActivity,
+                        getString(R.string.status_wallet_connect_wrong_version),
+                        Toast.LENGTH_LONG
+                    ).show() }else if (!walletStatus.isOk) {
+                    if(walletStatus.errorString.isNotEmpty()) {
+                        Toast.makeText(
+                            this@HomeActivity,
+                            walletStatus.errorString,
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            }
+        }
+        if (walletStatus == null || Wallet.ConnectionStatus.ConnectionStatus_Connected !== walletStatus.connectionStatus) {
+            Log.d("Beldex","WalletActivity finished called")
+            /*finish()*/
+        } else {
+            haveWallet = true
+            invalidateOptionsMenu()
+            //WalletFragment Functionality --
+            val currentFragment = getCurrentFragment()
+            runOnUiThread {
+                //WalletFragment Functionality --
+                when (currentFragment) {
+                    is WalletFragment -> {
+                        currentFragment.onLoaded()
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onWalletOpen(device: Wallet.Device?) {
+        //Important
+        /*if (device === Wallet.Device.Device_Ledger) {
+            runOnUiThread { showLedgerProgressDialog(LedgerProgressDialog.TYPE_RESTORE) }
+        }*/
+    }
+
+    override fun onWalletFinish() {
+        finish()
+    }
+
+    override fun onScanned(qrCode: String?): Boolean {
+        // #gurke
+        val bcData = BarcodeData.fromString(qrCode)
+        return if (bcData != null) {
+            popFragmentStack(null)
+            Timber.d("AAA")
+            onUriScanned(bcData)
+            true
+        } else {
+            false
+        }
+    }
+
+    override fun setOnBarcodeScannedListener(onUriScannedListener: OnUriScannedListener?) {
+        this.onUriScannedListener = onUriScannedListener
+    }
+
+    /// QR scanner callbacks
+    override fun onScan() {
+        if (Helper.getCameraPermission(this)) {
+            startWalletScanFragment()
+        } else {
+            Timber.i("Waiting for permissions")
+        }
+    }
+
+//////////////////////////////////////////
+// SendFragment.Listener
+//////////////////////////////////////////
+
+    override val prefs: SharedPreferences?
+        get() = getPreferences(MODE_PRIVATE)
+    override val totalFunds: Long
+        get() = if(getWallet()!=null){getWallet()!!.unlockedBalance}else{0}
+    override val isStreetMode: Boolean
+        get() = streetMode > 0
+
+    override fun onPrepareSend(tag: String?, txData: TxData?) {
+        if (mIsBound) { // no point in talking to unbound service
+            var intent: Intent? = null
+            if(intent==null) {
+                intent = Intent(applicationContext, WalletService::class.java)
+                intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_TX)
+                intent.putExtra(WalletService.REQUEST_CMD_TX_DATA, txData)
+                intent.putExtra(WalletService.REQUEST_CMD_TX_TAG, tag)
+                startService(intent)
+            }
+        } else {
+            Timber.e("Service not bound")
+        }
+    }
+
+    override val walletName: String?
+        get() = getWallet()!!.name
+
+    override fun onSend(notes: UserNotes?) {
+        if (mIsBound) { // no point in talking to unbound service
+            var intent: Intent? = null
+            if(intent==null) {
+                intent = Intent(applicationContext, WalletService::class.java)
+                intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_SEND)
+                intent.putExtra(WalletService.REQUEST_CMD_SEND_NOTES, notes!!.txNotes)
+                startService(intent)
+                Timber.d("SEND TX request sent")
+            }
+        } else {
+            Timber.e("Service not bound")
+        }
+    }
+
+    override fun onDisposeRequest() {
+        if(getWallet()!=null) {
+            getWallet()!!.disposePendingTransaction()
+        }
+    }
+
+    override fun onFragmentDone() {
+        popFragmentStack(null)
+    }
+
+    private fun popFragmentStack(name: String?) {
+        if (name == null) {
+            supportFragmentManager.popBackStack()
+        } else {
+            supportFragmentManager.popBackStack(name, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        }
+    }
+
+    override fun setOnUriScannedListener(onUriScannedListener: OnUriScannedListener?) {
+        this.onUriScannedListener = onUriScannedListener
+    }
+
+    override fun setOnUriWalletScannedListener(onUriWalletScannedListener: OnUriWalletScannedListener?) {
+        this.onUriWalletScannedListener = onUriWalletScannedListener
+    }
+
+    override fun setBarcodeData(data: BarcodeData?) {
+        barcodeData = data
+    }
+
+    override fun getBarcodeData(): BarcodeData? {
+        return barcodeData
+    }
+
+    override fun popBarcodeData(): BarcodeData? {
+        val data = barcodeData!!
+        barcodeData = null
+        return data
+    }
+
+    enum class Mode {
+        BDX, BTC
+    }
+
+    override fun setMode(mode: Mode?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getTxData(): TxData? {
+        TODO("Not yet implemented")
+    }
+
+
+    private fun startWalletService() {
+        val walletName = getWalletName(this)
+        val walletPassword = getWalletPassword(this)
+        if (walletName != null && walletPassword != null) {
+            // acquireWakeLock()
+            // we can set the streetmode height AFTER opening the wallet
+            if (CheckOnline.isOnline(this)) {
+                connectWalletService(walletName, walletPassword)
+            }
+        } else {
+            val intent = Intent(this, WalletInfoActivity::class.java)
+            push(intent)
+        }
+    }
+
+    override fun onBackPressedFun() {
+        if(CheckOnline.isOnline(this)) {
+            onDisposeRequest()
+        }
+        setBarcodeData(null)
+        onBackPressed()
+    }
+
+    override fun onWalletScan(view: View?) {
+        if (Helper.getCameraPermission(this)) {
+            val extras = Bundle()
+            replaceFragment(WalletScannerFragment(), null, extras)
+        } else {
+            Timber.i("Waiting for permissions")
+        }
+    }
+
+    override fun onWalletScanned(qrCode: String?): Boolean {
+        // #gurke
+        val bcData = BarcodeData.fromString(qrCode)
+        return if (bcData != null) {
+            popFragmentStack(null)
+            onUriWalletScanned(bcData)
+            true
+        } else {
+            false
+        }
+    }
+
+    //SecureActivity
+    override fun onUriScanned(barcodeData: BarcodeData?) {
+        var processed = false
+        if (onUriScannedListener != null) {
+
+            processed = onUriScannedListener!!.onUriScanned(barcodeData)
+        }
+        if (!processed || onUriScannedListener == null) {
+            Toast.makeText(this, getString(R.string.nfc_tag_read_what), Toast.LENGTH_LONG).show()
+        }
+    }
+
+    fun onUriWalletScanned(barcodeData: BarcodeData?) {
+        var processed = false
+        if (onUriWalletScannedListener != null) {
+
+            processed = onUriWalletScannedListener!!.onUriWalletScanned(barcodeData)
+        }
+        if (!processed || onUriWalletScannedListener == null) {
+            Toast.makeText(this, getString(R.string.nfc_tag_read_what), Toast.LENGTH_LONG).show()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Timber.d("onResume()-->")
+        //Important
+        //if (!Ledger.isConnected()) attachLedger()
+        if(!CheckOnline.isOnline(this)){
+            Toast.makeText(this,getString(R.string.please_check_your_internet_connection),Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun stopWalletService() {
+        disconnectWalletService()
+    }
+
+    private fun disconnectWalletService() {
+        if (mIsBound) {
+            // Detach our existing connection.
+            if(mBoundService != null){
+                mBoundService!!.setObserver(null)
+            }
+            unbindService(mConnection)
+            mIsBound = false
+            Timber.d("UNBOUND")
+        }
+    }
+
+    private fun saveWallet() {
+        if (mIsBound) { // no point in talking to unbound service
+            var intent: Intent? = null
+            if(intent==null) {
+                intent = Intent(applicationContext, WalletService::class.java)
+                intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_STORE)
+                startService(intent)
+                Timber.d("STORE request sent")
+            }
+        } else {
+            Timber.e("Service not bound")
+        }
+    }
+
+    private var startScanFragment = false
+
+    override fun onResumeFragments() {
+        super.onResumeFragments()
+        if (startScanFragment) {
+            startScanFragment()
+            startScanFragment = false
+        }
+    }
+
+    private fun startScanFragment() {
+        val extras = Bundle()
+        replaceFragment(WalletScannerFragment(), null, extras)
+    }
+
+    private fun startWalletScanFragment() {
+        val extras = Bundle()
+        replaceFragment(ScannerFragment(), null, extras)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String?>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == Helper.PERMISSIONS_REQUEST_CAMERA) { // If request is cancelled, the result arrays are empty.
+            if (grantResults.size > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED
+            ) {
+                startScanFragment = true
+            } else {
+                val msg = getString(R.string.message_camera_not_permitted)
+                Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    fun onWalletRescan(restoreHeight: Long) {
+        try {
+            val currentWallet = getCurrentFragment()
+
+            if(getWallet()!=null) {
+                // The height entered by user
+                getWallet()!!.restoreHeight = restoreHeight
+                getWallet()!!.rescanBlockchainAsync()
+            }
+            synced = false
+            if(currentWallet is WalletFragment){
+                currentWallet.unsync()
+            invalidateOptionsMenu()
+            }
+        } catch (ex: java.lang.ClassCastException) {
+            Timber.d(ex.localizedMessage)
+        }
+    }
+
+    override fun setToolbarButton(type: Int) {
+        /*binding.toolbar.setButton(type)*/
+    }
+
+    override fun setSubtitle(title: String?) {
+        /* binding.toolbar.setSubtitle(subtitle)*/
+    }
+
+    override fun setTitle(titleId: Int) {
+
+    }
+
+    override fun callToolBarRescan(){
+        val dialog: AlertDialog.Builder = AlertDialog.Builder(this, R.style.BChatAlertDialog_Syncing_Option)
+        val li = LayoutInflater.from(dialog.context)
+        val promptsView = li.inflate(R.layout.alert_sync_options, null)
+
+        dialog.setView(promptsView)
+        val reConnect  = promptsView.findViewById<Button>(R.id.reConnectButton_Alert)
+        val reScan = promptsView.findViewById<Button>(R.id.rescanButton_Alert)
+        val alertDialog: AlertDialog = dialog.create()
+        alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        alertDialog.show()
+
+        reConnect.setOnClickListener {
+            if (CheckOnline.isOnline(this)) {
+                onWalletReconnect(node, useSSL, isLightWallet)
+                alertDialog.dismiss()
+            } else {
+                Toast.makeText(
+                    this,
+                    R.string.please_check_your_internet_connection,
+                    Toast.LENGTH_SHORT
+                ).show()
+                alertDialog.dismiss()
+            }
+        }
+
+        reScan.setOnClickListener {
+            if (CheckOnline.isOnline(this)) {
+                if (getWallet() != null) {
+                    if (isSynced) {
+                        if (getWallet()!!.daemonBlockChainHeight != null) {
+                            RescanDialog(this, getWallet()!!.daemonBlockChainHeight).show(
+                                supportFragmentManager,
+                                ""
+                            )
+                        }
+                    } else {
+                        Toast.makeText(
+                            this,
+                            getString(R.string.cannot_rescan_while_wallet_is_syncing),
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
+                    }
+
+                    //onWalletRescan()
+                }
+            } else {
+                Toast.makeText(
+                    this,
+                    getString(R.string.please_check_your_internet_connection),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            alertDialog.dismiss()
+        }
+    }
+
+    private fun onWalletReconnect(node: NodeInfo?, UseSSL: Boolean, isLightWallet: Boolean) {
+        val currentWallet = getCurrentFragment()
+        if (CheckOnline.isOnline(this)) {
+            if (getWallet() != null) {
+                val isOnline =
+                    getWallet()?.reConnectToDaemon(node, UseSSL, isLightWallet) as Boolean
+                if (isOnline) {
+                    synced = false
+                    setNode(node)
+                    if(currentWallet is WalletFragment) {
+                        currentWallet.setProgress(getString(R.string.reconnecting))
+                        currentWallet.setProgress(101)
+                        invalidateOptionsMenu()
+                    }
+                } else {
+                    if(currentWallet is WalletFragment) {
+                        currentWallet.setProgress(R.string.failed_connected_to_the_node)
+                    }
+                }
+            } else {
+                Toast.makeText(this, "Wait for connection..", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        } else {
+            Toast.makeText(this, R.string.please_check_your_internet_connection, Toast.LENGTH_SHORT)
+                .show()
+        }
+    }
+
+    override fun callToolBarSettings() {
+        openWalletSettings()
+    }
+
+    private fun openWalletSettings() {
+        val intent = Intent(this, WalletSettings::class.java)
+        walletSettingsResultLauncher.launch(intent)
+    }
+
+    private var walletSettingsResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val intent = Intent(this, LoadingActivity::class.java)
+            push(intent)
+            finish()
+        }
+    }
+
+    override fun walletOnBackPressed(){
+        val fragment: Fragment = getCurrentFragment()!!
+        if (fragment is ConversationFragmentV2 || fragment is SendFragment || fragment is ReceiveFragment || fragment is ScannerFragment || fragment is WalletScannerFragment || fragment is WalletFragment) {
+            if (!(fragment as OnBackPressedListener).onBackPressed()) {
+                TextSecurePreferences.callFiatCurrencyApi(this,false)
+                try {
+                    super.onBackPressed()
+                }catch(e : IllegalStateException){
+                    replaceHomeFragment()
+                }
+            }
+        }
+    }
+
+
+    //SetDataAndType
+    override fun passSharedMessageToConversationScreen(thread:Recipient) {
+        val intent = Intent(this, MediaOverviewActivity::class.java)
+        intent.putExtra(MediaOverviewActivity.ADDRESS_EXTRA, thread.address)
+        passSharedMessageToConversationScreen.launch(intent)
+    }
+    private val passSharedMessageToConversationScreen = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            if(result.data!=null){
+                val extras = Bundle()
+                extras.putParcelable(ConversationFragmentV2.ADDRESS, result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
+                extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
+                extras.putParcelable(ConversationFragmentV2.URI,result.data!!.getParcelableExtra<Uri>(ConversationFragmentV2.URI))
+                extras.putString(ConversationFragmentV2.TYPE,result.data!!.getStringExtra(ConversationFragmentV2.TYPE))
+                extras.putCharSequence(Intent.EXTRA_TEXT,result.data!!.getCharSequenceExtra(Intent.EXTRA_TEXT))
+                //Shortcut launcher
+                extras.putBoolean(ConversationFragmentV2.SHORTCUT_LAUNCHER,true)
+                replaceFragment(HomeFragment(),null,extras)
+            }
+        }
+    }
+
+    private fun loadFavouritesWithNetwork() {
+        Helper.runWithNetwork {
+            loadFavourites()
+            true
+        }
+    }
+
+    private fun loadFavourites() {
+        favouriteNodes.clear()
+        val selectedNodeId = getSelectedNodeId()
+        val storedNodes = getSharedPreferences(NODES_PREFS_NAME, MODE_PRIVATE).all
+        for (nodeEntry in storedNodes.entries) {
+            if (nodeEntry != null) { // just in case, ignore possible future errors
+                val nodeId = nodeEntry.value as String
+                val addedNode = addFavourite(nodeId)
+                if (addedNode != null) {
+                    if (nodeId == selectedNodeId) {
+                        addedNode.isSelected = true
+                    }
+                }
+            }
+        }
+        if (storedNodes.isEmpty()) { // try to load legacy list & remove it (i.e. migrate the data once)
+            val sharedPref = getPreferences(MODE_PRIVATE)
+            when (WalletManager.getInstance().networkType) {
+                NetworkType.NetworkType_Mainnet -> {
+                    loadLegacyList(sharedPref.getString(PREF_DAEMON_MAINNET, null))
+                    sharedPref.edit().remove(PREF_DAEMON_MAINNET).apply()
+                }
+                NetworkType.NetworkType_Stagenet -> {
+                    loadLegacyList(sharedPref.getString(PREF_DAEMON_STAGENET, null))
+                    sharedPref.edit().remove(PREF_DAEMON_STAGENET).apply()
+                }
+                NetworkType.NetworkType_Testnet -> {
+                    loadLegacyList(sharedPref.getString(PREF_DAEMON_TESTNET, null))
+                    sharedPref.edit().remove(PREF_DAEMON_TESTNET).apply()
+                }
+                else -> throw java.lang.IllegalStateException("unsupported net " + WalletManager.getInstance().networkType)
+            }
+        }
+    }
 }
+//endregion

@@ -1,6 +1,5 @@
 package com.thoughtcrimes.securesms.conversation.v2.menus
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.graphics.BitmapFactory
 import android.graphics.PorterDuff
@@ -18,10 +17,8 @@ import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
-import com.beldex.libbchat.messaging.messages.control.ExpirationTimerUpdate
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.messaging.sending_receiving.leave
-import com.beldex.libbchat.utilities.Contact
 import com.beldex.libbchat.utilities.ExpirationUtil
 import com.beldex.libbchat.utilities.GroupUtil.doubleDecodeGroupID
 import com.beldex.libbchat.utilities.TextSecurePreferences
@@ -31,9 +28,7 @@ import com.beldex.libsignal.utilities.guava.Optional
 import com.beldex.libsignal.utilities.toHexString
 import com.thoughtcrimes.securesms.*
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
-import com.thoughtcrimes.securesms.contacts.ContactSelectionListItem
 import com.thoughtcrimes.securesms.contacts.SelectContactsActivity
-import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
 import com.thoughtcrimes.securesms.conversation.v2.utilities.NotificationUtils
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.groups.EditClosedGroupActivity
@@ -44,26 +39,15 @@ import com.thoughtcrimes.securesms.util.BitmapUtil
 import com.thoughtcrimes.securesms.util.getColorWithID
 import java.io.IOException
 import android.content.*
-import android.content.pm.PackageManager
 import android.view.*
 import io.beldex.bchat.R
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.os.Build
-import android.telephony.PhoneStateListener
-import android.telephony.TelephonyCallback
-import android.telephony.TelephonyManager
-import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
-import androidx.core.content.PermissionChecker.checkSelfPermission
-import androidx.core.content.ContextCompat.getSystemService
-
-
-
+import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 
 object ConversationMenuHelper {
 
-    fun onPrepareOptionsMenu(menu: Menu, inflater: MenuInflater, thread: Recipient, threadId: Long, context: Context, onOptionsItemSelected: (MenuItem) -> Unit) {
+    fun onPrepareOptionsMenu(menu: Menu, inflater: MenuInflater, thread: Recipient, threadId: Long, context: Context,fragmentV2: ConversationFragmentV2, onOptionsItemSelected: (MenuItem) -> Unit) {
         // Prepare
         menu.clear()
         val isOpenGroup = thread.isOpenGroupRecipient
@@ -78,7 +62,7 @@ object ConversationMenuHelper {
                 val actionView = item.actionView
                 val iconView = actionView.findViewById<ImageView>(R.id.menu_badge_icon)
                 val badgeView = actionView.findViewById<TextView>(R.id.expiration_badge)
-                @ColorInt val color = context.resources.getColorWithID(R.color.text, context.theme)
+                @ColorInt val color = fragmentV2.resources.getColorWithID(R.color.text, context.theme)
                 iconView.colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY)
                 badgeView.text = ExpirationUtil.getExpirationAbbreviatedDisplayValue(context, thread.expireMessages)
                 actionView.setOnClickListener { onOptionsItemSelected(item) }
@@ -87,7 +71,7 @@ object ConversationMenuHelper {
             }
         }
         // One-on-one chat menu (options that should only be present for one-on-one chats)
-        if (thread.isContactRecipient) {
+        if (thread.isContactRecipient && thread.hasApprovedMe() && !thread.isLocalNumber) {
             if (thread.isBlocked) {
                 inflater.inflate(R.menu.menu_conversation_unblock, menu)
             } else {
@@ -96,17 +80,24 @@ object ConversationMenuHelper {
         }
         // Secret group menu (options that should only be present in secret groups)
         if (thread.isClosedGroupRecipient) {
-            inflater.inflate(R.menu.menu_conversation_closed_group, menu)
+            val groupPublicKey = doubleDecodeGroupID(thread.address.toString()).toHexString()
+            val isClosedGroup =
+                DatabaseComponent.get(context).beldexAPIDatabase().isClosedGroup(groupPublicKey)
+            if (isClosedGroup) {
+                inflater.inflate(R.menu.menu_conversation_closed_group, menu)
+            }
         }
         // Social group menu
         if (isOpenGroup) {
             inflater.inflate(R.menu.menu_conversation_open_group, menu)
         }
         // Muting
-        if (thread.isMuted) {
-            inflater.inflate(R.menu.menu_conversation_muted, menu)
-        } else {
-            inflater.inflate(R.menu.menu_conversation_unmuted, menu)
+        if(thread.hasApprovedMe() && !thread.isLocalNumber) {
+            if (thread.isMuted) {
+                inflater.inflate(R.menu.menu_conversation_muted, menu)
+            } else {
+                inflater.inflate(R.menu.menu_conversation_unmuted, menu)
+            }
         }
 
         if (thread.isGroupRecipient && !thread.isMuted) {
@@ -114,13 +105,13 @@ object ConversationMenuHelper {
         }
 
         //SteveJosephh21
-        if (!thread.isGroupRecipient && thread.hasApprovedMe()) {
+        if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isLocalNumber) {
             inflater.inflate(R.menu.menu_conversation_call, menu)
         }
 
         // Search
         val searchViewItem = menu.findItem(R.id.menu_search)
-        (context as ConversationActivityV2).searchViewItem = searchViewItem
+        fragmentV2.searchViewItem = searchViewItem
         val searchView = searchViewItem.actionView as SearchView
 
         val queryListener = object : OnQueryTextListener {
@@ -129,7 +120,7 @@ object ConversationMenuHelper {
             }
 
             override fun onQueryTextChange(query: String): Boolean {
-                context.onSearchQueryUpdated(query)
+                fragmentV2.onSearchQueryUpdated(query)
                 Log.d("Beldex","Search Query text change")
                 return true
             }
@@ -138,7 +129,7 @@ object ConversationMenuHelper {
             override fun onMenuItemActionExpand(item: MenuItem): Boolean {
                 Log.d("Beldex","Search expand listener")
                 searchView.setOnQueryTextListener(queryListener)
-                context.onSearchOpened()
+                fragmentV2.onSearchOpened()
                 for (i in 0 until menu.size()) {
                     if (menu.getItem(i) != searchViewItem) {
                         menu.getItem(i).isVisible = false
@@ -149,23 +140,29 @@ object ConversationMenuHelper {
 
             override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
                 searchView.setOnQueryTextListener(null)
-                context.onSearchClosed()
+                fragmentV2.onSearchClosed()
                 return true
             }
         })
 
     }
 
-    fun onOptionItemSelected(context: Context, item: MenuItem, thread: Recipient): Boolean {
+    fun onOptionItemSelected(
+        context: Context,
+        fragmentV2: ConversationFragmentV2,
+        item: MenuItem,
+        thread: Recipient,
+        listenerCallback: ConversationFragmentV2.Listener?
+    ): Boolean {
         when (item.itemId) {
-            R.id.menu_view_all_media -> { showAllMedia(context, thread) }
-            R.id.menu_search -> { search(context) }
+            R.id.menu_view_all_media -> { showAllMedia(thread,listenerCallback) }
+            R.id.menu_search -> { search(fragmentV2) }
             R.id.menu_add_shortcut -> { addShortcut(context, thread) }
-            R.id.menu_expiring_messages -> { showExpiringMessagesDialog(context, thread) }
-            R.id.menu_expiring_messages_off -> { showExpiringMessagesDialog(context, thread) }
-            R.id.menu_unblock -> { unblock(context, thread) }
-            R.id.menu_block -> { block(context, thread,deleteThread = false) }
-            R.id.menu_copy_bchat_id -> { copyBchatID(context, thread) }
+            R.id.menu_expiring_messages -> { showExpiringMessagesDialog(fragmentV2, thread) }
+            R.id.menu_expiring_messages_off -> { showExpiringMessagesDialog(fragmentV2, thread) }
+            R.id.menu_unblock -> { unblock(fragmentV2, thread) }
+            R.id.menu_block -> { block(fragmentV2, thread,deleteThread = false) }
+            R.id.menu_copy_bchat_id -> { copyBchatID(fragmentV2, thread) }
             R.id.menu_edit_group -> { editClosedGroup(context, thread) }
             R.id.menu_leave_group -> { leaveClosedGroup(context, thread) }
             R.id.menu_invite_to_open_group -> { inviteContacts(context, thread) }
@@ -281,16 +278,14 @@ object ConversationMenuHelper {
 
 
 
-    fun showAllMedia(context: Context, thread: Recipient) {
-        val intent = Intent(context, MediaOverviewActivity::class.java)
-        intent.putExtra(MediaOverviewActivity.ADDRESS_EXTRA, thread.address)
-        val activity = context as AppCompatActivity
-        activity.startActivity(intent)
+    fun showAllMedia(thread: Recipient,listenerCallback: ConversationFragmentV2.Listener?) {
+        //SetDataAndType
+        listenerCallback?.passSharedMessageToConversationScreen(thread)
     }
 
-    private fun search(context: Context) {
-        val searchViewModel = (context as ConversationActivityV2).searchViewModel
-        searchViewModel.onSearchOpened()
+    private fun search(context: ConversationFragmentV2) {
+        val searchViewModel = context.searchViewModel
+        searchViewModel!!.onSearchOpened()
     }
 
     //New Line
@@ -373,24 +368,24 @@ object ConversationMenuHelper {
         }.execute()
     }
 
-    private fun showExpiringMessagesDialog(context: Context, thread: Recipient) {
+    private fun showExpiringMessagesDialog(context: ConversationFragmentV2, thread: Recipient) {
         val listener = context as? ConversationMenuListener ?: return
         listener.showExpiringMessagesDialog(thread)
     }
 
-    private fun unblock(context: Context, thread: Recipient) {
+    private fun unblock(context: ConversationFragmentV2, thread: Recipient) {
         if (!thread.isContactRecipient) { return }
         val listener = context as? ConversationMenuListener ?: return
         listener.unblock()
     }
 
-    private fun block(context: Context, thread: Recipient, deleteThread: Boolean) {
+    private fun block(context: ConversationFragmentV2, thread: Recipient, deleteThread: Boolean) {
         if (!thread.isContactRecipient) { return }
         val listener = context as? ConversationMenuListener ?: return
         listener.block(deleteThread)
     }
 
-    private fun copyBchatID(context: Context, thread: Recipient) {
+    private fun copyBchatID(context: ConversationFragmentV2, thread: Recipient) {
         if (!thread.isContactRecipient) { return }
         val listener = context as? ConversationMenuListener ?: return
         listener.copyBchatID(thread.address.toString())
@@ -452,7 +447,7 @@ object ConversationMenuHelper {
         if (!thread.isOpenGroupRecipient) { return }
         val intent = Intent(context, SelectContactsActivity::class.java)
         val activity = context as AppCompatActivity
-        activity.startActivityForResult(intent, ConversationActivityV2.INVITE_CONTACTS)
+        activity.startActivityForResult(intent, ConversationFragmentV2.INVITE_CONTACTS)
     }
 
     private fun unmute(context: Context, thread: Recipient) {

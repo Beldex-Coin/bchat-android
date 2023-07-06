@@ -28,7 +28,6 @@ import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.PublicKeyValidation
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
-import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.util.ScanQRCodeWrapperFragment
 import com.thoughtcrimes.securesms.util.ScanQRCodeWrapperFragmentDelegate
@@ -115,7 +114,7 @@ class CreatePrivateChatActivity : PassphraseRequiredActionBarActivity(), ScanQRC
     }
 
     private fun createPrivateChat(hexEncodedPublicKey: String) {
-        val recipient = Recipient.from(this, Address.fromSerialized(hexEncodedPublicKey), false)
+        /*val recipient = Recipient.from(this, Address.fromSerialized(hexEncodedPublicKey), false)
         //-Log.d("Beldex","recipient in create private chat ${recipient.address}")
         val intent = Intent(this, ConversationActivityV2::class.java)
         intent.putExtra(ConversationActivityV2.ADDRESS, recipient.address)
@@ -123,7 +122,7 @@ class CreatePrivateChatActivity : PassphraseRequiredActionBarActivity(), ScanQRC
         val existingThread = DatabaseComponent.get(this).threadDatabase().getThreadIdIfExistsFor(recipient)
         intent.putExtra(ConversationActivityV2.THREAD_ID, existingThread)
         startActivity(intent)
-        finish()
+        finish()*/
     }
     // endregion
 }

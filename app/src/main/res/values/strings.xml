@@ -578,6 +578,7 @@
     <string name="preferences_chat_font_small" translatable="false">Small</string>
     <string name="preferences_chat_font_medium" translatable="false">Medium</string>
     <string name="preferences_chat_font_large" translatable="false">large</string>
+    <string name="preferences_chat_pay_as_you_chat_title" translatable="false">Pay as you chat</string>
 
     <!-- **************************************** -->
     <!-- menus -->
@@ -883,7 +884,7 @@
     <string name="dialog_open_url_title" translatable="false">Open URL?</string>
     <string name="dialog_open_url_explanation" translatable="false">Are you sure you want to open %s?</string>
     <string name="open" translatable="false">Open</string>
-    <string name="copy_url" translatable="false">Copy URL</string>
+    <string name="copy_link" translatable="false">Copy Link</string>
 
     <string name="dialog_link_preview_title" translatable="false">Enable Link Previews?</string>
     <string name="dialog_link_preview_explanation" translatable="false">Enabling link previews will show previews for URLs you send and receive. This can be useful, but BChat will need to contact linked websites to generate previews. You can always disable link previews in BChat\'s settings.</string>
@@ -993,9 +994,6 @@
     <string name="seed_permission_important_confirmTitle" translatable="false">Check your surroundings to ensure no one is overlooking. Do you want to proceed?</string>
     <string name="seed_permission_important_confirmButton" translatable="false">Yes, I\'m Safe.</string>
     <string name="mnemonic_edit_text_hint" translatable="false">Enter your recovery seed to restore your account.</string>
-    <string name="keys_permission_important_subTitle" translatable="false">Never share your restore key with anyone!</string>
-    <string name="keys_permission_important_description" translatable="false">Your key can be used to restore your account. Never share it with anyone or store a digital copy of it. Never enter your restore key in any other website or application other than BChat or the Beldex official wallet.</string>
-    <string name="keys_permission_important_confirmTitle" translatable="false">Check your surroundings and ensure no one is overlooking. Do you want to proceed?</string>
     <string name="password_screen_description_content" translatable="false">Enter your four digit pin to unlock your account</string>
     <string name="check_password_description_content_seed" translatable="false">Enter your password to view your seed. Write it down on paper.</string>
     <string name="check_password_description_content_keys" translatable="false">Enter your password to view your restore key. Write it down on paper.</string>
@@ -1250,8 +1248,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="confirm_sending" translatable="false">Confirm Sending</string>
     <string name="address" translatable="false">Address :</string>
     <string name="commit_transaction" translatable="false">Commit Transaction</string>
-    <string name="amount" translatable="false">Amount:</string>
-    <string name="fee" translatable="false">Fee:</string>
+    <string name="amount" translatable="false">Amount :</string>
+    <string name="fee" translatable="false">Fee :</string>
     <string name="estimated_fee" translatable="false">Estimated Fee: %1$s BDX</string>
     <string name="fiat_currency" translatable="false">%1$.2f %2$s</string>
     <string name="beldex_amount_valid_error_message" translatable="false">Enter a valid amount</string>
@@ -1301,7 +1299,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="change_pin_confirmation_message" translatable="false">New pin and old pin can\'t be same, Please enter a different pin</string>
     <string name="failed_connected_to_the_node" translatable="false">Failed to connect to the node</string>
     <string name="reconnecting" translatable="false">Reconnecting...</string>
-    <string name="switching_node">Switching Node</string>
+    <string name="switching_node">Switching Node… Once its finished please reopen the wallet!</string>
     <string name="no_copied_seed" translatable="false">Make sure you have copied the seed!</string>
     <string name="your_pin_has_been_set_up_successfully" translatable="false">Your PIN has been set up successfully!</string>
     <string name="sync_info" translatable="false">Sync Info</string>
@@ -1343,14 +1341,48 @@ Your wallet password can be used to access your wallet within BChat and authenti
         <item quantity="other">and %d others</item>
     </plurals>
     <string name="unblock_selected" translatable="false">Unblock Selected</string>
-    <string name="call_alert_while_ringing" translatable="false">BChat call won\'t allow ,Because your phone call ringing</string>
-    <string name="call_alert_while_on_going" translatable="false">BChat call won\'t allow ,Because your phone call is on going</string>
+    <string name="call_alert" translatable="false">You\'re already on call</string>
     <string name="please_connect_to_other_node" translatable="false">Please connect to other node</string>
     <string name="please_try_after_some_time" translatable="false">Please try after some time</string>
+    <string name="conversation_transition_name" translatable="false">conversation_transition</string>
+    <string name="in_chat_payment" translatable="false">In-Chat Payment</string>
+    <string name="pay_as_you_chat" translatable="false">Pay As You Chat</string>
+    <string name="subtitle_balance" translatable="false">Balance :</string>
+    <string name="subtitle_unlocked_balance" translatable="false">Unlocked Balance :</string>
+    <string name="subtitle_current_height" translatable="false">Current Height :</string>
+    <string name="subtitle_wallet" translatable="false">Wallet :</string>
     <string name="bdx" translatable="false">BDX</string>
     <string name="payment_success_message" translatable="false">Sent Successfully</string>
     <string name="payment_received_message" translatable="false">Received Successfully</string>
     <string name="payment_sent" translatable="false">Payment Sent</string>
     <string name="payment_received" translatable="false">Payment Received</string>
     <string name="reply_payment_card_message" translatable="false">%1s : %2s BDX</string>
+    <string name="open_link" translatable="false">Open Link</string>
+    <string name="initiating_transaction" translatable="false">Initiating Transaction..</string>
+    <string name="invalid_destination_address" translatable="false">Invalid destination address</string>
+    <string name="search_people_and_groups" translatable="false">Search people and groups</string>
+    <string name="you_can_t_send_messages_to_this_group_because_you_re_no_longer_a_participant" translatable="false">You can\'t send messages to this group because you\'re no longer a participant.</string>
+    <string name="empty_message_toast" translatable="false">Can\'t send empty message</string>
+    <string name="slide_to_send_bdx" translatable="false">Slide to send BDX</string>
+    <string name="search_currency" translatable="false">Search Currency</string>
+    <string name="enter_a_valid_nickname" translatable="false">Enter a valid nickname</string>
+    <string name="in_chat_amount" translatable="false">Amount</string>
+    <string name="failed_to_connect_to_node" translatable="false">Failed to connect to node</string>
+    <string name="receiver_address_is_not_available" translatable="false">Receiver address is not available</string>
+    <string name="hold_to_enable_option" translatable="false">Hold to Enable Pay as you chat</string>
+    <string name="connected" translatable="false">Connected</string>
+    <string name="try_to_connect" translatable="false">Try to connect</string>
+    <string name="please_enter_your_four_digit_pin" translatable="false">Please enter your 4 digit PIN.</string>
+    <string name="invalid_password" translatable="false">Invalid Password.</string>
+    <string name="please_copy_and_save_your_seed" translatable="false">Please copy and save your seed</string>
+    <string name="please_copy_the_seed_and_save_it" translatable="false">Please copy the seed and save it</string>
+    <string name="dialog_title_setup_pin_" translatable="false">Setup Pin</string>
+    <string name="dialog_setup_button" translatable="false">Setup</string>
+    <string name="dialog_message_for_set_wallet_pin" translatable="false">Please set up wallet pin to enable pay as you chat feature.</string>
+    <string name="save_your_seed" translatable="false">Save your seed</string>
+    <string name="save_your_seed_message" translatable="false">You haven\'t copied the seed phrase. Kindly copy and save the seed. Only your seed can be used to recover your account.</string>
+    <string name="joined_social_group_successfully" translatable="false">Joined %s successfully</string>
+    <string name="record_voice_restriction" translatable="false">Can\'t record voice messages during a BChat call.</string>
+    <string name="failed_to_connect" translatable="false">Failed to Connect</string>
+    <string name="invalid_qr_code" translatable="false">Invalid QR Code</string>
 </resources>

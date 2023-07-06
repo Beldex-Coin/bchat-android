@@ -8,9 +8,9 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import com.thoughtcrimes.securesms.wallet.WalletActivity
+import com.thoughtcrimes.securesms.ApplicationContext
+import com.thoughtcrimes.securesms.home.HomeActivity
 import io.beldex.bchat.databinding.ActivityLoadingBinding
-import io.beldex.bchat.databinding.ActivitySplashScreenBinding
 import timber.log.Timber
 import com.thoughtcrimes.securesms.wallet.service.WalletService as WalletService
 
@@ -20,11 +20,11 @@ class LoadingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoadingBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        ApplicationContext.getInstance(this).messageNotifier.setHomeScreenVisible(true)
         checkServiceRunning()
     }
 
     private fun checkServiceRunning(){
-        Log.d("Service Running Status ", WalletService.Running.toString())
         if(!WalletService.Running){
             Handler(Looper.getMainLooper()).postDelayed({
                 val walletName = TextSecurePreferences.getWalletName(this)
@@ -57,7 +57,7 @@ class LoadingActivity : AppCompatActivity() {
         TextSecurePreferences.setIncomingTransactionStatus(this, true)
         TextSecurePreferences.setOutgoingTransactionStatus(this, true)
         TextSecurePreferences.setTransactionsByDateStatus(this,false)
-        val intent = Intent(this, WalletActivity::class.java)
+        val intent = Intent(this, HomeActivity::class.java)
         intent.putExtra(REQUEST_ID, walletName)
         intent.putExtra(REQUEST_PW, walletPassword)
         intent.putExtra(REQUEST_FINGERPRINT_USED, fingerprintUsed)

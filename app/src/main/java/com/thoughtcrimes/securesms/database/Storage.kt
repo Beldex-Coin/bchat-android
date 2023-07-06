@@ -173,8 +173,8 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
                 smsDatabase.insertMessageOutboxNew(message.threadID ?: -1, textMessage, message.sentTimestamp!!)
 
             } else {
-                val textMessage = if (isOpenGroupInvitation) IncomingTextMessage.fromOpenGroupInvitation(message.openGroupInvitation, senderAddress, message.sentTimestamp)
-                else if(isPayment) IncomingTextMessage.fromPayment(message.payment,senderAddress,message.sentTimestamp) //Payment Tag
+                val textMessage = if (isOpenGroupInvitation) IncomingTextMessage.fromOpenGroupInvitation(message.openGroupInvitation, senderAddress, message.sentTimestamp,targetRecipient.expireMessages * 1000L)
+                else if(isPayment) IncomingTextMessage.fromPayment(message.payment,senderAddress,message.sentTimestamp,targetRecipient.expireMessages * 1000L) //Payment Tag
                 else IncomingTextMessage.from(message, senderAddress, group, targetRecipient.expireMessages * 1000L)
                 val encrypted =
                     IncomingEncryptedMessage(

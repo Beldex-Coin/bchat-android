@@ -1,14 +1,17 @@
 package com.thoughtcrimes.securesms.preferences
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Environment
+import androidx.activity.result.contract.ActivityResultContracts
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityAppLockBinding.inflate
 import io.beldex.bchat.databinding.ActivityShowQrcodeWithScanQrcodeBinding
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
+import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.util.*
 import java.io.File
 import java.io.FileOutputStream
@@ -37,8 +40,26 @@ class ShowQRCodeWithScanQRCodeActivity :  PassphraseRequiredActionBarActivity(){
         //binding.explanationTextView.text = resources.getString(R.string.fragment_view_my_qr_code_explanation)
         binding.shareButton.setOnClickListener { shareQRCode() }
         binding.scanButton.setOnClickListener {
-            val intent = Intent(this,ScanQRCodeActivity::class.java)
+            /*val intent = Intent(this,ScanQRCodeActivity::class.java)
             push(intent)
+            finish()*/
+            val intent = Intent(this,ScanQRCodeActivity::class.java)
+            callScanQRCodeActivityResultLauncher.launch(intent)
+        }
+    }
+
+    private var callScanQRCodeActivityResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val extras = Bundle()
+            extras.putParcelable(ConversationFragmentV2.ADDRESS, result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
+            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
+            extras.putParcelable(ConversationFragmentV2.URI,result.data!!.getParcelableExtra(ConversationFragmentV2.URI))
+            val returnIntent = Intent()
+            returnIntent.putExtra(ConversationFragmentV2.TYPE,result.data!!.getStringArrayExtra(ConversationFragmentV2.TYPE))
+            //returnIntent.setDataAndType(intent.data, intent.type)
+            returnIntent.putExtras(extras)
+            setResult(RESULT_OK, returnIntent)
             finish()
         }
     }

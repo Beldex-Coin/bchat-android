@@ -7,7 +7,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 
@@ -39,13 +40,11 @@ import com.thoughtcrimes.securesms.model.NetworkType;
 import com.thoughtcrimes.securesms.model.WalletManager;
 import com.thoughtcrimes.securesms.util.Helper;
 import com.thoughtcrimes.securesms.util.NodePinger;
-import com.thoughtcrimes.securesms.wallet.WalletActivity;
 import com.thoughtcrimes.securesms.wallet.utils.dialog.ProgressDialog;
 
 import java.io.File;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
-import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -58,9 +57,6 @@ public class NodeFragment extends Fragment
         implements NodeInfoAdapter.OnInteractionListener, View.OnClickListener {
 
     static private int NODES_TO_FIND = 10;
-
-    static public NumberFormat FORMATTER = NumberFormat.getInstance();
-
     private SwipeRefreshLayout pullToRefresh;
     private TextView tvPull;
     private View fab;
@@ -71,9 +67,10 @@ public class NodeFragment extends Fragment
 
     private Listener activityCallback;
 
-    private ProgressDialog progressBar;
+    ProgressDialog progressBar;
 
     Button testButton;
+    Button addButton;
 
     public interface Listener {
         File getStorageRoot();
@@ -114,7 +111,6 @@ public class NodeFragment extends Fragment
 
     @Override
     public void onPause() {
-        Timber.d("onPause() %d", nodeList.size());
         if (asyncFindNodes != null)
             asyncFindNodes.cancel(true);
         if (activityCallback != null)
@@ -125,32 +121,13 @@ public class NodeFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-        Timber.d("onResume()");
-        //activityCallback.setToolbarButton(Toolbar.BUTTON_BACK);
         activityCallback.setTitle(R.string.label_nodes);
-        updateRefreshElements();
-    }
-
-    boolean isRefreshing() {
-        return asyncFindNodes != null;
-    }
-
-    void updateRefreshElements() {
-        //by Hales63
-      /* if (isRefreshing()) {
-            activityCallback.setToolbarButton(Toolbar.BUTTON_NONE);
-            fab.setVisibility(View.GONE);
-        } else {
-            activityCallback.setToolbarButton(Toolbar.BUTTON_BACK);
-            fab.setVisibility(View.GONE);
-        }*/
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Timber.d("onCreateView");
-        Log.d("Beldex","Node list onCreateView");
         View view = inflater.inflate(R.layout.activity_node_list, container, false);
 
         fab = view.findViewById(R.id.fab);
@@ -176,14 +153,7 @@ public class NodeFragment extends Fragment
 
         nodeList = new HashSet<>(activityCallback.getFavouriteNodes());
         nodesAdapter.setNodes(nodeList);
-
-
-        ViewGroup llNotice = view.findViewById(R.id.llNotice);
-        //by Hales63
-       // Notice.showAll(llNotice, ".*_nodes");
-
         refresh(AsyncFindNodes.PING); // start connection tests
-
         return view;
     }
 
@@ -192,7 +162,6 @@ public class NodeFragment extends Fragment
     private boolean refresh(int type) {
         if (asyncFindNodes != null) return false; // ignore refresh request as one is ongoing
         asyncFindNodes = new AsyncFindNodes();
-        updateRefreshElements();
         asyncFindNodes.execute(type);
         return true;
     }
@@ -233,13 +202,11 @@ public class NodeFragment extends Fragment
         yesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Timber.d("onInteraction");
                 if (!nodeItem.isFavourite()) {
                     nodeItem.setFavourite(true);
                     activityCallback.setFavouriteNodes(nodeList);
                 }
                 AsyncTask.execute(() -> {
-                    Log.d("Beldex","Value of current node 2 " +nodeItem.getHost());
                     activityCallback.setNode(nodeItem);
                     // this marks it as selected & saves it as well
                     nodeItem.setSelecting(false);
@@ -252,35 +219,11 @@ public class NodeFragment extends Fragment
                 alertDialog.dismiss();
             }
         });
-
-       /* new android.app.AlertDialog.Builder(getContext(), R.style.BChatAlertDialog_Wallet)
-                .setTitle(R.string.switch_node_alert)
-                .setPositiveButton(R.string.yes, (dialog, which) -> {
-                    Timber.d("onInteraction");
-                    if (!nodeItem.isFavourite()) {
-                        nodeItem.setFavourite(true);
-                        activityCallback.setFavouriteNodes(nodeList);
-                    }
-                    AsyncTask.execute(() -> {
-                        Log.d("Beldex","Value of current node 2 " +nodeItem.getHost());
-                        activityCallback.setNode(nodeItem);
-                        // this marks it as selected & saves it as well
-                        nodeItem.setSelecting(false);
-                        TextSecurePreferences.changeDaemon(requireContext(),true);
-                        try {
-                            requireActivity().runOnUiThread(() -> nodesAdapter.allowClick(true));
-                        } catch (NullPointerException ignored) {
-                        }
-                    });
-
-                }).setNegativeButton(android.R.string.cancel, null)
-                .show();*/
     }
 
     // open up edit dialog
     @Override
     public boolean onLongInteraction(final View view, final NodeInfo nodeItem) {
-        Timber.d("onLongInteraction");
         EditDialog diag = createEditDialog(nodeItem);
         if (diag != null) {
             diag.show();
@@ -332,19 +275,15 @@ public class NodeFragment extends Fragment
                     }
                 }
                 NodePinger.execute(nodeList, this);
-                Log.d("Beldex","Node list majorversion6 ");
                 return true;
             } else if (params[0] == PING) {
-                Log.d("Beldex","Node list majorversion7 ");
                 NodePinger.execute(nodeList, this);
                 return true;
             } else if (params[0] == SCAN) {
                 // otherwise scan the network
-                Timber.d("scanning");
                 Set<NodeInfo> seedList = new HashSet<>();
                 seedList.addAll(nodeList);
                 nodeList.clear();
-                Timber.d("seed %d", seedList.size());
                 Dispatcher d = new Dispatcher(info -> publishProgress(info));
                 d.seedPeers(seedList);
                 d.awaitTermination(NODES_TO_FIND);
@@ -382,7 +321,6 @@ public class NodeFragment extends Fragment
 
         @Override
         protected void onProgressUpdate(NodeInfo... values) {
-            Timber.d("onProgressUpdate");
             if (!isCancelled())
                 if (values != null)
                     nodesAdapter.addNode(values[0]);
@@ -392,36 +330,26 @@ public class NodeFragment extends Fragment
 
         @Override
         protected void onPostExecute(Boolean result) {
-            Timber.d("done scanning");
             complete();
         }
 
         @Override
         protected void onCancelled(Boolean result) {
-            Timber.d("cancelled scanning");
             complete();
         }
 
         private void complete() {
             asyncFindNodes = null;
             if (!isAdded()) return;
-            //if (isCancelled()) return;
             tvPull.setText("Add node manually or pull down to scan");
             pullToRefresh.setRefreshing(false);
             nodesAdapter.setNodes(nodeList);
             nodesAdapter.allowClick(true);
-            updateRefreshElements();
         }
 
         public void publish(NodeInfo nodeInfo) {
             publishProgress(nodeInfo);
         }
-    }
-
-    @Override
-    public void onDetach() {
-        Timber.d("detached");
-        super.onDetach();
     }
 
     private EditDialog editDialog = null; // for preventing opening of multiple dialogs
@@ -481,7 +409,6 @@ public class NodeFragment extends Fragment
             }
             etNodeHost.setError(null);
             nodeInfo.setRpcPort(port);
-            // setName() may trigger reverse DNS
             Helper.runWithNetwork(new Helper.Action() {
                 @Override
                 public boolean run() {
@@ -509,12 +436,10 @@ public class NodeFragment extends Fragment
         }
 
         private void closeDialog() {
-            Log.d("Beldex","value of editDialog " + editDialog);
             if (editDialog == null)
                 throw new IllegalStateException();
             Helper.hideKeyboardAlways(getActivity());
             editDialog.dismiss();
-            /*editDialog = null;*/
             NodeFragment.this.editDialog = null;
         }
 
@@ -531,10 +456,6 @@ public class NodeFragment extends Fragment
             }
         }
 
-        private void showKeyboard() {
-            Helper.showKeyboard(editDialog);
-        }
-
         AlertDialog editDialog = null;
 
         TextInputLayout etNodeName;
@@ -549,9 +470,6 @@ public class NodeFragment extends Fragment
 
         void showTestResult() {
             if (nodeInfo.isSuccessful()) {
-               /* tvResult.setText(getString(R.string.node_result,
-                        FORMATTER.format(nodeInfo.getHeight()), nodeInfo.getMajorVersion(),
-                        nodeInfo.getResponseTime(), nodeInfo.getHostAddress()));*/
                 tvResult.setText(getString(R.string.add_node_success));
                 tvResultCardView.setCardBackgroundColor(ContextCompat.getColor(requireContext(),(R.color.button_green)));
 
@@ -559,10 +477,7 @@ public class NodeFragment extends Fragment
                 iVConnectionError.setVisibility(View.GONE);
                 tvResult.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
                 TextSecurePreferences.setNodeIsTested(requireContext(),true);
-
-                Log.d("Beldex","showTestResult in NodeFragment()");
             } else {
-                Log.d("Beldex","showTestResult in NodeFragment()");
                 tvResult.setText(NodeInfoAdapter.getResponseErrorText(getActivity(), nodeInfo.getResponseCode()));
                 tvResultCardView.setCardBackgroundColor(ContextCompat.getColor(requireContext(),R.color.red));
                 tvResult.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
@@ -573,7 +488,6 @@ public class NodeFragment extends Fragment
         }
 
         EditDialog(final NodeInfo nodeInfo) {
-            //AlertDialog.Builder alertDialogBuilder = new MaterialAlertDialogBuilder(getActivity());
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(),R.style.BChatAlertDialog_AddNode);
             LayoutInflater li = LayoutInflater.from(alertDialogBuilder.getContext());
             View promptsView = li.inflate(R.layout.prompt_editnode, null);
@@ -625,7 +539,24 @@ public class NodeFragment extends Fragment
             editDialog.setOnShowListener(new DialogInterface.OnShowListener() {
                 @Override
                 public void onShow(final DialogInterface dialog) {
+                    etNodeHost.getEditText().addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+                            testButton.setEnabled(!etNodeHost.getEditText().getText().toString().isEmpty());
+                        }
+                    });
                     testButton = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_NEUTRAL);
+                    testButton.setEnabled(!etNodeHost.getEditText().getText().toString().isEmpty());
                     testButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -638,17 +569,15 @@ public class NodeFragment extends Fragment
                         }
                     });
 
-                    Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
-                    button.setOnClickListener(new View.OnClickListener() {
+                    addButton = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                    addButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Log.d("Beldex","Value of NodeIsTested " +TextSecurePreferences.getNodeIsTested(requireContext()));
                             if (!TextSecurePreferences.getNodeIsTested(requireContext()) && tvResult.getText().toString().equals("")) {
                                 Toast.makeText(requireActivity(), getString(R.string.make_sure_you_test_the_node_before_adding_it), Toast.LENGTH_SHORT).show();
                             } else if (tvResult.getText().toString().equals(getString(R.string.node_general_error))) {
                                 Toast.makeText(requireActivity(), getString(R.string.unable_to_connect_test_failed), Toast.LENGTH_SHORT).show();
                             } else if (tvResult.getText().toString().equals(getString(R.string.add_node_success))) {
-                                Log.d("Beldex","value of getInfo isMainnet" + TextSecurePreferences.getNodeIsMainnet(requireActivity()));
                                 if(TextSecurePreferences.getNodeIsMainnet(requireActivity())) {
                                     apply();
                                     TextSecurePreferences.setNodeIsMainnet(requireContext(), false);
@@ -691,7 +620,6 @@ public class NodeFragment extends Fragment
             @Override
             protected Boolean doInBackground(Void... params) {
                 nodeInfo.testIsMainnet();
-                Log.d("Beldex","Value of getInfo isMainnet nodeInfo " +nodeInfo.testIsMainnet());
                 if (nodeInfo.testIsMainnet()) {
                     TextSecurePreferences.setNodeIsMainnet(requireContext(), true);
                 } else {
@@ -706,7 +634,9 @@ public class NodeFragment extends Fragment
                 if (editDialog != null) {
                     showTestResult();
                     testButton.setEnabled(true);
-                    progressBar.dismiss();
+                    if(progressBar !=null) {
+                        progressBar.dismiss();
+                    }
                 }
                 if (shutdown) {
                     if (nodeBackup == null) {
@@ -729,3 +659,4 @@ public class NodeFragment extends Fragment
         }
     }
 }
+//endregion

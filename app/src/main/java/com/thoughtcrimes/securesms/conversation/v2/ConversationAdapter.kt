@@ -88,7 +88,7 @@ class ConversationAdapter(context: Context, cursor: Cursor, private val onItemPr
                 viewHolder.view.bind(message, messageBefore)
                 if (message.isCallLog && message.isFirstMissedCall) {
                     viewHolder.view.setOnClickListener {
-                        AlertDialog.Builder(context)
+                        AlertDialog.Builder(context,R.style.BChatAlertDialog_Call_Missed)
                             .setTitle(R.string.CallNotificationBuilder_first_call_title)
                             .setMessage(R.string.CallNotificationBuilder_first_call_message)
                             .setPositiveButton(R.string.activity_settings_title) { _, _ ->

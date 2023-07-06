@@ -1,13 +1,18 @@
 package com.thoughtcrimes.securesms.preferences;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -20,6 +25,10 @@ import com.thoughtcrimes.securesms.util.Trimmer;
 
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.beldex.libsignal.utilities.Log;
+import com.thoughtcrimes.securesms.wallet.info.WalletInfoActivity;
+import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity;
+import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock;
+import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager;
 
 import io.beldex.bchat.R;
 
@@ -37,6 +46,8 @@ public class ChatsPreferenceFragment extends ListSummaryPreferenceFragment {
     findPreference(TextSecurePreferences.CHAT_FONT_SIZE)
             .setOnPreferenceChangeListener(new ChangeFontSizeListener());
     initializeListSummary((ListPreference) findPreference(TextSecurePreferences.CHAT_FONT_SIZE));
+    findPreference(TextSecurePreferences.PAY_AS_YOU_CHAT_PREF)
+            .setOnPreferenceChangeListener(new PayAsYouChatListener());
 
   }
 
@@ -111,6 +122,13 @@ public class ChatsPreferenceFragment extends ListSummaryPreferenceFragment {
 
     public TrimLengthValidationListener() {
       EditTextPreference preference = findPreference(TextSecurePreferences.THREAD_TRIM_LENGTH);
+      assert preference != null;
+      preference.setOnBindEditTextListener(new EditTextPreference.OnBindEditTextListener() {
+        @Override
+        public void onBindEditText(@NonNull EditText editText) {
+          editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED);
+        }
+      });
       onPreferenceChange(preference, preference.getText());
     }
 
@@ -153,4 +171,56 @@ public class ChatsPreferenceFragment extends ListSummaryPreferenceFragment {
     }
 
   }
+
+  class PayAsYouChatListener implements Preference.OnPreferenceChangeListener {
+
+    @Override
+    public boolean onPreferenceChange(Preference preference, Object newValue) {
+      boolean preferenceValue = (boolean) newValue;
+      if (preferenceValue) {
+        if (TextSecurePreferences.getWalletEntryPassword(requireContext()) != null) {
+          return true;
+        } else {
+          new AlertDialog.Builder(requireContext(),R.style.BChatAlertDialog_Call_Missed)
+                  .setTitle(R.string.dialog_title_setup_pin_)
+                  .setMessage(R.string.dialog_message_for_set_wallet_pin)
+                  .setPositiveButton(R.string.dialog_setup_button, (d, w) -> {
+                    setWalletPin();
+                  })
+                  .setNegativeButton(R.string.cancel, (d, w) -> {
+                  })
+                  .show();
+        }
+        return false;
+      } else {
+        return true;
+      }
+    }
+
+    public void setWalletPin() {
+      String walletName = TextSecurePreferences.getWalletName(requireContext());
+      String walletPassword = TextSecurePreferences.getWalletPassword(requireContext());
+      if (walletName != null && walletPassword != null) {
+        LockManager lockManager = LockManager.getInstance();
+        lockManager.enableAppLock(requireContext(), CustomPinActivity.class);
+        Intent intent = new Intent(requireContext(), CustomPinActivity.class);
+        if (TextSecurePreferences.getWalletEntryPassword(requireContext()) != null) {
+          intent.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN);
+        } else {
+          intent.putExtra(AppLock.EXTRA_TYPE, AppLock.ENABLE_PINLOCK);
+        }
+        intent.putExtra("change_pin", false);
+        intent.putExtra("send_authentication", false);
+        setUpWalletPinActivityResultLauncher.launch(intent);
+      } else {
+        Intent intent = new Intent(requireContext(), WalletInfoActivity.class);
+        startActivity(intent);
+      }
+    }
+
+    ActivityResultLauncher setUpWalletPinActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+
+    });
+  }
+
 }

@@ -23,7 +23,7 @@ import com.beldex.libbchat.utilities.recipients.Recipient
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
 import com.thoughtcrimes.securesms.contacts.SelectContactsAdapter
 import com.thoughtcrimes.securesms.contacts.SelectContactsLoader
-import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
+import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.util.UiModeUtilities
 import com.thoughtcrimes.securesms.util.fadeIn
@@ -84,6 +84,11 @@ class CreateClosedGroupActivity : PassphraseRequiredActionBarActivity(), LoaderM
             }
         }
         LoaderManager.getInstance(this).initLoader(0, null, this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.nameEditText.isFocusable = false
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -161,7 +166,7 @@ class CreateClosedGroupActivity : PassphraseRequiredActionBarActivity(), LoaderM
             val threadID = DatabaseComponent.get(this).threadDatabase().getOrCreateThreadIdFor(
                 Recipient.from(this, Address.fromSerialized(groupID), false))
              if (!isFinishing) {
-                openConversationActivity(this, threadID, Recipient.from(this, Address.fromSerialized(groupID), false))
+                openConversationActivity(threadID, Recipient.from(this, Address.fromSerialized(groupID), false))
                 finish()
             }
         }.failUi {
@@ -171,14 +176,12 @@ class CreateClosedGroupActivity : PassphraseRequiredActionBarActivity(), LoaderM
             Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
         }
     }
+
+    private fun openConversationActivity(threadId: Long, recipient: Recipient) {
+        val returnIntent = Intent()
+        returnIntent.putExtra(ConversationFragmentV2.THREAD_ID,threadId)
+        returnIntent.putExtra(ConversationFragmentV2.ADDRESS,recipient.address)
+        setResult(RESULT_OK, returnIntent)
+    }
     // endregion
 }
-
-// region Convenience
-private fun openConversationActivity(context: Context, threadId: Long, recipient: Recipient) {
-    val intent = Intent(context, ConversationActivityV2::class.java)
-    intent.putExtra(ConversationActivityV2.THREAD_ID, threadId)
-    intent.putExtra(ConversationActivityV2.ADDRESS, recipient.address)
-    context.startActivity(intent)
-}
-// endregion

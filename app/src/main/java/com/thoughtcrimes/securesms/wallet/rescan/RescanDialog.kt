@@ -1,6 +1,8 @@
 package com.thoughtcrimes.securesms.wallet.rescan
 
 import android.app.DatePickerDialog
+import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
@@ -10,13 +12,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import android.widget.Toolbar
 import androidx.fragment.app.DialogFragment
-import com.thoughtcrimes.securesms.preferences.ClearAllDataDialog
-import com.thoughtcrimes.securesms.util.Helper
+import com.thoughtcrimes.securesms.home.HomeActivity
 import com.thoughtcrimes.securesms.wallet.CheckOnline
-import com.thoughtcrimes.securesms.wallet.WalletActivity
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.RescanDialogBinding
 import timber.log.Timber
@@ -24,7 +24,7 @@ import java.math.BigInteger
 import java.text.SimpleDateFormat
 import java.util.*
 
-class RescanDialog(val context: WalletActivity, private val daemonBlockChainHeight: Long): DialogFragment() {
+class RescanDialog(val context: HomeActivity, private val daemonBlockChainHeight: Long): DialogFragment() {
 
     private lateinit var binding: RescanDialogBinding
 
@@ -91,7 +91,17 @@ class RescanDialog(val context: WalletActivity, private val daemonBlockChainHeig
         dates["2022-07"] = 1291910
         dates["2022-08"] = 1361030
         dates["2022-09"] = 1456070
-        dates["2022-10"] = 1674950
+        dates["2022-10"] = 1575070
+
+        dates["2022-11"] = 1674950
+        dates["2022-12"] = 1764950
+        dates["2023-01"] = 1853950
+        dates["2023-02"] = 1942950
+        dates["2023-03"] = 2022950
+        dates["2023-04"] = 2112950
+        dates["2023-05"] = 2199950
+        dates["2023-06"] = 2289269
+        dates["2023-07"] = 2363143
 
         // create an OnDateSetListener
         val dateSetListener =
@@ -109,6 +119,7 @@ class RescanDialog(val context: WalletActivity, private val daemonBlockChainHeig
                     1 -> {
                         binding.restoreSeedWalletRestoreDate.text = ""
                         binding.restoreSeedWalletRestoreHeight.setText("")
+                        binding.restoreSeedWalletRestoreHeight.isFocusable = false
                         dismiss()
                     }
                     else -> Timber.e("Button " + type + "pressed - how can this be?")
@@ -116,9 +127,11 @@ class RescanDialog(val context: WalletActivity, private val daemonBlockChainHeig
             }
             dialogCurrentBlockHeight.text=daemonBlockChainHeight.toString()
 
+            binding.dialogCurrentBlockHeight.inputType = InputType.TYPE_CLASS_NUMBER
+
             binding.restoreSeedWalletRestoreHeight.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable) {
-                    if (binding.restoreSeedWalletRestoreHeight.text.toString().length == 9) {
+                    if (binding.restoreSeedWalletRestoreHeight.text.trim().toString().length == 9) {
                         Toast.makeText(
                             context,
                             R.string.enter_a_valid_height,
@@ -141,6 +154,7 @@ class RescanDialog(val context: WalletActivity, private val daemonBlockChainHeig
             })
             //SteveJosephh21
             restoreSeedWalletRestoreDate.setOnClickListener {
+                keyboardDismiss()
                 restoreSeedWalletRestoreDate.inputType = InputType.TYPE_NULL;
                 val datePickerDialog = DatePickerDialog(context,
                     dateSetListener,
@@ -154,7 +168,7 @@ class RescanDialog(val context: WalletActivity, private val daemonBlockChainHeig
 
             rescanButton.setOnClickListener {
                 if(CheckOnline.isOnline(context)) {
-                    val restoreHeight = binding.restoreSeedWalletRestoreHeight.text.toString()
+                    val restoreHeight = binding.restoreSeedWalletRestoreHeight.text.trim().toString()
                     val restoreFromDate = binding.restoreSeedWalletRestoreDate.text.toString()
                     //SteveJosephh21
                     when {
@@ -199,6 +213,11 @@ class RescanDialog(val context: WalletActivity, private val daemonBlockChainHeig
         return binding.root
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.restoreSeedWalletRestoreHeight.isFocusable = false
+    }
+
     private fun updateDateInView() {
         val myFormat = "yyyy-MM-dd" // mention the format you need
         val sdf = SimpleDateFormat(myFormat, Locale.US)
@@ -236,6 +255,18 @@ class RescanDialog(val context: WalletActivity, private val daemonBlockChainHeig
         Log.d("Beldex","Restore Height --> $height")
 
         return height
+    }
+
+    private fun keyboardDismiss() {
+        val imm: InputMethodManager = binding.restoreSeedWalletRestoreHeight.context
+            .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        if (imm.isActive) imm.hideSoftInputFromWindow(binding.restoreSeedWalletRestoreHeight.windowToken,
+            0)
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        keyboardDismiss()
+        super.onDismiss(dialog)
     }
 
 }

@@ -733,6 +733,7 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
         wantsToAnswerReceiver?.let { receiver ->
             LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
         }
+        callManager.shutDownAudioManager()
         networkChangedReceiver = null
         callReceiver = null
         uncaughtExceptionHandlerManager?.unregister()

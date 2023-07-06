@@ -14,7 +14,7 @@ import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.PublicKeyValidation
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
-import com.thoughtcrimes.securesms.conversation.v2.ConversationActivityV2
+import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.qr.ScanListener
 import com.thoughtcrimes.securesms.util.*
@@ -96,8 +96,8 @@ class ScanQRCodeActivity : PassphraseRequiredActionBarActivity(), ScanQRCodePlac
 
     override fun onBackPressed() {
         super.onBackPressed()
-        val intent = Intent(this,ShowQRCodeWithScanQRCodeActivity::class.java)
-        push(intent)
+        /*val intent = Intent(this,ShowQRCodeWithScanQRCodeActivity::class.java)
+        push(intent)*/
         finish()
     }
 
@@ -108,13 +108,24 @@ class ScanQRCodeActivity : PassphraseRequiredActionBarActivity(), ScanQRCodePlac
 
     fun createPrivateChatIfPossible(hexEncodedPublicKey: String) {
         if (!PublicKeyValidation.isValid(hexEncodedPublicKey)) { return Toast.makeText(this, R.string.invalid_bchat_id, Toast.LENGTH_SHORT).show() }
-        val recipient = Recipient.from(this, Address.fromSerialized(hexEncodedPublicKey), false)
+       /* val recipient = Recipient.from(this, Address.fromSerialized(hexEncodedPublicKey), false)
         val intent = Intent(this, ConversationActivityV2::class.java)
         intent.putExtra(ConversationActivityV2.ADDRESS, recipient.address)
         intent.setDataAndType(getIntent().data, getIntent().type)
         val existingThread = DatabaseComponent.get(this).threadDatabase().getThreadIdIfExistsFor(recipient)
         intent.putExtra(ConversationActivityV2.THREAD_ID, existingThread)
         startActivity(intent)
+        finish()*/
+
+        val recipient = Recipient.from(this, Address.fromSerialized(hexEncodedPublicKey), false)
+        val returnIntent = Intent()
+        returnIntent.putExtra(ConversationFragmentV2.ADDRESS, recipient.address)
+        returnIntent.putExtra(ConversationFragmentV2.URI,intent.data)
+        returnIntent.putExtra(ConversationFragmentV2.TYPE,intent.type)
+        //returnIntent.setDataAndType(intent.data, intent.type)
+        val existingThread = DatabaseComponent.get(this).threadDatabase().getThreadIdIfExistsFor(recipient)
+        returnIntent.putExtra(ConversationFragmentV2.THREAD_ID, existingThread)
+        setResult(RESULT_OK, returnIntent)
         finish()
     }
     // endregion

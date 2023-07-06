@@ -117,7 +117,17 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         dates["2022-07"] = 1291910
         dates["2022-08"] = 1361030
         dates["2022-09"] = 1456070
-        dates["2022-10"] = 1674950
+        dates["2022-10"] = 1575070
+
+        dates["2022-11"] = 1674950
+        dates["2022-12"] = 1764950
+        dates["2023-01"] = 1853950
+        dates["2023-02"] = 1942950
+        dates["2023-03"] = 2022950
+        dates["2023-04"] = 2112950
+        dates["2023-05"] = 2199950
+        dates["2023-06"] = 2289269
+        dates["2023-07"] = 2363143
 
         getSeed = intent.extras?.getString("seed")
         // create an OnDateSetListener
@@ -157,20 +167,18 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
 
             restoreSeedWalletName.imeOptions = restoreSeedWalletName.imeOptions or 16777216 // Always use incognito keyboard
             restoreSeedWalletName.setOnEditorActionListener(
-                TextView.OnEditorActionListener { _, actionID, event ->
+                TextView.OnEditorActionListener { _, actionID, _ ->
                     if (actionID == EditorInfo.IME_ACTION_SEARCH ||
-                        actionID == EditorInfo.IME_ACTION_DONE ||
-                        (event.action == KeyEvent.ACTION_DOWN &&
-                                event.keyCode == KeyEvent.KEYCODE_ENTER)
+                        actionID == EditorInfo.IME_ACTION_DONE
                     ) {
                         register()
                         return@OnEditorActionListener true
                     }
                     false
                 })
-            binding.restoreSeedWalletRestoreHeight.addTextChangedListener(object : TextWatcher {
+            restoreSeedWalletRestoreHeight.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable) {
-                    if (binding.restoreSeedWalletRestoreHeight.text.toString().length == 9) {
+                    if (restoreSeedWalletRestoreHeight.text.toString().length == 9) {
                         Toast.makeText(
                             this@RecoveryGetSeedDetailsActivity,
                             R.string.enter_a_valid_height,
@@ -191,6 +199,16 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
                 ) {
                 }
             })
+            restoreSeedWalletRestoreHeight.setOnEditorActionListener(
+                TextView.OnEditorActionListener { _, actionID, _ ->
+                    if (actionID == EditorInfo.IME_ACTION_SEARCH ||
+                        actionID == EditorInfo.IME_ACTION_DONE
+                    ) {
+                        register()
+                        return@OnEditorActionListener true
+                    }
+                    false
+                })
             restoreSeedRestoreButton.setOnClickListener { register() }
         }
 

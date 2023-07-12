@@ -8,8 +8,7 @@ import android.graphics.Color
 import android.graphics.PointF
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import android.os.Bundle
-import android.os.IBinder
+import android.os.*
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -1568,9 +1567,22 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         if (mIsBound) { // no point in talking to unbound service
             var intent: Intent? = null
             if(intent==null) {
-                intent = Intent(applicationContext, WalletService::class.java)
+                intent = Intent(this, WalletService::class.java)
                 intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_STORE)
-                startService(intent)
+                try {
+                    when {
+                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
+                            Handler(Looper.getMainLooper()).post {
+                                ContextCompat.startForegroundService(this, intent)
+                            }
+                        }
+                        else -> {
+                            this.startService(intent)
+                        }
+                    }
+                }catch(ex: Exception){
+                    Log.d("Exception ",ex.message.toString())
+                }
                 Timber.d("STORE request sent")
             }
         } else {

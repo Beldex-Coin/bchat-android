@@ -222,8 +222,7 @@
             android:layout_above="@id/inputBarCard"
             android:fontFamily="@font/open_sans_medium"
             android:justificationMode="inter_word"
-            android:clickable="true"
-            android:focusable="true"/>
+            android:clickable="false"/>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/inputBarCard"

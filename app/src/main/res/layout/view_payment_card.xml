@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.thoughtcrimes.securesms.conversation.v2.messages.PaymentCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/viewPaymentCard"
@@ -96,4 +96,4 @@
         android:textColor="@color/white"
         android:textSize="@dimen/small_font_size" />
 
-</LinearLayout>
+</com.thoughtcrimes.securesms.conversation.v2.messages.PaymentCardView>

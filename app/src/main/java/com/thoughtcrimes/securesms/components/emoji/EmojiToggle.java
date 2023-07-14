@@ -10,6 +10,7 @@ import androidx.appcompat.widget.AppCompatImageButton;
 
 import io.beldex.bchat.R;
 
+
 public class EmojiToggle extends AppCompatImageButton implements MediaKeyboard.MediaKeyboardListener {
 
   private Drawable emojiToggle;

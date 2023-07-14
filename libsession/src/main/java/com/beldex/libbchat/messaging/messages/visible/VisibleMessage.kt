@@ -26,6 +26,7 @@ class VisibleMessage : Message()  {
     var profile: Profile? = null
     var openGroupInvitation: OpenGroupInvitation? = null
     var beldexAddress:String?= null
+    var reaction: Reaction? = null
     //Payment Tag
     var payment: Payment? = null
 
@@ -37,6 +38,7 @@ class VisibleMessage : Message()  {
         if (!super.isValid()) return false
         if (attachmentIDs.isNotEmpty()) return true
         if (openGroupInvitation != null) return true
+        if (reaction != null) return true
         if (payment !=null) return true //Payment Tag
         val text = text?.trim() ?: return false
         if (text.isNotEmpty()) return true
@@ -83,6 +85,11 @@ class VisibleMessage : Message()  {
             // TODO Contact
             val profile = Profile.fromProto(dataMessage)
             if (profile != null) { result.profile = profile }
+            val reactionProto = if (dataMessage.hasReaction()) dataMessage.reaction else null
+            if (reactionProto != null) {
+                val reaction = Reaction.fromProto(reactionProto)
+                result.reaction = reaction
+            }
             return  result
         }
     }
@@ -103,6 +110,11 @@ class VisibleMessage : Message()  {
         val quoteProto = quote?.toProto()
         if (quoteProto != null) {
             dataMessage.quote = quoteProto
+        }
+        // Reaction
+        val reactionProto = reaction?.toProto()
+        if (reactionProto != null) {
+            dataMessage.reaction = reactionProto
         }
         // Link preview
         val linkPreviewProto = linkPreview?.toProto()
@@ -174,6 +186,6 @@ class VisibleMessage : Message()  {
     }
 
     fun isMediaMessage(): Boolean {
-        return attachmentIDs.isNotEmpty() || quote != null || linkPreview != null
+        return attachmentIDs.isNotEmpty() || quote != null || linkPreview != null || reaction != null
     }
 }

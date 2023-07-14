@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.beldex.libbchat.utilities.Address;
+import com.beldex.libsignal.utilities.Log;
 import com.thoughtcrimes.securesms.home.HomeActivity;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.thoughtcrimes.securesms.onboarding.PasswordActivity;
@@ -40,6 +41,7 @@ public class ShortcutLauncherActivity extends AppCompatActivity {
     if (serializedAddress == null) {
       Toast.makeText(this, R.string.ShortcutLauncherActivity_invalid_shortcut, Toast.LENGTH_SHORT).show();
       startActivity(new Intent(this, PasswordActivity.class));
+      Log.d("Beldex","notification issue password screen called");
       finish();
       return;
     }

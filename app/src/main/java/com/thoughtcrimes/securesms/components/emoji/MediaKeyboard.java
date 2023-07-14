@@ -14,14 +14,15 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 
+import com.beldex.libsignal.utilities.Log;
 import com.thoughtcrimes.securesms.components.InputAwareLayout;
 import com.thoughtcrimes.securesms.components.RepeatableImageKey;
-import com.beldex.libsignal.utilities.Log;
 import com.thoughtcrimes.securesms.mms.GlideApp;
 
 import java.util.Arrays;
 
 import io.beldex.bchat.R;
+
 
 public class MediaKeyboard extends FrameLayout implements InputAwareLayout.InputView,
                                                           MediaKeyboardProvider.Presenter,

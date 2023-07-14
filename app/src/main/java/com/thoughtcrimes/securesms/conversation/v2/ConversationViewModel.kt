@@ -3,8 +3,10 @@ package com.thoughtcrimes.securesms.conversation.v2
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.beldex.libbchat.messaging.open_groups.OpenGroupV2
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
+import com.thoughtcrimes.securesms.database.Storage
 import com.thoughtcrimes.securesms.database.model.MessageRecord
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -17,7 +19,8 @@ import java.util.UUID
 
 class ConversationViewModel(
     val threadId: Long,
-    private val repository: ConversationRepository
+    private val repository: ConversationRepository,
+    private val storage: Storage
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ConversationUiState())
@@ -25,6 +28,14 @@ class ConversationViewModel(
     /*Hales63*/
     val recipient: Recipient?
         get() = repository.getRecipientForThreadId(threadId)
+
+    private var _openGroup: RetrieveOnce<OpenGroupV2> = RetrieveOnce {
+        storage.getV2OpenGroup(threadId)
+    }
+
+    val openGroup: OpenGroupV2?
+        get() = _openGroup.value
+
 
     init {
         _uiState.update {
@@ -159,11 +170,12 @@ class ConversationViewModel(
     @Suppress("UNCHECKED_CAST")
     class Factory @AssistedInject constructor(
         @Assisted private val threadId: Long,
-        private val repository: ConversationRepository
+        private val repository: ConversationRepository,
+        private val storage: Storage
     ) : ViewModelProvider.Factory {
 
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return ConversationViewModel(threadId, repository) as T
+            return ConversationViewModel(threadId, repository, storage) as T
         }
     }
 }
@@ -175,3 +187,18 @@ data class ConversationUiState(
     val uiMessages: List<UiMessage> = emptyList(),
     val isMessageRequestAccepted: Boolean? = null
 )
+data class RetrieveOnce<T>(val retrieval: () -> T?) {
+    private var triedToRetrieve: Boolean = false
+    private var _value: T? = null
+
+    val value: T?
+        get() {
+            if (triedToRetrieve) { return _value }
+
+            triedToRetrieve = true
+            _value = retrieval()
+            return _value
+        }
+
+    fun updateTo(value: T?) { _value = value }
+}

@@ -11,7 +11,7 @@ import android.view.View;
 import com.thoughtcrimes.securesms.util.ResUtil;
 
 import io.beldex.bchat.R;
-import com.thoughtcrimes.securesms.util.ResUtil;
+
 
 public class AsciiEmojiView extends View {
 

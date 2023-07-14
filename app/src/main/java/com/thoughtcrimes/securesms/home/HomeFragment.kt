@@ -550,6 +550,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
     }
 
     override fun onDestroy() {
+        Log.d("Beldex","notification issue home fragment ondestroy called")
         val broadcastReceiver = this.broadcastReceiver
         if (broadcastReceiver != null) {
             LocalBroadcastManager.getInstance(requireActivity().applicationContext).unregisterReceiver(broadcastReceiver)

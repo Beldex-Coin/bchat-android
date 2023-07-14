@@ -179,7 +179,9 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         linkPreview = null
         linkPreviewDraftView = null
         binding.inputBarAdditionalContentContainer.removeAllViews()
-        val quoteView = QuoteView(context, QuoteView.Mode.Draft)
+        // inflate quoteview with typed array here
+        val layout = LayoutInflater.from(context).inflate(R.layout.view_quote, binding.inputBarAdditionalContentContainer, false)
+        val quoteView = layout.findViewById<QuoteView>(R.id.mainQuoteViewContainer)
         quoteView.delegate = this
         binding.inputBarAdditionalContentContainer.addView(quoteView)
         val attachments = (message as? MmsMessageRecord)?.slideDeck

@@ -22,6 +22,7 @@ import com.beldex.libsignal.utilities.*
 import com.beldex.libsignal.utilities.Base64.*
 import com.beldex.libsignal.utilities.HTTP.Verb.*
 import org.whispersystems.curve25519.Curve25519
+import com.beldex.libsignal.utilities.JsonUtil.*
 import java.util.*
 
 object OpenGroupAPIV2 {
@@ -82,6 +83,12 @@ object OpenGroupAPIV2 {
         }
     }
 
+    enum class Capability {
+        SOGS, BLIND, REACTIONS
+    }
+
+    private val pendingReactions = mutableListOf<PendingReaction>()
+
     data class Request(
         val verb: HTTP.Verb,
         val room: String?,
@@ -98,13 +105,44 @@ object OpenGroupAPIV2 {
         val useOnionRouting: Boolean = true
     )
 
+    data class Reaction(
+        val count: Long = 0,
+        val reactors: List<String> = emptyList(),
+        val you: Boolean = false,
+        val index: Long = 0
+    )
+
+    data class AddReactionResponse(
+        val seqNo: Long,
+        val added: Boolean
+    )
+
+    data class DeleteReactionResponse(
+        val seqNo: Long,
+        val removed: Boolean
+    )
+
+    data class DeleteAllReactionsResponse(
+        val seqNo: Long,
+        val removed: Boolean
+    )
+
+    data class PendingReaction(
+        val server: String,
+        val room: String,
+        val messageId: Long,
+        val emoji: String,
+        val add: Boolean,
+        var seqNo: Long? = null
+    )
+
     private fun createBody(parameters: Any?): RequestBody? {
         if (parameters == null) return null
-        val parametersAsJSON = JsonUtil.toJson(parameters)
+        val parametersAsJSON = toJson(parameters)
         return RequestBody.create(MediaType.get("application/json"), parametersAsJSON)
     }
 
-    private fun send(request: Request): Promise<Map<*, *>, Exception> {
+    private fun send(request: Request): Promise<OnionRequestAPI.OnionResponse, Exception> {
         val url = HttpUrl.parse(request.server) ?: return Promise.ofFail(Error.InvalidURL)
         //-Log.d("Beldex","Social group api url $url")
         val urlBuilder = HttpUrl.Builder()
@@ -119,7 +157,7 @@ object OpenGroupAPIV2 {
 
             }
         }
-        fun execute(token: String?): Promise<Map<*, *>, Exception> {
+        fun execute(token: String?): Promise<OnionRequestAPI.OnionResponse, Exception> {
             val requestBuilder = okhttp3.Request.Builder()
 
                 .url(urlBuilder.build())
@@ -179,10 +217,7 @@ object OpenGroupAPIV2 {
 
     fun downloadOpenGroupProfilePicture(roomID: String, server: String): Promise<ByteArray, Exception> {
         val request = Request(verb = GET, room = roomID, server = server, endpoint = "rooms/$roomID/image", isAuthRequired = false)
-        return send(request).map { json ->
-            val result = json["result"] as? String ?: throw Error.ParsingFailed
-            decode(result)
-        }
+        return getResponseBody(request)
     }
 
     // region Authorization
@@ -204,7 +239,7 @@ object OpenGroupAPIV2 {
             ?: return Promise.ofFail(Error.Generic)
         val queryParameters = mutableMapOf( "public_key" to publicKey.toHexString() )
         val request = Request(GET, room, server, "auth_token_challenge", queryParameters, isAuthRequired = false, parameters = null)
-        return send(request).map { json ->
+        return getResponseBodyJson(request).map { json ->
             val challenge = json["challenge"] as? Map<*, *> ?: throw Error.ParsingFailed
             val base64EncodedCiphertext = challenge["ciphertext"] as? String ?: throw Error.ParsingFailed
             val base64EncodedEphemeralPublicKey = challenge["ephemeral_public_key"] as? String ?: throw Error.ParsingFailed
@@ -241,17 +276,17 @@ object OpenGroupAPIV2 {
         val base64EncodedFile = encodeBytes(file)
         val parameters = mapOf( "file" to base64EncodedFile )
         val request = Request(verb = POST, room = room, server = server, endpoint = "files", parameters = parameters)
-        return send(request).map { json ->
-            (json["result"] as? Number)?.toLong() ?: throw Error.ParsingFailed
+        return getResponseBodyJson(request).map { json ->
+            (json["id"] as? Number)?.toLong() ?: throw Error.ParsingFailed
         }
+        /*return send(request).map { json ->
+            (json["result"] as? Number)?.toLong() ?: throw Error.ParsingFailed
+        }*/
     }
 
     fun download(file: Long, room: String, server: String): Promise<ByteArray, Exception> {
         val request = Request(verb = GET, room = room, server = server, endpoint = "files/$file")
-        return send(request).map { json ->
-            val base64EncodedFile = json["result"] as? String ?: throw Error.ParsingFailed
-            decode(base64EncodedFile) ?: throw Error.ParsingFailed
-        }
+        return getResponseBody(request)
     }
     // endregion
 
@@ -260,7 +295,7 @@ object OpenGroupAPIV2 {
         val signedMessage = message.sign() ?: return Promise.ofFail(Error.SigningFailed)
         val jsonMessage = signedMessage.toJSON()
         val request = Request(verb = POST, room = room, server = server, endpoint = "messages", parameters = jsonMessage)
-        return send(request).map { json ->
+        return getResponseBodyJson(request).map { json ->
             @Suppress("UNCHECKED_CAST") val rawMessage = json["message"] as? Map<String, Any>
                     ?: throw Error.ParsingFailed
             val result = OpenGroupMessageV2.fromJSON(rawMessage) ?: throw Error.ParsingFailed
@@ -279,7 +314,7 @@ object OpenGroupAPIV2 {
             queryParameters += "from_server_id" to lastId.toString()
         }
         val request = Request(verb = GET, room = room, server = server, endpoint = "messages", queryParameters = queryParameters)
-        return send(request).map { json ->
+        return getResponseBodyJson(request).map { json ->
             @Suppress("UNCHECKED_CAST") val rawMessages = json["messages"] as? List<Map<String, Any>>
                 ?: throw Error.ParsingFailed
             parseMessages(room, server, rawMessages)
@@ -326,7 +361,8 @@ object OpenGroupAPIV2 {
             queryParameters["from_server_id"] = last.toString()
         }
         val request = Request(verb = GET, room = room, server = server, endpoint = "deleted_messages", queryParameters = queryParameters)
-        return send(request).map { json ->
+        return getResponseBody(request).map { response ->
+            val json = JsonUtil.fromJson(response, Map::class.java)
             val type = TypeFactory.defaultInstance().constructCollectionType(List::class.java, MessageDeletion::class.java)
             val idsAsString = JsonUtil.toJson(json["ids"])
             val serverIDs = JsonUtil.fromJson<List<MessageDeletion>>(idsAsString, type) ?: throw Error.ParsingFailed
@@ -347,7 +383,7 @@ object OpenGroupAPIV2 {
 
     fun getModerators(room: String, server: String): Promise<List<String>, Exception> {
         val request = Request(verb = GET, room = room, server = server, endpoint = "moderators")
-        return send(request).map { json ->
+        return getResponseBodyJson(request).map { json ->
             @Suppress("UNCHECKED_CAST") val moderatorsJson = json["moderators"] as? List<String>
                 ?: throw Error.ParsingFailed
             val id = "$server.$room"
@@ -414,7 +450,7 @@ object OpenGroupAPIV2 {
             )
         }
         val request = Request(verb = POST, room = null, server = server, endpoint = "compact_poll", isAuthRequired = false, parameters = mapOf( "requests" to requests ))
-        return send(request = request).map { json ->
+        return getResponseBodyJson(request).map { json ->
             val results = json["results"] as? List<*> ?: throw Error.ParsingFailed
             results.mapNotNull { json ->
                 if (json !is Map<*,*>) return@mapNotNull null
@@ -432,8 +468,8 @@ object OpenGroupAPIV2 {
                 handleModerators("$server.$roomID", moderators)
                 // Deletions
                 val type = TypeFactory.defaultInstance().constructCollectionType(List::class.java, MessageDeletion::class.java)
-                val idsAsString = JsonUtil.toJson(json["deletions"])
-                val deletions = JsonUtil.fromJson<List<MessageDeletion>>(idsAsString, type) ?: throw Error.ParsingFailed
+                val idsAsString = toJson(json["deletions"])
+                val deletions = fromJson<List<MessageDeletion>>(idsAsString, type) ?: throw Error.ParsingFailed
                 // Messages
                 val rawMessages = json["messages"] as? List<Map<String, Any>> ?: return@mapNotNull null
                 val messages = parseMessages(roomID, server, rawMessages)
@@ -479,7 +515,7 @@ object OpenGroupAPIV2 {
 
     fun getInfo(room: String, server: String): Promise<Info, Exception> {
         val request = Request(verb = GET, room = null, server = server, endpoint = "rooms/$room", isAuthRequired = false)
-        return send(request).map { json ->
+        return getResponseBodyJson(request).map { json ->
             val rawRoom = json["room"] as? Map<*, *> ?: throw Error.ParsingFailed
             val id = rawRoom["id"] as? String ?: throw Error.ParsingFailed
             val name = rawRoom["name"] as? String ?: throw Error.ParsingFailed
@@ -490,7 +526,7 @@ object OpenGroupAPIV2 {
 
     fun getAllRooms(server: String): Promise<List<Info>, Exception> {
         val request = Request(verb = GET, room = null, server = server, endpoint = "rooms", isAuthRequired = false)
-        return send(request).map { json ->
+        return getResponseBodyJson(request).map { json ->
             val rawRooms = json["rooms"] as? List<Map<*, *>> ?: throw Error.ParsingFailed
             rawRooms.mapNotNull {
                 val roomJson = it as? Map<*, *> ?: return@mapNotNull null
@@ -504,12 +540,71 @@ object OpenGroupAPIV2 {
 
     fun getMemberCount(room: String, server: String): Promise<Int, Exception> {
         val request = Request(verb = GET, room = room, server = server, endpoint = "member_count")
-        return send(request).map { json ->
+        return getResponseBodyJson(request).map { json ->
             val memberCount = json["member_count"] as? Int ?: throw Error.ParsingFailed
             val storage = MessagingModuleConfiguration.shared.storage
             storage.setUserCount(room, server, memberCount)
             memberCount
         }
     }
+
+    private fun getResponseBody(request: Request): Promise<ByteArray, Exception> {
+        return send(request).map { response ->
+            response.body ?: throw Error.ParsingFailed
+        }
+    }
+
+    private fun getResponseBodyJson(request: Request): Promise<Map<*, *>, Exception> {
+        return send(request).map {
+            JsonUtil.fromJson(it.body, Map::class.java)
+        }
+    }
+
+
+    fun addReaction(room: String, server: String, messageId: Long, emoji: String): Promise<AddReactionResponse, Exception> {
+        val request = Request(
+            verb = PUT,
+            room = room,
+            server = server,
+            endpoint = "reaction",
+            parameters = emptyMap<String, String>()
+        )
+        val pendingReaction = PendingReaction(server, room, messageId, emoji, true)
+        return getResponseBody(request).map { response ->
+            JsonUtil.fromJson(response, AddReactionResponse::class.java).also {
+                val index = pendingReactions.indexOf(pendingReaction)
+                pendingReactions[index].seqNo = it.seqNo
+            }
+        }
+    }
+
+    fun deleteReaction(room: String, server: String, messageId: Long, emoji: String): Promise<DeleteReactionResponse, Exception> {
+        val request = Request(
+            verb = DELETE,
+            room = room,
+            server = server,
+            endpoint = "reaction"
+        )
+        val pendingReaction = PendingReaction(server, room, messageId, emoji, true)
+        return getResponseBody(request).map { response ->
+            JsonUtil.fromJson(response, DeleteReactionResponse::class.java).also {
+                val index = pendingReactions.indexOf(pendingReaction)
+                pendingReactions[index].seqNo = it.seqNo
+            }
+        }
+    }
+
+    fun deleteAllReactions(room: String, server: String, messageId: Long, emoji: String): Promise<DeleteAllReactionsResponse, Exception> {
+        val request = Request(
+            verb = DELETE,
+            room = room,
+            server = server,
+            endpoint ="reactions"
+        )
+        return getResponseBody(request).map { response ->
+            JsonUtil.fromJson(response, DeleteAllReactionsResponse::class.java)
+        }
+    }
+
     // endregion
 }

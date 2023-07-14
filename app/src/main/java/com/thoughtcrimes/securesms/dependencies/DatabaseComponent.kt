@@ -41,6 +41,8 @@ interface DatabaseComponent {
     fun beldexBackupFilesDatabase(): BeldexBackupFilesDatabase
     fun bchatJobDatabase(): BchatJobDatabase
     fun bchatContactDatabase(): BchatContactDatabase
+    fun reactionDatabase(): ReactionDatabase
+    fun emojiSearchDatabase(): EmojiSearchDatabase
     fun storage(): Storage
     fun attachmentProvider(): MessageDataProvider
     fun bchatRecipientAddressDatabase():BchatRecipientAddressDatabase

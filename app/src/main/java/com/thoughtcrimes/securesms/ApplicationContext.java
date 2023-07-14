@@ -47,16 +47,20 @@ import com.beldex.libbchat.utilities.Util;
 import com.beldex.libbchat.utilities.dynamiclanguage.DynamicLanguageContextWrapper;
 import com.beldex.libbchat.utilities.dynamiclanguage.LocaleParser;
 import com.beldex.libsignal.utilities.HTTP;
+import com.beldex.libsignal.utilities.JsonUtil;
 import com.beldex.libsignal.utilities.Log;
 import com.beldex.libsignal.utilities.ThreadUtils;
 import org.signal.aesgcmprovider.AesGcmProvider;
 import com.thoughtcrimes.securesms.components.TypingStatusSender;
 import com.thoughtcrimes.securesms.crypto.KeyPairUtilities;
+import com.thoughtcrimes.securesms.database.EmojiSearchDatabase;
 import com.thoughtcrimes.securesms.database.JobDatabase;
 import com.thoughtcrimes.securesms.database.BeldexAPIDatabase;
 import com.thoughtcrimes.securesms.database.Storage;
+import com.thoughtcrimes.securesms.database.model.EmojiSearchData;
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent;
 import com.thoughtcrimes.securesms.dependencies.DatabaseModule;
+import com.thoughtcrimes.securesms.emoji.EmojiSource;
 import com.thoughtcrimes.securesms.groups.OpenGroupManager;
 import com.thoughtcrimes.securesms.home.HomeActivity;
 import com.thoughtcrimes.securesms.jobmanager.JobManager;
@@ -92,11 +96,15 @@ import org.webrtc.voiceengine.WebRtcAudioManager;
 import org.webrtc.voiceengine.WebRtcAudioUtils;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.security.Security;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
@@ -201,6 +209,8 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
         initializeWebRtc();
         initializeBlobProvider();
         resubmitProfilePictureIfNeeded();
+        loadEmojiSearchIndexIfNeeded();
+        EmojiSource.refresh();
 
         NetworkConstraint networkConstraint = new NetworkConstraint.Factory(this).create();
         HTTP.INSTANCE.setConnectedToNetwork(networkConstraint::isMet);
@@ -474,6 +484,21 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
             }
         });
     }
+
+    private void loadEmojiSearchIndexIfNeeded() {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            EmojiSearchDatabase emojiSearchDb = getDatabaseComponent().emojiSearchDatabase();
+            if (emojiSearchDb.query("face", 1).isEmpty()) {
+                try (InputStream inputStream = getAssets().open("emoji/emoji_search_index.json")) {
+                    List<EmojiSearchData> searchIndex = Arrays.asList(JsonUtil.fromJson(inputStream, EmojiSearchData[].class));
+                    emojiSearchDb.setSearchIndex(searchIndex);
+                } catch (IOException e) {
+                    Log.e("Beldex", "Failed to load emoji search index");
+                }
+            }
+        });
+    }
+
 
     public void clearAllData(boolean isMigratingToV2KeyPair) {
         String token = TextSecurePreferences.getFCMToken(this);

@@ -14,16 +14,12 @@ import com.thoughtcrimes.securesms.conversation.v2.dialogs.JoinOpenGroupDialog
 import com.thoughtcrimes.securesms.database.model.MessageRecord
 
 class OpenGroupInvitationView : LinearLayout {
-    private lateinit var binding: ViewOpenGroupInvitationBinding
+    private val binding: ViewOpenGroupInvitationBinding by lazy { ViewOpenGroupInvitationBinding.bind(this) }
     private var data: UpdateMessageData.Kind.OpenGroupInvitation? = null
 
-    constructor(context: Context): super(context) { initialize() }
-    constructor(context: Context, attrs: AttributeSet?): super(context, attrs) { initialize() }
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int): super(context, attrs, defStyleAttr) { initialize() }
-
-    private fun initialize() {
-        binding = ViewOpenGroupInvitationBinding.inflate(LayoutInflater.from(context), this, true)
-    }
+    constructor(context: Context): super(context)
+    constructor(context: Context, attrs: AttributeSet?): super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int): super(context, attrs, defStyleAttr)
 
     fun bind(message: MessageRecord, @ColorInt textColor: Int) {
         // FIXME: This is a really weird approach...

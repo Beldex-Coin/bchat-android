@@ -23,11 +23,13 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.work.impl.utils.RawQueries;
 
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 import com.google.android.mms.pdu_alt.NotificationInd;
 import com.google.android.mms.pdu_alt.PduHeaders;
+import com.thoughtcrimes.securesms.database.model.ReactionRecord;
 import com.thoughtcrimes.securesms.mms.MmsException;
 import com.thoughtcrimes.securesms.mms.SlideDeck;
 
@@ -73,6 +75,7 @@ import com.thoughtcrimes.securesms.dependencies.DatabaseComponent;
 import java.io.Closeable;
 import java.io.IOException;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -170,7 +173,19 @@ public class MmsDatabase extends MessagingDatabase {
           "'" + AttachmentDatabase.STICKER_PACK_ID + "', " + AttachmentDatabase.TABLE_NAME + "." + AttachmentDatabase.STICKER_PACK_ID+ ", " +
           "'" + AttachmentDatabase.STICKER_PACK_KEY + "', " + AttachmentDatabase.TABLE_NAME + "." + AttachmentDatabase.STICKER_PACK_KEY + ", " +
           "'" + AttachmentDatabase.STICKER_ID + "', " + AttachmentDatabase.TABLE_NAME + "." + AttachmentDatabase.STICKER_ID +
-          ")) AS " + AttachmentDatabase.ATTACHMENT_JSON_ALIAS,
+              ")) AS " + AttachmentDatabase.ATTACHMENT_JSON_ALIAS,
+          "json_group_array(json_object(" +
+                  "'" + ReactionDatabase.ROW_ID + "', " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.ROW_ID + ", " +
+                  "'" + ReactionDatabase.MESSAGE_ID + "', " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.MESSAGE_ID + ", " +
+                  "'" + ReactionDatabase.IS_MMS + "', " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.IS_MMS + ", " +
+                  "'" + ReactionDatabase.AUTHOR_ID + "', " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.AUTHOR_ID + ", " +
+                  "'" + ReactionDatabase.EMOJI + "', " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.EMOJI + ", " +
+                  "'" + ReactionDatabase.SERVER_ID + "', " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.SERVER_ID + ", " +
+                  "'" + ReactionDatabase.COUNT + "', " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.COUNT + ", " +
+                  "'" + ReactionDatabase.SORT_ID + "', " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.SORT_ID + ", " +
+                  "'" + ReactionDatabase.DATE_SENT + "', " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.DATE_SENT + ", " +
+                  "'" + ReactionDatabase.DATE_RECEIVED + "', " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.DATE_RECEIVED +
+                  ")) AS " + ReactionDatabase.REACTION_JSON_ALIAS
   };
 
   private static final String RAW_ID_WHERE = TABLE_NAME + "._id = ?";
@@ -185,6 +200,16 @@ public class MmsDatabase extends MessagingDatabase {
   public static String getCreateMessageRequestResponseCommand() {
     return "ALTER TABLE "+ TABLE_NAME + " " +
             "ADD COLUMN " + MESSAGE_REQUEST_RESPONSE + " INTEGER DEFAULT 0;";
+  }
+
+  public static String getCreateReactionsUnreadCommand(){
+    return "ALTER TABLE "+ TABLE_NAME+" "+
+            "ADD COLUMN "+ REACTIONS_UNREAD +" INTEGER DEFAULT 0;";
+  }
+
+  public static String getCreateReactionsLastSeenCommand(){
+    return "ALTER TABLE "+ TABLE_NAME+" "+
+            "ADD COLUMN "+ REACTIONS_LAST_SEEN +" INTEGER DEFAULT 0;";
   }
 
 
@@ -343,9 +368,11 @@ public class MmsDatabase extends MessagingDatabase {
   private Cursor rawQuery(@NonNull String where, @Nullable String[] arguments) {
     SQLiteDatabase database = databaseHelper.getReadableDatabase();
     return database.rawQuery("SELECT " + Util.join(MMS_PROJECTION, ",") +
-                             " FROM " + MmsDatabase.TABLE_NAME +  " LEFT OUTER JOIN " + AttachmentDatabase.TABLE_NAME +
-                             " ON (" + MmsDatabase.TABLE_NAME + "." + ID + " = " + AttachmentDatabase.TABLE_NAME + "." + AttachmentDatabase.MMS_ID + ")" +
-                             " WHERE " + where + " GROUP BY " + MmsDatabase.TABLE_NAME + "." + ID, arguments);
+            " FROM " + TABLE_NAME +
+            " LEFT OUTER JOIN " + AttachmentDatabase.TABLE_NAME + " ON (" + TABLE_NAME + "." + ID + " = " + AttachmentDatabase.TABLE_NAME + "." + AttachmentDatabase.MMS_ID + ")" +
+            " LEFT OUTER JOIN " + ReactionDatabase.TABLE_NAME + " ON (" + TABLE_NAME + "." + ID + " = " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.MESSAGE_ID + " AND " + ReactionDatabase.TABLE_NAME + "." + ReactionDatabase.IS_MMS + " = 1)" +
+            " WHERE " + where + " GROUP BY " + TABLE_NAME + "." + ID, arguments
+    );
   }
 
   public Cursor getMessage(long messageId) {
@@ -449,7 +476,7 @@ public class MmsDatabase extends MessagingDatabase {
 
 
   public List<MarkedMessageInfo> setMessagesRead(long threadId) {
-    return setMessagesRead(THREAD_ID + " = ? AND " + READ + " = 0", new String[] {String.valueOf(threadId)});
+    return setMessagesRead(THREAD_ID + " = ? AND (" + READ + " = 0 OR " + REACTIONS_UNREAD + " = 1)", new String[] {String.valueOf(threadId)});
   }
 
   public List<MarkedMessageInfo> setAllMessagesRead() {
@@ -477,6 +504,7 @@ public class MmsDatabase extends MessagingDatabase {
 
       ContentValues contentValues = new ContentValues();
       contentValues.put(READ, 1);
+      contentValues.put(REACTIONS_UNREAD, 0);
 
       database.update(TABLE_NAME, contentValues, where, arguments);
       database.setTransactionSuccessful();
@@ -968,6 +996,12 @@ public class MmsDatabase extends MessagingDatabase {
     return threadDeleted;
   }
 
+  @Override
+  public MessageRecord getMessageRecord(long messageId) throws NoSuchMessageException {
+    Cursor cursor = rawQuery(RAW_ID_WHERE, new String[] {messageId + ""});
+    return readerFor(cursor).getNext();
+  }
+
   public void deleteThread(long threadId) {
     Set<Long> singleThreadSet = new HashSet<>();
     singleThreadSet.add(threadId);
@@ -1196,7 +1230,7 @@ public class MmsDatabase extends MessagingDatabase {
                                                      message.getOutgoingQuote().getMissing(),
                                                      new SlideDeck(context, message.getOutgoingQuote().getAttachments())) :
                                            null,
-                                       message.getSharedContacts(), message.getLinkPreviews(), false);
+                                       message.getSharedContacts(), message.getLinkPreviews(), Collections.emptyList(),false);
     }
   }
 
@@ -1300,12 +1334,13 @@ public class MmsDatabase extends MessagingDatabase {
       Set<Attachment>           previewAttachments = Stream.of(previews).filter(lp -> lp.getThumbnail().isPresent()).map(lp -> lp.getThumbnail().get()).collect(Collectors.toSet());
       SlideDeck                 slideDeck          = getSlideDeck(Stream.of(attachments).filterNot(contactAttachments::contains).filterNot(previewAttachments::contains).toList());
       Quote                     quote              = getQuote(cursor);
+      List<ReactionRecord> reactions               = DatabaseComponent.get(context).reactionDatabase().getReactions(cursor);
 
       return new MediaMmsMessageRecord(id, recipient, recipient,
                                        addressDeviceId, dateSent, dateReceived, deliveryReceiptCount,
                                        threadId, body, slideDeck, partCount, box, mismatches,
                                        networkFailures, subscriptionId, expiresIn, expireStarted,
-                                       readReceiptCount, quote, contacts, previews, unidentified);
+                                       readReceiptCount, quote, contacts, previews,reactions, unidentified);
     }
 
     private Recipient getRecipientFor(String serialized) {

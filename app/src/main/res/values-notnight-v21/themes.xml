@@ -36,6 +36,7 @@
 
         <item name="conversation_item_audio_seek_bar_color_incoming">@color/accent</item>
         <item name="conversation_item_audio_seek_bar_color_outgoing">@color/white</item>
+        <item name="emoji_show_less_icon">@drawable/ic_chevron_up</item>
     </style>
 
     <style name="Theme.Bchat.DayNight" parent="Theme.Bchat.Light">

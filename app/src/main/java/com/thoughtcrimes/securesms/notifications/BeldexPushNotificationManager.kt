@@ -11,6 +11,7 @@ import com.beldex.libsignal.utilities.JsonUtil
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.retryIfNeeded
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
+import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.functional.map
 
 object BeldexPushNotificationManager {
@@ -43,7 +44,7 @@ object BeldexPushNotificationManager {
         val body = RequestBody.create("application/json".toMediaType(), JsonUtil.toJson(parameters))
         val request = Request.Builder().url(url).post(body)
         retryIfNeeded(maxRetryCount) {
-            OnionRequestAPI.sendOnionRequest(request.build(), server, pnServerPublicKey, "/beldex/v2/lsrpc").map { json ->
+            getResponseBody(request.build()).map { json ->
                 val code = json["code"] as? Int
                 if (code != null && code != 0) {
                     TextSecurePreferences.setIsUsingFCM(context, false)
@@ -72,7 +73,7 @@ object BeldexPushNotificationManager {
         val body = RequestBody.create("application/json".toMediaType(), JsonUtil.toJson(parameters))
         val request = Request.Builder().url(url).post(body)
         retryIfNeeded(maxRetryCount) {
-            OnionRequestAPI.sendOnionRequest(request.build(), server, pnServerPublicKey, "/beldex/v2/lsrpc").map { json ->
+            getResponseBody(request.build()).map { json ->
                 val code = json["code"] as? Int
                 if (code != null && code != 0) {
                     TextSecurePreferences.setIsUsingFCM(context, true)
@@ -100,14 +101,19 @@ object BeldexPushNotificationManager {
         val body = RequestBody.create("application/json".toMediaType(), JsonUtil.toJson(parameters))
         val request = Request.Builder().url(url).post(body)
         retryIfNeeded(maxRetryCount) {
-            OnionRequestAPI.sendOnionRequest(request.build(), server, pnServerPublicKey, "/beldex/v2/lsrpc").map { json ->
+            getResponseBody(request.build()).map { json ->
                 val code = json["code"] as? Int
                 if (code == null || code == 0) {
-                    Log.d("Beldex", "Couldn't subscribe/unsubscribe secret group: $closedGroupPublicKey due to error: ${json["message"] as? String ?: "null"}.")
+                    Log.d("Beldex", "Couldn't subscribe/unsubscribe closed group: $closedGroupPublicKey due to error: ${json["message"] as? String ?: "null"}.")
                 }
             }.fail { exception ->
                 Log.d("Beldex", "Couldn't subscribe/unsubscribe secret group: $closedGroupPublicKey due to error: ${exception}.")
             }
+        }
+    }
+    private fun getResponseBody(request: Request): Promise<Map<*, *>, Exception> {
+        return OnionRequestAPI.sendOnionRequest(request, server, pnServerPublicKey, "/beldex/v2/lsrpc").map { response ->
+            JsonUtil.fromJson(response.body, Map::class.java)
         }
     }
 }

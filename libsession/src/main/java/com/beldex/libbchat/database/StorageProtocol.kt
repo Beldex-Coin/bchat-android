@@ -7,9 +7,11 @@ import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.messaging.jobs.AttachmentUploadJob
 import com.beldex.libbchat.messaging.jobs.Job
 import com.beldex.libbchat.messaging.jobs.MessageSendJob
+import com.beldex.libbchat.messaging.messages.Message
 import com.beldex.libbchat.messaging.messages.control.ConfigurationMessage
 import com.beldex.libbchat.messaging.messages.control.MessageRequestResponse
 import com.beldex.libbchat.messaging.messages.visible.Attachment
+import com.beldex.libbchat.messaging.messages.visible.Reaction
 import com.beldex.libbchat.messaging.messages.visible.VisibleMessage
 import com.beldex.libbchat.messaging.open_groups.OpenGroupV2
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentId
@@ -170,4 +172,8 @@ interface StorageProtocol {
     fun unblock(toUnblock: List<Recipient>)
     fun blockedContacts(): List<Recipient>
     fun unblockSingleUser(toUnblock: Recipient)
+    fun addReaction(reaction: Reaction)
+    fun removeReaction(emoji: String, messageTimestamp: Long, author: String)
+    fun updateReactionIfNeeded(message: Message, sender: String, openGroupSentTimestamp: Long)
+    fun deleteReactions(messageId: Long, mms: Boolean)
 }

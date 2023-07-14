@@ -16,16 +16,13 @@ import io.beldex.bchat.databinding.ViewPaymentCardBinding
 
 class PaymentCardView : LinearLayout {
 
-    private lateinit var binding: ViewPaymentCardBinding
+   private val binding: ViewPaymentCardBinding by lazy { ViewPaymentCardBinding.bind(this) }
     private var data: UpdateMessageData.Kind.Payment? = null
 
-    constructor(context: Context): super(context) { initialize() }
-    constructor(context: Context, attrs: AttributeSet?): super(context, attrs) { initialize() }
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int): super(context, attrs, defStyleAttr) { initialize() }
+    constructor(context: Context): super(context)
+    constructor(context: Context, attrs: AttributeSet?): super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int): super(context, attrs, defStyleAttr)
 
-    private fun initialize() {
-        binding = ViewPaymentCardBinding.inflate(LayoutInflater.from(context), this, true)
-    }
 
     fun bind(message: MessageRecord, @ColorInt textColor: Int) {
         // FIXME: This is a really weird approach...

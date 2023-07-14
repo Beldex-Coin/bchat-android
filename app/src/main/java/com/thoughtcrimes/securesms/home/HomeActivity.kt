@@ -139,12 +139,16 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     @Inject
     lateinit var beldexMessageDb: BeldexMessageDatabase
 
+    @Inject
+    lateinit var reactionDb: ReactionDatabase
+
     //New Line App Update
     private var appUpdateManager: AppUpdateManager? = null
     private val IMMEDIATE_APP_UPDATE_REQ_CODE = 124
 
     companion object{
         const val SHORTCUT_LAUNCHER = "short_cut_launcher"
+        const val IS_NOTIFICATION = "is_notification"
 
         var REQUEST_URI = "uri"
         val reportIssueBChatID = "bdb890a974a25ef50c64cc4e3270c4c49c7096c433b8eecaf011c1ad000e426813" //Mainnet
@@ -348,7 +352,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         publicKey: String,
         profileButton: ProfilePictureView,
         drawerProfileName: TextView,
-        drawerProfileIcon: ProfilePictureView
+        drawerProfileIcon: ProfilePictureView,
     ) {
         lifecycleScope.launchWhenStarted {
             launch(Dispatchers.IO) {
@@ -471,7 +475,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         profileButton: ProfilePictureView,
         drawerProfileName: TextView,
         drawerProfileIcon: ProfilePictureView,
-        publicKey: String
+        publicKey: String,
     ) {
         profileButton.publicKey = publicKey
         profileButton.displayName = TextSecurePreferences.getProfileName(this)
@@ -783,7 +787,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 saveWallet()
             }
         }
-        stopWalletService()
+            Log.d("Beldex","notification issue home destroy called")
+            stopWalletService()
+            Log.d("Beldex","notification issue home destroy called 1")
         super.onDestroy()
     }
 
@@ -802,7 +808,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     override fun passGlobalSearchAdapterModelMessageValue(
         threadId: Long,
         timestamp: Long,
-        author: Address
+        author: Address,
     ) {
         val extras = Bundle()
         extras.putLong(ConversationFragmentV2.THREAD_ID,threadId)
@@ -893,15 +899,18 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         // we know will be running in our own process (and thus won't be
         // supporting component replacement by other applications).
         Log.d("Beldex","value of walletName & walletPassword $walletName , $walletPassword")
+        Log.d("Beldex","notification issue startWalletService called 2")
         if (CheckOnline.isOnline(this)) {
             var intent: Intent? = null
             if(intent==null) {
-                intent = Intent(applicationContext, WalletService::class.java)
+                Log.d("Beldex","notification issue startWalletService called 3")
+                intent = Intent(this, WalletService::class.java)
                 intent.putExtra(WalletService.REQUEST_WALLET, walletName)
                 intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_LOAD)
                 intent.putExtra(WalletService.REQUEST_CMD_LOAD_PW, walletPassword)
                 startService(intent)
                 bindService(intent, mConnection, BIND_AUTO_CREATE)
+                Log.d("Beldex","notification issue startWalletService called 4")
                 mIsBound = true
                 Timber.d("BOUND")
             }
@@ -1293,16 +1302,21 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     override fun onWalletStarted(walletStatus: Wallet.Status?) {
         runOnUiThread {
+           Log.d("Beldex", "notification issue startWalletService called 10")
             dismissProgressDialog()
+            Log.d("Beldex", "notification issue startWalletService called 11")
             if (walletStatus == null) {
                 // guess what went wrong
+                Log.d("Beldex", "notification issue startWalletService called 12")
                 Toast.makeText(
                     this@HomeActivity,
                     getString(R.string.status_wallet_connect_failed),
                     Toast.LENGTH_LONG
                 ).show()
             } else {
+                Log.d("Beldex", "notification issue startWalletService called 13")
                 if (Wallet.ConnectionStatus.ConnectionStatus_WrongVersion === walletStatus.connectionStatus) {
+                    Log.d("Beldex", "notification issue startWalletService called 14")
                     Toast.makeText(
                         this@HomeActivity,
                         getString(R.string.status_wallet_connect_wrong_version),
@@ -1320,20 +1334,30 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }
         if (walletStatus == null || Wallet.ConnectionStatus.ConnectionStatus_Connected !== walletStatus.connectionStatus) {
             Log.d("Beldex","WalletActivity finished called")
+            Log.d("Beldex", "notification issue startWalletService called 15")
             /*finish()*/
         } else {
             haveWallet = true
             invalidateOptionsMenu()
+            Log.d("Beldex", "notification issue startWalletService called 16")
             //WalletFragment Functionality --
             val currentFragment = getCurrentFragment()
-            runOnUiThread {
+            Log.d("Beldex", "notification issue startWalletService called 17")
+            if(currentFragment is WalletFragment){
+                runOnUiThread{ currentFragment.onLoaded()}
+                Log.d("Beldex", "notification issue startWalletService called 18")
+            }
+            Log.d("Beldex", "notification issue startWalletService called 19")
+           /* runOnUiThread {
                 //WalletFragment Functionality --
+                Log.d("Beldex", "notification issue startWalletService called 17")
                 when (currentFragment) {
                     is WalletFragment -> {
+                        Log.d("Beldex", "notification issue startWalletService called 18")
                         currentFragment.onLoaded()
                     }
                 }
-            }
+            }*/
         }
     }
 
@@ -1472,12 +1496,14 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
 
     private fun startWalletService() {
+        Log.d("Beldex","notification issue startWalletService called")
         val walletName = getWalletName(this)
         val walletPassword = getWalletPassword(this)
         if (walletName != null && walletPassword != null) {
             // acquireWakeLock()
             // we can set the streetmode height AFTER opening the wallet
             if (CheckOnline.isOnline(this)) {
+                Log.d("Beldex","notification issue startWalletService called 1")
                 connectWalletService(walletName, walletPassword)
             }
         } else {
@@ -1549,6 +1575,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     private fun stopWalletService() {
+        Log.d("Beldex","notification issue stopWalletService called")
         disconnectWalletService()
     }
 
@@ -1601,7 +1628,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String?>,
-        grantResults: IntArray
+        grantResults: IntArray,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == Helper.PERMISSIONS_REQUEST_CAMERA) { // If request is cancelled, the result arrays are empty.

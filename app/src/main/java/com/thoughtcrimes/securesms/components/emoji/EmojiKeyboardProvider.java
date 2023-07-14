@@ -11,24 +11,23 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 
-import com.thoughtcrimes.securesms.util.ResUtil;
-import com.thoughtcrimes.securesms.components.emoji.EmojiPageViewGridAdapter.VariationSelectorListener;
-import com.thoughtcrimes.securesms.mms.GlideRequests;
-
 import com.beldex.libbchat.utilities.ThemeUtil;
+import com.thoughtcrimes.securesms.mms.GlideRequests;
+import com.thoughtcrimes.securesms.util.ResUtil;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import io.beldex.bchat.R;
 
+
 /**
  * A provider to select emoji in the {@link MediaKeyboard}.
  */
 public class EmojiKeyboardProvider implements MediaKeyboardProvider,
-                                              MediaKeyboardProvider.TabIconProvider,
-                                              MediaKeyboardProvider.BackspaceObserver,
-                                              VariationSelectorListener
+        MediaKeyboardProvider.TabIconProvider,
+        MediaKeyboardProvider.BackspaceObserver,
+        EmojiPageViewGridAdapter.VariationSelectorListener
 {
   private static final KeyEvent DELETE_KEY_EVENT = new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL);
 
@@ -115,12 +114,12 @@ public class EmojiKeyboardProvider implements MediaKeyboardProvider,
     private Context                   context;
     private List<EmojiPageModel>      pages;
     private EmojiEventListener emojiSelectionListener;
-    private VariationSelectorListener variationSelectorListener;
+    private EmojiPageViewGridAdapter.VariationSelectorListener variationSelectorListener;
 
     public EmojiPagerAdapter(@NonNull Context context,
                              @NonNull List<EmojiPageModel> pages,
                              @NonNull EmojiEventListener emojiSelectionListener,
-                             @NonNull VariationSelectorListener variationSelectorListener)
+                             @NonNull EmojiPageViewGridAdapter.VariationSelectorListener variationSelectorListener)
     {
       super();
       this.context                   = context;
@@ -136,8 +135,7 @@ public class EmojiKeyboardProvider implements MediaKeyboardProvider,
 
     @Override
     public @NonNull Object instantiateItem(@NonNull ViewGroup container, int position) {
-      EmojiPageView page = new EmojiPageView(context, emojiSelectionListener, variationSelectorListener);
-      page.setModel(pages.get(position));
+      EmojiPageView page = new EmojiPageView(context, emojiSelectionListener, variationSelectorListener, false);
       container.addView(page);
       return page;
     }
@@ -160,8 +158,4 @@ public class EmojiKeyboardProvider implements MediaKeyboardProvider,
     }
   }
 
-  public interface EmojiEventListener {
-    void onEmojiSelected(String emoji);
-    void onKeyEvent(KeyEvent keyEvent);
-  }
 }

@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 public class JsonUtil {
 
@@ -28,6 +29,10 @@ public class JsonUtil {
 
   public static <T> T fromJson(byte[] serialized, Class<T> clazz) throws IOException {
     return fromJson(new String(serialized), clazz);
+  }
+
+  public static <T> T fromJson(String serialized, TypeReference<T> typeReference) throws IOException {
+    return objectMapper.readValue(serialized, typeReference);
   }
 
   public static <T> T fromJson(String serialized, Class<T> clazz) throws IOException {

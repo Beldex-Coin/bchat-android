@@ -28,6 +28,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.thoughtcrimes.securesms.components.emoji.EmojiEventListener;
 import com.thoughtcrimes.securesms.util.CharacterCalculator;
 import com.thoughtcrimes.securesms.util.PushCharacterCalculator;
 import com.thoughtcrimes.securesms.util.Stopwatch;
@@ -389,7 +390,7 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
 
   private void onEmojiToggleClicked(View v) {
     if (!emojiDrawer.resolved()) {
-      emojiDrawer.get().setProviders(0, new EmojiKeyboardProvider(requireContext(), new EmojiKeyboardProvider.EmojiEventListener() {
+      emojiDrawer.get().setProviders(0, new EmojiKeyboardProvider(requireContext(), new EmojiEventListener() {
         @Override
         public void onKeyEvent(KeyEvent keyEvent) {
           getActiveInputField().dispatchKeyEvent(keyEvent);

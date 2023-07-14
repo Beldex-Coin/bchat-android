@@ -44,12 +44,12 @@ object PushNotificationAPI {
         val body = RequestBody.create(MediaType.get("application/json"), JsonUtil.toJson(parameters))
         val request = Request.Builder().url(url).post(body)
         retryIfNeeded(maxRetryCount) {
-            OnionRequestAPI.sendOnionRequest(request.build(), server, serverPublicKey, "/beldex/v2/lsrpc").map { json ->
-                val code = json["code"] as? Int
+            OnionRequestAPI.sendOnionRequest(request.build(), server, serverPublicKey, "/beldex/v2/lsrpc").map { response ->
+                val code = response.info["code"] as? Int
                 if (code != null && code != 0) {
                     TextSecurePreferences.setIsUsingFCM(context, false)
                 } else {
-                    Log.d("Beldex", "Couldn't disable FCM due to error: ${json["message"] as? String ?: "null"}.")
+                    Log.d("Beldex", "Couldn't disable FCM due to error: ${response.info["message"] as? String ?: "null"}.")
                 }
             }.fail { exception ->
                 Log.d("Beldex", "Couldn't disable FCM due to error: ${exception}.")
@@ -72,14 +72,14 @@ object PushNotificationAPI {
         val body = RequestBody.create(MediaType.get("application/json"), JsonUtil.toJson(parameters))
         val request = Request.Builder().url(url).post(body)
         retryIfNeeded(maxRetryCount) {
-            OnionRequestAPI.sendOnionRequest(request.build(), server, serverPublicKey, "/beldex/v2/lsrpc").map { json ->
-                val code = json["code"] as? Int
+            OnionRequestAPI.sendOnionRequest(request.build(), server, serverPublicKey, "/beldex/v2/lsrpc").map { response ->
+                val code = response.info["code"] as? Int
                 if (code != null && code != 0) {
                     TextSecurePreferences.setIsUsingFCM(context, true)
                     TextSecurePreferences.setFCMToken(context, token)
                     TextSecurePreferences.setLastFCMUploadTime(context, System.currentTimeMillis())
                 } else {
-                    Log.d("Beldex", "Couldn't register for FCM due to error: ${json["message"] as? String ?: "null"}.")
+                    Log.d("Beldex", "Couldn't register for FCM due to error: ${response.info["message"] as? String ?: "null"}.")
                 }
             }.fail { exception ->
                 Log.d("Beldex", "Couldn't register for FCM due to error: ${exception}.")
@@ -99,10 +99,10 @@ object PushNotificationAPI {
         val body = RequestBody.create(MediaType.get("application/json"), JsonUtil.toJson(parameters))
         val request = Request.Builder().url(url).post(body)
         retryIfNeeded(maxRetryCount) {
-            OnionRequestAPI.sendOnionRequest(request.build(), server, serverPublicKey, "/beldex/v2/lsrpc").map { json ->
-                val code = json["code"] as? Int
+            OnionRequestAPI.sendOnionRequest(request.build(), server, serverPublicKey, "/beldex/v2/lsrpc").map { response ->
+                val code = response.info["code"] as? Int
                 if (code == null || code == 0) {
-                    Log.d("Beldex", "Couldn't subscribe/unsubscribe secret group: $closedGroupPublicKey due to error: ${json["message"] as? String ?: "null"}.")
+                    Log.d("Beldex", "Couldn't subscribe/unsubscribe closed group: $closedGroupPublicKey due to error: ${response.info["message"] as? String ?: "null"}.")
                 }
             }.fail { exception ->
                 Log.d("Beldex", "Couldn't subscribe/unsubscribe secret group: $closedGroupPublicKey due to error: ${exception}.")

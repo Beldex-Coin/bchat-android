@@ -273,18 +273,23 @@ public class WalletService extends Service {
                         case REQUEST_CMD_LOAD:
                             String walletId = extras.getString(REQUEST_WALLET, null);
                             String walletPw = extras.getString(REQUEST_CMD_LOAD_PW, null);
+                            Log.d("Beldex","notification issue startWalletService called 5");
                             if (walletId != null) {
                                 showProgress(getString(R.string.status_wallet_loading));
                                 showProgress(10);
+                                Log.d("Beldex","notification issue startWalletService called 6");
                                 Wallet.Status walletStatus = start(walletId, walletPw);
+                                Log.d("Beldex","notification issue startWalletService called 7");
                                 if (observer != null) {
                                     try {
                                         observer.onWalletStarted(walletStatus);
+                                        Log.d("Beldex","notification issue startWalletService called 8");
                                     }catch (NullPointerException ex){
                                         Log.d("Exception", ex.toString());
                                     }
                                 }
                                 if ((walletStatus == null) || !walletStatus.isOk()) {
+                                    Log.d("Beldex","notification issue startWalletService called 9");
                                     errorState = true;
                                     stop();
                                 }

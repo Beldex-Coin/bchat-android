@@ -16,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
@@ -48,11 +49,12 @@ class VisibleMessageView : LinearLayout {
     @Inject lateinit var threadDb: ThreadDatabase
     @Inject lateinit var contactDb: BchatContactDatabase
     @Inject lateinit var beldexThreadDb: BeldexThreadDatabase
+    @Inject lateinit var beldexAPIDb: BeldexAPIDatabase
     @Inject lateinit var mmsSmsDb: MmsSmsDatabase
     @Inject lateinit var smsDb: SmsDatabase
     @Inject lateinit var mmsDb: MmsDatabase
 
-    private lateinit var binding: io.beldex.bchat.databinding.ViewVisibleMessageBinding
+    private val binding by lazy { ViewVisibleMessageBinding.bind(this) }
     private val screenWidth = Resources.getSystem().displayMetrics.widthPixels
     private val swipeToReplyIcon = ContextCompat.getDrawable(context, R.drawable.ic_baseline_reply_24)!!.mutate()
     private val swipeToReplyIconRect = Rect()
@@ -73,7 +75,7 @@ class VisibleMessageView : LinearLayout {
     var onPress: ((event: MotionEvent) -> Unit)? = null
     var onSwipeToReply: (() -> Unit)? = null
     var onLongPress: (() -> Unit)? = null
-    var contentViewDelegate: VisibleMessageContentViewDelegate? = null
+    val messageContentView: VisibleMessageContentView by lazy { binding.messageContentView.root }
 
     companion object {
         const val swipeToReplyThreshold = 64.0f // dp
@@ -83,13 +85,16 @@ class VisibleMessageView : LinearLayout {
     }
 
     // region Lifecycle
-    constructor(context: Context) : super(context) { initialize() }
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) { initialize() }
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) { initialize() }
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+
+    override fun onFinishInflate() {
+        super.onFinishInflate()
+        initialize()
+    }
 
     private fun initialize() {
-        binding = ViewVisibleMessageBinding.inflate(LayoutInflater.from(context), this, true)
-        layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         isHapticFeedbackEnabled = true
         setWillNotDraw(false)
         binding.expirationTimerViewContainer.disableClipping()
@@ -98,7 +103,7 @@ class VisibleMessageView : LinearLayout {
     // endregion
 
     // region Updating
-    fun bind(message: MessageRecord, previous: MessageRecord?, next: MessageRecord?, glide: GlideRequests, searchQuery: String?) {
+    fun bind(message: MessageRecord, previous: MessageRecord?, next: MessageRecord?, glide: GlideRequests, searchQuery: String?,delegate: VisibleMessageViewDelegate?,) {
         val sender = message.individualRecipient
         val senderBchatID = sender.address.serialize()
         val threadID = message.threadId
@@ -170,14 +175,24 @@ class VisibleMessageView : LinearLayout {
         }
         // Expiration timer
         updateExpirationTimer(message)
-        // Calculate max message bubble width
+        // Emoji Reactions
+        val emojiLayoutParams = binding.emojiReactionsView.root.layoutParams as ConstraintLayout.LayoutParams
+        emojiLayoutParams.horizontalBias = if (message.isOutgoing) 1f else 0f
+        binding.emojiReactionsView.root.layoutParams = emojiLayoutParams
+        if (message.reactions.isNotEmpty()) {
+            binding.emojiReactionsView.root.setReactions(message.id, message.reactions, message.isOutgoing, delegate)
+            binding.emojiReactionsView.root.isVisible = true
+        } else {
+            binding.emojiReactionsView.root.isVisible = false
+        }
+
         var maxWidth = screenWidth - startPadding - endPadding
         if (binding.profilePictureContainer.visibility != View.GONE) { maxWidth -= binding.profilePictureContainer.width }
         // Populate content view
-        binding.messageContentView.indexInAdapter = indexInAdapter
-        binding.messageContentView.bind(message, isStartOfMessageCluster, isEndOfMessageCluster, glide, maxWidth, thread, searchQuery, message.isOutgoing || isGroupThread || (contact?.isTrusted ?: false))
-        binding.messageContentView.delegate = contentViewDelegate
-        onDoubleTap = { binding.messageContentView.onContentDoubleTap?.invoke() }
+        binding.messageContentView.root.indexInAdapter = indexInAdapter
+        binding.messageContentView.root.bind(message, isStartOfMessageCluster, isEndOfMessageCluster, glide, maxWidth, thread, searchQuery, message.isOutgoing || isGroupThread || (contact?.isTrusted ?: false))
+        binding.messageContentView.root.delegate = delegate
+        onDoubleTap = { binding.messageContentView.root.onContentDoubleTap?.invoke() }
     }
 
     private fun setMessageSpacing(isStartOfMessageCluster: Boolean, isEndOfMessageCluster: Boolean) {
@@ -221,7 +236,7 @@ class VisibleMessageView : LinearLayout {
     private fun updateExpirationTimer(message: MessageRecord) {
         val expirationTimerViewLayoutParams = binding.expirationTimerView.layoutParams as MarginLayoutParams
         val container = binding.expirationTimerViewContainer
-        val content = binding.messageContentView
+        val content = binding.messageContentView.root
         val expiration = binding.expirationTimerView
         container.removeAllViewsInLayout()
         container.addView(if (message.isOutgoing) expiration else content)
@@ -274,7 +289,7 @@ class VisibleMessageView : LinearLayout {
             val spacing = context.resources.getDimensionPixelSize(R.dimen.small_spacing)
             val threshold = swipeToReplyThreshold
             val iconSize = toPx(24, context.resources)
-            val bottomVOffset = paddingBottom + binding.messageStatusImageView.height + (binding.messageContentView.height - iconSize) / 2
+            val bottomVOffset = paddingBottom + binding.messageStatusImageView.height + (binding.messageContentView.root.height - iconSize) / 2
             swipeToReplyIconRect.left = binding.messageContentContainer.right - binding.messageContentContainer.paddingEnd + spacing
             swipeToReplyIconRect.top = height - bottomVOffset - iconSize
             swipeToReplyIconRect.right = binding.messageContentContainer.right - binding.messageContentContainer.paddingEnd + iconSize + spacing
@@ -290,7 +305,7 @@ class VisibleMessageView : LinearLayout {
 
     fun recycle() {
         binding.profilePictureView.recycle()
-        binding.messageContentView.recycle()
+        binding.messageContentView.root.recycle()
     }
     // endregion
 
@@ -386,7 +401,7 @@ class VisibleMessageView : LinearLayout {
     }
 
     fun onContentClick(event: MotionEvent) {
-        binding.messageContentView.onContentClick.iterator().forEach { clickHandler -> clickHandler.invoke(event) }
+        binding.messageContentView.root.onContentClick.iterator().forEach { clickHandler -> clickHandler.invoke(event) }
     }
 
     private fun onPress(event: MotionEvent) {
@@ -406,7 +421,7 @@ class VisibleMessageView : LinearLayout {
     }
 
     fun playVoiceMessage() {
-        binding.messageContentView.playVoiceMessage()
+        binding.messageContentView.root.playVoiceMessage()
     }
     // endregion
 }

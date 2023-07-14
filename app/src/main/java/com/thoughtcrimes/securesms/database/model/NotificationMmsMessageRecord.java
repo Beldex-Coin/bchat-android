@@ -30,6 +30,7 @@ import com.beldex.libbchat.utilities.recipients.Recipient;
 import java.util.Collections;
 import java.util.LinkedList;
 import io.beldex.bchat.R;
+import static java.util.Collections.emptyList;
 
 /**
  * Represents the message record model for MMS messages that are
@@ -55,9 +56,8 @@ public class NotificationMmsMessageRecord extends MmsMessageRecord {
   {
     super(id, "", conversationRecipient, individualRecipient,
       dateSent, dateReceived, threadId, SmsDatabase.Status.STATUS_NONE, deliveryReceiptCount, mailbox,
-      new LinkedList<IdentityKeyMismatch>(), new LinkedList<NetworkFailure>(),
-      0, 0, slideDeck, readReceiptCount, null, Collections.emptyList(), Collections.emptyList(), false);
-
+            emptyList(), emptyList(),
+            0, 0, slideDeck, readReceiptCount, null, emptyList(), emptyList(), false, emptyList());
     this.contentLocation = contentLocation;
     this.messageSize     = messageSize;
     this.expiry          = expiry;

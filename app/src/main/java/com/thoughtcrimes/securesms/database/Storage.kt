@@ -6,10 +6,12 @@ import com.beldex.libbchat.database.StorageProtocol
 import com.beldex.libbchat.messaging.calls.CallMessageType
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.messaging.jobs.*
+import com.beldex.libbchat.messaging.messages.Message
 import com.beldex.libbchat.messaging.messages.control.ConfigurationMessage
 import com.beldex.libbchat.messaging.messages.control.MessageRequestResponse
 import com.beldex.libbchat.messaging.messages.signal.*
 import com.beldex.libbchat.messaging.messages.visible.Attachment
+import com.beldex.libbchat.messaging.messages.visible.Reaction
 import com.beldex.libbchat.messaging.messages.visible.VisibleMessage
 import com.beldex.libbchat.messaging.open_groups.OpenGroupV2
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentId
@@ -30,6 +32,8 @@ import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.guava.Optional
 import com.thoughtcrimes.securesms.ApplicationContext
 import com.thoughtcrimes.securesms.database.helpers.SQLCipherOpenHelper
+import com.thoughtcrimes.securesms.database.model.MessageId
+import com.thoughtcrimes.securesms.database.model.ReactionRecord
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.groups.OpenGroupManager
 import com.thoughtcrimes.securesms.jobs.RetrieveProfileAvatarJob
@@ -809,4 +813,57 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
         val recipientDb = DatabaseComponent.get(context).recipientDatabase()
         return recipientDb.blockedContacts
     }
+
+    override fun addReaction(reaction: Reaction) {
+        val timestamp = reaction.timestamp
+        val localId = reaction.localId
+        val isMms = reaction.isMms
+        val messageId = if (localId != null && localId > 0 && isMms != null) {
+            MessageId(localId, isMms)
+        } else if (timestamp != null && timestamp > 0) {
+            val messageRecord = DatabaseComponent.get(context).mmsSmsDatabase().getMessageForTimestamp(timestamp) ?: return
+            MessageId(messageRecord.id, messageRecord.isMms)
+        } else return
+        DatabaseComponent.get(context).reactionDatabase().addReaction(
+            messageId,
+            ReactionRecord(
+                messageId = messageId.id,
+                isMms = messageId.mms,
+                author = reaction.publicKey!!,
+                emoji = reaction.emoji!!,
+                serverId = reaction.serverId!!,
+                count = reaction.count!!,
+                sortId = reaction.index!!,
+                dateSent = reaction.dateSent!!,
+                dateReceived = reaction.dateReceived!!
+            )
+        )
+    }
+
+    override fun removeReaction(emoji: String, messageTimestamp: Long, author: String) {
+        val messageRecord = DatabaseComponent.get(context).mmsSmsDatabase().getMessageForTimestamp(messageTimestamp) ?: return
+        val messageId = MessageId(messageRecord.id, messageRecord.isMms)
+        DatabaseComponent.get(context).reactionDatabase().deleteReaction(emoji, messageId, author)
+    }
+
+    override fun updateReactionIfNeeded(message: Message, sender: String, openGroupSentTimestamp: Long) {
+        val database = DatabaseComponent.get(context).reactionDatabase()
+        var reaction = database.getReactionFor(message.sentTimestamp!!, sender) ?: return
+        if (openGroupSentTimestamp != -1L) {
+            addReceivedMessageTimestamp(openGroupSentTimestamp)
+            reaction = reaction.copy(dateSent = openGroupSentTimestamp)
+        }
+        message.serverHash?.let {
+            reaction = reaction.copy(serverId = it)
+        }
+        message.openGroupServerMessageID?.let {
+            reaction = reaction.copy(serverId = "$it")
+        }
+        database.updateReaction(reaction)
+    }
+
+    override fun deleteReactions(messageId: Long, mms: Boolean) {
+        DatabaseComponent.get(context).reactionDatabase().deleteMessageReactions(MessageId(messageId, mms))
+    }
+
 }

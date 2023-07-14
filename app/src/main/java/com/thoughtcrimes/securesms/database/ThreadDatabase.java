@@ -811,6 +811,10 @@ public class ThreadDatabase extends Database {
     return query;
   }
 
+  public void notifyThreadUpdated(long threadId) {
+    notifyConversationListeners(threadId);
+  }
+
   public interface ProgressListener {
     void onProgress(int complete, int total);
   }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
@@ -21,7 +22,7 @@ import java.util.List;
 
 import io.beldex.bchat.R;
 
-public class AlbumThumbnailView extends FrameLayout {
+public class AlbumThumbnailView extends RelativeLayout {
 
   private @Nullable
   SlideClickListener thumbnailClickListener;

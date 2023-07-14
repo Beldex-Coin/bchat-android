@@ -38,15 +38,13 @@ class NotifyPNServerJob(val message: MnodeMessage) : Job {
         val body = RequestBody.create(MediaType.get("application/json"), JsonUtil.toJson(parameters))
         val request = Request.Builder().url(url).post(body)
         retryIfNeeded(4) {
-            OnionRequestAPI.sendOnionRequest(request.build(), server, PushNotificationAPI.serverPublicKey, "/beldex/v2/lsrpc").map { json ->
-                val code = json["code"] as? Int
+            OnionRequestAPI.sendOnionRequest(request.build(), server, PushNotificationAPI.serverPublicKey).map { response ->
+                val code = response.info["code"] as? Int
                 if (code == null || code == 0) {
-                    Log.d("Beldex", "Couldn't notify PN server due to error: ${json["message"] as? String ?: "null"}.")
+                    Log.d("Beldex", "Couldn't notify PN server due to error: ${response.info["message"] as? String ?: "null"}.")
                 }
             }.fail { exception ->
-                Log.d("Beldex", "_Couldn't notify PN server due to error: $exception.")
-                //New Line
-                handleFailure(exception)
+                Log.d("Beldex", "Couldn't notify PN server due to error: $exception.")
             }
         }.success {
             handleSuccess()

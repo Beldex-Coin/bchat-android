@@ -23,7 +23,7 @@ import com.thoughtcrimes.securesms.mms.ImageSlide
 import com.thoughtcrimes.securesms.util.UiModeUtilities
 
 class LinkPreviewView : LinearLayout {
-    private lateinit var binding: ViewLinkPreviewBinding
+    private val binding: ViewLinkPreviewBinding by lazy { ViewLinkPreviewBinding.bind(this) }
     private val cornerMask by lazy {
         CornerMask(
             this
@@ -33,13 +33,9 @@ class LinkPreviewView : LinearLayout {
     lateinit var bodyTextView: TextView
 
     // region Lifecycle
-    constructor(context: Context) : super(context) { initialize() }
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) { initialize() }
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) { initialize() }
-
-    private fun initialize() {
-        binding = ViewLinkPreviewBinding.inflate(LayoutInflater.from(context), this, true)
-    }
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
     // endregion
 
     // region Updating

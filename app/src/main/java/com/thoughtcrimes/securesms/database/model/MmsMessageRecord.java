@@ -28,10 +28,9 @@ public abstract class MmsMessageRecord extends MessageRecord {
     List<NetworkFailure> networkFailures, long expiresIn,
     long expireStarted, @NonNull SlideDeck slideDeck, int readReceiptCount,
     @Nullable Quote quote, @NonNull List<Contact> contacts,
-    @NonNull List<LinkPreview> linkPreviews, boolean unidentified)
+    @NonNull List<LinkPreview> linkPreviews, boolean unidentified, List<ReactionRecord> reactions)
   {
-    super(id, body, conversationRecipient, individualRecipient, dateSent, dateReceived, threadId, deliveryStatus, deliveryReceiptCount, type, mismatches, networkFailures, expiresIn, expireStarted, readReceiptCount, unidentified);
-    this.slideDeck = slideDeck;
+    super(id, body, conversationRecipient, individualRecipient, dateSent, dateReceived, threadId, deliveryStatus, deliveryReceiptCount, type, mismatches, networkFailures, expiresIn, expireStarted, readReceiptCount, unidentified, reactions);    this.slideDeck = slideDeck;
     this.quote     = quote;
     this.contacts.addAll(contacts);
     this.linkPreviews.addAll(linkPreviews);

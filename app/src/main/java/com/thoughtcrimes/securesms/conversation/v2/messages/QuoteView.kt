@@ -7,7 +7,9 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.annotation.ColorInt
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.content.res.use
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,27 +40,29 @@ import kotlin.math.min
 // • Quoted voice messages and documents in both private chats and group chats
 // • All of the above in both dark mode and light mode
 @AndroidEntryPoint
-class QuoteView : LinearLayout {
+class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : ConstraintLayout(context, attrs) {
 
     @Inject lateinit var contactDb: BchatContactDatabase
 
-    private lateinit var binding: ViewQuoteBinding
+    private val binding: ViewQuoteBinding by lazy { ViewQuoteBinding.bind(this) }
     private lateinit var mode: Mode
     private val vPadding by lazy { toPx(6, resources) }
     var delegate: QuoteViewDelegate? = null
 
     enum class Mode { Regular, Draft }
 
-    // region Lifecycle
-    constructor(context: Context) : this(context, Mode.Regular)
-    constructor(context: Context, attrs: AttributeSet) : this(context,  Mode.Regular, attrs)
+    init {
+        mode = attrs?.let { attrSet ->
+            context.obtainStyledAttributes(attrSet, R.styleable.QuoteView).use { typedArray ->
+                val modeIndex = typedArray.getInt(R.styleable.QuoteView_quote_mode,  0)
+                Mode.values()[modeIndex]
+            }
+        } ?: Mode.Regular
+    }
 
-    constructor(context: Context, mode: Mode, attrs: AttributeSet? = null) : super(context, attrs) {
-        this.mode = mode
-        binding = ViewQuoteBinding.inflate(LayoutInflater.from(context), this, true)
-        // Add padding here (not on binding.mainQuoteViewContainer) to get a bit of a top inset while avoiding
-        // the clipping issue described in getIntrinsicHeight(maxContentWidth:).
-        setPadding(0, toPx(6, resources), 0, 0)
+    // region Lifecycle
+    override fun onFinishInflate() {
+        super.onFinishInflate()
         when (mode) {
             Mode.Draft -> binding.quoteViewCancelButton.setOnClickListener { delegate?.cancelQuoteDraft(1)}
             Mode.Regular -> {

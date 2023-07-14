@@ -31,6 +31,7 @@ import androidx.annotation.DimenRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.drawToBitmap
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
@@ -75,7 +76,7 @@ import com.thoughtcrimes.securesms.conversation.v2.input_bar.mentions.MentionCan
 import com.thoughtcrimes.securesms.conversation.v2.menus.ConversationActionModeCallback
 import com.thoughtcrimes.securesms.conversation.v2.menus.ConversationActionModeCallbackDelegate
 import com.thoughtcrimes.securesms.conversation.v2.menus.ConversationMenuHelper
-import com.thoughtcrimes.securesms.conversation.v2.messages.VisibleMessageContentViewDelegate
+import com.thoughtcrimes.securesms.conversation.v2.messages.VisibleMessageViewDelegate
 import com.thoughtcrimes.securesms.conversation.v2.messages.VisibleMessageView
 import com.thoughtcrimes.securesms.conversation.v2.search.SearchBottomBar
 import com.thoughtcrimes.securesms.conversation.v2.search.SearchViewModel
@@ -109,14 +110,20 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 import androidx.lifecycle.Observer
+import com.beldex.libbchat.messaging.messages.visible.Reaction
+import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.*
+import com.beldex.libbchat.utilities.Address.Companion.fromSerialized
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.contacts.SelectContactsActivity
 import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.data.PendingTx
 import com.thoughtcrimes.securesms.data.TxData
 import com.thoughtcrimes.securesms.data.UserNotes
+import com.thoughtcrimes.securesms.database.model.MessageId
+import com.thoughtcrimes.securesms.database.model.ReactionRecord
 import com.thoughtcrimes.securesms.giph.ui.GiphyActivity
+import com.thoughtcrimes.securesms.groups.OpenGroupManager
 import com.thoughtcrimes.securesms.home.HomeActivity
 import com.thoughtcrimes.securesms.home.HomeFragment
 import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
@@ -124,6 +131,8 @@ import com.thoughtcrimes.securesms.model.PendingTransaction
 import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.preferences.ChatSettingsActivity
 import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
+import com.thoughtcrimes.securesms.reactions.ReactionsDialogFragment
+import com.thoughtcrimes.securesms.reactions.any.ReactWithAnyEmojiDialogFragment
 import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.util.slidetoact.SlideToActView
 import com.thoughtcrimes.securesms.wallet.CheckOnline
@@ -145,6 +154,7 @@ import java.util.concurrent.Executor
 import com.thoughtcrimes.securesms.util.slidetoact.SlideToActView.OnSlideCompleteListener
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
 import com.thoughtcrimes.securesms.webrtc.NetworkChangeReceiver
+import io.beldex.bchat.databinding.ViewVisibleMessageBinding
 import java.io.FileNotFoundException
 
 
@@ -153,7 +163,7 @@ private const val ARG_PARAM2 = "param2"
 
 class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     InputBarRecordingViewDelegate, AttachmentManager.AttachmentListener,
-    ConversationActionModeCallbackDelegate, VisibleMessageContentViewDelegate,
+    ConversationActionModeCallbackDelegate, VisibleMessageViewDelegate,
     RecipientModifiedListener,
     SearchBottomBar.EventListener, LoaderManager.LoaderCallbacks<Cursor>,
     ConversationMenuHelper.ConversationMenuListener, OnBackPressedListener,SendConfirm {
@@ -274,17 +284,25 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             onItemSwipeToReply = { message, position ->
                 handleSwipeToReply(message, position)
             },
-            onItemLongPress = { message, position ->
-                handleLongPress(message, position)
+            onItemLongPress = { message, position, view ->
+                /*if (!isMessageRequestThread() &&
+                    (viewModel.openGroup == null || OpenGroupAPIV2.Capability.REACTIONS.name.lowercase() in viewModel.serverCapabilities)
+                )*/
+                if (!isMessageRequestThread()) {
+                    showEmojiPicker(message, view)
+                } else {
+                    handleLongPress(message, position)
+                }
             },
-            glide,
             onDeselect = { message, position ->
                 actionMode?.let {
                     onDeselect(message, position, it)
                 }
-            }
+            },
+            glide = glide,
+            lifecycleCoroutineScope = lifecycleScope
         )
-        adapter.visibleMessageContentViewDelegate = this
+        adapter.visibleMessageViewDelegate = this
         adapter
     }
 
@@ -393,6 +411,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private var networkChangedReceiver: NetworkChangeReceiver? = null
     private var isNetworkAvailable = true
     private var callViewModel : CallViewModel? =null
+    private lateinit var reactionDelegate: ConversationReactionDelegate
+    private val reactWithAnyEmojiStartPage = -1
+    private var emojiPickerVisible = false
+
 
 
     interface Listener {
@@ -441,26 +463,31 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         searchViewModel = ViewModelProvider(requireActivity()).get(SearchViewModel::class.java)
         audioRecorder = AudioRecorder(requireActivity().applicationContext)
 
+        Log.d("Beldex","Notification issue conversation oncreate called 1")
+
         val thread = (activity as HomeActivity).threadDb.getRecipientForThreadId(viewModel.threadId)
         if (thread == null) {
             Toast.makeText(requireActivity(), "This thread has been deleted.", Toast.LENGTH_LONG)
                 .show()
             return backToHome()
         }
+        Log.d("Beldex","Notification issue conversation oncreate called 2")
 
         // messageIdToScroll
         messageToScrollTimestamp.set(requireArguments().getLong(SCROLL_MESSAGE_ID, -1))
         messageToScrollAuthor.set(requireArguments().getParcelable<Address>(SCROLL_MESSAGE_AUTHOR))
 
+        Log.d("Beldex","Notification issue conversation oncreate called 3")
         if (!thread.isGroupRecipient && thread.hasApprovedMe()) {
             senderBeldexAddress = getBeldexAddress(thread.address)
         }
-
+        Log.d("Beldex","Notification issue conversation oncreate called 4")
         networkChangedReceiver = NetworkChangeReceiver(::networkChange)
         networkChangedReceiver!!.register(requireContext())
         if (isNetworkAvailable) {
             binding.networkStatusLayout.visibility = View.GONE
         }
+        Log.d("Beldex","Notification issue conversation oncreate called 5")
 
         lifecycleScope.launch(Dispatchers.IO) {
             unreadCount =
@@ -472,14 +499,17 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 getLatestOpenGroupInfoIfNeeded()
                 setUpSearchResultObserver()
                 scrollToFirstUnreadMessageIfNeeded()
+                Log.d("Beldex","Notification issue conversation oncreate called 6")
             }
         }
+        Log.d("Beldex","Notification issue conversation oncreate called 7")
         setUpToolBar()
         setUpInputBar()
         setUpLinkPreviewObserver()
         restoreDraftIfNeeded()
         setUpUiStateObserver()
         setMediaControlForReportIssue()
+        Log.d("Beldex","Notification issue conversation oncreate called 8")
 
         binding.scrollToBottomButton.setOnClickListener {
 
@@ -503,6 +533,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 }
             }
         }
+        Log.d("Beldex","Notification issue conversation oncreate called 9")
 
         updateUnreadCountIndicator()
         updateSubtitle()
@@ -511,7 +542,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         showOrHideInputIfNeeded()
         /*Hales63*/
         setUpMessageRequestsBar()
-
+        Log.d("Beldex","Notification issue conversation oncreate called 10")
         viewModel.recipient?.let { recipient ->
             if (recipient.isOpenGroupRecipient) {
                 try {
@@ -530,12 +561,14 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 }
             }
         }
+        Log.d("Beldex","Notification issue conversation oncreate called 11")
         listenerCallback!!.forceUpdate(requireActivity())
         showBlockProgressBar(thread)
 
         callShowPayAsYouChatBDXIcon(thread)
 
         showBalance(Helper.getDisplayAmount(0), Helper.getDisplayAmount(0), walletSynchronized)
+        Log.d("Beldex","Notification issue conversation oncreate called 12")
 
         if (listenerCallback!!.getNode() == null) {
             setProgress(getString(R.string.failed_to_connect_to_node))
@@ -609,23 +642,31 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 }
             }
         }
+        Log.d("Beldex","Notification issue conversation oncreate called 13")
         callViewModel = ViewModelProvider(requireActivity()).get(CallViewModel::class.java)
+        Log.d("Beldex","Notification issue conversation oncreate called 14")
+        val reactionOverlayStub: Stub<ConversationReactionOverlay> =
+            ViewUtil.findStubById(requireActivity(), R.id.conversation_reaction_scrubber_stub)
+        reactionDelegate = ConversationReactionDelegate(reactionOverlayStub)
+        //reactionDelegate.setOnReactionSelectedListener(this)
     }
 
     override fun onResume() {
         super.onResume()
         ApplicationContext.getInstance(requireActivity()).messageNotifier.setVisibleThread(viewModel.threadId)
+        Log.d("Beldex","Notification issue conversation oncreate called 15")
         val recipient = viewModel.recipient ?: return
         (activity as HomeActivity).threadDb.markAllAsRead(
             viewModel.threadId,
             recipient.isOpenGroupRecipient
         )
-
+        Log.d("Beldex","Notification issue conversation oncreate called 16")
         val thread = (activity as HomeActivity).threadDb.getRecipientForThreadId(viewModel.threadId)
         if (thread != null) {
             showBlockProgressBar(thread)
             callShowPayAsYouChatBDXIcon(thread)
         }
+        Log.d("Beldex","Notification issue conversation oncreate called 17")
         if (TextSecurePreferences.isPayAsYouChat(requireActivity())) {
             if (binding.inputBar.text!!.isNotEmpty() && binding.inputBar.text.matches(Regex("^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$"))) {
                 binding.inputBar.setTextColor(thread,HomeActivity.reportIssueBChatID,true)
@@ -643,23 +684,29 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             binding.inputBar.setTextColor(thread,HomeActivity.reportIssueBChatID,false)
             showPayWithSlide(thread,false)
         }
+        Log.d("Beldex","Notification issue conversation oncreate called 18")
         //Minimized app
         if (onTransactionProgress) {
             onTransactionProgress = false
             hideProgress()
             refreshTransactionDetails()
+            Log.d("Beldex","Notification issue conversation oncreate called 19")
             //Continuously Transaction
             this.pendingTransaction = null
             this.pendingTx = null
         }
+        Log.d("Beldex","Notification issue conversation oncreate called 20")
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        Log.d("Beldex","Notification issue conversation onDestroy called 1")
         cancelVoiceMessage()
         isNetworkAvailable = false
+        Log.d("Beldex","Notification issue conversation onDestroy called 2")
         networkChangedReceiver?.unregister(requireContext())
         networkChangedReceiver = null
+        Log.d("Beldex","Notification issue conversation onDestroy called 3")
     }
 
     private fun networkChange(networkAvailable: Boolean) {
@@ -1046,6 +1093,209 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             Toast.makeText(requireActivity(),getString(R.string.record_voice_restriction),Toast.LENGTH_SHORT).show()
         }
     }
+
+    private fun showEmojiPicker(message: MessageRecord, visibleMessageView: VisibleMessageView) {
+        val messageContentBitmap = try {
+            visibleMessageView.messageContentView.drawToBitmap()
+        } catch (e: Exception) {
+            Log.e("Beldex", "Failed to show emoji picker", e)
+            return
+        }
+        ViewUtil.hideKeyboard(requireActivity(), visibleMessageView);
+        binding.reactionsShade.isVisible = true
+        //showOrHidScrollToBottomButton(false)
+        binding?.conversationRecyclerView?.suppressLayout(true)
+        reactionDelegate.setOnActionSelectedListener(ReactionsToolbarListener(message))
+        reactionDelegate.setOnHideListener(object: ConversationReactionOverlay.OnHideListener {
+            override fun startHide() {
+                binding.reactionsShade.let {
+                    ViewUtil.fadeOut(it, resources.getInteger(R.integer.reaction_scrubber_hide_duration), View.GONE)
+                }
+               // showOrHidScrollToBottomButton(true)
+            }
+
+            override fun onHide() {
+                binding.conversationRecyclerView.suppressLayout(false)
+
+                WindowUtil.setLightStatusBarFromTheme(requireActivity());
+                WindowUtil.setLightNavigationBarFromTheme(requireActivity());
+            }
+
+        })
+        val contentBounds = Rect()
+        visibleMessageView.messageContentView.getGlobalVisibleRect(contentBounds)
+        val selectedConversationModel = SelectedConversationModel(
+            messageContentBitmap,
+            contentBounds.left.toFloat(),
+            contentBounds.top.toFloat(),
+            visibleMessageView.messageContentView.width,
+            message.isOutgoing,
+            visibleMessageView.messageContentView
+        )
+        reactionDelegate.show(requireActivity(), message, selectedConversationModel,null)
+    }
+
+    fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        return reactionDelegate.applyTouchEvent(ev)
+    }
+
+    fun onReactionSelected(messageRecord: MessageRecord, emoji: String) {
+        reactionDelegate.hide()
+        val oldRecord = messageRecord.reactions.find { it.author == TextSecurePreferences.getLocalNumber(requireActivity()) }
+        if (oldRecord != null && oldRecord.emoji == emoji) {
+            sendEmojiRemoval(emoji, messageRecord)
+        } else {
+            sendEmojiReaction(emoji, messageRecord)
+        }
+    }
+
+    private fun sendEmojiReaction(emoji: String, originalMessage: MessageRecord) {
+        // Create the message
+        val recipient = viewModel.recipient ?: return
+        val reactionMessage = VisibleMessage()
+        val emojiTimestamp = System.currentTimeMillis()
+        reactionMessage.sentTimestamp = emojiTimestamp
+        val author = TextSecurePreferences.getLocalNumber(requireActivity())!!
+        // Put the message in the database
+        val reaction = ReactionRecord(
+            messageId = originalMessage.id,
+            isMms = originalMessage.isMms,
+            author = author,
+            emoji = emoji,
+            count = 1,
+            dateSent = emojiTimestamp,
+            dateReceived = emojiTimestamp
+        )
+        (activity as HomeActivity).reactionDb.addReaction(MessageId(originalMessage.id, originalMessage.isMms), reaction)
+        // Send it
+        reactionMessage.reaction = Reaction.from(originalMessage.timestamp, originalMessage.recipient.address.serialize(), emoji, true)
+        if (recipient.isOpenGroupRecipient) {
+            val messageServerId = (activity as HomeActivity).beldexMessageDb.getServerID(originalMessage.id, !originalMessage.isMms) ?: return
+            viewModel.openGroup?.let {
+                OpenGroupAPIV2.addReaction(it.room, it.server, messageServerId, emoji)
+            }
+        } else {
+            MessageSender.send(reactionMessage, recipient.address)
+        }
+        LoaderManager.getInstance(this).restartLoader(0, null, this)
+    }
+
+    private fun sendEmojiRemoval(emoji: String, originalMessage: MessageRecord) {
+        val recipient = viewModel.recipient ?: return
+        val message = VisibleMessage()
+        val emojiTimestamp = System.currentTimeMillis()
+        message.sentTimestamp = emojiTimestamp
+        val author = TextSecurePreferences.getLocalNumber(requireActivity())!!
+        (activity as HomeActivity).reactionDb.deleteReaction(emoji, MessageId(originalMessage.id, originalMessage.isMms), author)
+        message.reaction = Reaction.from(originalMessage.timestamp, author, emoji, false)
+        if (recipient.isOpenGroupRecipient) {
+            val messageServerId = (activity as HomeActivity).beldexMessageDb.getServerID(originalMessage.id, !originalMessage.isMms) ?: return
+            viewModel.openGroup?.let {
+                OpenGroupAPIV2.deleteReaction(it.room, it.server, messageServerId, emoji)
+            }
+        } else {
+            MessageSender.send(message, recipient.address)
+        }
+        LoaderManager.getInstance(this).restartLoader(0, null, this)
+    }
+
+    fun onCustomReactionSelected(messageRecord: MessageRecord, hasAddedCustomEmoji: Boolean) {
+        val oldRecord = messageRecord.reactions.find { record -> record.author == TextSecurePreferences.getLocalNumber(requireActivity()) }
+
+        if (oldRecord != null && hasAddedCustomEmoji) {
+            reactionDelegate.hide()
+            sendEmojiRemoval(oldRecord.emoji, messageRecord)
+        } else {
+            reactionDelegate.hideForReactWithAny()
+
+            ReactWithAnyEmojiDialogFragment
+                .createForMessageRecord(messageRecord, reactWithAnyEmojiStartPage)
+                .show(requireActivity().supportFragmentManager, "BOTTOM");
+        }
+    }
+
+    fun onReactWithAnyEmojiDialogDismissed() {
+        reactionDelegate.hide()
+    }
+
+    fun onReactWithAnyEmojiSelected(emoji: String, messageId: MessageId) {
+        reactionDelegate.hide()
+        val message = if (messageId.mms) {
+            (activity as HomeActivity).mmsDb.getMessageRecord(messageId.id)
+        } else {
+            (activity as HomeActivity).smsDb.getMessageRecord(messageId.id)
+        }
+        val oldRecord = (activity as HomeActivity).reactionDb.getReactions(messageId).find { it.author == TextSecurePreferences.getLocalNumber(requireActivity()) }
+        if (oldRecord?.emoji == emoji) {
+            sendEmojiRemoval(emoji, message)
+        } else {
+            sendEmojiReaction(emoji, message)
+        }
+    }
+
+    fun onRemoveReaction(emoji: String, messageId: MessageId) {
+        val message = if (messageId.mms) {
+            (activity as HomeActivity).mmsDb.getMessageRecord(messageId.id)
+        } else {
+            (activity as HomeActivity).smsDb.getMessageRecord(messageId.id)
+        }
+        sendEmojiRemoval(emoji, message)
+    }
+
+    fun onClearAll(emoji: String, messageId: MessageId) {
+        (activity as HomeActivity).reactionDb.deleteEmojiReactions(emoji, messageId)
+        viewModel.openGroup?.let { openGroup ->
+            (activity as HomeActivity).beldexMessageDb.getServerID(messageId.id, !messageId.mms)?.let { serverId ->
+                OpenGroupAPIV2.deleteAllReactions(openGroup.room, openGroup.server, serverId, emoji)
+            }
+        }
+        (activity as HomeActivity).threadDb.notifyThreadUpdated(viewModel.threadId)
+    }
+
+    override fun onReactionClicked(emoji: String, messageId: MessageId, userWasSender: Boolean) {
+        val message = if (messageId.mms) {
+            (activity as HomeActivity).mmsDb.getMessageRecord(messageId.id)
+        } else {
+            (activity as HomeActivity).smsDb.getMessageRecord(messageId.id)
+        }
+        if (userWasSender) {
+            sendEmojiRemoval(emoji, message)
+        } else {
+            sendEmojiReaction(emoji, message)
+        }
+    }
+
+    override fun onReactionLongClicked(messageId: MessageId) {
+        if (viewModel.recipient?.isGroupRecipient == true) {
+            /*     val isUserModerator = viewModel.openGroup?.let { openGroup ->
+                val userPublicKey = TextSecurePreferences.getLocalNumber(requireActivity()) ?: return@let false
+                OpenGroupManager.isUserModerator(this, openGroup.id, userPublicKey, viewModel.blindedPublicKey)
+            } ?: false
+            val fragment = ReactionsDialogFragment.create(messageId, isUserModerator)
+            fragment.show(requireActivity().supportFragmentManager, null)
+        }*/
+            val fragment = ReactionsDialogFragment.create(messageId, false)
+            fragment.show(requireActivity().supportFragmentManager, null)
+        }
+    }
+
+    inner class ReactionsToolbarListener constructor(val message: MessageRecord) :
+        ConversationReactionOverlay.OnActionSelectedListener {
+
+        override fun onActionSelected(action: ConversationReactionOverlay.Action) {
+            val selectedItems = setOf(message)
+            when (action) {
+                ConversationReactionOverlay.Action.REPLY -> reply(selectedItems)
+                ConversationReactionOverlay.Action.RESEND -> resendMessage(selectedItems)
+                ConversationReactionOverlay.Action.DOWNLOAD -> saveAttachment(selectedItems)
+                ConversationReactionOverlay.Action.COPY_MESSAGE -> copyMessages(selectedItems)
+                ConversationReactionOverlay.Action.VIEW_INFO -> showMessageDetail(selectedItems)
+               /* ConversationReactionOverlay.Action.SELECT -> selectMessages(selectedItems)*/
+                ConversationReactionOverlay.Action.DELETE -> deleteMessages(selectedItems)
+            }
+        }
+    }
+
 
     override fun onMicrophoneButtonMove(event: MotionEvent) {
         val rawX = event.rawX
@@ -1774,13 +2024,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         binding.conversationRecyclerView.scrollToPosition(lastSeenItemPosition)
     }
 
-    fun playVoiceMessageAtIndexIfPossible(indexInAdapter: Int) {
+    override fun playVoiceMessageAtIndexIfPossible(indexInAdapter: Int) {
         if (indexInAdapter < 0 || indexInAdapter >= adapter.itemCount) {
             return
         }
-        val viewHolder =
-            binding.conversationRecyclerView.findViewHolderForAdapterPosition(indexInAdapter) as? ConversationAdapter.VisibleMessageViewHolder
-        viewHolder?.view?.playVoiceMessage()
+        val viewHolder = binding?.conversationRecyclerView?.findViewHolderForAdapterPosition(indexInAdapter) as? ConversationAdapter.VisibleMessageViewHolder ?: return
+        val visibleMessageView = ViewVisibleMessageBinding.bind(viewHolder.view).visibleMessageView
+        visibleMessageView.playVoiceMessage()
     }
 
     fun onSearchOpened() {

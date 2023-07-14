@@ -36,14 +36,18 @@ import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.goterl.lazysodium.utils.KeyPair;
 import com.thoughtcrimes.securesms.ApplicationContext;
 import com.thoughtcrimes.securesms.contactshare.ContactUtil;
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2;
 import com.thoughtcrimes.securesms.conversation.v2.utilities.MentionManagerUtilities;
 import com.thoughtcrimes.securesms.conversation.v2.utilities.MentionUtilities;
+import com.thoughtcrimes.securesms.crypto.KeyPairUtilities;
+import com.thoughtcrimes.securesms.database.BeldexThreadDatabase;
 import com.thoughtcrimes.securesms.database.MessagingDatabase;
 import com.thoughtcrimes.securesms.database.MmsSmsDatabase;
 import com.thoughtcrimes.securesms.database.RecipientDatabase;
@@ -52,6 +56,7 @@ import com.thoughtcrimes.securesms.database.model.MediaMmsMessageRecord;
 import com.thoughtcrimes.securesms.database.model.MessageRecord;
 import com.thoughtcrimes.securesms.database.model.MmsMessageRecord;
 import com.thoughtcrimes.securesms.database.model.Quote;
+import com.thoughtcrimes.securesms.database.model.ReactionRecord;
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent;
 import com.thoughtcrimes.securesms.home.HomeActivity;
 import com.thoughtcrimes.securesms.mms.SlideDeck;
@@ -80,6 +85,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import com.annimon.stream.Optional;
+import com.annimon.stream.Stream;
 
 import me.leolin.shortcutbadger.ShortcutBadger;
 import io.beldex.bchat.R;

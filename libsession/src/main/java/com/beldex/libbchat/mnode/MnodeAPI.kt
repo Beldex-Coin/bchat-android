@@ -42,6 +42,10 @@ object MnodeAPI {
      */
     internal var clockOffset = 0L
 
+    @JvmStatic
+    public val nowWithOffset
+        get() = System.currentTimeMillis() + clockOffset
+
     // Settings
     private val maxRetryCount = 6
     private val minimumMnodePoolCount = 12
@@ -78,8 +82,14 @@ object MnodeAPI {
     }
 
     // Internal API
-    internal fun invoke(method: Mnode.Method, mnode: Mnode, publicKey: String? = null, parameters: Map<String, Any>): RawResponsePromise {
+    internal fun invoke(
+        method: Mnode.Method,
+        mnode: Mnode,
+        publicKey: String? = null,
+        parameters: Map<String, Any>,
+    ): RawResponsePromise {
         val url = "${mnode.address}:${mnode.port}/storage_rpc/v1"
+        val deferred = deferred<Map<*, *>, Exception>()
         if (useOnionRequests) {
             //-Log.d("Beldex","new payload in invoke fun Send url $url")
             //-Log.d("Beldex","new payload in invoke fun Send method $method")
@@ -87,26 +97,33 @@ object MnodeAPI {
             //-Log.d("Beldex","new payload in invoke fun Send mnode $mnode")
             //-Log.d("Beldex","new payload in invoke fun Send publickey $publicKey")
 
-            return OnionRequestAPI.sendOnionRequest(method, parameters, mnode, publicKey)
+            OnionRequestAPI.sendOnionRequest(method, parameters, mnode, publicKey).map {
+                val body = it.body ?: throw Error.Generic
+                deferred.resolve(JsonUtil.fromJson(body, Map::class.java))
+            }.fail { deferred.reject(it) }
         } else {
-            val deferred = deferred<Map<*, *>, Exception>()
             ThreadUtils.queue {
-                val payload = mapOf( "method" to method.rawValue, "params" to parameters )
+                val payload = mapOf("method" to method.rawValue, "params" to parameters)
                 try {
                     val json = HTTP.execute(HTTP.Verb.POST, url, payload)
                     deferred.resolve(json)
                 } catch (exception: Exception) {
                     val httpRequestFailedException = exception as? HTTP.HTTPRequestFailedException
                     if (httpRequestFailedException != null) {
-                        val error = handleMnodeError(httpRequestFailedException.statusCode, httpRequestFailedException.json, mnode, publicKey)
-                        if (error != null) { return@queue deferred.reject(exception) }
+                        val error = handleMnodeError(httpRequestFailedException.statusCode,
+                            httpRequestFailedException.json,
+                            mnode,
+                            publicKey)
+                        if (error != null) {
+                            return@queue deferred.reject(exception)
+                        }
                     }
                     Log.d("Beldex", "Unhandled exception: $exception.")
                     deferred.reject(exception)
                 }
             }
-            return deferred.promise
         }
+        return deferred.promise
     }
 
     internal fun getRandomMnode(): Promise<Mnode, Exception> {

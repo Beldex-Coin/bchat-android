@@ -274,21 +274,39 @@ fun MessageReceiver.handleVisibleMessage(message: VisibleMessage, proto: SignalS
             return@mapNotNull attachment
         }
     }
-    // Persist the message
-    message.threadID = threadID
-    val messageID = storage.persist(message, quoteModel, linkPreviews, message.groupPublicKey, openGroupID, attachments,runIncrement,runThreadUpdate) ?: throw MessageReceiver.Error.DuplicateMessage
-    // Parse & persist attachments
-    // Start attachment downloads if needed
-    storage.getAttachmentsForMessage(messageID).iterator().forEach { attachment ->
-        attachment.attachmentId?.let { id ->
-            val downloadJob = AttachmentDownloadJob(id.rowId, messageID)
-            JobQueue.shared.add(downloadJob)
+    message.reaction?.let { reaction ->
+        if (reaction.react == true) {
+            reaction.serverId = message.openGroupServerMessageID?.toString() ?: message.serverHash.orEmpty()
+            reaction.dateSent = message.sentTimestamp ?: 0
+            reaction.dateReceived = message.receivedTimestamp ?: 0
+            storage.addReaction(reaction)
+        } else {
+            storage.removeReaction(reaction.emoji!!, reaction.timestamp!!, reaction.publicKey!!)
         }
-    }
-    val openGroupServerID = message.openGroupServerMessageID
-    if (openGroupServerID != null) {
-        val isSms = !(message.isMediaMessage() || attachments.isNotEmpty())
-        storage.setOpenGroupServerMessageID(messageID, openGroupServerID, threadID, isSms)
+    } ?: run {
+        // Persist the message
+        message.threadID = threadID
+        val messageID = storage.persist(message,
+            quoteModel,
+            linkPreviews,
+            message.groupPublicKey,
+            openGroupID,
+            attachments,
+            runIncrement,
+            runThreadUpdate) ?: throw MessageReceiver.Error.DuplicateMessage
+        // Parse & persist attachments
+        // Start attachment downloads if needed
+        storage.getAttachmentsForMessage(messageID).iterator().forEach { attachment ->
+            attachment.attachmentId?.let { id ->
+                val downloadJob = AttachmentDownloadJob(id.rowId, messageID)
+                JobQueue.shared.add(downloadJob)
+            }
+        }
+        val openGroupServerID = message.openGroupServerMessageID
+        if (openGroupServerID != null) {
+            val isSms = !(message.isMediaMessage() || attachments.isNotEmpty())
+            storage.setOpenGroupServerMessageID(messageID, openGroupServerID, threadID, isSms)
+        }
     }
     // Cancel any typing indicators if needed
     cancelTypingIndicatorsIfNeeded(message.sender!!)

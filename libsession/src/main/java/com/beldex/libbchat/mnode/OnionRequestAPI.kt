@@ -325,8 +325,8 @@ object OnionRequestAPI {
     /**
      * Sends an onion request to `destination`. Builds new paths as needed.
      */
-    private fun sendOnionRequest(destination: Destination, payload: Map<*, *>): Promise<Map<*, *>, Exception> {
-        val deferred = deferred<Map<*, *>, Exception>()
+    private fun sendOnionRequest(destination: Destination, payload: Map<*, *>): Promise<OnionResponse, Exception> {
+        val deferred = deferred<OnionResponse, Exception>()
         lateinit var guardMnode: Mnode
         Log.d("Beldex --> payload onion req uest ","$payload")
         Log.d("Beldex --> destination onion request ","$destination")
@@ -393,13 +393,13 @@ object OnionRequestAPI {
                                     val exception = HTTPRequestFailedAtDestinationException(statusCode, body, destination.description)
                                     return@queue deferred.reject(exception)
                                 }
-                                deferred.resolve(body)
+                                deferred.resolve(OnionResponse(body, JsonUtil.toJson(body).toByteArray()))
                             } else {
                                 if (statusCode != 200) {
                                     val exception = HTTPRequestFailedAtDestinationException(statusCode, json, destination.description)
                                     return@queue deferred.reject(exception)
                                 }
-                                deferred.resolve(json)
+                                deferred.resolve(OnionResponse(json, JsonUtil.toJson(json).toByteArray()))
                             }
                         } catch (exception: Exception) {
                             deferred.reject(Exception("Invalid JSON: ${plaintext.toString(Charsets.UTF_8)}."))
@@ -476,7 +476,7 @@ object OnionRequestAPI {
     /**
      * Sends an onion request to `mnode`. Builds new paths as needed.
      */
-    internal fun sendOnionRequest(method: Mnode.Method, parameters: Map<*, *>, mnode: Mnode, publicKey: String? = null): Promise<Map<*, *>, Exception> {
+    internal fun sendOnionRequest(method: Mnode.Method, parameters: Map<*, *>, mnode: Mnode, publicKey: String? = null): Promise<OnionResponse, Exception> {
         val payload = mapOf( "method" to method.rawValue, "params" to parameters )
         //-Log.d("Beldex","payload in sendOnionRequest $payload ")
         //-Log.d("Beldex","parameters in sendOnionRequest $parameters ")
@@ -496,7 +496,7 @@ object OnionRequestAPI {
      *
      * `publicKey` is the hex encoded public key of the user the call is associated with. This is needed for swarm cache maintenance.
      */
-    fun sendOnionRequest(request: Request, server: String, x25519PublicKey: String, target: String = "/beldex/v3/lsrpc"): Promise<Map<*, *>, Exception> {
+    fun sendOnionRequest(request: Request, server: String, x25519PublicKey: String, target: String = "/beldex/v3/lsrpc"): Promise<OnionResponse, Exception> {
         val headers = request.getHeadersForOnionRequest()
         Log.d("Beldex","sendOnionRequest for social group header $headers")
         val url = request.url()
@@ -526,5 +526,9 @@ object OnionRequestAPI {
             throw exception
         }
     }
+    data class OnionResponse(
+        val info: Map<*, *>,
+        val body: ByteArray? = null
+    )
     // endregion
 }

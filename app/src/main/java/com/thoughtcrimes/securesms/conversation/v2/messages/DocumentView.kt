@@ -13,28 +13,12 @@ import io.beldex.bchat.databinding.ViewDocumentBinding
 import com.thoughtcrimes.securesms.database.model.MmsMessageRecord
 
 class DocumentView : LinearLayout {
-    private lateinit var binding: ViewDocumentBinding
+    private val binding: ViewDocumentBinding by lazy { ViewDocumentBinding.bind(this) }
 
     // region Lifecycle
-    constructor(context: Context) : super(context) {
-        initialize()
-    }
-
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        initialize()
-    }
-
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
-    ) {
-        initialize()
-    }
-
-    private fun initialize() {
-        binding = ViewDocumentBinding.inflate(LayoutInflater.from(context), this, true)
-    }
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
     // endregion
 
     // region Updating

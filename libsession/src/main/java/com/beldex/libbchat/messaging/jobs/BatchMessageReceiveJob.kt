@@ -1,5 +1,6 @@
 package com.beldex.libbchat.messaging.jobs
 
+import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
 import com.google.protobuf.ByteString
 import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.task
@@ -12,7 +13,8 @@ import com.beldex.libsignal.utilities.Log
 data class MessageReceiveParameters(
     val data: ByteArray,
     val serverHash: String? = null,
-    val openGroupMessageServerID: Long? = null
+    val openGroupMessageServerID: Long? = null,
+    val reactions: Map<String, OpenGroupAPIV2.Reaction>? = null
 )
 
 class BatchMessageReceiveJob(

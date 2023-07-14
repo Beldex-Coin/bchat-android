@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.view.children
 import androidx.core.view.isVisible
@@ -26,26 +27,17 @@ import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.mms.Slide
 import com.thoughtcrimes.securesms.util.ActivityDispatcher
 
-class AlbumThumbnailView : FrameLayout {
+class AlbumThumbnailView : RelativeLayout {
 
-    private lateinit var binding: AlbumThumbnailViewBinding
-
+    private val binding: AlbumThumbnailViewBinding by lazy { AlbumThumbnailViewBinding.bind(this) }
     companion object {
         const val MAX_ALBUM_DISPLAY_SIZE = 5
     }
 
     // region Lifecycle
-    constructor(context: Context) : super(context) {
-        initialize()
-    }
-
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        initialize()
-    }
-
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        initialize()
-    }
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     private val cornerMask by lazy {
         CornerMask(
@@ -55,9 +47,6 @@ class AlbumThumbnailView : FrameLayout {
     private var slides: List<Slide> = listOf()
     private var slideSize: Int = 0
 
-    private fun initialize() {
-        binding = AlbumThumbnailViewBinding.inflate(LayoutInflater.from(context), this, true)
-    }
 
     override fun dispatchDraw(canvas: Canvas?) {
         super.dispatchDraw(canvas)

@@ -17,7 +17,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
+import androidx.core.view.marginBottom
 import com.beldex.libbchat.messaging.contacts.Contact
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
@@ -33,7 +35,7 @@ import com.thoughtcrimes.securesms.database.model.MessageRecord
 import com.thoughtcrimes.securesms.home.UserDetailsBottomSheet
 import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.util.*
-import java.util.Date
+import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.min
@@ -144,18 +146,16 @@ class VisibleMessageView : LinearLayout {
                     binding.moderatorIconImageView.isVisible = !message.isOutgoing && isModerator
                 }
             }
-            binding.senderNameTextView.isVisible = isStartOfMessageCluster
-            val context = if (thread.isOpenGroupRecipient) ContactContext.OPEN_GROUP else ContactContext.REGULAR
-            binding.senderNameTextView.text = contact?.displayName(context) ?: senderBChatID
-        } else {
-            binding.senderNameTextView.visibility = View.GONE
         }
+        binding.senderNameTextView.isVisible = !message.isOutgoing && (isStartOfMessageCluster && (isGroupThread || snIsSelected))
+        val contactContext =
+            if (thread.isOpenGroupRecipient) ContactContext.OPEN_GROUP else ContactContext.REGULAR
+        binding.senderNameTextView.text = contact?.displayName(contactContext) ?: senderBChatID
         // Date break
+        val showDateBreak = isStartOfMessageCluster || snIsSelected
+        binding.dateBreakTextView.text = if (showDateBreak) DateUtils.getDisplayFormattedTimeSpanString(context, Locale.getDefault(), message.timestamp) else null
+        binding.dateBreakTextView.isVisible = showDateBreak
         binding.dateBreakTextView.textSize = fontSize.toFloat()
-        binding.dateBreakTextView.showDateBreak(message, previous)
-        // Timestamp
-        //binding.messageTimestampTextView.text = DateUtils.getDisplayFormattedTimeSpanString(context, Locale.getDefault(), message.timestamp)
-        // Message status indicator
         val (iconID, iconColor) = getMessageStatusImage(message)
         if (iconID != null) {
             val drawable = ContextCompat.getDrawable(context, iconID)?.mutate()
@@ -229,7 +229,7 @@ class VisibleMessageView : LinearLayout {
         container.layoutParams = containerParams
         if (message.expiresIn > 0 && !message.isPending) {
             binding.expirationTimerView.setColorFilter(ResourcesCompat.getColor(resources, R.color.text, context.theme))
-            binding.expirationTimerView.isVisible = true
+            binding.expirationTimerView.isInvisible = false
             binding.expirationTimerView.setPercentComplete(0.0f)
             if (message.expireStarted > 0) {
                 binding.expirationTimerView.setExpirationTime(message.expireStarted, message.expiresIn)
@@ -252,7 +252,7 @@ class VisibleMessageView : LinearLayout {
                 binding.expirationTimerView.setPercentComplete(0.0f)
             }
         } else {
-            binding.expirationTimerView.isVisible = false
+            binding.expirationTimerView.isInvisible = true
         }
         container.requestLayout()
     }
@@ -270,11 +270,14 @@ class VisibleMessageView : LinearLayout {
             val spacing = context.resources.getDimensionPixelSize(R.dimen.small_spacing)
             val threshold = swipeToReplyThreshold
             val iconSize = toPx(24, context.resources)
-            val bottomVOffset = paddingBottom + binding.messageStatusImageView.height + (binding.messageContentView.height - iconSize) / 2
-            swipeToReplyIconRect.left = binding.messageContentView.right - binding.messageContentView.paddingEnd + spacing
-            swipeToReplyIconRect.top = height - bottomVOffset - iconSize
-            swipeToReplyIconRect.right = binding.messageContentView.right - binding.messageContentView.paddingEnd + iconSize + spacing
-            swipeToReplyIconRect.bottom = height - bottomVOffset
+            val left = binding.expirationTimerViewContainer.left + binding.messageContentView.right + spacing
+            val top = height - (binding.expirationTimerViewContainer.height / 2) - binding.profilePictureView.root.marginBottom - (iconSize / 2)
+            val right = left + iconSize
+            val bottom = top + iconSize
+            swipeToReplyIconRect.left = left
+            swipeToReplyIconRect.top = top
+            swipeToReplyIconRect.right = right
+            swipeToReplyIconRect.bottom = bottom
             swipeToReplyIcon.bounds = swipeToReplyIconRect
             swipeToReplyIcon.alpha = (255.0f * (min(abs(translationX), threshold) / threshold)).roundToInt()
         } else {

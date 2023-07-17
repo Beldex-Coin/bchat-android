@@ -39,14 +39,13 @@ class JoinOpenGroupDialog(private val name: String, private val url: String) : B
         val openGroup = OpenGroupUrlParser.parseUrl(url)
         val activity = requireContext() as AppCompatActivity
         ThreadUtils.queue {
-            OpenGroupManager.add(openGroup.server, openGroup.room, openGroup.serverPublicKey, activity)
-            MessagingModuleConfiguration.shared.storage.onOpenGroupAdded(url)
-            ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(activity)
-        }
-        try {
-            Toast.makeText(requireActivity().applicationContext, resources.getString(R.string.joined_social_group_successfully, name), Toast.LENGTH_SHORT).show()
-        }catch (ex:IllegalStateException){
-            Log.d("Exception",ex.message.toString())
+            try {
+                OpenGroupManager.add(openGroup.server, openGroup.room, openGroup.serverPublicKey, activity)
+                MessagingModuleConfiguration.shared.storage.onOpenGroupAdded(openGroup.server)
+                ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(activity)
+            } catch (e: Exception) {
+                Toast.makeText(activity, R.string.activity_join_public_chat_error, Toast.LENGTH_SHORT).show()
+            }
         }
         dismiss()
     }

@@ -321,14 +321,15 @@ object OnionRequestAPI {
      */
     private fun sendOnionRequest(destination: Destination, payload: Map<*, *>): Promise<Map<*, *>, Exception> {
         val deferred = deferred<Map<*, *>, Exception>()
-        lateinit var guardMnode: Mnode
+        var guardMnode: Mnode? = null
         Log.d("Beldex --> payload onion req uest ","$payload")
         Log.d("Beldex --> destination onion request ","$destination")
         buildOnionForDestination(payload, destination).success { result ->
             guardMnode = result.guardMnode
             Log.d("Beldex","guard node-- $guardMnode")
             //Original
-            val url = "${guardMnode.address}:${guardMnode.port}/onion_req/v2"
+            val nonNullGuardSnode = result.guardMnode
+            val url = "${nonNullGuardSnode.address}:${nonNullGuardSnode.port}/onion_req/v2"
 
             //10-05-2022 - 5.21 PM
             //val url = "https://13.233.54.176:19090/onion_req/v2"
@@ -418,7 +419,7 @@ object OnionRequestAPI {
                     var pathFailureCount = OnionRequestAPI.pathFailureCount[path] ?: 0
                     pathFailureCount += 1
                     if (pathFailureCount >= pathFailureThreshold) {
-                        dropGuardMnode(guardMnode)
+                        guardMnode?.let { dropGuardMnode(it) }
                         path.forEach { mnode ->
                             @Suppress("ThrowableNotThrown")
                             MnodeAPI.handleMnodeError(exception.statusCode, exception.json, mnode, null) // Intentionally don't throw

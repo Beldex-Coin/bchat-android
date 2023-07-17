@@ -49,6 +49,7 @@ object FileServerAPIV2 {
             val queryParameters: Map<String, String> = mapOf(),
             val parameters: Any? = null,
             val headers: Map<String, String> = mapOf(),
+            val body: ByteArray? = null,
             /**
          * Always `true` under normal circumstances. You might want to disable
          * this when running over Beldex.
@@ -56,7 +57,8 @@ object FileServerAPIV2 {
         val useOnionRouting: Boolean = true
     )
 
-    private fun createBody(parameters: Any?): RequestBody? {
+    private fun createBody(body: ByteArray?, parameters: Any?): RequestBody? {
+        if (body != null) return RequestBody.create(MediaType.get("application/octet-stream"), body)
         if (parameters == null) return null
         val parametersAsJSON = JsonUtil.toJson(parameters)
         return RequestBody.create(MediaType.get("application/json"), parametersAsJSON)
@@ -81,9 +83,9 @@ object FileServerAPIV2 {
             .headers(Headers.of(request.headers))
         when (request.verb) {
             HTTP.Verb.GET -> requestBuilder.get()
-            HTTP.Verb.PUT -> requestBuilder.put(createBody(request.parameters)!!)
-            HTTP.Verb.POST -> requestBuilder.post(createBody(request.parameters)!!)
-            HTTP.Verb.DELETE -> requestBuilder.delete(createBody(request.parameters))
+            HTTP.Verb.PUT -> requestBuilder.put(createBody(request.body, request.parameters)!!)
+            HTTP.Verb.POST -> requestBuilder.post(createBody(request.body, request.parameters)!!)
+            HTTP.Verb.DELETE -> requestBuilder.delete(createBody(request.body, request.parameters))
         }
         if (request.useOnionRouting) {
             //-Log.d("Beldex","request for fileserver ${request.useOnionRouting}")
@@ -101,9 +103,7 @@ object FileServerAPIV2 {
     }
 
     fun upload(file: ByteArray): Promise<Long, Exception> {
-        val base64EncodedFile = Base64.encodeBytes(file)
-        val parameters = mapOf( "file" to base64EncodedFile )
-        val request = Request(verb = HTTP.Verb.POST, endpoint = "files", parameters = parameters)
+        val request = Request(verb = HTTP.Verb.POST, endpoint = "files", body = file)
         return send(request).map { json ->
             json["result"] as? Long ?: throw OpenGroupAPIV2.Error.ParsingFailed
         }

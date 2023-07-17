@@ -21,6 +21,7 @@ import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
@@ -115,7 +116,7 @@ class VisibleMessageContentView : LinearLayout {
             BlendModeCompat.SRC_IN
         )
         background.colorFilter = filter
-        setBackground(background)
+        binding.contentParent.background = background
 
         val onlyBodyMessage = message is SmsMessageRecord
         val mediaThumbnailMessage =
@@ -138,7 +139,7 @@ class VisibleMessageContentView : LinearLayout {
         }
 
         // clear the
-        binding.bodyTextView.text = null
+        binding.bodyTextView.text = ""
 
         binding.quoteView.root.isVisible = message is MmsMessageRecord && message.quote != null
 
@@ -146,10 +147,6 @@ class VisibleMessageContentView : LinearLayout {
             message is MmsMessageRecord && message.linkPreviews.isNotEmpty()
         binding.linkPreviewView.bodyTextView = binding.bodyTextView
 
-        val linkPreviewLayout = binding.linkPreviewView.layoutParams
-        linkPreviewLayout.width =
-            if (mediaThumbnailMessage) 0 else ViewGroup.LayoutParams.WRAP_CONTENT
-        binding.linkPreviewView.layoutParams = linkPreviewLayout
 
         binding.untrustedView.root.isVisible =
             !contactIsTrusted && message is MmsMessageRecord && message.quote == null
@@ -184,9 +181,7 @@ class VisibleMessageContentView : LinearLayout {
                     delegate?.scrollToMessageIfPossible(quote.id)
                 }
             }
-            val layoutParams = binding.quoteView.root.layoutParams as MarginLayoutParams
             val hasMedia = message.slideDeck.asAttachments().isNotEmpty()
-            binding.quoteView.root.minWidth = if (hasMedia) 0 else toPx(300,context.resources)
         }
 
         if (message is MmsMessageRecord) {
@@ -303,6 +298,9 @@ class VisibleMessageContentView : LinearLayout {
                         isStart = isStartOfMessageCluster,
                         isEnd = isEndOfMessageCluster
                     )
+                    val layoutParams = binding.albumThumbnailView.layoutParams as ConstraintLayout.LayoutParams
+                    layoutParams.horizontalBias = if (message.isOutgoing) 1f else 0f
+                    binding.albumThumbnailView.layoutParams = layoutParams
                     onContentClick.add { event ->
                         binding.albumThumbnailView.calculateHitObject(event, message, thread)
                     }
@@ -336,10 +334,6 @@ class VisibleMessageContentView : LinearLayout {
 
         binding.bodyTextView.isVisible = message.body.isNotEmpty() && !hideBody
 
-        // set it to use constraints if not only a text message, otherwise wrap content to whatever width it wants
-        val params = binding.bodyTextView.layoutParams
-        params.width =
-            if (onlyBodyMessage || binding.barrierViewsGone()) ViewGroup.LayoutParams.MATCH_PARENT else 0
         val fontSize = TextSecurePreferences.getChatFontSize(context)
         binding.bodyTextView.textSize = fontSize!!.toFloat()
 
@@ -361,6 +355,9 @@ class VisibleMessageContentView : LinearLayout {
                 }
             }
         }
+        val layoutParams = binding.contentParent.layoutParams as ConstraintLayout.LayoutParams
+        layoutParams.horizontalBias = if (message.isOutgoing) 1f else 0f
+        binding.contentParent.layoutParams = layoutParams
     }
 
     private fun ViewVisibleMessageContentBinding.barrierViewsGone(): Boolean =

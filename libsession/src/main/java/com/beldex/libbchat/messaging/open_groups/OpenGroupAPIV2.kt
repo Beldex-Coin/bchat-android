@@ -91,6 +91,7 @@ object OpenGroupAPIV2 {
         val parameters: Any? = null,
         val headers: Map<String, String> = mapOf(),
         val isAuthRequired: Boolean = true,
+        val body: ByteArray? = null,
             /**
          * Always `true` under normal circumstances. You might want to disable
          * this when running over Beldex.
@@ -98,7 +99,8 @@ object OpenGroupAPIV2 {
         val useOnionRouting: Boolean = true
     )
 
-    private fun createBody(parameters: Any?): RequestBody? {
+    private fun createBody(body: ByteArray?, parameters: Any?): RequestBody? {
+        if (body != null) return RequestBody.create(MediaType.get("application/octet-stream"), body)
         if (parameters == null) return null
         val parametersAsJSON = JsonUtil.toJson(parameters)
         return RequestBody.create(MediaType.get("application/json"), parametersAsJSON)
@@ -131,9 +133,9 @@ object OpenGroupAPIV2 {
             }
             when (request.verb) {
                 GET -> requestBuilder.get()
-                PUT -> requestBuilder.put(createBody(request.parameters)!!)
-                POST -> requestBuilder.post(createBody(request.parameters)!!)
-                DELETE -> requestBuilder.delete(createBody(request.parameters))
+                PUT -> requestBuilder.put(createBody(request.body, request.parameters)!!)
+                POST -> requestBuilder.post(createBody(request.body, request.parameters)!!)
+                DELETE -> requestBuilder.delete(createBody(request.body, request.parameters))
             }
             if (!request.room.isNullOrEmpty()) {
                 requestBuilder.header("Room", request.room)
@@ -242,8 +244,12 @@ object OpenGroupAPIV2 {
     // region Upload/Download
     fun upload(file: ByteArray, room: String, server: String): Promise<Long, Exception> {
         val base64EncodedFile = encodeBytes(file)
-        val parameters = mapOf( "file" to base64EncodedFile )
-        val request = Request(verb = POST, room = room, server = server, endpoint = "files", parameters = parameters)
+        val request = Request(verb = POST, room = room, server = server, endpoint = "files", body = file,
+            headers = mapOf(
+                "Content-Disposition" to "attachment",
+                "Content-Type" to "application/octet-stream"
+            )
+        )
         return send(request).map { json ->
             (json["result"] as? Number)?.toLong() ?: throw Error.ParsingFailed
         }

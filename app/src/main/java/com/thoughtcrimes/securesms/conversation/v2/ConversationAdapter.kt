@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.database.Cursor
+import android.os.Build
 import android.util.SparseArray
 import android.util.SparseBooleanArray
 import android.view.LayoutInflater
@@ -51,7 +52,9 @@ class ConversationAdapter(context: Context, cursor: Cursor, private val onItemPr
             while (isActive) {
                 val item = updateQueue.receive()
                 val contact = getSenderInfo(item) ?: continue
-                contactCache[item.hashCode()] = contact
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    contactCache[item.hashCode()] = contact
+                }
                 contactLoadedCache[item.hashCode()] = true
             }
         }
@@ -110,7 +113,9 @@ class ConversationAdapter(context: Context, cursor: Cursor, private val onItemPr
                 updateQueue.trySend(senderId)
                 if (contactCache[senderIdHash] == null && !contactLoadedCache.getOrDefault(senderIdHash, false)) {
                     getSenderInfo(senderId)?.let { contact ->
-                        contactCache[senderIdHash] = contact
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                            contactCache[senderIdHash] = contact
+                        }
                     }
                 }
                 val contact = contactCache[senderIdHash]

@@ -39,6 +39,8 @@ internal fun Request.getBodyForOnionRequest(): Any? {
         if (body is MultipartBody) {
             val base64EncodedBody: String = Base64.encodeBytes(bodyAsData)
             return mapOf( "fileUpload" to base64EncodedBody )
+        } else if (body.contentType()?.toString() == "application/octet-stream") {
+            return bodyAsData
         } else {
             val charset = body.contentType()?.charset() ?: Charsets.UTF_8
             return bodyAsData?.toString(charset)

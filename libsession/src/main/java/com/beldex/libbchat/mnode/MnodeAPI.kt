@@ -27,7 +27,7 @@ import kotlin.Pair
 
 object MnodeAPI {
     private val sodium by lazy { LazySodiumAndroid(SodiumAndroid()) }
-    private val database: BeldexAPIDatabaseProtocol
+    internal val database: BeldexAPIDatabaseProtocol
         get() = MnodeModule.shared.storage
     private val broadcaster: Broadcaster
         get() = MnodeModule.shared.broadcaster
@@ -455,7 +455,7 @@ object MnodeAPI {
         return if (messages != null) {
             updateLastMessageHashValueIfPossible(mnode, publicKey, messages)
             val newRawMessages = removeDuplicates(publicKey, messages)
-            return parseEnvelopes(newRawMessages);
+            return parseEnvelopes(newRawMessages)
         } else {
             listOf()
         }
@@ -472,7 +472,9 @@ object MnodeAPI {
     }
 
     private fun removeDuplicates(publicKey: String, rawMessages: List<*>): List<*> {
-        val receivedMessageHashValues = database.getReceivedMessageHashValues(publicKey)?.toMutableSet() ?: mutableSetOf()
+        /*val receivedMessageHashValues = database.getReceivedMessageHashValues(publicKey)?.toMutableSet() ?: mutableSetOf()*/
+        val originalMessageHashValues = database.getReceivedMessageHashValues(publicKey)?.toMutableSet() ?: mutableSetOf()
+        val receivedMessageHashValues = originalMessageHashValues.toMutableSet()
         val result = rawMessages.filter { rawMessage ->
             val rawMessageAsJSON = rawMessage as? Map<*, *>
             val hashValue = rawMessageAsJSON?.get("hash") as? String
@@ -485,7 +487,9 @@ object MnodeAPI {
                 false
             }
         }
-        database.setReceivedMessageHashValues(publicKey, receivedMessageHashValues)
+        if (originalMessageHashValues != receivedMessageHashValues) {
+            database.setReceivedMessageHashValues(publicKey, receivedMessageHashValues)
+        }
         return result
     }
 

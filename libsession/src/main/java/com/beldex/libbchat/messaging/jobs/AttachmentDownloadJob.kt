@@ -32,7 +32,7 @@ class AttachmentDownloadJob(val attachmentID: Long, val databaseMessageID: Long)
     }
 
     // Settings
-    override val maxFailureCount: Int = 100
+    override val maxFailureCount: Int = 2
 
     companion object {
         val KEY: String = "AttachmentDownloadJob"
@@ -63,6 +63,13 @@ class AttachmentDownloadJob(val attachmentID: Long, val databaseMessageID: Long)
                 }
                 this.handlePermanentFailure(exception)
             } else {
+                if (failureCount + 1 >= maxFailureCount) {
+                    attachment?.let { id ->
+                        messageDataProvider.setAttachmentState(AttachmentState.FAILED, id, databaseMessageID)
+                    } ?: run {
+                        messageDataProvider.setAttachmentState(AttachmentState.FAILED, AttachmentId(attachmentID,0), databaseMessageID)
+                    }
+                }
                 this.handleFailure(exception)
             }
         }

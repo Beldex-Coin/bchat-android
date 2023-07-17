@@ -6,6 +6,7 @@ import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 
+import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.thoughtcrimes.securesms.crypto.DatabaseSecret;
 import com.thoughtcrimes.securesms.database.AttachmentDatabase;
 import com.thoughtcrimes.securesms.database.BchatContactDatabase;
@@ -32,14 +33,6 @@ import net.sqlcipher.database.SQLiteDatabaseHook;
 import net.sqlcipher.database.SQLiteOpenHelper;
 
 import com.beldex.libsignal.utilities.Log;
-
-import com.thoughtcrimes.securesms.database.BeldexAPIDatabase;
-import com.thoughtcrimes.securesms.database.BeldexBackupFilesDatabase;
-import com.thoughtcrimes.securesms.database.BeldexMessageDatabase;
-import com.thoughtcrimes.securesms.database.BeldexThreadDatabase;
-import com.thoughtcrimes.securesms.database.BeldexUserDatabase;
-import com.thoughtcrimes.securesms.database.BchatContactDatabase;
-import com.thoughtcrimes.securesms.database.BchatJobDatabase;
 
 public class SQLCipherOpenHelper extends SQLiteOpenHelper {
 
@@ -95,6 +88,13 @@ public class SQLCipherOpenHelper extends SQLiteOpenHelper {
       public void postKey(SQLiteDatabase db) {
         db.rawExecSQL("PRAGMA kdf_iter = '1';");
         db.rawExecSQL("PRAGMA cipher_page_size = 4096;");
+        // if not vacuumed in a while, perform that operation
+        long currentTime = System.currentTimeMillis();
+        // 7 days
+        if (currentTime - TextSecurePreferences.getLastVacuumTime(context) > 604_800_000) {
+          db.rawExecSQL("VACUUM;");
+          TextSecurePreferences.setLastVacuumNow(context);
+        }
       }
     });
 
@@ -153,7 +153,7 @@ public class SQLCipherOpenHelper extends SQLiteOpenHelper {
     db.execSQL(GroupDatabase.getCreateUpdatedTimestampCommand());
     db.execSQL(RecipientDatabase.getCreateApprovedCommand());
     db.execSQL(RecipientDatabase.getCreateApprovedMeCommand());
-    db.execSQL(MmsDatabase.getCreateMessageRequestResponseCommand());
+    db.execSQL(MmsDatabase.getCreateMessageRequestResponseCommand);
     //New
     db.execSQL(BchatRecipientAddressDatabase.getCreateBchatRecipientAddressTableCommand());
 
@@ -343,7 +343,7 @@ public class SQLCipherOpenHelper extends SQLiteOpenHelper {
         db.execSQL(RecipientDatabase.getCreateApprovedMeCommand());
         db.execSQL(RecipientDatabase.getUpdateApprovedCommand());
         db.execSQL(RecipientDatabase.getUpdateApprovedSelectConversations());
-        db.execSQL(MmsDatabase.getCreateMessageRequestResponseCommand());
+        db.execSQL(MmsDatabase.getCreateMessageRequestResponseCommand);
       }
 
       if(oldVersion < beldexV32) {

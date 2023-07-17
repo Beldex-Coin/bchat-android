@@ -12,13 +12,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.beldex.libbchat.utilities.recipients.Recipient
-import com.beldex.libsignal.utilities.Log
 import com.thoughtcrimes.securesms.conversation.v2.utilities.MentionUtilities.highlightMentions
-import com.thoughtcrimes.securesms.database.MmsSmsDatabase
-import com.thoughtcrimes.securesms.database.RecipientDatabase
-import com.thoughtcrimes.securesms.database.model.MessageRecord
+import com.thoughtcrimes.securesms.database.RecipientDatabase.NOTIFY_TYPE_ALL
+import com.thoughtcrimes.securesms.database.RecipientDatabase.NOTIFY_TYPE_NONE
 import com.thoughtcrimes.securesms.database.model.ThreadRecord
-import com.thoughtcrimes.securesms.dependencies.DatabaseComponent.Companion.get
 import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.util.DateUtils
 import io.beldex.bchat.R
@@ -54,7 +51,7 @@ class ConversationView : LinearLayout {
             binding.conversationViewDisplayNameTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
             ContextCompat.getDrawable(context, R.drawable.conversation_view_background)
         }
-        binding.profilePictureView.glide = glide
+        binding.profilePictureView.root.glide = glide
         val unreadCount = thread.unreadCount
         if (thread.recipient.isBlocked) {
             binding.accentView.setBackgroundResource(R.color.destructive)
@@ -80,15 +77,15 @@ class ConversationView : LinearLayout {
         binding.conversationViewDisplayNameTextView.text = senderDisplayName
         binding.timestampTextView.text = DateUtils.getDisplayFormattedTimeSpanString(context, Locale.getDefault(), thread.date)
         val recipient = thread.recipient
-        binding.muteIndicatorImageView.isVisible = recipient.isMuted || recipient.notifyType != RecipientDatabase.NOTIFY_TYPE_ALL
-        val drawableRes = if (recipient.isMuted || recipient.notifyType == RecipientDatabase.NOTIFY_TYPE_NONE) {
+        binding.muteIndicatorImageView.isVisible = recipient.isMuted || recipient.notifyType != NOTIFY_TYPE_ALL
+        val drawableRes = if (recipient.isMuted || recipient.notifyType == NOTIFY_TYPE_NONE) {
             R.drawable.ic_outline_notifications_off_24
         } else {
             R.drawable.ic_notifications_mentions
         }
         binding.muteIndicatorImageView.setImageResource(drawableRes)
         val rawSnippet = thread.getDisplayBody(context)
-        val snippet = highlightMentions(rawSnippet, thread.threadId, context)
+        val snippet = highlightMentions(rawSnippet, recipient.isOpenGroupRecipient, context)
 
         //SteveJosephh21-17 - if
         /*val mmsSmsDatabase = get(context).mmsSmsDatabase()
@@ -138,13 +135,11 @@ class ConversationView : LinearLayout {
             else -> binding.statusIndicatorImageView.setImageResource(R.drawable.ic_circle_check)
 
         }
-        post {
-            binding.profilePictureView.update(thread.recipient)
-        }
+        binding.profilePictureView.root.update(thread.recipient)
     }
 
     fun recycle() {
-        binding.profilePictureView.recycle()
+        binding.profilePictureView.root.recycle()
     }
 
     private fun getUserDisplayName(recipient: Recipient): String? {

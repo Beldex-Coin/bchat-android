@@ -8,18 +8,17 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
-import android.view.Gravity
 import android.view.HapticFeedbackConstants
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import com.beldex.libbchat.messaging.contacts.Contact
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewVisibleMessageBinding
@@ -35,7 +34,6 @@ import com.thoughtcrimes.securesms.home.UserDetailsBottomSheet
 import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.util.*
 import java.util.Date
-import java.util.Locale
 import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.min
@@ -46,13 +44,12 @@ import kotlin.math.sqrt
 class VisibleMessageView : LinearLayout {
 
     @Inject lateinit var threadDb: ThreadDatabase
-    @Inject lateinit var contactDb: BchatContactDatabase
     @Inject lateinit var beldexThreadDb: BeldexThreadDatabase
     @Inject lateinit var mmsSmsDb: MmsSmsDatabase
     @Inject lateinit var smsDb: SmsDatabase
     @Inject lateinit var mmsDb: MmsDatabase
 
-    private lateinit var binding: io.beldex.bchat.databinding.ViewVisibleMessageBinding
+    private val binding by lazy { ViewVisibleMessageBinding.bind(this) }
     private val screenWidth = Resources.getSystem().displayMetrics.widthPixels
     private val swipeToReplyIcon = ContextCompat.getDrawable(context, R.drawable.ic_baseline_reply_24)!!.mutate()
     private val swipeToReplyIconRect = Rect()
@@ -67,7 +64,6 @@ class VisibleMessageView : LinearLayout {
     var snIsSelected = false
         set(value) {
             field = value
-            binding.messageTimestampTextView.isVisible = isSelected
             handleIsSelectedChanged()
         }
     var onPress: ((event: MotionEvent) -> Unit)? = null
@@ -83,27 +79,27 @@ class VisibleMessageView : LinearLayout {
     }
 
     // region Lifecycle
-    constructor(context: Context) : super(context) { initialize() }
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) { initialize() }
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) { initialize() }
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+
+    override fun onFinishInflate() {
+        super.onFinishInflate()
+        initialize()
+    }
 
     private fun initialize() {
-        binding = ViewVisibleMessageBinding.inflate(LayoutInflater.from(context), this, true)
-        layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         isHapticFeedbackEnabled = true
         setWillNotDraw(false)
         binding.expirationTimerViewContainer.disableClipping()
-        binding.messageContentContainer.disableClipping()
+        binding.messageContentView.disableClipping()
     }
     // endregion
 
     // region Updating
-    fun bind(message: MessageRecord, previous: MessageRecord?, next: MessageRecord?, glide: GlideRequests, searchQuery: String?) {
-        val sender = message.individualRecipient
-        val senderBchatID = sender.address.serialize()
+    fun bind(message: MessageRecord, previous: MessageRecord?, next: MessageRecord?, glide: GlideRequests, searchQuery: String?, contact: Contact?, senderBChatID: String) {
         val threadID = message.threadId
         val thread = threadDb.getRecipientForThreadId(threadID) ?: return
-        val contact = contactDb.getContactWithBchatID(senderBchatID)
         val isGroupThread = thread.isGroupRecipient
         val isStartOfMessageCluster = isStartOfMessageCluster(message, previous, isGroupThread)
         val isEndOfMessageCluster = isEndOfMessageCluster(message, next, isGroupThread)
@@ -111,48 +107,54 @@ class VisibleMessageView : LinearLayout {
         binding.senderNameTextView.textSize = fontSize!!.toFloat()
         // Show profile picture and sender name if this is a group thread AND
         // the message is incoming
+        binding.moderatorIconImageView.isVisible = false
+        binding.profilePictureView.root.visibility = when {
+            thread.isGroupRecipient && !message.isOutgoing && isEndOfMessageCluster -> View.VISIBLE
+            thread.isGroupRecipient -> View.INVISIBLE
+            else -> View.GONE
+        }
+
+        val bottomMargin = if (isEndOfMessageCluster) resources.getDimensionPixelSize(R.dimen.small_spacing)
+        else ViewUtil.dpToPx(context,2)
+
+        if (binding.profilePictureView.root.visibility == View.GONE) {
+            val expirationParams = binding.expirationTimerViewContainer.layoutParams as MarginLayoutParams
+            expirationParams.bottomMargin = bottomMargin
+            binding.expirationTimerViewContainer.layoutParams = expirationParams
+        } else {
+            val avatarLayoutParams = binding.profilePictureView.root.layoutParams as MarginLayoutParams
+            avatarLayoutParams.bottomMargin = bottomMargin
+            binding.profilePictureView.root.layoutParams = avatarLayoutParams
+        }
         if (isGroupThread && !message.isOutgoing) {
-            binding.profilePictureContainer.visibility = if (isEndOfMessageCluster) View.VISIBLE else View.INVISIBLE
-            binding.profilePictureView.publicKey = senderBchatID
-            binding.profilePictureView.glide = glide
-            binding.profilePictureView.update(message.individualRecipient)
-            binding.profilePictureView.setOnClickListener {
-                showUserDetails(senderBchatID, threadID)
-            }
-            if (thread.isOpenGroupRecipient) {
-                val openGroup = beldexThreadDb.getOpenGroupChat(threadID) ?: return
-                val isModerator = OpenGroupAPIV2.isUserModerator(senderBchatID, openGroup.room, openGroup.server)
-                binding.moderatorIconImageView.visibility = if (isModerator) View.VISIBLE else View.INVISIBLE
-            } else {
-                binding.moderatorIconImageView.visibility = View.INVISIBLE
+            if (isEndOfMessageCluster) {
+                binding.profilePictureView.root.publicKey = senderBChatID
+                binding.profilePictureView.root.glide = glide
+                binding.profilePictureView.root.update(message.individualRecipient)
+                binding.profilePictureView.root.setOnClickListener {
+                    showUserDetails(senderBChatID, threadID)
+                }
+                if (thread.isOpenGroupRecipient) {
+                    val openGroup = beldexThreadDb.getOpenGroupChat(threadID) ?: return
+                    val isModerator = OpenGroupAPIV2.isUserModerator(
+                        senderBChatID,
+                        openGroup.room,
+                        openGroup.server
+                    )
+                    binding.moderatorIconImageView.isVisible = !message.isOutgoing && isModerator
+                }
             }
             binding.senderNameTextView.isVisible = isStartOfMessageCluster
             val context = if (thread.isOpenGroupRecipient) ContactContext.OPEN_GROUP else ContactContext.REGULAR
-            binding.senderNameTextView.text = contact?.displayName(context) ?: senderBchatID
+            binding.senderNameTextView.text = contact?.displayName(context) ?: senderBChatID
         } else {
-            binding.profilePictureContainer.visibility = View.GONE
             binding.senderNameTextView.visibility = View.GONE
         }
         // Date break
         binding.dateBreakTextView.textSize = fontSize.toFloat()
         binding.dateBreakTextView.showDateBreak(message, previous)
         // Timestamp
-        binding.messageTimestampTextView.text = DateUtils.getDisplayFormattedTimeSpanString(context, Locale.getDefault(), message.timestamp)
-        // Margins
-        val startPadding = if (isGroupThread) {
-            if (message.isOutgoing) resources.getDimensionPixelSize(R.dimen.very_large_spacing) else toPx(50,resources)
-        } else {
-            if (message.isOutgoing) resources.getDimensionPixelSize(R.dimen.very_large_spacing)
-            else resources.getDimensionPixelSize(R.dimen.medium_spacing)
-        }
-        val endPadding = if (message.isOutgoing) resources.getDimensionPixelSize(R.dimen.medium_spacing)
-            else resources.getDimensionPixelSize(R.dimen.very_large_spacing)
-        binding.messageContentContainer.setPaddingRelative(startPadding, 0, endPadding, 0)
-        // Set inter-message spacing
-        setMessageSpacing(isStartOfMessageCluster, isEndOfMessageCluster)
-        // Gravity
-        val gravity = if (message.isOutgoing) Gravity.END else Gravity.START
-        binding.mainContainer.gravity = gravity or Gravity.BOTTOM
+        //binding.messageTimestampTextView.text = DateUtils.getDisplayFormattedTimeSpanString(context, Locale.getDefault(), message.timestamp)
         // Message status indicator
         val (iconID, iconColor) = getMessageStatusImage(message)
         if (iconID != null) {
@@ -170,21 +172,11 @@ class VisibleMessageView : LinearLayout {
         }
         // Expiration timer
         updateExpirationTimer(message)
-        // Calculate max message bubble width
-        var maxWidth = screenWidth - startPadding - endPadding
-        if (binding.profilePictureContainer.visibility != View.GONE) { maxWidth -= binding.profilePictureContainer.width }
         // Populate content view
         binding.messageContentView.indexInAdapter = indexInAdapter
-        binding.messageContentView.bind(message, isStartOfMessageCluster, isEndOfMessageCluster, glide, maxWidth, thread, searchQuery, message.isOutgoing || isGroupThread || (contact?.isTrusted ?: false))
+        binding.messageContentView.bind(message, isStartOfMessageCluster, isEndOfMessageCluster, glide, thread, searchQuery, message.isOutgoing || isGroupThread || (contact?.isTrusted ?: false))
         binding.messageContentView.delegate = contentViewDelegate
         onDoubleTap = { binding.messageContentView.onContentDoubleTap?.invoke() }
-    }
-
-    private fun setMessageSpacing(isStartOfMessageCluster: Boolean, isEndOfMessageCluster: Boolean) {
-        val topPadding = if (isStartOfMessageCluster) R.dimen.conversation_vertical_message_spacing_default else R.dimen.conversation_vertical_message_spacing_collapse
-        ViewUtil.setPaddingTop(this, resources.getDimension(topPadding).roundToInt())
-        val bottomPadding = if (isEndOfMessageCluster) R.dimen.conversation_vertical_message_spacing_default else R.dimen.conversation_vertical_message_spacing_collapse
-        ViewUtil.setPaddingBottom(this, resources.getDimension(bottomPadding).roundToInt())
     }
 
     private fun isStartOfMessageCluster(current: MessageRecord, previous: MessageRecord?, isGroupThread: Boolean): Boolean {
@@ -219,18 +211,22 @@ class VisibleMessageView : LinearLayout {
     }
 
     private fun updateExpirationTimer(message: MessageRecord) {
-        val expirationTimerViewLayoutParams = binding.expirationTimerView.layoutParams as MarginLayoutParams
         val container = binding.expirationTimerViewContainer
         val content = binding.messageContentView
         val expiration = binding.expirationTimerView
+        val spacing = binding.messageContentSpacing
         container.removeAllViewsInLayout()
         container.addView(if (message.isOutgoing) expiration else content)
         container.addView(if (message.isOutgoing) content else expiration)
-        val expirationTimerViewSize = toPx(12, resources)
+       /* val expirationTimerViewSize = toPx(12, resources)
         val smallSpacing = resources.getDimension(R.dimen.small_spacing).roundToInt()
         expirationTimerViewLayoutParams.marginStart = if (message.isOutgoing) -(smallSpacing + expirationTimerViewSize) else 10
         expirationTimerViewLayoutParams.marginEnd = if (message.isOutgoing) 10 else -(smallSpacing + expirationTimerViewSize)
-        binding.expirationTimerView.layoutParams = expirationTimerViewLayoutParams
+        binding.expirationTimerView.layoutParams = expirationTimerViewLayoutParams*/
+        container.addView(spacing, if (message.isOutgoing) 0 else 2)
+        val containerParams = container.layoutParams as ConstraintLayout.LayoutParams
+        containerParams.horizontalBias = if (message.isOutgoing) 1f else 0f
+        container.layoutParams = containerParams
         if (message.expiresIn > 0 && !message.isPending) {
             binding.expirationTimerView.setColorFilter(ResourcesCompat.getColor(resources, R.color.text, context.theme))
             binding.expirationTimerView.isVisible = true
@@ -275,9 +271,9 @@ class VisibleMessageView : LinearLayout {
             val threshold = swipeToReplyThreshold
             val iconSize = toPx(24, context.resources)
             val bottomVOffset = paddingBottom + binding.messageStatusImageView.height + (binding.messageContentView.height - iconSize) / 2
-            swipeToReplyIconRect.left = binding.messageContentContainer.right - binding.messageContentContainer.paddingEnd + spacing
+            swipeToReplyIconRect.left = binding.messageContentView.right - binding.messageContentView.paddingEnd + spacing
             swipeToReplyIconRect.top = height - bottomVOffset - iconSize
-            swipeToReplyIconRect.right = binding.messageContentContainer.right - binding.messageContentContainer.paddingEnd + iconSize + spacing
+            swipeToReplyIconRect.right = binding.messageContentView.right - binding.messageContentView.paddingEnd + iconSize + spacing
             swipeToReplyIconRect.bottom = height - bottomVOffset
             swipeToReplyIcon.bounds = swipeToReplyIconRect
             swipeToReplyIcon.alpha = (255.0f * (min(abs(translationX), threshold) / threshold)).roundToInt()
@@ -289,7 +285,7 @@ class VisibleMessageView : LinearLayout {
     }
 
     fun recycle() {
-        binding.profilePictureView.recycle()
+        binding.profilePictureView.root.recycle()
         binding.messageContentView.recycle()
     }
     // endregion

@@ -30,7 +30,7 @@ object AvatarPlaceholderGenerator {
         val colorPrimary = colorArray[(hash % colorArray.size).toInt()]
 
         val labelText = when {
-            !TextUtils.isEmpty(displayName) -> extractLabel(displayName!!.capitalize())
+            !TextUtils.isEmpty(displayName) -> extractLabel(displayName!!.capitalize(Locale.ROOT))
             !TextUtils.isEmpty(hashString) -> extractLabel(hashString)
             else -> EMPTY_LABEL
         }
@@ -59,14 +59,19 @@ object AvatarPlaceholderGenerator {
         return BitmapDrawable(context.resources, bitmap)
     }
 
-    private fun extractLabel(content: String): String {
-        var content = content.trim()
-        if (content.isEmpty()) return EMPTY_LABEL
-        return if (content.length > 2 && content.startsWith("bd")) {
-            content[2].toString().toUpperCase(Locale.ROOT)
+    fun extractLabel(content: String): String {
+        var trimmedContent = content.trim()
+        if (trimmedContent.isEmpty()) return EMPTY_LABEL
+        return if (trimmedContent.length > 2 && trimmedContent.startsWith("bd")) {
+            trimmedContent[2].toString()
         } else {
-            content.first().toString().toUpperCase(Locale.ROOT)
-        }
+            val splitWords = trimmedContent.split(Regex("\\W"))
+            if (splitWords.size < 2) {
+                trimmedContent.take(2)
+            } else {
+                splitWords.filter { word -> word.isNotEmpty() }.take(2).map { it.first() }.joinToString("")
+            }
+        }.uppercase()
     }
 
     private fun getSha512(input: String): String {

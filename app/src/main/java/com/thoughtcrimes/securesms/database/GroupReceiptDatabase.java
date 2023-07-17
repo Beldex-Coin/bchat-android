@@ -92,6 +92,19 @@ public class GroupReceiptDatabase extends Database {
     return results;
   }
 
+  void deleteRowsForMessages(String[] mmsIds) {
+    StringBuilder queryBuilder = new StringBuilder();
+    for (int i = 0; i < mmsIds.length; i++) {
+      queryBuilder.append(MMS_ID+" = ").append(mmsIds[i]);
+      if (i+1 < mmsIds.length) {
+        queryBuilder.append(" OR ");
+      }
+    }
+    String idsAsString = queryBuilder.toString();
+    SQLiteDatabase db = databaseHelper.getWritableDatabase();
+    db.delete(TABLE_NAME, idsAsString, null);
+  }
+
   void deleteRowsForMessage(long mmsId) {
     SQLiteDatabase db = databaseHelper.getWritableDatabase();
     db.delete(TABLE_NAME, MMS_ID + " = ?", new String[] {String.valueOf(mmsId)});

@@ -1,7 +1,10 @@
 package com.beldex.libsignal.utilities
 
-import okhttp3.*
-import java.lang.IllegalStateException
+import okhttp3.MediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
+import okhttp3.Response
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
 import java.util.concurrent.TimeUnit
@@ -14,6 +17,7 @@ object HTTP {
 
     private val seedNodeConnection by lazy {
         OkHttpClient().newBuilder()
+            .callTimeout(timeout, TimeUnit.SECONDS)
             .connectTimeout(timeout, TimeUnit.SECONDS)
             .readTimeout(timeout, TimeUnit.SECONDS)
             .writeTimeout(timeout, TimeUnit.SECONDS)
@@ -33,6 +37,7 @@ object HTTP {
         OkHttpClient().newBuilder()
             .sslSocketFactory(sslContext.socketFactory, trustManager)
             .hostnameVerifier { _, _ -> true }
+            .callTimeout(timeout, TimeUnit.SECONDS)
             .connectTimeout(timeout, TimeUnit.SECONDS)
             .readTimeout(timeout, TimeUnit.SECONDS)
             .writeTimeout(timeout, TimeUnit.SECONDS)
@@ -52,13 +57,14 @@ object HTTP {
         return OkHttpClient().newBuilder()
             .sslSocketFactory(sslContext.socketFactory, trustManager)
             .hostnameVerifier { _, _ -> true }
+            .callTimeout(timeout, TimeUnit.SECONDS)
             .connectTimeout(timeout, TimeUnit.SECONDS)
             .readTimeout(timeout, TimeUnit.SECONDS)
             .writeTimeout(timeout, TimeUnit.SECONDS)
             .build()
     }
 
-    private const val timeout: Long = 10
+    private const val timeout: Long = 120
 
     open class HTTPRequestFailedException(val statusCode: Int, val json: Map<*, *>?, message: String = "HTTP request failed with status code $statusCode")
         : kotlin.Exception(message)

@@ -151,7 +151,7 @@ class DatabaseAttachmentProvider(context: Context, helper: SQLCipherOpenHelper) 
         val mmsDb = DatabaseComponent.get(context).mmsDatabase()
         return mmsDb.getMessage(mmsMessageId).use { cursor ->
             mmsDb.readerFor(cursor).next
-        }.isOutgoing
+        }?.isOutgoing ?: false
     }
 
     override fun isOutgoingMessage(timestamp: Long): Boolean {

@@ -3,8 +3,11 @@ package com.thoughtcrimes.securesms.mms;
 import android.content.Context;
 import android.graphics.Bitmap;
 import androidx.annotation.NonNull;
+
+import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 
+import com.beldex.libbchat.avatars.PlaceholderAvatarPhoto;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.GlideBuilder;
 import com.bumptech.glide.Registry;
@@ -27,6 +30,7 @@ import com.thoughtcrimes.securesms.giph.model.ChunkedImageUrl;
 import com.thoughtcrimes.securesms.glide.ChunkedImageUrlLoader;
 import com.thoughtcrimes.securesms.glide.ContactPhotoLoader;
 import com.thoughtcrimes.securesms.glide.OkHttpUrlLoader;
+import com.thoughtcrimes.securesms.glide.PlaceholderAvatarLoader;
 import com.thoughtcrimes.securesms.glide.cache.EncryptedBitmapCacheDecoder;
 import com.thoughtcrimes.securesms.glide.cache.EncryptedBitmapResourceEncoder;
 import com.thoughtcrimes.securesms.glide.cache.EncryptedCacheEncoder;
@@ -68,6 +72,7 @@ public class SignalGlideModule extends AppGlideModule {
     registry.append(DecryptableStreamUriLoader.DecryptableUri.class, InputStream.class, new DecryptableStreamUriLoader.Factory(context));
     registry.append(AttachmentModel.class, InputStream.class, new AttachmentStreamUriLoader.Factory());
     registry.append(ChunkedImageUrl.class, InputStream.class, new ChunkedImageUrlLoader.Factory());
+    registry.append(PlaceholderAvatarPhoto.class, BitmapDrawable.class, new PlaceholderAvatarLoader.Factory(context));
     registry.replace(GlideUrl.class, InputStream.class, new OkHttpUrlLoader.Factory());
   }
 

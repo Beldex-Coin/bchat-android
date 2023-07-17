@@ -77,7 +77,6 @@ public class ThreadRecord extends DisplayRecord {
 
   @Override
   public SpannableString getDisplayBody(@NonNull Context context) {
-    Recipient recipient = getRecipient();
     if (isGroupUpdateMessage()) {
       return emphasisAdded(context.getString(R.string.ThreadRecord_group_updated));
     } else if (isOpenGroupInvitation()) {

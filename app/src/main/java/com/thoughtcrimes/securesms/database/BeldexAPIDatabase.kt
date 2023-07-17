@@ -244,7 +244,8 @@ class BeldexAPIDatabase(context: Context, helper: SQLCipherOpenHelper) : Databas
         val database = databaseHelper.writableDatabase
         val row = wrap(mapOf( Companion.mnode to mnode.toString(), Companion.publicKey to publicKey, lastMessageHashValue to newValue ))
         val query = "${Companion.mnode} = ? AND ${Companion.publicKey} = ?"
-        database.insertOrUpdate(lastMessageHashValueTable2, row, query, arrayOf( mnode.toString(), publicKey ))
+        //database.insertOrUpdate(lastMessageHashValueTable2, row, query, arrayOf( mnode.toString(), publicKey ))
+        val lastHash = database.insertOrUpdate(lastMessageHashValueTable2, row, query, arrayOf( mnode.toString(), publicKey))
     }
 
     override fun getReceivedMessageHashValues(publicKey: String): Set<String>? {

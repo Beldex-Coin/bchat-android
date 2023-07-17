@@ -245,6 +245,7 @@ public class GroupDatabase extends Database implements BeldexOpenGroupDatabasePr
       recipient.setParticipants(Stream.of(members).map(memberAddress -> Recipient.from(context, memberAddress, true)).toList());
     });
 
+    notifyConversationListeners(threadId);
     notifyConversationListListeners();
     return threadId;
   }
@@ -316,6 +317,7 @@ public class GroupDatabase extends Database implements BeldexOpenGroupDatabasePr
                                                 new String[] {groupID});
 
     Recipient.applyCached(Address.fromSerialized(groupID), recipient -> recipient.setGroupAvatarId(avatarId == 0 ? null : avatarId));
+    notifyConversationListListeners();
   }
 
   public void updateMembers(String groupId, List<Address> members) {

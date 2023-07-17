@@ -6,27 +6,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainContainerConstraint"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <!--<TextView
-        android:id="@+id/senderNameTextView"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_width="0dp"
-        app:layout_constraintHorizontal_weight="2"
-        android:gravity="start"
-        android:foregroundGravity="left"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:textAlignment="textStart"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"
-        android:textColor="@color/chat_user_name_color"
-        android:text="sdasdasda"
-        android:textStyle="bold"
-        android:maxLines="1"/>-->
 
     <!-- Content that will only show on its own -->
-    <com.thoughtcrimes.securesms.conversation.v2.messages.DeletedMessageView
+    <include layout="@layout/view_deleted_message"
        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,7 +17,7 @@
         android:id="@+id/deletedMessageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
-    <com.thoughtcrimes.securesms.conversation.v2.messages.UntrustedAttachmentView
+    <include layout="@layout/view_untrusted_attachment"
        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,16 +26,16 @@
         android:id="@+id/untrustedView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
-    <com.thoughtcrimes.securesms.conversation.v2.messages.VoiceMessageView
+    <include layout="@layout/view_voice_message"
        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:visibility="gone"
         android:id="@+id/voiceMessageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-    <com.thoughtcrimes.securesms.conversation.v2.messages.OpenGroupInvitationView
+        android:layout_width="160dp"
+        android:layout_height="36dp"/>
+    <include layout="@layout/view_open_group_invitation"
        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -71,7 +53,7 @@
         android:id="@+id/paymentCardView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
-    <com.thoughtcrimes.securesms.conversation.v2.messages.DocumentView
+    <include layout="@layout/view_document"
        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -83,13 +65,13 @@
 
     <!-- Content that will show with other elements -->
 
-    <com.thoughtcrimes.securesms.conversation.v2.messages.QuoteView
+    <include layout="@layout/view_quote"
        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:visibility="visible"
         android:visibility="gone"
         android:id="@+id/quoteView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <com.thoughtcrimes.securesms.conversation.v2.messages.LinkPreviewView
         app:layout_constraintTop_toBottomOf="@+id/quoteView"
@@ -127,5 +109,6 @@
         android:paddingVertical="@dimen/small_spacing"
         android:id="@+id/bodyTextView"
         android:layout_width="0dp"
+        android:maxWidth="300dp"
         android:layout_height="wrap_content"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

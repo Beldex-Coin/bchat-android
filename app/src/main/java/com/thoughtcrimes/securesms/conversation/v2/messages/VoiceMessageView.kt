@@ -4,9 +4,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.util.AttributeSet
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.core.view.isVisible
 import com.beldex.libbchat.messaging.sending_receiving.attachments.DatabaseAttachment
@@ -24,11 +22,11 @@ import javax.inject.Inject
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 @AndroidEntryPoint
-class VoiceMessageView : LinearLayout, AudioSlidePlayer.Listener {
+class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
 
     @Inject lateinit var attachmentDb: AttachmentDatabase
 
-    private lateinit var binding: ViewVoiceMessageBinding
+    private val binding: ViewVoiceMessageBinding by lazy { ViewVoiceMessageBinding.bind(this) }
     private val cornerMask by lazy {
       CornerMask(
             this
@@ -46,12 +44,12 @@ class VoiceMessageView : LinearLayout, AudioSlidePlayer.Listener {
     var indexInAdapter = -1
 
     // region Lifecycle
-    constructor(context: Context) : super(context) { initialize() }
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) { initialize() }
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) { initialize() }
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    private fun initialize() {
-        binding = ViewVoiceMessageBinding.inflate(LayoutInflater.from(context), this, true)
+    override fun onFinishInflate() {
+        super.onFinishInflate()
         binding.voiceMessageViewDurationTextView.text = String.format("%01d:%02d",
             TimeUnit.MILLISECONDS.toMinutes(0),
             TimeUnit.MILLISECONDS.toSeconds(0))

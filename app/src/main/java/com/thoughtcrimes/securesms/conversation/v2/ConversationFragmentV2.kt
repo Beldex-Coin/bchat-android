@@ -145,6 +145,7 @@ import java.util.concurrent.Executor
 import com.thoughtcrimes.securesms.util.slidetoact.SlideToActView.OnSlideCompleteListener
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
 import com.thoughtcrimes.securesms.webrtc.NetworkChangeReceiver
+import io.beldex.bchat.databinding.ViewVisibleMessageBinding
 import java.io.FileNotFoundException
 
 
@@ -282,7 +283,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 actionMode?.let {
                     onDeselect(message, position, it)
                 }
-            }
+            },
+            lifecycleCoroutineScope = lifecycleScope
         )
         adapter.visibleMessageContentViewDelegate = this
         adapter
@@ -1779,8 +1781,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             return
         }
         val viewHolder =
-            binding.conversationRecyclerView.findViewHolderForAdapterPosition(indexInAdapter) as? ConversationAdapter.VisibleMessageViewHolder
-        viewHolder?.view?.playVoiceMessage()
+            binding.conversationRecyclerView.findViewHolderForAdapterPosition(indexInAdapter) as? ConversationAdapter.VisibleMessageViewHolder ?: return
+        val visibleMessageView = ViewVisibleMessageBinding.bind(viewHolder.view).visibleMessageView
+        visibleMessageView.playVoiceMessage()
     }
 
     fun onSearchOpened() {
@@ -1830,7 +1833,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             this.activity?.invalidateOptionsMenu()
             updateSubtitle()
             showOrHideInputIfNeeded()
-            binding.profilePictureView.update(recipient)
+            binding.profilePictureView.root.update(recipient)
             //New Line v32
             binding.conversationTitleView.text = recipient.toShortString()
         }
@@ -1892,13 +1895,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             R.dimen.small_profile_picture_size
         }
         val size = resources.getDimension(sizeID).roundToInt()
-        binding.profilePictureView.layoutParams = LinearLayout.LayoutParams(size, size)
-        binding.profilePictureView.glide = glide
+        binding.profilePictureView.root.layoutParams = LinearLayout.LayoutParams(size, size)
+        binding.profilePictureView.root.glide = glide
         MentionManagerUtilities.populateUserPublicKeyCacheIfNeeded(
             viewModel.threadId,
             requireActivity()
         )
-        binding.profilePictureView.update(recipient)
+        binding.profilePictureView.root.update(recipient)
         binding.layoutConversation.setOnClickListener()
         {
             ConversationMenuHelper.showAllMedia(recipient, listenerCallback)
@@ -2615,8 +2618,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         message.id = (activity as HomeActivity).mmsDb.insertMessageOutbox(
             outgoingTextMessage,
             viewModel.threadId,
-            false
-        ) { }
+            false,null,runThreadUpdate = true
+        )
         // Send it
         MessageSender.send(message, recipient.address, attachments, quote, linkPreview)
         // Send a typing stopped message
@@ -2661,7 +2664,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             outgoingTextMessage,
             false,
             message.sentTimestamp!!,
-            null
+            null,true
         )
 
         // Send it

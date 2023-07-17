@@ -253,8 +253,8 @@ object FullBackupExporter {
     }
 
     private fun isForNonExpiringMessage(db: SQLiteDatabase, mmsId: Long): Boolean {
-        val columns = arrayOf(MmsDatabase.EXPIRES_IN)
-        val where = MmsDatabase.ID + " = ?"
+        val columns = arrayOf(MmsSmsColumns.EXPIRES_IN)
+        val where = MmsSmsColumns.ID + " = ?"
         val args = arrayOf(mmsId.toString())
         db.query(MmsDatabase.TABLE_NAME, columns, where, args, null, null, null).use { mmsCursor ->
             if (mmsCursor != null && mmsCursor.moveToFirst()) {

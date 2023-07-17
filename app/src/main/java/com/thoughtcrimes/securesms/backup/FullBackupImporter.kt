@@ -172,7 +172,7 @@ object FullBackupImporter {
     }
 
     private fun trimEntriesForExpiredMessages(context: Context, db: SQLiteDatabase) {
-        val trimmedCondition = " NOT IN (SELECT ${MmsDatabase.ID} FROM ${MmsDatabase.TABLE_NAME})"
+        val trimmedCondition = " NOT IN (SELECT ${MmsSmsColumns.ID} FROM ${MmsDatabase.TABLE_NAME})"
         db.delete(GroupReceiptDatabase.TABLE_NAME, GroupReceiptDatabase.MMS_ID + trimmedCondition, null)
         val columns = arrayOf(AttachmentDatabase.ROW_ID, AttachmentDatabase.UNIQUE_ID)
         val where = AttachmentDatabase.MMS_ID + trimmedCondition

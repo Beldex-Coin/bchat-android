@@ -94,8 +94,9 @@ class DefaultConversationRepository @Inject constructor(
     override fun isBeldexHostedOpenGroup(threadId: Long): Boolean {
         val openGroup = beldexThreadDb.getOpenGroupChat(threadId)
         Log.d("Beldex","open group $openGroup")
-        return openGroup?.room == "bchat" || openGroup?.room == "beldex"
-                || openGroup?.room == "crypto"  || openGroup?.room == "masternode" || openGroup?.room == "belnet"
+        /*return openGroup?.room == "bchat" || openGroup?.room == "beldex"
+                || openGroup?.room == "crypto"  || openGroup?.room == "masternode" || openGroup?.room == "belnet"*/
+        return openGroup?.publicKey == OpenGroupAPIV2.defaultServerPublicKey
     }
 
     override fun getRecipientForThreadId(threadId: Long): Recipient? {
@@ -129,7 +130,7 @@ class DefaultConversationRepository @Inject constructor(
                 contact,
                 message.sentTimestamp
             )
-            smsDb.insertMessageOutboxNew(-1, outgoingTextMessage, message.sentTimestamp!!)
+            smsDb.insertMessageOutboxNew(-1, outgoingTextMessage, message.sentTimestamp!!,true)
             MessageSender.send(message, contact.address)
         }
     }
@@ -146,7 +147,7 @@ class DefaultConversationRepository @Inject constructor(
             recipient,
             message.sentTimestamp
         )
-        smsDb.insertMessageOutboxNew(-1,outgoingTextMessage,message.sentTimestamp!!)
+        smsDb.insertMessageOutboxNew(-1,outgoingTextMessage,message.sentTimestamp!!,true)
         MessageSender.send(message,recipient!!.address)
     }
     override fun setBlocked(recipient: Recipient, blocked: Boolean) {

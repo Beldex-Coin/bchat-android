@@ -3,7 +3,6 @@ package com.thoughtcrimes.securesms.home
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.*
-import android.database.Cursor
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
@@ -21,8 +20,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.loader.app.LoaderManager
-import androidx.loader.content.Loader
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -66,10 +63,13 @@ import java.io.IOException
 import java.lang.IllegalStateException
 import java.util.*
 import android.view.MotionEvent
+import androidx.activity.viewModels
+import androidx.fragment.app.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 
-class HomeFragment : Fragment(),ConversationClickListener,
+@AndroidEntryPoint
+class HomeFragment : Fragment(), ConversationClickListener,
     NewConversationButtonSetViewDelegate,
-    LoaderManager.LoaderCallbacks<Cursor>,
     GlobalSearchInputLayout.GlobalSearchInputLayoutListener{
 
     //Shortcut launcher
@@ -95,9 +95,11 @@ class HomeFragment : Fragment(),ConversationClickListener,
     private val publicKey: String
         get() = TextSecurePreferences.getLocalNumber(requireActivity().applicationContext)!!
 
+    val homeViewModel by viewModels<HomeViewModel>()
+
     /*Hales63*/
     private val homeAdapter: HomeAdapter by lazy {
-        HomeAdapter(context = requireActivity(), cursor = (activity as HomeActivity).threadDb.approvedConversationList, listener = this)
+        HomeAdapter(context = requireActivity(), listener = this)
     }
 
     private val globalSearchAdapter = GlobalSearchAdapter { model ->
@@ -209,7 +211,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
         // Set up Glide
         glide = GlideApp.with(this)
         // Set up toolbar buttons
-        binding.profileButton.glide = glide
+        binding.profileButton.root.glide = glide
 
         //New Line
         // Setup Recyclerview's Layout
@@ -280,7 +282,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
                 }, 200)
             }
         }))
-        binding.profileButton.setOnClickListener {
+        binding.profileButton.root.setOnClickListener {
             binding.drawerLayout.openDrawer(GravityCompat.END)
         }
         binding.drawerCloseIcon.setOnClickListener { binding.drawerLayout.closeDrawer(GravityCompat.END) }
@@ -306,7 +308,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
                 binding.drawerLayout.closeDrawer(GravityCompat.END)
             }, 200)
         }
-        binding.drawerProfileIcon.glide = glide
+        binding.drawerProfileIcon.root.glide = glide
         binding.drawerProfileId.text = "ID: $hexEncodedPublicKey"
 
         binding.searchViewContainer.setOnClickListener {
@@ -324,8 +326,20 @@ class HomeFragment : Fragment(),ConversationClickListener,
         binding.globalSearchRecycler.adapter = globalSearchAdapter
         // Set up empty state view
         binding.createNewPrivateChatButton.setOnClickListener { createNewPrivateChat() }
-        // This is a workaround for the fact that CursorRecyclerViewAdapter doesn't actually auto-update (even though it says it will)
-        LoaderManager.getInstance(this).restartLoader(0, null, this)
+        homeViewModel.getObservable(requireActivity().applicationContext).observe(requireActivity()) { newData ->
+            val manager = binding.recyclerView.layoutManager as LinearLayoutManager
+            val firstPos = manager.findFirstCompletelyVisibleItemPosition()
+            val offsetTop = if(firstPos >= 0) {
+                manager.findViewByPosition(firstPos)?.let { view ->
+                    manager.getDecoratedTop(view) - manager.getTopDecorationHeight(view)
+                } ?: 0
+            } else 0
+            homeAdapter.data = newData
+            if(firstPos >= 0) { manager.scrollToPositionWithOffset(firstPos, offsetTop) }
+            setupMessageRequestsBanner()
+            updateEmptyState()
+        }
+        homeViewModel.tryUpdateChannel()
         // Set up new conversation button set
         binding.newConversationButtonSet.delegate = this
         // Observe blocked contacts changed events
@@ -337,7 +351,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
         this.broadcastReceiver = broadcastReceiver
         LocalBroadcastManager.getInstance(requireActivity().applicationContext)
             .registerReceiver(broadcastReceiver, IntentFilter("blockedContactsChanged"))
-        activityCallback?.callLifeCycleScope(binding.recyclerView,binding.globalSearchInputLayout,(activity as HomeActivity).mmsSmsDatabase,globalSearchAdapter,publicKey,binding.profileButton,binding.drawerProfileName,binding.drawerProfileIcon)
+        activityCallback?.callLifeCycleScope(binding.recyclerView,binding.globalSearchInputLayout,(activity as HomeActivity).mmsSmsDatabase,globalSearchAdapter,publicKey,binding.profileButton.root,binding.drawerProfileName,binding.drawerProfileIcon.root)
 
     }
 
@@ -361,11 +375,17 @@ class HomeFragment : Fragment(),ConversationClickListener,
                         RecyclerView.LayoutParams.MATCH_PARENT,
                         RecyclerView.LayoutParams.WRAP_CONTENT
                     )
-                    homeAdapter.headerView = root
-                    homeAdapter.notifyItemChanged(0)
+                    val hadHeader = homeAdapter.hasHeaderView()
+                    homeAdapter.header = root
+                    if (hadHeader) homeAdapter.notifyItemChanged(0)
+                    else homeAdapter.notifyItemInserted(0)
                 }
             } else {
-                homeAdapter.headerView = null
+                val hadHeader = homeAdapter.hasHeaderView()
+                homeAdapter.header = null
+                if (hadHeader) {
+                    homeAdapter.notifyItemRemoved(0)
+                }
             }
     }
 
@@ -376,7 +396,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
             .setPositiveButton(R.string.yes) { _, _ ->
                 (activity as HomeActivity).textSecurePreferences.setHasHiddenMessageRequests()
                 setupMessageRequestsBanner()
-                LoaderManager.getInstance(this).restartLoader(0, null, this)
+                homeViewModel.tryUpdateChannel()
             }
             .setNegativeButton(R.string.no) { _, _ ->
                 // Do nothing
@@ -476,20 +496,6 @@ class HomeFragment : Fragment(),ConversationClickListener,
         binding.newConversationButtonSet.isVisible = !isShown
     }
 
-    override fun onCreateLoader(id: Int, bundle: Bundle?): Loader<Cursor> {
-        return HomeLoader(requireActivity().applicationContext)
-    }
-
-    override fun onLoadFinished(loader: Loader<Cursor>, cursor: Cursor?) {
-        homeAdapter.changeCursor(cursor)
-        setupMessageRequestsBanner()
-        updateEmptyState()
-    }
-
-    override fun onLoaderReset(cursor: Loader<Cursor>) {
-        homeAdapter.changeCursor(null)
-    }
-
     override fun onResume() {
         super.onResume()
         setupCallActionBar()
@@ -498,12 +504,12 @@ class HomeFragment : Fragment(),ConversationClickListener,
         if (TextSecurePreferences.getLocalNumber(requireActivity().applicationContext) == null) {
             return; } // This can be the case after a secondary device is auto-cleared
         IdentityKeyUtil.checkUpdate(requireActivity().applicationContext)
-        binding.profileButton.recycle() // clear cached image before update tje profilePictureView
-        binding.profileButton.update()
+        binding.profileButton.root.recycle() // clear cached image before update tje profilePictureView
+        binding.profileButton.root.update()
 
         //New Line
-        binding.drawerProfileIcon.recycle()
-        binding.drawerProfileIcon.update()
+        binding.drawerProfileIcon.root.recycle()
+        binding.drawerProfileIcon.root.update()
 
         if (TextSecurePreferences.getConfigurationMessageSynced(requireActivity().applicationContext)) {
             lifecycleScope.launch(Dispatchers.IO) {
@@ -559,7 +565,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
     }
 
     private fun updateEmptyState() {
-        val threadCount = (binding.recyclerView.adapter as HomeAdapter).itemCount
+        val threadCount = (binding.recyclerView.adapter)!!.itemCount
         binding.emptyStateContainer.isVisible = threadCount == 0 && binding.recyclerView.isVisible
         binding.emptyStateContainerText.isVisible =
             threadCount == 0 && binding.recyclerView.isVisible
@@ -572,17 +578,17 @@ class HomeFragment : Fragment(),ConversationClickListener,
     }
 
     fun updateProfileButton() {
-        binding.profileButton.publicKey = publicKey
-        binding.profileButton.displayName = TextSecurePreferences.getProfileName(requireActivity().applicationContext)
-        binding.profileButton.recycle()
-        binding.profileButton.update()
+        binding.profileButton.root.publicKey = publicKey
+        binding.profileButton.root.displayName = TextSecurePreferences.getProfileName(requireActivity().applicationContext)
+        binding.profileButton.root.recycle()
+        binding.profileButton.root.update()
 
         //New Line
         binding.drawerProfileName.text = TextSecurePreferences.getProfileName(requireActivity().applicationContext)
-        binding.drawerProfileIcon.publicKey = publicKey
-        binding.drawerProfileIcon.displayName = TextSecurePreferences.getProfileName(requireActivity().applicationContext)
-        binding.drawerProfileIcon.recycle()
-        binding.drawerProfileIcon.update()
+        binding.drawerProfileIcon.root.publicKey = publicKey
+        binding.drawerProfileIcon.root.displayName = TextSecurePreferences.getProfileName(requireActivity().applicationContext)
+        binding.drawerProfileIcon.root.recycle()
+        binding.drawerProfileIcon.root.update()
     }
 
     fun onBackPressed() {
@@ -637,11 +643,11 @@ class HomeFragment : Fragment(),ConversationClickListener,
         }
         bottomSheet.onPinTapped = {
             bottomSheet.dismiss()
-            setConversationPinned(thread.threadId, true,this)
+            setConversationPinned(thread.threadId, true)
         }
         bottomSheet.onUnpinTapped = {
             bottomSheet.dismiss()
-            setConversationPinned(thread.threadId, false, this)
+            setConversationPinned(thread.threadId, false)
         }
         bottomSheet.onMarkAllAsReadTapped = {
             bottomSheet.dismiss()
@@ -722,14 +728,11 @@ class HomeFragment : Fragment(),ConversationClickListener,
 
     private fun setConversationPinned(
         threadId: Long,
-        pinned: Boolean,
-        homeFragment: HomeFragment
+        pinned: Boolean
     ) {
         lifecycleScope.launch(Dispatchers.IO) {
             (activity as HomeActivity).threadDb.setPinned(threadId, pinned)
-            withContext(Dispatchers.Main) {
-                LoaderManager.getInstance(homeFragment).restartLoader(0, null, homeFragment)
-            }
+            homeViewModel.tryUpdateChannel()
         }
     }
 
@@ -847,7 +850,6 @@ class HomeFragment : Fragment(),ConversationClickListener,
         fun showQRCode()
         fun showSeed()
         fun showAbout()
-        fun showPath()
         fun showMessageRequests()
         fun sendMessageToSupport()
         fun help()

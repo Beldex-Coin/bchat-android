@@ -2,6 +2,7 @@ package com.thoughtcrimes.securesms.service;
 
 import android.content.Context;
 
+import com.thoughtcrimes.securesms.database.MmsDatabase;
 import com.thoughtcrimes.securesms.mms.MmsException;
 
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +17,6 @@ import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libsignal.messages.SignalServiceGroup;
 import com.beldex.libsignal.utilities.Log;
 import com.beldex.libsignal.utilities.guava.Optional;
-import com.thoughtcrimes.securesms.database.MmsDatabase;
 import com.thoughtcrimes.securesms.database.SmsDatabase;
 import com.thoughtcrimes.securesms.database.model.MessageRecord;
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent;
@@ -120,7 +120,7 @@ public class ExpiringMessageManager implements SSKEnvironment.MessageExpirationM
               Optional.absent(),
               Optional.absent());
       //insert the timer update message
-      database.insertSecureDecryptedMessageInbox(mediaMessage, -1);
+      database.insertSecureDecryptedMessageInbox(mediaMessage, -1,true,true);
 
       //set the timer to the conversation
       DatabaseComponent.get(context).recipientDatabase().setExpireMessages(recipient, duration);
@@ -142,7 +142,7 @@ public class ExpiringMessageManager implements SSKEnvironment.MessageExpirationM
 
     try {
       OutgoingExpirationUpdateMessage timerUpdateMessage = new OutgoingExpirationUpdateMessage(recipient, sentTimestamp, duration * 1000L, groupId);
-      database.insertSecureDecryptedMessageOutbox(timerUpdateMessage, -1, sentTimestamp);
+      database.insertSecureDecryptedMessageOutbox(timerUpdateMessage, -1, sentTimestamp,true);
 
       if (groupId != null) {
         // we need the group ID as recipient for setExpireMessages below

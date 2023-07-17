@@ -44,6 +44,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.ProfilePictureModifiedEvent
@@ -247,6 +248,11 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             if(currentFragment is HomeFragment) {
                 currentFragment.updateProfileButton()
             }
+        }else {
+            val currentFragment = getCurrentFragment()
+            if(currentFragment is HomeFragment) {
+                currentFragment.homeViewModel.tryUpdateChannel()
+            }
         }
     }
 
@@ -354,25 +360,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 // Double check that the long poller is up
                 (applicationContext as ApplicationContext).startPollingIfNeeded()
                 // update things based on TextSecurePrefs (profile info etc)
-                // Set up typing observer
-                withContext(Dispatchers.Main) {
-                    ApplicationContext.getInstance(this@HomeActivity).typingStatusRepository.typingThreads.observe(
-                        this@HomeActivity,
-                        Observer<Set<Long>> { threadIDs ->
-                            val adapter = recyclerView.adapter as HomeAdapter
-                            adapter.typingThreadIDs = threadIDs ?: setOf()
-                        })
-                    updateProfileButton(profileButton,drawerProfileName,drawerProfileIcon,publicKey)
-                    TextSecurePreferences.events.filter { it == TextSecurePreferences.PROFILE_NAME_PREF }
-                        .collect {
-                            updateProfileButton(
-                                profileButton,
-                                drawerProfileName,
-                                drawerProfileIcon,
-                                publicKey
-                            )
-                        }
-                }
                 // Set up remaining components if needed
                 val application = ApplicationContext.getInstance(this@HomeActivity)
                 application.registerForFCMIfNeeded(false)
@@ -380,6 +367,13 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 if (userPublicKey != null) {
                     OpenGroupManager.startPolling()
                     JobQueue.shared.resumePendingJobs()
+                }
+                // Set up typing observer
+                withContext(Dispatchers.Main) {
+                    updateProfileButton(profileButton,drawerProfileName,drawerProfileIcon,publicKey)
+                    TextSecurePreferences.events.filter { it == TextSecurePreferences.PROFILE_NAME_PREF }.collect {
+                        updateProfileButton(profileButton,drawerProfileName,drawerProfileIcon,publicKey)
+                    }
                 }
             }
             // monitor the global search VM query
@@ -654,11 +648,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     override fun showAbout() {
         val intent = Intent(this, AboutActivity::class.java)
-        show(intent)
-    }
-
-    override fun showPath() {
-        val intent = Intent(this, PathActivity::class.java)
         show(intent)
     }
 

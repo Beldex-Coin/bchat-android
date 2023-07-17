@@ -24,7 +24,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
-import android.os.Looper;
+import android.os.HandlerThread;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.DefaultLifecycleObserver;
@@ -38,6 +38,7 @@ import com.beldex.libbchat.messaging.MessagingModuleConfiguration;
 import com.beldex.libbchat.messaging.sending_receiving.notifications.MessageNotifier;
 import com.beldex.libbchat.messaging.sending_receiving.pollers.ClosedGroupPollerV2;
 import com.beldex.libbchat.messaging.sending_receiving.pollers.Poller;
+import com.beldex.libbchat.messaging.utilities.WindowDebouncer;
 import com.beldex.libbchat.mnode.MnodeModule;
 import com.beldex.libbchat.utilities.Address;
 import com.beldex.libbchat.utilities.ProfilePictureUtilities;
@@ -97,6 +98,7 @@ import java.security.Security;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Timer;
 
 import javax.inject.Inject;
 
@@ -131,7 +133,9 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
     public Poller poller = null;
     public Broadcaster broadcaster = null;
     private Job firebaseInstanceIdJob;
-    private Handler conversationListNotificationHandler;
+    private WindowDebouncer conversationListDebouncer;
+    private HandlerThread conversationListHandlerThread;
+    private Handler conversationListHandler;
     private PersistentLogger persistentLogger;
 
     @Inject BeldexAPIDatabase beldexAPIDatabase;
@@ -141,8 +145,17 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
     //New Line
     @Inject TextSecurePreferences textSecurePreferences;
     CallMessageProcessor callMessageProcessor;
+    MessagingModuleConfiguration messagingModuleConfiguration;
 
     private volatile boolean isAppVisible;
+
+    @Override
+    public Object getSystemService(String name) {
+        if (MessagingModuleConfiguration.MESSAGING_MODULE_SERVICE.equals(name)) {
+            return messagingModuleConfiguration;
+        }
+        return super.getSystemService(name);
+    }
 
     public static ApplicationContext getInstance(Context context) {
         return (ApplicationContext) context.getApplicationContext();
@@ -153,10 +166,21 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
     }
 
     public Handler getConversationListNotificationHandler() {
-        if (this.conversationListNotificationHandler == null) {
-            conversationListNotificationHandler = new Handler(Looper.getMainLooper());
+        if (this.conversationListHandlerThread == null) {
+            conversationListHandlerThread = new HandlerThread("ConversationListHandler");
+            conversationListHandlerThread.start();
         }
-        return this.conversationListNotificationHandler;
+        if (this.conversationListHandler == null) {
+            conversationListHandler = new Handler(conversationListHandlerThread.getLooper());
+        }
+        return conversationListHandler;
+    }
+
+    public WindowDebouncer getConversationListDebouncer() {
+        if (conversationListDebouncer == null) {
+            conversationListDebouncer = new WindowDebouncer(1000, new Timer());
+        }
+        return conversationListDebouncer;
     }
 
     public PersistentLogger getPersistentLogger() {
@@ -166,7 +190,12 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
     @Override
     public void onCreate() {
         DatabaseModule.init(this);
+        MessagingModuleConfiguration.configure(this);
         super.onCreate();
+        messagingModuleConfiguration = new MessagingModuleConfiguration(this,
+                storage,
+                messageDataProvider,
+                ()-> KeyPairUtilities.INSTANCE.getUserED25519KeyPair(this));
         callMessageProcessor = new CallMessageProcessor(this, textSecurePreferences, ProcessLifecycleOwner.get().getLifecycle(), storage);
         Log.i(TAG, "onCreate()");
         startKovenant();
@@ -179,11 +208,6 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
         messageNotifier = new OptimizedMessageNotifier(new DefaultMessageNotifier());
         broadcaster = new Broadcaster(this);
         BeldexAPIDatabase apiDB = getDatabaseComponent().beldexAPIDatabase();
-        MessagingModuleConfiguration.Companion.configure(this,
-                storage,
-                messageDataProvider,
-                ()-> KeyPairUtilities.INSTANCE.getUserED25519KeyPair(this)
-        );
         MnodeModule.Companion.configure(apiDB, broadcaster);
         String userPublicKey = TextSecurePreferences.getLocalNumber(this);
         if (userPublicKey != null) {

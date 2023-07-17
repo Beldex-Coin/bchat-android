@@ -25,7 +25,7 @@
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="14dp">
 
-        <com.thoughtcrimes.securesms.components.ProfilePictureView
+        <include layout="@layout/view_profile_picture"
             android:id="@+id/profilePictureView"
             android:layout_width="@dimen/medium_profile_picture_size"
             android:layout_height="@dimen/medium_profile_picture_size"

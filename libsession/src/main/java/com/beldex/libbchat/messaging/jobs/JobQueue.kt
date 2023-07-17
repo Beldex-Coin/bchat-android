@@ -1,17 +1,10 @@
 package com.beldex.libbchat.messaging.jobs
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libsignal.utilities.Log
+import kotlinx.coroutines.*
 import java.util.Timer
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
@@ -25,46 +18,128 @@ class JobQueue : JobDelegate {
     private var hasResumedPendingJobs = false // Just for debugging
     private val jobTimestampMap = ConcurrentHashMap<Long, AtomicInteger>()
     private val rxDispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+    private val rxMediaDispatcher = Executors.newFixedThreadPool(4).asCoroutineDispatcher()
+    private val openGroupDispatcher = Executors.newCachedThreadPool().asCoroutineDispatcher()
     private val txDispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
-    private val scope = GlobalScope + SupervisorJob()
+    private val scope = CoroutineScope(Dispatchers.Default) + SupervisorJob()
     private val queue = Channel<Job>(UNLIMITED)
     private val pendingJobIds = mutableSetOf<String>()
+    private val pendingTrimThreadIds = mutableSetOf<Long>()
+
+    private val openGroupChannels = mutableMapOf<String, Channel<Job>>()
 
     val timer = Timer()
 
-    private fun CoroutineScope.processWithDispatcher(
+    private fun CoroutineScope.processWithOpenGroupDispatcher(
         channel: Channel<Job>,
-        dispatcher: CoroutineDispatcher
+        dispatcher: CoroutineDispatcher,
+        name: String
     ) = launch(dispatcher) {
         for (job in channel) {
             if (!isActive) break
-            job.delegate = this@JobQueue
-            job.execute()
+            val openGroupId = when (job) {
+                is BatchMessageReceiveJob -> job.openGroupID
+                is OpenGroupDeleteJob -> job.openGroupId
+                is TrimThreadJob -> job.openGroupId
+                is BackgroundGroupAddJob -> job.openGroupId
+                is GroupAvatarDownloadJob -> "${job.server}.${job.room}"
+                else -> null
+            }
+            if (openGroupId.isNullOrEmpty()) {
+                Log.e("OpenGroupDispatcher", "Open Group ID was null on ${job.javaClass.simpleName}")
+                handleJobFailedPermanently(job, NullPointerException("Open Group ID was null"))
+            } else {
+                val groupChannel = if (!openGroupChannels.containsKey(openGroupId)) {
+                    Log.d("OpenGroupDispatcher", "Creating $openGroupId channel")
+                    val newGroupChannel = Channel<Job>(UNLIMITED)
+                    launch(dispatcher) {
+                        for (groupJob in newGroupChannel) {
+                            if (!isActive) break
+                            groupJob.process(name)
+                        }
+                    }
+                    openGroupChannels[openGroupId] = newGroupChannel
+                    newGroupChannel
+                } else {
+                    Log.d("OpenGroupDispatcher", "Re-using channel")
+                    openGroupChannels[openGroupId]!!
+                }
+                Log.d("OpenGroupDispatcher", "Sending to channel $groupChannel")
+                groupChannel.send(job)
+            }
         }
+    }
+
+    private fun CoroutineScope.processWithDispatcher(
+        channel: Channel<Job>,
+        dispatcher: CoroutineDispatcher,
+        name: String,
+        asynchronous: Boolean = true
+    ) = launch(dispatcher) {
+        for (job in channel) {
+            if (!isActive) break
+            if (asynchronous) {
+                launch(dispatcher) {
+                    job.process(name)
+                }
+            } else {
+                job.process(name)
+            }
+        }
+    }
+
+    private fun Job.process(dispatcherName: String) {
+        Log.d(dispatcherName,"processJob: ${javaClass.simpleName}")
+        delegate = this@JobQueue
+        execute()
     }
 
     init {
         // Process jobs
         scope.launch {
-            val rxQueue = Channel<Job>(capacity = 4096)
-            val txQueue = Channel<Job>(capacity = 4096)
+            val rxQueue = Channel<Job>(capacity = UNLIMITED)
+            val txQueue = Channel<Job>(capacity = UNLIMITED)
+            val mediaQueue = Channel<Job>(capacity = UNLIMITED)
+            val openGroupQueue = Channel<Job>(capacity = UNLIMITED)
 
-            val receiveJob = processWithDispatcher(rxQueue, rxDispatcher)
-            val txJob = processWithDispatcher(txQueue, txDispatcher)
+            val receiveJob = processWithDispatcher(rxQueue, rxDispatcher, "rx", asynchronous = false)
+            val txJob = processWithDispatcher(txQueue, txDispatcher, "tx")
+            val mediaJob = processWithDispatcher(mediaQueue, rxMediaDispatcher, "media")
+            val openGroupJob = processWithOpenGroupDispatcher(openGroupQueue, openGroupDispatcher, "openGroup")
 
             while (isActive) {
-                for (job in queue) {
-                    when (job) {
-                        is NotifyPNServerJob, is AttachmentUploadJob, is MessageSendJob -> {
-                            txQueue.send(job)
-                        }
-                        is MessageReceiveJob, is TrimThreadJob, is BatchMessageReceiveJob,
-                        is AttachmentDownloadJob, is GroupAvatarDownloadJob -> {
+                if (queue.isEmpty && pendingTrimThreadIds.isNotEmpty()) {
+                    // process trim thread jobs
+                    val pendingThreads = pendingTrimThreadIds.toList()
+                    pendingTrimThreadIds.clear()
+                    for (thread in pendingThreads) {
+                        Log.d("Beldex", "Trimming thread $thread")
+                        queue.trySend(TrimThreadJob(thread, null))
+                    }
+                }
+                when (val job = queue.receive()) {
+                    is NotifyPNServerJob, is AttachmentUploadJob, is MessageSendJob -> {
+                        txQueue.send(job)
+                    }
+                    is AttachmentDownloadJob -> {
+                        mediaQueue.send(job)
+                    }
+                    is GroupAvatarDownloadJob,
+                    is BackgroundGroupAddJob,
+                    is OpenGroupDeleteJob -> {
+                        openGroupQueue.send(job)
+                    }
+                    is MessageReceiveJob, is TrimThreadJob,
+                    is BatchMessageReceiveJob -> {
+                        if ((job is BatchMessageReceiveJob && !job.openGroupID.isNullOrEmpty())
+                            || (job is TrimThreadJob && !job.openGroupId.isNullOrEmpty())) {
+                            openGroupQueue.send(job)
+                        } else {
                             rxQueue.send(job)
                         }
-                        else -> {
-                            throw IllegalStateException("Unexpected job type.")
-                        }
+                    }
+                    else -> {
+                        throw IllegalStateException("Unexpected job type.")
                     }
                 }
             }
@@ -73,6 +148,8 @@ class JobQueue : JobDelegate {
             receiveJob.cancel()
             txJob.cancel()
 
+            mediaJob.cancel()
+            openGroupJob.cancel()
         }
     }
 
@@ -80,6 +157,10 @@ class JobQueue : JobDelegate {
 
         @JvmStatic
         val shared: JobQueue by lazy { JobQueue() }
+    }
+
+    fun queueThreadForTrim(threadId: Long) {
+        pendingTrimThreadIds += threadId
     }
 
     fun add(job: Job) {
@@ -141,7 +222,9 @@ class JobQueue : JobDelegate {
             MessageSendJob.KEY,
             NotifyPNServerJob.KEY,
             BatchMessageReceiveJob.KEY,
-            GroupAvatarDownloadJob.KEY
+            GroupAvatarDownloadJob.KEY,
+            BackgroundGroupAddJob.KEY,
+            OpenGroupDeleteJob.KEY,
         )
         allJobTypes.forEach { type ->
             resumePendingJobs(type)
@@ -166,8 +249,13 @@ class JobQueue : JobDelegate {
             return
         }
         // Batch message receive job, re-queue non-permanently failed jobs
-        if (job is BatchMessageReceiveJob) {
-            val replacementParameters = job.failures
+        if (job is BatchMessageReceiveJob && job.failureCount <= 0) {
+            val replacementParameters = job.failures.toList()
+            if (replacementParameters.isNotEmpty()) {
+                val newJob = BatchMessageReceiveJob(replacementParameters, job.openGroupID)
+                newJob.failureCount = job.failureCount + 1
+                add(newJob)
+            }
         }
 
         // Regular job failure

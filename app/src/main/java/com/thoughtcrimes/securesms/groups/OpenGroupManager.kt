@@ -18,6 +18,7 @@ object OpenGroupManager {
     private val executorService = Executors.newScheduledThreadPool(4)
     private var pollers = mutableMapOf<String, OpenGroupPollerV2>() // One for each server
     private var isPolling = false
+    private val pollUpdaterLock = Any()
 
     val isAllCaughtUp: Boolean
         get() {
@@ -50,29 +51,34 @@ object OpenGroupManager {
     }
 
     fun stopPolling() {
-        pollers.forEach { it.value.stop() }
-        pollers.clear()
+        synchronized(pollUpdaterLock) {
+            pollers.forEach { it.value.stop() }
+            pollers.clear()
+            isPolling = false
+        }
     }
 
     @WorkerThread
     fun add(server: String, room: String, publicKey: String, context: Context) {
         val openGroupID = "$server.$room"
-        Log.d("Beldex","Social group manager fun OpengroupID $openGroupID")
+        Log.d("Beldex", "Social group manager fun OpengroupID $openGroupID")
         var threadID = GroupManager.getOpenGroupThreadID(openGroupID, context)
-        Log.d("Beldex","Social group manager fun threadID $threadID")
+        Log.d("Beldex", "Social group manager fun threadID $threadID")
         val storage = MessagingModuleConfiguration.shared.storage
-        Log.d("Beldex","Social group manager fun storage $storage")
+        Log.d("Beldex", "Social group manager fun storage $storage")
         val threadDB = DatabaseComponent.get(context).beldexThreadDatabase()
-        Log.d("Beldex","Social group manager fun threadDB $threadID")
+        Log.d("Beldex", "Social group manager fun threadDB $threadID")
         // Check it it's added already
         val existingOpenGroup = threadDB.getOpenGroupChat(threadID)
-        Log.d("Beldex","Social group manager fun existingOpenGroup $existingOpenGroup")
-        if (existingOpenGroup != null) { return }
+        Log.d("Beldex", "Social group manager fun existingOpenGroup $existingOpenGroup")
+        if (existingOpenGroup != null) {
+            return
+        }
         // Clear any existing data if needed
         storage.removeLastDeletionServerID(room, server)
         storage.removeLastMessageServerID(room, server)
         // Store the public key
-        storage.setOpenGroupPublicKey(server,publicKey)
+        storage.setOpenGroupPublicKey(server, publicKey)
         // Get an auth token
         OpenGroupAPIV2.getAuthToken(room, server).get()
         // Get group info
@@ -83,11 +89,17 @@ object OpenGroupManager {
         }
         val openGroup = OpenGroupV2(server, room, info.name, publicKey)
         threadDB.setOpenGroupChat(openGroup, threadID)
+    }
+
+    fun restartPollerForServer(server: String) {
         // Start the poller if needed
-        pollers[server]?.startIfNeeded() ?: run {
-            val poller = OpenGroupPollerV2(server, executorService)
-            Util.runOnMain { poller.startIfNeeded() }
-            pollers[server] = poller
+        synchronized(pollUpdaterLock) {
+            pollers[server]?.stop()
+            pollers[server]?.startIfNeeded() ?: run {
+                val poller = OpenGroupPollerV2(server, executorService)
+                pollers[server] = poller
+                poller.startIfNeeded()
+            }
         }
     }
 
@@ -97,13 +109,16 @@ object OpenGroupManager {
         val openGroupID = "$server.$room"
         val threadID = GroupManager.getOpenGroupThreadID(openGroupID, context)
         val recipient = threadDB.getRecipientForThreadId(threadID) ?: return
+        threadDB.setThreadArchived(threadID)
         val groupID = recipient.address.serialize()
         // Stop the poller if needed
         val openGroups = storage.getAllV2OpenGroups().filter { it.value.server == server }
         if (openGroups.count() == 1) {
-            val poller = pollers[server]
-            poller?.stop()
-            pollers.remove(server)
+            synchronized(pollUpdaterLock) {
+                val poller = pollers[server]
+                poller?.stop()
+                pollers.remove(server)
+            }
         }
         // Delete
         storage.removeLastDeletionServerID(room, server)
@@ -118,12 +133,7 @@ object OpenGroupManager {
 
     fun addOpenGroup(urlAsString: String, context: Context) {
         val url = urlAsString.toHttpUrlOrNull() ?: return
-        val builder = HttpUrl.Builder().scheme(url.scheme).host(url.host)
-        if (url.port != 80 || url.port != 443) {
-            // Non-standard port; add to server
-            builder.port(url.port)
-        }
-        val server = builder.build()
+        val server = OpenGroupV2.getServer(urlAsString)
         val room = url.pathSegments.firstOrNull() ?: return
         val publicKey = url.queryParameter("public_key") ?: return
         add(server.toString().removeSuffix("/"), room, publicKey, context)

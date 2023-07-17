@@ -129,6 +129,13 @@ class BchatJobDatabase(context: Context, helper: SQLCipherOpenHelper) : Database
         job.failureCount = cursor.getInt(failureCount)
         return job
     }
+
+    fun hasBackgroundGroupAddJob(groupJoinUrl: String): Boolean {
+        val database = databaseHelper.readableDatabase
+        return database.getAll(bchatJobTable, "$jobType = ?", arrayOf(BackgroundGroupAddJob.KEY)) { cursor ->
+            jobFromCursor(cursor) as? BackgroundGroupAddJob
+        }.filterNotNull().any { it.joinUrl == groupJoinUrl }
+    }
 }
 
 object BchatJobHelper {

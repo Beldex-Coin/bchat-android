@@ -27,7 +27,7 @@ import com.beldex.libsignal.protos.SignalServiceProtos
 import com.beldex.libsignal.utilities.Base64
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.guava.Optional
-import com.beldex.libsignal.utilities.removing05PrefixIfNeeded
+import com.beldex.libsignal.utilities.removingbdPrefixIfNeeded
 import com.beldex.libsignal.utilities.toHexString
 import java.security.MessageDigest
 import java.util.*
@@ -404,7 +404,7 @@ private fun MessageReceiver.handleClosedGroupEncryptionKeyPair(message: ClosedGr
     val proto = SignalServiceProtos.KeyPair.parseFrom(plaintext)
     val keyPair = ECKeyPair(
         DjbECPublicKey(
-            proto.publicKey.toByteArray().removing05PrefixIfNeeded()
+            proto.publicKey.toByteArray().removingbdPrefixIfNeeded()
         ),
         DjbECPrivateKey(proto.privateKey.toByteArray())
     )

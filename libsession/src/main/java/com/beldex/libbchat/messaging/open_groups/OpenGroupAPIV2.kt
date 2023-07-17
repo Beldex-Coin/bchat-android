@@ -304,7 +304,7 @@ object OpenGroupAPIV2 {
                 val sender = message.sender
                 val data = decode(message.base64EncodedData)
                 val signature = decode(message.base64EncodedSignature)
-                val publicKey = Hex.fromStringCondensed(sender.removing05PrefixIfNeeded())
+                val publicKey = Hex.fromStringCondensed(sender.removingbdPrefixIfNeeded())
                 val isValid = curve.verifySignature(publicKey, data, signature)
                 if (!isValid) {
                     Log.d("Beldex", "Ignoring message with invalid signature.")

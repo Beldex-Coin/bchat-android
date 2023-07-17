@@ -1,6 +1,6 @@
 package com.beldex.libbchat.mnode
 
-import com.beldex.libsignal.utilities.removing05PrefixIfNeeded
+import com.beldex.libsignal.utilities.removingbdPrefixIfNeeded
 
 data class MnodeMessage(
     /**
@@ -28,7 +28,7 @@ data class MnodeMessage(
 
     internal fun toJSON(): Map<String, String> {
         return mapOf(
-            "pubKey" to if (MnodeAPI.useTestnet) recipient.removing05PrefixIfNeeded() else recipient,
+            "pubKey" to if (MnodeAPI.useTestnet) recipient.removingbdPrefixIfNeeded() else recipient,
             "data" to data,
             "ttl" to ttl.toString(),
             "timestamp" to timestamp.toString(),

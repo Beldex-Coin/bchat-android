@@ -85,7 +85,7 @@ class ConversationView : LinearLayout {
         }
         binding.muteIndicatorImageView.setImageResource(drawableRes)
         val rawSnippet = thread.getDisplayBody(context)
-        val snippet = highlightMentions(rawSnippet, recipient.isOpenGroupRecipient, context)
+        val snippet = highlightMentions(rawSnippet,thread.threadId, context)
 
         //SteveJosephh21-17 - if
         /*val mmsSmsDatabase = get(context).mmsSmsDatabase()

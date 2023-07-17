@@ -291,7 +291,7 @@ fun MessageSender.generateAndSendNewEncryptionKeyPair(groupPublicKey: String, ta
 fun MessageSender.sendEncryptionKeyPair(groupPublicKey: String, newKeyPair: ECKeyPair, targetMembers: Collection<String>, targetUser: String? = null, force: Boolean = true): Promise<Unit, Exception>? {
     val destination = targetUser ?: GroupUtil.doubleEncodeGroupID(groupPublicKey)
     val proto = SignalServiceProtos.KeyPair.newBuilder()
-    proto.publicKey = ByteString.copyFrom(newKeyPair.publicKey.serialize().removing05PrefixIfNeeded())
+    proto.publicKey = ByteString.copyFrom(newKeyPair.publicKey.serialize().removingbdPrefixIfNeeded())
     proto.privateKey = ByteString.copyFrom(newKeyPair.privateKey.serialize())
     val plaintext = proto.build().toByteArray()
     val storage = MessagingModuleConfiguration.shared.storage
@@ -330,7 +330,7 @@ fun MessageSender.sendLatestEncryptionKeyPair(publicKey: String, groupPublicKey:
         ?: storage.getLatestClosedGroupEncryptionKeyPair(groupPublicKey) ?: return
     // Send it
     val proto = SignalServiceProtos.KeyPair.newBuilder()
-    proto.publicKey = ByteString.copyFrom(encryptionKeyPair.publicKey.serialize().removing05PrefixIfNeeded())
+    proto.publicKey = ByteString.copyFrom(encryptionKeyPair.publicKey.serialize().removingbdPrefixIfNeeded())
     proto.privateKey = ByteString.copyFrom(encryptionKeyPair.privateKey.serialize())
     val plaintext = proto.build().toByteArray()
     val ciphertext = MessageEncrypter.encrypt(plaintext, publicKey,storage.getSenderBeldexAddress()!!)

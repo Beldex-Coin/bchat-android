@@ -281,7 +281,7 @@ object MnodeAPI {
             cachedSwarmCopy.addAll(cachedSwarm)
             return task { cachedSwarmCopy }
         } else {
-            val parameters = mapOf( "pubKey" to if (useTestnet) publicKey.removing05PrefixIfNeeded() else publicKey )
+            val parameters = mapOf( "pubKey" to if (useTestnet) publicKey.removingbdPrefixIfNeeded() else publicKey )
             return getRandomMnode().bind {
                 Log.d("Beldex", "invoke MnodeAPI.kt 2")
                 invoke(Mnode.Method.GetSwarm, it, publicKey, parameters)
@@ -309,7 +309,7 @@ object MnodeAPI {
 //        }
         // Make the request
         val parameters = mapOf(
-            "pubKey" to if (useTestnet) publicKey.removing05PrefixIfNeeded() else publicKey,
+            "pubKey" to if (useTestnet) publicKey.removingbdPrefixIfNeeded() else publicKey,
             "lastHash" to lastHashValue,
 //            "timestamp" to timestamp,
 //            "pubkey_ed25519" to ed25519PublicKey,
@@ -337,7 +337,7 @@ object MnodeAPI {
     }
 
     fun sendMessage(message: MnodeMessage): Promise<Set<RawResponsePromise>, Exception> {
-        val destination = if (useTestnet) message.recipient.removing05PrefixIfNeeded() else message.recipient
+        val destination = if (useTestnet) message.recipient.removingbdPrefixIfNeeded() else message.recipient
         Log.d("Beldex","bchat id validation -- check the test net  or mainnet for remove prefix")
         return retryIfNeeded(maxRetryCount) {
             getTargetMnodes(destination).map { swarm ->

@@ -11,8 +11,8 @@ import com.beldex.libbchat.utilities.AESGCM
 import com.beldex.libsignal.utilities.*
 import com.beldex.libsignal.utilities.Mnode
 import com.beldex.libbchat.utilities.AESGCM.EncryptionResult
-import com.beldex.libbchat.utilities.getBodyForOnionRequest
-import com.beldex.libbchat.utilities.getHeadersForOnionRequest
+import com.beldex.libbchat.mnode.utilities.getBodyForOnionRequest
+import com.beldex.libbchat.mnode.utilities.getHeadersForOnionRequest
 import com.beldex.libsignal.crypto.getRandomElement
 import com.beldex.libsignal.crypto.getRandomElementOrNull
 import com.beldex.libsignal.utilities.Broadcaster

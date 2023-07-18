@@ -91,16 +91,14 @@ object OpenGroupAPIV2 {
         val parameters: Any? = null,
         val headers: Map<String, String> = mapOf(),
         val isAuthRequired: Boolean = true,
-        val body: ByteArray? = null,
-            /**
+        /**
          * Always `true` under normal circumstances. You might want to disable
          * this when running over Beldex.
          */
         val useOnionRouting: Boolean = true
     )
 
-    private fun createBody(body: ByteArray?, parameters: Any?): RequestBody? {
-        if (body != null) return RequestBody.create(MediaType.get("application/octet-stream"), body)
+    private fun createBody(parameters: Any?): RequestBody? {
         if (parameters == null) return null
         val parametersAsJSON = JsonUtil.toJson(parameters)
         return RequestBody.create(MediaType.get("application/json"), parametersAsJSON)
@@ -133,9 +131,9 @@ object OpenGroupAPIV2 {
             }
             when (request.verb) {
                 GET -> requestBuilder.get()
-                PUT -> requestBuilder.put(createBody(request.body, request.parameters)!!)
-                POST -> requestBuilder.post(createBody(request.body, request.parameters)!!)
-                DELETE -> requestBuilder.delete(createBody(request.body, request.parameters))
+                PUT -> requestBuilder.put(createBody(request.parameters)!!)
+                POST -> requestBuilder.post(createBody(request.parameters)!!)
+                DELETE -> requestBuilder.delete(createBody(request.parameters))
             }
             if (!request.room.isNullOrEmpty()) {
                 requestBuilder.header("Room", request.room)
@@ -244,12 +242,8 @@ object OpenGroupAPIV2 {
     // region Upload/Download
     fun upload(file: ByteArray, room: String, server: String): Promise<Long, Exception> {
         val base64EncodedFile = encodeBytes(file)
-        val request = Request(verb = POST, room = room, server = server, endpoint = "files", body = file,
-            headers = mapOf(
-                "Content-Disposition" to "attachment",
-                "Content-Type" to "application/octet-stream"
-            )
-        )
+        val parameters = mapOf( "file" to base64EncodedFile )
+        val request = Request(verb = POST, room = room, server = server, endpoint = "files", parameters = parameters)
         return send(request).map { json ->
             (json["result"] as? Number)?.toLong() ?: throw Error.ParsingFailed
         }
@@ -271,7 +265,7 @@ object OpenGroupAPIV2 {
         val request = Request(verb = POST, room = room, server = server, endpoint = "messages", parameters = jsonMessage)
         return send(request).map { json ->
             @Suppress("UNCHECKED_CAST") val rawMessage = json["message"] as? Map<String, Any>
-                    ?: throw Error.ParsingFailed
+                ?: throw Error.ParsingFailed
             val result = OpenGroupMessageV2.fromJSON(rawMessage) ?: throw Error.ParsingFailed
             val storage = MessagingModuleConfiguration.shared.storage
             storage.addReceivedMessageTimestamp(result.sentTimestamp)
@@ -402,7 +396,7 @@ object OpenGroupAPIV2 {
         val context = MessagingModuleConfiguration.shared.context
         val timeSinceLastOpen = this.timeSinceLastOpen
         val useMessageLimit = (hasPerformedInitialPoll[server] != true
-            && timeSinceLastOpen > OpenGroupPollerV2.maxInactivityPeriod)
+                && timeSinceLastOpen > OpenGroupPollerV2.maxInactivityPeriod)
         hasPerformedInitialPoll[server] = true
         if (!hasUpdatedLastOpenDate) {
             hasUpdatedLastOpenDate = true

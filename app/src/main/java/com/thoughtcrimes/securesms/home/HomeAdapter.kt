@@ -62,6 +62,8 @@ class HomeAdapter(private val context: Context, private val listener: Conversati
     lateinit var glide: GlideRequests
     var typingThreadIDs = setOf<Long>()
         set(value) {
+            if (field == value) { return }
+
             field = value
             // TODO: replace this with a diffed update or a partial change set with payloads
             notifyDataSetChanged()

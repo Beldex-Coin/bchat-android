@@ -20,6 +20,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.view.marginBottom
+import androidx.lifecycle.LifecycleCoroutineScope
 import com.beldex.libbchat.messaging.contacts.Contact
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
@@ -94,12 +95,12 @@ class VisibleMessageView : LinearLayout {
         isHapticFeedbackEnabled = true
         setWillNotDraw(false)
         binding.expirationTimerViewContainer.disableClipping()
-        binding.messageContentView.disableClipping()
+        binding.messageContentView.root.disableClipping()
     }
     // endregion
 
     // region Updating
-    fun bind(message: MessageRecord, previous: MessageRecord?, next: MessageRecord?, glide: GlideRequests, searchQuery: String?, contact: Contact?, senderBChatID: String) {
+    fun bind(message: MessageRecord, previous: MessageRecord?, next: MessageRecord?, glide: GlideRequests, searchQuery: String?, contact: Contact?, senderBChatID: String, onAttachmentNeedsDownload: (Long, Long) -> Unit) {
         val threadID = message.threadId
         val thread = threadDb.getRecipientForThreadId(threadID) ?: return
         val isGroupThread = thread.isGroupRecipient
@@ -173,10 +174,11 @@ class VisibleMessageView : LinearLayout {
         // Expiration timer
         updateExpirationTimer(message)
         // Populate content view
-        binding.messageContentView.indexInAdapter = indexInAdapter
-        binding.messageContentView.bind(message, isStartOfMessageCluster, isEndOfMessageCluster, glide, thread, searchQuery, message.isOutgoing || isGroupThread || (contact?.isTrusted ?: false))
-        binding.messageContentView.delegate = contentViewDelegate
-        onDoubleTap = { binding.messageContentView.onContentDoubleTap?.invoke() }
+        binding.messageContentView.root.indexInAdapter = indexInAdapter
+        binding.messageContentView.root.bind(message, isStartOfMessageCluster, isEndOfMessageCluster, glide, thread, searchQuery, message.isOutgoing || isGroupThread || (contact?.isTrusted ?: false),
+            onAttachmentNeedsDownload)
+        binding.messageContentView.root.delegate = contentViewDelegate
+        onDoubleTap = { binding.messageContentView.root.onContentDoubleTap?.invoke() }
     }
 
     private fun isStartOfMessageCluster(current: MessageRecord, previous: MessageRecord?, isGroupThread: Boolean): Boolean {
@@ -212,7 +214,7 @@ class VisibleMessageView : LinearLayout {
 
     private fun updateExpirationTimer(message: MessageRecord) {
         val container = binding.expirationTimerViewContainer
-        val content = binding.messageContentView
+        val content = binding.messageContentView.root
         val expiration = binding.expirationTimerView
         val spacing = binding.messageContentSpacing
         container.removeAllViewsInLayout()
@@ -266,18 +268,19 @@ class VisibleMessageView : LinearLayout {
     }
 
     override fun onDraw(canvas: Canvas) {
+        val spacing = context.resources.getDimensionPixelSize(R.dimen.small_spacing)
+        val iconSize = toPx(24, context.resources)
+        val left = binding.expirationTimerViewContainer.left + binding.messageContentView.root.right + spacing
+        val top = height - (binding.expirationTimerViewContainer.height / 2) - binding.profilePictureView.root.marginBottom - (iconSize / 2)
+        val right = left + iconSize
+        val bottom = top + iconSize
+        swipeToReplyIconRect.left = left
+        swipeToReplyIconRect.top = top
+        swipeToReplyIconRect.right = right
+        swipeToReplyIconRect.bottom = bottom
+
         if (translationX < 0 && !binding.expirationTimerView.isVisible) {
-            val spacing = context.resources.getDimensionPixelSize(R.dimen.small_spacing)
             val threshold = swipeToReplyThreshold
-            val iconSize = toPx(24, context.resources)
-            val left = binding.expirationTimerViewContainer.left + binding.messageContentView.right + spacing
-            val top = height - (binding.expirationTimerViewContainer.height / 2) - binding.profilePictureView.root.marginBottom - (iconSize / 2)
-            val right = left + iconSize
-            val bottom = top + iconSize
-            swipeToReplyIconRect.left = left
-            swipeToReplyIconRect.top = top
-            swipeToReplyIconRect.right = right
-            swipeToReplyIconRect.bottom = bottom
             swipeToReplyIcon.bounds = swipeToReplyIconRect
             swipeToReplyIcon.alpha = (255.0f * (min(abs(translationX), threshold) / threshold)).roundToInt()
         } else {
@@ -289,7 +292,7 @@ class VisibleMessageView : LinearLayout {
 
     fun recycle() {
         binding.profilePictureView.root.recycle()
-        binding.messageContentView.recycle()
+        binding.messageContentView.root.recycle()
     }
     // endregion
 
@@ -385,7 +388,7 @@ class VisibleMessageView : LinearLayout {
     }
 
     fun onContentClick(event: MotionEvent) {
-        binding.messageContentView.onContentClick.iterator().forEach { clickHandler -> clickHandler.invoke(event) }
+        binding.messageContentView.root.onContentClick.iterator().forEach { clickHandler -> clickHandler.invoke(event) }
     }
 
     private fun onPress(event: MotionEvent) {
@@ -405,7 +408,7 @@ class VisibleMessageView : LinearLayout {
     }
 
     fun playVoiceMessage() {
-        binding.messageContentView.playVoiceMessage()
+        binding.messageContentView.root.playVoiceMessage()
     }
     // endregion
 }

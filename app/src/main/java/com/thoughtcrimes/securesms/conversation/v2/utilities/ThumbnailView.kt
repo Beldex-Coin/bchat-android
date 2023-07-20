@@ -27,31 +27,34 @@ import com.thoughtcrimes.securesms.mms.GlideRequest
 import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.mms.Slide
 import com.beldex.libbchat.utilities.Util.equals
+import kotlin.Boolean
+import kotlin.Int
+import kotlin.getValue
+import kotlin.lazy
+import kotlin.let
 
-open class KThumbnailView: FrameLayout {
-    private lateinit var binding: ThumbnailViewBinding
+open class ThumbnailView: FrameLayout {
     companion object {
         private const val WIDTH = 0
         private const val HEIGHT = 1
     }
+
+    private val binding: ThumbnailViewBinding by lazy { ThumbnailViewBinding.bind(this) }
 
     // region Lifecycle
     constructor(context: Context) : super(context) { initialize(null) }
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) { initialize(attrs) }
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) { initialize(attrs) }
 
-    private val image by lazy { binding.thumbnailImage }
-    private val playOverlay by lazy { binding.playOverlay }
+
     val loadIndicator: View by lazy { binding.thumbnailLoadIndicator }
-    val downloadIndicator: View by lazy { binding.thumbnailDownloadIcon }
 
     private val dimensDelegate = ThumbnailDimensDelegate()
 
     private var slide: Slide? = null
-    private var radius: Int = 0
+    var radius: Int = 0
 
     private fun initialize(attrs: AttributeSet?) {
-        binding = ThumbnailViewBinding.inflate(LayoutInflater.from(context), this)
         if (attrs != null) {
             val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.ThumbnailView, 0, 0)
 
@@ -86,18 +89,18 @@ open class KThumbnailView: FrameLayout {
     // endregion
 
     // region Interaction
-    fun setImageResource(glide: GlideRequests, slide: Slide, isPreview: Boolean, mms: MmsMessageRecord): ListenableFuture<Boolean> {
+    fun setImageResource(glide: GlideRequests, slide: Slide, isPreview: Boolean, mms: MmsMessageRecord?): ListenableFuture<Boolean> {
         return setImageResource(glide, slide, isPreview, 0, 0, mms)
     }
 
     fun setImageResource(glide: GlideRequests, slide: Slide,
                          isPreview: Boolean, naturalWidth: Int,
-                         naturalHeight: Int, mms: MmsMessageRecord
+                         naturalHeight: Int, mms: MmsMessageRecord?
     ): ListenableFuture<Boolean> {
 
         val currentSlide = this.slide
 
-        playOverlay.isVisible = (slide.thumbnailUri != null && slide.hasPlayOverlay() &&
+        binding.playOverlay.isVisible = (slide.thumbnailUri != null && slide.hasPlayOverlay() &&
                 (slide.transferState == AttachmentTransferProgress.TRANSFER_PROGRESS_DONE || isPreview))
 
         if (equals(currentSlide, slide)) {
@@ -113,8 +116,8 @@ open class KThumbnailView: FrameLayout {
 
         this.slide = slide
 
-        loadIndicator.isVisible = slide.isInProgress
-        downloadIndicator.isVisible = slide.transferState == AttachmentTransferProgress.TRANSFER_PROGRESS_FAILED
+        binding.thumbnailLoadIndicator.isVisible = slide.isInProgress
+        binding.thumbnailDownloadIcon.isVisible = slide.transferState == AttachmentTransferProgress.TRANSFER_PROGRESS_FAILED
 
         dimensDelegate.setDimens(naturalWidth, naturalHeight)
         invalidate()
@@ -125,7 +128,7 @@ open class KThumbnailView: FrameLayout {
             slide.thumbnailUri != null -> {
                 buildThumbnailGlideRequest(glide, slide).into(
                     GlideDrawableListeningTarget(
-                        image,
+                        binding.thumbnailImage,
                         result
                     )
                 )
@@ -133,13 +136,13 @@ open class KThumbnailView: FrameLayout {
             slide.hasPlaceholder() -> {
                 buildPlaceholderGlideRequest(glide, slide).into(
                     GlideBitmapListeningTarget(
-                        image,
+                        binding.thumbnailImage,
                         result
                     )
                 )
             }
             else -> {
-                glide.clear(image)
+                glide.clear(binding.thumbnailImage)
                 result.set(false)
             }
         }
@@ -183,7 +186,7 @@ open class KThumbnailView: FrameLayout {
     }
 
     open fun clear(glideRequests: GlideRequests) {
-        glideRequests.clear(image)
+        glideRequests.clear(binding.thumbnailImage)
         slide = null
     }
 
@@ -202,7 +205,7 @@ open class KThumbnailView: FrameLayout {
 
         request.into(
             GlideDrawableListeningTarget(
-                image,
+                binding.thumbnailImage,
                 future
             )
         )

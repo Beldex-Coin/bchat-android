@@ -339,6 +339,9 @@ class HomeFragment : Fragment(), ConversationClickListener,
             setupMessageRequestsBanner()
             updateEmptyState()
         }
+        ApplicationContext.getInstance(requireActivity()).typingStatusRepository.typingThreads.observe(requireActivity()) { threadIds ->
+            homeAdapter.typingThreadIDs = (threadIds ?: setOf())
+        }
         homeViewModel.tryUpdateChannel()
         // Set up new conversation button set
         binding.newConversationButtonSet.delegate = this

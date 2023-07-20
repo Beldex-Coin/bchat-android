@@ -36,8 +36,8 @@ import kotlinx.coroutines.launch
 
 class ConversationAdapter(context: Context, cursor: Cursor, private val onItemPress: (MessageRecord, Int, VisibleMessageView, MotionEvent) -> Unit,
                           private val onItemSwipeToReply: (MessageRecord, Int) -> Unit, private val onItemLongPress: (MessageRecord, Int) -> Unit,
-                          private val glide: GlideRequests, private val onDeselect: (MessageRecord, Int) -> Unit,lifecycleCoroutineScope: LifecycleCoroutineScope)
-    : CursorRecyclerViewAdapter<ViewHolder>(context, cursor) {
+                          private val glide: GlideRequests, private val onDeselect: (MessageRecord, Int) -> Unit, private val onAttachmentNeedsDownload: (Long, Long) -> Unit, lifecycleCoroutineScope: LifecycleCoroutineScope
+) : CursorRecyclerViewAdapter<ViewHolder>(context, cursor) {
     private val messageDB by lazy { DatabaseComponent.get(context).mmsSmsDatabase() }
     private val contactDB by lazy { DatabaseComponent.get(context).bchatContactDatabase() }
     var selectedItems = mutableSetOf<MessageRecord>()
@@ -120,7 +120,7 @@ class ConversationAdapter(context: Context, cursor: Cursor, private val onItemPr
                 }
                 val contact = contactCache[senderIdHash]
 
-                visibleMessageView.bind(message, messageBefore, getMessageAfter(position, cursor), glide, searchQuery, contact, senderId)
+                visibleMessageView.bind(message, messageBefore, getMessageAfter(position, cursor), glide, searchQuery, contact, senderId,onAttachmentNeedsDownload)
                 if (!message.isDeleted) {
                     visibleMessageView.onPress = { event -> onItemPress(message, viewHolder.adapterPosition, visibleMessageView, event) }
                     visibleMessageView.onSwipeToReply = { onItemSwipeToReply(message, viewHolder.adapterPosition) }

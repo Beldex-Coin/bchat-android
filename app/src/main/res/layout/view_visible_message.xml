@@ -42,7 +42,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/expirationTimerViewContainer"
             app:layout_constraintStart_toEndOf="@+id/startSpacing"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
         <ImageView
             android:id="@+id/moderatorIconImageView"
@@ -53,7 +53,8 @@
             android:src="@drawable/ic_crown"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/profilePictureView"
-            app:layout_constraintEnd_toEndOf="@+id/profilePictureView" />
+            app:layout_constraintEnd_toEndOf="@+id/profilePictureView"
+            tools:visibility="visible" />
 
         <TextView
             android:id="@+id/senderNameTextView"
@@ -82,8 +83,9 @@
             app:layout_constraintStart_toEndOf="@+id/profilePictureView"
             app:layout_constraintTop_toBottomOf="@+id/senderNameTextView">
 
-            <com.thoughtcrimes.securesms.conversation.v2.messages.VisibleMessageContentView
+            <include
                 android:id="@+id/messageContentView"
+                layout="@layout/view_visible_message_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="0dp" />
@@ -110,7 +112,7 @@
             android:id="@+id/messageTimestampContainer"
             android:layout_width="@dimen/medium_spacing"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/expirationTimerViewContainer"
+            app:layout_constraintBottom_toBottomOf="@+id/expirationTimerViewContainer"
             app:layout_constraintEnd_toEndOf="parent">
 
             <ImageView

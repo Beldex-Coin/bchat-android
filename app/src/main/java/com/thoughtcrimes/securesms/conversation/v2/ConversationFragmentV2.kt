@@ -109,6 +109,8 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 import androidx.lifecycle.Observer
+import com.beldex.libbchat.messaging.jobs.AttachmentDownloadJob
+import com.beldex.libbchat.messaging.jobs.JobQueue
 import com.beldex.libbchat.utilities.*
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.contacts.SelectContactsActivity
@@ -278,12 +280,18 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             onItemLongPress = { message, position ->
                 handleLongPress(message, position)
             },
-            glide,
             onDeselect = { message, position ->
                 actionMode?.let {
                     onDeselect(message, position, it)
                 }
             },
+            onAttachmentNeedsDownload = { attachmentId, mmsId ->
+                // Start download (on IO thread)
+                lifecycleScope.launch(Dispatchers.IO) {
+                    JobQueue.shared.add(AttachmentDownloadJob(attachmentId, mmsId))
+                }
+            },
+            glide = glide,
             lifecycleCoroutineScope = lifecycleScope
         )
         adapter.visibleMessageContentViewDelegate = this

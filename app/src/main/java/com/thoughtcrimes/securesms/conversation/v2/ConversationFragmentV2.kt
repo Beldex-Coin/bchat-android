@@ -1841,9 +1841,12 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             this.activity?.invalidateOptionsMenu()
             updateSubtitle()
             showOrHideInputIfNeeded()
-            binding.profilePictureView.root.update(recipient)
+            binding?.profilePictureView?.root?.update(threadRecipient)
             //New Line v32
-            binding.conversationTitleView.text = recipient.toShortString()
+            binding?.conversationTitleView?.text = when {
+                threadRecipient.isLocalNumber -> getString(R.string.note_to_self)
+                else -> threadRecipient.toShortString()
+            }
         }
     }
 
@@ -1896,7 +1899,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     private fun setUpToolBar() {
         val recipient = viewModel.recipient ?: return
-        binding.conversationTitleView.text = recipient.toShortString()
+        binding.conversationTitleView.text = when {
+            recipient.isLocalNumber -> getString(R.string.note_to_self)
+            else -> recipient.toShortString()
+        }
         @DimenRes val sizeID: Int = if (recipient.isClosedGroupRecipient) {
             R.dimen.medium_profile_picture_size
         } else {

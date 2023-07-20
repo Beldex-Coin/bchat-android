@@ -2,6 +2,7 @@ package com.thoughtcrimes.securesms.webrtc
 
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -29,6 +30,23 @@ import com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type.PRE_OFFE
 import com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type.PROVISIONAL_ANSWER
 
 class CallMessageProcessor (private val context: Context, private val textSecurePreferences: TextSecurePreferences, lifecycle: Lifecycle, private val storage: StorageProtocol) {
+
+    companion object {
+
+        fun safeStartService(context: Context, intent: Intent) {
+            // If the foreground service crashes then it's possible for one of these intents to
+            // be started in the background (in which case 'startService' will throw a
+            // 'BackgroundServiceStartNotAllowedException' exception) so catch that case and try
+            // to re-start the service in the foreground
+            try { context.startService(intent) }
+            catch(e: Exception) {
+                try { ContextCompat.startForegroundService(context, intent) }
+                catch (e2: Exception) {
+                    Log.e("Beldex", "Unable to start CallMessage intent: ${e2.message}")
+                }
+            }
+        }
+    }
     /*Hales63*/
     init {
         lifecycle.coroutineScope.launch(Dispatchers.IO) {
@@ -85,7 +103,7 @@ class CallMessageProcessor (private val context: Context, private val textSecure
         val callId = callMessage.callId ?: return
         val hangupIntent = WebRtcCallService.remoteHangupIntent(context, callId)
         Log.d("startForegroundService->","3")
-        context.startService(hangupIntent)
+        safeStartService(context, hangupIntent)
     }
 
     private fun incomingAnswer(callMessage: CallMessage) {
@@ -98,7 +116,7 @@ class CallMessageProcessor (private val context: Context, private val textSecure
             sdp = sdp,
             callId = callId
         )
-        context.startService(answerIntent)
+        safeStartService(context, answerIntent)
     }
 
     private fun handleIceCandidates(callMessage: CallMessage) {
@@ -114,7 +132,7 @@ class CallMessageProcessor (private val context: Context, private val textSecure
             callId = callId,
             address = Address.fromSerialized(sender)
         )
-        context.startService(iceIntent)
+        safeStartService(context, iceIntent)
     }
 
     private fun incomingPreOffer(callMessage: CallMessage) {
@@ -127,7 +145,7 @@ class CallMessageProcessor (private val context: Context, private val textSecure
             callId = callId,
             callTime = callMessage.sentTimestamp!!
         )
-        context.startService(incomingIntent)
+        safeStartService(context, incomingIntent)
     }
 
     private fun incomingCall(callMessage: CallMessage) {
@@ -141,7 +159,7 @@ class CallMessageProcessor (private val context: Context, private val textSecure
             callId = callId,
             callTime = callMessage.sentTimestamp!!
         )
-        context.startService(incomingIntent)
+        safeStartService(context, incomingIntent)
 
     }
 

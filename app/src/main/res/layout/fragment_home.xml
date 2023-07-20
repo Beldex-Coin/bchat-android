@@ -128,7 +128,7 @@
                         android:layout_centerInParent="true"
                         android:layout_toStartOf="@+id/profileButton"
                         android:fontFamily="@font/open_sans_bold"
-                        android:text="BChat"
+                        android:text="@string/bchat"
                         android:textSize="30sp"
                         android:textStyle="bold" />
 

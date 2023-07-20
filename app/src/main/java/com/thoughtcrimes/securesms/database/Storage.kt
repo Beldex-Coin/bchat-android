@@ -10,6 +10,7 @@ import com.beldex.libbchat.messaging.messages.control.ConfigurationMessage
 import com.beldex.libbchat.messaging.messages.control.MessageRequestResponse
 import com.beldex.libbchat.messaging.messages.signal.*
 import com.beldex.libbchat.messaging.messages.visible.Attachment
+import com.beldex.libbchat.messaging.messages.visible.Profile
 import com.beldex.libbchat.messaging.messages.visible.VisibleMessage
 import com.beldex.libbchat.messaging.open_groups.OpenGroupV2
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentId
@@ -45,16 +46,12 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
     override fun getUserX25519KeyPair(): ECKeyPair {
         return DatabaseComponent.get(context).beldexAPIDatabase().getUserX25519KeyPair()
     }
-    override fun getUserDisplayName(): String? {
-        return TextSecurePreferences.getProfileName(context)
-    }
 
-    override fun getUserProfileKey(): ByteArray? {
-        return ProfileKeyUtil.getProfileKey(context)
-    }
-
-    override fun getUserProfilePictureURL(): String? {
-        return TextSecurePreferences.getProfilePictureURL(context)
+    override fun getUserProfile(): Profile {
+        val displayName = TextSecurePreferences.getProfileName(context)!!
+        val profileKey = ProfileKeyUtil.getProfileKey(context)
+        val profilePictureUrl = TextSecurePreferences.getProfilePictureURL(context)
+        return Profile(displayName, profileKey, profilePictureUrl)
     }
 
     override fun setUserProfilePictureURL(newValue: String) {

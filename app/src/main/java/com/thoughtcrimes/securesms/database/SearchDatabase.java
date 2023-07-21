@@ -1,13 +1,13 @@
 package com.thoughtcrimes.securesms.database;
 
 import android.content.Context;
+import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 
 import com.annimon.stream.Stream;
 
-import net.sqlcipher.Cursor;
-import net.sqlcipher.database.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
 import com.beldex.libbchat.utilities.Util;
 import com.thoughtcrimes.securesms.database.helpers.SQLCipherOpenHelper;

@@ -3,7 +3,7 @@ package com.thoughtcrimes.securesms.database
 import android.content.ContentValues
 import android.content.Context
 import androidx.core.database.getStringOrNull
-import net.sqlcipher.Cursor
+import android.database.Cursor
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libsignal.utilities.Base64
 import com.beldex.libsignal.utilities.Log
@@ -104,22 +104,6 @@ class BchatContactDatabase(context: Context, helper: SQLCipherOpenHelper) : Data
     }
 
     fun contactFromCursor(cursor: Cursor): Contact {
-        val bchatID = cursor.getString(bchatID)
-        val contact = Contact(bchatID)
-        contact.name = cursor.getStringOrNull(name)
-        contact.nickname = cursor.getStringOrNull(nickname)
-        contact.profilePictureURL = cursor.getStringOrNull(profilePictureURL)
-        contact.profilePictureFileName = cursor.getStringOrNull(profilePictureFileName)
-        cursor.getStringOrNull(profilePictureEncryptionKey)?.let {
-            contact.profilePictureEncryptionKey = Base64.decode(it)
-        }
-        contact.threadID = cursor.getLong(threadID)
-        contact.isTrusted = cursor.getInt(isTrusted) != 0
-        contact.beldexAddress   = cursor.getStringOrNull(beldexAddress)
-        return contact
-    }
-
-    fun contactFromCursor(cursor: android.database.Cursor): Contact {
         val bchatID = cursor.getString(cursor.getColumnIndexOrThrow(bchatID))
         val contact = Contact(bchatID)
         contact.name = cursor.getStringOrNull(cursor.getColumnIndexOrThrow(name))

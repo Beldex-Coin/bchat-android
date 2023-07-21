@@ -3,7 +3,7 @@ package com.thoughtcrimes.securesms.database
 import android.content.ContentValues
 import android.content.Context
 import com.beldex.libsignal.database.BeldexMessageDatabaseProtocol
-import net.sqlcipher.database.SQLiteDatabase.CONFLICT_REPLACE
+import net.zetetic.database.sqlcipher.SQLiteDatabase.CONFLICT_REPLACE
 import com.thoughtcrimes.securesms.database.helpers.SQLCipherOpenHelper
 
 class BeldexMessageDatabase(context: Context, helper: SQLCipherOpenHelper) : Database(context, helper),
@@ -78,6 +78,25 @@ class BeldexMessageDatabase(context: Context, helper: SQLCipherOpenHelper) : Dat
         database.endTransaction()
     }
 
+    fun deleteMessages(messageIDs: List<Long>) {
+        val database = databaseHelper.writableDatabase
+        database.beginTransaction()
+
+        database.delete(
+            messageIDTable,
+            "${Companion.messageID} IN (${messageIDs.map { "?" }.joinToString(",")})",
+            messageIDs.map { "$it" }.toTypedArray()
+        )
+        database.delete(
+            messageThreadMappingTable,
+            "${Companion.messageID} IN (${messageIDs.map { "?" }.joinToString(",")})",
+            messageIDs.map { "$it" }.toTypedArray()
+        )
+
+        database.setTransactionSuccessful()
+        database.endTransaction()
+    }
+
     fun getMessageID(serverID: Long, threadID: Long): Pair<Long, Boolean>? {
         val database = databaseHelper.readableDatabase
         val mappingResult = database.get(messageThreadMappingTable, "${Companion.serverID} = ? AND ${Companion.threadID} = ?",
@@ -93,6 +112,38 @@ class BeldexMessageDatabase(context: Context, helper: SQLCipherOpenHelper) : Dat
             cursor.getInt(messageID).toLong() to (cursor.getInt(messageType) == SMS_TYPE)
         }
     }
+
+    fun getMessageIDs(serverIDs: List<Long>, threadID: Long): Pair<List<Long>, List<Long>> {
+        val database = databaseHelper.readableDatabase
+
+        // Retrieve the message ids
+        val messageIdCursor = database
+            .rawQuery(
+                """
+                    SELECT ${messageThreadMappingTable}.${messageID}, ${messageIDTable}.${messageType}
+                    FROM ${messageThreadMappingTable}
+                    JOIN ${messageIDTable} ON ${messageIDTable}.message_id = ${messageThreadMappingTable}.${messageID} 
+                    WHERE (
+                        ${messageThreadMappingTable}.${Companion.threadID} = $threadID AND
+                        ${messageThreadMappingTable}.${Companion.serverID} IN (${serverIDs.joinToString(",")})
+                    )
+                """
+            )
+
+        val smsMessageIds: MutableList<Long> = mutableListOf()
+        val mmsMessageIds: MutableList<Long> = mutableListOf()
+        while (messageIdCursor.moveToNext()) {
+            if (messageIdCursor.getInt(1) == SMS_TYPE) {
+                smsMessageIds.add(messageIdCursor.getLong(0))
+            }
+            else {
+                mmsMessageIds.add(messageIdCursor.getLong(0))
+            }
+        }
+
+        return Pair(smsMessageIds, mmsMessageIds)
+    }
+
 
     override fun setServerID(messageID: Long, serverID: Long, isSms: Boolean) {
         val database = databaseHelper.writableDatabase
@@ -179,5 +230,14 @@ class BeldexMessageDatabase(context: Context, helper: SQLCipherOpenHelper) : Dat
     fun deleteMessageServerHash(messageID: Long) {
         val database = databaseHelper.writableDatabase
         database.delete(messageHashTable, "${Companion.messageID} = ?", arrayOf(messageID.toString()))
+    }
+
+    fun deleteMessageServerHashes(messageIDs: List<Long>) {
+        val database = databaseHelper.writableDatabase
+        database.delete(
+            messageHashTable,
+            "${Companion.messageID} IN (${messageIDs.map { "?" }.joinToString(",")})",
+            messageIDs.map { "$it" }.toTypedArray()
+        )
     }
 }

@@ -56,6 +56,7 @@ import com.thoughtcrimes.securesms.crypto.KeyPairUtilities;
 import com.thoughtcrimes.securesms.database.JobDatabase;
 import com.thoughtcrimes.securesms.database.BeldexAPIDatabase;
 import com.thoughtcrimes.securesms.database.Storage;
+import com.thoughtcrimes.securesms.database.helpers.SQLCipherOpenHelper;
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent;
 import com.thoughtcrimes.securesms.dependencies.DatabaseModule;
 import com.thoughtcrimes.securesms.groups.OpenGroupManager;
@@ -515,7 +516,7 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
             TextSecurePreferences.setProfileName(this, displayName);
         }
         getSharedPreferences(PREFERENCES_NAME, 0).edit().clear().commit();
-        if (!deleteDatabase("bchat.db")) {
+        if (!deleteDatabase(SQLCipherOpenHelper.DATABASE_NAME)) {
             Log.d("Beldex", "Failed to delete database.");
         }
         Util.runOnMain(() -> new Handler().postDelayed(ApplicationContext.this::restartApplication, 200));

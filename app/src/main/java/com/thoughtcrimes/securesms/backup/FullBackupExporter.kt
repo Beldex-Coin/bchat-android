@@ -11,7 +11,7 @@ import com.beldex.libbchat.avatars.AvatarHelper
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentId
 import com.beldex.libbchat.utilities.Conversions
 import com.google.protobuf.ByteString
-import net.sqlcipher.database.SQLiteDatabase
+import net.zetetic.database.sqlcipher.SQLiteDatabase
 import org.greenrobot.eventbus.EventBus
 
 import com.thoughtcrimes.securesms.backup.BackupProtos.*

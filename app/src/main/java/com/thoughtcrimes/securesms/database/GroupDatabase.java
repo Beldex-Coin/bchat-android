@@ -13,7 +13,7 @@ import androidx.annotation.Nullable;
 import com.annimon.stream.Stream;
 import com.thoughtcrimes.securesms.util.BitmapUtil;
 
-import net.sqlcipher.database.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.thoughtcrimes.securesms.database.helpers.SQLCipherOpenHelper;

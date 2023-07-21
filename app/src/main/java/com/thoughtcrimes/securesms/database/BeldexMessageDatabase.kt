@@ -3,7 +3,7 @@ package com.thoughtcrimes.securesms.database
 import android.content.ContentValues
 import android.content.Context
 import com.beldex.libsignal.database.BeldexMessageDatabaseProtocol
-import net.sqlcipher.database.SQLiteDatabase.CONFLICT_REPLACE
+import net.zetetic.database.sqlcipher.SQLiteDatabase.CONFLICT_REPLACE
 import com.thoughtcrimes.securesms.database.helpers.SQLCipherOpenHelper
 
 class BeldexMessageDatabase(context: Context, helper: SQLCipherOpenHelper) : Database(context, helper),

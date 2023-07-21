@@ -45,7 +45,7 @@ import com.thoughtcrimes.securesms.util.BitmapUtil;
 import com.thoughtcrimes.securesms.util.MediaUtil;
 import com.thoughtcrimes.securesms.video.EncryptedMediaDataSource;
 
-import net.sqlcipher.database.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
 import org.json.JSONArray;
 import org.json.JSONException;

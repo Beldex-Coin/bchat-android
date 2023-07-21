@@ -5,7 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import androidx.annotation.NonNull;
 
-import net.sqlcipher.database.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
 import com.thoughtcrimes.securesms.database.helpers.SQLCipherOpenHelper;
 import com.thoughtcrimes.securesms.jobmanager.persistence.ConstraintSpec;

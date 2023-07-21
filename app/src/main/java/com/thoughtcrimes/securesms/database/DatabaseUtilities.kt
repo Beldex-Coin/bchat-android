@@ -3,8 +3,8 @@ package com.thoughtcrimes.securesms.database
 import android.content.ContentValues
 import androidx.core.database.getStringOrNull
 import com.beldex.libsignal.utilities.Base64
-import net.sqlcipher.Cursor
-import net.sqlcipher.database.SQLiteDatabase
+import android.database.Cursor
+import net.zetetic.database.sqlcipher.SQLiteDatabase
 
 fun <T> SQLiteDatabase.get(table: String, query: String?, arguments: Array<String>?, get: (Cursor) -> T): T? {
     var cursor: Cursor? = null

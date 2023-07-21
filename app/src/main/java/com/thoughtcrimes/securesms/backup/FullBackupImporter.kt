@@ -7,7 +7,7 @@ import android.net.Uri
 import androidx.annotation.WorkerThread
 import com.beldex.libbchat.avatars.AvatarHelper
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentId
-import net.sqlcipher.database.SQLiteDatabase
+import net.zetetic.database.sqlcipher.SQLiteDatabase
 import org.greenrobot.eventbus.EventBus
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.Conversions

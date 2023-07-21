@@ -7,7 +7,7 @@ import com.beldex.libbchat.messaging.utilities.Data
 import com.beldex.libsignal.utilities.Log
 import com.thoughtcrimes.securesms.database.helpers.SQLCipherOpenHelper
 import com.thoughtcrimes.securesms.jobmanager.impl.JsonDataSerializer
-import net.sqlcipher.Cursor
+import android.database.Cursor
 
 class BchatJobDatabase(context: Context, helper: SQLCipherOpenHelper) : Database(context, helper) {
 

@@ -36,7 +36,7 @@ import com.thoughtcrimes.securesms.mms.Slide;
 import com.thoughtcrimes.securesms.mms.SlideDeck;
 import com.thoughtcrimes.securesms.util.BchatMetaProtocol;
 
-import net.sqlcipher.database.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
 import com.beldex.libbchat.utilities.Address;
 import com.beldex.libbchat.utilities.Contact;

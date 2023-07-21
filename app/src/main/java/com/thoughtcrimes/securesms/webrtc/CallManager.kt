@@ -1,13 +1,11 @@
 package com.thoughtcrimes.securesms.webrtc
 
-import android.Manifest.permission.READ_PHONE_STATE
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.telephony.PhoneStateListener
 import android.telephony.TelephonyCallback
 import android.telephony.TelephonyManager
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.beldex.libbchat.database.StorageProtocol
 import com.beldex.libbchat.messaging.calls.CallMessageType
@@ -38,7 +36,6 @@ import com.thoughtcrimes.securesms.webrtc.data.State as CallState
 import com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type.ICE_CANDIDATES
 import com.thoughtcrimes.securesms.ApplicationContext
 import com.thoughtcrimes.securesms.service.WebRtcCallService
-import com.thoughtcrimes.securesms.util.Helper
 import nl.komponents.kovenant.functional.bind
 
 class CallManager(context: Context, audioManager: AudioManagerCompat, private val storage: StorageProtocol): PeerConnection.Observer,

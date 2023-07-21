@@ -597,7 +597,7 @@ public final class BackupProtos {
                   BackupProtos.SqlStatement.SqlParameter.class, BackupProtos.SqlStatement.SqlParameter.Builder.class);
         }
 
-        // Construct using com.thoughtcrime.securesms.backup.BackupProtos.SqlStatement.SqlParameter.newBuilder()
+        // Construct using com.thoughtcrimes.securesms.backup.BackupProtos.SqlStatement.SqlParameter.newBuilder()
         private Builder() {
           maybeForceBuilderInitialization();
         }
@@ -1170,7 +1170,7 @@ public final class BackupProtos {
                 BackupProtos.SqlStatement.class, BackupProtos.SqlStatement.Builder.class);
       }
 
-      // Construct using com.thoughtcrime.securesms.backup.BackupProtos.SqlStatement.newBuilder()
+      // Construct using com.thoughtcrimes.securesms.backup.BackupProtos.SqlStatement.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -2065,7 +2065,7 @@ public final class BackupProtos {
                 BackupProtos.SharedPreference.class, BackupProtos.SharedPreference.Builder.class);
       }
 
-      // Construct using com.thoughtcrime.securesms.backup.BackupProtos.SharedPreference.newBuilder()
+      // Construct using com.thoughtcrimes.securesms.backup.BackupProtos.SharedPreference.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -2752,7 +2752,7 @@ public final class BackupProtos {
                 BackupProtos.Attachment.class, BackupProtos.Attachment.Builder.class);
       }
 
-      // Construct using com.thoughtcrime.securesms.backup.BackupProtos.Attachment.newBuilder()
+      // Construct using com.thoughtcrimes.securesms.backup.BackupProtos.Attachment.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -3271,7 +3271,7 @@ public final class BackupProtos {
                 BackupProtos.Sticker.class, BackupProtos.Sticker.Builder.class);
       }
 
-      // Construct using com.thoughtcrime.securesms.backup.BackupProtos.Sticker.newBuilder()
+      // Construct using com.thoughtcrimes.securesms.backup.BackupProtos.Sticker.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -3780,7 +3780,7 @@ public final class BackupProtos {
                 BackupProtos.Avatar.class, BackupProtos.Avatar.Builder.class);
       }
 
-      // Construct using com.thoughtcrime.securesms.backup.BackupProtos.Avatar.newBuilder()
+      // Construct using com.thoughtcrimes.securesms.backup.BackupProtos.Avatar.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -4261,7 +4261,7 @@ public final class BackupProtos {
                 BackupProtos.DatabaseVersion.class, BackupProtos.DatabaseVersion.Builder.class);
       }
 
-      // Construct using com.thoughtcrime.securesms.backup.BackupProtos.DatabaseVersion.newBuilder()
+      // Construct using com.thoughtcrimes.securesms.backup.BackupProtos.DatabaseVersion.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -4696,7 +4696,7 @@ public final class BackupProtos {
                 BackupProtos.Header.class, BackupProtos.Header.Builder.class);
       }
 
-      // Construct using com.thoughtcrime.securesms.backup.BackupProtos.Header.newBuilder()
+      // Construct using com.thoughtcrimes.securesms.backup.BackupProtos.Header.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -5539,7 +5539,7 @@ public final class BackupProtos {
                 BackupProtos.BackupFrame.class, BackupProtos.BackupFrame.Builder.class);
       }
 
-      // Construct using com.thoughtcrime.securesms.backup.BackupProtos.BackupFrame.newBuilder()
+      // Construct using com.thoughtcrimes.securesms.backup.BackupProtos.BackupFrame.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }

@@ -34,7 +34,7 @@ public class ResourceContactPhoto implements FallbackContactPhoto {
     Drawable        background = TextDrawable.builder().buildRound(" ", inverted ? Color.WHITE : color);
     RoundedDrawable foreground = (RoundedDrawable) RoundedDrawable.fromDrawable(context.getResources().getDrawable(resourceId));
 
-    foreground.setScaleType(ImageView.ScaleType.CENTER);
+    foreground.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
 
     if (inverted) {
       foreground.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);

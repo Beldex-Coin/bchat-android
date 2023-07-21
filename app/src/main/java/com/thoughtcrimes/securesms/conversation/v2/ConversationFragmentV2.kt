@@ -148,7 +148,6 @@ import com.thoughtcrimes.securesms.util.slidetoact.SlideToActView.OnSlideComplet
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
 import com.thoughtcrimes.securesms.webrtc.NetworkChangeReceiver
 import io.beldex.bchat.databinding.ViewVisibleMessageBinding
-import java.io.FileNotFoundException
 
 
 private const val ARG_PARAM1 = "param1"
@@ -1693,6 +1692,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         endActionMode()
     }
 
+    override fun destroyActionMode() {
+        this.actionMode = null
+    }
+
     //SteveJosephh21 - 08
     override fun block(deleteThread: Boolean) {
         val title = R.string.RecipientPreferenceActivity_block_this_contact_question
@@ -2378,7 +2381,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     result.getResults()[result.position]?.let {
                         jumpToMessage(
                             it.messageRecipient.address,
-                            it.receivedTimestampMs,
+                            it.sentTimestampMs,
                             Runnable { searchViewModel!!.onMissingResult() })
                     }
                 }

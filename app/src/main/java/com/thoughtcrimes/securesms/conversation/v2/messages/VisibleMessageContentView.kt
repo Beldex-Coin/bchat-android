@@ -15,7 +15,6 @@ import android.text.style.URLSpan
 import android.text.util.Linkify
 import android.util.AttributeSet
 import android.view.*
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorInt
@@ -29,12 +28,7 @@ import androidx.core.graphics.BlendModeCompat
 import androidx.core.text.getSpans
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
-import androidx.lifecycle.LifecycleCoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
-import com.beldex.libbchat.messaging.jobs.AttachmentDownloadJob
-import com.beldex.libbchat.messaging.jobs.JobQueue
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentTransferProgress
 import com.beldex.libbchat.messaging.sending_receiving.attachments.DatabaseAttachment
 import com.beldex.libbchat.utilities.TextSecurePreferences
@@ -120,6 +114,14 @@ class VisibleMessageContentView : ConstraintLayout {
                 message,
                 VisibleMessageContentView.getTextColor(context, message)
             )
+            binding.bodyTextView.isVisible = false
+            binding.quoteView.root.isVisible = false
+            binding.linkPreviewView.root.isVisible = false
+            binding.untrustedView.root.isVisible = false
+            binding.voiceMessageView.root.isVisible = false
+            binding.documentView.root.isVisible = false
+            binding.albumThumbnailView.root.isVisible = false
+            binding.openGroupInvitationView.root.isVisible = false
             return
         } else {
             binding.deletedMessageView.root.isVisible = false

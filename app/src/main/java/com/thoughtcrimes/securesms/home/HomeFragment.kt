@@ -106,7 +106,7 @@ class HomeFragment : Fragment(), ConversationClickListener,
         when (model) {
             is GlobalSearchAdapter.Model.Message -> {
                 val threadId = model.messageResult.threadId
-                val timestamp = model.messageResult.receivedTimestampMs
+                val timestamp = model.messageResult.sentTimestampMs
                 val author = model.messageResult.messageRecipient.address
                 if (binding.globalSearchRecycler.isVisible) {
                     binding.globalSearchInputLayout.clearSearch(true)

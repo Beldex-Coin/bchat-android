@@ -6,7 +6,7 @@
 
 package signal;
 
-option java_package         = "com.thoughtcrime.securesms.webrtc";
+option java_package         = "com.thoughtcrimes.securesms.webrtc";
 option java_outer_classname = "WebRtcDataProtos";
 
 message Connected {

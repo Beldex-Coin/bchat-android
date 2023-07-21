@@ -49,7 +49,7 @@ class SelectContactsActivity : PassphraseRequiredActionBarActivity(), LoaderMana
         LoaderManager.getInstance(this).initLoader(0, null, this)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_done_open_group, menu)
         return members.isNotEmpty()
     }
@@ -70,7 +70,7 @@ class SelectContactsActivity : PassphraseRequiredActionBarActivity(), LoaderMana
 
     private fun update(members: List<String>) {
         this.members = members
-        binding.mainContentContainer.visibility = if (members.isEmpty()) View.GONE else View.VISIBLE
+        binding.recyclerView.visibility = if (members.isEmpty()) View.GONE else View.VISIBLE
         binding.emptyStateContainer.visibility = if (members.isEmpty()) View.VISIBLE else View.GONE
         invalidateOptionsMenu()
     }

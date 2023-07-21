@@ -67,7 +67,7 @@ class MessageRequestsAdapter(
             //item.iconTintList = ColorStateList.valueOf(context.getColor(R.color.destructive))
             item.title = s
         }
-        popupMenu.forceShowIcon() //TODO: call setForceShowIcon(true) after update to appcompat 1.4.1+
+        popupMenu.setForceShowIcon(true) //TODO: call setForceShowIcon(true) after update to appcompat 1.4.1+
         popupMenu.show()
     }
 

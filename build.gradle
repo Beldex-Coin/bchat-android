@@ -4,9 +4,9 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.2'
+        classpath "com.android.tools.build:gradle:$gradlePluginVersion"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10"
-        classpath "com.google.gms:google-services:4.3.10"
+        classpath "com.google.gms:google-services:$googleServicesVersion"
         classpath files('libs/gradle-witness.jar')
     }
 }

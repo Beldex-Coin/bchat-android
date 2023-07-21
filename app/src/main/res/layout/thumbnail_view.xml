@@ -18,13 +18,6 @@
         android:padding="3dp"
         android:contentDescription="@string/conversation_item__mms_image_description" />
 
-    <!--<com.thoughtcrime.securesms.conversation.v2.utilities.ThumbnailProgressBar
-        android:id="@+id/thumbnail_load_indicator"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/accent_line_thickness"
-        android:layout_gravity="bottom"
-        android:visibility="gone"
-        tools:visibility="visible" />-->
     <ProgressBar
         android:id="@+id/thumbnail_load_indicator"
         android:layout_width="match_parent"

@@ -3,8 +3,6 @@ package com.thoughtcrimes.securesms.webrtc
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
@@ -15,7 +13,6 @@ import com.beldex.libbchat.messaging.messages.control.CallMessage
 import com.beldex.libbchat.messaging.utilities.WebRtcUtils
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import com.beldex.libbchat.utilities.recipients.Recipient
 import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.util.CallNotificationBuilder
 import kotlinx.coroutines.Dispatchers

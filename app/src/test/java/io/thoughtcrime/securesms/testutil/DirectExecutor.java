@@ -1,4 +1,4 @@
-package com.thoughtcrime.securesms.testutil;
+package io.thoughtcrime.securesms.testutil;
 
 import androidx.annotation.NonNull;
 

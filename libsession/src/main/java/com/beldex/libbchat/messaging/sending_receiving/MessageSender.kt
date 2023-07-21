@@ -263,6 +263,8 @@ object MessageSender {
             message.serverHash?.let {
                 storage.setMessageServerHash(messageID, it)
             }
+            // in case any errors from previous sends
+            storage.clearErrorMessage(messageID)
             // Track the social group server message ID
             if (message.openGroupServerMessageID != null && destination is Destination.OpenGroupV2) {
                 val encoded = GroupUtil.getEncodedOpenGroupID("${destination.server}.${destination.room}".toByteArray())

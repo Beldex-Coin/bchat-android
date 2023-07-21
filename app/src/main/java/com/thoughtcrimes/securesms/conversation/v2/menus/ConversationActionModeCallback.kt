@@ -67,9 +67,9 @@ class ConversationActionModeCallback(private val adapter: ConversationAdapter, p
         menu.findItem(R.id.menu_context_copy).isVisible = !containsControlMessage && hasText
         // Copy Bchat ID
         menu.findItem(R.id.menu_context_copy_public_key).isVisible =
-            (thread.isGroupRecipient && !thread.isOpenGroupRecipient && selectedItems.size == 1 && firstMessage.recipient.address.toString() != userPublicKey)
+            (thread.isGroupRecipient && !thread.isOpenGroupRecipient && selectedItems.size == 1 && firstMessage.individualRecipient.address.toString() != userPublicKey)
         // Message detail
-        menu.findItem(R.id.menu_message_details).isVisible = (selectedItems.size == 1 && firstMessage.isFailed)
+        menu.findItem(R.id.menu_message_details).isVisible = (selectedItems.size == 1 && firstMessage.isOutgoing)
         // Resend
         menu.findItem(R.id.menu_context_resend).isVisible = (selectedItems.size == 1 && firstMessage.isFailed)
         // Save media
@@ -103,6 +103,7 @@ class ConversationActionModeCallback(private val adapter: ConversationAdapter, p
     override fun onDestroyActionMode(mode: ActionMode) {
         adapter.selectedItems.clear()
         adapter.notifyDataSetChanged()
+        delegate?.destroyActionMode()
     }
 }
 
@@ -117,4 +118,5 @@ interface ConversationActionModeCallbackDelegate {
     fun showMessageDetail(messages: Set<MessageRecord>)
     fun saveAttachment(messages: Set<MessageRecord>)
     fun reply(messages: Set<MessageRecord>)
+    fun destroyActionMode()
 }

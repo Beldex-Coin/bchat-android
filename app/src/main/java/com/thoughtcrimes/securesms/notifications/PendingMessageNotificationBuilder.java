@@ -8,7 +8,6 @@ import androidx.core.app.NotificationCompat;
 
 import com.thoughtcrimes.securesms.home.HomeActivity;
 import com.beldex.libbchat.utilities.recipients.Recipient;
-import com.thoughtcrimes.securesms.home.HomeActivity;
 import com.beldex.libbchat.utilities.NotificationPrivacyPreference;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 

@@ -680,9 +680,9 @@
         <item name="itemFillColor">@color/button_green</item>
         <item name="itemTextColor">@color/default_background_start</item>
         <item name="itemStrokeWidth">2dp</item>
-        <item name="itemShapeAppearance">
+      <!--  <item name="itemShapeAppearance">
             @style/Test.ShapeAppearanceOverlay.MaterialComponents.MaterialCalendar.Day
-        </item>
+        </item>-->
     </style>
 
 

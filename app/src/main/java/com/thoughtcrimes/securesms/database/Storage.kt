@@ -432,6 +432,11 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
         }
     }
 
+    override fun clearErrorMessage(messageID: Long) {
+        val db = DatabaseComponent.get(context).beldexMessageDatabase()
+        db.clearErrorMessage(messageID)
+    }
+
     override fun setMessageServerHash(messageID: Long, serverHash: String) {
         DatabaseComponent.get(context).beldexMessageDatabase().setMessageServerHash(messageID, serverHash)
     }

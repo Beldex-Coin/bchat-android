@@ -198,12 +198,12 @@ public class TypingStatusRepository implements SSKEnvironment.TypingIndicatorsPr
 
       if (device != typist.device) return false;
       if (threadId != typist.threadId) return false;
-      return author.equals(typist.author);
+      return author.getAddress().equals(typist.author.getAddress());
     }
 
     @Override
     public int hashCode() {
-      int result = author.hashCode();
+      int result = author.getAddress().hashCode();
       result = 31 * result + device;
       result = 31 * result + (int) (threadId ^ (threadId >>> 32));
       return result;

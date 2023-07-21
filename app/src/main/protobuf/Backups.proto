@@ -6,7 +6,7 @@
 
 package signal;
 
-option java_package         = "com.thoughtcrime.securesms.backup";
+option java_package         = "com.thoughtcrimes.securesms.backup";
 option java_outer_classname = "BackupProtos";
 
 message SqlStatement {

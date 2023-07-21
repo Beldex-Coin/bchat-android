@@ -204,12 +204,26 @@ class DatabaseAttachmentProvider(context: Context, helper: SQLCipherOpenHelper) 
         return messageDB.getMessageID(serverId, threadId)
     }
 
+    override fun getMessageIDs(serverIds: List<Long>, threadId: Long): Pair<List<Long>, List<Long>> {
+        val messageDB = DatabaseComponent.get(context).beldexMessageDatabase()
+        return messageDB.getMessageIDs(serverIds, threadId)
+    }
+
     override fun deleteMessage(messageID: Long, isSms: Boolean) {
         val messagingDatabase: MessagingDatabase = if (isSms)  DatabaseComponent.get(context).smsDatabase()
                                                    else DatabaseComponent.get(context).mmsDatabase()
         messagingDatabase.deleteMessage(messageID)
         DatabaseComponent.get(context).beldexMessageDatabase().deleteMessage(messageID, isSms)
         DatabaseComponent.get(context).beldexMessageDatabase().deleteMessageServerHash(messageID)
+    }
+
+    override fun deleteMessages(messageIDs: List<Long>, threadId: Long, isSms: Boolean) {
+        val messagingDatabase: MessagingDatabase = if (isSms)  DatabaseComponent.get(context).smsDatabase()
+        else DatabaseComponent.get(context).mmsDatabase()
+
+        messagingDatabase.deleteMessages(messageIDs.toLongArray(), threadId)
+        DatabaseComponent.get(context).beldexMessageDatabase().deleteMessages(messageIDs)
+        DatabaseComponent.get(context).beldexMessageDatabase().deleteMessageServerHashes(messageIDs)
     }
 
     override fun updateMessageAsDeleted(timestamp: Long, author: String) {

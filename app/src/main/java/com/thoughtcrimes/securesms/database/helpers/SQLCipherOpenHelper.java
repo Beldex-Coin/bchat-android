@@ -74,14 +74,15 @@ public class SQLCipherOpenHelper extends SQLiteOpenHelper {
 
   // beldex - onUpgrade(...) must be updated to use beldex version numbers if Signal makes any database changes
   private static final int    DATABASE_VERSION = beldexV32;
-  private static final String DATABASE_NAME    = "bchat_v4.db";
+  private static final int    MIN_DATABASE_VERSION     = beldexV7;
+  public static final String DATABASE_NAME    = "bchat_v4.db";
   private static final String CIPHER3_DATABASE_NAME    = "bchat.db";
 
   private final Context        context;
   private final DatabaseSecret databaseSecret;
 
   public SQLCipherOpenHelper(@NonNull Context context, @NonNull DatabaseSecret databaseSecret) {
-    super(context, DATABASE_NAME, databaseSecret.asString(), null, DATABASE_VERSION, DATABASE_VERSION, null, new SQLiteDatabaseHook() {
+    super(context, DATABASE_NAME, databaseSecret.asString(), null, DATABASE_VERSION, MIN_DATABASE_VERSION, null, new SQLiteDatabaseHook() {
       @Override
       public void preKey(SQLiteConnection connection) {
         connection.execute("PRAGMA cipher_default_kdf_iter = 256000;", null, null);

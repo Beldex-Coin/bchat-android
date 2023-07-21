@@ -26,8 +26,8 @@ import android.util.Pair;
 
 import com.annimon.stream.Stream;
 
-import net.sqlcipher.database.SQLiteDatabase;
-import net.sqlcipher.database.SQLiteStatement;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteStatement;
 
 
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration;
@@ -51,8 +51,11 @@ import com.thoughtcrimes.securesms.database.model.MessageRecord;
 import com.thoughtcrimes.securesms.database.model.SmsMessageRecord;
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.IOException;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -589,6 +592,31 @@ public class SmsDatabase extends MessagingDatabase {
     notifyConversationListeners(threadId);
     return threadDeleted;
   }
+
+  @Override
+  public boolean deleteMessages(long[] messageIds, long threadId) {
+    String[] argsArray = new String[messageIds.length];
+    String[] argValues = new String[messageIds.length];
+    Arrays.fill(argsArray, "?");
+
+    for (int i = 0; i < messageIds.length; i++) {
+      argValues[i] = (messageIds[i] + "");
+    }
+
+    String combinedMessageIdArgss = StringUtils.join(messageIds, ',');
+    String combinedMessageIds = StringUtils.join(messageIds, ',');
+    Log.i("MessageDatabase", "Deleting: " + combinedMessageIds);
+    SQLiteDatabase db = databaseHelper.getWritableDatabase();
+    db.delete(
+            TABLE_NAME,
+            ID + " IN (" + StringUtils.join(argsArray, ',') + ")",
+            argValues
+    );
+    boolean threadDeleted = DatabaseComponent.get(context).threadDatabase().update(threadId, false);
+    notifyConversationListeners(threadId);
+    return threadDeleted;
+  }
+
 
   private boolean isDuplicate(IncomingTextMessage message, long threadId) {
     SQLiteDatabase database = databaseHelper.getReadableDatabase();

@@ -13,6 +13,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import com.thoughtcrimes.securesms.repository.ConversationRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import java.util.UUID
 
 class ConversationViewModel(
@@ -49,11 +51,17 @@ class ConversationViewModel(
     }
 
     fun saveDraft(text: String) {
-        repository.saveDraft(threadId, text)
+        GlobalScope.launch(Dispatchers.IO) {
+            repository.saveDraft(threadId, text)
+        }
     }
 
     fun getDraft(): String? {
-        return repository.getDraft(threadId)
+        val draft: String? = repository.getDraft(threadId)
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.clearDrafts(threadId)
+        }
+        return draft
     }
 
     fun inviteContacts(contacts: List<Recipient>) {

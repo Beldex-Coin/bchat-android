@@ -2,10 +2,10 @@ package com.thoughtcrimes.securesms.database
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libsignal.utilities.Log
 import com.thoughtcrimes.securesms.database.helpers.SQLCipherOpenHelper
-import net.sqlcipher.Cursor
 
 class BchatRecipientAddressDatabase(context:Context,helper:SQLCipherOpenHelper):Database(context,helper) {
     companion object{

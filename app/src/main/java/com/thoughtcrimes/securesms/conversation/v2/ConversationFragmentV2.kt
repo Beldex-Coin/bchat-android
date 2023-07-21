@@ -626,10 +626,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         super.onResume()
         ApplicationContext.getInstance(requireActivity()).messageNotifier.setVisibleThread(viewModel.threadId)
         val recipient = viewModel.recipient ?: return
-        (activity as HomeActivity).threadDb.markAllAsRead(
-            viewModel.threadId,
-            recipient.isOpenGroupRecipient
-        )
+        lifecycleScope.launch(Dispatchers.IO) {
+            (activity as HomeActivity).threadDb.markAllAsRead(
+                viewModel.threadId,
+                recipient.isOpenGroupRecipient
+            )
+        }
+
 
         val thread = (activity as HomeActivity).threadDb.getRecipientForThreadId(viewModel.threadId)
         if (thread != null) {

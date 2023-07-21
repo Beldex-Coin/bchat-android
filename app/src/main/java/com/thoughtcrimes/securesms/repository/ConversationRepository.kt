@@ -30,6 +30,7 @@ interface ConversationRepository {
     fun getRecipientForThreadId(threadId: Long): Recipient?
     fun saveDraft(threadId: Long, text: String)
     fun getDraft(threadId: Long): String?
+    fun clearDrafts(threadId: Long)
     fun inviteContacts(threadId: Long, contacts: List<Recipient>)
     //Payment Tah
     fun sentPayment(threadId: Long, amount: String, txnId: String?, recipient: Recipient?)
@@ -112,8 +113,11 @@ class DefaultConversationRepository @Inject constructor(
 
     override fun getDraft(threadId: Long): String? {
         val drafts = draftDb.getDrafts(threadId)
-        draftDb.clearDrafts(threadId)
         return drafts.find { it.type == DraftDatabase.Draft.TEXT }?.value
+    }
+
+    override fun clearDrafts(threadId: Long) {
+        draftDb.clearDrafts(threadId)
     }
 
     override fun inviteContacts(threadId: Long, contacts: List<Recipient>) {

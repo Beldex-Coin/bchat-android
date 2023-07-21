@@ -12,6 +12,8 @@ import com.thoughtcrimes.securesms.database.helpers.SQLCipherOpenHelper;
 
 import com.beldex.libbchat.utilities.Address;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -109,6 +111,12 @@ public class GroupReceiptDatabase extends Database {
     SQLiteDatabase db = databaseHelper.getWritableDatabase();
     db.delete(TABLE_NAME, MMS_ID + " = ?", new String[] {String.valueOf(mmsId)});
   }
+
+  void deleteRowsForMessages(long[] mmsIds) {
+    SQLiteDatabase db = databaseHelper.getWritableDatabase();
+    db.delete(TABLE_NAME, MMS_ID + " IN (?)", new String[] {StringUtils.join(mmsIds, ',')});
+  }
+
 
   void deleteAllRows() {
     SQLiteDatabase db = databaseHelper.getWritableDatabase();

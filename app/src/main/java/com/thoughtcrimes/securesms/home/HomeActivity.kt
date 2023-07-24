@@ -2,52 +2,41 @@ package com.thoughtcrimes.securesms.home
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.*
+import android.content.ComponentName
+import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
+import android.content.IntentSender
+import android.content.ServiceConnection
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.PointF
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.Handler
+import android.os.IBinder
+import android.os.Looper
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
-import androidx.activity.viewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
-import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityHomeBinding
-import com.beldex.libbchat.messaging.jobs.JobQueue
-import com.beldex.libbchat.utilities.TextSecurePreferences
-import com.thoughtcrimes.securesms.groups.OpenGroupManager
-import com.thoughtcrimes.securesms.home.search.GlobalSearchAdapter
-import com.thoughtcrimes.securesms.home.search.GlobalSearchInputLayout
-import com.thoughtcrimes.securesms.home.search.GlobalSearchViewModel
-import com.thoughtcrimes.securesms.ApplicationContext
-import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
-import com.thoughtcrimes.securesms.database.*
-import com.thoughtcrimes.securesms.onboarding.*
-import com.thoughtcrimes.securesms.preferences.*
-import com.thoughtcrimes.securesms.util.*
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
+import com.beldex.libbchat.messaging.jobs.JobQueue
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.ProfilePictureModifiedEvent
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getWalletName
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getWalletPassword
 import com.beldex.libbchat.utilities.recipients.Recipient
@@ -58,24 +47,64 @@ import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.tasks.Task
+import com.thoughtcrimes.securesms.ApplicationContext
 import com.thoughtcrimes.securesms.MediaOverviewActivity
+import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.components.ProfilePictureView
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.conversation.v2.ConversationViewModel
 import com.thoughtcrimes.securesms.conversation.v2.messages.VoiceMessageViewDelegate
 import com.thoughtcrimes.securesms.conversation.v2.utilities.BaseDialog
-import com.thoughtcrimes.securesms.data.*
+import com.thoughtcrimes.securesms.data.BarcodeData
+import com.thoughtcrimes.securesms.data.DefaultNodes
+import com.thoughtcrimes.securesms.data.NodeInfo
+import com.thoughtcrimes.securesms.data.TxData
+import com.thoughtcrimes.securesms.data.UserNotes
+import com.thoughtcrimes.securesms.database.BchatContactDatabase
+import com.thoughtcrimes.securesms.database.BeldexAPIDatabase
+import com.thoughtcrimes.securesms.database.BeldexMessageDatabase
+import com.thoughtcrimes.securesms.database.BeldexThreadDatabase
+import com.thoughtcrimes.securesms.database.GroupDatabase
+import com.thoughtcrimes.securesms.database.MmsDatabase
+import com.thoughtcrimes.securesms.database.MmsSmsDatabase
+import com.thoughtcrimes.securesms.database.RecipientDatabase
+import com.thoughtcrimes.securesms.database.SmsDatabase
+import com.thoughtcrimes.securesms.database.ThreadDatabase
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.dms.CreateNewPrivateChatActivity
 import com.thoughtcrimes.securesms.groups.CreateClosedGroupActivity
 import com.thoughtcrimes.securesms.groups.JoinPublicChatNewActivity
+import com.thoughtcrimes.securesms.groups.OpenGroupManager
+import com.thoughtcrimes.securesms.home.search.GlobalSearchAdapter
+import com.thoughtcrimes.securesms.home.search.GlobalSearchInputLayout
+import com.thoughtcrimes.securesms.home.search.GlobalSearchViewModel
 import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
-import com.thoughtcrimes.securesms.model.*
+import com.thoughtcrimes.securesms.model.NetworkType
+import com.thoughtcrimes.securesms.model.PendingTransaction
+import com.thoughtcrimes.securesms.model.TransactionInfo
+import com.thoughtcrimes.securesms.model.Wallet
+import com.thoughtcrimes.securesms.model.WalletManager
+import com.thoughtcrimes.securesms.onboarding.AboutActivity
+import com.thoughtcrimes.securesms.onboarding.SeedActivity
+import com.thoughtcrimes.securesms.onboarding.SeedReminderViewDelegate
+import com.thoughtcrimes.securesms.preferences.NotificationSettingsActivity
+import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
+import com.thoughtcrimes.securesms.preferences.SettingsActivity
+import com.thoughtcrimes.securesms.preferences.ShowQRCodeWithScanQRCodeActivity
 import com.thoughtcrimes.securesms.seed.SeedPermissionActivity
-import com.thoughtcrimes.securesms.wallet.*
+import com.thoughtcrimes.securesms.util.ActivityDispatcher
+import com.thoughtcrimes.securesms.util.Helper
+import com.thoughtcrimes.securesms.util.IP2Country
+import com.thoughtcrimes.securesms.util.push
+import com.thoughtcrimes.securesms.util.show
+import com.thoughtcrimes.securesms.wallet.CheckOnline
+import com.thoughtcrimes.securesms.wallet.OnBackPressedListener
+import com.thoughtcrimes.securesms.wallet.OnUriScannedListener
+import com.thoughtcrimes.securesms.wallet.OnUriWalletScannedListener
+import com.thoughtcrimes.securesms.wallet.WalletFragment
 import com.thoughtcrimes.securesms.wallet.info.WalletInfoActivity
-import com.thoughtcrimes.securesms.wallet.node.*
+import com.thoughtcrimes.securesms.wallet.node.NodeFragment
 import com.thoughtcrimes.securesms.wallet.receive.ReceiveFragment
 import com.thoughtcrimes.securesms.wallet.rescan.RescanDialog
 import com.thoughtcrimes.securesms.wallet.scanner.ScannerFragment
@@ -88,13 +117,20 @@ import com.thoughtcrimes.securesms.wallet.utils.common.LoadingActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
-import kotlinx.coroutines.*
+import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ActivityHomeBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import java.io.File
-import java.util.*
 import javax.inject.Inject
 
 
@@ -959,8 +995,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         get() = synced
     override val streetModeHeight: Long
         get() = streetMode
-    override val isWatchOnly: Boolean
-        get() = if(getWallet()!=null){getWallet()!!.isWatchOnly}else{false}
 
     override fun getTxKey(txId: String?): String? {
         return getWallet()!!.getTxKey(txId)
@@ -1139,27 +1173,29 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         try {
             //WalletFragment Functionality --
             val currentFragment = getCurrentFragment()
-            if (wallet.isSynchronized) {
-                if (!synced) { // first sync
-                    onProgress(-2)//onProgress(-1)
-                    saveWallet() // save on first sync
-                    synced = true
-                    //WalletFragment Functionality --
-                    when (currentFragment) {
-                        is WalletFragment -> {
-                            runOnUiThread(currentFragment::onSynced)
+            if (wallet != null) {
+                if (wallet.isSynchronized) {
+                    if (!synced) { // first sync
+                        onProgress(-2)//onProgress(-1)
+                        saveWallet() // save on first sync
+                        synced = true
+                        //WalletFragment Functionality --
+                        when (currentFragment) {
+                            is WalletFragment -> {
+                                runOnUiThread(currentFragment::onSynced)
+                            }
                         }
                     }
                 }
-            }
-            runOnUiThread {
-                //WalletFragment Functionality --
-                when (currentFragment) {
-                    is ConversationFragmentV2 -> {
-                        currentFragment.onRefreshed(wallet,full)
-                    }
-                    is WalletFragment -> {
-                        currentFragment.onRefreshed(wallet,full)
+                runOnUiThread {
+                    //WalletFragment Functionality --
+                    when (currentFragment) {
+                        is ConversationFragmentV2 -> {
+                            currentFragment.onRefreshed(wallet, full)
+                        }
+                        is WalletFragment -> {
+                            currentFragment.onRefreshed(wallet, full)
+                        }
                     }
                 }
             }

@@ -423,6 +423,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         //SetDataAndType
         fun passSharedMessageToConversationScreen(thread: Recipient)
         fun getNode(): NodeInfo?
+        val isSynced: Boolean
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -3270,7 +3271,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     fun onRefreshed(wallet: Wallet, full: Boolean) {
-        if (full) {
+        if (full && listenerCallback!!.isSynced) {
             if (CheckOnline.isOnline(requireContext())) {
                 check(listenerCallback!!.hasBoundService()) { "WalletService not bound." }
                 val daemonConnected: Wallet.ConnectionStatus = listenerCallback!!.connectionStatus!!
@@ -3290,7 +3291,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         val df = DecimalFormat("#.##")
         val walletSyncPercentage = ((100.00 * walletHeight.toDouble()) / daemonHeight)
         if (CheckOnline.isOnline(requireContext())) {
-            balance = wallet.balance
             val sync: String
             check(listenerCallback!!.hasBoundService()) { "WalletService not bound." }
             val daemonConnected: Wallet.ConnectionStatus = listenerCallback!!.connectionStatus!!
@@ -3310,6 +3310,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     valueOfWallet = "${df.format(walletSyncPercentage)}%"
                     binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false,valueOfWallet)
                 } else {
+                    balance = wallet.balance
                     ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(
                         false
                     )

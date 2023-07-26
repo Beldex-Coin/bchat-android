@@ -952,7 +952,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     override fun forceUpdate(context: Context) {
         try {
             if(getWallet()!=null) {
-                onRefreshed(getWallet(), true)
+                onRefreshed(getWallet(), getWallet()!!.isSynchronized)
             }else{
                 if(!CheckOnline.isOnline(this)) {
                     Toast.makeText(
@@ -1164,12 +1164,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 // WalletService.Observer
 ///////////////////////////
 
-    private var numAccounts = -1
-
     override fun onRefreshed(wallet: Wallet?, full: Boolean): Boolean {
-        if (numAccounts != wallet!!.numAccounts) {
-            numAccounts = wallet.numAccounts
-        }
         try {
             //WalletFragment Functionality --
             val currentFragment = getCurrentFragment()

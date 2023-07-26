@@ -37,9 +37,9 @@ class ProfilePictureView @JvmOverloads constructor(
 
     private val profilePicturesCache = mutableMapOf<String, String?>()
     private val unknownRecipientDrawable = ResourceContactPhoto(R.drawable.ic_profile_default)
-        .asDrawable(context, R.color.text, false)
+        .asDrawable(context, ContactColors.UNKNOWN_COLOR.toConversationColor(context), false)
     private val unknownOpenGroupDrawable = ResourceContactPhoto(R.drawable.ic_notification_)
-        .asDrawable(context, R.color.text, false)
+        .asDrawable(context, ContactColors.UNKNOWN_COLOR.toConversationColor(context), false)
 
     // region Updating
     fun update(recipient: Recipient) {
@@ -138,7 +138,6 @@ class ProfilePictureView @JvmOverloads constructor(
                 ).into(imageView)*/
                 glide.load(placeholder)
                     .placeholder(unknownRecipientDrawable)
-                    .centerCrop()
                     .diskCacheStrategy(DiskCacheStrategy.NONE).transform(
                         CenterInside(),
                         GranularRoundedCorners(20f, 20f, 20f, 20f)

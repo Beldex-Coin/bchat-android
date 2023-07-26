@@ -37,9 +37,9 @@ class ProfilePictureView @JvmOverloads constructor(
 
     private val profilePicturesCache = mutableMapOf<String, String?>()
     private val unknownRecipientDrawable = ResourceContactPhoto(R.drawable.ic_profile_default)
-        .asDrawable(context, ContactColors.UNKNOWN_COLOR.toConversationColor(context), false)
+        .asDrawable(context, R.color.text, false)
     private val unknownOpenGroupDrawable = ResourceContactPhoto(R.drawable.ic_notification_)
-        .asDrawable(context, ContactColors.UNKNOWN_COLOR.toConversationColor(context), false)
+        .asDrawable(context, R.color.text, false)
 
     // region Updating
     fun update(recipient: Recipient) {

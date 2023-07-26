@@ -11,6 +11,7 @@ import com.beldex.libbchat.database.StorageProtocol
 import com.beldex.libbchat.messaging.calls.CallMessageType
 import com.beldex.libbchat.messaging.messages.control.CallMessage
 import com.beldex.libbchat.messaging.utilities.WebRtcUtils
+import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.service.WebRtcCallService
@@ -29,6 +30,8 @@ import com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type.PROVISIO
 class CallMessageProcessor (private val context: Context, private val textSecurePreferences: TextSecurePreferences, lifecycle: Lifecycle, private val storage: StorageProtocol) {
 
     companion object {
+
+        private const val VERY_EXPIRED_TIME = 15 * 60 * 1000L
 
         fun safeStartService(context: Context, intent: Intent) {
             // If the foreground service crashes then it's possible for one of these intents to
@@ -70,6 +73,12 @@ class CallMessageProcessor (private val context: Context, private val textSecure
                         Log.d("Beldex","busy call called 2")
                         insertMissedCall(sender, sentTimestamp)
                     }
+                    continue
+                }
+
+                val isVeryExpired = (nextMessage.sentTimestamp?:0) + VERY_EXPIRED_TIME < MnodeAPI.nowWithOffset
+                if (isVeryExpired) {
+                    Log.e("Beldex", "Dropping very expired call message")
                     continue
                 }
                 when (nextMessage.type) {

@@ -124,7 +124,7 @@ class DefaultConversationRepository @Inject constructor(
         val openGroup = beldexThreadDb.getOpenGroupChat(threadId) ?: return
         for (contact in contacts) {
             val message = VisibleMessage()
-            message.sentTimestamp = System.currentTimeMillis()
+            message.sentTimestamp = MnodeAPI.nowWithOffset
             val openGroupInvitation = OpenGroupInvitation()
             openGroupInvitation.name = openGroup.name
             openGroupInvitation.url = openGroup.joinURL
@@ -141,7 +141,7 @@ class DefaultConversationRepository @Inject constructor(
 
     override fun sentPayment(threadId: Long, amount: String, txnId: String?, recipient: Recipient?) {
         val message = VisibleMessage()
-        message.sentTimestamp = System.currentTimeMillis()
+        message.sentTimestamp = MnodeAPI.nowWithOffset
         val payment = Payment()
         payment.amount = amount
         payment.txnId = txnId

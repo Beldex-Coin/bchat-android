@@ -3,6 +3,7 @@ package com.thoughtcrimes.securesms.conversation.v2
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
+import com.beldex.libbchat.mnode.MnodeAPI
 import io.beldex.bchat.R
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.ExpirationUtil
@@ -66,7 +67,7 @@ class MessageDetailActivity: PassphraseRequiredActionBarActivity() {
             binding.expiresContainer.visibility = View.GONE
         } else {
             binding.expiresContainer.visibility = View.VISIBLE
-            val elapsed = System.currentTimeMillis() - messageRecord!!.expireStarted
+            val elapsed = MnodeAPI.nowWithOffset - messageRecord!!.expireStarted
             val remaining = messageRecord!!.expiresIn - elapsed
 
             val duration = ExpirationUtil.getExpirationDisplayValue(this, Math.max((remaining / 1000).toInt(), 1))

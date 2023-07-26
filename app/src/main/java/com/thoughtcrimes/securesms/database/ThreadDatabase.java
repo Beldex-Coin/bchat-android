@@ -31,6 +31,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.annimon.stream.Stream;
+import com.beldex.libbchat.mnode.MnodeAPI;
 import com.thoughtcrimes.securesms.ApplicationContext;
 import com.thoughtcrimes.securesms.mms.Slide;
 import com.thoughtcrimes.securesms.mms.SlideDeck;
@@ -138,7 +139,7 @@ public class ThreadDatabase extends Database {
 
   private long createThreadForRecipient(Address address, boolean group, int distributionType) {
     ContentValues contentValues = new ContentValues(4);
-    long date                   = System.currentTimeMillis();
+    long date                   = MnodeAPI.getNowWithOffset();
 
     contentValues.put(DATE, date - date % 1000);
     contentValues.put(ADDRESS, address.serialize());
@@ -284,7 +285,7 @@ public class ThreadDatabase extends Database {
     contentValues.put(UNREAD_COUNT, 0);
 
     if (lastSeen) {
-      contentValues.put(LAST_SEEN, System.currentTimeMillis());
+      contentValues.put(LAST_SEEN, MnodeAPI.getNowWithOffset());
     }
 
     SQLiteDatabase db = databaseHelper.getWritableDatabase();
@@ -502,7 +503,7 @@ public class ThreadDatabase extends Database {
     SQLiteDatabase db = databaseHelper.getWritableDatabase();
     ContentValues contentValues = new ContentValues(1);
     if (timestamp == -1) {
-      contentValues.put(LAST_SEEN, System.currentTimeMillis());
+      contentValues.put(LAST_SEEN, MnodeAPI.getNowWithOffset());
     } else {
       contentValues.put(LAST_SEEN, timestamp);
     }

@@ -111,6 +111,7 @@ import kotlin.math.sqrt
 import androidx.lifecycle.Observer
 import com.beldex.libbchat.messaging.jobs.AttachmentDownloadJob
 import com.beldex.libbchat.messaging.jobs.JobQueue
+import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.*
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.contacts.SelectContactsActivity
@@ -1777,7 +1778,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             (activity as HomeActivity).recipientDatabase.setExpireMessages(thread, expirationTime)
             val message = ExpirationTimerUpdate(expirationTime)
             message.recipient = thread.address.serialize()
-            message.sentTimestamp = System.currentTimeMillis()
+            message.sentTimestamp = MnodeAPI.nowWithOffset
             val expiringMessageManager =
                 ApplicationContext.getInstance(requireActivity()).expiringMessageManager
             expiringMessageManager.setExpirationTimer(message)
@@ -2581,7 +2582,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
         // Create the message
         val message = VisibleMessage()
-        message.sentTimestamp = System.currentTimeMillis()
+        message.sentTimestamp = MnodeAPI.nowWithOffset
         message.text = body
         val quote = quotedMessage?.let {
             val quotedAttachments =
@@ -2664,7 +2665,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
         // Create the message
         val message = VisibleMessage()
-        message.sentTimestamp = System.currentTimeMillis()
+        message.sentTimestamp = MnodeAPI.nowWithOffset
         message.text = text
         val outgoingTextMessage = OutgoingTextMessage.from(message, viewModel.recipient)
         // Clear the input bar
@@ -2816,7 +2817,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (recipient.isGroupRecipient) {
             return
         }
-        val timestamp = System.currentTimeMillis()
+        val timestamp = MnodeAPI.nowWithOffset
         val kind = DataExtractionNotification.Kind.MediaSaved(timestamp)
         val message = DataExtractionNotification(kind)
         MessageSender.send(message, recipient.address)

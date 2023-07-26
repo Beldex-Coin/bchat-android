@@ -52,6 +52,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import com.beldex.libbchat.mnode.MnodeAPI;
 import com.beldex.libsignal.utilities.Log;
 import com.codewaves.stickyheadergrid.StickyHeaderGridLayoutManager;
 import com.google.android.material.tabs.TabLayout;
@@ -390,7 +391,7 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
 
     private void sendMediaSavedNotificationIfNeeded() {
       if (recipient.isGroupRecipient()) return;
-      DataExtractionNotification message = new DataExtractionNotification(new DataExtractionNotification.Kind.MediaSaved(System.currentTimeMillis()));
+      DataExtractionNotification message = new DataExtractionNotification(new DataExtractionNotification.Kind.MediaSaved(MnodeAPI.getNowWithOffset()));
       MessageSender.send(message, recipient.getAddress());
     }
 

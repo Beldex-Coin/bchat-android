@@ -39,6 +39,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.beldex.libbchat.mnode.MnodeAPI;
 import com.thoughtcrimes.securesms.ApplicationContext;
 import com.thoughtcrimes.securesms.contactshare.ContactUtil;
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2;
@@ -146,7 +147,7 @@ public class DefaultMessageNotifier implements MessageNotifier {
       intent.putExtra(ConversationFragmentV2.ADDRESS, recipient.getAddress());
       intent.putExtra(ConversationFragmentV2.THREAD_ID, threadId);
       intent.putExtra(HomeActivity.SHORTCUT_LAUNCHER,true); //- New
-      intent.setData((Uri.parse("custom://" + System.currentTimeMillis())));
+      intent.setData((Uri.parse("custom://" + MnodeAPI.getNowWithOffset())));
 
       FailedNotificationBuilder builder = new FailedNotificationBuilder(context, TextSecurePreferences.getNotificationPrivacy(context), intent);
       ((NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE))

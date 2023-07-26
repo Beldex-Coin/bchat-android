@@ -67,7 +67,7 @@ object MessageSender {
         Log.d("Beldex","bchat id validation -- get user public key")
         // Set the timestamp, sender and recipient
         if (message.sentTimestamp == null) {
-            message.sentTimestamp = System.currentTimeMillis() // Visible messages will already have their sent timestamp set
+            message.sentTimestamp = MnodeAPI.nowWithOffset // Visible messages will already have their sent timestamp set
         }
         Log.d("Beldex","bchat id validation -- check send id and user public key")
         message.sender = userPublicKey
@@ -200,7 +200,7 @@ object MessageSender {
         val deferred = deferred<Unit, Exception>()
         val storage = MessagingModuleConfiguration.shared.storage
         if (message.sentTimestamp == null) {
-            message.sentTimestamp = System.currentTimeMillis()
+            message.sentTimestamp = MnodeAPI.nowWithOffset
         }
         message.sender = storage.getUserPublicKey()
         // Set the failure handler (need it here already for precondition failure handling)

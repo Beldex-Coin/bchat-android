@@ -37,6 +37,7 @@ import com.beldex.libbchat.messaging.messages.signal.IncomingTextMessage;
 import com.beldex.libbchat.messaging.messages.signal.OutgoingTextMessage;
 import com.beldex.libbchat.messaging.sending_receiving.MessageDecrypter;
 
+import com.beldex.libbchat.mnode.MnodeAPI;
 import com.beldex.libbchat.utilities.Address;
 import com.beldex.libbchat.utilities.IdentityKeyMismatch;
 import com.beldex.libbchat.utilities.IdentityKeyMismatchList;
@@ -209,7 +210,7 @@ public class SmsDatabase extends MessagingDatabase {
 
   @Override
   public void markExpireStarted(long id) {
-    markExpireStarted(id, System.currentTimeMillis());
+    markExpireStarted(id, MnodeAPI.getNowWithOffset());
   }
 
   @Override
@@ -522,7 +523,7 @@ public class SmsDatabase extends MessagingDatabase {
     contentValues.put(THREAD_ID, threadId);
     contentValues.put(BODY, message.getMessageBody());
     Log.d("Beldex","insertMessageOutbox message.getMessageBody() " + message.getMessageBody());
-    contentValues.put(DATE_RECEIVED, System.currentTimeMillis());
+    contentValues.put(DATE_RECEIVED, MnodeAPI.getNowWithOffset());
     contentValues.put(DATE_SENT, message.getSentTimestampMillis());
     contentValues.put(READ, 1);
     contentValues.put(TYPE, type);
@@ -742,11 +743,11 @@ public class SmsDatabase extends MessagingDatabase {
       return new SmsMessageRecord(id, message.getMessageBody(),
 
               message.getRecipient(), message.getRecipient(),
-              System.currentTimeMillis(), System.currentTimeMillis(),
+              MnodeAPI.getNowWithOffset(), MnodeAPI.getNowWithOffset(),
               0, message.isSecureMessage() ? MmsSmsColumns.Types.getOutgoingEncryptedMessageType() : MmsSmsColumns.Types.getOutgoingSmsMessageType(),
               threadId, 0, new LinkedList<IdentityKeyMismatch>(),
               message.getExpiresIn(),
-              System.currentTimeMillis(), 0, false);
+              MnodeAPI.getNowWithOffset(), 0, false);
     }
   }
 

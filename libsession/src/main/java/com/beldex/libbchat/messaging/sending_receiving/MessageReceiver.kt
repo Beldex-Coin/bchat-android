@@ -6,6 +6,7 @@ import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.messages.Message
 import com.beldex.libbchat.messaging.messages.control.*
 import com.beldex.libbchat.messaging.messages.visible.VisibleMessage
+import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libsignal.crypto.PushTransportDetails
 import com.beldex.libsignal.protos.SignalServiceProtos
 
@@ -126,7 +127,7 @@ object MessageReceiver {
         message.sender = sender
         message.recipient = userPublicKey
         message.sentTimestamp = envelope.timestamp
-        message.receivedTimestamp = if (envelope.hasServerTimestamp()) envelope.serverTimestamp else System.currentTimeMillis()
+        message.receivedTimestamp = if (envelope.hasServerTimestamp()) envelope.serverTimestamp else MnodeAPI.nowWithOffset
         message.groupPublicKey = groupPublicKey
         message.openGroupServerMessageID = openGroupServerID
         // Validate

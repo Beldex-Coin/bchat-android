@@ -4,6 +4,7 @@ import com.beldex.libbchat.utilities.GroupUtil
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
 import com.beldex.libbchat.messaging.utilities.Data
+import com.beldex.libbchat.mnode.MnodeAPI
 
 class GroupAvatarDownloadJob(val room: String, val server: String) : Job {
 
@@ -19,7 +20,7 @@ class GroupAvatarDownloadJob(val room: String, val server: String) : Job {
             val bytes = OpenGroupAPIV2.downloadOpenGroupProfilePicture(info.id, server).get()
             val groupId = GroupUtil.getEncodedOpenGroupID("$server.$room".toByteArray())
             storage.updateProfilePicture(groupId, bytes)
-            storage.updateTimestampUpdated(groupId, System.currentTimeMillis())
+            storage.updateTimestampUpdated(groupId, MnodeAPI.nowWithOffset)
             delegate?.handleJobSucceeded(this)
         } catch (e: Exception) {
             delegate?.handleJobFailed(this, e)

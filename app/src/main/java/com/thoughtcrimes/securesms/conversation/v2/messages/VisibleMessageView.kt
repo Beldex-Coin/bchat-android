@@ -27,6 +27,7 @@ import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewVisibleMessageBinding
 import com.beldex.libbchat.messaging.contacts.Contact.ContactContext
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
+import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.ViewUtil
 import com.beldex.libsignal.utilities.ThreadUtils
@@ -236,7 +237,7 @@ class VisibleMessageView : LinearLayout {
             if (message.expireStarted > 0) {
                 binding.expirationTimerView.setExpirationTime(message.expireStarted, message.expiresIn)
                 binding.expirationTimerView.startAnimation()
-                if (message.expireStarted + message.expiresIn <= System.currentTimeMillis()) {
+                if (message.expireStarted + message.expiresIn <= MnodeAPI.nowWithOffset) {
                     ApplicationContext.getInstance(context).expiringMessageManager.checkSchedule()
                 }
             } else if (!message.isMediaPending) {

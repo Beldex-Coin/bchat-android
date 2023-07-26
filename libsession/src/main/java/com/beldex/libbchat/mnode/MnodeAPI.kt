@@ -42,6 +42,10 @@ object MnodeAPI {
      */
     internal var clockOffset = 0L
 
+    @JvmStatic
+    public val nowWithOffset
+        get() = System.currentTimeMillis() + clockOffset
+
     // Settings
     private val maxRetryCount = 6
     private val minimumMnodePoolCount = 12

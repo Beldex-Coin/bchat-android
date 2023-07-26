@@ -26,6 +26,7 @@ import android.os.Bundle;
 
 import androidx.core.app.RemoteInput;
 
+import com.beldex.libbchat.mnode.MnodeAPI;
 import com.thoughtcrimes.securesms.ApplicationContext;
 import com.thoughtcrimes.securesms.database.MessagingDatabase;
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent;
@@ -84,7 +85,7 @@ public class AndroidAutoReplyReceiver extends BroadcastReceiver {
 
           VisibleMessage message = new VisibleMessage();
           message.setText(responseText.toString());
-          message.setSentTimestamp(System.currentTimeMillis());
+          message.setSentTimestamp(MnodeAPI.getNowWithOffset());
           MessageSender.send(message, recipient.getAddress());
 
           if (recipient.isGroupRecipient()) {
@@ -98,7 +99,7 @@ public class AndroidAutoReplyReceiver extends BroadcastReceiver {
           } else {
             Log.w("AndroidAutoReplyReceiver", "Sending regular message ");
             OutgoingTextMessage reply = OutgoingTextMessage.from(message, recipient);
-            DatabaseComponent.get(context).smsDatabase().insertMessageOutbox(replyThreadId, reply, false, System.currentTimeMillis(), null,true);
+            DatabaseComponent.get(context).smsDatabase().insertMessageOutbox(replyThreadId, reply, false, MnodeAPI.getNowWithOffset(), null,true);
           }
 
           List<MessagingDatabase.MarkedMessageInfo> messageIds = DatabaseComponent.get(context).threadDatabase().setRead(replyThreadId, true);

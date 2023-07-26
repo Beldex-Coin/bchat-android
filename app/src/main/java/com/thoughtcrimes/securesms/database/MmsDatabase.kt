@@ -19,6 +19,7 @@ import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentId
 import com.beldex.libbchat.messaging.sending_receiving.attachments.DatabaseAttachment
 import com.beldex.libbchat.messaging.sending_receiving.link_preview.LinkPreview
 import com.beldex.libbchat.messaging.sending_receiving.quotes.QuoteModel
+import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.Address.Companion.UNKNOWN
 import com.beldex.libbchat.utilities.Address.Companion.fromExternal
@@ -36,6 +37,7 @@ import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libbchat.utilities.recipients.RecipientFormattingException
 import com.beldex.libsignal.utilities.JsonUtil
 import com.beldex.libsignal.utilities.Log
+import com.beldex.libsignal.utilities.Mnode
 import com.beldex.libsignal.utilities.ThreadUtils.queue
 import com.beldex.libsignal.utilities.guava.Optional
 import com.thoughtcrimes.securesms.attachments.MmsNotificationAttachment
@@ -362,7 +364,7 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
     }
 
     override fun markExpireStarted(messageId: Long) {
-        markExpireStarted(messageId, System.currentTimeMillis())
+        markExpireStarted(messageId, MnodeAPI.nowWithOffset)
     }
 
     override fun markExpireStarted(messageId: Long, startedTimestamp: Long) {
@@ -779,7 +781,7 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
         // In social groups messages should be sorted by their server timestamp
         var receivedTimestamp = serverTimestamp
         if (serverTimestamp == 0L) {
-            receivedTimestamp = System.currentTimeMillis()
+            receivedTimestamp = MnodeAPI.nowWithOffset
         }
         contentValues.put(DATE_RECEIVED, receivedTimestamp)
         contentValues.put(SUBSCRIPTION_ID, message.subscriptionId)
@@ -1243,7 +1245,7 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
                 val slideDeck = SlideDeck(context, message!!.attachments)
                 return MediaMmsMessageRecord(
                     id, message.recipient, message.recipient,
-                    1, System.currentTimeMillis(), System.currentTimeMillis(),
+                    1, MnodeAPI.nowWithOffset, MnodeAPI.nowWithOffset,
                     0, threadId, message.body,
                     slideDeck, slideDeck.slides.size,
                     if (message.isSecure) MmsSmsColumns.Types.getOutgoingEncryptedMessageType() else MmsSmsColumns.Types.getOutgoingSmsMessageType(),
@@ -1251,7 +1253,7 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
                     LinkedList(),
                     message.subscriptionId,
                     message.expiresIn,
-                    System.currentTimeMillis(), 0,
+                    MnodeAPI.nowWithOffset, 0,
                     if (message.outgoingQuote != null) Quote(
                         message.outgoingQuote!!.id,
                         message.outgoingQuote!!.author,

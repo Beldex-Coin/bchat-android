@@ -11,6 +11,7 @@ import com.beldex.libbchat.database.StorageProtocol
 import com.beldex.libbchat.messaging.calls.CallMessageType
 import com.beldex.libbchat.messaging.messages.control.CallMessage
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
+import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.Debouncer
 import com.beldex.libbchat.utilities.Util
@@ -607,7 +608,7 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
         }
     }
 
-    fun insertCallMessage(threadPublicKey: String, callMessageType: CallMessageType, signal: Boolean = false, sentTimestamp: Long = System.currentTimeMillis()) {
+    fun insertCallMessage(threadPublicKey: String, callMessageType: CallMessageType, signal: Boolean = false, sentTimestamp: Long = MnodeAPI.nowWithOffset) {
         storage.insertCallMessage(threadPublicKey, callMessageType, sentTimestamp)
     }
 

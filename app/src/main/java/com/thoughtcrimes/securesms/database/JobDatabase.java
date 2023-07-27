@@ -138,7 +138,10 @@ public class JobDatabase extends Database {
     ContentValues contentValues = new ContentValues();
     contentValues.put(Jobs.IS_RUNNING, 0);
 
-    databaseHelper.getWritableDatabase().update(Jobs.TABLE_NAME, contentValues, null, null);
+    String   query = Jobs.IS_RUNNING + " = ?";
+    String[] args = new String[] { "1" };
+
+    databaseHelper.getWritableDatabase().update(Jobs.TABLE_NAME, contentValues, query, args);
   }
 
   public synchronized void deleteJobs(@NonNull List<String> jobIds) {

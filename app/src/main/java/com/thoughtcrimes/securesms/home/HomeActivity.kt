@@ -80,6 +80,7 @@ import com.thoughtcrimes.securesms.home.search.GlobalSearchAdapter
 import com.thoughtcrimes.securesms.home.search.GlobalSearchInputLayout
 import com.thoughtcrimes.securesms.home.search.GlobalSearchViewModel
 import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
+import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
 import com.thoughtcrimes.securesms.model.NetworkType
 import com.thoughtcrimes.securesms.model.PendingTransaction
 import com.thoughtcrimes.securesms.model.TransactionInfo
@@ -96,6 +97,7 @@ import com.thoughtcrimes.securesms.seed.SeedPermissionActivity
 import com.thoughtcrimes.securesms.util.ActivityDispatcher
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.IP2Country
+import com.thoughtcrimes.securesms.util.NodePinger
 import com.thoughtcrimes.securesms.util.push
 import com.thoughtcrimes.securesms.util.show
 import com.thoughtcrimes.securesms.wallet.CheckOnline
@@ -113,7 +115,6 @@ import com.thoughtcrimes.securesms.wallet.send.SendFragment
 import com.thoughtcrimes.securesms.wallet.service.WalletService
 import com.thoughtcrimes.securesms.wallet.settings.WalletSettings
 import com.thoughtcrimes.securesms.wallet.utils.LegacyStorageHelper
-import com.thoughtcrimes.securesms.wallet.utils.common.LoadingActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
@@ -131,6 +132,9 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import java.io.File
+import java.util.ArrayList
+import java.util.Collections
+import java.util.Random
 import javax.inject.Inject
 
 
@@ -1046,6 +1050,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         if (nodes != null) {
             for (node in nodes) {
                 if (node.isFavourite) favouriteNodes.add(node)
+                Log.d("Close-Wallet-> 2-iii", node!!.host)
             }
         }
         saveFavourites()
@@ -1777,10 +1782,69 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     private var walletSettingsResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            val intent = Intent(this, LoadingActivity::class.java)
-            push(intent)
-            finish()
+            pingSelectedNode()
         }
+    }
+
+    private fun pingSelectedNode() {
+        val PING_SELECTED = 0
+        val FIND_BEST = 1
+        AsyncFindBestNode(PING_SELECTED, FIND_BEST).execute<Int>(PING_SELECTED)
+    }
+
+    inner class AsyncFindBestNode(val PING_SELECTED: Int, val FIND_BEST: Int) :
+        AsyncTaskCoroutine<Int?, NodeInfo?>() {
+        override fun onPreExecute() {
+            super.onPreExecute()
+        }
+
+        override fun doInBackground(vararg params: Int?): NodeInfo? {
+            val favourites: Set<NodeInfo?> = orPopulateFavourites
+            var selectedNode: NodeInfo?
+            if (params[0] == FIND_BEST) {
+                selectedNode = autoselect(favourites)
+            } else if (params[0] == PING_SELECTED) {
+                selectedNode = getNode()
+                if (selectedNode == null) {
+                    Log.d("Beldex", "selected node null")
+                    for (node in favourites) {
+                        if (node!!.isSelected) {
+                            selectedNode = node
+                            break
+                        }
+                    }
+                }
+                if (selectedNode == null) { // autoselect
+                    selectedNode = autoselect(favourites)
+                } else {
+                    //Steve Josephh21
+                    if(selectedNode!=null) {
+                        selectedNode!!.testRpcService()
+                    }
+                }
+            } else throw java.lang.IllegalStateException()
+            return if (selectedNode != null && selectedNode.isValid) {
+                setNode(selectedNode)
+                selectedNode
+            } else {
+                setNode(null)
+                null
+            }
+        }
+
+        override fun onPostExecute(result: NodeInfo?) {
+            Log.d("Beldex", "daemon connected to  ${result?.host}")
+        }
+
+    }
+
+    fun autoselect(nodes: Set<NodeInfo?>): NodeInfo? {
+        if (nodes.isEmpty()) return null
+        NodePinger.execute(nodes, null)
+        val nodeList: ArrayList<NodeInfo?> = ArrayList<NodeInfo?>(nodes)
+        Collections.sort(nodeList, NodeInfo.BestNodeComparator)
+        val rnd = Random().nextInt(nodeList.size)
+        return nodeList[rnd]
     }
 
     override fun walletOnBackPressed(){

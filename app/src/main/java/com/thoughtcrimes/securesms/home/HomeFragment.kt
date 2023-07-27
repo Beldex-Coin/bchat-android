@@ -909,12 +909,12 @@ class HomeFragment : Fragment(), ConversationClickListener,
                 selectedNode = autoselect(favourites)
             } else if (params[0] == PING_SELECTED) {
                 selectedNode = activityCallback!!.getNode()
-                if (selectedNode == null)
-                    Log.d("Beldex","selected node $selectedNode")
-                for (node in favourites) {
-                    if (node!!.isSelected) {
-                        selectedNode = node
-                        break
+                if (selectedNode == null) {
+                    for (node in favourites) {
+                        if (node!!.isSelected) {
+                            selectedNode = node
+                            break
+                        }
                     }
                 }
                 if (selectedNode == null) { // autoselect

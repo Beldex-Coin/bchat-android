@@ -1,6 +1,7 @@
 package com.thoughtcrimes.securesms.crypto;
 
 
+import static com.beldex.libsignal.crypto.CipherUtil.CIPHER_LOCK;
 import android.os.Build;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
@@ -45,12 +46,11 @@ public final class KeyStoreHelper {
   private static final String ANDROID_KEY_STORE = "AndroidKeyStore";
   private static final String KEY_ALIAS         = "SignalSecret";
 
-  private static final Object lock = new Object();
   public static SealedData seal(@NonNull byte[] input) {
     SecretKey secretKey = getOrCreateKeyStoreEntry();
 
     try {
-      synchronized (lock) {
+      synchronized (CIPHER_LOCK) {
         Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
         cipher.init(Cipher.ENCRYPT_MODE, secretKey);
 
@@ -68,7 +68,7 @@ public final class KeyStoreHelper {
     SecretKey secretKey = getKeyStoreEntry();
 
     try {
-      synchronized (lock) {
+      synchronized (CIPHER_LOCK) {
         Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
         cipher.init(Cipher.DECRYPT_MODE, secretKey, new GCMParameterSpec(128, sealedData.iv));
 
@@ -137,6 +137,7 @@ public final class KeyStoreHelper {
     }
   }
 
+
   private static boolean hasKeyStoreEntry() {
     try {
       KeyStore ks = KeyStore.getInstance(ANDROID_KEY_STORE);
@@ -201,7 +202,5 @@ public final class KeyStoreHelper {
         return Base64.decode(p.getValueAsString(), Base64.NO_WRAP | Base64.NO_PADDING);
       }
     }
-
   }
-
 }

@@ -61,11 +61,7 @@ import com.thoughtcrimes.securesms.dependencies.DatabaseComponent;
 import com.thoughtcrimes.securesms.dependencies.DatabaseModule;
 import com.thoughtcrimes.securesms.groups.OpenGroupManager;
 import com.thoughtcrimes.securesms.home.HomeActivity;
-import com.thoughtcrimes.securesms.jobmanager.JobManager;
-import com.thoughtcrimes.securesms.jobmanager.impl.JsonDataSerializer;
 import com.thoughtcrimes.securesms.jobmanager.impl.NetworkConstraint;
-import com.thoughtcrimes.securesms.jobs.FastJobStorage;
-import com.thoughtcrimes.securesms.jobs.JobManagerFactories;
 import com.thoughtcrimes.securesms.logging.AndroidLogger;
 import com.thoughtcrimes.securesms.logging.PersistentLogger;
 import com.thoughtcrimes.securesms.logging.UncaughtExceptionLogger;
@@ -127,7 +123,6 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
     private ExpiringMessageManager expiringMessageManager;
     private TypingStatusRepository typingStatusRepository;
     private TypingStatusSender typingStatusSender;
-    private JobManager jobManager;
     private ReadReceiptManager readReceiptManager;
     private ProfileManager profileManager;
     public MessageNotifier messageNotifier = null;
@@ -222,7 +217,6 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
         initializeProfileManager();
         initializePeriodicTasks();
         SSKEnvironment.Companion.configure(getTypingStatusRepository(), getReadReceiptManager(), getProfileManager(), messageNotifier, getExpiringMessageManager());
-        initializeJobManager();
         initializeWebRtc();
         initializeBlobProvider();
         resubmitProfilePictureIfNeeded();
@@ -269,10 +263,6 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
 
     public void initializeLocaleParser() {
         LocaleParser.Companion.configure(new LocaleParseHelper());
-    }
-
-    public JobManager getJobManager() {
-        return jobManager;
     }
 
     public ExpiringMessageManager getExpiringMessageManager() {
@@ -337,16 +327,6 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
     private void initializeCrashHandling() {
         final Thread.UncaughtExceptionHandler originalHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionLogger(originalHandler));
-    }
-
-    private void initializeJobManager() {
-        this.jobManager = new JobManager(this, new JobManager.Configuration.Builder()
-            .setDataSerializer(new JsonDataSerializer())
-            .setJobFactories(JobManagerFactories.getJobFactories(this))
-            .setConstraintFactories(JobManagerFactories.getConstraintFactories(this))
-            .setConstraintObservers(JobManagerFactories.getConstraintObservers(this))
-            .setJobStorage(new FastJobStorage(jobDatabase))
-            .build());
     }
 
     private void initializeExpiringMessageManager() {

@@ -121,7 +121,7 @@ class JobQueue : JobDelegate {
                     is NotifyPNServerJob, is AttachmentUploadJob, is MessageSendJob -> {
                         txQueue.send(job)
                     }
-                    is AttachmentDownloadJob -> {
+                    is RetrieveProfileAvatarJob,is AttachmentDownloadJob -> {
                         mediaQueue.send(job)
                     }
                     is GroupAvatarDownloadJob,
@@ -225,6 +225,7 @@ class JobQueue : JobDelegate {
             GroupAvatarDownloadJob.KEY,
             BackgroundGroupAddJob.KEY,
             OpenGroupDeleteJob.KEY,
+            RetrieveProfileAvatarJob.KEY,
         )
         allJobTypes.forEach { type ->
             resumePendingJobs(type)

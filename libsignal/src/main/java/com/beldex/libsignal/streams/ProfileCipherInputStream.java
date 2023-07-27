@@ -1,5 +1,7 @@
 package com.beldex.libsignal.streams;
 
+import static com.beldex.libsignal.crypto.CipherUtil.CIPHER_LOCK;
+
 import com.beldex.libsignal.utilities.Util;
 
 import java.io.FilterInputStream;
@@ -62,23 +64,23 @@ public class ProfileCipherInputStream extends FilterInputStream {
       byte[] ciphertext = new byte[outputLength / 2];
       int    read       = in.read(ciphertext, 0, ciphertext.length);
 
-      if (read == -1) {
-        if (cipher.getOutputSize(0) > outputLength) {
-          throw new AssertionError("Need: " + cipher.getOutputSize(0) + " but only have: " + outputLength);
-        }
+      synchronized (CIPHER_LOCK) {
+        if (read == -1) {
+          if (cipher.getOutputSize(0) > outputLength) {
+            throw new AssertionError("Need: " + cipher.getOutputSize(0) + " but only have: " + outputLength);
+          }
 
-        finished = true;
-        return cipher.doFinal(output, outputOffset);
-      } else {
-        if (cipher.getOutputSize(read) > outputLength) {
-          throw new AssertionError("Need: " + cipher.getOutputSize(read) + " but only have: " + outputLength);
-        }
+          finished = true;
+          return cipher.doFinal(output, outputOffset);
+        } else {
+          if (cipher.getOutputSize(read) > outputLength) {
+            throw new AssertionError("Need: " + cipher.getOutputSize(read) + " but only have: " + outputLength);
+          }
 
-        return cipher.update(ciphertext, 0, read, output, outputOffset);
+          return cipher.update(ciphertext, 0, read, output, outputOffset);
+        }
       }
-    } catch (IllegalBlockSizeException e) {
-      throw new AssertionError(e);
-    } catch(ShortBufferException e) {
+    } catch (IllegalBlockSizeException | ShortBufferException e) {
       throw new AssertionError(e);
     } catch (BadPaddingException e) {
       throw new IOException(e);

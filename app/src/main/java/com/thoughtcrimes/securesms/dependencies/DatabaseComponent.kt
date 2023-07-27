@@ -33,7 +33,6 @@ interface DatabaseComponent {
     fun recipientDatabase(): RecipientDatabase
     fun groupReceiptDatabase(): GroupReceiptDatabase
     fun searchDatabase(): SearchDatabase
-    fun jobDatabase(): JobDatabase
     fun beldexAPIDatabase(): BeldexAPIDatabase
     fun beldexMessageDatabase(): BeldexMessageDatabase
     fun beldexThreadDatabase(): BeldexThreadDatabase

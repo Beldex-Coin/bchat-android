@@ -53,7 +53,6 @@ import com.beldex.libsignal.utilities.ThreadUtils;
 import org.signal.aesgcmprovider.AesGcmProvider;
 import com.thoughtcrimes.securesms.components.TypingStatusSender;
 import com.thoughtcrimes.securesms.crypto.KeyPairUtilities;
-import com.thoughtcrimes.securesms.database.JobDatabase;
 import com.thoughtcrimes.securesms.database.BeldexAPIDatabase;
 import com.thoughtcrimes.securesms.database.Storage;
 import com.thoughtcrimes.securesms.database.helpers.SQLCipherOpenHelper;
@@ -75,7 +74,6 @@ import com.thoughtcrimes.securesms.notifications.OptimizedMessageNotifier;
 import com.thoughtcrimes.securesms.providers.BlobProvider;
 import com.thoughtcrimes.securesms.service.ExpiringMessageManager;
 import com.thoughtcrimes.securesms.service.KeyCachingService;
-import com.thoughtcrimes.securesms.service.UpdateApkRefreshListener;
 import com.thoughtcrimes.securesms.sskenvironment.ProfileManager;
 import com.thoughtcrimes.securesms.sskenvironment.ReadReceiptManager;
 import com.thoughtcrimes.securesms.sskenvironment.TypingStatusRepository;
@@ -137,7 +135,6 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
     @Inject BeldexAPIDatabase beldexAPIDatabase;
     @Inject Storage storage;
     @Inject MessageDataProvider messageDataProvider;
-    @Inject JobDatabase jobDatabase;
     //New Line
     @Inject TextSecurePreferences textSecurePreferences;
     CallMessageProcessor callMessageProcessor;
@@ -351,10 +348,6 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
 
     private void initializePeriodicTasks() {
         BackgroundPollWorker.schedulePeriodic(this);
-
-        if (BuildConfig.PLAY_STORE_DISABLED) {
-            UpdateApkRefreshListener.schedule(this);
-        }
     }
 
     private void initializeWebRtc() {

@@ -97,7 +97,8 @@ object MnodeAPI {
             ThreadUtils.queue {
                 val payload = mapOf( "method" to method.rawValue, "params" to parameters )
                 try {
-                    val json = HTTP.execute(HTTP.Verb.POST, url, payload)
+                    val response = HTTP.execute(HTTP.Verb.POST, url, payload).toString()
+                    val json = JsonUtil.fromJson(response, Map::class.java)
                     deferred.resolve(json)
                 } catch (exception: Exception) {
                     val httpRequestFailedException = exception as? HTTP.HTTPRequestFailedException
@@ -131,7 +132,12 @@ object MnodeAPI {
             deferred<Mnode, Exception>()
             ThreadUtils.queue {
                 try {
-                    val json = HTTP.execute(HTTP.Verb.POST, url, parameters, useSeedNodeConnection = true)
+                    val response = HTTP.execute(HTTP.Verb.POST, url, parameters, useSeedNodeConnection = true)
+                    val json = try {
+                        JsonUtil.fromJson(response, Map::class.java)
+                    } catch (exception: Exception) {
+                        mapOf( "result" to response.toString())
+                    }
                     //-Log.d("beldex","Json MnodeAPI $json")
                     val intermediate = json["result"] as? Map<*, *>
                     val rawMnodes = intermediate?.get("master_node_states") as? List<*>

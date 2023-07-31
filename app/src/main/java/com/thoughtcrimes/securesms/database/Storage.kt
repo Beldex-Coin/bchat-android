@@ -53,14 +53,6 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
         return Profile(displayName, profileKey, profilePictureUrl)
     }
 
-    override fun setUserProfilePictureURL(newValue: String) {
-        val ourRecipient = Address.fromSerialized(getUserPublicKey()!!).let {
-            Recipient.from(context, it, false)
-        }
-        TextSecurePreferences.setProfilePictureURL(context, newValue)
-        JobQueue.shared.add(RetrieveProfileAvatarJob(newValue, ourRecipient.address))
-    }
-
     override fun setProfileAvatar(recipient: Recipient, profileAvatar: String?) {
         val database = DatabaseComponent.get(context).recipientDatabase()
         database.setProfileAvatar(recipient, profileAvatar)

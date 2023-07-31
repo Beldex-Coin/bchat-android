@@ -1,12 +1,12 @@
 package com.beldex.libbchat.messaging.jobs
 
-import android.text.TextUtils
 import com.beldex.libbchat.avatars.AvatarHelper
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.utilities.Data
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.DownloadUtilities
-import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setProfileAvatarId
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setProfilePictureURL
 import com.beldex.libbchat.utilities.Util
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.streams.ProfileCipherInputStream
@@ -17,7 +17,7 @@ import java.io.FileOutputStream
 import java.io.InputStream
 import java.security.SecureRandom
 
-class RetrieveProfileAvatarJob(val profileAvatar: String, val recipientAddress: Address): Job {
+class RetrieveProfileAvatarJob(private val profileAvatar: String?, private val recipientAddress: Address): Job {
     override var delegate: JobDelegate? = null
     override var id: String? = null
     override var failureCount: Int = 0
@@ -28,8 +28,8 @@ class RetrieveProfileAvatarJob(val profileAvatar: String, val recipientAddress: 
         val KEY: String = "RetrieveProfileAvatarJob"
 
         // Keys used for database storage
-        private val PROFILE_AVATAR_KEY = "profileAvatar"
-        private val RECEIPIENT_ADDRESS_KEY = "recipient"
+        private const val PROFILE_AVATAR_KEY = "profileAvatar"
+        private const val RECEIPIENT_ADDRESS_KEY = "recipient"
     }
 
     override fun execute() {
@@ -52,10 +52,14 @@ class RetrieveProfileAvatarJob(val profileAvatar: String, val recipientAddress: 
             return
         }
 
-        if (TextUtils.isEmpty(profileAvatar)) {
+        if (profileAvatar.isNullOrEmpty()) {
             Log.w(TAG, "Removing profile avatar for: " + recipient.address.serialize())
+            if (recipient.isLocalNumber) {
+                setProfileAvatarId(context, SecureRandom().nextInt())
+                setProfilePictureURL(context, null)
+            }
             AvatarHelper.delete(context, recipient.address)
-            storage.setProfileAvatar(recipient, profileAvatar)
+            storage.setProfileAvatar(recipient, null)
             return
         }
 
@@ -73,7 +77,8 @@ class RetrieveProfileAvatarJob(val profileAvatar: String, val recipientAddress: 
         }
 
         if (recipient.isLocalNumber) {
-            TextSecurePreferences.setProfileAvatarId(context, SecureRandom().nextInt())
+            setProfileAvatarId(context, SecureRandom().nextInt())
+            setProfilePictureURL(context, profileAvatar)
         }
         storage.setProfileAvatar(recipient, profileAvatar)
     }
@@ -91,7 +96,7 @@ class RetrieveProfileAvatarJob(val profileAvatar: String, val recipientAddress: 
 
     class Factory: Job.Factory<RetrieveProfileAvatarJob> {
         override fun create(data: Data): RetrieveProfileAvatarJob {
-            val profileAvatar = data.getString(PROFILE_AVATAR_KEY)
+            val profileAvatar = if (data.hasString(PROFILE_AVATAR_KEY)) { data.getString(PROFILE_AVATAR_KEY) } else { null }
             val recipientAddress = Address.fromSerialized(data.getString(RECEIPIENT_ADDRESS_KEY))
             return RetrieveProfileAvatarJob(profileAvatar, recipientAddress)
         }

@@ -31,6 +31,7 @@ import com.beldex.libbchat.utilities.ProfileKeyUtil
 import com.beldex.libbchat.utilities.ProfilePictureUtilities
 import com.beldex.libbchat.utilities.SSKEnvironment.ProfileManagerProtocol
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.beldex.libbchat.utilities.truncateIdForDisplay
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
 import com.thoughtcrimes.securesms.applock.AppLockDetailsActivity
 import com.thoughtcrimes.securesms.avatar.AvatarSelection
@@ -76,13 +77,17 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
     private lateinit var animation2: Animation
     private var isFrontOfCardShowing = true
 
+    private fun getDisplayName(): String =
+        TextSecurePreferences.getProfileName(this) ?: truncateIdForDisplay(hexEncodedPublicKey)
+
     // region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?, isReady: Boolean) {
         super.onCreate(savedInstanceState, isReady)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setUpActionBarBchatLogo("My Account")
-        val displayName = TextSecurePreferences.getProfileName(this) ?: hexEncodedPublicKey
+        val displayName = getDisplayName()
         glide = GlideApp.with(this)
 
         val size = toPx(280, resources)
@@ -101,7 +106,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
         with(binding) {
             profilePictureView.root.glide = glide
             profilePictureView.root.publicKey = hexEncodedPublicKey
-            profilePictureView.root.displayName = displayName
+            profilePictureView.root.displayName = getDisplayName()
             profilePictureView.root.isLarge = true
             profilePictureView.root.update()
             //New Line

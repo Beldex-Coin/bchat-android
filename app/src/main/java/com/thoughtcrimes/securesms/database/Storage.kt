@@ -29,10 +29,11 @@ import com.beldex.libsignal.messages.SignalServiceGroup
 import com.beldex.libsignal.utilities.KeyHelper
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.guava.Optional
+import com.thoughtcrimes.securesms.ApplicationContext
 import com.thoughtcrimes.securesms.database.helpers.SQLCipherOpenHelper
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.groups.OpenGroupManager
-import com.beldex.libbchat.messaging.jobs.RetrieveProfileAvatarJob
+import com.thoughtcrimes.securesms.jobs.RetrieveProfileAvatarJob
 import com.thoughtcrimes.securesms.mms.PartAuthority
 import com.thoughtcrimes.securesms.util.BchatMetaProtocol
 
@@ -53,9 +54,21 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
         return Profile(displayName, profileKey, profilePictureUrl)
     }
 
-    override fun setProfileAvatar(recipient: Recipient, profileAvatar: String?) {
-        val database = DatabaseComponent.get(context).recipientDatabase()
-        database.setProfileAvatar(recipient, profileAvatar)
+    override fun setUserProfilePictureURL(newValue: String) {
+        val ourRecipient = Address.fromSerialized(getUserPublicKey()!!).let {
+            Recipient.from(context, it, false)
+        }
+        TextSecurePreferences.setProfilePictureURL(context, newValue)
+        RetrieveProfileAvatarJob(
+            ourRecipient,
+            newValue
+        )
+        ApplicationContext.getInstance(context).jobManager.add(
+            RetrieveProfileAvatarJob(
+                ourRecipient,
+                newValue
+            )
+        )
     }
 
     override fun getOrGenerateRegistrationID(): Int {

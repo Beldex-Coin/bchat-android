@@ -616,6 +616,13 @@
             </intent-filter>
         </receiver>
         <receiver
+            android:name="com.thoughtcrimes.securesms.service.LocalBackupListener"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <receiver
             android:name="com.thoughtcrimes.securesms.service.PersistentConnectionBootListener"
             android:exported="true">
             <intent-filter>
@@ -653,9 +660,21 @@
         </receiver>
 
         <service
+            android:name="com.thoughtcrimes.securesms.jobmanager.JobSchedulerScheduler$SystemService"
+            android:enabled="@bool/enable_job_service"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            tools:targetApi="26" />
+
+        <service
             android:name="com.thoughtcrimes.securesms.jobmanager.KeepAliveService"
             android:enabled="@bool/enable_alarm_manager"
             android:exported="false" />
+
+        <receiver
+            android:name="com.thoughtcrimes.securesms.jobmanager.AlarmManagerScheduler$RetryReceiver"
+            android:enabled="@bool/enable_alarm_manager"
+            android:exported="false" /> <!-- Probably don't need this one -->
 
         <uses-library
             android:name="com.sec.android.app.multiwindow"

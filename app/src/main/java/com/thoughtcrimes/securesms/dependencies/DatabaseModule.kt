@@ -121,6 +121,11 @@ object DatabaseModule {
 
     @Provides
     @Singleton
+    fun provideJobDatabase(@ApplicationContext context: Context, openHelper: SQLCipherOpenHelper) =
+        JobDatabase(context, openHelper)
+
+    @Provides
+    @Singleton
     fun provideBeldexApiDatabase(@ApplicationContext context: Context, openHelper: SQLCipherOpenHelper) = BeldexAPIDatabase(context,openHelper)
 
     @Provides

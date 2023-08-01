@@ -3,11 +3,11 @@ package com.thoughtcrimes.securesms.sskenvironment
 import android.content.Context
 import android.util.Log
 import com.beldex.libbchat.messaging.contacts.Contact
-import com.beldex.libbchat.messaging.jobs.JobQueue
 import com.beldex.libbchat.utilities.SSKEnvironment
 import com.beldex.libbchat.utilities.recipients.Recipient
+import com.thoughtcrimes.securesms.ApplicationContext
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
-import com.beldex.libbchat.messaging.jobs.RetrieveProfileAvatarJob
+import com.thoughtcrimes.securesms.jobs.RetrieveProfileAvatarJob
 
 class ProfileManager : SSKEnvironment.ProfileManagerProtocol {
 
@@ -46,8 +46,12 @@ class ProfileManager : SSKEnvironment.ProfileManagerProtocol {
     }
 
     override fun setProfilePictureURL(context: Context, recipient: Recipient, profilePictureURL: String) {
-        val job = RetrieveProfileAvatarJob(profilePictureURL, recipient.address)
-        JobQueue.shared.add(job)
+        val job = RetrieveProfileAvatarJob(
+            recipient,
+            profilePictureURL
+        )
+        val jobManager = ApplicationContext.getInstance(context).jobManager
+        jobManager.add(job)
         val bchatID = recipient.address.serialize()
         val contactDatabase = DatabaseComponent.get(context).bchatContactDatabase()
         var contact = contactDatabase.getContactWithBchatID(bchatID)

@@ -5,7 +5,6 @@ import com.beldex.libbchat.avatars.AvatarHelper
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.jobs.BackgroundGroupAddJob
 import com.beldex.libbchat.messaging.jobs.JobQueue
-import com.beldex.libbchat.messaging.jobs.RetrieveProfileAvatarJob
 import com.beldex.libbchat.messaging.messages.Message
 import com.beldex.libbchat.messaging.messages.control.*
 import com.beldex.libbchat.messaging.messages.visible.Attachment
@@ -182,7 +181,7 @@ private fun handleConfigurationMessage(message: ConfigurationMessage) {
         ProfileKeyUtil.setEncodedProfileKey(context, profileKey)
         profileManager.setProfileKey(context, recipient, message.profileKey)
         if (!message.profilePicture.isNullOrEmpty() && TextSecurePreferences.getProfilePictureURL(context) != message.profilePicture) {
-            JobQueue.shared.add(RetrieveProfileAvatarJob(message.profilePicture!!, recipient.address))
+            storage.setUserProfilePictureURL(message.profilePicture!!)
         }
     }
     storage.addContacts(message.contacts)

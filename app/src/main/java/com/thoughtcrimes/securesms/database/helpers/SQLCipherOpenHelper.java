@@ -20,6 +20,7 @@ import com.thoughtcrimes.securesms.database.BeldexUserDatabase;
 import com.thoughtcrimes.securesms.database.DraftDatabase;
 import com.thoughtcrimes.securesms.database.GroupDatabase;
 import com.thoughtcrimes.securesms.database.GroupReceiptDatabase;
+import com.thoughtcrimes.securesms.database.JobDatabase;
 import com.thoughtcrimes.securesms.database.MmsDatabase;
 import com.thoughtcrimes.securesms.database.PushDatabase;
 import com.thoughtcrimes.securesms.database.RecipientDatabase;
@@ -197,6 +198,9 @@ public class SQLCipherOpenHelper extends SQLiteOpenHelper {
     db.execSQL(RecipientDatabase.CREATE_TABLE);
     db.execSQL(GroupReceiptDatabase.CREATE_TABLE);
     for (String sql : SearchDatabase.CREATE_TABLE) {
+      db.execSQL(sql);
+    }
+    for (String sql : JobDatabase.CREATE_TABLE) {
       db.execSQL(sql);
     }
     db.execSQL(BeldexAPIDatabase.getCreateMnodePoolTableCommand());

@@ -1,7 +1,5 @@
 package com.beldex.libsignal.streams;
 
-import static com.beldex.libsignal.crypto.CipherUtil.CIPHER_LOCK;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.security.InvalidAlgorithmParameterException;
@@ -56,24 +54,20 @@ public class ProfileCipherOutputStream extends DigestingOutputStream {
     byte[] input = new byte[1];
     input[0] = (byte)b;
 
-    byte[] output;
-    synchronized (CIPHER_LOCK) {
-      output = cipher.update(input);
-    }
+    byte[] output = cipher.update(input);
     super.write(output);
   }
 
   @Override
   public void flush() throws IOException {
     try {
-      byte[] output;
-      synchronized (CIPHER_LOCK) {
-        output = cipher.doFinal();
-      }
+      byte[] output = cipher.doFinal();
 
       super.write(output);
       super.flush();
-    } catch (BadPaddingException | IllegalBlockSizeException e) {
+    } catch (BadPaddingException  e) {
+      throw new AssertionError(e);
+    } catch (IllegalBlockSizeException e) {
       throw new AssertionError(e);
     }
   }

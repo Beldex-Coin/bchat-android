@@ -1386,4 +1386,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="failed_to_connect" translatable="false">Failed to Connect</string>
     <string name="invalid_qr_code" translatable="false">Invalid QR Code</string>
     <string name="bchat" translatable="false">BChat</string>
+    <string name="activity_settings_set_display_picture">Set display picture</string>
+    <string name="activity_settings_upload">Upload</string>
+    <string name="activity_settings_remove">Remove</string>
 </resources>

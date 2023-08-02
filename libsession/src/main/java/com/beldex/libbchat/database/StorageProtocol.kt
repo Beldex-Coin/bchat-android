@@ -142,6 +142,7 @@ interface StorageProtocol {
     fun getThreadIdForMms(mmsId: Long): Long
     fun getLastUpdated(threadID: Long): Long
     fun trimThread(threadID: Long, threadLimit: Int)
+    fun deleteConversation(threadId: Long)
 
     // Contacts
     fun getContactWithBchatID(bchatID: String): Contact?

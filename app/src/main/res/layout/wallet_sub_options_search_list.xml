@@ -62,11 +62,20 @@
                         android:background="@android:color/transparent"
                         android:layout_height="40dp"/>
                     <ImageView
+                        android:id="@+id/currencySearchIcon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginEnd="10dp"
                         android:src="@drawable/ic_baseline_search_24"/>
+                    <ImageView
+                        android:id="@+id/currencyClearIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="10dp"
+                        android:visibility="gone"
+                        android:src="@drawable/ic_baseline_clear_24"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
             <androidx.recyclerview.widget.RecyclerView

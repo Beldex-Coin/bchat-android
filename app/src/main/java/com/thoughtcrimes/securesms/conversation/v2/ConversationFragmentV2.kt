@@ -1043,9 +1043,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 this.activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 audioRecorder.startRecording()
                 stopAudioHandler.postDelayed(
-                    stopVoiceMessageRecordingTask,
-                    60000
-                ) // Limit voice messages to 1 minute each
+                        stopVoiceMessageRecordingTask,
+                        300000
+                ) // Limit voice messages to 5 minute each
             } else {
                 Permissions.with(this)
                     .request(Manifest.permission.RECORD_AUDIO)
@@ -2573,7 +2573,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private fun sendAttachments(
         attachments: List<Attachment>,
         body: String?,
-        quotedMessage: MessageRecord? = null,
+        quotedMessage: MessageRecord? = binding.inputBar.quote,
         linkPreview: LinkPreview? = null
     ) {
         val recipient = viewModel.recipient ?: return

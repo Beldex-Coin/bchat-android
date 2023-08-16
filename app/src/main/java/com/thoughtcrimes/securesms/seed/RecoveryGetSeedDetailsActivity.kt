@@ -40,6 +40,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.concurrent.Executor
+import java.util.regex.Pattern
 import kotlin.collections.ArrayList
 
 class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
@@ -67,6 +68,7 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
     private var restoreFromDateHeight = 0
     private val dateFormat = SimpleDateFormat("yyyy-MM", Locale.US)
     private var dates = ArrayMap<String,Int>()
+    private val namePattern = Pattern.compile("[A-Za-z0-9]+")
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -281,6 +283,14 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
             return Toast.makeText(this, R.string.activity_display_name_display_name_too_long_error, Toast.LENGTH_SHORT).show()
         }
 
+        if (!displayName.matches(namePattern.toRegex())) {
+            return Toast.makeText(
+                    this,
+                    R.string.display_name_validation,
+                    Toast.LENGTH_SHORT
+            ).show()
+        }
+
         val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(binding.restoreSeedWalletName.windowToken, 0)
         TextSecurePreferences.setProfileName(this, displayName)
@@ -291,12 +301,14 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
             val restoreHeightBig = BigInteger(restoreHeight)
             if (restoreHeightBig.toLong() >= 0) {
                 binding.restoreSeedWalletRestoreDate.text = ""
+                binding.restoreSeedRestoreButton.isEnabled = false
                 _recoveryWallet(displayName, password, getSeed, restoreHeight.toLong())
             } else {
                 Toast.makeText(this, getString(R.string.restore_height_error_message), Toast.LENGTH_SHORT).show()
             }
         } else if (restoreFromDate.isNotEmpty() && binding.restoreSeedWalletRestoreDateCard.isVisible) {
             binding.restoreSeedWalletRestoreHeight.setText("")
+            binding.restoreSeedRestoreButton.isEnabled = false
             _recoveryWallet(displayName, password, getSeed, restoreFromDateHeight.toLong())
         } else if (restoreHeight.isEmpty() && binding.restoreSeedWalletRestoreDateCard.isVisible) {
             Toast.makeText(this, getString(R.string.activity_restore_from_date_missing_error), Toast.LENGTH_SHORT).show()

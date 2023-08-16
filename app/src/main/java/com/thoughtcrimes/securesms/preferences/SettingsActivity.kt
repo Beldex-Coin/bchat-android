@@ -52,6 +52,7 @@ import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.permissions.Permissions
 import com.thoughtcrimes.securesms.profiles.ProfileMediaConstraints
 import com.thoughtcrimes.securesms.showCustomDialog
+import java.util.regex.Pattern
 
 class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.AnimationListener {
     private lateinit var binding: ActivitySettingsBinding
@@ -75,6 +76,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
     private lateinit var animation1: Animation
     private lateinit var animation2: Animation
     private var isFrontOfCardShowing = true
+    private val namePattern = Pattern.compile("[A-Za-z0-9]+")
 
     private fun getDisplayName(): String =
         TextSecurePreferences.getProfileName(this) ?: truncateIdForDisplay(hexEncodedPublicKey)
@@ -398,6 +400,14 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
                 this,
                 R.string.activity_settings_display_name_too_long_error,
                 Toast.LENGTH_SHORT
+            ).show()
+            return false
+        }
+        if (!displayName.matches(namePattern.toRegex())) {
+            Toast.makeText(
+                    this,
+                    R.string.display_name_validation,
+                    Toast.LENGTH_SHORT
             ).show()
             return false
         }

@@ -2573,7 +2573,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private fun sendAttachments(
         attachments: List<Attachment>,
         body: String?,
-        quotedMessage: MessageRecord? = binding.inputBar.quote,
+        quotedMessage: MessageRecord? = null,
         linkPreview: LinkPreview? = null
     ) {
         val recipient = viewModel.recipient ?: return

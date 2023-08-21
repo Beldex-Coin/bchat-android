@@ -328,11 +328,9 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         binding.sendCardViewButton.isClickable= true
         binding.receiveCardViewButton.isClickable= true
         binding.sendCardViewButton.setOnClickListener { v: View? ->
-            binding.sendCardViewButton.isClickable= false
             activityCallback!!.onSendRequest(v)
         }
         binding.receiveCardViewButton.setOnClickListener { v: View? ->
-            binding.receiveCardViewButton.isClickable= false
             activityCallback!!.onWalletReceive(v)
         }
 

@@ -8,7 +8,7 @@ buildscript {
         classpath files('libs/gradle-witness.jar')
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlinVersion"
-        classpath "com.google.gms:google-services:4.3.12"
+        classpath "com.google.gms:google-services:4.3.15"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$daggerVersion"
     }
 }
@@ -64,7 +64,7 @@ dependencies {
     implementation 'commons-net:commons-net:3.7.2'
     implementation 'com.github.chrisbanes:PhotoView:2.1.3'
     implementation "com.github.bumptech.glide:glide:$glideVersion"
-    implementation 'com.google.firebase:firebase-crashlytics-buildtools:2.9.2'
+    implementation 'com.google.firebase:firebase-crashlytics-buildtools:2.9.8'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
     kapt "com.github.bumptech.glide:compiler:$glideVersion"
@@ -178,6 +178,7 @@ dependencies {
     implementation 'app.cash.copper:copper-flow:1.0.0'
     implementation 'com.google.code.gson:gson:2.8.7'
     //implementation 'com.google.firebase:firebase-crash:16.2.1'
+    implementation 'com.github.anrwatchdog:anrwatchdog:1.4.0'
 
 }
 
@@ -249,7 +250,7 @@ def abiPostFix = ['armeabi-v7a' : 1,
                   'universal'   : 5]
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion androidCompileSdkVersion
     buildToolsVersion '30.0.3'
     useLibrary 'org.apache.http.legacy'
 

@@ -148,11 +148,12 @@ class VisibleMessageView : LinearLayout {
                     binding.moderatorIconImageView.isVisible = !message.isOutgoing && isModerator
                 }
             }
+            binding.senderNameTextView.isVisible = isStartOfMessageCluster
+            val context = if (thread.isOpenGroupRecipient) ContactContext.OPEN_GROUP else ContactContext.REGULAR
+            binding.senderNameTextView.text = contact?.displayName(context) ?: senderBChatID
+        } else {
+            binding.senderNameTextView.visibility = View.GONE
         }
-        binding.senderNameTextView.isVisible = !message.isOutgoing && (isStartOfMessageCluster && (isGroupThread || snIsSelected))
-        val contactContext =
-            if (thread.isOpenGroupRecipient) ContactContext.OPEN_GROUP else ContactContext.REGULAR
-        binding.senderNameTextView.text = contact?.displayName(contactContext) ?: senderBChatID
         // Date break
         val showDateBreak = isStartOfMessageCluster || snIsSelected
         binding.dateBreakTextView.text = if (showDateBreak) DateUtils.getDisplayFormattedTimeSpanString(context, Locale.getDefault(), message.timestamp) else null

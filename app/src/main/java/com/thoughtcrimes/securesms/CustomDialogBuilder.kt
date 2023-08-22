@@ -1,12 +1,15 @@
 package com.thoughtcrimes.securesms
 
 import android.content.Context
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.LinearLayout.HORIZONTAL
 import android.widget.LinearLayout.VERTICAL
 import android.widget.TextView
 import androidx.annotation.AttrRes
@@ -18,6 +21,7 @@ import androidx.core.view.setMargins
 import androidx.core.view.setPadding
 import androidx.core.view.updateMargins
 import androidx.fragment.app.Fragment
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.util.toPx
 import io.beldex.bchat.R
 
@@ -32,12 +36,13 @@ class CustomDialogBuilder(val context: Context) {
     private val dp20 = toPx(20, context.resources)
     private val dp40 = toPx(40, context.resources)
 
-    private val dialogBuilder: AlertDialog.Builder = AlertDialog.Builder(context)
+    private val dialogBuilder: AlertDialog.Builder = AlertDialog.Builder(context, R.style.profile_backgroundColor)
 
     private var dialog: AlertDialog? = null
     private fun dismiss() = dialog?.dismiss()
 
-    private val topView = LinearLayout(context).apply { orientation = VERTICAL }
+    private val topView = LinearLayout(context).apply { orientation = HORIZONTAL
+    gravity = Gravity.END}
         .also(dialogBuilder::setCustomTitle)
     private val contentView = LinearLayout(context).apply { orientation = VERTICAL }
     private val buttonLayout = LinearLayout(context)
@@ -53,17 +58,23 @@ class CustomDialogBuilder(val context: Context) {
 
     fun title(text: CharSequence?) = title(text?.toString())
     fun title(text: String?) {
-        text(text, R.style.TextAppearance_AppCompat_Title) { setPadding(dp20) }
+        text(text, R.style.TextAppearance_AppCompat_Title) {  }
     }
 
     fun text(@StringRes id: Int, style: Int = 0) = text(context.getString(id), style)
     fun text(text: CharSequence?, @StyleRes style: Int = 0) {
         text(text, style) {
             layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
-                .apply { updateMargins(dp40, 0, dp40, dp20) }
+                .apply {  }
         }
     }
 
+    fun icon( @StyleRes style: Int) {
+        icon(style) {
+            layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply { gravity = Gravity.END
+                setPadding(20,40,40,20) }
+        }
+    }
 
     private fun text(text: CharSequence?, @StyleRes style: Int, modify: TextView.() -> Unit) {
         text ?: return
@@ -72,7 +83,19 @@ class CustomDialogBuilder(val context: Context) {
                 setText(text)
                 textAlignment = View.TEXT_ALIGNMENT_CENTER
                 modify()
-            }.let(topView::addView)
+            }.let(contentView::addView)
+    }
+
+    private fun icon(@StyleRes style: Int, modify: ImageView.() -> Unit) {
+        ImageView(context, null, 0, style)
+                .apply {
+                    setImageResource(R.drawable.ic_close)
+                    modify()
+                    setOnClickListener {
+                        dismiss()
+                    }
+                }.let(topView::addView)
+
     }
 
     fun view(view: View) = contentView.addView(view)
@@ -117,12 +140,33 @@ class CustomDialogBuilder(val context: Context) {
 
     fun button(
         @StringRes text: Int,
-        @StyleRes style: Int = R.style.Widget_Bchat_Button_Dialog_UnimportantText,
+        @StyleRes style: Int = R.style.Bchat_Profile_Change_dialog_Save,
         listener: (() -> Unit) = {}
     ) = Button(context, null, 0, style).apply {
         setText(text)
-        layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, 1f)
-            .apply { setMargins(toPx(20, resources)) }
+        layoutParams = LinearLayout.LayoutParams(150, 150, 1f)
+            .apply {  setMargins(toPx(20, resources)) }
+        setOnClickListener {
+            listener.invoke()
+            dismiss()
+        }
+    }.let(buttonLayout::addView)
+
+    fun removeButton(
+            @StringRes text: Int,
+            @StyleRes style: Int = R.style.Bchat_Profile_Change_dialog_Remove,
+            listener: (() -> Unit) = {}
+    ) = Button(context, null, 0, style).apply {
+        setText(text)
+        layoutParams = LinearLayout.LayoutParams(150, 150, 1f)
+                .apply { setMargins(toPx(20, resources)) }
+        isEnabled = if (TextSecurePreferences.getProfileAvatarId(context) == 0) {
+            setTextColor(context.getColor(R.color.disable_button_text_color))
+            false
+        } else {
+            setTextColor(context.getColor(R.color.text))
+            true
+        }
         setOnClickListener {
             listener.invoke()
             dismiss()

@@ -2,7 +2,6 @@ package com.thoughtcrimes.securesms.preferences
 
 import android.Manifest
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -17,6 +16,7 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
@@ -38,12 +38,10 @@ import com.thoughtcrimes.securesms.applock.AppLockDetailsActivity
 import com.thoughtcrimes.securesms.avatar.AvatarSelection
 import com.thoughtcrimes.securesms.changelog.ChangeLogActivity
 import com.thoughtcrimes.securesms.components.ProfilePictureView
-import com.thoughtcrimes.securesms.contacts.BlockedContactActivity
 import com.thoughtcrimes.securesms.contacts.blocked.BlockedContactsActivity
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
 import com.thoughtcrimes.securesms.home.PathActivity
-import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
 import com.thoughtcrimes.securesms.mms.GlideApp
 import com.thoughtcrimes.securesms.util.*
 import java.io.File
@@ -54,6 +52,7 @@ import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.permissions.Permissions
 import com.thoughtcrimes.securesms.profiles.ProfileMediaConstraints
 import com.thoughtcrimes.securesms.showCustomDialog
+import java.util.regex.Pattern
 
 class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.AnimationListener {
     private lateinit var binding: ActivitySettingsBinding
@@ -77,6 +76,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
     private lateinit var animation1: Animation
     private lateinit var animation2: Animation
     private var isFrontOfCardShowing = true
+    private val namePattern = Pattern.compile("[A-Za-z0-9]+")
 
     private fun getDisplayName(): String =
         TextSecurePreferences.getProfileName(this) ?: truncateIdForDisplay(hexEncodedPublicKey)
@@ -403,6 +403,14 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             ).show()
             return false
         }
+        if (!displayName.matches(namePattern.toRegex())) {
+            Toast.makeText(
+                    this,
+                    R.string.display_name_validation,
+                    Toast.LENGTH_SHORT
+            ).show()
+            return false
+        }
         updateProfile(false, displayName = displayName)
         return true
     }
@@ -430,15 +438,19 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
 
     private fun showEditProfilePictureUI() {
         showCustomDialog {
-            title(R.string.activity_settings_set_display_picture)
+            title(getString(R.string.activity_settings_profile_picture))
+            icon(R.drawable.ic_close)
             view(R.layout.dialog_change_avatar)
-            button(R.string.activity_settings_upload) { startAvatarSelection() }
-            if (TextSecurePreferences.getProfileAvatarId(context) != 0) {
-                button(R.string.activity_settings_remove) { removeAvatar() }
-            }
-            cancelButton()
+            removeButton(R.string.activity_settings_remove) { removeAvatar() }
+            button(R.string.activity_settings_save) { startAvatarSelection() }
         }.apply {
             findViewById<ProfilePictureView>(R.id.profile_picture_view)?.let(::setupProfilePictureView)
+            val profileImage = findViewById<ImageView>(R.id.profileCamaraView)
+            if (TextSecurePreferences.getProfileAvatarId(context) == 0) {
+                profileImage?.setImageResource((R.drawable.ic_profile_add))
+            } else {
+                profileImage?.setImageResource((R.drawable.ic_profile_camera))
+            }
         }
     }
 

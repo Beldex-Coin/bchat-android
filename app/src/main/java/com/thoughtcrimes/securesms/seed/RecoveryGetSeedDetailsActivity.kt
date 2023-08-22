@@ -8,11 +8,13 @@ import android.text.TextWatcher
 import android.util.ArrayMap
 import android.util.Log
 import android.view.KeyEvent
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.DatePicker
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.isVisible
 import com.goterl.lazysodium.utils.KeyPair
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityRecoveryGetSeedDetailsBinding
@@ -38,6 +40,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.concurrent.Executor
+import java.util.regex.Pattern
 import kotlin.collections.ArrayList
 
 class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
@@ -65,6 +68,7 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
     private var restoreFromDateHeight = 0
     private val dateFormat = SimpleDateFormat("yyyy-MM", Locale.US)
     private var dates = ArrayMap<String,Int>()
+    private val namePattern = Pattern.compile("[A-Za-z0-9]+")
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -212,6 +216,20 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
             restoreSeedRestoreButton.setOnClickListener { register() }
         }
 
+        binding.restoreFromDateButton.setOnClickListener {
+            binding.restoreSeedWalletRestoreDateCard.visibility = View.VISIBLE
+            binding.restoreSeedWalletRestoreHeightCard.visibility = View.GONE
+            binding.restoreFromHeightButton.visibility = View.VISIBLE
+            binding.restoreFromDateButton.visibility = View.GONE
+        }
+        binding.restoreFromHeightButton.setOnClickListener {
+            binding.restoreSeedWalletRestoreDateCard.visibility = View.GONE
+            binding.restoreSeedWalletRestoreHeightCard.visibility = View.VISIBLE
+            binding.restoreFromHeightButton.visibility = View.GONE
+            binding.restoreFromDateButton.visibility = View.VISIBLE
+        }
+
+
         //New Line load favourites with network function
         loadFavouritesWithNetwork()
     }
@@ -265,25 +283,37 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
             return Toast.makeText(this, R.string.activity_display_name_display_name_too_long_error, Toast.LENGTH_SHORT).show()
         }
 
+        if (!displayName.matches(namePattern.toRegex())) {
+            return Toast.makeText(
+                    this,
+                    R.string.display_name_validation,
+                    Toast.LENGTH_SHORT
+            ).show()
+        }
+
         val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(binding.restoreSeedWalletName.windowToken, 0)
         TextSecurePreferences.setProfileName(this, displayName)
         val uuid = UUID.randomUUID()
         val password = uuid.toString()
         //SteveJosephh21
-        if (restoreHeight.isNotEmpty()){
+        if (restoreHeight.isNotEmpty() && binding.restoreSeedWalletRestoreHeightCard.isVisible) {
             val restoreHeightBig = BigInteger(restoreHeight)
-            if(restoreHeightBig.toLong()>=0) {
+            if (restoreHeightBig.toLong() >= 0) {
                 binding.restoreSeedWalletRestoreDate.text = ""
+                binding.restoreSeedRestoreButton.isEnabled = false
                 _recoveryWallet(displayName, password, getSeed, restoreHeight.toLong())
-            }else{
-                Toast.makeText(this,getString(R.string.restore_height_error_message),Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, getString(R.string.restore_height_error_message), Toast.LENGTH_SHORT).show()
             }
-        }else if(restoreFromDate.isNotEmpty()){
+        } else if (restoreFromDate.isNotEmpty() && binding.restoreSeedWalletRestoreDateCard.isVisible) {
             binding.restoreSeedWalletRestoreHeight.setText("")
+            binding.restoreSeedRestoreButton.isEnabled = false
             _recoveryWallet(displayName, password, getSeed, restoreFromDateHeight.toLong())
-        }else{
-            Toast.makeText(this,getString(R.string.activity_restore_from_height_missing_error),Toast.LENGTH_SHORT).show()
+        } else if (restoreHeight.isEmpty() && binding.restoreSeedWalletRestoreDateCard.isVisible) {
+            Toast.makeText(this, getString(R.string.activity_restore_from_date_missing_error), Toast.LENGTH_SHORT).show()
+        } else if (restoreFromDate.isEmpty() && binding.restoreSeedWalletRestoreHeightCard.isVisible) {
+            Toast.makeText(this, getString(R.string.activity_restore_from_height_missing_error), Toast.LENGTH_SHORT).show()
         }
     }
     // region Updating

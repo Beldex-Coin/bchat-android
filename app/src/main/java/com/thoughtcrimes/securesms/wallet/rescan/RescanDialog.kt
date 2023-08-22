@@ -216,6 +216,7 @@ class RescanDialog(val context: HomeActivity, private val daemonBlockChainHeight
     override fun onDestroy() {
         super.onDestroy()
         binding.restoreSeedWalletRestoreHeight.isFocusable = false
+        keyboardDismiss()
     }
 
     private fun updateDateInView() {

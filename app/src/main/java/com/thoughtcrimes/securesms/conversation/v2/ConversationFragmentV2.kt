@@ -1043,9 +1043,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 this.activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 audioRecorder.startRecording()
                 stopAudioHandler.postDelayed(
-                    stopVoiceMessageRecordingTask,
-                    60000
-                ) // Limit voice messages to 1 minute each
+                        stopVoiceMessageRecordingTask,
+                        300000
+                ) // Limit voice messages to 5 minute each
             } else {
                 Permissions.with(this)
                     .request(Manifest.permission.RECORD_AUDIO)

@@ -132,7 +132,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import java.io.File
-import java.util.ArrayList
 import java.util.Collections
 import java.util.Random
 import javax.inject.Inject
@@ -498,6 +497,16 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             .replace(R.id.activity_home_frame_layout_container, newFragment)
             .addToBackStack(stackName)
             .commit()
+    }
+
+    private fun replaceFragmentWithTransition(view: View?, newFragment: Fragment, stackName: String?, extras: Bundle?) {
+        if (extras != null) {
+            newFragment.arguments = extras
+        }
+        supportFragmentManager.beginTransaction()
+                .add(R.id.activity_home_frame_layout_container, newFragment)
+                .addToBackStack(stackName)
+                .commit()
     }
 
     private fun updateProfileButton(
@@ -978,8 +987,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     override fun onSendRequest(view: View?) {
         if(CheckOnline.isOnline(this)) {
-            SendFragment.newInstance(uri)
-                .let { replaceFragment(it, null, null) }
+            replaceFragmentWithTransition(view,SendFragment(),null,null)
             uri = null // only use uri once
         }else{
             Toast.makeText(this, getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show();
@@ -1005,7 +1013,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     override fun onWalletReceive(view: View?) {
-        replaceFragment(ReceiveFragment(), null, null)
+        replaceFragmentWithTransition(view, ReceiveFragment(), null, null)
     }
 
     var haveWallet = false
@@ -1521,7 +1529,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     override fun onWalletScan(view: View?) {
         if (Helper.getCameraPermission(this)) {
             val extras = Bundle()
-            replaceFragment(WalletScannerFragment(), null, extras)
+            replaceFragmentWithTransition(view,WalletScannerFragment(),null,extras)
         } else {
             Timber.i("Waiting for permissions")
         }

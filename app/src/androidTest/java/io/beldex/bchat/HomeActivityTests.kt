@@ -1,5 +1,6 @@
 package io.beldex.bchat
 
+import android.Manifest
 import android.app.Instrumentation
 import android.content.ClipboardManager
 import android.content.Context
@@ -20,6 +21,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import com.adevinta.android.barista.interaction.PermissionGranter
 import androidx.test.platform.app.InstrumentationRegistry
 import com.beldex.libbchat.messaging.sending_receiving.link_preview.LinkPreview
 import io.beldex.bchat.util.InputBarButtonDrawableMatcher.Companion.inputButtonWithDrawable
@@ -86,6 +88,8 @@ class HomeActivityTests {
         }
         onView(withId(R.id.backgroundPollingOptionView)).perform(ViewActions.click())
         onView(withId(R.id.registerButton)).perform(ViewActions.click())
+        // allow notification permission
+        PermissionGranter.allowPermissionsIfNeeded(Manifest.permission.POST_NOTIFICATIONS)
     }
 
     private fun goToMyChat() {

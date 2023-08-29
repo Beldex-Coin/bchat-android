@@ -1,11 +1,17 @@
 package com.thoughtcrimes.securesms.onboarding
 
 import android.Manifest
+import android.app.AlertDialog
 import android.app.NotificationManager
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.widget.Button
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
@@ -44,9 +50,37 @@ class LandingActivity : AppCompatActivity() {
                 NOTIFICATION_SERVICE
             ) as NotificationManager).areNotificationsEnabled() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
         ) {
-            Permissions.with(this)
-                .request(Manifest.permission.POST_NOTIFICATIONS)
-                .execute()
+            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
+
+    private val notificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+        if (!it) {
+            enableNotification()
+        }
+    }
+
+    private fun enableNotification() {
+        val dialog = AlertDialog.Builder(this)
+        val li = LayoutInflater.from(dialog.context)
+        val promptsView = li.inflate(R.layout.alert_notification_enable, null)
+
+        dialog.setView(promptsView)
+        val enable = promptsView.findViewById<Button>(R.id.enableButton)
+        val alertDialog: AlertDialog = dialog.create()
+        alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        alertDialog.show()
+
+        enable.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !(getSystemService(
+                            NOTIFICATION_SERVICE
+                    ) as NotificationManager).areNotificationsEnabled() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+            ) {
+                Permissions.with(this)
+                        .request(Manifest.permission.POST_NOTIFICATIONS)
+                        .execute()
+            }
+            alertDialog.dismiss()
         }
     }
 

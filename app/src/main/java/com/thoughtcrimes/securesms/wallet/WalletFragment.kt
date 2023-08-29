@@ -629,7 +629,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                         }
                     }
                 sync = getString(R.string.failed_connected_to_the_node)
-                setProgress(-1)
+                setProgress(101)
                 binding.syncStatus.setTextColor(
                     ContextCompat.getColor(
                         requireActivity().applicationContext,
@@ -648,6 +648,10 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                     R.color.red
                 )
             )
+            setProgress(101)
+            binding.progressBar.indeterminateDrawable.setColorFilter(
+                    ContextCompat.getColor(requireActivity().applicationContext,R.color.red),
+                    android.graphics.PorterDuff.Mode.SRC_IN)
             binding.syncStatusIcon.visibility=View.GONE
             binding.syncFailIcon.visibility=View.GONE
         }

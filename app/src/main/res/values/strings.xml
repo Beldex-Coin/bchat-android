@@ -1385,4 +1385,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="record_voice_restriction" translatable="false">Can\'t record voice messages during a BChat call.</string>
     <string name="failed_to_connect" translatable="false">Failed to Connect</string>
     <string name="invalid_qr_code" translatable="false">Invalid QR Code</string>
+    <string name="sync_fail_content" translatable="false">It seems there is an issue with connecting to the node, please try to reconnect or switch the node.</string>
+    <string name="notification_enable_content" translatable="false">We recommend you to allow permission for notifications for BChat app to notify you for new messages and calls.</string>
 </resources>

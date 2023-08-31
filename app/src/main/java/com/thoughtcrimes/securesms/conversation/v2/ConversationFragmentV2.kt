@@ -530,7 +530,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 }
             }
         }
-        listenerCallback!!.forceUpdate(requireActivity())
+        if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && HomeActivity.reportIssueBChatID != thread.address.toString() && !thread.isLocalNumber) {
+            listenerCallback!!.forceUpdate(requireActivity())
+        }
         showBlockProgressBar(thread)
 
         callShowPayAsYouChatBDXIcon(thread)
@@ -3247,70 +3249,73 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     fun onRefreshed(wallet: Wallet, full: Boolean) {
-        if (full) {
-            if (CheckOnline.isOnline(requireContext())) {
-                check(listenerCallback!!.hasBoundService()) { "WalletService not bound." }
-                val daemonConnected: Wallet.ConnectionStatus = listenerCallback!!.connectionStatus!!
-                if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
-                    AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+        val recipient = viewModel.recipient ?: return
+        if (!recipient.isGroupRecipient && recipient.hasApprovedMe() && !recipient.isBlocked && HomeActivity.reportIssueBChatID != recipient.address.toString() && !recipient.isLocalNumber) {
+            if (full) {
+                if (CheckOnline.isOnline(requireContext())) {
+                    check(listenerCallback!!.hasBoundService()) { "WalletService not bound." }
+                    val daemonConnected: Wallet.ConnectionStatus = listenerCallback!!.connectionStatus!!
+                    if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
+                        AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
 
+                    }
                 }
             }
+            updateStatus(wallet)
         }
-        updateStatus(wallet)
     }
 
     private fun updateStatus(wallet: Wallet) {
-        if (!isAdded) return
-        val daemonHeight: Long = wallet.daemonBlockChainHeight
-        val walletHeight: Long = wallet.blockChainHeight
-        val df = DecimalFormat("#.##")
-        val walletSyncPercentage = ((100.00 * walletHeight.toDouble()) / daemonHeight)
-        if (CheckOnline.isOnline(requireContext())) {
-            balance = wallet.balance
-            val sync: String
-            check(listenerCallback!!.hasBoundService()) { "WalletService not bound." }
-            val daemonConnected: Wallet.ConnectionStatus = listenerCallback!!.connectionStatus!!
-            if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
-                if (!wallet.isSynchronized) {
-                    ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(
-                        true
-                    )
-                    val n = daemonHeight - walletHeight
-                    sync = formatter.format(n) + " " + getString(R.string.status_remaining)
-                    if (firstBlock == 0L) {
-                        firstBlock = walletHeight
+            if (!isAdded) return
+            if (CheckOnline.isOnline(requireContext())) {
+                balance = wallet.balance
+                val sync: String
+                check(listenerCallback!!.hasBoundService()) { "WalletService not bound." }
+                val daemonConnected: Wallet.ConnectionStatus = listenerCallback!!.connectionStatus!!
+                if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
+                    val daemonHeight: Long = wallet.daemonBlockChainHeight
+                    val walletHeight: Long = wallet.blockChainHeight
+                    val df = DecimalFormat("#.##")
+                    val walletSyncPercentage = ((100.00 * walletHeight.toDouble()) / daemonHeight)
+                    if (!wallet.isSynchronized) {
+                        ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(
+                                true
+                        )
+                        val n = daemonHeight - walletHeight
+                        sync = formatter.format(n) + " " + getString(R.string.status_remaining)
+                        if (firstBlock == 0L) {
+                            firstBlock = walletHeight
+                        }
+                        var x = (100 - Math.round(100f * n / (1f * daemonHeight - firstBlock))).toInt()
+                        if (x == 0) x = 101 // indeterminate
+                        setProgress(x)
+                        valueOfWallet = "${df.format(walletSyncPercentage)}%"
+                        binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false, valueOfWallet)
+                    } else {
+                        ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(
+                                false
+                        )
+                        sync =
+                                getString(R.string.status_synchronized)
+                        valueOfWallet = "${df.format(walletSyncPercentage)}%"
+                        binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false, valueOfWallet)
+                        //SteveJosephh21
+                        setProgress(-2)
                     }
-                    var x = (100 - Math.round(100f * n / (1f * daemonHeight - firstBlock))).toInt()
-                    if (x == 0) x = 101 // indeterminate
-                    setProgress(x)
-                    valueOfWallet = "${df.format(walletSyncPercentage)}%"
-                    binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false,valueOfWallet)
                 } else {
-                    ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(
-                        false
-                    )
-                    sync =
-                    getString(R.string.status_synchronized)
-                    valueOfWallet = "${df.format(walletSyncPercentage)}%"
-                    binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false,valueOfWallet)
-                    //SteveJosephh21
-                    setProgress(-2)
+                    sync = getString(R.string.failed_connected_to_the_node)
+                    setProgress(-1)
+                    valueOfWallet = "--"
+                    binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, true, valueOfWallet)
                 }
+                setProgress(sync)
             } else {
-                sync = getString(R.string.failed_connected_to_the_node)
-                setProgress(-1)
-                valueOfWallet ="--"
-                binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext,true,valueOfWallet)
+                setProgress(getString(R.string.no_node_connection))
+                valueOfWallet = "--"
+                binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, true, valueOfWallet)
             }
-            setProgress(sync)
-        } else {
-            setProgress(getString(R.string.no_node_connection))
-            valueOfWallet ="--"
-            binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, true,valueOfWallet)
+            toolTip()
         }
-        toolTip()
-    }
 
     private fun refreshBalance(synchronized: Boolean) {
         val unlockedBalance: Double = Helper.getDecimalAmount(unlockedBalance).toDouble()

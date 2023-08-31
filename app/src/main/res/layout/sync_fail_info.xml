@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/transparent"
+    app:cardBackgroundColor="@color/page_background"
+    app:cardCornerRadius="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="5dp"
+        android:orientation="vertical"
+        tools:ignore="MissingConstraints">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="5dp"
+                android:textAlignment="viewEnd"
+                android:src="@drawable/ic_fail_info"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Connection fail"
+                android:textAlignment="viewStart"
+                android:textColor="@color/text"
+                android:textSize="15sp"
+                android:layout_marginStart="2dp"
+                android:fontFamily="@font/open_sans_semi_bold"
+
+                />
+        </LinearLayout>
+
+
+        <TextView
+            android:fontFamily="@font/open_sans_medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:textColor="@color/text"
+            android:justificationMode="inter_word"
+            android:text="@string/sync_fail_content"
+            android:textAlignment="center" />
+
+
+        <Button
+            android:id="@+id/okButton"
+            style="@style/Widget.Bchat.Button.Common.ProminentFilled"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="15dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:text="@string/ok" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

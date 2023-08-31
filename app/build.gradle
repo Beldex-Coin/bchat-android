@@ -8,7 +8,7 @@ buildscript {
         classpath files('libs/gradle-witness.jar')
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlinVersion"
-        classpath "com.google.gms:google-services:4.3.12"
+        classpath "com.google.gms:google-services:4.3.15"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$daggerVersion"
     }
 }
@@ -64,7 +64,7 @@ dependencies {
     implementation 'commons-net:commons-net:3.7.2'
     implementation 'com.github.chrisbanes:PhotoView:2.1.3'
     implementation "com.github.bumptech.glide:glide:$glideVersion"
-    implementation 'com.google.firebase:firebase-crashlytics-buildtools:2.9.2'
+    implementation 'com.google.firebase:firebase-crashlytics-buildtools:2.9.8'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
     kapt "com.github.bumptech.glide:compiler:$glideVersion"
@@ -137,6 +137,9 @@ dependencies {
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
     // Core library
     androidTestImplementation 'androidx.test:core:1.4.0'
+    androidTestImplementation('com.adevinta.android:barista:4.2.0') {
+        exclude group: 'org.jetbrains.kotlin'
+    }
 
     // AndroidJUnitRunner and JUnit Rules
     androidTestImplementation 'androidx.test:runner:1.4.0'
@@ -178,11 +181,12 @@ dependencies {
     implementation 'app.cash.copper:copper-flow:1.0.0'
     implementation 'com.google.code.gson:gson:2.8.7'
     //implementation 'com.google.firebase:firebase-crash:16.2.1'
+    implementation 'com.github.anrwatchdog:anrwatchdog:1.4.0'
 
 }
 
-def canonicalVersionCode = 33
-def canonicalVersionName = "2.1.0"
+def canonicalVersionCode = 34
+def canonicalVersionName = "2.1.1"
 
 //First Release Date 17-06-2022
 //Version Code 15 Version Name 1.0.0
@@ -241,6 +245,9 @@ def canonicalVersionName = "2.1.0"
 //Nineteenth Release Data 06-07-2023
 //Version Code 33 Version Name 2.1.0
 
+//Twentieth Release Date 29-08-2023
+//Version Code 34 Version Name 2.1.1
+
 
 def postFixSize = 10
 def abiPostFix = ['armeabi-v7a' : 1,
@@ -249,7 +256,7 @@ def abiPostFix = ['armeabi-v7a' : 1,
                   'universal'   : 5]
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion androidCompileSdkVersion
     buildToolsVersion '30.0.3'
     useLibrary 'org.apache.http.legacy'
 

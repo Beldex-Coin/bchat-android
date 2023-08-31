@@ -197,7 +197,7 @@ class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
         binding.loader.animate().setDuration(150).alpha(0.0f)
             .setListener(object : AnimatorListenerAdapter() {
 
-                override fun onAnimationEnd(animation: Animator?) {
+                override fun onAnimationEnd(animation: Animator) {
                     super.onAnimationEnd(animation)
                     binding.loader.visibility = View.GONE
                 }

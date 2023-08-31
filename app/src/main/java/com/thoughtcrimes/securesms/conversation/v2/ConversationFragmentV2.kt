@@ -541,7 +541,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 }
             }
         }
-        listenerCallback!!.forceUpdate(requireActivity())
+        if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && HomeActivity.reportIssueBChatID != thread.address.toString() && !thread.isLocalNumber) {
+            listenerCallback!!.forceUpdate(requireActivity())
+        }
         showBlockProgressBar(thread)
 
         callShowPayAsYouChatBDXIcon(thread)
@@ -3272,26 +3274,29 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     fun onRefreshed(wallet: Wallet, full: Boolean) {
-        if (full && listenerCallback!!.isSynced) {
-            if (CheckOnline.isOnline(requireContext())) {
-                check(listenerCallback!!.hasBoundService()) { "WalletService not bound." }
-                val daemonConnected: Wallet.ConnectionStatus = listenerCallback!!.connectionStatus!!
-                if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
-                    AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+        val recipient = viewModel.recipient ?: return
+        if (!recipient.isGroupRecipient && recipient.hasApprovedMe() && !recipient.isBlocked && HomeActivity.reportIssueBChatID != recipient.address.toString() && !recipient.isLocalNumber) {
+            if (full) {
+                if (CheckOnline.isOnline(requireContext())) {
+                    check(listenerCallback!!.hasBoundService()) { "WalletService not bound." }
+                    val daemonConnected: Wallet.ConnectionStatus = listenerCallback!!.connectionStatus!!
+                    if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
+                        AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
 
+                    }
                 }
             }
+            updateStatus(wallet)
         }
-        updateStatus(wallet)
     }
 
     private fun updateStatus(wallet: Wallet) {
         if (!isAdded) return
-        val daemonHeight: Long = wallet.daemonBlockChainHeight
-        val walletHeight: Long = wallet.blockChainHeight
-        val df = DecimalFormat("#.##")
-        val walletSyncPercentage = ((100.00 * walletHeight.toDouble()) / daemonHeight)
         if (CheckOnline.isOnline(requireContext())) {
+            val daemonHeight: Long = wallet.daemonBlockChainHeight
+            val walletHeight: Long = wallet.blockChainHeight
+            val df = DecimalFormat("#.##")
+            val walletSyncPercentage = ((100.00 * walletHeight.toDouble()) / daemonHeight)
             val sync: String
             check(listenerCallback!!.hasBoundService()) { "WalletService not bound." }
             val daemonConnected: Wallet.ConnectionStatus = listenerCallback!!.connectionStatus!!

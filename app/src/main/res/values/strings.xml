@@ -1392,4 +1392,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="activity_restore_from_date_missing_error" translatable="false">Please pick a restore date</string>
     <string name="restored_via_seed" translatable="false">You restored via Seed!</string>
     <string name="display_name_validation" translatable="false">Please enter a valid name</string>
+    <string name="sync_fail_content" translatable="false">It seems there is an issue with connecting to the node, please try to reconnect or switch the node.</string>
+    <string name="notification_enable_content" translatable="false">We recommend you to allow permission for notifications for BChat app to notify you for new messages and calls.</string>
 </resources>

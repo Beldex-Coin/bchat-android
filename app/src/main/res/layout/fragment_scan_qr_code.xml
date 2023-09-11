@@ -20,23 +20,53 @@
         android:weightSum="3">
 
         <com.thoughtcrimes.securesms.components.ShapeScrim
-            android:layout_weight="2"
+            android:layout_weight="3"
             android:layout_width="match_parent"
-            android:layout_height="0dp"/>
+            android:layout_height="0dp" />
+
+        <LinearLayout
+            android:id="@+id/uploadFromGallery_Layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/upload_from_gallery_background"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:src="@drawable/gallery_upload" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/open_sans_medium"
+                android:padding="5dp"
+                android:text="@string/upload_from_gallery"
+                android:textColor="@color/black"
+                android:textSize="@dimen/very_small_font_size" />
+        </LinearLayout>
 
         <TextView
-            android:fontFamily="@font/open_sans_medium"
             android:id="@+id/messageTextView"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:padding="@dimen/very_large_spacing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="30dp"
+            android:background="@drawable/scan_qr_content_background"
+            android:fontFamily="@font/open_sans_medium"
             android:gravity="center"
-            android:textStyle="bold"
+            android:padding="@dimen/large_spacing"
             android:text="@string/activity_create_private_chat_scan_qr_code_explanation"
+            android:textColor="@color/white"
             android:textSize="@dimen/small_font_size"
-            android:background="@color/page_background"
-            android:textColor="@color/scan_qr_code_text_color" />
+            android:textStyle="bold" />
 
     </LinearLayout>
 

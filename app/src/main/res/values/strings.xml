@@ -1394,4 +1394,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="display_name_validation" translatable="false">Please enter a valid name</string>
     <string name="sync_fail_content" translatable="false">It seems there is an issue with connecting to the node, please try to reconnect or switch the node.</string>
     <string name="notification_enable_content" translatable="false">We recommend you to allow permission for notifications for BChat app to notify you for new messages and calls.</string>
+    <string name="invalid_qr_code_image" translatable="false">Unable to recognized a valid code from uploaded image</string>
+    <string name="upload_from_gallery" translatable="false">Upload from gallery</string>
+    <string name="join_social_group_content" translatable="false">Scan a Social group\'s QR code for Joining a social group. QR Codes can be found on the social group website link.</string>
+    <string name="wallet_scan_qr_content" translatable="false">Scan a receiver\'s QR code to send BDX. QR Codes can be found by clicking on receiver button in Wallet Dashboard.</string>
 </resources>

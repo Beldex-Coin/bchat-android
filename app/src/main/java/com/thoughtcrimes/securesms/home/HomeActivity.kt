@@ -48,7 +48,6 @@ import com.thoughtcrimes.securesms.MediaOverviewActivity
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
 import com.thoughtcrimes.securesms.components.ProfilePictureView
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
-import com.thoughtcrimes.securesms.conversation.v2.ConversationViewModel
 import com.thoughtcrimes.securesms.conversation.v2.messages.VoiceMessageViewDelegate
 import com.thoughtcrimes.securesms.conversation.v2.utilities.BaseDialog
 import com.thoughtcrimes.securesms.data.BarcodeData
@@ -56,13 +55,12 @@ import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.data.TxData
 import com.thoughtcrimes.securesms.data.UserNotes
 import com.thoughtcrimes.securesms.database.MmsSmsDatabase
-import com.thoughtcrimes.securesms.delegates.NodeDelegates
-import com.thoughtcrimes.securesms.delegates.NodeDelegatesImpl
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.groups.OpenGroupManager
 import com.thoughtcrimes.securesms.home.search.GlobalSearchAdapter
 import com.thoughtcrimes.securesms.home.search.GlobalSearchInputLayout
 import com.thoughtcrimes.securesms.home.search.GlobalSearchViewModel
+import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
 import com.thoughtcrimes.securesms.model.NetworkType
 import com.thoughtcrimes.securesms.model.PendingTransaction
 import com.thoughtcrimes.securesms.model.TransactionInfo
@@ -73,6 +71,7 @@ import com.thoughtcrimes.securesms.onboarding.SeedReminderViewDelegate
 import com.thoughtcrimes.securesms.util.ActivityDispatcher
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.IP2Country
+import com.thoughtcrimes.securesms.util.NodePinger
 import com.thoughtcrimes.securesms.util.SharedPreferenceUtil
 import com.thoughtcrimes.securesms.util.parcelable
 import com.thoughtcrimes.securesms.util.push
@@ -92,7 +91,6 @@ import com.thoughtcrimes.securesms.wallet.send.SendFragment
 import com.thoughtcrimes.securesms.wallet.service.WalletService
 import com.thoughtcrimes.securesms.wallet.settings.WalletSettings
 import com.thoughtcrimes.securesms.wallet.utils.LegacyStorageHelper
-import com.thoughtcrimes.securesms.wallet.utils.common.LoadingActivity
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
@@ -109,6 +107,8 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import java.io.File
+import java.util.Collections
+import java.util.Random
 import javax.inject.Inject
 
 @AndroidEntryPoint

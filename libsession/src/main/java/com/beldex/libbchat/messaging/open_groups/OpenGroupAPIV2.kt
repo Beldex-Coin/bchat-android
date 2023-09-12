@@ -1,5 +1,6 @@
 package com.beldex.libbchat.messaging.open_groups
 
+import com.beldex.libbchat.BuildConfig
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
@@ -42,12 +43,8 @@ object OpenGroupAPIV2 {
     /*private const val defaultServerPublicKey = "efcaecf00aebf5b75e62cf1fd550c6052842e1415a9339406e256c8b27cd2039"
     const val defaultServer = "http://13.233.251.36:8081"*/
 
-    //Mainnet
-    private const val defaultServerPublicKey = "0cfdbcc8bba5989a6787019c6635c08415c103174609360f9c3e4e764ef48073"
-    const val defaultServer = "http://social.beldex.io"
-    //Testnet
-    /*private const val defaultServerPublicKey = "7c4dc4a0d6eddcdbbed85487f6ccc3425284ad03bbcd33de2c4ce8cbb303a946"
-    const val defaultServer = "http://social.rpcnode.stream:8080"*/
+    private const val defaultServerPublicKey = BuildConfig.DEFAULT_SERVER_KEY
+    const val defaultServer = BuildConfig.DEFAULT_SERVER
 
     sealed class Error(message: String) : Exception(message) {
         object Generic : Error("An error occurred.")

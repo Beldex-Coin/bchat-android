@@ -12,6 +12,7 @@ import android.view.WindowManager;
 
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.thoughtcrimes.securesms.data.DefaultNodes;
+import com.thoughtcrimes.securesms.data.NetworkNodes;
 import com.thoughtcrimes.securesms.data.Node;
 import com.thoughtcrimes.securesms.data.NodeInfo;
 import com.thoughtcrimes.securesms.model.NetworkType;
@@ -244,8 +245,8 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
     @Override
     public Set<NodeInfo> getOrPopulateFavourites() {
         if (favouriteNodes.isEmpty()) {
-            for (DefaultNodes node : DefaultNodes.values()) {
-                NodeInfo nodeInfo = NodeInfo.fromString(node.getUri());
+            for (String node : NetworkNodes.INSTANCE.getNodes()) {
+                NodeInfo nodeInfo = NodeInfo.fromString(node);
                 if (nodeInfo != null) {
                     nodeInfo.setFavourite(true);
                     favouriteNodes.add(nodeInfo);

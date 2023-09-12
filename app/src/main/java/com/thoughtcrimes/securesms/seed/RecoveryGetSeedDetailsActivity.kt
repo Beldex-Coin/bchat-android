@@ -22,6 +22,7 @@ import com.beldex.libsignal.crypto.ecc.ECKeyPair
 import com.thoughtcrimes.securesms.BaseActionBarActivity
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
 import com.thoughtcrimes.securesms.data.DefaultNodes
+import com.thoughtcrimes.securesms.data.NetworkNodes
 import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
 import com.thoughtcrimes.securesms.model.NetworkType
@@ -333,10 +334,10 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
 
     fun getOrPopulateFavourites(): Set<NodeInfo?> {
         if (favouriteNodes.isEmpty()) {
-            for (node in DefaultNodes.values()) {
-                val nodeInfo = NodeInfo.fromString(node.name)
+            for (node in NetworkNodes.getNodes()) {
+                val nodeInfo = NodeInfo.fromString(node)
                 if (nodeInfo != null) {
-                    nodeInfo.setFavourite(true)
+                    nodeInfo.isFavourite = true
                     favouriteNodes.add(nodeInfo)
                 }
             }

@@ -34,6 +34,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.google.android.material.textfield.TextInputLayout;
 import com.thoughtcrimes.securesms.data.DefaultNodes;
+import com.thoughtcrimes.securesms.data.NetworkNodes;
 import com.thoughtcrimes.securesms.data.Node;
 import com.thoughtcrimes.securesms.data.NodeInfo;
 import com.thoughtcrimes.securesms.model.NetworkType;
@@ -267,8 +268,8 @@ public class NodeFragment extends Fragment
         @Override
         protected Boolean doInBackground(Integer... params) {
             if (params[0] == RESTORE_DEFAULTS) { // true = restore defaults
-                for (DefaultNodes node : DefaultNodes.values()) {
-                    NodeInfo nodeInfo = NodeInfo.fromString(node.getUri());
+                for (String node : NetworkNodes.INSTANCE.getNodes()) {
+                    NodeInfo nodeInfo = NodeInfo.fromString(node);
                     if (nodeInfo != null) {
                         nodeInfo.setFavourite(true);
                         nodeList.add(nodeInfo);

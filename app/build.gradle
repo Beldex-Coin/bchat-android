@@ -339,18 +339,37 @@ android {
         }
     }
 
-    flavorDimensions "distribution"
+    flavorDimensions "distribution", "targetNet"
     productFlavors {
         play {
+            dimension "distribution"
+
             ext.websiteUpdateUrl = "null"
             buildConfigField "boolean", "PLAY_STORE_DISABLED", "false"
             buildConfigField "String", "NOPLAY_UPDATE_URL", "$ext.websiteUpdateUrl"
         }
-
         website {
+            dimension "distribution"
+
             ext.websiteUpdateUrl = "https://github.com/Beldex-Coin/bchat-android/releases"
             buildConfigField "boolean", "PLAY_STORE_DISABLED", "true"
             buildConfigField "String", "NOPLAY_UPDATE_URL", "\"$ext.websiteUpdateUrl\""
+        }
+        mainNet {
+            dimension "targetNet"
+
+            buildConfigField "String", "NETWORK_TYPE", "\"mainnet\""
+            buildConfigField "String", "REPORT_ISSUE_ID", "\"bdb890a974a25ef50c64cc4e3270c4c49c7096c433b8eecaf011c1ad000e426813\""
+            buildConfigField "boolean", "USE_TESTNET", "false"
+            buildConfigField "String", "EXPLORER_URL", "\"https://explorer.beldex.io\""
+        }
+        devNet {
+            dimension "targetNet"
+
+            buildConfigField "String", "NETWORK_TYPE", "\"devnet\""
+            buildConfigField "String", "REPORT_ISSUE_ID", "\"bd21c8c3179975fa082f221323ae47d44bf38b8f6e39f530c2d07ce7ad4892682d\""
+            buildConfigField "boolean", "USE_TESTNET", "true"
+            buildConfigField "String", "EXPLORER_URL", "\"http://154.26.139.105\""
         }
     }
 
@@ -386,6 +405,7 @@ android {
             version '3.10.2'
         }
     }
+    ndkVersion '25.2.9519653'
 }
 
 static def getLastCommitTimestamp() {

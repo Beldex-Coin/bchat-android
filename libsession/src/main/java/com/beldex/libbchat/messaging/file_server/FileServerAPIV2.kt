@@ -1,5 +1,6 @@
 package com.beldex.libbchat.messaging.file_server
 
+import com.beldex.libbchat.BuildConfig
 import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.functional.map
 import okhttp3.Headers
@@ -29,13 +30,8 @@ object FileServerAPIV2 {
     //const val server = "http://fs.rpcnode.stream"
     //10-06-2022
 
-    //Mainnet
-    private const val serverPublicKey = "f3024b309be838eff764c6804c417b667096d6c5301184f90fb66e9e4515444c"
-    const val server = "http://fs1.rpcnode.stream"
-
-    //Testnet
-    /*private const val serverPublicKey = "decc13c0a80cdd44926226f20b86c85525b001d9ab9850c95b281aa67ffebf6a"
-    const val server = "http://fileserver.rpcnode.stream"*/
+    private const val serverPublicKey = BuildConfig.SERVER_KEY
+    const val server = BuildConfig.SERVER
     const val maxFileSize = 10_000_000 // 10 MB
 
     /**

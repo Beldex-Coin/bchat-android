@@ -3,6 +3,7 @@
 package com.beldex.libbchat.mnode
 
 import android.os.Build
+import com.beldex.libbchat.BuildConfig
 import com.goterl.lazysodium.LazySodiumAndroid
 import com.goterl.lazysodium.SodiumAndroid
 import com.goterl.lazysodium.exceptions.SodiumException
@@ -63,7 +64,7 @@ object MnodeAPI {
     private val targetSwarmMnodeCount = 2
     private val useOnionRequests = true
 
-    internal val useTestnet = false
+    internal val useTestnet = BuildConfig.USE_TESTNET
 
     // Error
     internal sealed class Error(val description: String) : Exception(description) {

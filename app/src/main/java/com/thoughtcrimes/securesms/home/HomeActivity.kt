@@ -88,6 +88,7 @@ import com.thoughtcrimes.securesms.wallet.utils.common.LoadingActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
+import io.beldex.bchat.BuildConfig
 import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -147,8 +148,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         const val SHORTCUT_LAUNCHER = "short_cut_launcher"
 
         var REQUEST_URI = "uri"
-        val reportIssueBChatID = "bdb890a974a25ef50c64cc4e3270c4c49c7096c433b8eecaf011c1ad000e426813" //Mainnet
-        //val reportIssueBChatID = "bd21c8c3179975fa082f221323ae47d44bf38b8f6e39f530c2d07ce7ad4892682d" //Testnet
+        val reportIssueBChatID = BuildConfig.REPORT_ISSUE_ID
     }
 
     //Wallet
@@ -1007,8 +1007,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     override fun getOrPopulateFavourites(): MutableSet<NodeInfo> {
         if (favouriteNodes.isEmpty()) {
-            for (node in DefaultNodes.values()) {
-                val nodeInfo = NodeInfo.fromString(node.uri)
+            for (node in NetworkNodes.getNodes()) {
+                val nodeInfo = NodeInfo.fromString(node)
                 if (nodeInfo != null) {
                     nodeInfo.isFavourite = true
                     favouriteNodes.add(nodeInfo)

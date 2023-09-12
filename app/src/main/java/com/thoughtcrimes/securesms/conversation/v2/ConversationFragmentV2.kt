@@ -544,7 +544,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         /*Hales63*/
         setUpMessageRequestsBar()
 
-<<<<<<< HEAD
 //        viewModel.recipient.value?.let { recipient ->
 //            if (recipient.isOpenGroupRecipient) {
 //                try {
@@ -3230,7 +3229,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     fun onRefreshed(wallet: Wallet, full: Boolean) {
-        val recipient = viewModel.recipient ?: return
+        val recipient = viewModel.recipient.value ?: return
         if (!recipient.isGroupRecipient && recipient.hasApprovedMe() && !recipient.isBlocked && HomeActivity.reportIssueBChatID != recipient.address.toString() && !recipient.isLocalNumber) {
             if (full) {
                 if (CheckOnline.isOnline(requireContext())) {

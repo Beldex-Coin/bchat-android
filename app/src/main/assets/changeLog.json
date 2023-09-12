@@ -239,6 +239,20 @@
           "description":"- Improved UI and Content"
         }
       ]
+    },
+    {
+      "title": "2.1.1",
+      "descriptions": [
+        {
+          "description":"- Added support for Android version 13"
+        },
+        {
+          "description":"- Fixed ANR issues"
+        },
+        {
+          "description":"- Minor Bug fixes"
+        }
+      ]
     }
   ]
 }

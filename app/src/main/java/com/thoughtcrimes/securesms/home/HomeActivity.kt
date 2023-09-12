@@ -716,6 +716,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             if(getWallet()!=null) {
                 onRefreshed(getWallet(), true)
             }else{
+                val currentFragment = getCurrentFragment()
+                if (currentFragment is WalletFragment) {
+                    currentFragment.updateNodeFailureStatus()
+                }
                 if(!CheckOnline.isOnline(this)) {
                     Toast.makeText(
                         requireActivity,
@@ -1452,10 +1456,67 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     private var walletSettingsResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            val intent = Intent(this, LoadingActivity::class.java)
-            push(intent)
-            finish()
+            pingSelectedNode()
         }
+    }
+
+    private fun pingSelectedNode() {
+        val PING_SELECTED = 0
+        val FIND_BEST = 1
+        AsyncFindBestNode(PING_SELECTED, FIND_BEST).execute<Int>(PING_SELECTED)
+    }
+
+    inner class AsyncFindBestNode(val PING_SELECTED: Int, val FIND_BEST: Int) :
+            AsyncTaskCoroutine<Int?, NodeInfo?>() {
+        override fun onPreExecute() {
+            super.onPreExecute()
+        }
+
+        override fun doInBackground(vararg params: Int?): NodeInfo? {
+            val favourites: Set<NodeInfo?> = orPopulateFavourites
+            var selectedNode: NodeInfo?
+            if (params[0] == FIND_BEST) {
+                selectedNode = autoselect(favourites)
+            } else if (params[0] == PING_SELECTED) {
+                selectedNode = getNode()
+                if (selectedNode == null) {
+                    Log.d("Beldex", "selected node null")
+                    for (node in favourites) {
+                        if (node!!.isSelected) {
+                            selectedNode = node
+                            break
+                        }
+                    }
+                }
+                if (selectedNode == null) { // autoselect
+                    selectedNode = autoselect(favourites)
+                } else {
+                    //Steve Josephh21
+                    if(selectedNode!=null) {
+                        selectedNode!!.testRpcService()
+                    }
+                }
+            } else throw java.lang.IllegalStateException()
+            return if (selectedNode != null && selectedNode.isValid) {
+                setNode(selectedNode)
+                selectedNode
+            } else {
+                setNode(null)
+                null
+            }
+        }
+        override fun onPostExecute(result: NodeInfo?) {
+            Log.d("Beldex", "daemon connected to home  ${result?.host}")
+        }
+    }
+
+    fun autoselect(nodes: Set<NodeInfo?>): NodeInfo? {
+        if (nodes.isEmpty()) return null
+        NodePinger.execute(nodes, null)
+        val nodeList: ArrayList<NodeInfo?> = ArrayList<NodeInfo?>(nodes)
+        Collections.sort(nodeList, NodeInfo.BestNodeComparator)
+        val rnd = Random().nextInt(nodeList.size)
+        return nodeList[rnd]
     }
 
     override fun walletOnBackPressed(){

@@ -11,7 +11,6 @@ apply from: 'buildGradle/dependencies.gradle'
 configurations.all {
     exclude module: "commons-logging"
 }
-
 buildscript {
     repositories {
         google()
@@ -19,8 +18,8 @@ buildscript {
     }
 }
 
-def canonicalVersionCode = 33
-def canonicalVersionName = "2.1.0"
+def canonicalVersionCode = 34
+def canonicalVersionName = "2.1.1"
 
 //First Release Date 17-06-2022
 //Version Code 15 Version Name 1.0.0
@@ -79,6 +78,9 @@ def canonicalVersionName = "2.1.0"
 //Nineteenth Release Data 06-07-2023
 //Version Code 33 Version Name 2.1.0
 
+//Twentieth Release Date 29-08-2023
+//Version Code 34 Version Name 2.1.1
+
 
 def postFixSize = 10
 def abiPostFix = ['armeabi-v7a' : 1,
@@ -87,8 +89,6 @@ def abiPostFix = ['armeabi-v7a' : 1,
                   'universal'   : 5]
 
 android {
-    compileSdkVersion 33
-    buildToolsVersion '30.0.3'
     useLibrary 'org.apache.http.legacy'
 
     dexOptions {
@@ -124,7 +124,9 @@ android {
         versionName canonicalVersionName
 
         minSdkVersion androidMinimumSdkVersion
+        compileSdk androidCompileSdkVersion
         targetSdkVersion androidTargetSdkVersion
+        buildToolsVersion '30.0.3'
 
         multiDexEnabled = true
 

@@ -1387,4 +1387,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="invalid_qr_code" translatable="false">Invalid QR Code</string>
     <string name="invitation_msg">Hey, I\'ve been using BChat to chat with complete privacy and security. Come join me! Download it at https://play.google.com/store/apps/details?id=io.beldex.bchat. My Chat ID is %s !</string>
     <string name="id_format">ID: %s</string>
+    <string name="sync_fail_content" translatable="false">It seems there is an issue with connecting to the node, please try to reconnect or switch the node.</string>
+    <string name="notification_enable_content" translatable="false">We recommend you to allow permission for notifications for BChat app to notify you for new messages and calls.</string>
 </resources>

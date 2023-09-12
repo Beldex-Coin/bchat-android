@@ -67,6 +67,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
     fun setProgress(text: String?) {
         if(text==getString(R.string.reconnecting) || text==getString(R.string.status_wallet_connecting)){
            binding.syncStatusIcon.visibility=View.GONE
+            binding.syncFailIcon.visibility = View.GONE
         }
         if(text==getString(R.string.reconnecting) || text == getString(R.string.status_wallet_loading) || text == getString(R.string.status_wallet_connecting)){
             binding.syncStatus.setTextColor(ContextCompat.getColor(requireActivity().applicationContext, R.color.green_color))
@@ -590,6 +591,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                     setProgress(x)
                     binding.filterTransactionsIcon.isClickable = false
                     binding.syncStatusIcon.visibility=View.GONE
+                    binding.syncFailIcon.visibility = View.GONE
                     binding.syncStatus.setTextColor(
                         ContextCompat.getColor(
                             requireActivity().applicationContext,
@@ -609,6 +611,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                     binding.filterTransactionsIcon.isClickable =
                         true //default = adapter!!.itemCount > 0
                     binding.syncStatusIcon.visibility=View.VISIBLE
+                    binding.syncFailIcon.visibility = View.GONE
                     binding.syncStatusIcon.setOnClickListener {
                         if(CheckOnline.isOnline(requireActivity())){
                             if(wallet!=null) {
@@ -619,8 +622,14 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                 }
             } else {
                 binding.syncStatusIcon.visibility=View.GONE
+                binding.syncFailIcon.visibility=View.VISIBLE
+                binding.syncFailIcon.setOnClickListener {
+                    if(CheckOnline.isOnline(requireActivity())){
+                            checkSyncFailInfo(requireActivity())
+                        }
+                    }
                 sync = getString(R.string.failed_connected_to_the_node)
-                setProgress(-1)
+                setProgress(101)
                 binding.syncStatus.setTextColor(
                     ContextCompat.getColor(
                         requireActivity().applicationContext,
@@ -639,7 +648,12 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                     R.color.red
                 )
             )
+            setProgress(101)
+            binding.progressBar.indeterminateDrawable.setColorFilter(
+                    ContextCompat.getColor(requireActivity().applicationContext,R.color.red),
+                    android.graphics.PorterDuff.Mode.SRC_IN)
             binding.syncStatusIcon.visibility=View.GONE
+            binding.syncFailIcon.visibility=View.GONE
         }
     }
 
@@ -658,6 +672,39 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         okButton.setOnClickListener {
             alert.dismiss()
         }
+    }
+
+    private fun checkSyncFailInfo(requireActivity: FragmentActivity) {
+        val dialog = AlertDialog.Builder(requireActivity)
+        val inflater = layoutInflater
+        val dialogView = inflater.inflate(R.layout.sync_fail_info, null)
+        dialog.setView(dialogView)
+        val okButton = dialogView.findViewById<Button>(R.id.okButton)
+        val alert = dialog.create()
+        alert.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        alert.setCanceledOnTouchOutside(false)
+        alert.show()
+        okButton.setOnClickListener {
+            alert.dismiss()
+        }
+    }
+
+    fun updateNodeFailureStatus() {
+        binding.syncStatusIcon.visibility = View.GONE
+        binding.syncFailIcon.visibility = View.VISIBLE
+        binding.syncFailIcon.setOnClickListener {
+            if (CheckOnline.isOnline(requireActivity())) {
+                checkSyncFailInfo(requireActivity())
+            }
+        }
+        setProgress(getString(R.string.failed_connected_to_the_node))
+        setProgress(101)
+        binding.syncStatus.setTextColor(
+                ContextCompat.getColor(
+                        requireActivity().applicationContext,
+                        R.color.red
+                )
+        )
     }
 
     private fun refreshBalance(synchronized: Boolean) {

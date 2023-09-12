@@ -84,7 +84,7 @@ class VoiceMessageView : LinearLayout, AudioSlidePlayer.Listener {
                     binding.voiceMessageViewDurationTextView.visibility = View.VISIBLE
                     binding.voiceMessageViewDurationTextView.text = String.format("%01d:%02d",
                             TimeUnit.MILLISECONDS.toMinutes(audioExtras.durationMs),
-                            TimeUnit.MILLISECONDS.toSeconds(audioExtras.durationMs))
+                            TimeUnit.MILLISECONDS.toSeconds(audioExtras.durationMs) % 60)
                     Log.d("Beldex","Voice msg time to mins ${TimeUnit.MICROSECONDS.toMinutes(audioExtras.durationMs)}")
                     Log.d("Beldex","Voice msg time to seconds ${TimeUnit.MICROSECONDS.toSeconds(audioExtras.durationMs)}")
                     Log.d("Beldex","Voice msg time text ${binding.voiceMessageViewDurationTextView.text}")
@@ -112,7 +112,7 @@ class VoiceMessageView : LinearLayout, AudioSlidePlayer.Listener {
         this.progress = progress
         binding.voiceMessageViewDurationTextView.text = String.format("%01d:%02d",
             TimeUnit.MILLISECONDS.toMinutes(duration - (progress * duration.toDouble()).roundToLong()),
-            TimeUnit.MILLISECONDS.toSeconds(duration - (progress * duration.toDouble()).roundToLong()))
+            TimeUnit.MILLISECONDS.toSeconds(duration - (progress * duration.toDouble()).roundToLong()) % 60)
         val layoutParams = binding.progressView.layoutParams as RelativeLayout.LayoutParams
         layoutParams.width = (width.toFloat() * progress.toFloat()).roundToInt()
         binding.progressView.layoutParams = layoutParams

@@ -129,6 +129,7 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         dates["2023-05"] = 2199950
         dates["2023-06"] = 2289269
         dates["2023-07"] = 2363143
+        dates["2023-08"] = 2420443
 
         getSeed = intent.extras?.getString("seed")
         // create an OnDateSetListener

@@ -60,12 +60,12 @@ object ConversationMenuHelper {
                 inflater.inflate(R.menu.menu_conversation_expiration_on, menu)
                 val item = menu.findItem(R.id.menu_expiring_messages)
                 val actionView = item.actionView
-                val iconView = actionView.findViewById<ImageView>(R.id.menu_badge_icon)
-                val badgeView = actionView.findViewById<TextView>(R.id.expiration_badge)
+                val iconView = actionView?.findViewById<ImageView>(R.id.menu_badge_icon)
+                val badgeView = actionView?.findViewById<TextView>(R.id.expiration_badge)
                 @ColorInt val color = fragmentV2.resources.getColorWithID(R.color.text, context.theme)
-                iconView.colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY)
-                badgeView.text = ExpirationUtil.getExpirationAbbreviatedDisplayValue(context, thread.expireMessages)
-                actionView.setOnClickListener { onOptionsItemSelected(item) }
+                iconView?.colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY)
+                badgeView?.text = ExpirationUtil.getExpirationAbbreviatedDisplayValue(context, thread.expireMessages)
+                actionView?.setOnClickListener { onOptionsItemSelected(item) }
             } else {
                 inflater.inflate(R.menu.menu_conversation_expiration_off, menu)
             }

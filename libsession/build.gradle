@@ -39,6 +39,7 @@ android {
 
         }
     }
+    namespace 'com.beldex.libbchat'
 }
 
 dependencies {

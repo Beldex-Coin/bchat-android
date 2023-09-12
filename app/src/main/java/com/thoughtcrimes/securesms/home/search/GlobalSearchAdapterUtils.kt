@@ -76,6 +76,7 @@ fun ContentView.bindQuery(query: String, model: GlobalSearchAdapter.Model) {
             }
             binding.searchResultSubtitle.text = getHighlight(query, membersString)
         }
+        else -> Unit
     }
 }
 

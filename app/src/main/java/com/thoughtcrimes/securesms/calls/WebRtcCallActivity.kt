@@ -398,6 +398,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                             CALL_CONNECTED -> {
                                 wantsToAnswer = false
                             }
+                            else -> Unit
                         }
                         updateControls(state)
                     }

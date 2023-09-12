@@ -173,7 +173,7 @@ android {
         }
     }
 
-    flavorDimensions "distribution", "targetNet"
+    flavorDimensions = ["distribution", "targetNet"]
     productFlavors {
         play {
             dimension "distribution"

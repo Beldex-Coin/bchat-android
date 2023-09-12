@@ -11,6 +11,9 @@ import io.beldex.bchat.R
 import com.thoughtcrimes.securesms.BaseActionBarActivity
 import com.thoughtcrimes.securesms.conversation.v2.utilities.BaseDialog
 
+val defaultBchatRequestCode: Int
+    get() = 42
+
 fun BaseActionBarActivity.setUpActionBarBchatLogo(title: String, hideBackButton: Boolean = false) {
     val actionbar = supportActionBar!!
 
@@ -23,12 +26,12 @@ fun BaseActionBarActivity.setUpActionBarBchatLogo(title: String, hideBackButton:
     actionbar.setDisplayShowCustomEnabled(true)
 
     val rootView: Toolbar = actionbar.customView!!.parent as Toolbar
-    rootView.setPadding(0,0,0,0)
-    rootView.setContentInsetsAbsolute(0,0);
+    rootView.setPadding(0, 0, 0, 0)
+    rootView.setContentInsetsAbsolute(0, 0);
 
     val backButton = actionbar.customView!!.findViewById<View>(R.id.back_button)
     val titleName = actionbar.customView!!.findViewById<TextView>(R.id.title_name)
-    titleName.text=title
+    titleName.text = title
     if (hideBackButton) {
         backButton.visibility = View.GONE
     } else {
@@ -38,9 +41,6 @@ fun BaseActionBarActivity.setUpActionBarBchatLogo(title: String, hideBackButton:
         }
     }
 }
-
-val AppCompatActivity.defaultBchatRequestCode: Int
-    get() = 42
 
 fun AppCompatActivity.push(intent: Intent, isForResult: Boolean = false) {
     if (isForResult) {

@@ -2,7 +2,13 @@ package com.thoughtcrimes.securesms.home
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.*
+import android.content.ComponentName
+import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
+import android.content.IntentSender
+import android.content.ServiceConnection
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.PointF
@@ -10,44 +16,23 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.IBinder
-import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
-import androidx.activity.viewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
-import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityHomeBinding
-import com.beldex.libbchat.messaging.jobs.JobQueue
-import com.beldex.libbchat.utilities.TextSecurePreferences
-import com.thoughtcrimes.securesms.groups.OpenGroupManager
-import com.thoughtcrimes.securesms.home.search.GlobalSearchAdapter
-import com.thoughtcrimes.securesms.home.search.GlobalSearchInputLayout
-import com.thoughtcrimes.securesms.home.search.GlobalSearchViewModel
-import com.thoughtcrimes.securesms.ApplicationContext
-import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
-import com.thoughtcrimes.securesms.database.*
-import com.thoughtcrimes.securesms.onboarding.*
-import com.thoughtcrimes.securesms.preferences.*
-import com.thoughtcrimes.securesms.util.*
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
+import com.beldex.libbchat.messaging.jobs.JobQueue
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.ProfilePictureModifiedEvent
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getWalletName
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getWalletPassword
 import com.beldex.libbchat.utilities.recipients.Recipient
@@ -58,24 +43,47 @@ import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.tasks.Task
+import com.thoughtcrimes.securesms.ApplicationContext
 import com.thoughtcrimes.securesms.MediaOverviewActivity
-import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
+import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
 import com.thoughtcrimes.securesms.components.ProfilePictureView
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.conversation.v2.ConversationViewModel
 import com.thoughtcrimes.securesms.conversation.v2.messages.VoiceMessageViewDelegate
 import com.thoughtcrimes.securesms.conversation.v2.utilities.BaseDialog
-import com.thoughtcrimes.securesms.data.*
+import com.thoughtcrimes.securesms.data.BarcodeData
+import com.thoughtcrimes.securesms.data.NodeInfo
+import com.thoughtcrimes.securesms.data.TxData
+import com.thoughtcrimes.securesms.data.UserNotes
+import com.thoughtcrimes.securesms.database.MmsSmsDatabase
+import com.thoughtcrimes.securesms.delegates.NodeDelegates
+import com.thoughtcrimes.securesms.delegates.NodeDelegatesImpl
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
-import com.thoughtcrimes.securesms.dms.CreateNewPrivateChatActivity
-import com.thoughtcrimes.securesms.groups.CreateClosedGroupActivity
-import com.thoughtcrimes.securesms.groups.JoinPublicChatNewActivity
-import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
-import com.thoughtcrimes.securesms.model.*
-import com.thoughtcrimes.securesms.seed.SeedPermissionActivity
-import com.thoughtcrimes.securesms.wallet.*
+import com.thoughtcrimes.securesms.groups.OpenGroupManager
+import com.thoughtcrimes.securesms.home.search.GlobalSearchAdapter
+import com.thoughtcrimes.securesms.home.search.GlobalSearchInputLayout
+import com.thoughtcrimes.securesms.home.search.GlobalSearchViewModel
+import com.thoughtcrimes.securesms.model.NetworkType
+import com.thoughtcrimes.securesms.model.PendingTransaction
+import com.thoughtcrimes.securesms.model.TransactionInfo
+import com.thoughtcrimes.securesms.model.Wallet
+import com.thoughtcrimes.securesms.model.WalletManager
+import com.thoughtcrimes.securesms.onboarding.SeedActivity
+import com.thoughtcrimes.securesms.onboarding.SeedReminderViewDelegate
+import com.thoughtcrimes.securesms.util.ActivityDispatcher
+import com.thoughtcrimes.securesms.util.Helper
+import com.thoughtcrimes.securesms.util.IP2Country
+import com.thoughtcrimes.securesms.util.SharedPreferenceUtil
+import com.thoughtcrimes.securesms.util.parcelable
+import com.thoughtcrimes.securesms.util.push
+import com.thoughtcrimes.securesms.util.show
+import com.thoughtcrimes.securesms.wallet.CheckOnline
+import com.thoughtcrimes.securesms.wallet.OnBackPressedListener
+import com.thoughtcrimes.securesms.wallet.OnUriScannedListener
+import com.thoughtcrimes.securesms.wallet.OnUriWalletScannedListener
+import com.thoughtcrimes.securesms.wallet.WalletFragment
 import com.thoughtcrimes.securesms.wallet.info.WalletInfoActivity
-import com.thoughtcrimes.securesms.wallet.node.*
+import com.thoughtcrimes.securesms.wallet.node.NodeFragment
 import com.thoughtcrimes.securesms.wallet.receive.ReceiveFragment
 import com.thoughtcrimes.securesms.wallet.rescan.RescanDialog
 import com.thoughtcrimes.securesms.wallet.scanner.ScannerFragment
@@ -85,70 +93,50 @@ import com.thoughtcrimes.securesms.wallet.service.WalletService
 import com.thoughtcrimes.securesms.wallet.settings.WalletSettings
 import com.thoughtcrimes.securesms.wallet.utils.LegacyStorageHelper
 import com.thoughtcrimes.securesms.wallet.utils.common.LoadingActivity
-import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
-import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
-import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
+import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.BuildConfig
-import kotlinx.coroutines.*
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ActivityHomeBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import java.io.File
-import java.util.*
 import javax.inject.Inject
-
 
 @AndroidEntryPoint
 class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDelegate,HomeFragment.HomeFragmentListener,ConversationFragmentV2.Listener,UserDetailsBottomSheet.UserDetailsBottomSheetListener,VoiceMessageViewDelegate, ActivityDispatcher,
     WalletFragment.Listener, WalletService.Observer, WalletScannerFragment.OnScannedListener,SendFragment.OnScanListener,SendFragment.Listener,ReceiveFragment.Listener,WalletFragment.OnScanListener,
-    ScannerFragment.OnWalletScannedListener,WalletScannerFragment.Listener,NodeFragment.Listener{
+    ScannerFragment.OnWalletScannedListener,WalletScannerFragment.Listener,NodeFragment.Listener {
 
     private lateinit var binding: ActivityHomeBinding
 
     private val globalSearchViewModel by viewModels<GlobalSearchViewModel>()
 
     @Inject
-    lateinit var threadDb: ThreadDatabase
-
-    @Inject
-    lateinit var mmsSmsDatabase: MmsSmsDatabase
-    @Inject
-    lateinit var recipientDatabase: RecipientDatabase
-    @Inject
-    lateinit var groupDb: GroupDatabase
-    @Inject
     lateinit var textSecurePreferences: TextSecurePreferences
-    @Inject
-    lateinit var viewModelFactory: ConversationViewModel.AssistedFactory
+//    @Inject
+//    lateinit var viewModelFactory: ConversationViewModel.AssistedFactory
 
     @Inject
-    lateinit var beldexThreadDb: BeldexThreadDatabase
-
-    @Inject
-    lateinit var bchatContactDb: BchatContactDatabase
-
-    @Inject
-    lateinit var beldexApiDb: BeldexAPIDatabase
-
-    @Inject
-    lateinit var smsDb: SmsDatabase
-
-    @Inject
-    lateinit var mmsDb: MmsDatabase
-
-    @Inject
-    lateinit var beldexMessageDb: BeldexMessageDatabase
+    lateinit var walletManager: WalletManager
 
     //New Line App Update
     private var appUpdateManager: AppUpdateManager? = null
-    private val IMMEDIATE_APP_UPDATE_REQ_CODE = 124
+    private val immediateAppUpdateRequestCode = 124
 
-    companion object{
+    companion object {
         const val SHORTCUT_LAUNCHER = "short_cut_launcher"
 
         var REQUEST_URI = "uri"
-        val reportIssueBChatID = BuildConfig.REPORT_ISSUE_ID
+        const val reportIssueBChatID = BuildConfig.REPORT_ISSUE_ID
     }
 
     //Wallet
@@ -156,12 +144,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     private var uri: String? = null
 
     //Node Connection
-    private val NODES_PREFS_NAME = "nodes"
-    private val SELECTED_NODE_PREFS_NAME = "selected_node"
-    private val PREF_DAEMON_TESTNET = "daemon_testnet"
-    private val PREF_DAEMON_STAGENET = "daemon_stagenet"
-    private val PREF_DAEMON_MAINNET = "daemon_mainnet"
-    private var favouriteNodes: MutableSet<NodeInfo> = HashSet<NodeInfo>()
+    private val prefDaemonTestNet = "daemon_testnet"
+    private val prefDaemonStageNet = "daemon_stagenet"
+    private val prefDaemonMainNet = "daemon_mainnet"
 
     private var node: NodeInfo? = null
     private var onUriScannedListener: OnUriScannedListener? = null
@@ -171,6 +156,12 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     private val useSSL: Boolean = false
     private val isLightWallet:  Boolean = false
+
+    private val viewModel: HomeViewModel by viewModels()
+
+    @Inject
+    lateinit var sharedPreferenceUtil: SharedPreferenceUtil
+    private var favouriteNodes: Set<NodeInfo> = setOf()
 
     // region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?, isReady: Boolean) {
@@ -187,31 +178,39 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
            //Shortcut launcher
             intent.removeExtra(SHORTCUT_LAUNCHER)
             val extras = Bundle()
-            extras.putParcelable(ConversationFragmentV2.ADDRESS,intent.getParcelableExtra(ConversationFragmentV2.ADDRESS))
+            val address = intent.parcelable<Address>(ConversationFragmentV2.ADDRESS)
+
+            extras.putParcelable(ConversationFragmentV2.ADDRESS, address)
             extras.putLong(ConversationFragmentV2.THREAD_ID, intent.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
             extras.putBoolean(ConversationFragmentV2.SHORTCUT_LAUNCHER,true)
 
             //SetDataAndType
-            extras.putParcelable(ConversationFragmentV2.URI,intent.getParcelableExtra(ConversationFragmentV2.URI))
+            val uri = intent.parcelable<Uri>(ConversationFragmentV2.URI)
+
+            extras.putParcelable(ConversationFragmentV2.URI, uri)
             extras.putString(ConversationFragmentV2.TYPE,intent.getStringExtra(ConversationFragmentV2.TYPE))
             extras.putCharSequence(Intent.EXTRA_TEXT,intent.getCharSequenceExtra(Intent.EXTRA_TEXT))
 
             val homeFragment: Fragment = HomeFragment()
             homeFragment.arguments = extras
-            supportFragmentManager.beginTransaction()
+            supportFragmentManager
+                .beginTransaction()
                 .add(
                     R.id.activity_home_frame_layout_container,
                     homeFragment,
                     HomeFragment::class.java.name
-                ).commit()
+                )
+                .commit()
         }else {
             val homeFragment: Fragment = HomeFragment()
-            supportFragmentManager.beginTransaction()
+            supportFragmentManager
+                .beginTransaction()
                 .add(
                     R.id.activity_home_frame_layout_container,
                     homeFragment,
                     HomeFragment::class.java.name
-                ).commit()
+                )
+                .commit()
         }
 
         IP2Country.configureIfNeeded(this@HomeActivity)
@@ -222,23 +221,24 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         binding.airdropIcon.setOnClickListener { callAirdropUrl() }*/
         appUpdateManager = AppUpdateManagerFactory.create(applicationContext)
         checkUpdate()
-        loadFavouritesWithNetwork()
+        viewModel.loadFavouritesWithNetwork()
+
+        lifecycleScope.launch {
+            viewModel.favouritesNodes.collectLatest { nodes ->
+                nodes?.let {
+                    favouriteNodes = it
+                    if (favouriteNodes.isEmpty()) {
+                        loadLegacyList()
+                    }
+                }
+            }
+        }
 
         /*if(TextSecurePreferences.getAirdropAnimationStatus(this)) {
             //New Line AirDrop
             TextSecurePreferences.setAirdropAnimationStatus(this,false)
             launchSuccessLottieDialog()
         }*/
-    }
-
-    override fun callConversationScreen(threadId: Long, address: Address?, uri: Uri?, type: String?, extraText: CharSequence?) {
-        val extras = Bundle()
-        extras.putParcelable(ConversationFragmentV2.ADDRESS,address)
-        extras.putLong(ConversationFragmentV2.THREAD_ID, threadId)
-        extras.putParcelable(ConversationFragmentV2.URI,uri)
-        extras.putString(ConversationFragmentV2.TYPE,type)
-        extras.putCharSequence(Intent.EXTRA_TEXT,extraText)
-        replaceFragment(ConversationFragmentV2(), null, extras)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -302,41 +302,45 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 appUpdateInfo,
                 AppUpdateType.IMMEDIATE,
                 this,
-                this.IMMEDIATE_APP_UPDATE_REQ_CODE
+                this.immediateAppUpdateRequestCode
             )
         } catch (e: IntentSender.SendIntentException) {
             e.printStackTrace()
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         //New Line App Update
-        if (requestCode == IMMEDIATE_APP_UPDATE_REQ_CODE) {
-            if (resultCode == PassphraseRequiredActionBarActivity.RESULT_CANCELED) {
-                Toast.makeText(
-                    applicationContext,
-                    "Update canceled by user! Result Code: $resultCode", Toast.LENGTH_LONG
-                ).show();
-            } else if (resultCode == PassphraseRequiredActionBarActivity.RESULT_OK) {
-                Toast.makeText(
-                    applicationContext,
-                    "Update success! Result Code: $resultCode",
-                    Toast.LENGTH_LONG
-                ).show();
-            } else {
-                Toast.makeText(
-                    applicationContext,
-                    "Update Failed! Result Code: $resultCode",
-                    Toast.LENGTH_LONG
-                ).show();
-                checkUpdate();
+        if (requestCode == immediateAppUpdateRequestCode) {
+            when (resultCode) {
+                RESULT_CANCELED -> {
+                    Toast.makeText(
+                        applicationContext,
+                        "Update canceled by user! Result Code: $resultCode", Toast.LENGTH_LONG
+                    ).show()
+                }
+                RESULT_OK -> {
+                    Toast.makeText(
+                        applicationContext,
+                        "Update success! Result Code: $resultCode",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                else -> {
+                    Toast.makeText(
+                        applicationContext,
+                        "Update Failed! Result Code: $resultCode",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    checkUpdate()
+                }
             }
         }
 
         val fragment = supportFragmentManager.findFragmentById(R.id.activity_home_frame_layout_container)
         if(fragment is ConversationFragmentV2) {
-            (fragment as ConversationFragmentV2).onActivityResult(requestCode, resultCode, data)
+            fragment.onActivityResult(requestCode, resultCode, data)
         }
     }
 
@@ -358,11 +362,11 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 // Set up typing observer
                 withContext(Dispatchers.Main) {
                     ApplicationContext.getInstance(this@HomeActivity).typingStatusRepository.typingThreads.observe(
-                        this@HomeActivity,
-                        Observer<Set<Long>> { threadIDs ->
-                            val adapter = recyclerView.adapter as HomeAdapter
-                            adapter.typingThreadIDs = threadIDs ?: setOf()
-                        })
+                        this@HomeActivity
+                    ) { threadIDs ->
+                        val adapter = recyclerView.adapter as HomeAdapter
+                        adapter.typingThreadIDs = threadIDs ?: setOf()
+                    }
                     updateProfileButton(profileButton,drawerProfileName,drawerProfileIcon,publicKey)
                     TextSecurePreferences.events.filter { it == TextSecurePreferences.PROFILE_NAME_PREF }
                         .collect {
@@ -392,7 +396,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             // Get group results and display them
             launch {
                 globalSearchViewModel.result.collect { result ->
-                    val currentUserPublicKey = publicKey
                     val contactAndGroupList =
                         result.contacts.map { GlobalSearchAdapter.Model.Contact(it) } +
                                 result.threads.map { GlobalSearchAdapter.Model.GroupConversation(it) }
@@ -402,16 +405,16 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                     if (contactResults.isEmpty()) {
                         contactResults.add(
                             GlobalSearchAdapter.Model.SavedMessages(
-                                currentUserPublicKey
+                                publicKey
                             )
                         )
                     }
 
                     val userIndex =
-                        contactResults.indexOfFirst { it is GlobalSearchAdapter.Model.Contact && it.contact.bchatID == currentUserPublicKey }
+                        contactResults.indexOfFirst { it is GlobalSearchAdapter.Model.Contact && it.contact.bchatID == publicKey }
                     if (userIndex >= 0) {
                         contactResults[userIndex] =
-                            GlobalSearchAdapter.Model.SavedMessages(currentUserPublicKey)
+                            GlobalSearchAdapter.Model.SavedMessages(publicKey)
                     }
 
                     if (contactResults.isNotEmpty()) {
@@ -422,9 +425,11 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                     }
 
                     val unreadThreadMap = result.messages
-                        .groupBy { it.threadId }.keys
-                        .map { it to mmsSmsDatabase.getUnreadCount(it) }
-                        .toMap()
+                        .groupBy { it.threadId }.keys.associateWith {
+                            mmsSmsDatabase.getUnreadCount(
+                                it
+                            )
+                        }
 
                     val messageResults: MutableList<GlobalSearchAdapter.Model> = result.messages
                         .map { messageResult ->
@@ -446,17 +451,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 }
             }
         }
-
-
     }
 
-    override fun onConversationClick(threadId: Long) {
-        val extras = Bundle()
-        extras.putLong(ConversationFragmentV2.THREAD_ID, threadId)
-        replaceFragment(ConversationFragmentV2(), null, extras)
-    }
-
-    private fun replaceFragment(newFragment: Fragment, stackName: String?, extras: Bundle?) {
+    fun replaceFragment(newFragment: Fragment, stackName: String?, extras: Bundle?) {
         if (extras != null) {
             newFragment.arguments = extras
         }
@@ -572,156 +569,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         show(intent)
     }
 
-    override fun openSettings() {
-        val intent = Intent(this, SettingsActivity::class.java)
-        callSettingsActivityResultLauncher.launch(intent)
-    }
-
-    private var callSettingsActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val extras = Bundle()
-            extras.putParcelable(ConversationFragmentV2.ADDRESS,result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
-            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
-            extras.putParcelable(ConversationFragmentV2.URI,result.data!!.getParcelableExtra(ConversationFragmentV2.URI))
-            extras.putString(ConversationFragmentV2.TYPE,result.data!!.getStringExtra(ConversationFragmentV2.TYPE))
-            replaceFragment(ConversationFragmentV2(), null, extras)
-        }
-    }
-
-    override fun openMyWallet() {
-        val walletName = TextSecurePreferences.getWalletName(this)
-        val walletPassword = TextSecurePreferences.getWalletPassword(this)
-        if (walletName != null && walletPassword !=null) {
-            //startWallet(walletName, walletPassword, fingerprintUsed = false, streetmode = false)
-            val lockManager: LockManager<CustomPinActivity> = LockManager.getInstance() as LockManager<CustomPinActivity>
-            lockManager.enableAppLock(this, CustomPinActivity::class.java)
-            val intent = Intent(this, CustomPinActivity::class.java)
-            if(TextSecurePreferences.getWalletEntryPassword(this)!=null) {
-                intent.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN)
-                intent.putExtra("change_pin",false)
-                intent.putExtra("send_authentication",false)
-                customPinActivityResultLauncher.launch(intent)
-            }else{
-                intent.putExtra(AppLock.EXTRA_TYPE, AppLock.ENABLE_PINLOCK)
-                intent.putExtra("change_pin",false)
-                intent.putExtra("send_authentication",false)
-                customPinActivityResultLauncher.launch(intent)
-            }
-        }else{
-            val intent = Intent(this, WalletInfoActivity::class.java)
-            push(intent)
-        }
-    }
-
-    private var customPinActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            replaceFragment(WalletFragment(), WalletFragment::class.java.name, null)
-        }
-    }
-
     private var setUpWalletPinActivityResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {}
-
-    override fun showNotificationSettings() {
-        val intent = Intent(this, NotificationSettingsActivity::class.java)
-        push(intent)
-    }
-
-    override fun showPrivacySettings() {
-        val intent = Intent(this, PrivacySettingsActivity::class.java)
-        push(intent)
-    }
-
-    override fun showQRCode() {
-        val intent = Intent(this, ShowQRCodeWithScanQRCodeActivity::class.java)
-        showQRCodeWithScanQRCodeActivityResultLauncher.launch(intent)
-    }
-
-    private var showQRCodeWithScanQRCodeActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val extras = Bundle()
-            extras.putParcelable(ConversationFragmentV2.ADDRESS,result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
-            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
-            extras.putParcelable(ConversationFragmentV2.URI,result.data!!.getParcelableExtra(ConversationFragmentV2.URI))
-            extras.putString(ConversationFragmentV2.TYPE,result.data!!.getStringExtra(ConversationFragmentV2.TYPE))
-            replaceFragment(ConversationFragmentV2(), null, extras)
-        }
-    }
-
-    override fun showSeed() {
-        val intent = Intent(this, SeedPermissionActivity::class.java)
-        show(intent)
-    }
-
-    override fun showAbout() {
-        val intent = Intent(this, AboutActivity::class.java)
-        show(intent)
-    }
-
-    override fun showPath() {
-        val intent = Intent(this, PathActivity::class.java)
-        show(intent)
-    }
-
-    override fun createNewPrivateChat() {
-        val intent = Intent(this, CreateNewPrivateChatActivity::class.java)
-        createNewPrivateChatResultLauncher.launch(intent)
-    }
-    private var createNewPrivateChatResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val extras = Bundle()
-            extras.putParcelable(ConversationFragmentV2.ADDRESS,result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
-            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
-            extras.putParcelable(ConversationFragmentV2.URI,result.data!!.getParcelableExtra(ConversationFragmentV2.URI))
-            extras.putString(ConversationFragmentV2.TYPE,result.data!!.getStringExtra(ConversationFragmentV2.TYPE))
-            replaceFragment(ConversationFragmentV2(), null, extras)
-        }
-    }
-
-    override fun createNewSecretGroup() {
-        val intent = Intent(this,CreateClosedGroupActivity::class.java)
-        createClosedGroupActivityResultLauncher.launch(intent)
-    }
-
-    private var createClosedGroupActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val extras = Bundle()
-            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
-            extras.putParcelable(ConversationFragmentV2.ADDRESS,result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
-            replaceFragment(ConversationFragmentV2(), null, extras)
-        }
-        if (result.resultCode == CreateClosedGroupActivity.closedGroupCreatedResultCode) {
-            createNewPrivateChat()
-        }
-    }
-
-    override fun joinSocialGroup() {
-        val intent = Intent(this, JoinPublicChatNewActivity::class.java)
-        joinPublicChatNewActivityResultLauncher.launch(intent)
-    }
-
-    private var joinPublicChatNewActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val extras = Bundle()
-            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
-            extras.putParcelable(ConversationFragmentV2.ADDRESS,result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
-            replaceFragment(ConversationFragmentV2(), null, extras)
-        }
-    }
-
-    /*Hales63*/
-    override fun showMessageRequests() {
-        val intent = Intent(this, MessageRequestsActivity::class.java)
-        resultLauncher.launch(intent)
-    }
-
-    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val extras = Bundle()
-            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
-            replaceFragment(ConversationFragmentV2(), null, extras)
-        }
-    }
 
     override fun sendMessageToSupport() {
         val recipient = Recipient.from(this, Address.fromSerialized(reportIssueBChatID), false)
@@ -729,43 +578,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         extras.putParcelable(ConversationFragmentV2.ADDRESS, recipient.address)
         val existingThread =
             DatabaseComponent.get(this).threadDatabase().getThreadIdIfExistsFor(recipient)
-        extras.putLong(ConversationFragmentV2.THREAD_ID,existingThread)
-        extras.putParcelable(ConversationFragmentV2.URI,intent.data)
-        extras.putString(ConversationFragmentV2.TYPE,intent.type)
+        extras.putLong(ConversationFragmentV2.THREAD_ID, existingThread)
+        extras.putParcelable(ConversationFragmentV2.URI, intent.data)
+        extras.putString(ConversationFragmentV2.TYPE, intent.type)
         replaceFragment(ConversationFragmentV2(), null, extras)
-    }
-
-    override fun help() {
-        val intent = Intent(Intent.ACTION_SENDTO)
-        intent.data = Uri.parse("mailto:") // only email apps should handle this
-        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("support@beldex.io"))
-        intent.putExtra(Intent.EXTRA_SUBJECT, "")
-        startActivity(intent)
-    }
-
-    override fun sendInvitation(hexEncodedPublicKey:String) {
-        val intent = Intent()
-        intent.action = Intent.ACTION_SEND
-        val invitation =
-            "Hey, I've been using BChat to chat with complete privacy and security. Come join me! Download it at https://play.google.com/store/apps/details?id=io.beldex.bchat. My Chat ID is $hexEncodedPublicKey !"
-        intent.putExtra(Intent.EXTRA_TEXT, invitation)
-        intent.type = "text/plain"
-        val chooser =
-            Intent.createChooser(intent, getString(R.string.activity_settings_invite_button_title))
-        startActivity(chooser)
-    }
-
-    override fun toolBarCall() {
-        val intent = Intent(this, WebRtcCallActivity::class.java)
-        push(intent)
-    }
-
-    override fun callAppPermission() {
-        val intent = Intent()
-        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-        val uri = Uri.fromParts("package", this@HomeActivity.packageName, null)
-        intent.data = uri
-        push(intent)
     }
 
     override fun onDestroy() {
@@ -787,9 +603,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         super.onDestroy()
     }
 
-    override fun getConversationViewModel(): ConversationViewModel.AssistedFactory {
-        return viewModelFactory
-    }
+//    override fun getConversationViewModel(): ConversationViewModel.AssistedFactory {
+//        return viewModelFactory
+//    }
 
     override fun gettextSecurePreferences(): TextSecurePreferences {
         return textSecurePreferences
@@ -797,36 +613,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     private fun getCurrentFragment(): Fragment? {
         return supportFragmentManager.findFragmentById(R.id.activity_home_frame_layout_container)
-    }
-
-    override fun passGlobalSearchAdapterModelMessageValue(
-        threadId: Long,
-        timestamp: Long,
-        author: Address
-    ) {
-        val extras = Bundle()
-        extras.putLong(ConversationFragmentV2.THREAD_ID,threadId)
-        extras.putLong(ConversationFragmentV2.SCROLL_MESSAGE_ID,timestamp)
-        extras.putParcelable(ConversationFragmentV2.SCROLL_MESSAGE_AUTHOR,author)
-        replaceFragment(ConversationFragmentV2(),null,extras)
-    }
-
-    override fun passGlobalSearchAdapterModelSavedMessagesValue(address: Address) {
-        val extras = Bundle()
-        extras.putParcelable(ConversationFragmentV2.ADDRESS,address)
-        replaceFragment(ConversationFragmentV2(),null,extras)
-    }
-
-    override fun passGlobalSearchAdapterModelContactValue(address: Address) {
-        val extras = Bundle()
-        extras.putParcelable(ConversationFragmentV2.ADDRESS,address)
-        replaceFragment(ConversationFragmentV2(),null,extras)
-    }
-
-    override fun passGlobalSearchAdapterModelGroupConversationValue(threadId: Long) {
-        val extras = Bundle()
-        extras.putLong(ConversationFragmentV2.THREAD_ID,threadId)
-        replaceFragment(ConversationFragmentV2(),null,extras)
     }
 
     override fun callConversationFragmentV2(address: Address, threadId: Long) {
@@ -839,7 +625,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     override fun playVoiceMessageAtIndexIfPossible(indexInAdapter: Int) {
         val fragment = supportFragmentManager.findFragmentById(R.id.activity_home_frame_layout_container)
         if(fragment is ConversationFragmentV2) {
-            (fragment as ConversationFragmentV2).playVoiceMessageAtIndexIfPossible(indexInAdapter)
+            fragment.playVoiceMessageAtIndexIfPossible(indexInAdapter)
         }
     }
 
@@ -925,14 +711,14 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         return mBoundService != null
     }
 
-    override fun forceUpdate(context: Context) {
+    override fun forceUpdate(requireActivity: Context) {
         try {
             if(getWallet()!=null) {
                 onRefreshed(getWallet(), true)
             }else{
                 if(!CheckOnline.isOnline(this)) {
                     Toast.makeText(
-                        context,
+                        requireActivity,
                         getString(R.string.please_check_your_internet_connection),
                         Toast.LENGTH_SHORT
                     ).show()
@@ -950,11 +736,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     override fun onSendRequest(view: View?) {
         if(CheckOnline.isOnline(this)) {
-            SendFragment.newInstance(uri)
-                .let { replaceFragment(it, null, null) }
+            replaceFragment(SendFragment.newInstance(uri), null, null)
             uri = null // only use uri once
         }else{
-            Toast.makeText(this, getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -982,7 +767,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         replaceFragment(ReceiveFragment(), null, null)
     }
 
-    var haveWallet = false
+    private var haveWallet = false
 
     override fun hasWallet(): Boolean {
         return haveWallet
@@ -1002,99 +787,21 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     override fun getFavouriteNodes(): MutableSet<NodeInfo> {
-        return favouriteNodes
+        return favouriteNodes.toHashSet()
     }
 
     override fun getOrPopulateFavourites(): MutableSet<NodeInfo> {
-        if (favouriteNodes.isEmpty()) {
-            for (node in NetworkNodes.getNodes()) {
-                val nodeInfo = NodeInfo.fromString(node)
-                if (nodeInfo != null) {
-                    nodeInfo.isFavourite = true
-                    favouriteNodes.add(nodeInfo)
-                }
-            }
-            saveFavourites()
-        }
-        return favouriteNodes
+        return viewModel.getOrPopulateFavourites()
     }
 
     override fun setFavouriteNodes(nodes: MutableCollection<NodeInfo>?) {
-        favouriteNodes.clear()
-        if (nodes != null) {
-            for (node in nodes) {
-                if (node.isFavourite) favouriteNodes.add(node)
-            }
-        }
-        saveFavourites()
-    }
-
-    private fun getSelectedNodeId(): String? {
-        return getSharedPreferences(
-            SELECTED_NODE_PREFS_NAME,
-            MODE_PRIVATE
-        ).getString("0", null)
-    }
-
-    private fun saveFavourites() {
-        val editor = getSharedPreferences(
-            NODES_PREFS_NAME,
-            MODE_PRIVATE
-        ).edit()
-        editor.clear()
-        var i = 1
-        for (info in favouriteNodes) {
-            val nodeString = info.toNodeString()
-            editor.putString(i.toString(), nodeString)
-            i++
-        }
-        editor.apply()
-    }
-
-    private fun addFavourite(nodeString: String): NodeInfo? {
-        val nodeInfo = NodeInfo.fromString(nodeString)
-        if (nodeInfo != null) {
-            nodeInfo.isFavourite = true
-            favouriteNodes.add(nodeInfo)
-        } else Timber.w("nodeString invalid: %s", nodeString)
-        return nodeInfo
-    }
-
-    private fun loadLegacyList(legacyListString: String?) {
-        if (legacyListString == null) return
-        val nodeStrings = legacyListString.split(";".toRegex()).toTypedArray()
-        for (nodeString in nodeStrings) {
-            addFavourite(nodeString)
-        }
-    }
-
-    private fun saveSelectedNode() { // save only if changed
-        val nodeInfo = getNode()
-        val selectedNodeId = getSelectedNodeId()
-        if (nodeInfo != null) {
-            if (!nodeInfo.toNodeString().equals(selectedNodeId)) saveSelectedNode(nodeInfo)
-        } else {
-            if (selectedNodeId != null) saveSelectedNode(null)
-        }
-    }
-
-    private fun saveSelectedNode(nodeInfo: NodeInfo?) {
-        val editor = getSharedPreferences(
-            SELECTED_NODE_PREFS_NAME,
-            MODE_PRIVATE
-        ).edit()
-        if (nodeInfo == null) {
-            editor.clear()
-        } else {
-            editor.putString("0", getNode()!!.toNodeString())
-        }
-        editor.apply()
+        viewModel.setFavouriteNodes(nodes)
     }
 
     override fun getNode(): NodeInfo? {
         return if(TextSecurePreferences.getDaemon(this)){
             TextSecurePreferences.changeDaemon(this,false)
-            val selectedNodeId = getSelectedNodeId()
+            val selectedNodeId = sharedPreferenceUtil.getSelectedNodeId()
             val nodeInfo = NodeInfo.fromString(selectedNodeId)
             nodeInfo
         }else {
@@ -1108,13 +815,13 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     private fun setNode(node: NodeInfo?, save: Boolean) {
         if (node !== this.node) {
-            require(!(node != null && node.networkType !== WalletManager.getInstance().networkType)) { "network type does not match" }
+            require(!(node != null && node.networkType !== walletManager.networkType)) { "network type does not match" }
             this.node = node
             for (nodeInfo in favouriteNodes) {
                 nodeInfo.isSelected = nodeInfo === node
             }
-            WalletManager.getInstance().setDaemon(node)
-            if (save) saveSelectedNode()
+            walletManager.setDaemon(node)
+            if (save) sharedPreferenceUtil.saveSelectedNode(getNode())
 
             //SteveJosephh21
             startWalletService()
@@ -1385,13 +1092,13 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     override val isStreetMode: Boolean
         get() = streetMode > 0
 
-    override fun onPrepareSend(tag: String?, txData: TxData?) {
+    override fun onPrepareSend(tag: String?, data: TxData?) {
         if (mIsBound) { // no point in talking to unbound service
             var intent: Intent? = null
             if(intent==null) {
                 intent = Intent(applicationContext, WalletService::class.java)
                 intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_TX)
-                intent.putExtra(WalletService.REQUEST_CMD_TX_DATA, txData)
+                intent.putExtra(WalletService.REQUEST_CMD_TX_DATA, data)
                 intent.putExtra(WalletService.REQUEST_CMD_TX_TAG, tag)
                 startService(intent)
             }
@@ -1452,7 +1159,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         return barcodeData
     }
 
-    override fun popBarcodeData(): BarcodeData? {
+    override fun popBarcodeData(): BarcodeData {
         val data = barcodeData!!
         barcodeData = null
         return data
@@ -1527,7 +1234,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }
     }
 
-    fun onUriWalletScanned(barcodeData: BarcodeData?) {
+    private fun onUriWalletScanned(barcodeData: BarcodeData?) {
         var processed = false
         if (onUriWalletScannedListener != null) {
 
@@ -1605,7 +1312,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == Helper.PERMISSIONS_REQUEST_CAMERA) { // If request is cancelled, the result arrays are empty.
-            if (grantResults.size > 0
+            if (grantResults.isNotEmpty()
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED
             ) {
                 startScanFragment = true
@@ -1705,12 +1412,12 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }
     }
 
-    private fun onWalletReconnect(node: NodeInfo?, UseSSL: Boolean, isLightWallet: Boolean) {
+    private fun onWalletReconnect(node: NodeInfo?, useSSL: Boolean, isLightWallet: Boolean) {
         val currentWallet = getCurrentFragment()
         if (CheckOnline.isOnline(this)) {
             if (getWallet() != null) {
                 val isOnline =
-                    getWallet()?.reConnectToDaemon(node, UseSSL, isLightWallet) as Boolean
+                    getWallet()?.reConnectToDaemon(node, useSSL, isLightWallet) as Boolean
                 if (isOnline) {
                     synced = false
                     setNode(node)
@@ -1772,13 +1479,16 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         intent.putExtra(MediaOverviewActivity.ADDRESS_EXTRA, thread.address)
         passSharedMessageToConversationScreen.launch(intent)
     }
+
     private val passSharedMessageToConversationScreen = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             if(result.data!=null){
                 val extras = Bundle()
-                extras.putParcelable(ConversationFragmentV2.ADDRESS, result.data!!.getParcelableExtra(ConversationFragmentV2.ADDRESS))
+                val address = intent.parcelable<Address>(ConversationFragmentV2.ADDRESS)
+                extras.putParcelable(ConversationFragmentV2.ADDRESS, address)
                 extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
-                extras.putParcelable(ConversationFragmentV2.URI,result.data!!.getParcelableExtra<Uri>(ConversationFragmentV2.URI))
+                val uri = intent.parcelable<Uri>(ConversationFragmentV2.URI)
+                extras.putParcelable(ConversationFragmentV2.URI, uri)
                 extras.putString(ConversationFragmentV2.TYPE,result.data!!.getStringExtra(ConversationFragmentV2.TYPE))
                 extras.putCharSequence(Intent.EXTRA_TEXT,result.data!!.getCharSequenceExtra(Intent.EXTRA_TEXT))
                 //Shortcut launcher
@@ -1788,45 +1498,22 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }
     }
 
-    private fun loadFavouritesWithNetwork() {
-        Helper.runWithNetwork {
-            loadFavourites()
-            true
-        }
-    }
-
-    private fun loadFavourites() {
-        favouriteNodes.clear()
-        val selectedNodeId = getSelectedNodeId()
-        val storedNodes = getSharedPreferences(NODES_PREFS_NAME, MODE_PRIVATE).all
-        for (nodeEntry in storedNodes.entries) {
-            if (nodeEntry != null) { // just in case, ignore possible future errors
-                val nodeId = nodeEntry.value as String
-                val addedNode = addFavourite(nodeId)
-                if (addedNode != null) {
-                    if (nodeId == selectedNodeId) {
-                        addedNode.isSelected = true
-                    }
-                }
+    private fun loadLegacyList() {
+        val sharedPref = getPreferences(MODE_PRIVATE)
+        when (walletManager.networkType) {
+            NetworkType.NetworkType_Mainnet -> {
+                viewModel.loadLegacyList(sharedPref.getString(prefDaemonMainNet, null))
+                sharedPref.edit().remove(prefDaemonMainNet).apply()
             }
-        }
-        if (storedNodes.isEmpty()) { // try to load legacy list & remove it (i.e. migrate the data once)
-            val sharedPref = getPreferences(MODE_PRIVATE)
-            when (WalletManager.getInstance().networkType) {
-                NetworkType.NetworkType_Mainnet -> {
-                    loadLegacyList(sharedPref.getString(PREF_DAEMON_MAINNET, null))
-                    sharedPref.edit().remove(PREF_DAEMON_MAINNET).apply()
-                }
-                NetworkType.NetworkType_Stagenet -> {
-                    loadLegacyList(sharedPref.getString(PREF_DAEMON_STAGENET, null))
-                    sharedPref.edit().remove(PREF_DAEMON_STAGENET).apply()
-                }
-                NetworkType.NetworkType_Testnet -> {
-                    loadLegacyList(sharedPref.getString(PREF_DAEMON_TESTNET, null))
-                    sharedPref.edit().remove(PREF_DAEMON_TESTNET).apply()
-                }
-                else -> throw java.lang.IllegalStateException("unsupported net " + WalletManager.getInstance().networkType)
+            NetworkType.NetworkType_Stagenet -> {
+                viewModel.loadLegacyList(sharedPref.getString(prefDaemonStageNet, null))
+                sharedPref.edit().remove(prefDaemonStageNet).apply()
             }
+            NetworkType.NetworkType_Testnet -> {
+                viewModel.loadLegacyList(sharedPref.getString(prefDaemonTestNet, null))
+                sharedPref.edit().remove(prefDaemonTestNet).apply()
+            }
+            else -> throw java.lang.IllegalStateException("unsupported net " + walletManager.networkType)
         }
     }
 }

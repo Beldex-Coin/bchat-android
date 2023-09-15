@@ -48,6 +48,7 @@ import com.thoughtcrimes.securesms.MediaOverviewActivity
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
 import com.thoughtcrimes.securesms.components.ProfilePictureView
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
+import com.thoughtcrimes.securesms.conversation.v2.ConversationViewModel
 import com.thoughtcrimes.securesms.conversation.v2.messages.VoiceMessageViewDelegate
 import com.thoughtcrimes.securesms.conversation.v2.utilities.BaseDialog
 import com.thoughtcrimes.securesms.data.BarcodeData
@@ -122,8 +123,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     @Inject
     lateinit var textSecurePreferences: TextSecurePreferences
-//    @Inject
-//    lateinit var viewModelFactory: ConversationViewModel.AssistedFactory
+    @Inject
+    lateinit var viewModelFactory: ConversationViewModel.AssistedFactory
 
     @Inject
     lateinit var walletManager: WalletManager
@@ -603,9 +604,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         super.onDestroy()
     }
 
-//    override fun getConversationViewModel(): ConversationViewModel.AssistedFactory {
-//        return viewModelFactory
-//    }
+    override fun getConversationViewModel(): ConversationViewModel.AssistedFactory {
+        return viewModelFactory
+    }
 
     override fun gettextSecurePreferences(): TextSecurePreferences {
         return textSecurePreferences

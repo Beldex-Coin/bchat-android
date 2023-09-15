@@ -716,7 +716,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                 true,
                 Helper.getFormattedAmount(amountFullBdx, true)
             )
-        }else{
+        } else {
             showBalance(
                 Helper.getFormattedAmount(amountBdx, true),
                 synchronized,

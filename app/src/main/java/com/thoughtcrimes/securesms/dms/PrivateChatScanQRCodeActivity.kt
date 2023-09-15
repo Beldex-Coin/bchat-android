@@ -120,11 +120,11 @@ class PrivateChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
         })
     }
 
-    fun handleQRCodeScanned(hexEncodedPublicKey: String) {
+    private fun handleQRCodeScanned(hexEncodedPublicKey: String) {
         createPrivateChatIfPossible(hexEncodedPublicKey)
     }
 
-    fun createPrivateChatIfPossible(bnsNameOrPublicKey: String) {
+    private fun createPrivateChatIfPossible(bnsNameOrPublicKey: String) {
         if (PublicKeyValidation.isValid(bnsNameOrPublicKey)) {
             createPrivateChat(bnsNameOrPublicKey)
         } else {

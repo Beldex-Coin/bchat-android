@@ -119,8 +119,11 @@ import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.data.PendingTx
 import com.thoughtcrimes.securesms.data.TxData
 import com.thoughtcrimes.securesms.data.UserNotes
+import com.thoughtcrimes.securesms.database.ThreadDatabase
 import com.thoughtcrimes.securesms.database.model.MessageRecord
 import com.thoughtcrimes.securesms.database.model.MmsMessageRecord
+import com.thoughtcrimes.securesms.delegates.WalletDelegates
+import com.thoughtcrimes.securesms.delegates.WalletDelegatesImpl
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.giph.ui.GiphyActivity
 import com.thoughtcrimes.securesms.home.HomeActivity
@@ -184,6 +187,7 @@ import java.util.concurrent.ExecutionException
 import java.util.concurrent.Executor
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicReference
+import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -199,7 +203,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     ConversationActionModeCallbackDelegate, VisibleMessageContentViewDelegate,
     RecipientModifiedListener,
     SearchBottomBar.EventListener, LoaderManager.LoaderCallbacks<Cursor>,
-    ConversationMenuHelper.ConversationMenuListener, OnBackPressedListener,SendConfirm {
+    ConversationMenuHelper.ConversationMenuListener, OnBackPressedListener,SendConfirm, WalletDelegates by WalletDelegatesImpl() {
 
     private var param2: String? = null
 
@@ -215,22 +219,33 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
 //    var threadId: Long? = -1L
+    @Inject
+    lateinit var threadDb: ThreadDatabase
 
-    private val viewModel: ConversationViewModel by viewModels()
+    private val viewModel: ConversationViewModel by viewModels {
+        var threadId = requireArguments().getLong(THREAD_ID,-1L)
+        if (threadId == -1L) {
+            requireArguments().getParcelable<Address>(ADDRESS)?.let { address ->
+                val recipient = Recipient.from(requireActivity(), address, false)
+                threadId = threadDb.getOrCreateThreadIdFor(recipient)
+            }
+        }
+        listenerCallback!!.getConversationViewModel().create(threadId!!)
+    }
 
-//    private fun callViewModel():Recipient?{
-//         val viewModels: ConversationViewModel by viewModels {
-//            threadId = requireArguments().getLong(THREAD_ID,-1L)
-//            if (threadId == -1L) {
-//                requireArguments().parcelable<Address>(ADDRESS)?.let { address ->
-//                    val recipient = Recipient.from(requireActivity(), address, false)
-//                    threadId = threadDb.getOrCreateThreadIdFor(recipient)
-//                }
-//            }
-//            listenerCallback!!.getConversationViewModel().create(threadId!!)
-//        }
-//        return viewModel.recipient
-//    }
+    private fun callViewModel():Recipient?{
+         val viewModels: ConversationViewModel by viewModels {
+            var threadId = requireArguments().getLong(THREAD_ID,-1L)
+            if (threadId == -1L) {
+                requireArguments().parcelable<Address>(ADDRESS)?.let { address ->
+                    val recipient = Recipient.from(requireActivity(), address, false)
+                    threadId = threadDb.getOrCreateThreadIdFor(recipient)
+                }
+            }
+            listenerCallback!!.getConversationViewModel().create(threadId!!)
+        }
+        return viewModels.recipient.value
+    }
 
     private val hexEncodedPublicKey: String
         get() {
@@ -429,7 +444,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
 
     interface Listener {
-//        fun getConversationViewModel(): ConversationViewModel.AssistedFactory
+        fun getConversationViewModel(): ConversationViewModel.AssistedFactory
         fun gettextSecurePreferences(): TextSecurePreferences
         fun onDisposeRequest()
         val totalFunds: Long
@@ -1132,7 +1147,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun sendMessage() {
-        val recipient = viewModel.recipient.value ?: return
+        val recipient = viewModel.recipient.value ?: callViewModel() ?: return
         if (recipient.isContactRecipient && recipient.isBlocked) {
             BlockedDialog(recipient).show(
                 requireActivity().supportFragmentManager,
@@ -3298,20 +3313,12 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
 
     private fun refreshBalance(synchronized: Boolean) {
-        val unlockedBalance: Double = Helper.getDecimalAmount(unlockedBalance).toDouble()
-        val balance: Double = Helper.getDecimalAmount(balance).toDouble()
-        if (balance > 0.0) {
-            showBalance(
-                Helper.getFormattedAmount(balance, true),
-                Helper.getFormattedAmount(unlockedBalance, true),
-                true
-            )
-        } else {
-            showBalance(
-                Helper.getFormattedAmount(balance, true),
-                Helper.getFormattedAmount(unlockedBalance, true),
-                synchronized
-            )
+        refreshBalance(
+            synchronized = synchronized,
+            unlockedBalance = unlockedBalance,
+            balance = balance,
+        ) { bal, unlockedBal, sync ->
+            showBalance(bal, unlockedBal, sync)
         }
     }
 
@@ -3320,56 +3327,16 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         walletUnlockedBalance: String?,
         synchronized: Boolean
     ) {
-        if (mContext != null) {
-            if (!synchronized) {
-                when {
-                    TextSecurePreferences.getDecimals(requireActivity()) == "2 - Two (0.00)" -> {
-                        valueOfBalance = "-.--"
-                        valueOfUnLockedBalance = "-.--"
-                    }
-                    TextSecurePreferences.getDecimals(requireActivity()) == "3 - Three (0.000)" -> {
-                        valueOfBalance = "-.---"
-                        valueOfUnLockedBalance = "-.---"
-                    }
-                    TextSecurePreferences.getDecimals(requireActivity()) == "0 - Zero (000)" -> {
-                        valueOfBalance = "-"
-                        valueOfUnLockedBalance = "-"
-                    }
-                    else -> {
-                        valueOfBalance = "-.----"
-                        valueOfUnLockedBalance = "-.----"
-                    }
-                }
-            } else {
-                when {
-                    TextSecurePreferences.getDecimals(requireActivity()) == "2 - Two (0.00)" -> {
-                        valueOfBalance =
-                            String.format("%.2f", walletBalance!!.replace(",", "").toDouble())
-                        valueOfUnLockedBalance = String.format(
-                            "%.2f",
-                            walletUnlockedBalance!!.replace(",", "").toDouble()
-                        )
-                    }
-                    TextSecurePreferences.getDecimals(requireActivity()) == "3 - Three (0.000)" -> {
-                        valueOfBalance =
-                            String.format("%.3f", walletBalance!!.replace(",", "").toDouble())
-                        valueOfUnLockedBalance = String.format(
-                            "%.3f",
-                            walletUnlockedBalance!!.replace(",", "").toDouble()
-                        )
-                    }
-                    TextSecurePreferences.getDecimals(requireActivity()) == "0 - Zero (000)" -> {
-                        valueOfBalance =
-                            String.format("%.0f", walletBalance!!.replace(",", "").toDouble())
-                        valueOfUnLockedBalance = String.format(
-                            "%.0f",
-                            walletUnlockedBalance!!.replace(",", "").toDouble()
-                        )
-                    }
-                    else -> {
-                        valueOfBalance = walletBalance!!
-                    }
-                }
+        showBalance(
+            walletBalance = walletBalance,
+            walletUnlockedBalance = walletUnlockedBalance,
+            synchronized = synchronized,
+            activity = requireActivity(),
+            mContext = mContext,
+        ) { bal, unlockedBal ->
+            valueOfBalance = bal
+            unlockedBal?.let {
+                valueOfUnLockedBalance = unlockedBal
             }
         }
         toolTip()

@@ -1,8 +1,8 @@
 package com.thoughtcrimes.securesms.conversation.v2
 
 import android.database.Cursor
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.messaging.messages.signal.OutgoingMediaMessage
@@ -24,17 +24,16 @@ import com.thoughtcrimes.securesms.database.RecipientDatabase
 import com.thoughtcrimes.securesms.database.SmsDatabase
 import com.thoughtcrimes.securesms.database.ThreadDatabase
 import com.thoughtcrimes.securesms.database.model.MessageRecord
+import com.thoughtcrimes.securesms.repository.ConversationRepository
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import com.thoughtcrimes.securesms.repository.ConversationRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.UUID
-import javax.inject.Inject
 
-@HiltViewModel
-class ConversationViewModel @Inject constructor(
+class ConversationViewModel (
     private val repository: ConversationRepository,
     private val beldexThreadDb: BeldexThreadDatabase,
     private val bchatContactDb: BchatContactDatabase,
@@ -46,10 +45,8 @@ class ConversationViewModel @Inject constructor(
     private val smsDb: SmsDatabase,
     private val mmsSmsDatabase: MmsSmsDatabase,
     private val beldexMessageDb: BeldexMessageDatabase,
-    savedStateHandle: SavedStateHandle
+    val threadId: Long,
 ) : ViewModel() {
-
-    val threadId = savedStateHandle.get<Long>("thread_id") ?: 0
 
     private val _uiState = MutableStateFlow(ConversationUiState())
     val uiState: StateFlow<ConversationUiState> = _uiState
@@ -70,12 +67,15 @@ class ConversationViewModel @Inject constructor(
         _uiState.update {
             it.copy(isBeldexHostedOpenGroup = repository.isBeldexHostedOpenGroup(threadId))
         }
+        println(">>>>thread: $threadId")
         viewModelScope.launch {
             _recipient.value = repository.getRecipientForThreadId(threadId)
+            println(">>>>>>${recipient.value}")
             if (recipient.value == null) {
                 _backToHome.value = true
             }
             recipient.value?.let {
+                println(">>>>>>hrere1")
                 if (it.isOpenGroupRecipient) {
                     val openGroup = beldexThreadDb.getOpenGroupChat(threadId)
                     if (openGroup == null) {
@@ -273,21 +273,31 @@ class ConversationViewModel @Inject constructor(
 
     fun getMessageServerHash(id: Long): String? = beldexMessageDb.getMessageServerHash(id)
 
-//    @dagger.assisted.AssistedFactory
-//    interface AssistedFactory {
-//        fun create(threadId: Long): Factory
-//    }
+    @dagger.assisted.AssistedFactory
+    interface AssistedFactory {
+        fun create(threadId: Long): Factory
+    }
 
-//    @Suppress("UNCHECKED_CAST")
-//    class Factory @AssistedInject constructor(
-//        @Assisted private val threadId: Long,
-//        private val repository: ConversationRepository
-//    ) : ViewModelProvider.Factory {
-//
-//        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-//            return ConversationViewModel(threadId, repository) as T
-//        }
-//    }
+    @Suppress("UNCHECKED_CAST")
+    class Factory @AssistedInject constructor(
+        @Assisted private val threadId: Long,
+        private val repository: ConversationRepository,
+        private val beldexThreadDb: BeldexThreadDatabase,
+        private val bchatContactDb: BchatContactDatabase,
+        private val threadDb: ThreadDatabase,
+        private val recipientDatabase: RecipientDatabase,
+        private val groupDb: GroupDatabase,
+        private val beldexApiDb: BeldexAPIDatabase,
+        private val mmsDb: MmsDatabase,
+        private val smsDb: SmsDatabase,
+        private val mmsSmsDatabase: MmsSmsDatabase,
+        private val beldexMessageDb: BeldexMessageDatabase,
+    ) : ViewModelProvider.Factory {
+
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return ConversationViewModel(repository,beldexThreadDb, bchatContactDb, threadDb, recipientDatabase, groupDb, beldexApiDb, mmsDb, smsDb, mmsSmsDatabase, beldexMessageDb, threadId) as T
+        }
+    }
 }
 
 data class UiMessage(val id: Long, val message: String)

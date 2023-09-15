@@ -66,6 +66,7 @@ class ScanQRCodeActivity : PassphraseRequiredActionBarActivity(), ScanQRCodePlac
             val scanQRCodeFragment = ScanQRCodeFragment()
             scanQRCodeFragment.scanListener = this
             scanQRCodeFragment.message = message
+            intent.putExtra(ScanQRCodeFragment.FROM_NEW_CHAT_SCREEN, true)
             fragment = scanQRCodeFragment
         } else {
             val scanQRCodePlaceholderFragment = ScanQRCodePlaceholderFragment()

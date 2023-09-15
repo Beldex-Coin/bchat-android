@@ -65,7 +65,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
     private var walletSynchronized:Boolean = false
 
     fun setProgress(text: String?) {
-        if(text==getString(R.string.reconnecting) || text==getString(R.string.status_wallet_connecting)){
+        if(text==getString(R.string.reconnecting) || text == getString(R.string.status_wallet_loading) || text==getString(R.string.status_wallet_connecting)){
            binding.syncStatusIcon.visibility=View.GONE
             binding.syncFailIcon.visibility = View.GONE
         }

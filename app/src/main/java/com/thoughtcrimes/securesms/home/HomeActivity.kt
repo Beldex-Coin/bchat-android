@@ -769,7 +769,11 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     override fun onWalletReceive(view: View?) {
-        replaceFragment(ReceiveFragment(), null, null)
+        if(CheckOnline.isOnline(this)) {
+            replaceFragment(ReceiveFragment(), null, null)
+        } else {
+            Toast.makeText(this, getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
+        }
     }
 
     private var haveWallet = false
@@ -1207,12 +1211,17 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     override fun onWalletScan(view: View?) {
-        if (Helper.getCameraPermission(this)) {
-            val extras = Bundle()
-            replaceFragment(WalletScannerFragment(), null, extras)
+        if(CheckOnline.isOnline(this)) {
+            if (Helper.getCameraPermission(this)) {
+                val extras = Bundle()
+                replaceFragment(WalletScannerFragment(), null, extras)
+            } else {
+                Timber.i("Waiting for permissions")
+            }
         } else {
-            Timber.i("Waiting for permissions")
+            Toast.makeText(this, getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
         }
+
     }
 
     override fun onWalletScanned(qrCode: String?): Boolean {

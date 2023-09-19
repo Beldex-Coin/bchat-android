@@ -305,7 +305,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         binding.sendCardViewButtonText.setTextColor(ContextCompat.getColor(requireActivity(),R.color.send_button_disable_color))
         binding.scanQrCodeImg.isEnabled = false
         binding.scanQrCodeImg.setImageResource(R.drawable.ic_wallet_scan_qr_disable)
-        showBalance(Helper.getDisplayAmount(0),walletSynchronized,Helper.getDisplayAmount(0))
+//        showBalance(Helper.getDisplayAmount(0),walletSynchronized,Helper.getDisplayAmount(0))
 
         adapter = TransactionInfoAdapter(activity)
         binding.transactionList.adapter = adapter
@@ -322,8 +322,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
             setProgress(101)
             binding.syncStatus.setTextColor(ContextCompat.getColor(requireActivity().applicationContext, R.color.red))
             binding.progressBar.indeterminateDrawable.setColorFilter(
-                ContextCompat.getColor(requireActivity().applicationContext,R.color.red),
-                android.graphics.PorterDuff.Mode.SRC_IN)
+                ContextCompat.getColor(requireActivity().applicationContext,R.color.red), PorterDuff.Mode.SRC_IN)
         }
 
         binding.sendCardViewButton.isClickable= true

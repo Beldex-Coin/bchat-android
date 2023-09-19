@@ -175,7 +175,7 @@ class RescanDialog(val context: HomeActivity, private val daemonBlockChainHeight
                     when {
                         restoreHeight.isNotEmpty() -> {
                             val restoreHeightBig = BigInteger(restoreHeight)
-                            if(restoreHeightBig.toLong()>=0 && restoreHeightBig.toLong()<daemonBlockChainHeight) {
+                            if(restoreHeightBig.toLong() in 0 until daemonBlockChainHeight) {
                                 binding.restoreFromHeightErrorMessage.text=""
                                 binding.restoreFromHeightErrorMessage.visibility=View.GONE
                                 binding.restoreSeedWalletRestoreDate.text = ""

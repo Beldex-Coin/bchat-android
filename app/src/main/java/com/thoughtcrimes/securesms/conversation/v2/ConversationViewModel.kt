@@ -67,15 +67,12 @@ class ConversationViewModel (
         _uiState.update {
             it.copy(isBeldexHostedOpenGroup = repository.isBeldexHostedOpenGroup(threadId))
         }
-        println(">>>>thread: $threadId")
         viewModelScope.launch {
             _recipient.value = repository.getRecipientForThreadId(threadId)
-            println(">>>>>>${recipient.value}")
             if (recipient.value == null) {
                 _backToHome.value = true
             }
             recipient.value?.let {
-                println(">>>>>>hrere1")
                 if (it.isOpenGroupRecipient) {
                     val openGroup = beldexThreadDb.getOpenGroupChat(threadId)
                     if (openGroup == null) {

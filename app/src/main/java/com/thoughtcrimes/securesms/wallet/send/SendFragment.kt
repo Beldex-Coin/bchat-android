@@ -173,6 +173,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
             f.arguments = args
             return f
         }
+        var scanFromGallery: Boolean = false
     }
 
     private val resultLaunchers = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -252,7 +253,29 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         })
 
         binding.beldexAmountEditTxtLayout.editText?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(editable: Editable) {
+            override fun afterTextChanged(s: Editable) {
+                if(scanFromGallery) {
+                    if (s.isNotEmpty()) {
+                        scanFromGallery = false
+                        if (validateBELDEXAmount(s.toString())) {
+                            hideErrorMessage()
+                            val bdx = getCleanAmountString(s.toString())
+                            val amount: BigDecimal = if (bdx != null) {
+                                BigDecimal(bdx.toDouble()).multiply(BigDecimal(price))
+                            } else {
+                                BigDecimal(0L).multiply(BigDecimal(price))
+                            }
+                            binding.currencyEditText.text = String.format("%.4f", amount)
+                        } else {
+                            binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.error_view_background)
+                            binding.beldexAmountErrorMessage.visibility = View.VISIBLE
+                            binding.beldexAmountErrorMessage.text = getString(R.string.beldex_amount_valid_error_message)
+                        }
+                    } else {
+                        hideErrorMessage()
+                        binding.currencyEditText.text = "0.00"
+                    }
+                }
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -630,6 +653,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     }
     // QR Scan Stuff
     fun processScannedData(barcodeData: BarcodeData?) {
+        scanFromGallery = true
         activityCallback?.setBarcodeData(barcodeData)
     }
 

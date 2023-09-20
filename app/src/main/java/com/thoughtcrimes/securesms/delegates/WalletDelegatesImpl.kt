@@ -15,7 +15,7 @@ class WalletDelegatesImpl: WalletDelegates {
     ) {
         val unlockedBalanceLocal: Double = Helper.getDecimalAmount(unlockedBalance).toDouble()
         val balanceLocal: Double = Helper.getDecimalAmount(balance).toDouble()
-        if (balance > 0.0) {
+        if (balanceLocal > 0.0) {
             setBalance(
                 Helper.getFormattedAmount(balanceLocal, true),
                 Helper.getFormattedAmount(unlockedBalanceLocal, true),

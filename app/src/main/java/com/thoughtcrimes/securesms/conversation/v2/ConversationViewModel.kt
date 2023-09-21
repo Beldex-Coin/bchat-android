@@ -79,8 +79,8 @@ class ConversationViewModel (
                         _backToHome.value = true
                     }
                 }
-                if (it.isGroupRecipient && it.hasApprovedMe()) {
-                    getBeldexAddress(it.address)
+                if (!it.isGroupRecipient && it.hasApprovedMe()) {
+                    senderBeldexAddress = getBeldexAddress(it.address)
                 }
             }
         }
@@ -204,9 +204,9 @@ class ConversationViewModel (
         return repository.hasReceived(threadId)
     }
 
-    private fun getBeldexAddress(address: Address) {
+    fun getBeldexAddress(address: Address): String {
         val contact = bchatContactDb.getContactWithBchatID(address.toString())
-        senderBeldexAddress = contact?.displayBeldexAddress(Contact.ContactContext.REGULAR) ?: address.toString()
+        return contact?.displayBeldexAddress(Contact.ContactContext.REGULAR) ?: address.toString()
     }
 
     fun markAllRead(): Boolean {

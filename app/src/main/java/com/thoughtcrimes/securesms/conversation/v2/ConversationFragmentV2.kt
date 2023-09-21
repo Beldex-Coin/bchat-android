@@ -173,6 +173,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.FragmentConversationV2Binding
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -608,7 +609,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                             }
                             senderBeldexAddress == null || senderBeldexAddress!!.isEmpty() -> {
                                 if (viewModel.recipient.value != null) {
-                                    if (viewModel.senderBeldexAddress.isValidString()) {
+                                    senderBeldexAddress = viewModel.getBeldexAddress(viewModel.recipient.value!!.address)
+                                    if (senderBeldexAddress.isValidString()) {
                                         if (validateBELDEXAmount(binding.inputBar.text)) {
                                             sendBDX()
                                         } else {
@@ -3244,8 +3246,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     check(listenerCallback!!.hasBoundService()) { "WalletService not bound." }
                     val daemonConnected: Wallet.ConnectionStatus = listenerCallback!!.connectionStatus!!
                     if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
-                        AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
-
+//                        AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+                        getUnlockedBalance(wallet)
                     }
                 }
             }
@@ -3335,32 +3337,51 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         toolTip()
     }
 
-    inner class AsyncGetUnlockedBalance(val wallet: Wallet) :
-        AsyncTaskCoroutine<Executor?, Boolean?>() {
-        override fun onPreExecute() {
-            super.onPreExecute()
-            if (mContext != null && walletAvailableBalance != null) {
-                if (walletAvailableBalance!!.replace(",", "").toDouble() > 0.0) {
-                    showBalance(walletAvailableBalance!!, unlockedBalance.toString(), true)
-                }
-            } else {
-                refreshBalance(false)
+    private fun getUnlockedBalance(wallet: Wallet) {
+        if (mContext != null && walletAvailableBalance != null) {
+            if (walletAvailableBalance!!.replace(",", "").toDouble() > 0.0) {
+                showBalance(walletAvailableBalance!!, unlockedBalance.toString(), true)
             }
+        } else {
+            refreshBalance(false)
         }
-
-        override fun doInBackground(vararg params: Executor?): Boolean {
+        lifecycleScope.launch {
             try {
                 unlockedBalance = wallet.unlockedBalance
+                delay(100)
+                refreshBalance(wallet.isSynchronized)
             } catch (e: Exception) {
                 Timber.tag("WalletFragment").d(e.toString())
             }
-            return true
-        }
-
-        override fun onPostExecute(result: Boolean?) {
-            refreshBalance(wallet.isSynchronized)
         }
     }
+
+//    inner class AsyncGetUnlockedBalance(val wallet: Wallet) :
+//        AsyncTaskCoroutine<Executor?, Boolean?>() {
+//        override fun onPreExecute() {
+//            super.onPreExecute()
+//            if (mContext != null && walletAvailableBalance != null) {
+//                if (walletAvailableBalance!!.replace(",", "").toDouble() > 0.0) {
+//                    showBalance(walletAvailableBalance!!, unlockedBalance.toString(), true)
+//                }
+//            } else {
+//                refreshBalance(false)
+//            }
+//        }
+//
+//        override fun doInBackground(vararg params: Executor?): Boolean {
+//            try {
+//                unlockedBalance = wallet.unlockedBalance
+//            } catch (e: Exception) {
+//                Timber.tag("WalletFragment").d(e.toString())
+//            }
+//            return true
+//        }
+//
+//        override fun onPostExecute(result: Boolean?) {
+//            refreshBalance(wallet.isSynchronized)
+//        }
+//    }
 
     private fun checkIfFragmentAttached(operation: Context.() -> Unit) {
         if (isAdded && context != null) {

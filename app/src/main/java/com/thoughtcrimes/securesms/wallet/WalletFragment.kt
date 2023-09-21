@@ -622,6 +622,9 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                         R.color.red
                     )
                 )
+                binding.progressBar.indeterminateDrawable.setColorFilter(
+                        ContextCompat.getColor(requireActivity().applicationContext,R.color.red),
+                        android.graphics.PorterDuff.Mode.SRC_IN)
             }
             setProgress(sync)
         }
@@ -691,6 +694,9 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                         R.color.red
                 )
         )
+        binding.progressBar.indeterminateDrawable.setColorFilter(
+                ContextCompat.getColor(requireActivity().applicationContext,R.color.red),
+                android.graphics.PorterDuff.Mode.SRC_IN)
     }
 
     private fun refreshBalance(synchronized: Boolean) {

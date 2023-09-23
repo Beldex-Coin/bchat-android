@@ -133,11 +133,13 @@ public class WalletService extends Service {
         public void refreshed() { // this means it's synced
             final Wallet wallet = getWallet();
             if (wallet != null) {
-                long blockChainHeight = wallet.getDaemonBlockChainHeight();
-                long syncedBlockHeight = wallet.getBlockChainHeight();
-                long latestSyncedBlockHeight = blockChainHeight - syncedBlockHeight;
-                if (latestSyncedBlockHeight < 50L) {
-                    wallet.setSynchronized();
+                if (CheckOnline.Companion.isOnline(getApplicationContext())) {
+                    long blockChainHeight = wallet.getDaemonBlockChainHeight();
+                    long syncedBlockHeight = wallet.getBlockChainHeight();
+                    long latestSyncedBlockHeight = blockChainHeight - syncedBlockHeight;
+                    if (latestSyncedBlockHeight < 50L) {
+                        wallet.setSynchronized();
+                    }
                 }
                 if (updated) {
                     updateDaemonState(wallet, wallet.getBlockChainHeight());

@@ -585,6 +585,8 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                             R.color.green_color
                         )
                     )
+                    binding.progressBar.indeterminateDrawable.setColorFilter(
+                            ContextCompat.getColor(requireActivity().applicationContext,R.color.green_color), PorterDuff.Mode.SRC_IN)
                 } else {
                     balance = wallet.balance
                     ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(false)
@@ -595,6 +597,8 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                             R.color.green_color
                         )
                     )
+                    binding.progressBar.indeterminateDrawable.setColorFilter(
+                            ContextCompat.getColor(requireActivity().applicationContext,R.color.green_color), PorterDuff.Mode.SRC_IN)
                     setProgress(-2)
                     binding.filterTransactionsIcon.isClickable =
                         true //default = adapter!!.itemCount > 0
@@ -624,6 +628,9 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                         R.color.red
                     )
                 )
+                binding.progressBar.indeterminateDrawable.setColorFilter(
+                        ContextCompat.getColor(requireActivity().applicationContext,R.color.red), PorterDuff.Mode.SRC_IN)
+
             }
             setProgress(sync)
         }
@@ -693,6 +700,8 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                         R.color.red
                 )
         )
+        binding.progressBar.indeterminateDrawable.setColorFilter(
+                ContextCompat.getColor(requireActivity().applicationContext,R.color.red), PorterDuff.Mode.SRC_IN)
     }
 
     private fun refreshBalance(synchronized: Boolean) {

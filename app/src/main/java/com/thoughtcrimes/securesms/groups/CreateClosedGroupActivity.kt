@@ -88,6 +88,7 @@ class CreateClosedGroupActivity : PassphraseRequiredActionBarActivity(), LoaderM
 
     override fun onDestroy() {
         super.onDestroy()
+        hideSoftKeyboard()
         binding.nameEditText.isFocusable = false
     }
 
@@ -182,6 +183,12 @@ class CreateClosedGroupActivity : PassphraseRequiredActionBarActivity(), LoaderM
         returnIntent.putExtra(ConversationFragmentV2.THREAD_ID,threadId)
         returnIntent.putExtra(ConversationFragmentV2.ADDRESS,recipient.address)
         setResult(RESULT_OK, returnIntent)
+    }
+    private fun hideSoftKeyboard() {
+        if (currentFocus != null) {
+            val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+        }
     }
     // endregion
 }

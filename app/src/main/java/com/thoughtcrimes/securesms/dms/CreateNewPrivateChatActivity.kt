@@ -159,6 +159,7 @@ class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        hideSoftKeyboard()
         binding.publicKeyEditText.isFocusable = false
     }
     // endregion
@@ -269,6 +270,12 @@ class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
                 setResult(RESULT_OK, returnIntent)
                 finish()
             }
+        }
+    }
+    private fun hideSoftKeyboard() {
+        if (currentFocus != null) {
+            val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
         }
     }
 }

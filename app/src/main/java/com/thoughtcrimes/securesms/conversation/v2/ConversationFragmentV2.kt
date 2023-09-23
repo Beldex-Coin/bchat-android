@@ -2180,8 +2180,12 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 if (openGroup != null) {
                     val userCount = viewModel.getUserCount(openGroup)
                     try {
-                        binding.conversationSubtitleView.text =
-                            getString(R.string.ConversationActivity_member_count, userCount)
+                        if (userCount != null) {
+                            binding.conversationSubtitleView.text =
+                                    getString(R.string.ConversationActivity_member_count, userCount)
+                        } else {
+                            binding.conversationSubtitleView.isVisible = false
+                        }
                     } catch (ex: IllegalStateException) {
                         Timber.w(ex.message)
                     }

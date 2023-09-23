@@ -129,7 +129,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
 
     @SuppressLint("ResourceType")
     fun onSynced() {
-        if (!activityCallback?.isWatchOnly!! && walletSynchronized) {
+        if (activityCallback!!.isSynced) {
             binding.sendCardViewButton.isEnabled = true
             binding.sendCardViewButton.setBackgroundResource(R.drawable.send_card_enabled_background)
             binding.sendCardViewButtonText.setTextColor(ContextCompat.getColor(requireActivity(),R.color.white))
@@ -139,7 +139,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
     }
 
     fun unsync() {
-        if (!activityCallback!!.isWatchOnly) {
+        if (!activityCallback!!.isSynced) {
             binding.sendCardViewButton.isEnabled = false
             binding.sendCardViewButtonText.setTextColor(ContextCompat.getColor(requireActivity(),R.color.send_button_disable_color))
             binding.scanQrCodeImg.isEnabled = false
@@ -552,26 +552,14 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         }
     }
 
-    private fun setActivityTitle(wallet: Wallet?) {
-        if (wallet == null) return
-        walletTitle = wallet.name
-        binding.transactionTitle.visibility = View.VISIBLE
-        binding.transactionLayoutCardView.visibility = View.VISIBLE
-    }
 
     private var firstBlock: Long = 0
     private var unlockedBalance: Long = -1
     private var balance: Long = 0
-    private var accountIdx = -1
 
     private fun updateStatus(wallet: Wallet) {
         if (!isAdded) return
-        if (walletTitle == null || accountIdx != wallet.accountIndex) {
-            accountIdx = wallet.accountIndex
-            setActivityTitle(wallet)
-        }
         if(CheckOnline.isOnline(requireContext())) {
-            balance = wallet.balance
             val sync: String
             check(activityCallback!!.hasBoundService()) { "WalletService not bound." }
             val daemonConnected: Wallet.ConnectionStatus = activityCallback!!.connectionStatus!!
@@ -598,6 +586,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                         )
                     )
                 } else {
+                    balance = wallet.balance
                     ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(false)
                     sync = getString(R.string.status_synchronized)//getString(R.string.status_synced) + " " + formatter.format(wallet.blockChainHeight)
                     binding.syncStatus.setTextColor(
@@ -746,7 +735,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                     binding.tvBalance.text = "-.----"
                 }
             }
-            if (!activityCallback!!.isWatchOnly) {
+            if (!activityCallback!!.isSynced) {
                 binding.sendCardViewButton.isEnabled = false
                 binding.sendCardViewButtonText.setTextColor(ContextCompat.getColor(requireActivity(),R.color.send_button_disable_color))
                 binding.scanQrCodeImg.isEnabled = false
@@ -770,7 +759,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                 }
             }
             //SteveJosephh21
-            if (!activityCallback?.isWatchOnly!! && activityCallback!!.isSynced) {
+            if (activityCallback!!.isSynced) {
                 binding.sendCardViewButton.isEnabled = true
                 binding.sendCardViewButton.setBackgroundResource(R.drawable.send_card_enabled_background)
                 binding.sendCardViewButtonText.setTextColor(ContextCompat.getColor(requireActivity(),R.color.white))
@@ -862,7 +851,6 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         val isSynced: Boolean
         val isStreetMode: Boolean
         val streetModeHeight: Long
-        val isWatchOnly: Boolean
 
         fun getTxKey(txId: String?): String?
         fun onWalletReceive(view: View?)
@@ -892,7 +880,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         if (adapter!!.needsTransactionUpdateOnNewBlock()) {
             full = true
         }
-        if (full) {
+        if (full && activityCallback!!.isSynced) {
             val list: MutableList<TransactionInfo> = ArrayList()
             val streetHeight: Long = activityCallback!!.streetModeHeight
             wallet.refreshHistory()

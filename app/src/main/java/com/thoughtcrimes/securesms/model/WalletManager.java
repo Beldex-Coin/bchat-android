@@ -220,7 +220,7 @@ public class WalletManager {
 
     public native long getBlockTarget();
 
-    public native String resolveOpenAlias(String address, boolean dnssec_valid);
+    //public native String resolveOpenAlias(String address, boolean dnssec_valid);
 
     static public native void initLogger(String argv0, String defaultLogBaseName);
 

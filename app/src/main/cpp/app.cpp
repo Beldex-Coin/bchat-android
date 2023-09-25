@@ -333,7 +333,7 @@ Java_com_thoughtcrimes_securesms_model_WalletManager_initLogger(JNIEnv *env, jcl
     env->ReleaseStringUTFChars(argv0, _argv0);
     env->ReleaseStringUTFChars(default_log_base_name, _default_log_base_name);
 }
-extern "C"
+/*extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_thoughtcrimes_securesms_model_WalletManager_resolveOpenAlias(JNIEnv *env, jobject thiz,
                                                                       jstring address,
@@ -346,7 +346,7 @@ Java_com_thoughtcrimes_securesms_model_WalletManager_resolveOpenAlias(JNIEnv *en
                     _dnssec_valid);
     env->ReleaseStringUTFChars(address, _address);
     return env->NewStringUTF(resolvedAlias.c_str());
-}
+}*/
 /*extern "C"
 JNIEXPORT jboolean JNICALL
 Java_com_thoughtcrimes_securesms_model_WalletManager_stopMining(JNIEnv *env, jobject thiz) {

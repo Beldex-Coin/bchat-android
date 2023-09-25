@@ -463,6 +463,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         //SetDataAndType
         fun passSharedMessageToConversationScreen(thread: Recipient)
         fun getNode(): NodeInfo?
+        val isSynced: Boolean
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -2186,8 +2187,12 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 if (openGroup != null) {
                     val userCount = viewModel.getUserCount(openGroup)
                     try {
-                        binding.conversationSubtitleView.text =
-                            getString(R.string.ConversationActivity_member_count, userCount)
+                        if (userCount != null) {
+                            binding.conversationSubtitleView.text =
+                                    getString(R.string.ConversationActivity_member_count, userCount)
+                        } else {
+                            binding.conversationSubtitleView.isVisible = false
+                        }
                     } catch (ex: IllegalStateException) {
                         Timber.w(ex.message)
                     }
@@ -3263,7 +3268,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private fun updateStatus(wallet: Wallet) {
             if (!isAdded) return
             if (CheckOnline.isOnline(requireContext())) {
-                balance = wallet.balance
                 val sync: String
                 check(listenerCallback!!.hasBoundService()) { "WalletService not bound." }
                 val daemonConnected: Wallet.ConnectionStatus = listenerCallback!!.connectionStatus!!
@@ -3287,6 +3291,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                         valueOfWallet = "${df.format(walletSyncPercentage)}%"
                         binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false, valueOfWallet)
                     } else {
+                        balance = wallet.balance
                         ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(
                                 false
                         )

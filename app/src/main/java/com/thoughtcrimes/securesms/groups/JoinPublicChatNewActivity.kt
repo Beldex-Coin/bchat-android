@@ -171,6 +171,7 @@ class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        hideSoftKeyboard()
         binding.chatURLEditText.isFocusable = false
     }
 
@@ -298,6 +299,12 @@ class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
             returnIntent.putExtras(extras)
             setResult(RESULT_OK, returnIntent)
             finish()
+        }
+    }
+    private fun hideSoftKeyboard() {
+        if (currentFocus != null) {
+            val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
         }
     }
 

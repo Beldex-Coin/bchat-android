@@ -761,8 +761,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         get() = synced
     override val streetModeHeight: Long
         get() = streetMode
-    override val isWatchOnly: Boolean
-        get() = if(getWallet()!=null){getWallet()!!.isWatchOnly}else{false}
 
     override fun getTxKey(txId: String?): String? {
         return getWallet()!!.getTxKey(txId)
@@ -858,36 +856,33 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 // WalletService.Observer
 ///////////////////////////
 
-    private var numAccounts = -1
-
     override fun onRefreshed(wallet: Wallet?, full: Boolean): Boolean {
-        if (numAccounts != wallet!!.numAccounts) {
-            numAccounts = wallet.numAccounts
-        }
         try {
             //WalletFragment Functionality --
             val currentFragment = getCurrentFragment()
-            if (wallet.isSynchronized) {
-                if (!synced) { // first sync
-                    onProgress(-2)//onProgress(-1)
-                    saveWallet() // save on first sync
-                    synced = true
-                    //WalletFragment Functionality --
-                    when (currentFragment) {
-                        is WalletFragment -> {
-                            runOnUiThread(currentFragment::onSynced)
+            if (wallet != null) {
+                if (wallet.isSynchronized) {
+                    if (!synced) { // first sync
+                        onProgress(-2)//onProgress(-1)
+                        saveWallet() // save on first sync
+                        synced = true
+                        //WalletFragment Functionality --
+                        when (currentFragment) {
+                            is WalletFragment -> {
+                                runOnUiThread(currentFragment::onSynced)
+                            }
                         }
                     }
                 }
-            }
-            runOnUiThread {
-                //WalletFragment Functionality --
-                when (currentFragment) {
-                    is ConversationFragmentV2 -> {
-                        currentFragment.onRefreshed(wallet,full)
-                    }
-                    is WalletFragment -> {
-                        currentFragment.onRefreshed(wallet,full)
+                runOnUiThread {
+                    //WalletFragment Functionality --
+                    when (currentFragment) {
+                        is ConversationFragmentV2 -> {
+                            currentFragment.onRefreshed(wallet, full)
+                        }
+                        is WalletFragment -> {
+                            currentFragment.onRefreshed(wallet, full)
+                        }
                     }
                 }
             }

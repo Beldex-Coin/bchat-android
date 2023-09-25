@@ -715,7 +715,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     override fun forceUpdate(requireActivity: Context) {
         try {
             if(getWallet()!=null) {
-                onRefreshed(getWallet(), true)
+                onRefreshed(getWallet(), getWallet()!!.isSynchronized)
             }else{
                 val currentFragment = getCurrentFragment()
                 if (currentFragment is WalletFragment) {

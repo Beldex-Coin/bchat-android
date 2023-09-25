@@ -701,6 +701,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     override fun onStop() {
         super.onStop()
+        /*These 2 lines are introduced to handle the visibility of keyboard on home screen after we put the
+        * app in background with this screen visible and keyboard opened. These lines can be removed if in future the issue is handled other
+        * way.*/
         binding.inputBar.clearFocus()
         Helper.hideKeyboard(requireActivity())
     }
@@ -3251,7 +3254,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     fun onRefreshed(wallet: Wallet, full: Boolean) {
         val recipient = viewModel.recipient.value ?: return
         if (!recipient.isGroupRecipient && recipient.hasApprovedMe() && !recipient.isBlocked && HomeActivity.reportIssueBChatID != recipient.address.toString() && !recipient.isLocalNumber) {
-            if (full) {
+            if (full && listenerCallback!!.isSynced) {
                 if (CheckOnline.isOnline(requireContext())) {
                     check(listenerCallback!!.hasBoundService()) { "WalletService not bound." }
                     val daemonConnected: Wallet.ConnectionStatus = listenerCallback!!.connectionStatus!!

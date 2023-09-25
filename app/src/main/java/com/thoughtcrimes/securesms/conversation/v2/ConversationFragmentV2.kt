@@ -486,7 +486,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         searchViewModel = ViewModelProvider(requireActivity())[SearchViewModel::class.java]
         audioRecorder = AudioRecorder(requireActivity().applicationContext)
 
@@ -697,6 +696,12 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             this.pendingTransaction = null
             this.pendingTx = null
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        binding.inputBar.clearFocus()
+        Helper.hideKeyboard(requireActivity())
     }
 
     override fun onDestroy() {

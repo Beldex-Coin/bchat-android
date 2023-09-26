@@ -313,7 +313,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     /*Hales63*/
     private val adapter by lazy {
-        val cursor = viewModel.getConversations(!isIncomingMessageRequestThread())
+        val cursor = viewModel.getConversationsCursor()
         val adapter = ConversationAdapter(
             requireActivity(),
             cursor,
@@ -501,6 +501,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
         }
 
+
         // messageIdToScroll
         messageToScrollTimestamp.set(requireArguments().getLong(SCROLL_MESSAGE_ID, -1))
         messageToScrollAuthor.set(requireArguments().parcelable(SCROLL_MESSAGE_AUTHOR))
@@ -510,6 +511,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (isNetworkAvailable) {
             binding.networkStatusLayout.visibility = View.GONE
         }
+
 
         lifecycleScope.launch(Dispatchers.IO) {
             unreadCount = viewModel.getUnreadCount()
@@ -528,7 +530,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         restoreDraftIfNeeded()
         setUpUiStateObserver()
         setMediaControlForReportIssue()
-
         binding.scrollToBottomButton.setOnClickListener {
 
             val layoutManager = (binding.conversationRecyclerView.layoutManager as? LinearLayoutManager) ?: return@setOnClickListener
@@ -552,6 +553,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
         }
 
+
         updateUnreadCountIndicator()
         updateSubtitle()
         setUpBlockedBanner()
@@ -559,6 +561,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         showOrHideInputIfNeeded()
         /*Hales63*/
         setUpMessageRequestsBar()
+
 
 //        viewModel.recipient.value?.let { recipient ->
 //            if (recipient.isOpenGroupRecipient) {
@@ -593,6 +596,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             setProgress(101)
             binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext,true,valueOfWallet)
         }
+
 
         binding.slideToPayButton.onSlideCompleteListener = object : OnSlideCompleteListener {
             override fun onSlideComplete(view: SlideToActView) {
@@ -1878,7 +1882,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
         return ConversationLoader(
             viewModel.threadId,
-            !isIncomingMessageRequestThread(),
+            !viewModel.isIncomingMessageRequestThread(),
             requireActivity()
         )
     }
@@ -1904,7 +1908,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         val layoutManager = LinearLayoutManager(
             requireActivity(),
             LinearLayoutManager.VERTICAL,
-            !isIncomingMessageRequestThread()
+            !viewModel.isIncomingMessageRequestThread()
         )
         binding.conversationRecyclerView.layoutManager = layoutManager
         // Workaround for the fact that CursorRecyclerViewAdapter doesn't auto-update automatically (even though it says it will)
@@ -2446,7 +2450,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (recipient.address.toString() != HomeActivity.reportIssueBChatID) {
             binding.inputBar.showMediaControls = !isOutgoingMessageRequestThread()
         }
-        binding.messageRequestBar.isVisible = isIncomingMessageRequestThread()
+        binding.messageRequestBar.isVisible = viewModel.isIncomingMessageRequestThread()
         binding.acceptMessageRequestButton.setOnClickListener {
             acceptAlertDialog()
         }
@@ -2470,15 +2474,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             animation.start()
         }
         binding.inputBarRecordingView.hide()
-    }
-
-    private fun isIncomingMessageRequestThread(): Boolean {
-        val recipient = viewModel.recipient.value ?: return false
-        return !recipient.isGroupRecipient &&
-                !recipient.isApproved &&
-                !recipient.isLocalNumber &&
-                !viewModel.getLastSeenAndHasSent().second() &&
-                viewModel.getMessageCount() > 0
     }
 
     private fun isOutgoingMessageRequestThread(): Boolean {
@@ -2693,7 +2688,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     //New Line v32
     private fun processMessageRequestApproval() {
-        if (isIncomingMessageRequestThread()) {
+        if (viewModel.isIncomingMessageRequestThread()) {
             acceptMessageRequest()
         } else if (viewModel.recipient.value?.isApproved == false) {
             // edge case for new outgoing thread on new recipient without sending approval messages
@@ -3344,7 +3339,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         ) { bal, unlockedBal ->
             valueOfBalance = bal
             unlockedBal?.let {
-                valueOfUnLockedBalance = unlockedBal
+                valueOfUnLockedBalance = it
             }
         }
         toolTip()
@@ -3358,7 +3353,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         } else {
             refreshBalance(false)
         }
-        lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             try {
                 unlockedBalance = wallet.unlockedBalance
                 delay(100)

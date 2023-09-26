@@ -57,6 +57,8 @@ class ConversationViewModel (
     private val _backToHome = MutableStateFlow(false)
     val backToHome: StateFlow<Boolean> = _backToHome
 
+    private lateinit var conversationsCursor: Cursor
+
     var senderBeldexAddress: String? = null
 
     /*Hales63*/
@@ -82,9 +84,34 @@ class ConversationViewModel (
                 if (!it.isGroupRecipient && it.hasApprovedMe()) {
                     senderBeldexAddress = getBeldexAddress(it.address)
                 }
+                fetchConversations()
             }
         }
     }
+
+    fun getConversationsCursor(): Cursor {
+        return if (::conversationsCursor.isInitialized) {
+            conversationsCursor
+        } else {
+            fetchConversations()
+            conversationsCursor
+        }
+    }
+
+    private fun fetchConversations() {
+        conversationsCursor = mmsSmsDatabase.getConversation(threadId, !isIncomingMessageRequestThread())
+    }
+
+    fun isIncomingMessageRequestThread(): Boolean {
+        return recipient.value?.let { recipient ->
+            !recipient.isGroupRecipient &&
+                    !recipient.isApproved &&
+                    !recipient.isLocalNumber &&
+                    getLastSeenAndHasSent().second() &&
+                    getMessageCount() > 0
+        } ?: false
+    }
+
     fun acceptMessageRequest() = viewModelScope.launch {
         val recipient = recipient.value ?: return@launch Log.w("Beldex", "Recipient was null for accept message request action")
         repository.acceptMessageRequest(threadId, recipient)
@@ -264,7 +291,7 @@ class ConversationViewModel (
         )
     }
 
-    fun getConversations(isIncomingRequestThread: Boolean): Cursor = mmsSmsDatabase.getConversation(threadId, isIncomingRequestThread)
+//    fun getConversations(isIncomingRequestThread: Boolean): Cursor = mmsSmsDatabase.getConversation(threadId, isIncomingRequestThread)
 
     fun getUnreadCount() = mmsSmsDatabase.getUnreadCount(threadId)
 

@@ -14,8 +14,11 @@ import android.graphics.Color
 import android.graphics.PointF
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -67,8 +70,14 @@ import com.thoughtcrimes.securesms.model.PendingTransaction
 import com.thoughtcrimes.securesms.model.TransactionInfo
 import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.model.WalletManager
+import com.thoughtcrimes.securesms.onboarding.AboutActivity
 import com.thoughtcrimes.securesms.onboarding.SeedActivity
 import com.thoughtcrimes.securesms.onboarding.SeedReminderViewDelegate
+import com.thoughtcrimes.securesms.preferences.NotificationSettingsActivity
+import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
+import com.thoughtcrimes.securesms.preferences.SettingsActivity
+import com.thoughtcrimes.securesms.preferences.ShowQRCodeWithScanQRCodeActivity
+import com.thoughtcrimes.securesms.seed.SeedPermissionActivity
 import com.thoughtcrimes.securesms.util.ActivityDispatcher
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.IP2Country
@@ -108,6 +117,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import java.io.File
+import java.util.ArrayList
 import java.util.Collections
 import java.util.Random
 import javax.inject.Inject
@@ -249,6 +259,11 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             if(currentFragment is HomeFragment) {
                 currentFragment.updateProfileButton()
             }
+        }else {
+            val currentFragment = getCurrentFragment()
+            if(currentFragment is HomeFragment) {
+                currentFragment.homeViewModel.tryUpdateChannel()
+            }
         }
     }
 
@@ -360,25 +375,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 // Double check that the long poller is up
                 (applicationContext as ApplicationContext).startPollingIfNeeded()
                 // update things based on TextSecurePrefs (profile info etc)
-                // Set up typing observer
-                withContext(Dispatchers.Main) {
-                    ApplicationContext.getInstance(this@HomeActivity).typingStatusRepository.typingThreads.observe(
-                        this@HomeActivity
-                    ) { threadIDs ->
-                        val adapter = recyclerView.adapter as HomeAdapter
-                        adapter.typingThreadIDs = threadIDs ?: setOf()
-                    }
-                    updateProfileButton(profileButton,drawerProfileName,drawerProfileIcon,publicKey)
-                    TextSecurePreferences.events.filter { it == TextSecurePreferences.PROFILE_NAME_PREF }
-                        .collect {
-                            updateProfileButton(
-                                profileButton,
-                                drawerProfileName,
-                                drawerProfileIcon,
-                                publicKey
-                            )
-                        }
-                }
                 // Set up remaining components if needed
                 val application = ApplicationContext.getInstance(this@HomeActivity)
                 application.registerForFCMIfNeeded(false)
@@ -386,6 +382,13 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 if (userPublicKey != null) {
                     OpenGroupManager.startPolling()
                     JobQueue.shared.resumePendingJobs()
+                }
+                // Set up typing observer
+                withContext(Dispatchers.Main) {
+                    updateProfileButton(profileButton,drawerProfileName,drawerProfileIcon,publicKey)
+                    TextSecurePreferences.events.filter { it == TextSecurePreferences.PROFILE_NAME_PREF }.collect {
+                        updateProfileButton(profileButton,drawerProfileName,drawerProfileIcon,publicKey)
+                    }
                 }
             }
             // monitor the global search VM query
@@ -1284,9 +1287,22 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         if (mIsBound) { // no point in talking to unbound service
             var intent: Intent? = null
             if(intent==null) {
-                intent = Intent(applicationContext, WalletService::class.java)
+                intent = Intent(this, WalletService::class.java)
                 intent.putExtra(WalletService.REQUEST, WalletService.REQUEST_CMD_STORE)
-                startService(intent)
+                try {
+                    when {
+                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
+                            Handler(Looper.getMainLooper()).post {
+                                ContextCompat.startForegroundService(this, intent)
+                            }
+                        }
+                        else -> {
+                            this.startService(intent)
+                        }
+                    }
+                }catch(ex: Exception){
+                    Log.d("Exception ",ex.message.toString())
+                }
                 Timber.d("STORE request sent")
             }
         } else {
@@ -1472,7 +1488,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     inner class AsyncFindBestNode(val PING_SELECTED: Int, val FIND_BEST: Int) :
-            AsyncTaskCoroutine<Int?, NodeInfo?>() {
+        AsyncTaskCoroutine<Int?, NodeInfo?>() {
         override fun onPreExecute() {
             super.onPreExecute()
         }
@@ -1510,8 +1526,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 null
             }
         }
+
         override fun onPostExecute(result: NodeInfo?) {
-            Log.d("Beldex", "daemon connected to home  ${result?.host}")
+            Log.d("Beldex", "daemon connected to  ${result?.host}")
         }
     }
 

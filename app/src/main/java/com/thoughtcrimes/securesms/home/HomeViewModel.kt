@@ -27,43 +27,10 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val threadDb: ThreadDatabase,
     private val sharedPreferenceUtil: SharedPreferenceUtil
-    ): ViewModel() {
-
-    private val executor = viewModelScope + SupervisorJob()
-
-    private val _conversations = MutableLiveData<List<ThreadRecord>>()
-    val conversations: LiveData<List<ThreadRecord>> = _conversations
+): ViewModel() {
 
     private val _favouritesNodes = MutableStateFlow<HashSet<NodeInfo>?>(null)
     val favouritesNodes: StateFlow<HashSet<NodeInfo>?> = _favouritesNodes
-
-    private val listUpdateChannel = Channel<Unit>(capacity = Channel.CONFLATED)
-
-    fun tryUpdateChannel() = listUpdateChannel.trySend(Unit)
-
-    fun getObservable(context: Context): LiveData<List<ThreadRecord>> {
-        executor.launch(Dispatchers.IO) {
-            context.contentResolver
-                .observeQuery(DatabaseContentProviders.ConversationList.CONTENT_URI)
-                .onEach { listUpdateChannel.trySend(Unit) }
-                .collect()
-        }
-        executor.launch(Dispatchers.IO) {
-            for (update in listUpdateChannel) {
-                threadDb.approvedConversationList.use { openCursor ->
-                    val reader = threadDb.readerFor(openCursor)
-                    val threads = mutableListOf<ThreadRecord>()
-                    while (true) {
-                        threads += reader.next ?: break
-                    }
-                    withContext(Dispatchers.Main) {
-                        _conversations.value = threads
-                    }
-                }
-            }
-        }
-        return conversations
-    }
 
     fun loadFavouritesWithNetwork() {
         Helper.runWithNetwork {

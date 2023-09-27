@@ -31,12 +31,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.annimon.stream.Stream;
+import com.beldex.libbchat.mnode.MnodeAPI;
 import com.thoughtcrimes.securesms.ApplicationContext;
 import com.thoughtcrimes.securesms.mms.Slide;
 import com.thoughtcrimes.securesms.mms.SlideDeck;
 import com.thoughtcrimes.securesms.util.BchatMetaProtocol;
 
-import net.sqlcipher.database.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
 import com.beldex.libbchat.utilities.Address;
 import com.beldex.libbchat.utilities.Contact;
@@ -138,7 +139,7 @@ public class ThreadDatabase extends Database {
 
   private long createThreadForRecipient(Address address, boolean group, int distributionType) {
     ContentValues contentValues = new ContentValues(4);
-    long date                   = System.currentTimeMillis();
+    long date                   = MnodeAPI.getNowWithOffset();
 
     contentValues.put(DATE, date - date % 1000);
     contentValues.put(ADDRESS, address.serialize());
@@ -284,7 +285,7 @@ public class ThreadDatabase extends Database {
     contentValues.put(UNREAD_COUNT, 0);
 
     if (lastSeen) {
-      contentValues.put(LAST_SEEN, System.currentTimeMillis());
+      contentValues.put(LAST_SEEN, MnodeAPI.getNowWithOffset());
     }
 
     SQLiteDatabase db = databaseHelper.getWritableDatabase();
@@ -498,13 +499,21 @@ public class ThreadDatabase extends Database {
     return db.rawQuery(query, null);
   }
 
-  public void setLastSeen(long threadId) {
+  public void setLastSeen(long threadId,long timestamp) {
     SQLiteDatabase db = databaseHelper.getWritableDatabase();
     ContentValues contentValues = new ContentValues(1);
-    contentValues.put(LAST_SEEN, System.currentTimeMillis());
+    if (timestamp == -1) {
+      contentValues.put(LAST_SEEN, MnodeAPI.getNowWithOffset());
+    } else {
+      contentValues.put(LAST_SEEN, timestamp);
+    }
 
     db.update(TABLE_NAME, contentValues, ID_WHERE, new String[] {String.valueOf(threadId)});
     notifyConversationListListeners();
+  }
+
+  public void setLastSeen(long threadId) {
+    setLastSeen(threadId, -1);
   }
 
   public Pair<Long, Boolean> getLastSeenAndHasSent(long threadId) {
@@ -595,6 +604,17 @@ public class ThreadDatabase extends Database {
 
   public long getOrCreateThreadIdFor(Recipient recipient) {
     return getOrCreateThreadIdFor(recipient, DistributionTypes.DEFAULT);
+  }
+
+  public void setThreadArchived(long threadId) {
+    ContentValues contentValues = new ContentValues(1);
+    contentValues.put(ARCHIVED, 1);
+
+    databaseHelper.getWritableDatabase().update(TABLE_NAME, contentValues, ID_WHERE,
+            new String[] {String.valueOf(threadId)});
+
+    notifyConversationListListeners();
+    notifyConversationListeners(threadId);
   }
 
   public long getOrCreateThreadIdFor(Recipient recipient, int distributionType) {

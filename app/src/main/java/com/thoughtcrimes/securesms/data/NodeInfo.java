@@ -38,20 +38,18 @@ public class  NodeInfo extends Node {
     final static public int MIN_MAJOR_VERSION = 12;
     final static public String RPC_VERSION = "2.0";
 
-    @Getter
     private long height = 0;
-    @Getter
+
     private long timestamp = 0;
-    @Getter
+
     private int majorVersion = 0;
-    @Getter
+
     private double responseTime = Double.MAX_VALUE;
-    @Getter
+
     private int responseCode = 0;
-    @Getter
+
     private boolean tested = false;
-    @Getter
-    @Setter
+
     private boolean selecting = false;
 
     public void clear() {

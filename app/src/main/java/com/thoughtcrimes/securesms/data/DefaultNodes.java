@@ -19,7 +19,6 @@ public enum DefaultNodes {
     /*BELDEX("38.242.196.72:19095"),
     BELDEX1("154.26.139.105:19095");*/
 
-    @Getter
     private final String uri;
 
     DefaultNodes(String uri) {

@@ -10,7 +10,7 @@ object PublicKeyValidation {
     @JvmStatic
     fun isValid(candidate: String, expectedLength: Int, isPrefixRequired: Boolean): Boolean {
         val hexCharacters = "0123456789ABCDEF".toSet()
-        val isValidHexEncoding = hexCharacters.containsAll(candidate.toUpperCase().toSet())
+        val isValidHexEncoding = hexCharacters.containsAll(candidate.uppercase().toSet())
         val hasValidLength = candidate.length == expectedLength
         val hasValidPrefix = if (isPrefixRequired) candidate.startsWith("bd") else true
         return isValidHexEncoding && hasValidLength && hasValidPrefix

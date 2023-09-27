@@ -11,7 +11,6 @@ apply from: 'buildGradle/dependencies.gradle'
 configurations.all {
     exclude module: "commons-logging"
 }
-
 def canonicalVersionCode = 34
 def canonicalVersionName = "2.1.1"
 
@@ -85,10 +84,6 @@ def abiPostFix = ['armeabi-v7a' : 1,
 android {
     useLibrary 'org.apache.http.legacy'
 
-    dexOptions {
-        javaMaxHeapSize "4g"
-    }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -96,6 +91,9 @@ android {
 
     kotlinOptions {
         jvmTarget = '1.8'
+        freeCompilerArgs += [
+                "-Xjvm-default=all",
+        ]
     }
     packagingOptions {
         resources {

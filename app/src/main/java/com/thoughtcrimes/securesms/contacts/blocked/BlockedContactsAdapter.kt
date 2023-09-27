@@ -56,7 +56,7 @@ class BlockedContactsAdapter(private val context: BlockedContactsActivity) : Lis
 
     override fun onViewRecycled(holder: ViewHolder) {
         super.onViewRecycled(holder)
-        holder.binding.profilePictureView.recycle()
+        holder.binding.profilePictureView.root.recycle()
     }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
@@ -67,7 +67,7 @@ class BlockedContactsAdapter(private val context: BlockedContactsActivity) : Lis
         fun bind(recipient: Recipient, isSelected: Boolean, context: BlockedContactsActivity,toggleSelection: () -> Unit) {
             val address = recipient.address.serialize()
             binding.recipientName.text =  if (recipient.isGroupRecipient) recipient.name else getUserDisplayName(address,context)
-            with (binding.profilePictureView) {
+            with (binding.profilePictureView.root) {
                 glide = this@ViewHolder.glide
                 update(recipient)
             }

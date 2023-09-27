@@ -8,7 +8,7 @@ import com.google.protobuf.ByteString
 import com.beldex.libsignal.protos.SignalServiceProtos.DataMessage
 import com.beldex.libsignal.utilities.Hex
 import com.beldex.libsignal.utilities.Log
-import com.beldex.libsignal.utilities.removing05PrefixIfNeeded
+import com.beldex.libsignal.utilities.removingbdPrefixIfNeeded
 import com.beldex.libsignal.utilities.toHexString
 
 class ClosedGroupControlMessage() : ControlMessage() {
@@ -143,7 +143,7 @@ class ClosedGroupControlMessage() : ControlMessage() {
                     closedGroupControlMessage.publicKey = kind.publicKey
                     closedGroupControlMessage.name = kind.name
                     val encryptionKeyPair = SignalServiceProtos.KeyPair.newBuilder()
-                    encryptionKeyPair.publicKey = ByteString.copyFrom(kind.encryptionKeyPair!!.publicKey.serialize().removing05PrefixIfNeeded())
+                    encryptionKeyPair.publicKey = ByteString.copyFrom(kind.encryptionKeyPair!!.publicKey.serialize().removingbdPrefixIfNeeded())
                     encryptionKeyPair.privateKey = ByteString.copyFrom(kind.encryptionKeyPair!!.privateKey.serialize())
                     closedGroupControlMessage.encryptionKeyPair = encryptionKeyPair.build()
                     closedGroupControlMessage.addAllMembers(kind.members)

@@ -29,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.thoughtcrimes.securesms.components.ProfilePictureView
+            <include layout="@layout/view_profile_picture"
                 android:id="@+id/profilePictureView"
                 android:layout_width="@dimen/medium_profile_picture_size"
                 android:layout_height="@dimen/medium_profile_picture_size" />
@@ -96,7 +96,7 @@
            android:id="@+id/layout_conversation"
            android:gravity="center_vertical">
 
-       <com.thoughtcrimes.securesms.components.ProfilePictureView
+       <include layout="@layout/view_profile_picture"
            android:id="@+id/profilePictureView"
            android:layout_width="@dimen/medium_profile_picture_size"
            android:layout_height="@dimen/medium_profile_picture_size" />
@@ -222,8 +222,7 @@
             android:layout_above="@id/inputBarCard"
             android:fontFamily="@font/open_sans_medium"
             android:justificationMode="inter_word"
-            android:clickable="true"
-            android:focusable="true"/>
+            android:clickable="false"/>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/inputBarCard"

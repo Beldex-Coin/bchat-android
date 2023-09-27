@@ -6,7 +6,7 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 import com.beldex.libsignal.utilities.Log;
 
-import net.sqlcipher.database.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
 import com.thoughtcrimes.securesms.database.helpers.SQLCipherOpenHelper;
 import com.beldex.libsignal.utilities.Base64;

@@ -11,8 +11,8 @@ import com.beldex.libbchat.utilities.AESGCM
 import com.beldex.libsignal.utilities.*
 import com.beldex.libsignal.utilities.Mnode
 import com.beldex.libbchat.utilities.AESGCM.EncryptionResult
-import com.beldex.libbchat.utilities.getBodyForOnionRequest
-import com.beldex.libbchat.utilities.getHeadersForOnionRequest
+import com.beldex.libbchat.mnode.utilities.getBodyForOnionRequest
+import com.beldex.libbchat.mnode.utilities.getHeadersForOnionRequest
 import com.beldex.libsignal.crypto.getRandomElement
 import com.beldex.libsignal.crypto.getRandomElementOrNull
 import com.beldex.libsignal.utilities.Broadcaster
@@ -136,13 +136,7 @@ object OnionRequestAPI {
                     testMnode(candidate).success {
                         deferred.resolve(candidate)
                     }.fail {
-                        getGuardMnode().success {
-                            deferred.resolve(candidate)
-                        }.fail { exception ->
-                            if (exception is InsufficientMnodesException) {
-                                deferred.reject(exception)
-                            }
-                        }
+                        deferred.reject(it)
                     }
                     return deferred.promise
                 }
@@ -327,14 +321,15 @@ object OnionRequestAPI {
      */
     private fun sendOnionRequest(destination: Destination, payload: Map<*, *>): Promise<Map<*, *>, Exception> {
         val deferred = deferred<Map<*, *>, Exception>()
-        lateinit var guardMnode: Mnode
+        var guardMnode: Mnode? = null
         Log.d("Beldex --> payload onion req uest ","$payload")
         Log.d("Beldex --> destination onion request ","$destination")
         buildOnionForDestination(payload, destination).success { result ->
             guardMnode = result.guardMnode
             Log.d("Beldex","guard node-- $guardMnode")
             //Original
-            val url = "${guardMnode.address}:${guardMnode.port}/onion_req/v2"
+            val nonNullGuardSnode = result.guardMnode
+            val url = "${nonNullGuardSnode.address}:${nonNullGuardSnode.port}/onion_req/v2"
 
             //10-05-2022 - 5.21 PM
             //val url = "https://13.233.54.176:19090/onion_req/v2"
@@ -424,7 +419,7 @@ object OnionRequestAPI {
                     var pathFailureCount = OnionRequestAPI.pathFailureCount[path] ?: 0
                     pathFailureCount += 1
                     if (pathFailureCount >= pathFailureThreshold) {
-                        dropGuardMnode(guardMnode)
+                        guardMnode?.let { dropGuardMnode(it) }
                         path.forEach { mnode ->
                             @Suppress("ThrowableNotThrown")
                             MnodeAPI.handleMnodeError(exception.statusCode, exception.json, mnode, null) // Intentionally don't throw

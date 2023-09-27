@@ -26,8 +26,8 @@ import android.util.Pair;
 
 import com.annimon.stream.Stream;
 
-import net.sqlcipher.database.SQLiteDatabase;
-import net.sqlcipher.database.SQLiteStatement;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteStatement;
 
 
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration;
@@ -37,6 +37,7 @@ import com.beldex.libbchat.messaging.messages.signal.IncomingTextMessage;
 import com.beldex.libbchat.messaging.messages.signal.OutgoingTextMessage;
 import com.beldex.libbchat.messaging.sending_receiving.MessageDecrypter;
 
+import com.beldex.libbchat.mnode.MnodeAPI;
 import com.beldex.libbchat.utilities.Address;
 import com.beldex.libbchat.utilities.IdentityKeyMismatch;
 import com.beldex.libbchat.utilities.IdentityKeyMismatchList;
@@ -51,8 +52,11 @@ import com.thoughtcrimes.securesms.database.model.MessageRecord;
 import com.thoughtcrimes.securesms.database.model.SmsMessageRecord;
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.IOException;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -206,7 +210,7 @@ public class SmsDatabase extends MessagingDatabase {
 
   @Override
   public void markExpireStarted(long id) {
-    markExpireStarted(id, System.currentTimeMillis());
+    markExpireStarted(id, MnodeAPI.getNowWithOffset());
   }
 
   @Override
@@ -486,11 +490,11 @@ public class SmsDatabase extends MessagingDatabase {
     return insertMessageInbox(message, Types.BASE_INBOX_TYPE, serverTimestamp,runIncrement,runThreadUpdate);
   }
 
-  public Optional<InsertResult> insertMessageOutboxNew(long threadId, OutgoingTextMessage message, long serverTimestamp) {
+  public Optional<InsertResult> insertMessageOutboxNew(long threadId, OutgoingTextMessage message, long serverTimestamp,boolean runThreadUpdate) {
     if (threadId == -1) {
       threadId = DatabaseComponent.get(context).threadDatabase().getOrCreateThreadIdFor(message.getRecipient());
     }
-    long messageId = insertMessageOutbox(threadId, message, false, serverTimestamp, null);
+    long messageId = insertMessageOutbox(threadId, message, false, serverTimestamp, null,runThreadUpdate);
     if (messageId == -1) {
       return Optional.absent();
     }
@@ -499,7 +503,7 @@ public class SmsDatabase extends MessagingDatabase {
   }
 
   public long insertMessageOutbox(long threadId, OutgoingTextMessage message,
-                                  boolean forceSms, long date, InsertListener insertListener)
+                                  boolean forceSms, long date, InsertListener insertListener,boolean runThreadUpdate)
   {
     long type = Types.BASE_SENDING_TYPE;
 
@@ -519,7 +523,7 @@ public class SmsDatabase extends MessagingDatabase {
     contentValues.put(THREAD_ID, threadId);
     contentValues.put(BODY, message.getMessageBody());
     Log.d("Beldex","insertMessageOutbox message.getMessageBody() " + message.getMessageBody());
-    contentValues.put(DATE_RECEIVED, System.currentTimeMillis());
+    contentValues.put(DATE_RECEIVED, MnodeAPI.getNowWithOffset());
     contentValues.put(DATE_SENT, message.getSentTimestampMillis());
     contentValues.put(READ, 1);
     contentValues.put(TYPE, type);
@@ -541,7 +545,9 @@ public class SmsDatabase extends MessagingDatabase {
       insertListener.onComplete();
     }
 
-    DatabaseComponent.get(context).threadDatabase().update(threadId, true);
+    if (runThreadUpdate) {
+      DatabaseComponent.get(context).threadDatabase().update(threadId, true);
+    }
     DatabaseComponent.get(context).threadDatabase().setLastSeen(threadId);
 
     DatabaseComponent.get(context).threadDatabase().setHasSent(threadId, true);
@@ -582,17 +588,36 @@ public class SmsDatabase extends MessagingDatabase {
     Log.i("MessageDatabase", "Deleting: " + messageId);
     SQLiteDatabase db = databaseHelper.getWritableDatabase();
     long threadId = getThreadIdForMessage(messageId);
-    try {
-      SmsMessageRecord toDelete = getMessage(messageId);
-      DatabaseComponent.get(context).mmsDatabase().deleteQuotedFromMessages(toDelete);
-    } catch (NoSuchMessageException e) {
-      Log.e(TAG, "Couldn't find message record for messageId "+messageId, e);
-    }
     db.delete(TABLE_NAME, ID_WHERE, new String[] {messageId+""});
     boolean threadDeleted = DatabaseComponent.get(context).threadDatabase().update(threadId, false);
     notifyConversationListeners(threadId);
     return threadDeleted;
   }
+
+  @Override
+  public boolean deleteMessages(long[] messageIds, long threadId) {
+    String[] argsArray = new String[messageIds.length];
+    String[] argValues = new String[messageIds.length];
+    Arrays.fill(argsArray, "?");
+
+    for (int i = 0; i < messageIds.length; i++) {
+      argValues[i] = (messageIds[i] + "");
+    }
+
+    String combinedMessageIdArgss = StringUtils.join(messageIds, ',');
+    String combinedMessageIds = StringUtils.join(messageIds, ',');
+    Log.i("MessageDatabase", "Deleting: " + combinedMessageIds);
+    SQLiteDatabase db = databaseHelper.getWritableDatabase();
+    db.delete(
+            TABLE_NAME,
+            ID + " IN (" + StringUtils.join(argsArray, ',') + ")",
+            argValues
+    );
+    boolean threadDeleted = DatabaseComponent.get(context).threadDatabase().update(threadId, false);
+    notifyConversationListeners(threadId);
+    return threadDeleted;
+  }
+
 
   private boolean isDuplicate(IncomingTextMessage message, long threadId) {
     SQLiteDatabase database = databaseHelper.getReadableDatabase();
@@ -718,11 +743,11 @@ public class SmsDatabase extends MessagingDatabase {
       return new SmsMessageRecord(id, message.getMessageBody(),
 
               message.getRecipient(), message.getRecipient(),
-              System.currentTimeMillis(), System.currentTimeMillis(),
+              MnodeAPI.getNowWithOffset(), MnodeAPI.getNowWithOffset(),
               0, message.isSecureMessage() ? MmsSmsColumns.Types.getOutgoingEncryptedMessageType() : MmsSmsColumns.Types.getOutgoingSmsMessageType(),
               threadId, 0, new LinkedList<IdentityKeyMismatch>(),
               message.getExpiresIn(),
-              System.currentTimeMillis(), 0, false);
+              MnodeAPI.getNowWithOffset(), 0, false);
     }
   }
 

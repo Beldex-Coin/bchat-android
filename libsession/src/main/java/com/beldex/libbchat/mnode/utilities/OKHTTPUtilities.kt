@@ -1,4 +1,4 @@
-package com.beldex.libbchat.utilities
+package com.beldex.libbchat.mnode.utilities
 
 import com.beldex.libsignal.utilities.Base64
 import okhttp3.MultipartBody

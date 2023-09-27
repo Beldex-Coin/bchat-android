@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools">
+<com.thoughtcrimes.securesms.components.ProfilePictureView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:id="@+id/doubleModeImageViewContainer"
@@ -39,4 +38,4 @@
         android:layout_height="@dimen/large_profile_picture_size"
         android:background="@drawable/profile_picture_view_large_background" />
 
-</RelativeLayout>
+</com.thoughtcrimes.securesms.components.ProfilePictureView>

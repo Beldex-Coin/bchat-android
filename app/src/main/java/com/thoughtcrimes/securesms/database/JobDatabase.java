@@ -5,7 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import androidx.annotation.NonNull;
 
-import net.sqlcipher.database.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
 import com.thoughtcrimes.securesms.database.helpers.SQLCipherOpenHelper;
 import com.thoughtcrimes.securesms.jobmanager.persistence.ConstraintSpec;
@@ -138,7 +138,10 @@ public class JobDatabase extends Database {
     ContentValues contentValues = new ContentValues();
     contentValues.put(Jobs.IS_RUNNING, 0);
 
-    databaseHelper.getWritableDatabase().update(Jobs.TABLE_NAME, contentValues, null, null);
+    String   query = Jobs.IS_RUNNING + " = ?";
+    String[] args = new String[] { "1" };
+
+    databaseHelper.getWritableDatabase().update(Jobs.TABLE_NAME, contentValues, query, args);
   }
 
   public synchronized void deleteJobs(@NonNull List<String> jobIds) {

@@ -67,7 +67,7 @@ object MessageSender {
         Log.d("Beldex","bchat id validation -- get user public key")
         // Set the timestamp, sender and recipient
         if (message.sentTimestamp == null) {
-            message.sentTimestamp = System.currentTimeMillis() // Visible messages will already have their sent timestamp set
+            message.sentTimestamp = MnodeAPI.nowWithOffset // Visible messages will already have their sent timestamp set
         }
         Log.d("Beldex","bchat id validation -- check send id and user public key")
         message.sender = userPublicKey
@@ -103,15 +103,11 @@ object MessageSender {
             }
             // Attach the user's profile if needed
             if (message is VisibleMessage) {
-                val displayName = storage.getUserDisplayName()!!
-                val profileKey = storage.getUserProfileKey()
-                val profilePictureUrl = storage.getUserProfilePictureURL()
-                if (profileKey != null && profilePictureUrl != null) {
-                    message.profile = Profile(displayName, profileKey, profilePictureUrl)
-                } else {
-                    message.profile = Profile(displayName)
-                }
+                message.profile = storage.getUserProfile()
             }
+            /*if (message is MessageRequestResponse) {
+                message.profile = storage.getUserProfile()
+            }*/
             // Convert it to protobuf
             val proto = message.toProto() ?: throw Error.ProtoConversionFailed
             // Serialize the protobuf
@@ -204,7 +200,7 @@ object MessageSender {
         val deferred = deferred<Unit, Exception>()
         val storage = MessagingModuleConfiguration.shared.storage
         if (message.sentTimestamp == null) {
-            message.sentTimestamp = System.currentTimeMillis()
+            message.sentTimestamp = MnodeAPI.nowWithOffset
         }
         message.sender = storage.getUserPublicKey()
         // Set the failure handler (need it here already for precondition failure handling)
@@ -221,14 +217,7 @@ object MessageSender {
                     val room = destination.room
                     // Attach the user's profile if needed
                     if (message is VisibleMessage) {
-                        val displayName = storage.getUserDisplayName()!!
-                        val profileKey = storage.getUserProfileKey()
-                        val profilePictureUrl = storage.getUserProfilePictureURL()
-                        if (profileKey != null && profilePictureUrl != null) {
-                            message.profile = Profile(displayName, profileKey, profilePictureUrl)
-                        } else {
-                            message.profile = Profile(displayName)
-                        }
+                        message.profile = storage.getUserProfile()
                     }
                     // Validate the message
                     if (message !is VisibleMessage || !message.isValid()) {
@@ -274,6 +263,8 @@ object MessageSender {
             message.serverHash?.let {
                 storage.setMessageServerHash(messageID, it)
             }
+            // in case any errors from previous sends
+            storage.clearErrorMessage(messageID)
             // Track the social group server message ID
             if (message.openGroupServerMessageID != null && destination is Destination.OpenGroupV2) {
                 val encoded = GroupUtil.getEncodedOpenGroupID("${destination.server}.${destination.room}".toByteArray())

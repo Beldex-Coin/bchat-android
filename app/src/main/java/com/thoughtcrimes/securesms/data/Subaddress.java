@@ -21,7 +21,6 @@ public class Subaddress implements Comparable<Subaddress> {
     @Getter
     private final String label;
     @Getter
-    @Setter
     private long amount;
 
     public Subaddress(int accountIndex, int subAddressIndex, String subaddress, String subaddressLabel) {

@@ -48,7 +48,8 @@ public class RetrieveProfileAvatarJob extends BaseJob {
             .setQueue("RetrieveProfileAvatarJob" + recipient.getAddress().serialize())
             .addConstraint(NetworkConstraint.KEY)
             .setLifespan(TimeUnit.HOURS.toMillis(1))
-            .setMaxAttempts(10)
+            .setMaxAttempts(2)
+            .setMaxInstances(1)
             .build(),
         recipient,
         profileAvatar);
@@ -84,7 +85,7 @@ public class RetrieveProfileAvatarJob extends BaseJob {
       return;
     }
 
-    if (Util.equals(profileAvatar, recipient.resolve().getProfileAvatar())) {
+    if (AvatarHelper.avatarFileExists(context, recipient.resolve().getAddress()) && Util.equals(profileAvatar, recipient.resolve().getProfileAvatar())) {
       Log.w(TAG, "Already retrieved profile avatar: " + profileAvatar);
       return;
     }

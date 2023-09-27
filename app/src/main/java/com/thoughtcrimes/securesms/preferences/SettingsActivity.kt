@@ -99,13 +99,13 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
         animation2.setAnimationListener(this)
 
         with(binding) {
-            profilePictureView.glide = glide
-            profilePictureView.publicKey = hexEncodedPublicKey
-            profilePictureView.displayName = displayName
-            profilePictureView.isLarge = true
-            profilePictureView.update()
+            profilePictureView.root.glide = glide
+            profilePictureView.root.publicKey = hexEncodedPublicKey
+            profilePictureView.root.displayName = displayName
+            profilePictureView.root.isLarge = true
+            profilePictureView.root.update()
             //New Line
-            profilePictureView.setOnClickListener { showEditProfilePictureUI() }
+            profilePictureView.root.setOnClickListener { showEditProfilePictureUI() }
 
             profilePictureViewButton.setOnClickListener { showEditProfilePictureUI() }
             ctnGroupNameSection.setOnClickListener {
@@ -350,8 +350,8 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
                 binding.btnGroupNameDisplay.text = displayName
             }
             if (isUpdatingProfilePicture && profilePicture != null) {
-                binding.profilePictureView.recycle() // Clear the cached image before updating
-                binding.profilePictureView.update()
+                binding.profilePictureView.root.recycle() // Clear the cached image before updating
+                binding.profilePictureView.root.update()
             }
             displayNameToBeUploaded = null
             profilePictureToBeUploaded = null

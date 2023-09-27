@@ -32,7 +32,7 @@ class AttachmentDownloadJob(val attachmentID: Long, val databaseMessageID: Long)
     }
 
     // Settings
-    override val maxFailureCount: Int = 100
+    override val maxFailureCount: Int = 2
 
     companion object {
         val KEY: String = "AttachmentDownloadJob"
@@ -62,7 +62,23 @@ class AttachmentDownloadJob(val attachmentID: Long, val databaseMessageID: Long)
                         ), databaseMessageID)
                 }
                 this.handlePermanentFailure(exception)
+            } else if (exception == Error.DuplicateData) {
+                attachment?.let { id ->
+                    Log.d("AttachmentDownloadJob", "Setting attachment state = done from duplicate data")
+                    messageDataProvider.setAttachmentState(AttachmentState.DONE, id, databaseMessageID)
+                } ?: run {
+                    Log.d("AttachmentDownloadJob", "Setting attachment state = done from duplicate data")
+                    messageDataProvider.setAttachmentState(AttachmentState.DONE, AttachmentId(attachmentID,0), databaseMessageID)
+                }
+                this.handleSuccess()
             } else {
+                if (failureCount + 1 >= maxFailureCount) {
+                    attachment?.let { id ->
+                        messageDataProvider.setAttachmentState(AttachmentState.FAILED, id, databaseMessageID)
+                    } ?: run {
+                        messageDataProvider.setAttachmentState(AttachmentState.FAILED, AttachmentId(attachmentID,0), databaseMessageID)
+                    }
+                }
                 this.handleFailure(exception)
             }
         }

@@ -40,6 +40,7 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.view.inputmethod.EditorInfo
 import androidx.activity.result.contract.ActivityResultContracts
+import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 
 class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
@@ -256,6 +257,7 @@ class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
                     val openGroupID = "$sanitizedServer.${room!!}"
                     Log.d("Beldex","join group openGroupID in joinPublicChatIfPossible fun $openGroupID")
                     OpenGroupManager.add(sanitizedServer, room, publicKey!!, this@JoinPublicChatNewActivity)
+                    MessagingModuleConfiguration.shared.storage.onOpenGroupAdded(stringWithExplicitScheme)
                     val threadID = GroupManager.getOpenGroupThreadID(openGroupID, this@JoinPublicChatNewActivity)
                     Log.d("Beldex","join group threadID in joinPublicChatIfPossible fun $threadID")
                     val groupID = GroupUtil.getEncodedOpenGroupID(openGroupID.toByteArray())

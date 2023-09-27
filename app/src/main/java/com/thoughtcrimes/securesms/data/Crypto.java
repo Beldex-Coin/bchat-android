@@ -35,10 +35,9 @@ public enum Crypto {
     });
     ;
 
-    @Getter
     @NonNull
     private final String symbol;
-    @Getter
+
     private final boolean casefull;
     @NonNull
     private final String uriSpec;
@@ -106,10 +105,6 @@ public enum Crypto {
 
     String getUriMessage() {
         return uriSpec.split(":")[3];
-    }
-
-    public int getButtonId() {
-        return buttonId;
     }
 
     boolean validate(String address) {

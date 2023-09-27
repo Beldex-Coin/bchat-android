@@ -28,6 +28,7 @@ import com.beldex.libsignal.utilities.guava.Optional;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 public class SlideDeck {
 
@@ -137,5 +138,18 @@ public class SlideDeck {
     }
 
     return null;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    SlideDeck slideDeck = (SlideDeck) o;
+    return Objects.equals(slides, slideDeck.slides);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(slides);
   }
 }

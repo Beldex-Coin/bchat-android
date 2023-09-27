@@ -11,7 +11,7 @@ import com.beldex.libbchat.avatars.AvatarHelper
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentId
 import com.beldex.libbchat.utilities.Conversions
 import com.google.protobuf.ByteString
-import net.sqlcipher.database.SQLiteDatabase
+import net.zetetic.database.sqlcipher.SQLiteDatabase
 import org.greenrobot.eventbus.EventBus
 
 import com.thoughtcrimes.securesms.backup.BackupProtos.*
@@ -19,6 +19,7 @@ import com.thoughtcrimes.securesms.database.*
 import com.thoughtcrimes.securesms.database.BeldexBackupFilesDatabase
 import com.thoughtcrimes.securesms.util.BackupUtil
 import com.beldex.libbchat.utilities.Util
+import com.beldex.libsignal.crypto.CipherUtil.CIPHER_LOCK
 import com.beldex.libsignal.crypto.kdf.HKDFv3
 import com.beldex.libsignal.utilities.ByteUtil
 import com.beldex.libsignal.utilities.Log
@@ -253,8 +254,8 @@ object FullBackupExporter {
     }
 
     private fun isForNonExpiringMessage(db: SQLiteDatabase, mmsId: Long): Boolean {
-        val columns = arrayOf(MmsDatabase.EXPIRES_IN)
-        val where = MmsDatabase.ID + " = ?"
+        val columns = arrayOf(MmsSmsColumns.EXPIRES_IN)
+        val where = MmsSmsColumns.ID + " = ?"
         val args = arrayOf(mmsId.toString())
         db.query(MmsDatabase.TABLE_NAME, columns, where, args, null, null, null).use { mmsCursor ->
             if (mmsCursor != null && mmsCursor.moveToFirst()) {
@@ -367,18 +368,24 @@ object FullBackupExporter {
         private fun writeStream(inputStream: InputStream) {
             try {
                 Conversions.intToByteArray(iv, 0, counter++)
-                cipher.init(Cipher.ENCRYPT_MODE, SecretKeySpec(cipherKey, "AES"), IvParameterSpec(iv))
-                mac.update(iv)
-                val buffer = ByteArray(8192)
-                var read: Int
-                while (inputStream.read(buffer).also { read = it } != -1) {
-                    val ciphertext = cipher.update(buffer, 0, read)
-                    if (ciphertext != null) {
-                        outputStream.write(ciphertext)
-                        mac.update(ciphertext)
+                val remainder = synchronized(CIPHER_LOCK) {
+                    cipher.init(
+                            Cipher.ENCRYPT_MODE,
+                            SecretKeySpec(cipherKey, "AES"),
+                            IvParameterSpec(iv)
+                    )
+                    mac.update(iv)
+                    val buffer = ByteArray(8192)
+                    var read: Int
+                    while (inputStream.read(buffer).also { read = it } != -1) {
+                        val ciphertext = cipher.update(buffer, 0, read)
+                        if (ciphertext != null) {
+                            outputStream.write(ciphertext)
+                            mac.update(ciphertext)
+                        }
                     }
+                    cipher.doFinal()
                 }
-                val remainder = cipher.doFinal()
                 outputStream.write(remainder)
                 mac.update(remainder)
                 val attachmentDigest = mac.doFinal()
@@ -400,8 +407,10 @@ object FullBackupExporter {
         private fun write(out: OutputStream, frame: BackupFrame) {
             try {
                 Conversions.intToByteArray(iv, 0, counter++)
-                cipher.init(Cipher.ENCRYPT_MODE, SecretKeySpec(cipherKey, "AES"), IvParameterSpec(iv))
-                val frameCiphertext = cipher.doFinal(frame.toByteArray())
+                val frameCiphertext = synchronized(CIPHER_LOCK) {
+                    cipher.init(Cipher.ENCRYPT_MODE, SecretKeySpec(cipherKey, "AES"), IvParameterSpec(iv))
+                    cipher.doFinal(frame.toByteArray())
+                }
                 val frameMac = mac.doFinal(frameCiphertext)
                 val length = Conversions.intToByteArray(frameCiphertext.size + 10)
                 out.write(length)

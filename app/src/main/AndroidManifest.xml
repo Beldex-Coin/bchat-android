@@ -88,11 +88,6 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thoughtcrimes.securesms.wallet.utils.common.LoadingActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
-        <activity
             android:name="com.thoughtcrimes.securesms.wallet.info.WalletInfoSeedActivity"
             android:exported="false"
             android:screenOrientation="portrait" />

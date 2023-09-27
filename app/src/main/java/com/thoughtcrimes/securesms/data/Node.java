@@ -22,28 +22,21 @@ public class Node {
     static public final String STAGENET = "stagenet";
     static public final String TESTNET = "testnet";
 
-    @Getter
     private String name = null;
-    @Getter
+
     final private NetworkType networkType;
     InetAddress hostAddress;
-    @Getter
     private String host;
-    @Getter
-    @Setter
+
     int rpcPort = 0;
     private int levinPort = 0;
-    @Getter
-    @Setter
+
     private String username = "";
-    @Getter
-    @Setter
+
     private String password = "";
-    @Getter
-    @Setter
+
     private boolean favourite = false;
-    @Getter
-    @Setter
+
     private boolean selected = false;
 
     @Override

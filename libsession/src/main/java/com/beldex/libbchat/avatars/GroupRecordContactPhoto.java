@@ -33,7 +33,7 @@ public class GroupRecordContactPhoto implements ContactPhoto {
 
   @Override
   public InputStream openInputStream(Context context) throws IOException {
-    StorageProtocol groupDatabase = MessagingModuleConfiguration.shared.getStorage();
+    StorageProtocol groupDatabase = MessagingModuleConfiguration.getShared().getStorage();
     Optional<GroupRecord> groupRecord   = Optional.of(groupDatabase.getGroup(address.toGroupString()));
 
     if (groupRecord.isPresent() && groupRecord.get().getAvatar() != null) {

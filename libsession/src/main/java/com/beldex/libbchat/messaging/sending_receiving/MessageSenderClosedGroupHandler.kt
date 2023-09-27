@@ -23,6 +23,8 @@ import com.beldex.libsignal.utilities.guava.Optional
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender.Error
+import com.beldex.libbchat.messaging.sending_receiving.notifications.MessageNotifier
+import com.beldex.libbchat.mnode.MnodeAPI
 
 const val groupSizeLimit = 100
 
@@ -45,12 +47,12 @@ fun MessageSender.create(name: String, members: Collection<String>): Promise<Str
         val admins = setOf( userPublicKey )
         val adminsAsData = admins.map { ByteString.copyFrom(Hex.fromStringCondensed(it)) }
         storage.createGroup(groupID, name, LinkedList(members.map { Address.fromSerialized(it) }),
-            null, null, LinkedList(admins.map { Address.fromSerialized(it) }), System.currentTimeMillis())
+            null, null, LinkedList(admins.map { Address.fromSerialized(it) }), MnodeAPI.nowWithOffset)
         storage.setProfileSharing(Address.fromSerialized(groupID), true)
         // Send a secret group update message to all members individually
         val closedGroupUpdateKind = ClosedGroupControlMessage.Kind.New(ByteString.copyFrom(
             Hex.fromStringCondensed(groupPublicKey)), name, encryptionKeyPair, membersAsData, adminsAsData, 0)
-        val sentTime = System.currentTimeMillis()
+        val sentTime = MnodeAPI.nowWithOffset
         for (member in members) {
             val closedGroupControlMessage = ClosedGroupControlMessage(closedGroupUpdateKind)
             closedGroupControlMessage.sentTimestamp = sentTime
@@ -110,7 +112,7 @@ fun MessageSender.setName(groupPublicKey: String, newName: String) {
     val admins = group.admins.map { it.serialize() }
     // Send the update to the group
     val kind = ClosedGroupControlMessage.Kind.NameChange(newName)
-    val sentTime = System.currentTimeMillis()
+    val sentTime = MnodeAPI.nowWithOffset
     val closedGroupControlMessage = ClosedGroupControlMessage(kind)
     closedGroupControlMessage.sentTimestamp = sentTime
     send(closedGroupControlMessage, Address.fromSerialized(groupID))
@@ -150,7 +152,7 @@ fun MessageSender.addMembers(groupPublicKey: String, membersToAdd: List<String>)
     val name = group.title
     // Send the update to the group
     val memberUpdateKind = ClosedGroupControlMessage.Kind.MembersAdded(newMembersAsData)
-    val sentTime = System.currentTimeMillis()
+    val sentTime = MnodeAPI.nowWithOffset
     val closedGroupControlMessage = ClosedGroupControlMessage(memberUpdateKind)
     closedGroupControlMessage.sentTimestamp = sentTime
     send(closedGroupControlMessage, Address.fromSerialized(groupID))
@@ -165,7 +167,7 @@ fun MessageSender.addMembers(groupPublicKey: String, membersToAdd: List<String>)
         // updates from before that timestamp. By setting the timestamp of the message below to a value
         // greater than that of the `MembersAdded` message, we ensure that newly added members ignore
         // the `MembersAdded` message.
-        closedGroupControlMessage.sentTimestamp = System.currentTimeMillis()
+        closedGroupControlMessage.sentTimestamp = MnodeAPI.nowWithOffset
         send(closedGroupControlMessage, Address.fromSerialized(member))
     }
     // Notify the user
@@ -206,7 +208,7 @@ fun MessageSender.removeMembers(groupPublicKey: String, membersToRemove: List<St
     val name = group.title
     // Send the update to the group
     val memberUpdateKind = ClosedGroupControlMessage.Kind.MembersRemoved(removeMembersAsData)
-    val sentTime = System.currentTimeMillis()
+    val sentTime = MnodeAPI.nowWithOffset
     val closedGroupControlMessage = ClosedGroupControlMessage(memberUpdateKind)
     closedGroupControlMessage.sentTimestamp = sentTime
     send(closedGroupControlMessage, Address.fromSerialized(groupID))
@@ -237,7 +239,7 @@ fun MessageSender.leave(groupPublicKey: String, notifyUser: Boolean = true): Pro
         val name = group.title
         // Send the update to the group
         val closedGroupControlMessage = ClosedGroupControlMessage(ClosedGroupControlMessage.Kind.MemberLeft())
-        val sentTime = System.currentTimeMillis()
+        val sentTime = MnodeAPI.nowWithOffset
         closedGroupControlMessage.sentTimestamp = sentTime
         storage.setActive(groupID, false)
         sendNonDurably(closedGroupControlMessage, Address.fromSerialized(groupID)).success {
@@ -291,7 +293,7 @@ fun MessageSender.generateAndSendNewEncryptionKeyPair(groupPublicKey: String, ta
 fun MessageSender.sendEncryptionKeyPair(groupPublicKey: String, newKeyPair: ECKeyPair, targetMembers: Collection<String>, targetUser: String? = null, force: Boolean = true): Promise<Unit, Exception>? {
     val destination = targetUser ?: GroupUtil.doubleEncodeGroupID(groupPublicKey)
     val proto = SignalServiceProtos.KeyPair.newBuilder()
-    proto.publicKey = ByteString.copyFrom(newKeyPair.publicKey.serialize().removing05PrefixIfNeeded())
+    proto.publicKey = ByteString.copyFrom(newKeyPair.publicKey.serialize().removingbdPrefixIfNeeded())
     proto.privateKey = ByteString.copyFrom(newKeyPair.privateKey.serialize())
     val plaintext = proto.build().toByteArray()
     val storage = MessagingModuleConfiguration.shared.storage
@@ -302,7 +304,7 @@ fun MessageSender.sendEncryptionKeyPair(groupPublicKey: String, newKeyPair: ECKe
     }
     val kind = ClosedGroupControlMessage.Kind.EncryptionKeyPair(ByteString.copyFrom(
         Hex.fromStringCondensed(groupPublicKey)), wrappers)
-    val sentTime = System.currentTimeMillis()
+    val sentTime = MnodeAPI.nowWithOffset
     val closedGroupControlMessage = ClosedGroupControlMessage(kind)
     closedGroupControlMessage.sentTimestamp = sentTime
     return if (force) {
@@ -330,7 +332,7 @@ fun MessageSender.sendLatestEncryptionKeyPair(publicKey: String, groupPublicKey:
         ?: storage.getLatestClosedGroupEncryptionKeyPair(groupPublicKey) ?: return
     // Send it
     val proto = SignalServiceProtos.KeyPair.newBuilder()
-    proto.publicKey = ByteString.copyFrom(encryptionKeyPair.publicKey.serialize().removing05PrefixIfNeeded())
+    proto.publicKey = ByteString.copyFrom(encryptionKeyPair.publicKey.serialize().removingbdPrefixIfNeeded())
     proto.privateKey = ByteString.copyFrom(encryptionKeyPair.privateKey.serialize())
     val plaintext = proto.build().toByteArray()
     val ciphertext = MessageEncrypter.encrypt(plaintext, publicKey,storage.getSenderBeldexAddress()!!)

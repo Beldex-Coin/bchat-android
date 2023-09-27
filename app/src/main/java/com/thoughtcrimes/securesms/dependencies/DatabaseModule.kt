@@ -7,7 +7,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import net.sqlcipher.database.SQLiteDatabase
+import net.zetetic.database.sqlcipher.SQLiteDatabase
 import com.beldex.libbchat.database.MessageDataProvider
 import com.thoughtcrimes.securesms.attachments.DatabaseAttachmentProvider
 import com.thoughtcrimes.securesms.crypto.AttachmentSecret
@@ -25,7 +25,7 @@ object DatabaseModule {
     fun init(context: Context) {
         Log.d("DatabaseModule","${context.filesDir}")
         try {
-            SQLiteDatabase.loadLibs(context)
+            System.loadLibrary("sqlcipher")
         }catch (e:UnsatisfiedLinkError) {
            Log.d("DatabaseModule","${e.message.toString()}")
         }
@@ -41,6 +41,7 @@ object DatabaseModule {
         val dbSecret = DatabaseSecretProvider(
             context
         ).orCreateDatabaseSecret
+        SQLCipherOpenHelper.migrateSqlCipher3To4IfNeeded(context, dbSecret)
         return SQLCipherOpenHelper(
             context,
             dbSecret

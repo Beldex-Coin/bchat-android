@@ -551,8 +551,6 @@ class WalletFragment : Fragment(),OnBackPressedListener {
             true
         }
     }
-
-
     private var firstBlock: Long = 0
     private var unlockedBalance: Long = -1
     private var balance: Long = 0

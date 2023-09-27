@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.thoughtcrimes.securesms.ApplicationContext;
-import com.thoughtcrimes.securesms.ApplicationContext;
 
 public class ExpirationListener extends BroadcastReceiver {
 

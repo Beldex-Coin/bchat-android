@@ -66,6 +66,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.annimon.stream.Stream
 import com.beldex.libbchat.messaging.contacts.Contact
+import com.beldex.libbchat.messaging.jobs.AttachmentDownloadJob
+import com.beldex.libbchat.messaging.jobs.JobQueue
 import com.beldex.libbchat.messaging.mentions.Mention
 import com.beldex.libbchat.messaging.mentions.MentionsManager
 import com.beldex.libbchat.messaging.messages.control.DataExtractionNotification
@@ -78,6 +80,7 @@ import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment
 import com.beldex.libbchat.messaging.sending_receiving.link_preview.LinkPreview
 import com.beldex.libbchat.messaging.sending_receiving.quotes.QuoteModel
+import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.MediaTypes
 import com.beldex.libbchat.utilities.TextSecurePreferences
@@ -141,7 +144,6 @@ import com.thoughtcrimes.securesms.mms.MediaConstraints
 import com.thoughtcrimes.securesms.mms.Slide
 import com.thoughtcrimes.securesms.mms.SlideDeck
 import com.thoughtcrimes.securesms.mms.VideoSlide
-import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
 import com.thoughtcrimes.securesms.model.PendingTransaction
 import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.permissions.Permissions
@@ -149,7 +151,6 @@ import com.thoughtcrimes.securesms.preferences.ChatSettingsActivity
 import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
 import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.util.ActivityDispatcher
-import com.thoughtcrimes.securesms.util.BChatThreadPoolExecutor
 import com.thoughtcrimes.securesms.util.ConfigurationMessageUtilities
 import com.thoughtcrimes.securesms.util.DateUtils
 import com.thoughtcrimes.securesms.util.Helper
@@ -172,6 +173,7 @@ import com.thoughtcrimes.securesms.webrtc.NetworkChangeReceiver
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.FragmentConversationV2Binding
+import io.beldex.bchat.databinding.ViewVisibleMessageBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -185,7 +187,6 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Locale
 import java.util.concurrent.ExecutionException
-import java.util.concurrent.Executor
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
@@ -326,12 +327,19 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             onItemLongPress = { message, position ->
                 handleLongPress(message, position)
             },
-            glide,
             onDeselect = { message, position ->
                 actionMode?.let {
                     onDeselect(message, position, it)
                 }
-            }
+            },
+            onAttachmentNeedsDownload = { attachmentId, mmsId ->
+                // Start download (on IO thread)
+                lifecycleScope.launch(Dispatchers.IO) {
+                    JobQueue.shared.add(AttachmentDownloadJob(attachmentId, mmsId))
+                }
+            },
+            glide = glide,
+            lifecycleCoroutineScope = lifecycleScope
         )
         adapter.visibleMessageContentViewDelegate = this
         adapter
@@ -1731,6 +1739,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         endActionMode()
     }
 
+    override fun destroyActionMode() {
+        this.actionMode = null
+    }
+
     //SteveJosephh21 - 08
     override fun block(deleteThread: Boolean) {
         val title = R.string.RecipientPreferenceActivity_block_this_contact_question
@@ -1803,7 +1815,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             viewModel.setExpireMessages(thread, expirationTime)
             val message = ExpirationTimerUpdate(expirationTime)
             message.recipient = thread.address.serialize()
-            message.sentTimestamp = System.currentTimeMillis()
+            message.sentTimestamp = MnodeAPI.nowWithOffset
             val expiringMessageManager =
                 ApplicationContext.getInstance(requireActivity()).expiringMessageManager
             expiringMessageManager.setExpirationTimer(message)
@@ -1822,8 +1834,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             return
         }
         val viewHolder =
-            binding.conversationRecyclerView.findViewHolderForAdapterPosition(indexInAdapter) as? ConversationAdapter.VisibleMessageViewHolder
-        viewHolder?.view?.playVoiceMessage()
+            binding.conversationRecyclerView.findViewHolderForAdapterPosition(indexInAdapter) as? ConversationAdapter.VisibleMessageViewHolder ?: return
+        val visibleMessageView = ViewVisibleMessageBinding.bind(viewHolder.view).visibleMessageView
+        visibleMessageView.playVoiceMessage()
     }
 
     fun onSearchOpened() {
@@ -1873,9 +1886,12 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             this.activity?.invalidateOptionsMenu()
             updateSubtitle()
             showOrHideInputIfNeeded()
-            binding.profilePictureView.update(recipient)
+            binding?.profilePictureView?.root?.update(threadRecipient)
             //New Line v32
-            binding.conversationTitleView.text = recipient.toShortString()
+            binding?.conversationTitleView?.text = when {
+                threadRecipient.isLocalNumber -> getString(R.string.note_to_self)
+                else -> threadRecipient.toShortString()
+            }
         }
     }
 
@@ -1928,20 +1944,23 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     private fun setUpToolBar() {
         val recipient = viewModel.recipient.value ?: return
-        binding.conversationTitleView.text = recipient.toShortString()
+        binding.conversationTitleView.text = when {
+            recipient.isLocalNumber -> getString(R.string.note_to_self)
+            else -> recipient.toShortString()
+        }
         @DimenRes val sizeID: Int = if (recipient.isClosedGroupRecipient) {
             R.dimen.medium_profile_picture_size
         } else {
             R.dimen.small_profile_picture_size
         }
         val size = resources.getDimension(sizeID).roundToInt()
-        binding.profilePictureView.layoutParams = LinearLayout.LayoutParams(size, size)
-        binding.profilePictureView.glide = glide
+        binding.profilePictureView.root.layoutParams = LinearLayout.LayoutParams(size, size)
+        binding.profilePictureView.root.glide = glide
         MentionManagerUtilities.populateUserPublicKeyCacheIfNeeded(
             viewModel.threadId,
             requireActivity()
         )
-        binding.profilePictureView.update(recipient)
+        binding.profilePictureView.root.update(recipient)
         binding.layoutConversation.setOnClickListener()
         {
             ConversationMenuHelper.showAllMedia(recipient, listenerCallback)
@@ -2399,8 +2418,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     result.getResults()[result.position]?.let {
                         jumpToMessage(
                             it.messageRecipient.address,
-                            it.receivedTimestampMs
-                        ) { searchViewModel!!.onMissingResult() }
+                            it.sentTimestampMs,
+                            Runnable { searchViewModel!!.onMissingResult() })
                     }
                 }
                 binding.searchBottomBar.setData(result.position, result.getResults().size)
@@ -2582,7 +2601,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
         // Create the message
         val message = VisibleMessage()
-        message.sentTimestamp = System.currentTimeMillis()
+        message.sentTimestamp = MnodeAPI.nowWithOffset
         message.text = body
         val quote = quotedMessage?.let {
             val quotedAttachments =
@@ -2660,7 +2679,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
         // Create the message
         val message = VisibleMessage()
-        message.sentTimestamp = System.currentTimeMillis()
+        message.sentTimestamp = MnodeAPI.nowWithOffset
         message.text = text
         val outgoingTextMessage = OutgoingTextMessage.from(message, viewModel.recipient.value)
         // Clear the input bar
@@ -2802,7 +2821,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (recipient.isGroupRecipient) {
             return
         }
-        val timestamp = System.currentTimeMillis()
+        val timestamp = MnodeAPI.nowWithOffset
         val kind = DataExtractionNotification.Kind.MediaSaved(timestamp)
         val message = DataExtractionNotification(kind)
         MessageSender.send(message, recipient.address)
@@ -3293,8 +3312,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                         ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(
                                 false
                         )
-                        sync =
-                                getString(R.string.status_synchronized)
+                        sync = getString(R.string.status_synchronized)
                         valueOfWallet = "${df.format(walletSyncPercentage)}%"
                         binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false, valueOfWallet)
                         //SteveJosephh21

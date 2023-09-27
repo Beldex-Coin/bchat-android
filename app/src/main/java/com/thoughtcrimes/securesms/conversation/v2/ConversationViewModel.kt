@@ -27,6 +27,8 @@ import com.thoughtcrimes.securesms.database.model.MessageRecord
 import com.thoughtcrimes.securesms.repository.ConversationRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -130,11 +132,17 @@ class ConversationViewModel (
     }
 
     fun saveDraft(text: String) {
-        repository.saveDraft(threadId, text)
+        GlobalScope.launch(Dispatchers.IO) {
+            repository.saveDraft(threadId, text)
+        }
     }
 
     fun getDraft(): String? {
-        return repository.getDraft(threadId)
+        val draft: String? = repository.getDraft(threadId)
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.clearDrafts(threadId)
+        }
+        return draft
     }
 
     fun inviteContacts(contacts: List<Recipient>) {
@@ -266,11 +274,7 @@ class ConversationViewModel (
     fun getMessageCount() = threadDb.getMessageCount(threadId)
 
     fun insertMessageOutBox(outgoingTextMessage: OutgoingMediaMessage): Long {
-        return mmsDb.insertMessageOutbox(
-            outgoingTextMessage,
-            threadId,
-            false
-        ) { }
+        return mmsDb.insertMessageOutbox(outgoingTextMessage, threadId, false, null, runThreadUpdate = true)
     }
 
     fun insertMessageOutBoxSMS(outgoingTextMessage: OutgoingTextMessage, sentTimeStamp: Long?): Long {
@@ -279,7 +283,8 @@ class ConversationViewModel (
             outgoingTextMessage,
             false,
             sentTimeStamp!!,
-            null
+            null,
+            true
         )
     }
 

@@ -99,7 +99,7 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp">
 
-                    <com.thoughtcrimes.securesms.components.ProfilePictureView
+                    <include layout="@layout/view_profile_picture"
                         android:id="@+id/profileButton"
                         android:layout_width="@dimen/small_profile_picture_size"
                         android:layout_height="@dimen/small_profile_picture_size"
@@ -128,7 +128,7 @@
                         android:layout_centerInParent="true"
                         android:layout_toStartOf="@+id/profileButton"
                         android:fontFamily="@font/open_sans_bold"
-                        android:text="BChat"
+                        android:text="@string/bchat"
                         android:textSize="30sp"
                         android:textStyle="bold" />
 
@@ -386,13 +386,6 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginEnd="30dp"
                 android:layout_marginBottom="-30dp" />
-            <!-- <com.thoughtcrime.securesms.home.NewConversationButtonSetView
-                 android:id="@+id/newConversationButtonSet"
-                 android:layout_width="276dp"
-                 android:layout_height="236dp"
-                 android:layout_alignParentEnd="true"
-                 android:layout_alignParentBottom="true"
-                 android:gravity="end" />-->
 
         </RelativeLayout>
 
@@ -461,7 +454,7 @@
                 android:clickable="false"
                 android:padding="5dp">
 
-                <com.thoughtcrimes.securesms.components.ProfilePictureView
+                <include layout="@layout/view_profile_picture"
                     android:id="@+id/drawer_profile_icon"
                     android:layout_width="40dp"
                     android:layout_height="40dp"

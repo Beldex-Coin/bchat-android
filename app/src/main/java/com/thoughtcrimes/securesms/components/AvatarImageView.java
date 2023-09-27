@@ -137,7 +137,7 @@ public class AvatarImageView extends AppCompatImageView {
             requestManager.load(photo.contactPhoto)
                           .fallback(photoPlaceholderDrawable)
                           .error(photoPlaceholderDrawable)
-                          .diskCacheStrategy(DiskCacheStrategy.ALL)
+                          .diskCacheStrategy(DiskCacheStrategy.NONE)
                           .circleCrop()
                           .into(this);
           } else {

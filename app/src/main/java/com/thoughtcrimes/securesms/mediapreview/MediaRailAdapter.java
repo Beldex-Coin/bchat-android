@@ -14,10 +14,7 @@ import com.thoughtcrimes.securesms.util.StableIdGenerator;
 import io.beldex.bchat.R;
 
 
-import com.thoughtcrimes.securesms.conversation.v2.utilities.ThumbnailView;
-import com.thoughtcrimes.securesms.mediasend.Media;
 import com.thoughtcrimes.securesms.mms.GlideRequests;
-import com.thoughtcrimes.securesms.util.StableIdGenerator;
 
 import java.util.ArrayList;
 import java.util.List;

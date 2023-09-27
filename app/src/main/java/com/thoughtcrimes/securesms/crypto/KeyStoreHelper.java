@@ -1,7 +1,6 @@
 package com.thoughtcrimes.securesms.crypto;
 
 
-import static com.beldex.libsignal.crypto.CipherUtil.CIPHER_LOCK;
 import android.os.Build;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
@@ -46,44 +45,44 @@ public final class KeyStoreHelper {
   private static final String ANDROID_KEY_STORE = "AndroidKeyStore";
   private static final String KEY_ALIAS         = "SignalSecret";
 
+  @RequiresApi(Build.VERSION_CODES.M)
   public static SealedData seal(@NonNull byte[] input) {
     SecretKey secretKey = getOrCreateKeyStoreEntry();
 
     try {
-      synchronized (CIPHER_LOCK) {
-        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+      Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+      cipher.init(Cipher.ENCRYPT_MODE, secretKey);
 
-        byte[] iv = cipher.getIV();
-        byte[] data = cipher.doFinal(input);
+      byte[] iv   = cipher.getIV();
+      byte[] data = cipher.doFinal(input);
 
-        return new SealedData(iv, data);
-      }
+      return new SealedData(iv, data);
+
     } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
       throw new AssertionError(e);
     }
   }
 
+  @RequiresApi(Build.VERSION_CODES.M)
   public static byte[] unseal(@NonNull SealedData sealedData) {
     SecretKey secretKey = getKeyStoreEntry();
 
     try {
-      synchronized (CIPHER_LOCK) {
-        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-        cipher.init(Cipher.DECRYPT_MODE, secretKey, new GCMParameterSpec(128, sealedData.iv));
-
-        return cipher.doFinal(sealedData.data);
-      }
-    } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
+      Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+      cipher.init(Cipher.DECRYPT_MODE, secretKey, new GCMParameterSpec(128, sealedData.iv));
+      return cipher.doFinal(sealedData.data);
+    } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException |
+             InvalidAlgorithmParameterException | IllegalBlockSizeException |
+             BadPaddingException e) {
       throw new AssertionError(e);
     }
   }
-
+  @RequiresApi(Build.VERSION_CODES.M)
   private static SecretKey getOrCreateKeyStoreEntry() {
     if (hasKeyStoreEntry()) return getKeyStoreEntry();
     else                    return createKeyStoreEntry();
   }
-
+  @RequiresApi(Build.VERSION_CODES.M)
   private static SecretKey createKeyStoreEntry() {
     try {
       KeyGenerator keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEY_STORE);
@@ -99,7 +98,7 @@ public final class KeyStoreHelper {
       throw new AssertionError(e);
     }
   }
-
+  @RequiresApi(Build.VERSION_CODES.M)
   private static SecretKey getKeyStoreEntry() {
     KeyStore keyStore = getKeyStore();
 
@@ -138,6 +137,7 @@ public final class KeyStoreHelper {
   }
 
 
+  @RequiresApi(Build.VERSION_CODES.M)
   private static boolean hasKeyStoreEntry() {
     try {
       KeyStore ks = KeyStore.getInstance(ANDROID_KEY_STORE);

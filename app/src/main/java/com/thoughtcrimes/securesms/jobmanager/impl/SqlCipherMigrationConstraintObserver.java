@@ -11,24 +11,24 @@ import com.thoughtcrimes.securesms.jobmanager.ConstraintObserver;
 
 public class SqlCipherMigrationConstraintObserver implements ConstraintObserver {
 
-  private static final String REASON = SqlCipherMigrationConstraintObserver.class.getSimpleName();
+    private static final String REASON = SqlCipherMigrationConstraintObserver.class.getSimpleName();
 
-  private Notifier notifier;
+    private Notifier notifier;
 
-  public SqlCipherMigrationConstraintObserver() {
-    EventBus.getDefault().register(this);
-  }
+    public SqlCipherMigrationConstraintObserver() {
+        EventBus.getDefault().register(this);
+    }
 
-  @Override
-  public void register(@NonNull Notifier notifier) {
-    this.notifier = notifier;
-  }
+    @Override
+    public void register(@NonNull Notifier notifier) {
+        this.notifier = notifier;
+    }
 
-  @Subscribe(threadMode = ThreadMode.MAIN)
-  public void onEvent(SqlCipherNeedsMigrationEvent event) {
-    if (notifier != null) notifier.onConstraintMet(REASON);
-  }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(SqlCipherNeedsMigrationEvent event) {
+        if (notifier != null) notifier.onConstraintMet(REASON);
+    }
 
-  public static class SqlCipherNeedsMigrationEvent {
-  }
+    public static class SqlCipherNeedsMigrationEvent {
+    }
 }

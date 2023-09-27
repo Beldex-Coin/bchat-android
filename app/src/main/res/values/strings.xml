@@ -1236,7 +1236,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="confirmation_alert_dialog_box_message" translatable="false">Do you wish to continue to sign-in and restore your account?</string>
     <string name="checkPasswordDescriptionsTextView" translatable="false">This is the PIN you set to your <font color='#128D15'>BChat account.</font></string>
     <string name="checkPasswordDescriptionTextView" translatable="false">Enter your PIN to verify</string>
-    <string name="activity_restore_from_height_missing_error" translatable="false">Please pick a restore height or restore from date</string>
     <string name="please_pick_a_restore_height" translatable="false">Please pick a restore height</string>
     <string name="please_pick_a_restore_from_date" translatable="false">Please pick a restore from date</string>
 
@@ -1387,7 +1386,18 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="invalid_qr_code" translatable="false">Invalid QR Code</string>
     <string name="invitation_msg">Hey, I\'ve been using BChat to chat with complete privacy and security. Come join me! Download it at https://play.google.com/store/apps/details?id=io.beldex.bchat. My Chat ID is %s !</string>
     <string name="id_format">ID: %s</string>
+    <string name="bchat" translatable="false">BChat</string>
+    <string name="activity_settings_profile_picture">Profile Picture</string>
+    <string name="activity_settings_save">Save</string>
+    <string name="activity_settings_remove">Remove Picture</string>
+    <string name="activity_restore_from_height_missing_error" translatable="false">Please enter a restore height</string>
+    <string name="activity_restore_from_date_missing_error" translatable="false">Please pick a restore date</string>
+    <string name="restored_via_seed" translatable="false">You restored via Seed!</string>
+    <string name="display_name_validation" translatable="false">Please enter a valid name</string>
     <string name="sync_fail_content" translatable="false">It seems there is an issue with connecting to the node, please try to reconnect or switch the node.</string>
     <string name="notification_enable_content" translatable="false">We recommend you to allow permission for notifications for BChat app to notify you for new messages and calls.</string>
-    <string name="bchat" translatable="false">BChat</string>
+    <string name="invalid_qr_code_image" translatable="false">Unable to recognized a valid code from uploaded image</string>
+    <string name="upload_from_gallery" translatable="false">Upload from gallery</string>
+    <string name="join_social_group_content" translatable="false">Scan a Social group\'s QR code for Joining a social group. QR Codes can be found on the social group website link.</string>
+    <string name="wallet_scan_qr_content" translatable="false">Scan a receiver\'s QR code to send BDX. QR Codes can be found by clicking on receiver button in Wallet Dashboard.</string>
 </resources>

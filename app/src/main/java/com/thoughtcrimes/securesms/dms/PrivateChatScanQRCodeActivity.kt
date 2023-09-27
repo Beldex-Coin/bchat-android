@@ -10,19 +10,16 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.tbruyelle.rxpermissions2.RxPermissions
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityPrivateChatScanQrcodeBinding
-import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libsignal.utilities.PublicKeyValidation
+import com.tbruyelle.rxpermissions2.RxPermissions
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.qr.ScanListener
 import com.thoughtcrimes.securesms.util.ScanQRCodeFragment
 import com.thoughtcrimes.securesms.util.ScanQRCodePlaceholderFragment
 import com.thoughtcrimes.securesms.util.ScanQRCodePlaceholderFragmentDelegate
-import nl.komponents.kovenant.ui.failUi
-import nl.komponents.kovenant.ui.successUi
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ActivityPrivateChatScanQrcodeBinding
 
 class PrivateChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
     ScanQRCodePlaceholderFragmentDelegate, ScanListener {
@@ -71,6 +68,7 @@ class PrivateChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
             val scanQRCodeFragment = ScanQRCodeFragment()
             scanQRCodeFragment.scanListener = this
             scanQRCodeFragment.message = message
+            intent.putExtra(ScanQRCodeFragment.FROM_NEW_CHAT_SCREEN, true)
             fragment = scanQRCodeFragment
         } else {
             val scanQRCodePlaceholderFragment = ScanQRCodePlaceholderFragment()
@@ -128,8 +126,9 @@ class PrivateChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
         if (PublicKeyValidation.isValid(bnsNameOrPublicKey)) {
             createPrivateChat(bnsNameOrPublicKey)
         } else {
+            Toast.makeText(this, R.string.invalid_bchat_id, Toast.LENGTH_SHORT).show()
             // This could be an BNS name
-            showLoader()
+            /*showLoader()
             MnodeAPI.getBchatID(bnsNameOrPublicKey).successUi { hexEncodedPublicKey ->
                 hideLoader()
                 this.createPrivateChat(hexEncodedPublicKey)
@@ -140,7 +139,7 @@ class PrivateChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
                     message = it
                 }
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-            }
+            }*/
         }
     }
 

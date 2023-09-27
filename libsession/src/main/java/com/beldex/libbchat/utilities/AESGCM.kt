@@ -1,7 +1,6 @@
 package com.beldex.libbchat.utilities
 
 import androidx.annotation.WorkerThread
-import com.beldex.libsignal.crypto.CipherUtil.CIPHER_LOCK
 import com.beldex.libsignal.utilities.ByteUtil
 import com.beldex.libsignal.utilities.Hex
 import org.whispersystems.curve25519.Curve25519
@@ -27,11 +26,9 @@ internal object AESGCM {
     internal fun decrypt(ivAndCiphertext: ByteArray, symmetricKey: ByteArray): ByteArray {
         val iv = ivAndCiphertext.sliceArray(0 until ivSize)
         val ciphertext = ivAndCiphertext.sliceArray(ivSize until ivAndCiphertext.count())
-        synchronized(CIPHER_LOCK) {
-            val cipher = Cipher.getInstance("AES/GCM/NoPadding")
-            cipher.init(Cipher.DECRYPT_MODE, SecretKeySpec(symmetricKey, "AES"), GCMParameterSpec(gcmTagSize, iv))
-            return cipher.doFinal(ciphertext)
-        }
+        val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+        cipher.init(Cipher.DECRYPT_MODE, SecretKeySpec(symmetricKey, "AES"), GCMParameterSpec(gcmTagSize, iv))
+        return cipher.doFinal(ciphertext)
     }
 
     /**
@@ -49,11 +46,9 @@ internal object AESGCM {
      */
     internal fun encrypt(plaintext: ByteArray, symmetricKey: ByteArray): ByteArray {
         val iv = Util.getSecretBytes(ivSize)
-        synchronized(CIPHER_LOCK) {
-            val cipher = Cipher.getInstance("AES/GCM/NoPadding")
-            cipher.init(Cipher.ENCRYPT_MODE, SecretKeySpec(symmetricKey, "AES"), GCMParameterSpec(gcmTagSize, iv))
-            return ByteUtil.combine(iv, cipher.doFinal(plaintext))
-        }
+        val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+        cipher.init(Cipher.ENCRYPT_MODE, SecretKeySpec(symmetricKey, "AES"), GCMParameterSpec(gcmTagSize, iv))
+        return ByteUtil.combine(iv, cipher.doFinal(plaintext))
     }
 
     /**

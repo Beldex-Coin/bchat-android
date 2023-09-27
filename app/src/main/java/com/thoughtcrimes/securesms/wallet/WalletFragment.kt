@@ -65,7 +65,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
     private var walletSynchronized:Boolean = false
 
     fun setProgress(text: String?) {
-        if(text==getString(R.string.reconnecting) || text==getString(R.string.status_wallet_connecting)){
+        if(text==getString(R.string.reconnecting) || text == getString(R.string.status_wallet_loading) || text==getString(R.string.status_wallet_connecting)){
            binding.syncStatusIcon.visibility=View.GONE
             binding.syncFailIcon.visibility = View.GONE
         }
@@ -328,11 +328,9 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         binding.sendCardViewButton.isClickable= true
         binding.receiveCardViewButton.isClickable= true
         binding.sendCardViewButton.setOnClickListener { v: View? ->
-            binding.sendCardViewButton.isClickable= false
             activityCallback!!.onSendRequest(v)
         }
         binding.receiveCardViewButton.setOnClickListener { v: View? ->
-            binding.receiveCardViewButton.isClickable= false
             activityCallback!!.onWalletReceive(v)
         }
 
@@ -627,8 +625,8 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                     )
                 )
                 binding.progressBar.indeterminateDrawable.setColorFilter(
-                        ContextCompat.getColor(requireActivity().applicationContext,R.color.red), PorterDuff.Mode.SRC_IN)
-
+                        ContextCompat.getColor(requireActivity().applicationContext,R.color.red),
+                    android.graphics.PorterDuff.Mode.SRC_IN)
             }
             setProgress(sync)
         }

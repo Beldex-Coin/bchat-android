@@ -18,66 +18,66 @@ import io.beldex.bchat.R;
 
 public class LocalBackupJob extends BaseJob {
 
-  public static final String KEY = "LocalBackupJob";
+    public static final String KEY = "LocalBackupJob";
 
-  private static final String TAG = LocalBackupJob.class.getSimpleName();
+    private static final String TAG = LocalBackupJob.class.getSimpleName();
 
-  public LocalBackupJob() {
-    this(new Job.Parameters.Builder()
-                           .setQueue("__LOCAL_BACKUP__")
-                           .setMaxInstances(1)
-                           .setMaxAttempts(3)
-                           .build());
-  }
-
-  private LocalBackupJob(@NonNull Job.Parameters parameters) {
-    super(parameters);
-  }
-
-  @Override
-  public @NonNull
-  Data serialize() {
-    return Data.EMPTY;
-  }
-
-  @Override
-  public @NonNull String getFactoryKey() {
-    return KEY;
-  }
-
-  @Override
-  public void onRun() throws NoExternalStorageException, IOException {
-    Log.i(TAG, "Executing backup job...");
-
-    GenericForegroundService.startForegroundTask(context,
-                                                 context.getString(R.string.LocalBackupJob_creating_backup),
-                                                 NotificationChannels.BACKUPS,
-                                                 R.drawable.ic_launcher_foreground);
-
-    // TODO: Maybe create a new backup icon like ic_signal_backup?
-
-    try {
-      BackupFileRecord record = BackupUtil.createBackupFile(context);
-      BackupUtil.deleteAllBackupFiles(context, Collections.singletonList(record));
-
-    } finally {
-      GenericForegroundService.stopForegroundTask(context);
+    public LocalBackupJob() {
+        this(new Job.Parameters.Builder()
+                .setQueue("__LOCAL_BACKUP__")
+                .setMaxInstances(1)
+                .setMaxAttempts(3)
+                .build());
     }
-  }
 
-  @Override
-  public boolean onShouldRetry(@NonNull Exception e) {
-    return false;
-  }
+    private LocalBackupJob(@NonNull Job.Parameters parameters) {
+        super(parameters);
+    }
 
-  @Override
-  public void onCanceled() {
-  }
-
-  public static class Factory implements Job.Factory<LocalBackupJob> {
     @Override
-    public @NonNull LocalBackupJob create(@NonNull Parameters parameters, @NonNull Data data) {
-      return new LocalBackupJob(parameters);
+    public @NonNull
+    Data serialize() {
+        return Data.EMPTY;
     }
-  }
+
+    @Override
+    public @NonNull String getFactoryKey() {
+        return KEY;
+    }
+
+    @Override
+    public void onRun() throws NoExternalStorageException, IOException {
+        Log.i(TAG, "Executing backup job...");
+
+        GenericForegroundService.startForegroundTask(context,
+                context.getString(R.string.LocalBackupJob_creating_backup),
+                NotificationChannels.BACKUPS,
+                R.drawable.ic_launcher_foreground);
+
+        // TODO: Maybe create a new backup icon like ic_signal_backup?
+
+        try {
+            BackupFileRecord record = BackupUtil.createBackupFile(context);
+            BackupUtil.deleteAllBackupFiles(context, Collections.singletonList(record));
+
+        } finally {
+            GenericForegroundService.stopForegroundTask(context);
+        }
+    }
+
+    @Override
+    public boolean onShouldRetry(@NonNull Exception e) {
+        return false;
+    }
+
+    @Override
+    public void onCanceled() {
+    }
+
+    public static class Factory implements Job.Factory<LocalBackupJob> {
+        @Override
+        public @NonNull LocalBackupJob create(@NonNull Parameters parameters, @NonNull Data data) {
+            return new LocalBackupJob(parameters);
+        }
+    }
 }

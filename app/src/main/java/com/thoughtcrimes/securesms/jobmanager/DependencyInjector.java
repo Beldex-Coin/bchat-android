@@ -20,5 +20,5 @@ package com.thoughtcrimes.securesms.jobmanager;
  * Interface responsible for injecting dependencies into Jobs.
  */
 public interface DependencyInjector {
-  void injectDependencies(Object object);
+    void injectDependencies(Object object);
 }

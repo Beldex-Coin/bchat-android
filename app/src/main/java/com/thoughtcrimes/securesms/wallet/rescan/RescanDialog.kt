@@ -2,6 +2,7 @@ package com.thoughtcrimes.securesms.wallet.rescan
 
 import android.app.DatePickerDialog
 import android.content.Context
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.DialogInterface
 import android.os.Bundle
 import android.text.Editable
@@ -22,7 +23,10 @@ import io.beldex.bchat.databinding.RescanDialogBinding
 import timber.log.Timber
 import java.math.BigInteger
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+
 
 class RescanDialog(val context: HomeActivity, private val daemonBlockChainHeight: Long): DialogFragment() {
 
@@ -120,6 +124,7 @@ class RescanDialog(val context: HomeActivity, private val daemonBlockChainHeight
                     1 -> {
                         binding.restoreSeedWalletRestoreDate.text = ""
                         binding.restoreSeedWalletRestoreHeight.setText("")
+                        keyboardDismiss(view!!)
                         binding.restoreSeedWalletRestoreHeight.isFocusable = false
                         dismiss()
                     }
@@ -155,7 +160,7 @@ class RescanDialog(val context: HomeActivity, private val daemonBlockChainHeight
             })
             //SteveJosephh21
             restoreSeedWalletRestoreDate.setOnClickListener {
-                keyboardDismiss()
+                keyboardDismiss(view!!)
                 restoreSeedWalletRestoreDate.inputType = InputType.TYPE_NULL;
                 val datePickerDialog = DatePickerDialog(context,
                     dateSetListener,
@@ -258,15 +263,12 @@ class RescanDialog(val context: HomeActivity, private val daemonBlockChainHeight
         return height
     }
 
-    private fun keyboardDismiss() {
-        val imm: InputMethodManager = binding.restoreSeedWalletRestoreHeight.context
-            .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        if (imm.isActive) imm.hideSoftInputFromWindow(binding.restoreSeedWalletRestoreHeight.windowToken,
-            0)
+    private fun keyboardDismiss(v: View) {
+        val inputMethodManager : InputMethodManager? = context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager?
+        inputMethodManager!!.hideSoftInputFromWindow(v.applicationWindowToken, 0)
     }
 
     override fun onDismiss(dialog: DialogInterface) {
-        keyboardDismiss()
         super.onDismiss(dialog)
     }
 

@@ -19,7 +19,6 @@ import com.thoughtcrimes.securesms.database.*
 import com.thoughtcrimes.securesms.database.BeldexBackupFilesDatabase
 import com.thoughtcrimes.securesms.util.BackupUtil
 import com.beldex.libbchat.utilities.Util
-import com.beldex.libsignal.crypto.CipherUtil.CIPHER_LOCK
 import com.beldex.libsignal.crypto.kdf.HKDFv3
 import com.beldex.libsignal.utilities.ByteUtil
 import com.beldex.libsignal.utilities.Log
@@ -49,7 +48,7 @@ object FullBackupExporter {
                passphrase: String) {
 
         val baseOutputStream = context.contentResolver.openOutputStream(fileUri)
-                ?: throw IOException("Cannot open an output stream for the file URI: $fileUri")
+            ?: throw IOException("Cannot open an output stream for the file URI: $fileUri")
 
         var count = 0
         try {
@@ -60,32 +59,32 @@ object FullBackupExporter {
                     count = when (table) {
                         SmsDatabase.TABLE_NAME, MmsDatabase.TABLE_NAME -> {
                             exportTable(table, input, outputStream,
-                                    { cursor: Cursor ->
-                                        cursor.getInt(cursor.getColumnIndexOrThrow(
-                                            MmsSmsColumns.EXPIRES_IN)) <= 0
-                                    },
-                                    null,
-                                    count)
+                                { cursor: Cursor ->
+                                    cursor.getInt(cursor.getColumnIndexOrThrow(
+                                        MmsSmsColumns.EXPIRES_IN)) <= 0
+                                },
+                                null,
+                                count)
                         }
                         GroupReceiptDatabase.TABLE_NAME -> {
                             exportTable(table, input, outputStream,
-                                    { cursor: Cursor ->
-                                        isForNonExpiringMessage(input, cursor.getLong(cursor.getColumnIndexOrThrow(
-                                            GroupReceiptDatabase.MMS_ID)))
-                                    },
-                                    null,
-                                    count)
+                                { cursor: Cursor ->
+                                    isForNonExpiringMessage(input, cursor.getLong(cursor.getColumnIndexOrThrow(
+                                        GroupReceiptDatabase.MMS_ID)))
+                                },
+                                null,
+                                count)
                         }
                         AttachmentDatabase.TABLE_NAME -> {
                             exportTable(table, input, outputStream,
-                                    { cursor: Cursor ->
-                                        isForNonExpiringMessage(input, cursor.getLong(cursor.getColumnIndexOrThrow(
-                                            AttachmentDatabase.MMS_ID)))
-                                    },
-                                    { cursor: Cursor ->
-                                        exportAttachment(attachmentSecret, cursor, outputStream)
-                                    },
-                                    count)
+                                { cursor: Cursor ->
+                                    isForNonExpiringMessage(input, cursor.getLong(cursor.getColumnIndexOrThrow(
+                                        AttachmentDatabase.MMS_ID)))
+                                },
+                                { cursor: Cursor ->
+                                    exportAttachment(attachmentSecret, cursor, outputStream)
+                                },
+                                count)
                         }
                         else -> {
                             exportTable(table, input, outputStream, null, null, count)
@@ -176,23 +175,23 @@ object FullBackupExporter {
                     when (cursor.getType(i)) {
                         Cursor.FIELD_TYPE_STRING -> {
                             statementBuilder.addParameters(SqlStatement.SqlParameter.newBuilder()
-                                    .setStringParamter(cursor.getString(i)))
+                                .setStringParamter(cursor.getString(i)))
                         }
                         Cursor.FIELD_TYPE_FLOAT -> {
                             statementBuilder.addParameters(SqlStatement.SqlParameter.newBuilder()
-                                    .setDoubleParameter(cursor.getDouble(i)))
+                                .setDoubleParameter(cursor.getDouble(i)))
                         }
                         Cursor.FIELD_TYPE_INTEGER -> {
                             statementBuilder.addParameters(SqlStatement.SqlParameter.newBuilder()
-                                    .setIntegerParameter(cursor.getLong(i)))
+                                .setIntegerParameter(cursor.getLong(i)))
                         }
                         Cursor.FIELD_TYPE_BLOB -> {
                             statementBuilder.addParameters(SqlStatement.SqlParameter.newBuilder()
-                                    .setBlobParameter(ByteString.copyFrom(cursor.getBlob(i))))
+                                .setBlobParameter(ByteString.copyFrom(cursor.getBlob(i))))
                         }
                         Cursor.FIELD_TYPE_NULL -> {
                             statementBuilder.addParameters(SqlStatement.SqlParameter.newBuilder()
-                                    .setNullparameter(true))
+                                .setNullparameter(true))
                         }
                         else -> {
                             throw AssertionError("unknown type?" + cursor.getType(i))
@@ -291,9 +290,9 @@ object FullBackupExporter {
                 counter = Conversions.byteArrayToInt(iv)
                 mac.init(SecretKeySpec(macKey, "HmacSHA256"))
                 val header = BackupFrame.newBuilder().setHeader(Header.newBuilder()
-                        .setIv(ByteString.copyFrom(iv))
-                        .setSalt(ByteString.copyFrom(salt)))
-                        .build().toByteArray()
+                    .setIv(ByteString.copyFrom(iv))
+                    .setSalt(ByteString.copyFrom(salt)))
+                    .build().toByteArray()
                 outputStream.write(Conversions.intToByteArray(header.size))
                 outputStream.write(header)
             } catch (e: Exception) {
@@ -321,42 +320,42 @@ object FullBackupExporter {
         @Throws(IOException::class)
         fun writeAvatar(avatarName: String, inputStream: InputStream, size: Long) {
             write(outputStream, BackupFrame.newBuilder()
-                    .setAvatar(Avatar.newBuilder()
-                            .setName(avatarName)
-                            .setLength(Util.toIntExact(size))
-                            .build())
+                .setAvatar(Avatar.newBuilder()
+                    .setName(avatarName)
+                    .setLength(Util.toIntExact(size))
                     .build())
+                .build())
             writeStream(inputStream)
         }
 
         @Throws(IOException::class)
         fun writeAttachment(attachmentId: AttachmentId, inputStream: InputStream, size: Long) {
             write(outputStream, BackupFrame.newBuilder()
-                    .setAttachment(Attachment.newBuilder()
-                            .setRowId(attachmentId.rowId)
-                            .setAttachmentId(attachmentId.uniqueId)
-                            .setLength(Util.toIntExact(size))
-                            .build())
+                .setAttachment(Attachment.newBuilder()
+                    .setRowId(attachmentId.rowId)
+                    .setAttachmentId(attachmentId.uniqueId)
+                    .setLength(Util.toIntExact(size))
                     .build())
+                .build())
             writeStream(inputStream)
         }
 
         @Throws(IOException::class)
         fun writeSticker(rowId: Long, inputStream: InputStream, size: Long) {
             write(outputStream, BackupFrame.newBuilder()
-                    .setSticker(Sticker.newBuilder()
-                            .setRowId(rowId)
-                            .setLength(Util.toIntExact(size))
-                            .build())
+                .setSticker(Sticker.newBuilder()
+                    .setRowId(rowId)
+                    .setLength(Util.toIntExact(size))
                     .build())
+                .build())
             writeStream(inputStream)
         }
 
         @Throws(IOException::class)
         fun writeDatabaseVersion(version: Int) {
             write(outputStream, BackupFrame.newBuilder()
-                    .setVersion(DatabaseVersion.newBuilder().setVersion(version))
-                    .build())
+                .setVersion(DatabaseVersion.newBuilder().setVersion(version))
+                .build())
         }
 
         @Throws(IOException::class)
@@ -368,24 +367,18 @@ object FullBackupExporter {
         private fun writeStream(inputStream: InputStream) {
             try {
                 Conversions.intToByteArray(iv, 0, counter++)
-                val remainder = synchronized(CIPHER_LOCK) {
-                    cipher.init(
-                            Cipher.ENCRYPT_MODE,
-                            SecretKeySpec(cipherKey, "AES"),
-                            IvParameterSpec(iv)
-                    )
-                    mac.update(iv)
-                    val buffer = ByteArray(8192)
-                    var read: Int
-                    while (inputStream.read(buffer).also { read = it } != -1) {
-                        val ciphertext = cipher.update(buffer, 0, read)
-                        if (ciphertext != null) {
-                            outputStream.write(ciphertext)
-                            mac.update(ciphertext)
-                        }
+                cipher.init(Cipher.ENCRYPT_MODE, SecretKeySpec(cipherKey, "AES"), IvParameterSpec(iv))
+                mac.update(iv)
+                val buffer = ByteArray(8192)
+                var read: Int
+                while (inputStream.read(buffer).also { read = it } != -1) {
+                    val ciphertext = cipher.update(buffer, 0, read)
+                    if (ciphertext != null) {
+                        outputStream.write(ciphertext)
+                        mac.update(ciphertext)
                     }
-                    cipher.doFinal()
                 }
+                val remainder = cipher.doFinal()
                 outputStream.write(remainder)
                 mac.update(remainder)
                 val attachmentDigest = mac.doFinal()
@@ -407,10 +400,8 @@ object FullBackupExporter {
         private fun write(out: OutputStream, frame: BackupFrame) {
             try {
                 Conversions.intToByteArray(iv, 0, counter++)
-                val frameCiphertext = synchronized(CIPHER_LOCK) {
-                    cipher.init(Cipher.ENCRYPT_MODE, SecretKeySpec(cipherKey, "AES"), IvParameterSpec(iv))
-                    cipher.doFinal(frame.toByteArray())
-                }
+                cipher.init(Cipher.ENCRYPT_MODE, SecretKeySpec(cipherKey, "AES"), IvParameterSpec(iv))
+                val frameCiphertext = cipher.doFinal(frame.toByteArray())
                 val frameMac = mac.doFinal(frameCiphertext)
                 val length = Conversions.intToByteArray(frameCiphertext.size + 10)
                 out.write(length)

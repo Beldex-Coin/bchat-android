@@ -6,7 +6,6 @@
 
 package com.beldex.libsignal.streams;
 
-import static com.beldex.libsignal.crypto.CipherUtil.CIPHER_LOCK;
 
 import com.beldex.libsignal.utilities.Util;
 
@@ -70,17 +69,16 @@ public class AttachmentCipherOutputStream extends DigestingOutputStream {
   @Override
   public void flush() throws IOException {
     try {
-      byte[] ciphertext;
-      synchronized (CIPHER_LOCK) {
-        ciphertext = cipher.doFinal();
-      }
+      byte[] ciphertext = cipher.doFinal();
       byte[] auth       = mac.doFinal(ciphertext);
 
       super.write(ciphertext);
       super.write(auth);
 
       super.flush();
-    } catch (IllegalBlockSizeException | BadPaddingException e) {
+    } catch (IllegalBlockSizeException e) {
+      throw new AssertionError(e);
+    } catch (BadPaddingException e) {
       throw new AssertionError(e);
     }
   }

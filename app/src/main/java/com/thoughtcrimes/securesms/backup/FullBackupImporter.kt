@@ -12,7 +12,6 @@ import org.greenrobot.eventbus.EventBus
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.Conversions
 import com.beldex.libbchat.utilities.Util
-import com.beldex.libsignal.crypto.CipherUtil.CIPHER_LOCK
 import com.beldex.libsignal.crypto.kdf.HKDFv3
 import com.beldex.libsignal.utilities.ByteUtil
 import com.beldex.libsignal.utilities.Log
@@ -52,7 +51,7 @@ object FullBackupImporter {
                       passphrase: String) {
 
         val baseInputStream = context.contentResolver.openInputStream(fileUri)
-                ?: throw IOException("Cannot open an input stream for the file URI: $fileUri")
+            ?: throw IOException("Cannot open an input stream for the file URI: $fileUri")
 
         var count = 0
         try {
@@ -127,14 +126,14 @@ object FullBackupImporter {
         contentValues.put(AttachmentDatabase.THUMBNAIL, null as String?)
         contentValues.put(AttachmentDatabase.DATA_RANDOM, output.first)
         db.update(AttachmentDatabase.TABLE_NAME, contentValues,
-                "${AttachmentDatabase.ROW_ID} = ? AND ${AttachmentDatabase.UNIQUE_ID} = ?",
-                arrayOf(attachment.rowId.toString(), attachment.attachmentId.toString()))
+            "${AttachmentDatabase.ROW_ID} = ? AND ${AttachmentDatabase.UNIQUE_ID} = ?",
+            arrayOf(attachment.rowId.toString(), attachment.attachmentId.toString()))
     }
 
     @Throws(IOException::class)
     private fun processAvatar(context: Context, avatar: Avatar, inputStream: BackupRecordInputStream) {
         inputStream.readAttachmentTo(FileOutputStream(
-                AvatarHelper.getAvatarFile(context, Address.fromExternal(context, avatar.name))), avatar.length)
+            AvatarHelper.getAvatarFile(context, Address.fromExternal(context, avatar.name))), avatar.length)
     }
 
     @SuppressLint("ApplySharedPref")
@@ -147,13 +146,13 @@ object FullBackupImporter {
         when {
             key.startsWith(PREF_PREFIX_TYPE_INT) ->
                 preferences.edit().putInt(
-                        key.substring(PREF_PREFIX_TYPE_INT.length),
-                        value.toInt()
+                    key.substring(PREF_PREFIX_TYPE_INT.length),
+                    value.toInt()
                 ).commit()
             key.startsWith(PREF_PREFIX_TYPE_BOOLEAN) ->
                 preferences.edit().putBoolean(
-                        key.substring(PREF_PREFIX_TYPE_BOOLEAN.length),
-                        value.toBoolean()
+                    key.substring(PREF_PREFIX_TYPE_BOOLEAN.length),
+                    value.toBoolean()
                 ).commit()
             else ->
                 preferences.edit().putString(key, value).commit()
@@ -180,18 +179,18 @@ object FullBackupImporter {
         db.query(AttachmentDatabase.TABLE_NAME, columns, where, null, null, null, null).use { cursor ->
             while (cursor != null && cursor.moveToNext()) {
                 DatabaseComponent.get(context).attachmentDatabase()
-                        .deleteAttachment(
-                            AttachmentId(
-                                cursor.getLong(0),
-                                cursor.getLong(1)
-                            )
+                    .deleteAttachment(
+                        AttachmentId(
+                            cursor.getLong(0),
+                            cursor.getLong(1)
                         )
+                    )
             }
         }
         db.query(
             ThreadDatabase.TABLE_NAME, arrayOf(
                 ThreadDatabase.ID),
-                ThreadDatabase.EXPIRES_IN + " > 0", null, null, null, null).use { cursor ->
+            ThreadDatabase.EXPIRES_IN + " > 0", null, null, null, null).use { cursor ->
             while (cursor != null && cursor.moveToNext()) {
                 DatabaseComponent.get(context).threadDatabase().update(cursor.getLong(0), false)
             }
@@ -231,7 +230,7 @@ object FullBackupImporter {
                 val split = ByteUtil.split(derived, 32, 32)
                 cipherKey = split[0]
                 macKey = split[1]
-                cipher = synchronized(CIPHER_LOCK) { Cipher.getInstance("AES/CTR/NoPadding") }
+                cipher = Cipher.getInstance("AES/CTR/NoPadding")
                 mac = Mac.getInstance("HmacSHA256")
                 mac.init(SecretKeySpec(macKey, "HmacSHA256"))
                 counter = Conversions.byteArrayToInt(iv)
@@ -257,26 +256,20 @@ object FullBackupImporter {
             var length = length
             try {
                 Conversions.intToByteArray(iv, 0, counter++)
-                val plaintext = synchronized(CIPHER_LOCK) {
-                    cipher.init(
-                            Cipher.DECRYPT_MODE,
-                            SecretKeySpec(cipherKey, "AES"),
-                            IvParameterSpec(iv)
-                    )
-                    mac.update(iv)
-                    val buffer = ByteArray(8192)
-                    while (length > 0) {
-                        val read = inputStream.read(buffer, 0, Math.min(buffer.size, length))
-                        if (read == -1) throw IOException("File ended early!")
-                        mac.update(buffer, 0, read)
-                        val plaintext = cipher.update(buffer, 0, read)
-                        if (plaintext != null) {
-                            out.write(plaintext, 0, plaintext.size)
-                        }
-                        length -= read
+                cipher.init(Cipher.DECRYPT_MODE, SecretKeySpec(cipherKey, "AES"), IvParameterSpec(iv))
+                mac.update(iv)
+                val buffer = ByteArray(8192)
+                while (length > 0) {
+                    val read = inputStream.read(buffer, 0, Math.min(buffer.size, length))
+                    if (read == -1) throw IOException("File ended early!")
+                    mac.update(buffer, 0, read)
+                    val plaintext = cipher.update(buffer, 0, read)
+                    if (plaintext != null) {
+                        out.write(plaintext, 0, plaintext.size)
                     }
-                    cipher.doFinal()
+                    length -= read
                 }
+                val plaintext = cipher.doFinal()
                 if (plaintext != null) {
                     out.write(plaintext, 0, plaintext.size)
                 }
@@ -319,10 +312,8 @@ object FullBackupImporter {
                     throw IOException("Bad MAC")
                 }
                 Conversions.intToByteArray(iv, 0, counter++)
-                val plaintext = synchronized(CIPHER_LOCK) {
-                    cipher.init(Cipher.DECRYPT_MODE, SecretKeySpec(cipherKey, "AES"), IvParameterSpec(iv))
-                    cipher.doFinal(frame, 0, frame.size - 10)
-                }
+                cipher.init(Cipher.DECRYPT_MODE, SecretKeySpec(cipherKey, "AES"), IvParameterSpec(iv))
+                val plaintext = cipher.doFinal(frame, 0, frame.size - 10)
                 BackupFrame.parseFrom(plaintext)
             } catch (e: Exception) {
                 when (e) {
@@ -344,5 +335,5 @@ object FullBackupImporter {
     }
 
     class DatabaseDowngradeException internal constructor(currentVersion: Int, backupVersion: Int) :
-            IOException("Tried to import a backup with version $backupVersion into a database with version $currentVersion")
+        IOException("Tried to import a backup with version $backupVersion into a database with version $currentVersion")
 }

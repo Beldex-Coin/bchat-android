@@ -30,6 +30,7 @@ import com.thoughtcrimes.securesms.home.HomeActivity
 import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.util.FileProviderUtil
 import com.thoughtcrimes.securesms.util.Helper
+import com.thoughtcrimes.securesms.util.toPx
 import com.thoughtcrimes.securesms.wallet.OnBackPressedListener
 import com.thoughtcrimes.securesms.wallet.utils.ThemeHelper
 import io.beldex.bchat.R
@@ -164,7 +165,7 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
         val bdxAmount: String = binding.amountEditTextReceive.text.toString()
         bcData = BarcodeData(Crypto.BDX, address, notes, bdxAmount)
 
-        val size: Int = Math.max(200, 200)
+        val size = toPx(280, resources)
         val qr = generate(bcData!!.uriString, size, size)
         if (qr != null) {
             setQR(qr)
@@ -209,7 +210,7 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
             return
         }
         bcData = BarcodeData(Crypto.BDX, address, notes, bdxAmount)
-        val size: Int = Math.max(binding.qrCodeReceive.width, binding.qrCodeReceive.height)
+        val size = toPx(280, resources)
         val qr = generate(bcData!!.uriString, size, size)
         if (qr != null) {
             setQR(qr)

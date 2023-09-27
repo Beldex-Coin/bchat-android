@@ -43,10 +43,10 @@ object BackupPreferences {
             return
         }
         outPrefList.add(BackupProtos.SharedPreference.newBuilder()
-                .setFile(prefFileName)
-                .setKey(prefKey)
-                .setValue(value)
-                .build())
+            .setFile(prefFileName)
+            .setKey(prefKey)
+            .setValue(value)
+            .build())
         logBackupEntry(prefKey, true)
     }
 
@@ -62,10 +62,10 @@ object BackupPreferences {
             return
         }
         outPrefList.add(BackupProtos.SharedPreference.newBuilder()
-                .setFile(prefFileName)
-                .setKey(PREF_PREFIX_TYPE_INT + prefKey) // The prefix denotes the type of the preference.
-                .setValue(value.toString())
-                .build())
+            .setFile(prefFileName)
+            .setKey(PREF_PREFIX_TYPE_INT + prefKey) // The prefix denotes the type of the preference.
+            .setValue(value.toString())
+            .build())
         logBackupEntry(prefKey, true)
     }
 
@@ -80,10 +80,10 @@ object BackupPreferences {
             return
         }
         outPrefList.add(BackupProtos.SharedPreference.newBuilder()
-                .setFile(prefFileName)
-                .setKey(PREF_PREFIX_TYPE_BOOLEAN + prefKey) // The prefix denotes the type of the preference.
-                .setValue(prefs.getBoolean(prefKey, false).toString())
-                .build())
+            .setFile(prefFileName)
+            .setKey(PREF_PREFIX_TYPE_BOOLEAN + prefKey) // The prefix denotes the type of the preference.
+            .setValue(prefs.getBoolean(prefKey, false).toString())
+            .build())
         logBackupEntry(prefKey, true)
     }
 

@@ -41,10 +41,10 @@ class PrepareAttachmentAudioExtrasJob : BaseJob {
     private val attachmentId: AttachmentId
 
     constructor(attachmentId: AttachmentId) : this(Parameters.Builder()
-            .setQueue(KEY)
-            .setLifespan(TimeUnit.DAYS.toMillis(1))
-            .build(),
-            attachmentId)
+        .setQueue(KEY)
+        .setLifespan(TimeUnit.DAYS.toMillis(1))
+        .build(),
+        attachmentId)
 
     private constructor(parameters: Parameters, attachmentId: AttachmentId) : super(parameters) {
         this.attachmentId = attachmentId
@@ -112,9 +112,9 @@ class PrepareAttachmentAudioExtrasJob : BaseJob {
         }
 
         attachDb.setAttachmentAudioExtras(DatabaseAttachmentAudioExtras(
-                attachmentId,
-                rmsValues,
-                totalDurationMs
+            attachmentId,
+            rmsValues,
+            totalDurationMs
         ))
 
         EventBus.getDefault().post(AudioExtrasUpdatedEvent(attachmentId))

@@ -287,9 +287,18 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
             status = true
         }
         val searchText = dialog.findViewById(R.id.searchTextEditText) as EditText
+        val searchIcon = dialog.findViewById(R.id.currencySearchIcon) as ImageView
+        val clearIcon  = dialog.findViewById(R.id.currencyClearIcon) as ImageView
 
         searchText.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if(s.isNotEmpty()){
+                    searchIcon.visibility = View.GONE
+                    clearIcon.visibility = View.VISIBLE
+                } else{
+                    searchIcon.visibility = View.VISIBLE
+                    clearIcon.visibility = View.GONE
+                }
             }
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
             }
@@ -297,6 +306,10 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
                 filter(s.toString(),currencyList)
             }
         })
+
+        clearIcon.setOnClickListener {
+            searchText.text.clear()
+        }
 
         walletSubOptionsList.layoutManager = LinearLayoutManager(this)
         walletSubOptionsSearchListItemAdapter = WalletSubOptionsSearchListItemAdapter(this, currencyList,selectedCurrencyIndex,3)

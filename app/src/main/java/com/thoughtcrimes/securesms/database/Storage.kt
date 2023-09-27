@@ -54,19 +54,19 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
         return Profile(displayName, profileKey, profilePictureUrl)
     }
 
-    override fun setUserProfilePictureURL(newValue: String) {
+    override fun setUserProfilePictureURL(newProfilePicture: String) {
         val ourRecipient = Address.fromSerialized(getUserPublicKey()!!).let {
             Recipient.from(context, it, false)
         }
-        TextSecurePreferences.setProfilePictureURL(context, newValue)
+        TextSecurePreferences.setProfilePictureURL(context, newProfilePicture)
         RetrieveProfileAvatarJob(
             ourRecipient,
-            newValue
+            newProfilePicture
         )
         ApplicationContext.getInstance(context).jobManager.add(
             RetrieveProfileAvatarJob(
                 ourRecipient,
-                newValue
+                newProfilePicture
             )
         )
     }
@@ -446,8 +446,8 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
         return if (group.isPresent) { group.get() } else null
     }
 
-    override fun createGroup(groupId: String, title: String?, members: List<Address>, avatar: SignalServiceAttachmentPointer?, relay: String?, admins: List<Address>, formationTimestamp: Long) {
-        DatabaseComponent.get(context).groupDatabase().create(groupId, title, members, avatar, relay, admins, formationTimestamp)
+    override fun createGroup(groupID: String, title: String?, members: List<Address>, avatar: SignalServiceAttachmentPointer?, relay: String?, admins: List<Address>, formationTimestamp: Long) {
+        DatabaseComponent.get(context).groupDatabase().create(groupID, title, members, avatar, relay, admins, formationTimestamp)
     }
 
     override fun isGroupActive(groupPublicKey: String): Boolean {
@@ -726,6 +726,11 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
     override fun trimThread(threadID: Long, threadLimit: Int) {
         val threadDB = DatabaseComponent.get(context).threadDatabase()
         threadDB.trimThread(threadID, threadLimit)
+    }
+
+    override fun deleteConversation(threadId: Long) {
+        val threadDB = DatabaseComponent.get(context).threadDatabase()
+        threadDB.deleteConversation(threadId)
     }
 
     override fun getAttachmentDataUri(attachmentId: AttachmentId): Uri {

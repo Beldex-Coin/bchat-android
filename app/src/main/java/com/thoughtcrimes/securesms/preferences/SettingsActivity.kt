@@ -16,6 +16,7 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
@@ -31,16 +32,16 @@ import com.beldex.libbchat.utilities.ProfileKeyUtil
 import com.beldex.libbchat.utilities.ProfilePictureUtilities
 import com.beldex.libbchat.utilities.SSKEnvironment.ProfileManagerProtocol
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.beldex.libbchat.utilities.truncateIdForDisplay
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
 import com.thoughtcrimes.securesms.applock.AppLockDetailsActivity
 import com.thoughtcrimes.securesms.avatar.AvatarSelection
 import com.thoughtcrimes.securesms.changelog.ChangeLogActivity
-import com.thoughtcrimes.securesms.contacts.BlockedContactActivity
+import com.thoughtcrimes.securesms.components.ProfilePictureView
 import com.thoughtcrimes.securesms.contacts.blocked.BlockedContactsActivity
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
 import com.thoughtcrimes.securesms.home.PathActivity
-import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
 import com.thoughtcrimes.securesms.mms.GlideApp
 import com.thoughtcrimes.securesms.util.*
 import java.io.File
@@ -50,6 +51,8 @@ import java.util.Date
 import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.permissions.Permissions
 import com.thoughtcrimes.securesms.profiles.ProfileMediaConstraints
+import com.thoughtcrimes.securesms.showCustomDialog
+import java.util.regex.Pattern
 
 class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.AnimationListener {
     private lateinit var binding: ActivitySettingsBinding
@@ -58,8 +61,6 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             field = value; handleDisplayNameEditActionModeChanged()
         }
     private lateinit var glide: GlideRequests
-    private var displayNameToBeUploaded: String? = null
-    private var profilePictureToBeUploaded: ByteArray? = null
     private var tempFile: File? = null
 
     private val hexEncodedPublicKey: String
@@ -75,14 +76,19 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
     private lateinit var animation1: Animation
     private lateinit var animation2: Animation
     private var isFrontOfCardShowing = true
+    private val namePattern = Pattern.compile("[A-Za-z0-9]+")
+
+    private fun getDisplayName(): String =
+        TextSecurePreferences.getProfileName(this) ?: truncateIdForDisplay(hexEncodedPublicKey)
 
     // region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?, isReady: Boolean) {
         super.onCreate(savedInstanceState, isReady)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setUpActionBarBchatLogo("My Account")
-        val displayName = TextSecurePreferences.getProfileName(this) ?: hexEncodedPublicKey
+        val displayName = getDisplayName()
         glide = GlideApp.with(this)
 
         val size = toPx(280, resources)
@@ -99,11 +105,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
         animation2.setAnimationListener(this)
 
         with(binding) {
-            profilePictureView.root.glide = glide
-            profilePictureView.root.publicKey = hexEncodedPublicKey
-            profilePictureView.root.displayName = displayName
-            profilePictureView.root.isLarge = true
-            profilePictureView.root.update()
+            setupProfilePictureView(profilePictureView.root)
             //New Line
             profilePictureView.root.setOnClickListener { showEditProfilePictureUI() }
 
@@ -163,6 +165,16 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
 
             beldexAddressCardView.setOnClickListener { copyBeldexAddress() }
             beldexAddressShareButton.setOnClickListener { shareBeldexAddress() }
+        }
+    }
+
+    private fun setupProfilePictureView(view: ProfilePictureView) {
+        view.glide = glide
+        view.apply {
+            publicKey = hexEncodedPublicKey
+            displayName = getDisplayName()
+            isLarge = true
+            update()
         }
     }
 
@@ -269,13 +281,13 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
                 }
                 AsyncTask.execute {
                     try {
-                        profilePictureToBeUploaded = BitmapUtil.createScaledBytes(
+                        val profilePictureToBeUploaded = BitmapUtil.createScaledBytes(
                             this@SettingsActivity,
                             AvatarSelection.getResultUri(data),
                             ProfileMediaConstraints()
                         ).bitmap
                         Handler(Looper.getMainLooper()).post {
-                            updateProfile(true)
+                            updateProfile(true,profilePictureToBeUploaded)
                         }
                     } catch (e: BitmapDecodingException) {
                         e.printStackTrace()
@@ -317,27 +329,31 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
         }
     }
 
-    private fun updateProfile(isUpdatingProfilePicture: Boolean) {
+    private fun updateProfile(isUpdatingProfilePicture: Boolean, profilePicture: ByteArray? = null,
+                              displayName: String? = null) {
         binding.loader.isVisible = true
         val promises = mutableListOf<Promise<*, Exception>>()
-        val displayName = displayNameToBeUploaded
         if (displayName != null) {
             TextSecurePreferences.setProfileName(this, displayName)
         }
-        val profilePicture = profilePictureToBeUploaded
         val encodedProfileKey = ProfileKeyUtil.generateEncodedProfileKey(this)
-        if (isUpdatingProfilePicture && profilePicture != null) {
-            promises.add(ProfilePictureUtilities.upload(profilePicture, encodedProfileKey, this))
+        if (isUpdatingProfilePicture) {
+            if (profilePicture != null) {
+                promises.add(ProfilePictureUtilities.upload(profilePicture, encodedProfileKey, this))
+            } else {
+                TextSecurePreferences.setLastProfilePictureUpload(this, System.currentTimeMillis())
+                TextSecurePreferences.setProfilePictureURL(this, null)
+            }
         }
         val compoundPromise = all(promises)
         compoundPromise.successUi { // Do this on the UI thread so that it happens before the alwaysUi clause below
-            if (isUpdatingProfilePicture && profilePicture != null) {
+            if (isUpdatingProfilePicture) {
                 AvatarHelper.setAvatar(
                     this,
                     Address.fromSerialized(TextSecurePreferences.getLocalNumber(this)!!),
                     profilePicture
                 )
-                TextSecurePreferences.setProfileAvatarId(this, SecureRandom().nextInt())
+                TextSecurePreferences.setProfileAvatarId(this,profilePicture?.let { SecureRandom().nextInt() } ?: 0)
                 TextSecurePreferences.setLastProfilePictureUpload(this, Date().time)
                 ProfileKeyUtil.setEncodedProfileKey(this, encodedProfileKey)
             }
@@ -349,12 +365,10 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             if (displayName != null) {
                 binding.btnGroupNameDisplay.text = displayName
             }
-            if (isUpdatingProfilePicture && profilePicture != null) {
+            if (isUpdatingProfilePicture) {
                 binding.profilePictureView.root.recycle() // Clear the cached image before updating
                 binding.profilePictureView.root.update()
             }
-            displayNameToBeUploaded = null
-            profilePictureToBeUploaded = null
             binding.loader.isVisible = false
         }
     }
@@ -389,8 +403,15 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             ).show()
             return false
         }
-        displayNameToBeUploaded = displayName
-        updateProfile(false)
+        if (!displayName.matches(namePattern.toRegex())) {
+            Toast.makeText(
+                    this,
+                    R.string.display_name_validation,
+                    Toast.LENGTH_SHORT
+            ).show()
+            return false
+        }
+        updateProfile(false, displayName = displayName)
         return true
     }
 
@@ -416,6 +437,28 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
     }
 
     private fun showEditProfilePictureUI() {
+        showCustomDialog {
+            title(getString(R.string.activity_settings_profile_picture))
+            icon(R.drawable.ic_close)
+            view(R.layout.dialog_change_avatar)
+            removeButton(R.string.activity_settings_remove) { removeAvatar() }
+            button(R.string.activity_settings_save) { startAvatarSelection() }
+        }.apply {
+            findViewById<ProfilePictureView>(R.id.profile_picture_view)?.let(::setupProfilePictureView)
+            val profileImage = findViewById<ImageView>(R.id.profileCamaraView)
+            if (TextSecurePreferences.getProfileAvatarId(context) == 0) {
+                profileImage?.setImageResource((R.drawable.ic_profile_add))
+            } else {
+                profileImage?.setImageResource((R.drawable.ic_profile_camera))
+            }
+        }
+    }
+
+    private fun removeAvatar() {
+        updateProfile(true)
+    }
+
+    private fun startAvatarSelection() {
         // Ask for an optional camera permission.
         Permissions.with(this)
             .request(Manifest.permission.CAMERA)

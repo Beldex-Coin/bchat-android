@@ -81,7 +81,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
     interface Listener {
         val prefs: SharedPreferences?
-        val totalFunds: Long
+        val getUnLockedBalance: Long
         val isStreetMode: Boolean
 
         fun onPrepareSend(tag: String?, data: TxData?)
@@ -438,7 +438,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         }
     }
 
-    inner class AsyncGetUnlockedBalance(val wallet: Listener?) :
+    inner class AsyncGetUnlockedBalance(val listener: Listener?) :
         AsyncTaskCoroutine<Executor?, Boolean?>() {
         override fun onPreExecute() {
             super.onPreExecute()
@@ -446,7 +446,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         }
 
         override fun doInBackground(vararg params: Executor?): Boolean {
-            totalFunds = wallet!!.totalFunds
+            totalFunds = listener!!.getUnLockedBalance
             return true
         }
 

@@ -144,6 +144,7 @@ import com.thoughtcrimes.securesms.mms.MediaConstraints
 import com.thoughtcrimes.securesms.mms.Slide
 import com.thoughtcrimes.securesms.mms.SlideDeck
 import com.thoughtcrimes.securesms.mms.VideoSlide
+import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
 import com.thoughtcrimes.securesms.model.PendingTransaction
 import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.permissions.Permissions
@@ -151,6 +152,7 @@ import com.thoughtcrimes.securesms.preferences.ChatSettingsActivity
 import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
 import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.util.ActivityDispatcher
+import com.thoughtcrimes.securesms.util.BChatThreadPoolExecutor
 import com.thoughtcrimes.securesms.util.ConfigurationMessageUtilities
 import com.thoughtcrimes.securesms.util.DateUtils
 import com.thoughtcrimes.securesms.util.Helper
@@ -187,6 +189,7 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Locale
 import java.util.concurrent.ExecutionException
+import java.util.concurrent.Executor
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
@@ -456,7 +459,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         fun getConversationViewModel(): ConversationViewModel.AssistedFactory
         fun gettextSecurePreferences(): TextSecurePreferences
         fun onDisposeRequest()
-        val totalFunds: Long
+        val getUnLockedBalance: Long
+        val getFullBalance: Long
         fun onPrepareSend(tag: String?, data: TxData?)
         fun onSend(notes: UserNotes?)
         fun onBackPressedFun()
@@ -3273,8 +3277,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     check(listenerCallback!!.hasBoundService()) { "WalletService not bound." }
                     val daemonConnected: Wallet.ConnectionStatus = listenerCallback!!.connectionStatus!!
                     if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
-//                        AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
-                        getUnlockedBalance(wallet)
+                        //getUnlockedBalance(wallet)
+                        AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
                     }
                 }
             }
@@ -3308,7 +3312,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     valueOfWallet = "${df.format(walletSyncPercentage)}%"
                     binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false,valueOfWallet)
                 } else {
-                    balance = wallet.balance
                     ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(
                         false
                     )
@@ -3382,32 +3385,32 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
     }
 
-//    inner class AsyncGetUnlockedBalance(val wallet: Wallet) :
-//        AsyncTaskCoroutine<Executor?, Boolean?>() {
-//        override fun onPreExecute() {
-//            super.onPreExecute()
-//            if (mContext != null && walletAvailableBalance != null) {
-//                if (walletAvailableBalance!!.replace(",", "").toDouble() > 0.0) {
-//                    showBalance(walletAvailableBalance!!, unlockedBalance.toString(), true)
-//                }
-//            } else {
-//                refreshBalance(false)
-//            }
-//        }
-//
-//        override fun doInBackground(vararg params: Executor?): Boolean {
-//            try {
-//                unlockedBalance = wallet.unlockedBalance
-//            } catch (e: Exception) {
-//                Timber.tag("WalletFragment").d(e.toString())
-//            }
-//            return true
-//        }
-//
-//        override fun onPostExecute(result: Boolean?) {
-//            refreshBalance(wallet.isSynchronized)
-//        }
-//    }
+    inner class AsyncGetUnlockedBalance(val wallet: Wallet) :
+        AsyncTaskCoroutine<Executor?, Boolean?>() {
+        override fun onPreExecute() {
+            super.onPreExecute()
+            if (mContext != null && walletAvailableBalance != null) {
+                if (walletAvailableBalance!!.replace(",", "").toDouble() > 0.0) {
+                    showBalance(walletAvailableBalance!!, unlockedBalance.toString(), true)
+                }
+            } else {
+                refreshBalance(false)
+            }
+        }
+        override fun doInBackground(vararg params: Executor?): Boolean {
+            try {
+                unlockedBalance = listenerCallback!!.getUnLockedBalance
+                balance = listenerCallback!!.getFullBalance
+            } catch (e: Exception) {
+                Timber.tag("ConversationFragment").d(e.toString())
+            }
+            return true
+        }
+
+        override fun onPostExecute(result: Boolean?) {
+            refreshBalance(wallet.isSynchronized)
+        }
+    }
 
     private fun checkIfFragmentAttached(operation: Context.() -> Unit) {
         if (isAdded && context != null) {

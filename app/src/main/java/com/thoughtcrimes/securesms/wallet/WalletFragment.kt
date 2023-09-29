@@ -251,7 +251,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
 
         override fun doInBackground(vararg params: Executor?): Boolean {
             try {
-                unlockedBalance = wallet.unlockedBalance
+                unlockedBalance = activityCallback!!.getUnLockedBalance
             }catch (e: Exception){
                 Log.d("WalletFragment",e.toString())
             }
@@ -260,6 +260,36 @@ class WalletFragment : Fragment(),OnBackPressedListener {
 
         override fun onPostExecute(result: Boolean?) {
              refreshBalance(wallet.isSynchronized)
+        }
+    }
+
+    inner class AsyncGetFullBalance(val wallet: Wallet) : AsyncTaskCoroutine<Executor?, Boolean?>() {
+        override fun onPreExecute() {
+            super.onPreExecute()
+            if (mContext != null && walletAvailableBalance != null) {
+                if (TextSecurePreferences.getDisplayBalanceAs(mContext!!) == 1 || TextSecurePreferences.getDisplayBalanceAs(mContext!!) == 0) {
+                    if (walletAvailableBalance!!.replace(",", "").toDouble() > 0.0) {
+                        showSelectedDecimalBalance(walletAvailableBalance!!, true)
+                    } else {
+                        refreshBalance(false)
+                    }
+                }
+            } else {
+                refreshBalance(false)
+            }
+        }
+
+        override fun doInBackground(vararg params: Executor?): Boolean {
+            try {
+                balance = activityCallback!!.getFullBalance
+            } catch (e: Exception) {
+                Log.d("WalletFragment", e.toString())
+            }
+            return true
+        }
+
+        override fun onPostExecute(result: Boolean?) {
+            refreshBalance(wallet.isSynchronized)
         }
     }
 
@@ -584,7 +614,6 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                     binding.progressBar.indeterminateDrawable.setColorFilter(
                             ContextCompat.getColor(requireActivity().applicationContext,R.color.green_color), PorterDuff.Mode.SRC_IN)
                 } else {
-                    balance = wallet.balance
                     ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(false)
                     sync = getString(R.string.status_synchronized)//getString(R.string.status_synced) + " " + formatter.format(wallet.blockChainHeight)
                     binding.syncStatus.setTextColor(
@@ -876,6 +905,8 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         fun callToolBarSettings()
 
         fun walletOnBackPressed() //-
+        val getUnLockedBalance: Long
+        val getFullBalance: Long
     }
 
     private var accountIndex = 0
@@ -916,7 +947,11 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                 check(activityCallback!!.hasBoundService()) { "WalletService not bound." }
                 val daemonConnected: Wallet.ConnectionStatus = activityCallback!!.connectionStatus!!
                 if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
-                    AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+                    if (TextSecurePreferences.getDisplayBalanceAs(mContext!!) == 1) {
+                        AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+                    } else if (TextSecurePreferences.getDisplayBalanceAs(mContext!!) == 0) {
+                        AsyncGetFullBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+                    }
                 }
             }
         }

@@ -1103,8 +1103,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     override val prefs: SharedPreferences?
         get() = getPreferences(MODE_PRIVATE)
-    override val totalFunds: Long
+    override val getUnLockedBalance: Long
         get() = if(getWallet()!=null){getWallet()!!.unlockedBalance}else{0}
+    override val getFullBalance: Long
+        get() = if(getWallet()!=null){getWallet()!!.balance}else{0}
     override val isStreetMode: Boolean
         get() = streetMode > 0
 

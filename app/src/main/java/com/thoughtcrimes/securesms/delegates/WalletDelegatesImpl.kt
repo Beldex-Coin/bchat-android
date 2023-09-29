@@ -34,26 +34,25 @@ class WalletDelegatesImpl: WalletDelegates {
         walletBalance: String?,
         walletUnlockedBalance: String?,
         synchronized: Boolean,
-        activity: FragmentActivity,
         mContext: Context?,
         setBalance: (valueOfBalance: String, valueOfUnLockedBalance: String?) -> Unit
     ) {
         if (mContext != null) {
             if (!synchronized) {
                 when {
-                    TextSecurePreferences.getDecimals(activity) == "2 - Two (0.00)" -> {
+                    TextSecurePreferences.getDecimals(mContext) == "2 - Two (0.00)" -> {
                         setBalance(
                             "-.--",
                             "-.--"
                         )
                     }
-                    TextSecurePreferences.getDecimals(activity) == "3 - Three (0.000)" -> {
+                    TextSecurePreferences.getDecimals(mContext) == "3 - Three (0.000)" -> {
                         setBalance(
                             "-.---",
                             "-.---"
                         )
                     }
-                    TextSecurePreferences.getDecimals(activity) == "0 - Zero (000)" -> {
+                    TextSecurePreferences.getDecimals(mContext) == "0 - Zero (000)" -> {
                         setBalance(
                             "-",
                             "-"
@@ -68,7 +67,7 @@ class WalletDelegatesImpl: WalletDelegates {
                 }
             } else {
                 when {
-                    TextSecurePreferences.getDecimals(activity) == "2 - Two (0.00)" -> {
+                    TextSecurePreferences.getDecimals(mContext) == "2 - Two (0.00)" -> {
                         setBalance(
                             String.format("%.2f", walletBalance!!.replace(",", "").toDouble()),
                             String.format(
@@ -77,7 +76,7 @@ class WalletDelegatesImpl: WalletDelegates {
                             )
                         )
                     }
-                    TextSecurePreferences.getDecimals(activity) == "3 - Three (0.000)" -> {
+                    TextSecurePreferences.getDecimals(mContext) == "3 - Three (0.000)" -> {
                         setBalance(
                             String.format("%.3f", walletBalance!!.replace(",", "").toDouble()),
                             String.format(
@@ -86,7 +85,7 @@ class WalletDelegatesImpl: WalletDelegates {
                             )
                         )
                     }
-                    TextSecurePreferences.getDecimals(activity) == "0 - Zero (000)" -> {
+                    TextSecurePreferences.getDecimals(mContext) == "0 - Zero (000)" -> {
                         setBalance(
                             String.format("%.0f", walletBalance!!.replace(",", "").toDouble()),
                             String.format(

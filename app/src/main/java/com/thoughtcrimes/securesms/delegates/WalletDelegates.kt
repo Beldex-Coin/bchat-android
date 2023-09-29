@@ -16,7 +16,6 @@ interface WalletDelegates {
         walletBalance: String?,
         walletUnlockedBalance: String?,
         synchronized: Boolean,
-        activity: FragmentActivity,
         mContext: Context?,
         setBalance: (valueOfBalance: String, valueOfUnLockedBalance: String?) -> Unit
     )

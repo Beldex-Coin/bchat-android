@@ -3353,7 +3353,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             walletBalance = walletBalance,
             walletUnlockedBalance = walletUnlockedBalance,
             synchronized = synchronized,
-            activity = requireActivity(),
             mContext = mContext,
         ) { bal, unlockedBal ->
             valueOfBalance = bal

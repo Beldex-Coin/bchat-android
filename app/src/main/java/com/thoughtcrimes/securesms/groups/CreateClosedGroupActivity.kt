@@ -31,6 +31,7 @@ import com.thoughtcrimes.securesms.util.fadeOut
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
 import com.thoughtcrimes.securesms.mms.GlideApp
+import com.thoughtcrimes.securesms.util.Helper
 
 class CreateClosedGroupActivity : PassphraseRequiredActionBarActivity(), LoaderManager.LoaderCallbacks<List<String>> {
     private lateinit var binding: ActivityCreateClosedGroupBinding
@@ -189,6 +190,11 @@ class CreateClosedGroupActivity : PassphraseRequiredActionBarActivity(), LoaderM
             val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Helper.hideKeyboard(this)
     }
     // endregion
 }

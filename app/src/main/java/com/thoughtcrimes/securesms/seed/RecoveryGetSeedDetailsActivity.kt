@@ -137,15 +137,13 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
 
         getSeed = intent.extras?.getString("seed")
         // create an OnDateSetListener
-        val dateSetListener = object : DatePickerDialog.OnDateSetListener {
-            override fun onDateSet(view: DatePicker, year: Int, monthOfYear: Int,
-                                   dayOfMonth: Int) {
+        val dateSetListener =
+            DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
                 cal.set(Calendar.YEAR, year)
                 cal.set(Calendar.MONTH, monthOfYear)
                 cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
                 updateDateInView()
             }
-        }
 
         with(binding){
             /*restoreSeedWalletRestoreDate.setOnClickListener {
@@ -302,9 +300,14 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         if (restoreHeight.isNotEmpty() && binding.restoreSeedWalletRestoreHeightCard.isVisible) {
             val restoreHeightBig = BigInteger(restoreHeight)
             if (restoreHeightBig.toLong() >= 0) {
-                binding.restoreSeedWalletRestoreDate.text = ""
-                binding.restoreSeedRestoreButton.isEnabled = false
-                _recoveryWallet(displayName, password, getSeed, restoreHeight.toLong())
+                val lastHeight = dates.values.maxOf { it }
+                if (restoreHeightBig.toLong() <= lastHeight) {
+                    binding.restoreSeedWalletRestoreDate.text = ""
+                    binding.restoreSeedRestoreButton.isEnabled = false
+                    _recoveryWallet(displayName, password, getSeed, restoreHeight.toLong())
+                } else {
+                    Toast.makeText(this, getString(R.string.restore_height_excess_error_message), Toast.LENGTH_SHORT).show()
+                }
             } else {
                 Toast.makeText(this, getString(R.string.restore_height_error_message), Toast.LENGTH_SHORT).show()
             }

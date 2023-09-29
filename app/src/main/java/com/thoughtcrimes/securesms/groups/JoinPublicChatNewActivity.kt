@@ -42,6 +42,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.activity.result.contract.ActivityResultContracts
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
+import com.thoughtcrimes.securesms.util.Helper
 
 class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
     private lateinit var binding: ActivityJoinPublicChatNewBinding
@@ -308,6 +309,11 @@ class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
             val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Helper.hideKeyboard(this)
     }
 
    /* private val viewModel: DefaultGroupsViewModel by lazy {

@@ -1295,6 +1295,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="enter_bdx_to_send" translatable="false">Enter BDX to send</string>
     <string name="amount_hint" translatable="false">Amount</string>
     <string name="restore_height_error_message" translatable="false">Enter a valid blockheight</string>
+    <string name="restore_height_excess_error_message" translatable="false">Enter blockheight less than current blockheight.</string>
     <string name="change_pin_confirmation_message" translatable="false">New pin and old pin can\'t be same, Please enter a different pin</string>
     <string name="failed_connected_to_the_node" translatable="false">Failed to connect to the node</string>
     <string name="reconnecting" translatable="false">Reconnecting...</string>

@@ -646,7 +646,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                 UserDetailsBottomSheet.ARGUMENT_THREAD_ID to thread.threadId
             )
             userDetailsBottomSheet.arguments = bundle
-            userDetailsBottomSheet.show(requireActivity().supportFragmentManager, userDetailsBottomSheet.tag)
+            userDetailsBottomSheet.show(childFragmentManager, userDetailsBottomSheet.tag)
         }
         bottomSheet.onBlockTapped = {
             bottomSheet.dismiss()

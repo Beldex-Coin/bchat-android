@@ -28,6 +28,7 @@ import com.beldex.libsignal.utilities.PublicKeyValidation
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
+import com.thoughtcrimes.securesms.util.Helper
 
 class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
     private lateinit var binding: ActivityCreateNewPrivateChatBinding
@@ -277,5 +278,10 @@ class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
             val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Helper.hideKeyboard(this)
     }
 }

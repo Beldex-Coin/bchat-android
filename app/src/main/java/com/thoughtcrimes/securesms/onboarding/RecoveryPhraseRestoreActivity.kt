@@ -6,24 +6,31 @@ import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
-import android.text.*
+import android.text.Editable
+import android.text.InputFilter
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
 import android.view.View
 import android.widget.Toast
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityRecoveryPhraseRestoreBinding
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.crypto.MnemonicCodec
+import com.beldex.libsignal.utilities.Hex
+import com.beldex.libsignal.utilities.KeyHelper
+import com.beldex.libsignal.utilities.hexEncodedPrivateKey
+import com.beldex.libsignal.utilities.hexEncodedPublicKey
 import com.thoughtcrimes.securesms.BaseActionBarActivity
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
 import com.thoughtcrimes.securesms.crypto.KeyPairUtilities
 import com.thoughtcrimes.securesms.crypto.MnemonicUtilities
+import com.thoughtcrimes.securesms.seed.RecoveryGetSeedDetailsActivity
 import com.thoughtcrimes.securesms.util.push
 import com.thoughtcrimes.securesms.util.setUpActionBarBchatLogo
-import com.thoughtcrimes.securesms.seed.RecoveryGetSeedDetailsActivity
-import com.beldex.libsignal.utilities.*
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ActivityRecoveryPhraseRestoreBinding
 
 
 class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
@@ -72,11 +79,20 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable) {
+                if (s.length >= 2) {
+                    val isMultipleSpace = s.substring(s.length - 2).all { it.isWhitespace() }
+                    if (isMultipleSpace) {
+                        binding.mnemonicEditText.apply {
+                            setText(s.removeSuffix(" "))
+                            setSelection(s.length - 1)
+                        }
+                    }
+                }
+
                 var numberOfInputWords = 0
 
                 if(s.toString().isNotEmpty())
-
-                numberOfInputWords = s.toString().trim().split("\\s+".toRegex()).size
+                    numberOfInputWords = s.toString().trim().split("\\s+".toRegex()).size
                 binding.recoveryPhraseCountWord.text = "$numberOfInputWords/25"
 
                 if (numberOfInputWords > 25){

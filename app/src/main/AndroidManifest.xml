@@ -312,7 +312,8 @@
             android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"/>
 
         <activity-alias
             android:name=".RoutingActivity"

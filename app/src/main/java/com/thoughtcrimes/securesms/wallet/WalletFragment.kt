@@ -600,7 +600,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                         firstBlock = walletHeight
                     }
                     var x = (100 - Math.round(100f * n / (1f * daemonHeight  - firstBlock))).toInt()
-                    if (x == 0) x = 101 // indeterminate
+                    if (x == 0) x = 1 // indeterminate
                     setProgress(x)
                     binding.filterTransactionsIcon.isClickable = false
                     binding.syncStatusIcon.visibility=View.GONE

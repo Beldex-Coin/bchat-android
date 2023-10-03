@@ -3307,7 +3307,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                         firstBlock = walletHeight
                     }
                     var x = (100 - Math.round(100f * n / (1f * daemonHeight - firstBlock))).toInt()
-                    if (x == 0) x = 101 // indeterminate
+                    if (x == 0) x = 1 // indeterminate
                     setProgress(x)
                     valueOfWallet = "${df.format(walletSyncPercentage)}%"
                     binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false,valueOfWallet)

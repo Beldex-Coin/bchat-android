@@ -31,6 +31,7 @@ import com.thoughtcrimes.securesms.model.WalletManager;
 import com.thoughtcrimes.securesms.util.Helper;
 import com.thoughtcrimes.securesms.util.LocalHelper;
 import com.thoughtcrimes.securesms.wallet.CheckOnline;
+import com.thoughtcrimes.securesms.wallet.WalletFragment;
 
 import io.beldex.bchat.R;
 import timber.log.Timber;
@@ -132,12 +133,10 @@ public class WalletService extends Service {
 
         public void refreshed() { // this means it's synced
             final Wallet wallet = getWallet();
+            long latestBlock =   WalletFragment.Companion.getSyncingBlocks();
             if (wallet != null) {
                 if (CheckOnline.Companion.isOnline(getApplicationContext())) {
-                    long blockChainHeight = wallet.getDaemonBlockChainHeight();
-                    long syncedBlockHeight = wallet.getBlockChainHeight();
-                    long latestSyncedBlockHeight = blockChainHeight - syncedBlockHeight;
-                    if (latestSyncedBlockHeight < 50L) {
+                    if (latestBlock < 50L) {
                         wallet.setSynchronized();
                     }
                 }

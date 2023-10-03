@@ -306,6 +306,9 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         super.onPause()
     }
 
+    companion object{
+        var syncingBlocks : Long = 0
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -596,6 +599,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                     val walletHeight = wallet.blockChainHeight
                     val n = daemonHeight - walletHeight
                     sync = formatter.format(n) + " " + getString(R.string.status_remaining)
+                    syncingBlocks = n
                     if (firstBlock == 0L) {
                         firstBlock = walletHeight
                     }

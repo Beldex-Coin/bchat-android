@@ -124,7 +124,7 @@ class RescanDialog(val context: HomeActivity, private val daemonBlockChainHeight
                     1 -> {
                         binding.restoreSeedWalletRestoreDate.text = ""
                         binding.restoreSeedWalletRestoreHeight.setText("")
-                        keyboardDismiss(view!!)
+                        keyboardDismiss(requireView())
                         binding.restoreSeedWalletRestoreHeight.isFocusable = false
                         dismiss()
                     }
@@ -160,7 +160,7 @@ class RescanDialog(val context: HomeActivity, private val daemonBlockChainHeight
             })
             //SteveJosephh21
             restoreSeedWalletRestoreDate.setOnClickListener {
-                keyboardDismiss(view!!)
+                keyboardDismiss(requireView())
                 restoreSeedWalletRestoreDate.inputType = InputType.TYPE_NULL;
                 val datePickerDialog = DatePickerDialog(context,
                     dateSetListener,
@@ -269,6 +269,7 @@ class RescanDialog(val context: HomeActivity, private val daemonBlockChainHeight
     }
 
     override fun onDismiss(dialog: DialogInterface) {
+        keyboardDismiss(requireView())
         super.onDismiss(dialog)
     }
 

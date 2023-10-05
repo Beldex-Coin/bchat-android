@@ -238,7 +238,9 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
 
 
         //New Line load favourites with network function
-        loadFavouritesWithNetwork()
+        if (CheckOnline.isOnline(this)) {
+            loadFavouritesWithNetwork()
+        }
     }
     private fun updateDateInView() {
         binding.restoreSeedWalletRestoreDate.text = sdf.format(cal.time)

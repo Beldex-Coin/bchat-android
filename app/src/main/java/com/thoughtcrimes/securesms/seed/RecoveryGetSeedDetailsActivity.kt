@@ -7,23 +7,18 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.util.ArrayMap
 import android.util.Log
-import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.DatePicker
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isVisible
-import com.goterl.lazysodium.utils.KeyPair
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityRecoveryGetSeedDetailsBinding
 import com.beldex.libbchat.utilities.SSKEnvironment
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.crypto.ecc.ECKeyPair
+import com.goterl.lazysodium.utils.KeyPair
 import com.thoughtcrimes.securesms.BaseActionBarActivity
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
-import com.thoughtcrimes.securesms.data.DefaultNodes
 import com.thoughtcrimes.securesms.data.NetworkNodes
 import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
@@ -32,7 +27,15 @@ import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.model.WalletManager
 import com.thoughtcrimes.securesms.onboarding.AppLockActivity
 import com.thoughtcrimes.securesms.onboarding.CreatePasswordActivity
-import com.thoughtcrimes.securesms.util.*
+import com.thoughtcrimes.securesms.util.BChatThreadPoolExecutor
+import com.thoughtcrimes.securesms.util.Helper
+import com.thoughtcrimes.securesms.util.NodePinger
+import com.thoughtcrimes.securesms.util.RestoreHeight
+import com.thoughtcrimes.securesms.util.push
+import com.thoughtcrimes.securesms.util.setUpActionBarBchatLogo
+import com.thoughtcrimes.securesms.wallet.CheckOnline
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ActivityRecoveryGetSeedDetailsBinding
 import timber.log.Timber
 import java.io.File
 import java.math.BigInteger
@@ -45,7 +48,6 @@ import java.util.Locale
 import java.util.UUID
 import java.util.concurrent.Executor
 import java.util.regex.Pattern
-import kotlin.collections.ArrayList
 
 class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
     private lateinit var binding:ActivityRecoveryGetSeedDetailsBinding
@@ -239,42 +241,10 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         loadFavouritesWithNetwork()
     }
     private fun updateDateInView() {
-        val myFormat = "yyyy-MM-dd" // mention the format you need
-        val sdf = SimpleDateFormat(myFormat, Locale.US)
         binding.restoreSeedWalletRestoreDate.text = sdf.format(cal.time)
-
         if (cal.time != null) {
-           restoreFromDateHeight = getHeightByDate(cal.time,sdf)
+            restoreFromDateHeight = RestoreHeight.getInstance().getHeight(sdf.format(cal.time)).toInt()
         }
-    }
-
-    private fun getHeightByDate(date: Date, sdf: SimpleDateFormat): Int {
-        val sdfDate = sdf.parse(sdf.format(date))
-
-        val monthFormat = "MM"
-        val monthSdfFormat = SimpleDateFormat(monthFormat, Locale.US)
-        val monthVal = monthSdfFormat.format(date).toInt()
-        val month = if (monthVal < 10) "0${monthVal}" else "$monthVal"
-
-        val yearFormat = "yyyy"
-        val yearSdfFormat = SimpleDateFormat(yearFormat, Locale.US)
-        val yearVal = yearSdfFormat.format(date).toInt()
-
-        val raw = "${yearVal}-$month"
-        val firstDate = dateFormat.parse(dates.keys.first())
-
-        Log.d("Beldex","Restore Height -->$raw")
-
-        var height = dates[raw]?:0
-
-        if (height != null) {
-            if (height <= 0 && sdfDate.after(firstDate)) {
-                height = dates.values.last()
-            }
-        }
-        Log.d("Beldex","Restore Height --> $height")
-
-        return height
     }
 
     private fun register() {

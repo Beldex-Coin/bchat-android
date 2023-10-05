@@ -38,8 +38,11 @@ import java.io.File
 import java.math.BigInteger
 import java.text.SimpleDateFormat
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.util.*
+import java.util.Calendar
+import java.util.Collections
+import java.util.Date
+import java.util.Locale
+import java.util.UUID
 import java.util.concurrent.Executor
 import java.util.regex.Pattern
 import kotlin.collections.ArrayList
@@ -70,6 +73,8 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
     private val dateFormat = SimpleDateFormat("yyyy-MM", Locale.US)
     private var dates = ArrayMap<String,Int>()
     private val namePattern = Pattern.compile("[A-Za-z0-9]+")
+    private val myFormat = "yyyy-MM-dd" // mention the format you need
+    val sdf = SimpleDateFormat(myFormat, Locale.US)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -300,8 +305,9 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         if (restoreHeight.isNotEmpty() && binding.restoreSeedWalletRestoreHeightCard.isVisible) {
             val restoreHeightBig = BigInteger(restoreHeight)
             if (restoreHeightBig.toLong() >= 0) {
-                val lastHeight = dates.values.maxOf { it }
-                if (restoreHeightBig.toLong() <= lastHeight) {
+                val currentDate = sdf.format(Date())
+                val currentHeight = RestoreHeight.getInstance().getHeight(currentDate)
+                if (restoreHeightBig.toLong() <= currentHeight) {
                     binding.restoreSeedWalletRestoreDate.text = ""
                     binding.restoreSeedRestoreButton.isEnabled = false
                     _recoveryWallet(displayName, password, getSeed, restoreHeight.toLong())

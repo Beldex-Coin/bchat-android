@@ -147,7 +147,8 @@ public class Wallet {
     public enum ConnectionStatus {
         ConnectionStatus_Disconnected,
         ConnectionStatus_Connected,
-        ConnectionStatus_WrongVersion
+        ConnectionStatus_WrongVersion,
+        ConnectionStatus_Connecting
     }
 
     public native String getSeed();

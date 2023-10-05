@@ -731,7 +731,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             }else{
                 val currentFragment = getCurrentFragment()
                 if (currentFragment is WalletFragment) {
-                    currentFragment.updateNodeFailureStatus()
+                    currentFragment.updateNodeConnectingStatus()
                 }
                 if(!CheckOnline.isOnline(this)) {
                     Toast.makeText(

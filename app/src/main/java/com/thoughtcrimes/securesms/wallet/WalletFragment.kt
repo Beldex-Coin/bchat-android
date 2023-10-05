@@ -641,6 +641,20 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                         }
                     }
                 }
+            } else if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connecting) {
+                binding.syncStatusIcon.visibility = View.GONE
+                binding.syncFailIcon.visibility = View.GONE
+                sync = getString(R.string.status_wallet_connecting)
+                setProgress(101)
+                binding.syncStatus.setTextColor(
+                        ContextCompat.getColor(
+                                requireActivity().applicationContext,
+                                R.color.green_color
+                        )
+                )
+                binding.progressBar.indeterminateDrawable.setColorFilter(
+                        ContextCompat.getColor(requireActivity().applicationContext, R.color.green_color), PorterDuff.Mode.SRC_IN)
+
             } else {
                 binding.syncStatusIcon.visibility=View.GONE
                 binding.syncFailIcon.visibility=View.VISIBLE
@@ -713,24 +727,19 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         }
     }
 
-    fun updateNodeFailureStatus() {
+    fun updateNodeConnectingStatus() {
         binding.syncStatusIcon.visibility = View.GONE
-        binding.syncFailIcon.visibility = View.VISIBLE
-        binding.syncFailIcon.setOnClickListener {
-            if (CheckOnline.isOnline(requireActivity())) {
-                checkSyncFailInfo(requireActivity())
-            }
-        }
-        setProgress(getString(R.string.failed_connected_to_the_node))
+        binding.syncFailIcon.visibility = View.GONE
+        setProgress(getString(R.string.status_wallet_connecting))
         setProgress(101)
         binding.syncStatus.setTextColor(
                 ContextCompat.getColor(
                         requireActivity().applicationContext,
-                        R.color.red
+                        R.color.green_color
                 )
         )
         binding.progressBar.indeterminateDrawable.setColorFilter(
-                ContextCompat.getColor(requireActivity().applicationContext,R.color.red), PorterDuff.Mode.SRC_IN)
+                ContextCompat.getColor(requireActivity().applicationContext,R.color.green_color), PorterDuff.Mode.SRC_IN)
     }
 
     private fun refreshBalance(synchronized: Boolean) {

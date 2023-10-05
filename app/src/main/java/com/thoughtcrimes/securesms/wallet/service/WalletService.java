@@ -153,7 +153,7 @@ public class WalletService extends Service {
 
     private long lastDaemonStatusUpdate = 0;
     private long daemonHeight = 0;
-    private Wallet.ConnectionStatus connectionStatus = Wallet.ConnectionStatus.ConnectionStatus_Disconnected;
+    private Wallet.ConnectionStatus connectionStatus = Wallet.ConnectionStatus.ConnectionStatus_Connecting;
     private static final long STATUS_UPDATE_INTERVAL = 120000; // 120s (blocktime)
 
     private void updateDaemonState(Wallet wallet, long height) {

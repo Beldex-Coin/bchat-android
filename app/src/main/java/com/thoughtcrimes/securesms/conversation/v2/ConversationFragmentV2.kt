@@ -3322,11 +3322,16 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     //SteveJosephh21
                     setProgress(-2)
                 }
+            } else if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connecting) {
+                sync = getString(R.string.status_wallet_connecting)
+                setProgress(-1)
+                valueOfWallet = "--"
+                binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, true, valueOfWallet)
             } else {
                 sync = getString(R.string.failed_connected_to_the_node)
                 setProgress(-1)
-                valueOfWallet ="--"
-                binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext,true,valueOfWallet)
+                valueOfWallet = "--"
+                binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, true, valueOfWallet)
             }
             setProgress(sync)
         } else {

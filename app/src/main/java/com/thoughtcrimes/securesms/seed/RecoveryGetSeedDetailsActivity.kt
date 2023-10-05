@@ -300,14 +300,9 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         if (restoreHeight.isNotEmpty() && binding.restoreSeedWalletRestoreHeightCard.isVisible) {
             val restoreHeightBig = BigInteger(restoreHeight)
             if (restoreHeightBig.toLong() >= 0) {
-                val lastHeight = dates.values.maxOf { it }
-                if (restoreHeightBig.toLong() <= lastHeight) {
-                    binding.restoreSeedWalletRestoreDate.text = ""
-                    binding.restoreSeedRestoreButton.isEnabled = false
-                    _recoveryWallet(displayName, password, getSeed, restoreHeight.toLong())
-                } else {
-                    Toast.makeText(this, getString(R.string.restore_height_excess_error_message), Toast.LENGTH_SHORT).show()
-                }
+                binding.restoreSeedWalletRestoreDate.text = ""
+                binding.restoreSeedRestoreButton.isEnabled = false
+                _recoveryWallet(displayName, password, getSeed, restoreHeight.toLong())
             } else {
                 Toast.makeText(this, getString(R.string.restore_height_error_message), Toast.LENGTH_SHORT).show()
             }

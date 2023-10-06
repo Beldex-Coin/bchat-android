@@ -442,15 +442,9 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             icon(R.drawable.ic_close)
             view(R.layout.dialog_change_avatar)
             removeButton(R.string.activity_settings_remove) { removeAvatar() }
-            button(R.string.activity_settings_save) { startAvatarSelection() }
+            button(R.string.activity_settings_upload) { startAvatarSelection() }
         }.apply {
             findViewById<ProfilePictureView>(R.id.profile_picture_view)?.let(::setupProfilePictureView)
-            val profileImage = findViewById<ImageView>(R.id.profileCamaraView)
-            if (TextSecurePreferences.getProfileAvatarId(context) == 0) {
-                profileImage?.setImageResource((R.drawable.ic_profile_add))
-            } else {
-                profileImage?.setImageResource((R.drawable.ic_profile_camera))
-            }
         }
     }
 

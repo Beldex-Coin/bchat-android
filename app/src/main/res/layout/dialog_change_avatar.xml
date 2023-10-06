@@ -20,6 +20,7 @@
         android:layout_gravity="center"
         android:layout_marginStart="35dp"
         android:layout_marginTop="35dp"
+        android:visibility="gone"
         android:src="@drawable/ic_profile_camera" />
 
 </FrameLayout>

@@ -1388,9 +1388,9 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="invitation_msg">Hey, I\'ve been using BChat to chat with complete privacy and security. Come join me! Download it at https://play.google.com/store/apps/details?id=io.beldex.bchat. My Chat ID is %s !</string>
     <string name="id_format">ID: %s</string>
     <string name="bchat" translatable="false">BChat</string>
-    <string name="activity_settings_profile_picture">Profile Picture</string>
-    <string name="activity_settings_save">Save</string>
-    <string name="activity_settings_remove">Remove Picture</string>
+    <string name="activity_settings_profile_picture" translatable="false">Profile Picture</string>
+    <string name="activity_settings_upload" translatable="false">Upload</string>
+    <string name="activity_settings_remove" translatable="false">Remove Picture</string>
     <string name="activity_restore_from_height_missing_error" translatable="false">Please enter a restore height</string>
     <string name="activity_restore_from_date_missing_error" translatable="false">Please pick a restore date</string>
     <string name="restored_via_seed" translatable="false">You restored via Seed!</string>

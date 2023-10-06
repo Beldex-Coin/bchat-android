@@ -225,6 +225,12 @@ public class MediaSendFragment extends Fragment implements ViewTreeObserver.OnGl
   }
 
   @Override
+  public void onResume() {
+    super.onResume();
+    composeText.setFocusableInTouchMode(true);
+  }
+
+  @Override
   public void onPause() {
     super.onPause();
     composeText.setFocusable(false);

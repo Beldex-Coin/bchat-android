@@ -486,7 +486,11 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         }
 
         binding.toolBarRescan.setOnClickListener {
-            activityCallback?.callToolBarRescan()
+            if (activityCallback!!.isSynced) {
+                activityCallback?.callToolBarRescan()
+            } else {
+                Toast.makeText(context, getString(R.string.cannot_access_sync_option), Toast.LENGTH_SHORT).show()
+            }
         }
         binding.toolBarSettings.setOnClickListener {
             activityCallback?.callToolBarSettings()

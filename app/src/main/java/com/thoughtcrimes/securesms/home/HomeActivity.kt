@@ -1089,9 +1089,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     /// QR scanner callbacks
-    override fun onScan() {
+    override fun onScan(view: View?) {
         if (Helper.getCameraPermission(this)) {
-            startWalletScanFragment()
+            replaceFragmentWithTransition(view,ScannerFragment(),null,null)
         } else {
             Timber.i("Waiting for permissions")
         }
@@ -1223,7 +1223,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         if(CheckOnline.isOnline(this)) {
             if (Helper.getCameraPermission(this)) {
                 val extras = Bundle()
-                replaceFragment(WalletScannerFragment(), null, extras)
+                replaceFragmentWithTransition(view,WalletScannerFragment(), null, extras)
             } else {
                 Timber.i("Waiting for permissions")
             }
@@ -1336,10 +1336,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         replaceFragment(WalletScannerFragment(), null, extras)
     }
 
-    private fun startWalletScanFragment() {
-        val extras = Bundle()
-        replaceFragment(ScannerFragment(), null, extras)
-    }
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,

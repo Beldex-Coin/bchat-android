@@ -108,7 +108,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     }
     var onScanListener: OnScanListener? = null
     interface OnScanListener {
-        fun onScan()
+        fun onScan(view: View?)
     }
 
     fun onCreateTransactionFailed(errorText: String?) {
@@ -199,7 +199,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
             if(!CheckOnline.isOnline(requireActivity())) {
                 Toast.makeText(requireActivity(), R.string.please_check_your_internet_connection, Toast.LENGTH_SHORT).show()
             }else{
-                onScanListener?.onScan()
+                onScanListener?.onScan(requireView())
             }
         }
         binding.addressBook.setOnClickListener {
@@ -655,6 +655,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     fun processScannedData(barcodeData: BarcodeData?) {
         scanFromGallery = true
         activityCallback?.setBarcodeData(barcodeData)
+        processScannedData()
     }
 
     private fun processScannedData() {

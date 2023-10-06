@@ -140,7 +140,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     //New Line App Update
     private var appUpdateManager: AppUpdateManager? = null
-    private val immediateAppUpdateRequestCode = 124
+    private val immediateAppUpdateRequestCode = 125
 
     companion object {
         const val SHORTCUT_LAUNCHER = "short_cut_launcher"

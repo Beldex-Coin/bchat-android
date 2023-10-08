@@ -34,6 +34,7 @@ import com.beldex.libsignal.utilities.ThreadUtils
 import com.thoughtcrimes.securesms.ApplicationContext
 import com.thoughtcrimes.securesms.database.*
 import com.thoughtcrimes.securesms.database.model.MessageRecord
+import com.thoughtcrimes.securesms.home.HomeActivity
 import com.thoughtcrimes.securesms.home.UserDetailsBottomSheet
 import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.util.*
@@ -405,8 +406,9 @@ class VisibleMessageView : LinearLayout {
                 UserDetailsBottomSheet.ARGUMENT_THREAD_ID to threadID
         )
         userDetailsBottomSheet.arguments = bundle
-        val activity = context as AppCompatActivity
-        userDetailsBottomSheet.show(activity.supportFragmentManager, userDetailsBottomSheet.tag)
+        context.getFragmentManager()?.let {
+            userDetailsBottomSheet.show(it, userDetailsBottomSheet.tag)
+        }
     }
 
     fun playVoiceMessage() {

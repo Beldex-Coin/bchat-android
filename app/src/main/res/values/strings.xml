@@ -1402,4 +1402,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="join_social_group_content" translatable="false">Scan a Social group\'s QR code for Joining a social group. QR Codes can be found on the social group website link.</string>
     <string name="wallet_scan_qr_content" translatable="false">Scan a receiver\'s QR code to send BDX. QR Codes can be found by clicking on receiver button in Wallet Dashboard.</string>
     <string name="cannot_access_sync_option" translatable="false">Can\'t rescan or reconnect while wallet is syncing</string>
+    <string name="validation_for_balance" translatable="false">You don\'t have enough balance</string>
 </resources>

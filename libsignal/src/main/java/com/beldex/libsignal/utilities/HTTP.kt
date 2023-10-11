@@ -64,7 +64,7 @@ object HTTP {
             .build()
     }
 
-    private const val timeout: Long = 120
+    private const val timeout: Long = 360
 
     open class HTTPRequestFailedException(val statusCode: Int, val json: Map<*, *>?, message: String = "HTTP request failed with status code $statusCode")
         : kotlin.Exception(message)

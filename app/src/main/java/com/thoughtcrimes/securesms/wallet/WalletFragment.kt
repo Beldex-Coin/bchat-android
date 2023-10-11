@@ -308,6 +308,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
 
     companion object{
         var syncingBlocks : Long = 0
+        var getUserBalance: String = "0"
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -622,6 +623,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                     binding.progressBar.indeterminateDrawable.setColorFilter(
                             ContextCompat.getColor(requireActivity().applicationContext,R.color.green_color), PorterDuff.Mode.SRC_IN)
                 } else {
+                    syncingBlocks = 0
                     ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(false)
                     sync = getString(R.string.status_synchronized)//getString(R.string.status_synced) + " " + formatter.format(wallet.blockChainHeight)
                     binding.syncStatus.setTextColor(
@@ -818,6 +820,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                 binding.scanQrCodeImg.setImageResource(R.drawable.ic_scan_qr)
             }
         }
+        getUserBalance = binding.tvBalance.text.toString()
         //Update Fiat Currency
         updateFiatCurrency(balance)
     }

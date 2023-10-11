@@ -345,6 +345,11 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
     private fun createTransactionIfPossible(){
         if(CheckOnline.isOnline(requireContext())) {
+            var getDisplayBalance = WalletFragment.getUserBalance
+            val getEnteredAmount = binding.beldexAmountEditTxtLayout.editText?.text.toString()
+            if (TextSecurePreferences.getDisplayBalanceAs(requireActivity()) == 2) {
+                getDisplayBalance = Helper.getDisplayAmount(totalFunds, Helper.DISPLAY_DIGITS_INFO).toString()
+            }
             if (!checkAddressNoError()) {
                 shakeAddress()
                 val enteredAddress: String =
@@ -354,7 +359,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                     Log.d("OpenAlias is %s", dnsOA)
                 }
                 dnsOA?.let { processOpenAlias(it) }
-            } else {
+            } else if(getDisplayBalance >  getEnteredAmount) {
                 if (binding.beldexAddressEditTxtLayout.editText?.text!!.isNotEmpty() && binding.beldexAmountEditTxtLayout.editText?.text!!.isNotEmpty() && validateBELDEXAmount(binding.beldexAmountEditTxtLayout.editText!!.text.toString()) && binding.beldexAmountEditTxtLayout.editText!!.text.toString()
                         .toDouble() > 0.00
                 ) {
@@ -432,6 +437,8 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                     binding.beldexAddressErrorMessage.visibility = View.VISIBLE
                     binding.beldexAddressErrorMessage.text=getString(R.string.beldex_address_error_message)
                 }
+            } else{
+                Toast.makeText(requireContext(), getString(R.string.validation_for_balance), Toast.LENGTH_SHORT).show()
             }
         } else {
             Toast.makeText(requireContext(), getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()

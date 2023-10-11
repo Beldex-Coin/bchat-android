@@ -308,6 +308,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
 
     companion object{
         var syncingBlocks : Long = 0
+        var getUserBalance: String = "0"
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -818,6 +819,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                 binding.scanQrCodeImg.setImageResource(R.drawable.ic_scan_qr)
             }
         }
+        getUserBalance = binding.tvBalance.text.toString()
         //Update Fiat Currency
         updateFiatCurrency(balance)
     }

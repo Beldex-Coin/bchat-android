@@ -623,6 +623,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                     binding.progressBar.indeterminateDrawable.setColorFilter(
                             ContextCompat.getColor(requireActivity().applicationContext,R.color.green_color), PorterDuff.Mode.SRC_IN)
                 } else {
+                    syncingBlocks = 0
                     ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(false)
                     sync = getString(R.string.status_synchronized)//getString(R.string.status_synced) + " " + formatter.format(wallet.blockChainHeight)
                     binding.syncStatus.setTextColor(

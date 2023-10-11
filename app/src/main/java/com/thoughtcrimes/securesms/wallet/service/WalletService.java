@@ -136,7 +136,10 @@ public class WalletService extends Service {
             long latestBlock =   WalletFragment.Companion.getSyncingBlocks();
             if (wallet != null) {
                 if (CheckOnline.Companion.isOnline(getApplicationContext())) {
-                    if (latestBlock < 50L) {
+                    long blockChainHeight = wallet.getDaemonBlockChainHeight();
+                    long syncedBlockHeight = wallet.getBlockChainHeight();
+                    long latestSyncedBlockHeight = blockChainHeight - syncedBlockHeight;
+                    if(latestBlock <50L || latestSyncedBlockHeight <50L) {
                         wallet.setSynchronized();
                     }
                 }

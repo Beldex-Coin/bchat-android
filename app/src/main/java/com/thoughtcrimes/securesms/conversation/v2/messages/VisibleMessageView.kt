@@ -404,9 +404,7 @@ class VisibleMessageView : LinearLayout {
                 UserDetailsBottomSheet.ARGUMENT_PUBLIC_KEY to publicKey,
                 UserDetailsBottomSheet.ARGUMENT_THREAD_ID to threadID
         )
-        userDetailsBottomSheet.arguments = bundle
-        val activity = context as AppCompatActivity
-        userDetailsBottomSheet.show(activity.supportFragmentManager, userDetailsBottomSheet.tag)
+        ActivityDispatcher.get(context)?.showBottomSheetDialogWithBundle(UserDetailsBottomSheet(),userDetailsBottomSheet.tag,bundle)
     }
 
     fun playVoiceMessage() {

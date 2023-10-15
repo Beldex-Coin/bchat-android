@@ -20,6 +20,7 @@ import com.thoughtcrimes.securesms.conversation.v2.utilities.TextUtilities.getIn
 import com.thoughtcrimes.securesms.database.model.MmsMessageRecord
 import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.mms.ImageSlide
+import com.thoughtcrimes.securesms.util.ActivityDispatcher
 import com.thoughtcrimes.securesms.util.UiModeUtilities
 
 class LinkPreviewView : LinearLayout {
@@ -89,10 +90,9 @@ class LinkPreviewView : LinearLayout {
         }
     }
 
-    fun openURL() {
+    private fun openURL() {
         val url = this.url ?: return
-        val activity = context as AppCompatActivity
-        ModalUrlBottomSheet(url).show(activity.supportFragmentManager, "Open URL Dialog")
+        ActivityDispatcher.get(context)?.showBottomSheetDialog(ModalUrlBottomSheet(url),"Open URL Dialog")
     }
     // endregion
 }

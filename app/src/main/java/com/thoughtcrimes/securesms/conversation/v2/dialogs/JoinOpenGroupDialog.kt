@@ -37,14 +37,13 @@ class JoinOpenGroupDialog(private val name: String, private val url: String) : B
 
     private fun join() {
         val openGroup = OpenGroupUrlParser.parseUrl(url)
-        val activity = requireContext() as AppCompatActivity
         ThreadUtils.queue {
             try {
-                OpenGroupManager.add(openGroup.server, openGroup.room, openGroup.serverPublicKey, activity)
+                OpenGroupManager.add(openGroup.server, openGroup.room, openGroup.serverPublicKey, requireActivity())
                 MessagingModuleConfiguration.shared.storage.onOpenGroupAdded(openGroup.server)
-                ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(activity)
+                ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(requireActivity())
             } catch (e: Exception) {
-                Toast.makeText(activity, R.string.activity_join_public_chat_error, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireActivity(), R.string.activity_join_public_chat_error, Toast.LENGTH_SHORT).show()
             }
         }
         dismiss()

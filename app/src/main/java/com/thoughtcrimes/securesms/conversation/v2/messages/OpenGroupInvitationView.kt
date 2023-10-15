@@ -11,6 +11,7 @@ import com.beldex.libbchat.messaging.utilities.UpdateMessageData
 import com.beldex.libbchat.utilities.OpenGroupUrlParser
 import com.thoughtcrimes.securesms.conversation.v2.dialogs.JoinOpenGroupDialog
 import com.thoughtcrimes.securesms.database.model.MessageRecord
+import com.thoughtcrimes.securesms.util.ActivityDispatcher
 
 class OpenGroupInvitationView : LinearLayout {
     private val binding: ViewOpenGroupInvitationBinding by lazy { ViewOpenGroupInvitationBinding.bind(this) }
@@ -38,7 +39,6 @@ class OpenGroupInvitationView : LinearLayout {
 
     fun joinOpenGroup() {
         val data = data ?: return
-        val activity = context as AppCompatActivity
-        JoinOpenGroupDialog(data.groupName, data.groupUrl).show(activity.supportFragmentManager, "Join Open Group Dialog")
+        ActivityDispatcher.get(context)?.showDialog(JoinOpenGroupDialog(data.groupName,data.groupUrl),"Join Open Group Dialog")
     }
 }

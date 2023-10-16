@@ -53,6 +53,10 @@ public class ThreadRecord extends DisplayRecord {
   private           final long    expiresIn;
   private           final long    lastSeen;
   private           final boolean pinned;
+  /*This variable was introduced to handle the problem of nickname
+  * not updating in home screen after we update it from detail sheet.
+  * This was to make sure HomeDifUtil returns a difference between old and new list*/
+  private           final String  nickName;
 
   public ThreadRecord(@NonNull String body, @Nullable Uri snippetUri,
                       @NonNull Recipient recipient, long date, long count, int unreadCount,
@@ -69,6 +73,7 @@ public class ThreadRecord extends DisplayRecord {
     this.expiresIn        = expiresIn;
     this.lastSeen         = lastSeen;
     this.pinned         = pinned;
+    this.nickName         = recipient.getName();
   }
 
   public @Nullable Uri getSnippetUri() {
@@ -188,5 +193,9 @@ public class ThreadRecord extends DisplayRecord {
 
   public boolean isPinned() {
     return pinned;
+  }
+
+  public String getNickName() {
+    return nickName;
   }
 }

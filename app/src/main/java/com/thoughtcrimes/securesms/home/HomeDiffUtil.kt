@@ -30,7 +30,10 @@ class HomeDiffUtil(
         if (!samePinned) return false
         val sameAvatar = oldItem.recipient.profileAvatar == newItem.recipient.profileAvatar
         if (!sameAvatar) return false
-        val sameUsername = oldItem.recipient.name == newItem.recipient.name
+//        val sameUsername = oldItem.recipient.name == newItem.recipient.name
+        /*recipient.name is replaced by new variable as recipient.name was causing home screen to
+        * not update the list after nickname was updated from sheet*/
+        val sameUsername = oldItem.nickName == newItem.nickName
         if (!sameUsername) return false
         val sameSnippet = oldItem.getDisplayBody(context) == newItem.getDisplayBody(context)
         if (!sameSnippet) return false

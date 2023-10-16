@@ -40,6 +40,7 @@ import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getWalletNa
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getWalletPassword
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
@@ -656,6 +657,15 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     override fun showDialog(baseDialog: BaseDialog, tag: String?) {
         baseDialog.show(supportFragmentManager, tag)
+    }
+
+    override fun showBottomSheetDialog(bottomSheetDialogFragment: BottomSheetDialogFragment, tag: String?) {
+        bottomSheetDialogFragment.show(supportFragmentManager,tag)
+    }
+
+    override fun showBottomSheetDialogWithBundle(bottomSheetDialogFragment: BottomSheetDialogFragment, tag: String?, bundle: Bundle) {
+        bottomSheetDialogFragment.arguments = bundle
+        bottomSheetDialogFragment.show(supportFragmentManager,tag)
     }
 
     //Wallet

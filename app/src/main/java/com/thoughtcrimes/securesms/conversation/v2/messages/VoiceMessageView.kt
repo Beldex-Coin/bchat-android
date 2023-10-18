@@ -42,6 +42,7 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
     private var player: AudioSlidePlayer? = null
     var delegate: VoiceMessageViewDelegate? = null
     var indexInAdapter = -1
+    private var messageId: Int = 0
 
     // region Lifecycle
     constructor(context: Context) : super(context)
@@ -106,14 +107,23 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
         }
     }
 
+    fun getMessageID(messageRecord: Long){
+        messageId = messageRecord.toInt()
+    }
+
     private fun handleProgressChanged(progress: Double) {
-        this.progress = progress
-        binding.voiceMessageViewDurationTextView.text = String.format("%01d:%02d",
-            TimeUnit.MILLISECONDS.toMinutes(duration - (progress * duration.toDouble()).roundToLong()),
-            TimeUnit.MILLISECONDS.toSeconds(duration - (progress * duration.toDouble()).roundToLong()) % 60)
-        val layoutParams = binding.progressView.layoutParams as RelativeLayout.LayoutParams
-        layoutParams.width = (width.toFloat() * progress.toFloat()).roundToInt()
-        binding.progressView.layoutParams = layoutParams
+        if (messageId != 0) {
+            this.progress = progress
+            binding.voiceMessageViewDurationTextView.text = String.format("%01d:%02d",
+                    TimeUnit.MILLISECONDS.toMinutes(duration - (progress * duration.toDouble()).roundToLong()),
+                    TimeUnit.MILLISECONDS.toSeconds(duration - (progress * duration.toDouble()).roundToLong()) % 60)
+            val layoutParams = binding.progressView.layoutParams as RelativeLayout.LayoutParams
+            layoutParams.width = (width.toFloat() * progress.toFloat()).roundToInt()
+            binding.progressView.layoutParams = layoutParams
+        } else {
+            isPlaying = false
+            player!!.stop()
+        }
     }
 
     override fun onPlayerStop(player: AudioSlidePlayer) {

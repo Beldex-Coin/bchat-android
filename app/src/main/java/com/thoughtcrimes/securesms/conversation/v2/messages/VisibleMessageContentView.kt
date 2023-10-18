@@ -223,7 +223,8 @@ class VisibleMessageContentView : ConstraintLayout {
                     )
                     // We have to use onContentClick (rather than a click listener directly on the voice
                     // message view) so as to not interfere with all the other gestures.
-                    onContentClick.add { binding.voiceMessageView.root.togglePlayback() }
+                    onContentClick.add { binding.voiceMessageView.root.togglePlayback()
+                        binding.voiceMessageView.root.getMessageID(message.id)}
                     onContentDoubleTap = { binding.voiceMessageView.root.handleDoubleTap() }
                 } else {
                     // TODO: move this out to its own area

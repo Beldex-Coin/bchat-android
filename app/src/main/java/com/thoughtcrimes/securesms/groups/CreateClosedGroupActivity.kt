@@ -159,6 +159,7 @@ class CreateClosedGroupActivity : PassphraseRequiredActionBarActivity(), LoaderM
         val userPublicKey = TextSecurePreferences.getLocalNumber(this)!!
         isLoading = true
         binding.loaderContainer.fadeIn()
+        hideSoftKeyboard()
         binding.nameEditText.text.clear()
         binding.nameEditText.isFocusable = false
         MessageSender.createClosedGroup(name.toString(), selectedMembers + setOf( userPublicKey )).successUi { groupID ->

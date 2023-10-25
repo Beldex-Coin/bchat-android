@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
@@ -16,15 +17,18 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 
+import com.thoughtcrimes.securesms.home.HomeActivity;
 import com.thoughtcrimes.securesms.permissions.Permissions;
 import com.thoughtcrimes.securesms.util.Trimmer;
 
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.beldex.libsignal.utilities.Log;
+import com.thoughtcrimes.securesms.wallet.WalletSetupLoadingBar;
 import com.thoughtcrimes.securesms.wallet.info.WalletInfoActivity;
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity;
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock;
@@ -48,6 +52,8 @@ public class ChatsPreferenceFragment extends ListSummaryPreferenceFragment {
     initializeListSummary((ListPreference) findPreference(TextSecurePreferences.CHAT_FONT_SIZE));
     findPreference(TextSecurePreferences.PAY_AS_YOU_CHAT_PREF)
             .setOnPreferenceChangeListener(new PayAsYouChatListener());
+    findPreference(TextSecurePreferences.IS_WALLET_ACTIVE)
+            .setOnPreferenceChangeListener(new StartWalletListener());
 
   }
 
@@ -223,4 +229,44 @@ public class ChatsPreferenceFragment extends ListSummaryPreferenceFragment {
     });
   }
 
+  class StartWalletListener implements Preference.OnPreferenceChangeListener {
+    @Override
+    public boolean onPreferenceChange(Preference preference, Object newValue) {
+      boolean preferenceValue = (boolean) newValue;
+      if (!preferenceValue) {
+        TextSecurePreferences.setBooleanPreference(requireContext(), TextSecurePreferences.PAY_AS_YOU_CHAT_PREF, false);
+      }
+      showProgress();
+      Handler handler = new Handler();
+      handler.postDelayed(() -> {
+        hideProgress();
+        restartHome();
+      }, 2000);
+      return true;
+    }
+
+    private void restartHome() {
+      Intent intent = new Intent(requireContext(), HomeActivity.class);
+      intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+      startActivity(intent);
+    }
+
+    private void showProgress() {
+      new WalletSetupLoadingBar().show(
+              requireActivity().getSupportFragmentManager(),
+              "wallet_setup_progressbar_tag");
+    }
+
+    private void hideProgress() {
+      WalletSetupLoadingBar fragment = (WalletSetupLoadingBar) requireActivity().getSupportFragmentManager().findFragmentByTag("wallet_setup_progressbar_tag");
+      if (fragment != null) {
+        DialogFragment dialogFragment = new DialogFragment();
+        try {
+          dialogFragment.dismiss();
+        } catch (IllegalStateException ex) {
+          Log.e("Beldex", "IllegalStateException " + ex);
+        }
+      }
+    }
+  }
 }

@@ -593,15 +593,17 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 //            }
 //        }
         viewModel.recipient.value?.let { thread ->
-            if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && HomeActivity.reportIssueBChatID != thread.address.toString() && !thread.isLocalNumber) {
+            if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && HomeActivity.reportIssueBChatID != thread.address.toString() && !thread.isLocalNumber && TextSecurePreferences.isWalletActive(requireContext())) {
                 listenerCallback!!.forceUpdate(requireActivity())
             }
         }
-        showBlockProgressBar(viewModel.recipient.value)
+        if(TextSecurePreferences.isWalletActive(requireContext())) {
+            showBlockProgressBar(viewModel.recipient.value)
 
-        callShowPayAsYouChatBDXIcon(viewModel.recipient.value)
+            callShowPayAsYouChatBDXIcon(viewModel.recipient.value)
 
-        showBalance(Helper.getDisplayAmount(0), Helper.getDisplayAmount(0), walletSynchronized)
+            showBalance(Helper.getDisplayAmount(0), Helper.getDisplayAmount(0), walletSynchronized)
+        }
 
         if (listenerCallback!!.getNode() == null) {
             setProgress(getString(R.string.failed_to_connect_to_node))

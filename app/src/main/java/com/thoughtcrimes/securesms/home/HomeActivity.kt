@@ -71,14 +71,8 @@ import com.thoughtcrimes.securesms.model.PendingTransaction
 import com.thoughtcrimes.securesms.model.TransactionInfo
 import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.model.WalletManager
-import com.thoughtcrimes.securesms.onboarding.AboutActivity
 import com.thoughtcrimes.securesms.onboarding.SeedActivity
 import com.thoughtcrimes.securesms.onboarding.SeedReminderViewDelegate
-import com.thoughtcrimes.securesms.preferences.NotificationSettingsActivity
-import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
-import com.thoughtcrimes.securesms.preferences.SettingsActivity
-import com.thoughtcrimes.securesms.preferences.ShowQRCodeWithScanQRCodeActivity
-import com.thoughtcrimes.securesms.seed.SeedPermissionActivity
 import com.thoughtcrimes.securesms.util.ActivityDispatcher
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.IP2Country
@@ -543,7 +537,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     private fun backToHome(fragment: HomeFragment?) {
         when {
-            !synced -> {
+            !synced && TextSecurePreferences.isWalletActive(this) -> {
                 val dialog: AlertDialog.Builder =
                     AlertDialog.Builder(this, R.style.BChatAlertDialog_Wallet_Syncing_Exit_Alert)
                 dialog.setTitle(getString(R.string.wallet_syncing_alert_title))
@@ -608,12 +602,14 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         //unregisterDetachReceiver()
         //Ledger.disconnect()
 
-        if(CheckOnline.isOnline(this)) {
-            if (mBoundService != null && getWallet() != null) {
-                saveWallet()
+        if(TextSecurePreferences.isWalletActive(this)) {
+            if (CheckOnline.isOnline(this)) {
+                if (mBoundService != null && getWallet() != null) {
+                    saveWallet()
+                }
             }
+            stopWalletService()
         }
-        stopWalletService()
         super.onDestroy()
     }
 
@@ -1304,7 +1300,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }
     }
 
-    private fun saveWallet() {
+     fun saveWallet() {
         if (mIsBound) { // no point in talking to unbound service
             var intent: Intent? = null
             if(intent==null) {

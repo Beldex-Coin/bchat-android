@@ -256,8 +256,12 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                     }
                     1 -> {
                         // # My Wallet Activity
-                        if(CheckOnline.isOnline(requireActivity().applicationContext)) {
-                            openMyWallet()
+                        if (CheckOnline.isOnline(requireActivity().applicationContext)) {
+                            if (TextSecurePreferences.isWalletActive(requireContext())) {
+                                openMyWallet()
+                            } else {
+                                Toast.makeText(requireActivity(), getString(R.string.validation_for_start_wallet), Toast.LENGTH_SHORT).show()
+                            }
                         }
                         else {
                             Toast.makeText(requireActivity().applicationContext,getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
@@ -527,7 +531,9 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     override fun onResume() {
         super.onResume()
         setupCallActionBar()
-        pingSelectedNode()
+        if(TextSecurePreferences.isWalletActive(requireContext())) {
+            pingSelectedNode()
+        }
         ApplicationContext.getInstance(requireActivity().applicationContext).messageNotifier.setHomeScreenVisible(false)
         if (TextSecurePreferences.getLocalNumber(requireActivity().applicationContext) == null) {
             return; } // This can be the case after a secondary device is auto-cleared

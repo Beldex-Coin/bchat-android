@@ -1403,4 +1403,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="wallet_scan_qr_content" translatable="false">Scan a receiver\'s QR code to send BDX. QR Codes can be found by clicking on receiver button in Wallet Dashboard.</string>
     <string name="cannot_access_sync_option" translatable="false">Can\'t rescan or reconnect while wallet is syncing</string>
     <string name="validation_for_balance" translatable="false">You don\'t have enough balance</string>
+    <string name="validation_for_start_wallet" translatable="false">Enable wallet start option in My Account</string>
+    <string name="wallet_setup_loading_content" translatable="false">Home screen is restart for wallet setup process... Please wait until complete!</string>
 </resources>

@@ -272,7 +272,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
     }
 
     fun showPayAsYouChatBDXIcon(thread: Recipient,reportIssueId:String) {
-        if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && reportIssueId!=thread.address.toString() && !thread.isLocalNumber) {
+        if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && reportIssueId!=thread.address.toString() && !thread.isLocalNumber && TextSecurePreferences.isWalletActive(context)) {
             binding.payAsYouChatLayout.visibility = View.VISIBLE
         }else{
             binding.payAsYouChatLayout.visibility = View.GONE

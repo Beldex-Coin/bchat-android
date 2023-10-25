@@ -247,6 +247,7 @@ interface TextSecurePreferences {
 
     fun getLastVacuum(): Long
     fun setLastVacuumNow()
+    fun isWalletActive(): Boolean
 
 
     companion object {
@@ -359,6 +360,7 @@ interface TextSecurePreferences {
         const val PAY_AS_YOU_CHAT_PREF = "pref_pay_as_you_chat"
         const val COPIED_SEED = "copied_seed"
         const val LAST_VACUUM_TIME = "pref_last_vacuum_time"
+        const val IS_WALLET_ACTIVE = "pref_is_wallet_active"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -1358,6 +1360,10 @@ interface TextSecurePreferences {
         fun setLastVacuumNow(context: Context) {
             setLongPreference(context, LAST_VACUUM_TIME, System.currentTimeMillis())
         }
+        @JvmStatic
+        fun isWalletActive(context: Context): Boolean {
+            return getBooleanPreference(context, IS_WALLET_ACTIVE, false)
+        }
 
     }
 }
@@ -2210,6 +2216,10 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun setLastVacuumNow() {
         setLongPreference(LAST_VACUUM_TIME, System.currentTimeMillis())
+    }
+
+    override fun isWalletActive(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.IS_WALLET_ACTIVE, false)
     }
 
 

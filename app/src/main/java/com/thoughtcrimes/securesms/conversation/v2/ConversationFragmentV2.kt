@@ -930,6 +930,14 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun toggleAttachmentOptions() {
+        val recipient = viewModel.recipient.value ?: return
+        if (recipient.isBlocked) {
+            BlockedDialog(recipient).show(
+                    requireActivity().supportFragmentManager,
+                    "Blocked Dialog"
+            )
+            return
+        }
         val targetAlpha = if (isShowingAttachmentOptions) 0.0f else 1.0f
         val allButtonContainers = listOfNotNull(
             binding.cameraButtonContainer,
@@ -1093,6 +1101,14 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun startRecordingVoiceMessage() {
+        val recipient = viewModel.recipient.value ?: return
+        if (recipient.isBlocked) {
+            BlockedDialog(recipient).show(
+                    requireActivity().supportFragmentManager,
+                    "Blocked Dialog"
+            )
+            return
+        }
         if(callViewModel?.callStartTime == -1L) {
             if (Permissions.hasAll(requireActivity(), Manifest.permission.RECORD_AUDIO)) {
                 showVoiceMessageUI()

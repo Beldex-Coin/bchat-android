@@ -79,7 +79,7 @@ class VisibleMessageContentView : ConstraintLayout {
         // Background
         val background = getBackground(message.isOutgoing, isStartOfMessageCluster, isEndOfMessageCluster)
         val colorID = if (message.isOutgoing) {
-            if (message.isFailed) {
+            if (message.isFailed && !message.isPayment) {
                 R.attr.message_sent_background_transparent_color
             } else {
                 R.attr.message_sent_background_color

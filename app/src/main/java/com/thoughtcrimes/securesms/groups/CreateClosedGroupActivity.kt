@@ -13,8 +13,6 @@ import android.widget.Toast
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityCreateClosedGroupBinding
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.messaging.sending_receiving.groupSizeLimit
 import com.beldex.libbchat.utilities.Address
@@ -25,13 +23,15 @@ import com.thoughtcrimes.securesms.contacts.SelectContactsAdapter
 import com.thoughtcrimes.securesms.contacts.SelectContactsLoader
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
+import com.thoughtcrimes.securesms.mms.GlideApp
+import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.UiModeUtilities
 import com.thoughtcrimes.securesms.util.fadeIn
 import com.thoughtcrimes.securesms.util.fadeOut
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ActivityCreateClosedGroupBinding
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
-import com.thoughtcrimes.securesms.mms.GlideApp
-import com.thoughtcrimes.securesms.util.Helper
 
 class CreateClosedGroupActivity : PassphraseRequiredActionBarActivity(), LoaderManager.LoaderCallbacks<List<String>> {
     private lateinit var binding: ActivityCreateClosedGroupBinding
@@ -83,6 +83,7 @@ class CreateClosedGroupActivity : PassphraseRequiredActionBarActivity(), LoaderM
                     false
                 }
             }
+            loaderContainer.setOnClickListener {  }
         }
         LoaderManager.getInstance(this).initLoader(0, null, this)
     }
@@ -161,7 +162,7 @@ class CreateClosedGroupActivity : PassphraseRequiredActionBarActivity(), LoaderM
         binding.loaderContainer.fadeIn()
         hideSoftKeyboard()
         binding.nameEditText.text.clear()
-        binding.nameEditText.isFocusable = false
+        binding.nameEditText.clearFocus()
         MessageSender.createClosedGroup(name.toString(), selectedMembers + setOf( userPublicKey )).successUi { groupID ->
             binding.nameEditText.isFocusable = true
             binding.loaderContainer.fadeOut()

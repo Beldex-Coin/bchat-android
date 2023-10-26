@@ -2576,7 +2576,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     override fun showVoiceMessageUI() {
         //New Line
-        binding.inputBar.visibility = View.GONE
+        binding.inputBar.visibility = View.INVISIBLE
 
         binding.inputBarRecordingView.show()
         binding.inputBarCard.alpha = 0.0f

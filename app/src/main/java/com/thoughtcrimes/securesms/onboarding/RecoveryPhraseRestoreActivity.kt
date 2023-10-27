@@ -79,23 +79,13 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable) {
-                if (s.length >= 2) {
-                    val isMultipleSpace = s.substring(s.length - 2).all { it.isWhitespace() }
-                    if (isMultipleSpace) {
-                        binding.mnemonicEditText.apply {
-                            setText(s.removeSuffix(" "))
-                            setSelection(s.length - 1)
-                        }
-                    }
-                }
-
                 var numberOfInputWords = 0
 
                 if(s.toString().isNotEmpty())
                     numberOfInputWords = s.toString().trim().split("\\s+".toRegex()).size
                 binding.recoveryPhraseCountWord.text = "$numberOfInputWords/25"
 
-                if (numberOfInputWords > 25){
+                if (numberOfInputWords >= 25){
                     filter = InputFilter.LengthFilter(binding.mnemonicEditText.text.toString().length)
                     binding.mnemonicEditText.filters = arrayOf<InputFilter>(filter ?: return)
                 }

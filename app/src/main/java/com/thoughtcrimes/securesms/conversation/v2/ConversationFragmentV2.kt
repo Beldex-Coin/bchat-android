@@ -2485,13 +2485,21 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
     }
 
+    private fun isIncomingMessageRequestThread(): Boolean {
+        val recipient = viewModel.recipient.value ?: return false
+        return !recipient.isGroupRecipient &&
+                !recipient.isApproved &&
+                !recipient.isLocalNumber &&
+                !threadDb.getLastSeenAndHasSent(viewModel.threadId).second() &&
+                threadDb.getMessageCount(viewModel.threadId) > 0
+    }
     /*Hales63*/
     private fun setUpMessageRequestsBar() {
         val recipient = viewModel.recipient.value ?: return
         if (recipient.address.toString() != HomeActivity.reportIssueBChatID) {
             binding.inputBar.showMediaControls = !isOutgoingMessageRequestThread()
         }
-        binding.messageRequestBar.isVisible = viewModel.isIncomingMessageRequestThread()
+        binding.messageRequestBar.isVisible = isIncomingMessageRequestThread()
         binding.acceptMessageRequestButton.setOnClickListener {
             acceptAlertDialog()
         }

@@ -1691,11 +1691,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun showMessageDetail(messages: Set<MessageRecord>) {
-        val message = messages.first()
-        val intent = Intent(requireActivity(), MessageDetailActivity::class.java)
-        intent.putExtra(MessageDetailActivity.MESSAGE_TIMESTAMP, message.timestamp)
-        startActivity(intent)
-        endActionMode()
+        if(messages.isNotEmpty()) {
+            val message = messages.first()
+            val intent = Intent(requireActivity(), MessageDetailActivity::class.java)
+            intent.putExtra(MessageDetailActivity.MESSAGE_TIMESTAMP, message.timestamp)
+            startActivity(intent)
+            endActionMode()
+        }
     }
 
     override fun saveAttachment(messages: Set<MessageRecord>) {
@@ -1756,8 +1758,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         //New Line
         val params = binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
         params.bottomMargin = 16
-
-        binding.inputBar.draftQuote(recipient, messages.first(), glide)
+        if(messages.isNotEmpty()) {
+            binding.inputBar.draftQuote(recipient, messages.first(), glide)
+        }
         endActionMode()
     }
 

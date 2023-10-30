@@ -52,6 +52,7 @@ import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.permissions.Permissions
 import com.thoughtcrimes.securesms.profiles.ProfileMediaConstraints
 import com.thoughtcrimes.securesms.showCustomDialog
+import com.thoughtcrimes.securesms.wallet.CheckOnline
 import java.util.regex.Pattern
 
 class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.AnimationListener {
@@ -454,12 +455,20 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
 
     private fun startAvatarSelection() {
         // Ask for an optional camera permission.
-        Permissions.with(this)
-            .request(Manifest.permission.CAMERA)
-            .onAnyResult {
-                tempFile = AvatarSelection.startAvatarSelection(this, false, true)
-            }
-            .execute()
+        if (CheckOnline.isOnline(this)) {
+            Permissions.with(this)
+                    .request(Manifest.permission.CAMERA)
+                    .onAnyResult {
+                        tempFile = AvatarSelection.startAvatarSelection(this, false, true)
+                    }
+                    .execute()
+        } else {
+            Toast.makeText(
+                    this,
+                    getString(R.string.please_check_your_internet_connection),
+                    Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private fun copyPublicKey() {

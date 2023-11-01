@@ -2424,7 +2424,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         binding.blockedBanner.isVisible = recipient.isBlocked
         callShowPayAsYouChatBDXIcon(recipient)
         showBlockProgressBar(recipient)
-        binding.blockedBanner.setOnClickListener { viewModel.unblock() }
         binding.unblockButton.setOnClickListener {
             viewModel.unblock()
             viewModel.recipient.value?.let { thread ->

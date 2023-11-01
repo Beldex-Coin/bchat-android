@@ -132,23 +132,21 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
         window.setDimAmount(if (isLightMode) 0.1f else 0.75f)
     }
 
-    fun saveNickName(recipient: Recipient) = with(binding) {
-        nicknameEditText.clearFocus()
-        hideSoftKeyboard()
-        nameTextViewContainer.visibility = View.VISIBLE
-        nameEditTextContainer.visibility = View.INVISIBLE
-        var newNickName: String? = null
-        if (nicknameEditText.text.trim().isNotEmpty()) {
-            newNickName = nicknameEditText.text.toString()
-        }else{
+    private fun saveNickName(recipient: Recipient) = with(binding) {
+        if (nicknameEditText.text.trim().isEmpty()) {
             Toast.makeText(context,R.string.enter_a_valid_nickname,Toast.LENGTH_SHORT).show()
+        }else{
+            nicknameEditText.clearFocus()
+            hideSoftKeyboard()
+            nameTextViewContainer.visibility = View.VISIBLE
+            nameEditTextContainer.visibility = View.INVISIBLE
+            val publicKey = recipient.address.serialize()
+            val contactDB = DatabaseComponent.get(requireContext()).bchatContactDatabase()
+            val contact = contactDB.getContactWithBchatID(publicKey) ?: Contact(publicKey)
+            contact.nickname = nicknameEditText.text.toString()
+            contactDB.setContact(contact)
+            nameTextView.text = recipient.name ?: publicKey // Uses the Contact API internally
         }
-        val publicKey = recipient.address.serialize()
-        val contactDB = DatabaseComponent.get(requireContext()).bchatContactDatabase()
-        val contact = contactDB.getContactWithBchatID(publicKey) ?: Contact(publicKey)
-        contact.nickname = newNickName
-        contactDB.setContact(contact)
-        nameTextView.text = recipient.name ?: publicKey // Uses the Contact API internally
     }
 
     @SuppressLint("ServiceCast")

@@ -57,12 +57,13 @@ public class ThreadRecord extends DisplayRecord {
   * not updating in home screen after we update it from detail sheet.
   * This was to make sure HomeDifUtil returns a difference between old and new list*/
   private           final String  nickName;
+  private           final int messageRequestCount;
 
   public ThreadRecord(@NonNull String body, @Nullable Uri snippetUri,
                       @NonNull Recipient recipient, long date, long count, int unreadCount,
                       long threadId, int deliveryReceiptCount, int status, long snippetType,
                       int distributionType, boolean archived, long expiresIn, long lastSeen,
-                      int readReceiptCount, boolean pinned)
+                      int readReceiptCount, boolean pinned, int messageRequestCount)
   {
     super(body, recipient, date, date, threadId, status, deliveryReceiptCount, snippetType, readReceiptCount);
     this.snippetUri       = snippetUri;
@@ -74,20 +75,10 @@ public class ThreadRecord extends DisplayRecord {
     this.lastSeen         = lastSeen;
     this.pinned         = pinned;
     this.nickName         = recipient.getName();
+    this.messageRequestCount = messageRequestCount;
   }
 
-  public ThreadRecord(int unreadCount) {
-    super(null, null, 0, 0, 0, 0, 0, 0, 0);
-    this.unreadCount = unreadCount;
-    this.snippetUri       = null;
-    this.count            = 0;
-    this.distributionType = 0;
-    this.archived         = false;
-    this.expiresIn        = 0;
-    this.lastSeen         = 0;
-    this.pinned         = false;
-    this.nickName         = null;
-  }
+
 
   public @Nullable Uri getSnippetUri() {
     return snippetUri;
@@ -210,5 +201,9 @@ public class ThreadRecord extends DisplayRecord {
 
   public String getNickName() {
     return nickName;
+  }
+
+  public int getMessageRequestCount() {
+    return messageRequestCount;
   }
 }

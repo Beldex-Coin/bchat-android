@@ -22,9 +22,8 @@ class HomeDiffUtil(
         val oldItem = old[oldItemPosition]
         val newItem = new[newItemPosition]
 
-        if (!hiddenRequestCounts && (oldItemPosition == 0 && newItemPosition == 0)) {
-            return oldItem.unreadCount == newItem.unreadCount
-        }
+        val sameMessageRequestCount = oldItem.messageRequestCount == newItem.messageRequestCount
+        if(!sameMessageRequestCount) return false
 
         // return early to save getDisplayBody or expensive calls
         val sameCount = oldItem.count == newItem.count

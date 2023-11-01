@@ -368,7 +368,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
             val messageRequestCount = threadDb.unapprovedConversationCount
             var requestData = emptyList<ThreadRecord>()
             if (messageRequestCount > 0 && !(activity as HomeActivity).textSecurePreferences.hasHiddenMessageRequests()) {
-                requestData = listOf(ThreadRecord(messageRequestCount))
+                requestData = newData
                 homeAdapter.setHasMessageRequestCount(true)
             } else {
                 homeAdapter.setHasMessageRequestCount(false)

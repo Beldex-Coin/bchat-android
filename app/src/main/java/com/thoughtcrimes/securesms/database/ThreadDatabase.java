@@ -884,6 +884,7 @@ public class ThreadDatabase extends Database {
       long               lastSeen             = cursor.getLong(cursor.getColumnIndexOrThrow(ThreadDatabase.LAST_SEEN));
       Uri                snippetUri           = getSnippetUri(cursor);
       boolean            pinned              = cursor.getInt(cursor.getColumnIndexOrThrow(ThreadDatabase.IS_PINNED)) != 0;
+      int                messageRequestCount  = getUnapprovedConversationCount();
 
       if (!TextSecurePreferences.isReadReceiptsEnabled(context)) {
         readReceiptCount = 0;
@@ -891,7 +892,7 @@ public class ThreadDatabase extends Database {
 
       return new ThreadRecord(body, snippetUri, recipient, date, count,
                               unreadCount, threadId, deliveryReceiptCount, status, type,
-                              distributionType, archived, expiresIn, lastSeen, readReceiptCount, pinned);
+                              distributionType, archived, expiresIn, lastSeen, readReceiptCount, pinned,messageRequestCount);
     }
 
     private @Nullable Uri getSnippetUri(Cursor cursor) {

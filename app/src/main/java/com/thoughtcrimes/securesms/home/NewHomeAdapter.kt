@@ -22,11 +22,12 @@ class NewHomeAdapter(private val context: Context, private val listener: Convers
     var header: View? = null
 
     private var _data: List<ThreadRecord> = emptyList()
+    private var hasMessageRequests: Boolean = false
     var data: List<ThreadRecord>
         get() = _data.toList()
         set(newData) {
             val previousData = _data.toList()
-            val diff = HomeDiffUtil(previousData, newData, context)
+            val diff = HomeDiffUtil(previousData, newData, context,hasMessageRequests)
             val diffResult = DiffUtil.calculateDiff(diff)
             _data = newData
             diffResult.dispatchUpdatesTo(this as ListUpdateCallback)

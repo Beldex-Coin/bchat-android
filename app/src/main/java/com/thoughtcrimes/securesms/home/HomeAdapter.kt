@@ -99,7 +99,7 @@ class HomeAdapter(private val context: Context, private val listener: Conversati
         if (position == 0 && hasMessageRequests) {
             with((holder as HeaderFooterViewHolder).view) {
                 val item = data[position]
-                unreadCountTextView.text = item.unreadCount.toString()
+                unreadCountTextView.text = item.messageRequestCount.toString()
                 timestampTextView.text = DateUtils.getDisplayFormattedTimeSpanString(
                     context,
                     Locale.getDefault(),

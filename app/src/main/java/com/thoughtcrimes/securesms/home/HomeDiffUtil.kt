@@ -7,7 +7,8 @@ import com.thoughtcrimes.securesms.database.model.ThreadRecord
 class HomeDiffUtil(
     private val old: List<ThreadRecord>,
     private val new: List<ThreadRecord>,
-    private val context: Context
+    private val context: Context,
+    private val hiddenRequestCounts: Boolean
 ): DiffUtil.Callback() {
 
     override fun getOldListSize(): Int = old.size
@@ -20,6 +21,10 @@ class HomeDiffUtil(
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldItem = old[oldItemPosition]
         val newItem = new[newItemPosition]
+
+        if (!hiddenRequestCounts && (oldItemPosition == 0 && newItemPosition == 0)) {
+            return oldItem.unreadCount == newItem.unreadCount
+        }
 
         // return early to save getDisplayBody or expensive calls
         val sameCount = oldItem.count == newItem.count

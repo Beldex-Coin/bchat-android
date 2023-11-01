@@ -76,6 +76,19 @@ public class ThreadRecord extends DisplayRecord {
     this.nickName         = recipient.getName();
   }
 
+  public ThreadRecord(int unreadCount) {
+    super(null, null, 0, 0, 0, 0, 0, 0, 0);
+    this.unreadCount = unreadCount;
+    this.snippetUri       = null;
+    this.count            = 0;
+    this.distributionType = 0;
+    this.archived         = false;
+    this.expiresIn        = 0;
+    this.lastSeen         = 0;
+    this.pinned         = false;
+    this.nickName         = null;
+  }
+
   public @Nullable Uri getSnippetUri() {
     return snippetUri;
   }

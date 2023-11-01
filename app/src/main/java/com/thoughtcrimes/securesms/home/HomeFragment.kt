@@ -137,7 +137,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
 
     /*Hales63*/
     private val homeAdapter: HomeAdapter by lazy {
-        HomeAdapter(context = requireActivity(), listener = this)
+        HomeAdapter(context = requireActivity(), listener = this, threadDB = threadDb)
     }
 
     private val globalSearchAdapter = GlobalSearchAdapter { model ->
@@ -347,7 +347,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         }
         binding.bchatToolbar.disableClipping()
 
-        setupMessageRequestsBanner()
+//        setupMessageRequestsBanner()
         setupHeaderImage()
         // Set up recycler view
         binding.globalSearchInputLayout.listener = this
@@ -365,9 +365,17 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                     manager.getDecoratedTop(view) - manager.getTopDecorationHeight(view)
                 } ?: 0
             } else 0
-            homeAdapter.data = newData
+            val messageRequestCount = threadDb.unapprovedConversationCount
+            var requestData = emptyList<ThreadRecord>()
+            if (messageRequestCount > 0 && !(activity as HomeActivity).textSecurePreferences.hasHiddenMessageRequests()) {
+                requestData = listOf(ThreadRecord(messageRequestCount))
+                homeAdapter.setHasMessageRequestCount(true)
+            } else {
+                homeAdapter.setHasMessageRequestCount(false)
+            }
+            homeAdapter.data = if (requestData.isEmpty()) newData else requestData + newData
             if(firstPos >= 0) { manager.scrollToPositionWithOffset(firstPos, offsetTop) }
-            setupMessageRequestsBanner()
+//            setupMessageRequestsBanner()
             updateEmptyState()
         }
         ApplicationContext.getInstance(requireActivity()).typingStatusRepository.typingThreads.observe(requireActivity()) { threadIds ->
@@ -391,45 +399,52 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
 
 
     /*Hales63*/
-    private fun setupMessageRequestsBanner() {
-            val messageRequestCount = threadDb.unapprovedConversationCount
-            // Set up message requests
-            if (messageRequestCount > 0 && !(activity as HomeActivity).textSecurePreferences.hasHiddenMessageRequests()) {
-                with(ViewMessageRequestBannerBinding.inflate(layoutInflater)) {
-                    unreadCountTextView.text = messageRequestCount.toString()
-                    timestampTextView.text = DateUtils.getDisplayFormattedTimeSpanString(
-                        requireActivity().applicationContext,
-                        Locale.getDefault(),
-                        threadDb.latestUnapprovedConversationTimestamp
-                    )
-                    root.setOnClickListener { showMessageRequests() }
-                    expandMessageRequest.setOnClickListener { showMessageRequests() }
-                    root.setOnLongClickListener { hideMessageRequests(); true }
-                    root.layoutParams = RecyclerView.LayoutParams(
-                        RecyclerView.LayoutParams.MATCH_PARENT,
-                        RecyclerView.LayoutParams.WRAP_CONTENT
-                    )
-                    val hadHeader = homeAdapter.hasHeaderView()
-                    homeAdapter.header = root
-                    if (hadHeader) homeAdapter.notifyItemChanged(0)
-                    else homeAdapter.notifyItemInserted(0)
-                }
-            } else {
-                val hadHeader = homeAdapter.hasHeaderView()
-                homeAdapter.header = null
-                if (hadHeader) {
-                    homeAdapter.notifyItemRemoved(0)
-                }
-            }
-    }
+//    private fun setupMessageRequestsBanner() {
+//        println(">>>>>setting banner")
+//            val messageRequestCount = threadDb.unapprovedConversationCount
+//            // Set up message requests
+//            if (messageRequestCount > 0 && !(activity as HomeActivity).textSecurePreferences.hasHiddenMessageRequests()) {
+//                println(">>>>>setting banner:$messageRequestCount")
+//                with(ViewMessageRequestBannerBinding.inflate(layoutInflater)) {
+//                    unreadCountTextView.text = messageRequestCount.toString()
+//                    timestampTextView.text = DateUtils.getDisplayFormattedTimeSpanString(
+//                        requireActivity().applicationContext,
+//                        Locale.getDefault(),
+//                        threadDb.latestUnapprovedConversationTimestamp
+//                    )
+//                    root.setOnClickListener { showMessageRequests() }
+//                    expandMessageRequest.setOnClickListener { showMessageRequests() }
+//                    root.setOnLongClickListener { hideMessageRequests(); true }
+//                    root.layoutParams = RecyclerView.LayoutParams(
+//                        RecyclerView.LayoutParams.MATCH_PARENT,
+//                        RecyclerView.LayoutParams.WRAP_CONTENT
+//                    )
+//                    val hadHeader = homeAdapter.hasHeaderView()
+//                    homeAdapter.header = root
+//                    if (hadHeader) {
+//                        println(">>>>updating item")
+//                        homeAdapter.notifyItemRemoved(0)
+//                    } else {
+//                        println(">>>>adding item")
+//                        homeAdapter.notifyItemInserted(0)
+//                    }
+//                }
+//            } else {
+//                val hadHeader = homeAdapter.hasHeaderView()
+//                homeAdapter.header = null
+//                if (hadHeader) {
+//                    homeAdapter.notifyItemRemoved(0)
+//                }
+//            }
+//    }
 
-    private fun hideMessageRequests() {
+    override fun hideMessageRequests() {
         val dialog = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog_New)
             .setTitle("Hide message requests?")
             .setMessage("Once they are hidden, you can access them from Settings > Message Requests")
             .setPositiveButton(R.string.yes) { _, _ ->
                 (activity as HomeActivity).textSecurePreferences.setHasHiddenMessageRequests()
-                setupMessageRequestsBanner()
+//                setupMessageRequestsBanner()
                 homeViewModel.tryUpdateChannel()
             }
             .setNegativeButton(R.string.no) { _, _ ->
@@ -1075,7 +1090,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         }
     }
 
-    private fun showMessageRequests() {
+    override fun showMessageRequests() {
         Intent(requireContext(), MessageRequestsActivity::class.java).also {
             resultLauncher.launch(it)
         }

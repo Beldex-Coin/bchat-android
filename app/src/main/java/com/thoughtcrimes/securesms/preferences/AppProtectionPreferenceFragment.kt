@@ -7,22 +7,37 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.view.WindowManager
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.DialogFragment
 import androidx.preference.Preference
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getScreenLockTimeout
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getWalletEntryPassword
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getWalletName
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getWalletPassword
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.isPasswordDisabled
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.isScreenSecurityEnabled
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setBooleanPreference
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setScreenLockEnabled
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setScreenLockTimeout
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setScreenSecurityPreference
+import com.beldex.libsignal.utilities.Log
 import com.thoughtcrimes.securesms.ApplicationContext
 import com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
+import com.thoughtcrimes.securesms.home.HomeActivity
 import com.thoughtcrimes.securesms.permissions.Permissions
 import com.thoughtcrimes.securesms.service.KeyCachingService
 import com.thoughtcrimes.securesms.util.CallNotificationBuilder.Companion.areNotificationsEnabled
 import com.thoughtcrimes.securesms.util.IntentUtils
+import com.thoughtcrimes.securesms.wallet.WalletSetupLoadingBar
+import com.thoughtcrimes.securesms.wallet.info.WalletInfoActivity
+import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
+import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
+import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
 import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
 import mobi.upod.timedurationpicker.TimeDurationPicker
@@ -49,6 +64,8 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
             CallToggleListener(this) { setCall(it) }
         findPreference<Preference>(TextSecurePreferences.SCREEN_SECURITY_PREF)!!.onPreferenceChangeListener =
             ScreenSecurityListener()
+        findPreference<Preference>(TextSecurePreferences.PAY_AS_YOU_CHAT_PREF)!!.onPreferenceChangeListener = PayAsYouChatListener()
+        findPreference<Preference>(TextSecurePreferences.IS_WALLET_ACTIVE)!!.onPreferenceChangeListener = StartWalletListener()
         initializeVisibility()
     }
 
@@ -206,6 +223,89 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
     private inner class LinkPreviewToggleListener : Preference.OnPreferenceChangeListener {
         override fun onPreferenceChange(preference: Preference, newValue: Any): Boolean {
             return true
+        }
+    }
+
+    private inner class PayAsYouChatListener : Preference.OnPreferenceChangeListener {
+        override fun onPreferenceChange(preference: Preference, newValue: Any): Boolean {
+            val preferenceValue = newValue as Boolean
+            return if (preferenceValue) {
+                if (getWalletEntryPassword(requireContext()) != null) {
+                    return true
+                } else {
+                    androidx.appcompat.app.AlertDialog.Builder(requireContext(), R.style.BChatAlertDialog_Call_Missed)
+                            .setTitle(R.string.dialog_title_setup_pin_)
+                            .setMessage(R.string.dialog_message_for_set_wallet_pin)
+                            .setPositiveButton(R.string.dialog_setup_button) { d, w -> setWalletPin() }
+                            .setNegativeButton(R.string.cancel) { d, w -> }
+                            .show()
+                }
+                false
+            } else {
+                true
+            }
+        }
+
+        private fun setWalletPin() {
+            val walletName = getWalletName(requireContext())
+            val walletPassword = getWalletPassword(requireContext())
+            if (walletName != null && walletPassword != null) {
+                val lockManager = LockManager.getInstance()
+                lockManager.enableAppLock(requireContext(), CustomPinActivity::class.java)
+                val intent = Intent(requireContext(), CustomPinActivity::class.java)
+                if (getWalletEntryPassword(requireContext()) != null) {
+                    intent.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN)
+                } else {
+                    intent.putExtra(AppLock.EXTRA_TYPE, AppLock.ENABLE_PINLOCK)
+                }
+                intent.putExtra("change_pin", false)
+                intent.putExtra("send_authentication", false)
+                setUpWalletPinActivityResultLauncher.launch(intent)
+            } else {
+                val intent = Intent(requireContext(), WalletInfoActivity::class.java)
+                startActivity(intent)
+            }
+        }
+
+        var setUpWalletPinActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
+    }
+
+    private inner class StartWalletListener : Preference.OnPreferenceChangeListener {
+        override fun onPreferenceChange(preference: Preference, newValue: Any): Boolean {
+            val preferenceValue = newValue as Boolean
+            if (!preferenceValue) {
+                setBooleanPreference(requireContext(), TextSecurePreferences.PAY_AS_YOU_CHAT_PREF, false)
+            }
+            showProgress()
+            Handler(Looper.getMainLooper()).postDelayed({
+                hideProgress()
+                restartHome()
+            }, 2000)
+            return true
+        }
+
+        private fun restartHome() {
+            val intent = Intent(requireContext(), HomeActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+        }
+
+        private fun showProgress() {
+            WalletSetupLoadingBar().show(
+                    requireActivity().supportFragmentManager,
+                    "wallet_setup_progressbar_tag")
+        }
+
+        private fun hideProgress() {
+            val fragment = requireActivity().supportFragmentManager.findFragmentByTag("wallet_setup_progressbar_tag") as WalletSetupLoadingBar
+            if (fragment != null) {
+                val dialogFragment = DialogFragment()
+                try {
+                    dialogFragment.dismiss()
+                } catch (ex: IllegalStateException) {
+                    Log.e("Beldex", "IllegalStateException $ex")
+                }
+            }
         }
     }
 }

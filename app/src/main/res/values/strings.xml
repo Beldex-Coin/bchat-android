@@ -579,6 +579,10 @@
     <string name="preferences_chat_font_medium" translatable="false">Medium</string>
     <string name="preferences_chat_font_large" translatable="false">large</string>
     <string name="preferences_chat_pay_as_you_chat_title" translatable="false">Pay as you chat</string>
+    <string name="preferences_wallet_title" translatable="false">Wallet</string>
+    <string name="preferences_start_wallet_subtitle" translatable="false">Enabling wallet will allow you to send and receive BDX</string>
+    <string name="preferences_pay_as_you_chat_subTitle" translatable="false">Enabling \‘Pay As You Chat\’ will allow you to send and receive BDX right from the chat window</string>
+
 
     <!-- **************************************** -->
     <!-- menus -->
@@ -1405,4 +1409,10 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="validation_for_balance" translatable="false">You don\'t have enough balance</string>
     <string name="validation_for_start_wallet" translatable="false">Enable wallet start option in My Account</string>
     <string name="wallet_setup_loading_content" translatable="false">Home screen is restart for wallet setup process... Please wait until complete!</string>
+    <string name="wallet_setup_content_first" translatable="false">You can Send and Receive BDX with the BChat integrated wallet.</string>
+    <string name="wallet_setup_content_second" translatable="false">The ‘Pay as you Chat’ feature is an easy-pay feature. You can send BDX to your friends right from the chat window</string>
+    <string name="wallet_setup_content_third" translatable="false">The BChat wallet is beta. Constant updates are released in newer versions of the app to enhance the integrated wallet functionality.</string>
+    <string name="wallet_setup_content_fourth" translatable="false">You can enable or disable the wallet using the Start wallet feature under Settings > Wallet settings.</string>
+    <string name="yes_i_understand" translatable="false">Yes, I Understand</string>
+    <string name="enable_wallet" translatable="false">Enable Wallet</string>
 </resources>

@@ -57,20 +57,6 @@
             app:isPreferenceVisible="false"
             android:title="@string/preferences_advanced__use_system_emoji"
             app:layout="@layout/preference_layout"/>
-        <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
-            android:defaultValue="false"
-            android:key="pref_is_wallet_active"
-            app:iconSpaceReserved="false"
-            android:title="Start Wallet"
-            app:layout="@layout/preference_layout"/>
-
-        <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
-            android:defaultValue="false"
-            android:key="pref_pay_as_you_chat"
-            app:iconSpaceReserved="false"
-            android:title="@string/preferences_chat_pay_as_you_chat_title"
-            android:dependency="pref_is_wallet_active"
-            app:layout="@layout/preference_layout"/>
 
         <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
             android:defaultValue="false"

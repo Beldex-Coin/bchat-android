@@ -242,6 +242,10 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" /> <!-- Disable all analytics -->
+        <activity
+            android:name="com.thoughtcrimes.securesms.wallet.startwallet.StartWalletInfo"
+            android:screenOrientation="portrait"
+            android:exported="false" />
         <meta-data
             android:name="firebase_analytics_collection_deactivated"
             android:value="true" />

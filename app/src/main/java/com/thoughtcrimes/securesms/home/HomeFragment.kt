@@ -70,6 +70,7 @@ import com.thoughtcrimes.securesms.util.*
 import com.thoughtcrimes.securesms.wallet.CheckOnline
 import com.thoughtcrimes.securesms.wallet.WalletFragment
 import com.thoughtcrimes.securesms.wallet.info.WalletInfoActivity
+import com.thoughtcrimes.securesms.wallet.startwallet.StartWalletInfo
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
@@ -185,12 +186,12 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
 
     private var items = arrayListOf(
         NavigationItemModel(R.drawable.ic_my_account, "My Account",0),
-        NavigationItemModel(R.drawable.ic_wallet, "My Wallet",R.drawable.ic_beta),
+        NavigationItemModel(R.drawable.ic_settings, "Settings",0),
         NavigationItemModel(R.drawable.ic_notifications, "Notification",0),
         NavigationItemModel(R.drawable.ic_message_requests, "Message Requests",0),
-        NavigationItemModel(R.drawable.ic_privacy, "Privacy",0),
         NavigationItemModel(R.drawable.ic_app_permissions, "App Permissions",0),
         NavigationItemModel(R.drawable.ic_recovery_seed, "Recovery Seed",0),
+        NavigationItemModel(R.drawable.ic_wallet, "Wallet",R.drawable.ic_beta),
         NavigationItemModel(R.drawable.ic_report_issue,"Report Issue",0),
         NavigationItemModel(R.drawable.ic_help, "Help",0),
         NavigationItemModel(R.drawable.ic_invite, "Invite",0),
@@ -255,17 +256,8 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                         openSettings()
                     }
                     1 -> {
-                        // # My Wallet Activity
-                        if (CheckOnline.isOnline(requireActivity().applicationContext)) {
-                            if (TextSecurePreferences.isWalletActive(requireContext())) {
-                                openMyWallet()
-                            } else {
-                                Toast.makeText(requireActivity(), getString(R.string.validation_for_start_wallet), Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                        else {
-                            Toast.makeText(requireActivity().applicationContext,getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
-                        }
+                        // # Privacy Activity
+                        showPrivacySettings()
                     }
                     2 -> {
                         // # Notification Activity
@@ -276,16 +268,24 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                         showMessageRequests()
                     }
                     4 -> {
-                        // # Privacy Activity
-                        showPrivacySettings()
-                    }
-                    5 -> {
                         // # App Permissions Activity
                         callAppPermission()
                     }
-                    6 -> {
+                    5 -> {
                         // # Recovery Seed Activity
                         showSeed()
+                    }
+                    6 -> {
+                        // # My Wallet Activity
+                        if (CheckOnline.isOnline(requireActivity().applicationContext)) {
+                            if (TextSecurePreferences.isWalletActive(requireContext())) {
+                                openMyWallet()
+                            } else {
+                                openStartWalletInfo()
+                            }
+                        } else {
+                            Toast.makeText(requireActivity().applicationContext, getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
+                        }
                     }
                     7 -> {
                         // # Support
@@ -1058,6 +1058,12 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
             Intent(requireContext(), WalletInfoActivity::class.java).also {
                 push(it)
             }
+        }
+    }
+
+    private fun openStartWalletInfo(){
+        Intent(requireContext(), StartWalletInfo::class.java).also {
+            push(it)
         }
     }
 

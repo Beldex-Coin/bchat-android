@@ -50,10 +50,7 @@ public class ChatsPreferenceFragment extends ListSummaryPreferenceFragment {
     findPreference(TextSecurePreferences.CHAT_FONT_SIZE)
             .setOnPreferenceChangeListener(new ChangeFontSizeListener());
     initializeListSummary((ListPreference) findPreference(TextSecurePreferences.CHAT_FONT_SIZE));
-    findPreference(TextSecurePreferences.PAY_AS_YOU_CHAT_PREF)
-            .setOnPreferenceChangeListener(new PayAsYouChatListener());
-    findPreference(TextSecurePreferences.IS_WALLET_ACTIVE)
-            .setOnPreferenceChangeListener(new StartWalletListener());
+
 
   }
 
@@ -176,97 +173,5 @@ public class ChatsPreferenceFragment extends ListSummaryPreferenceFragment {
       return super.onPreferenceChange(preference, value);
     }
 
-  }
-
-  class PayAsYouChatListener implements Preference.OnPreferenceChangeListener {
-
-    @Override
-    public boolean onPreferenceChange(Preference preference, Object newValue) {
-      boolean preferenceValue = (boolean) newValue;
-      if (preferenceValue) {
-        if (TextSecurePreferences.getWalletEntryPassword(requireContext()) != null) {
-          return true;
-        } else {
-          new AlertDialog.Builder(requireContext(),R.style.BChatAlertDialog_Call_Missed)
-                  .setTitle(R.string.dialog_title_setup_pin_)
-                  .setMessage(R.string.dialog_message_for_set_wallet_pin)
-                  .setPositiveButton(R.string.dialog_setup_button, (d, w) -> {
-                    setWalletPin();
-                  })
-                  .setNegativeButton(R.string.cancel, (d, w) -> {
-                  })
-                  .show();
-        }
-        return false;
-      } else {
-        return true;
-      }
-    }
-
-    public void setWalletPin() {
-      String walletName = TextSecurePreferences.getWalletName(requireContext());
-      String walletPassword = TextSecurePreferences.getWalletPassword(requireContext());
-      if (walletName != null && walletPassword != null) {
-        LockManager lockManager = LockManager.getInstance();
-        lockManager.enableAppLock(requireContext(), CustomPinActivity.class);
-        Intent intent = new Intent(requireContext(), CustomPinActivity.class);
-        if (TextSecurePreferences.getWalletEntryPassword(requireContext()) != null) {
-          intent.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN);
-        } else {
-          intent.putExtra(AppLock.EXTRA_TYPE, AppLock.ENABLE_PINLOCK);
-        }
-        intent.putExtra("change_pin", false);
-        intent.putExtra("send_authentication", false);
-        setUpWalletPinActivityResultLauncher.launch(intent);
-      } else {
-        Intent intent = new Intent(requireContext(), WalletInfoActivity.class);
-        startActivity(intent);
-      }
-    }
-
-    ActivityResultLauncher setUpWalletPinActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-
-    });
-  }
-
-  class StartWalletListener implements Preference.OnPreferenceChangeListener {
-    @Override
-    public boolean onPreferenceChange(Preference preference, Object newValue) {
-      boolean preferenceValue = (boolean) newValue;
-      if (!preferenceValue) {
-        TextSecurePreferences.setBooleanPreference(requireContext(), TextSecurePreferences.PAY_AS_YOU_CHAT_PREF, false);
-      }
-      showProgress();
-      Handler handler = new Handler();
-      handler.postDelayed(() -> {
-        hideProgress();
-        restartHome();
-      }, 2000);
-      return true;
-    }
-
-    private void restartHome() {
-      Intent intent = new Intent(requireContext(), HomeActivity.class);
-      intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-      startActivity(intent);
-    }
-
-    private void showProgress() {
-      new WalletSetupLoadingBar().show(
-              requireActivity().getSupportFragmentManager(),
-              "wallet_setup_progressbar_tag");
-    }
-
-    private void hideProgress() {
-      WalletSetupLoadingBar fragment = (WalletSetupLoadingBar) requireActivity().getSupportFragmentManager().findFragmentByTag("wallet_setup_progressbar_tag");
-      if (fragment != null) {
-        DialogFragment dialogFragment = new DialogFragment();
-        try {
-          dialogFragment.dismiss();
-        } catch (IllegalStateException ex) {
-          Log.e("Beldex", "IllegalStateException " + ex);
-        }
-      }
-    }
   }
 }

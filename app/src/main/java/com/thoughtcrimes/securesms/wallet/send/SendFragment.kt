@@ -199,6 +199,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
             if(!CheckOnline.isOnline(requireActivity())) {
                 Toast.makeText(requireActivity(), R.string.please_check_your_internet_connection, Toast.LENGTH_SHORT).show()
             }else{
+                Helper.hideKeyboard(activity)
                 onScanListener?.onScan(requireView())
             }
         }

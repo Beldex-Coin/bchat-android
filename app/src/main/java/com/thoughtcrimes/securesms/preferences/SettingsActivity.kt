@@ -86,7 +86,6 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
     override fun onCreate(savedInstanceState: Bundle?, isReady: Boolean) {
         super.onCreate(savedInstanceState, isReady)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
-        binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setUpActionBarBchatLogo("My Account")
         val displayName = getDisplayName()
@@ -166,6 +165,8 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
 
             beldexAddressCardView.setOnClickListener { copyBeldexAddress() }
             beldexAddressShareButton.setOnClickListener { shareBeldexAddress() }
+
+            loader.setOnClickListener {  }
         }
     }
 

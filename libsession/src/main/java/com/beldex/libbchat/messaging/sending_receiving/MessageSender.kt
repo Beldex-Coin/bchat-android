@@ -24,6 +24,7 @@ import com.beldex.libsignal.protos.SignalServiceProtos
 import com.beldex.libsignal.utilities.Base64
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.hexEncodedPublicKey
+import java.util.concurrent.atomic.AtomicInteger
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment as SignalAttachment
 import com.beldex.libbchat.messaging.sending_receiving.link_preview.LinkPreview as SignalLinkPreview
 import com.beldex.libbchat.messaging.sending_receiving.quotes.QuoteModel as SignalQuote
@@ -156,7 +157,7 @@ object MessageSender {
             MnodeAPI.sendMessage(mnodeMessage).success { promises: Set<RawResponsePromise> ->
                 var isSuccess = false
                 val promiseCount = promises.size
-                var errorCount = 0
+                var errorCount =  AtomicInteger(0)
                 promises.iterator().forEach { promise: RawResponsePromise ->
                     promise.success {
                         if (isSuccess) { return@success } // Succeed as soon as the first promise succeeds
@@ -180,8 +181,8 @@ object MessageSender {
                         deferred.resolve(Unit)
                     }
                     promise.fail {
-                        errorCount += 1
-                        if (errorCount != promiseCount) { return@fail } // Only error out if all promises failed
+                        errorCount.getAndIncrement()
+                        if (errorCount.get() != promiseCount) { return@fail } // Only error out if all promises failed
                         handleFailure(it)
                     }
                 }

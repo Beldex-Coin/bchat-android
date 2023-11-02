@@ -60,7 +60,7 @@ public class ThreadRecord extends DisplayRecord {
   private           final int messageRequestCount;
 
   public ThreadRecord(@NonNull String body, @Nullable Uri snippetUri,
-                      @NonNull Recipient recipient, long date, long count, int unreadCount,
+                      Recipient recipient, long date, long count, int unreadCount,
                       long threadId, int deliveryReceiptCount, int status, long snippetType,
                       int distributionType, boolean archived, long expiresIn, long lastSeen,
                       int readReceiptCount, boolean pinned, int messageRequestCount)
@@ -73,12 +73,10 @@ public class ThreadRecord extends DisplayRecord {
     this.archived         = archived;
     this.expiresIn        = expiresIn;
     this.lastSeen         = lastSeen;
-    this.pinned         = pinned;
-    this.nickName         = recipient.getName();
+    this.pinned           = pinned;
+    this.nickName         = recipient == null ? null : recipient.getName();
     this.messageRequestCount = messageRequestCount;
   }
-
-
 
   public @Nullable Uri getSnippetUri() {
     return snippetUri;

@@ -368,12 +368,16 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
             val messageRequestCount = threadDb.unapprovedConversationCount
             var requestData = emptyList<ThreadRecord>()
             if (messageRequestCount > 0 && !(activity as HomeActivity).textSecurePreferences.hasHiddenMessageRequests()) {
-                requestData = newData
+                requestData = if (newData.isEmpty()) {
+                    listOf(ThreadRecord("", null, null, 0, 0, 0, 0, 0, 0, 0,0, false, 0, 0, 0, false, messageRequestCount))
+                } else {
+                    listOf(newData[0])
+                }
                 homeAdapter.setHasMessageRequestCount(true)
             } else {
                 homeAdapter.setHasMessageRequestCount(false)
             }
-            homeAdapter.data = if (requestData.isEmpty()) newData else requestData + newData
+            homeAdapter.data = requestData + newData
             if(firstPos >= 0) { manager.scrollToPositionWithOffset(firstPos, offsetTop) }
 //            setupMessageRequestsBanner()
             updateEmptyState()

@@ -2585,6 +2585,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun showVoiceMessageUI() {
+        Helper.hideKeyboard(activity)
         //New Line
         binding.inputBar.visibility = View.INVISIBLE
 

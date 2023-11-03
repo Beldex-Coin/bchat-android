@@ -323,10 +323,10 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
             createTransactionIfPossible()
         }
         if(TextSecurePreferences.getFeePriority(requireActivity())==0){
-            binding.estimatedFeeTextView.text = getString(R.string.estimated_fee,calculateEstimatedFee(1).toString())
+            AsyncCalculateEstimatedFee(1).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
             binding.estimatedFeeDescriptionTextView.text =getString(R.string.estimated_fee_description,"Slow")
         }else{
-            binding.estimatedFeeTextView.text = getString(R.string.estimated_fee,calculateEstimatedFee(5).toString())
+            AsyncCalculateEstimatedFee(5).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
             binding.estimatedFeeDescriptionTextView.text =getString(R.string.estimated_fee_description,"Flash")
         }
 
@@ -336,6 +336,33 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
         return binding.root
 
+    }
+
+    inner class AsyncCalculateEstimatedFee(val priority: Int) :
+        AsyncTaskCoroutine<Executor?, Double>() {
+        override fun onPreExecute() {
+            super.onPreExecute()
+            binding.estimatedFeeTextView.text = getString(R.string.estimated_fee,"0.00")
+        }
+        override fun doInBackground(vararg params: Executor?): Double {
+            return try {
+                if(WalletManager.getInstance().wallet!=null) {
+                    val wallet: Wallet = WalletManager.getInstance().wallet
+                    wallet.estimateTransactionFee(priority)
+                }else{
+                    0.00
+                }
+            }catch (e: Exception){
+                Log.d("Estimated Fee exception ",e.toString())
+                0.00
+            }
+        }
+        override fun onPostExecute(result: Double?) {
+            val activity = activity
+            if (isAdded && activity != null) {
+                binding.estimatedFeeTextView.text = getString(R.string.estimated_fee,result.toString())
+            }
+        }
     }
 
     private fun hideErrorMessage(){

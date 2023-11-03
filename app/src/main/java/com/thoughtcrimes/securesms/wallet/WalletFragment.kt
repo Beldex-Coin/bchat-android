@@ -232,6 +232,23 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         )
     }
 
+    inner class AsyncRefreshHistory(val wallet: Wallet) :
+        AsyncTaskCoroutine<Executor?, Boolean?>() {
+
+        override fun doInBackground(vararg params: Executor?): Boolean {
+            try {
+                wallet.refreshHistory()
+            }catch (e: Exception){
+                Log.d("RefreshHistory exception ",e.toString())
+            }
+            return true
+        }
+
+        override fun onPostExecute(result: Boolean?) {
+            callRefreshHistory(wallet)
+        }
+    }
+
     inner class AsyncGetUnlockedBalance(val wallet: Wallet) :
         AsyncTaskCoroutine<Executor?, Boolean?>() {
         override fun onPreExecute() {
@@ -937,45 +954,48 @@ class WalletFragment : Fragment(),OnBackPressedListener {
             full = true
         }
         if (full && activityCallback!!.isSynced) {
-            val list: MutableList<TransactionInfo> = ArrayList()
-            val streetHeight: Long = activityCallback!!.streetModeHeight
-            wallet.refreshHistory()
-            for (info in wallet.history.all) {
-                if ((info.isPending || info.blockheight >= streetHeight)
-                    && !dismissedTransactions.contains(info.hash)
-                ) list.add(info)
-            }
-            adapter!!.setInfos(list)
-            adapterItems.clear()
-            adapterItems.addAll(adapter!!.infoItems!!)
-            if (accountIndex != wallet.accountIndex) {
-                accountIndex = wallet.accountIndex
-                binding.transactionList.scrollToPosition(0)
-            }
+            AsyncRefreshHistory(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+        }
+        updateStatus(wallet)
+    }
 
-            //SteveJosephh21
-            if (adapter!!.itemCount > 0) {
-                binding.transactionList.visibility = View.VISIBLE
-                binding.emptyContainerLayout.visibility = View.GONE
-            } else {
-                binding.filterTransactionsIcon.isClickable = true // default = false
-                binding.transactionList.visibility = View.GONE
-                binding.emptyContainerLayout.visibility = View.VISIBLE
-            }
-            //Steve Josephh21 ANRS
-            if(CheckOnline.isOnline(requireContext())) {
-                check(activityCallback!!.hasBoundService()) { "WalletService not bound." }
-                val daemonConnected: Wallet.ConnectionStatus = activityCallback!!.connectionStatus!!
-                if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
-                    if (TextSecurePreferences.getDisplayBalanceAs(mContext!!) == 1) {
-                        AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
-                    } else if (TextSecurePreferences.getDisplayBalanceAs(mContext!!) == 0) {
-                        AsyncGetFullBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
-                    }
+    fun callRefreshHistory(wallet:Wallet){
+        val list: MutableList<TransactionInfo> = ArrayList()
+        val streetHeight: Long = activityCallback!!.streetModeHeight
+        for (info in wallet.history.all) {
+            if ((info.isPending || info.blockheight >= streetHeight)
+                && !dismissedTransactions.contains(info.hash)
+            ) list.add(info)
+        }
+        adapter!!.setInfos(list)
+        adapterItems.clear()
+        adapterItems.addAll(adapter!!.infoItems!!)
+        if (accountIndex != wallet.accountIndex) {
+            accountIndex = wallet.accountIndex
+            binding.transactionList.scrollToPosition(0)
+        }
+
+        //SteveJosephh21
+        if (adapter!!.itemCount > 0) {
+            binding.transactionList.visibility = View.VISIBLE
+            binding.emptyContainerLayout.visibility = View.GONE
+        } else {
+            binding.filterTransactionsIcon.isClickable = true // default = false
+            binding.transactionList.visibility = View.GONE
+            binding.emptyContainerLayout.visibility = View.VISIBLE
+        }
+        //Steve Josephh21 ANRS
+        if(CheckOnline.isOnline(requireContext())) {
+            check(activityCallback!!.hasBoundService()) { "WalletService not bound." }
+            val daemonConnected: Wallet.ConnectionStatus = activityCallback!!.connectionStatus!!
+            if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
+                if (TextSecurePreferences.getDisplayBalanceAs(mContext!!) == 1) {
+                    AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+                } else if (TextSecurePreferences.getDisplayBalanceAs(mContext!!) == 0) {
+                    AsyncGetFullBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
                 }
             }
         }
-        updateStatus(wallet)
     }
 
 

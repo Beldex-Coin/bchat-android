@@ -2972,7 +2972,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 lifecycleScope.launch(Dispatchers.IO) {
                     ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(requireActivity())
                 }
-                //finish()
+                backToHome()
             }
             .setNegativeButton(R.string.cancel) { _, _ ->
                 // Do nothing

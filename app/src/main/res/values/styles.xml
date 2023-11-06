@@ -20,7 +20,7 @@
     </style>
 
     <style name="Widget.Bchat.SearchView" parent="@style/Widget.AppCompat.SearchView">
-        <item name="closeIcon">@drawable/ic_clear</item>
+        <item name="closeIcon">@drawable/ic_baseline_clear_24</item>
     </style>
 
     <style name="ThemeOverlay.Bchat.AlertDialog" parent="ThemeOverlay.AppCompat.Dialog.Alert">

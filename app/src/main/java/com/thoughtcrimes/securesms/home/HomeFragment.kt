@@ -8,6 +8,7 @@ import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -308,7 +309,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                 if (position != 6 && position != 4) {
                     updateAdapter(position)
                 }
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     binding.drawerLayout.closeDrawer(GravityCompat.END)
                 }, 200)
             }
@@ -335,7 +336,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         }
         binding.drawerQrcodeImg.setOnClickListener {
             showQRCode()
-            Handler().postDelayed({
+            Handler(Looper.getMainLooper()).postDelayed({
                 binding.drawerLayout.closeDrawer(GravityCompat.END)
             }, 200)
         }
@@ -627,11 +628,14 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         binding.emptyStateContainer.isVisible = threadCount == 0 && binding.recyclerView.isVisible
         binding.emptyStateContainerText.isVisible =
             threadCount == 0 && binding.recyclerView.isVisible
-        val isDayUiMode = UiModeUtilities.isDayUiMode(requireActivity())
-        (if (isDayUiMode) R.drawable.ic_doodle_3_2 else R.drawable.ic_doodle_3_1).also {
-            binding.emptyStateImageView.setImageResource(
-                it
-            )
+        val activity =activity
+        if(isAdded && activity !=null) {
+            val isDayUiMode = UiModeUtilities.isDayUiMode(requireActivity())
+            (if (isDayUiMode) R.drawable.ic_doodle_3_2 else R.drawable.ic_doodle_3_1).also {
+                binding.emptyStateImageView.setImageResource(
+                    it
+                )
+            }
         }
     }
 
@@ -1021,8 +1025,11 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     }
 
     private fun openSettings() {
-        Intent(requireContext(), SettingsActivity::class.java).also {
-            callSettingsActivityResultLauncher.launch(it)
+        val activity = activity
+        if(isAdded && activity !=null) {
+            Intent(activity, SettingsActivity::class.java).also {
+                callSettingsActivityResultLauncher.launch(it)
+            }
         }
     }
 

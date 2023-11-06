@@ -592,12 +592,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 //                }
 //            }
 //        }
-        viewModel.recipient.value?.let { thread ->
-            if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && HomeActivity.reportIssueBChatID != thread.address.toString() && !thread.isLocalNumber && TextSecurePreferences.isWalletActive(requireContext())) {
-                listenerCallback!!.forceUpdate(requireActivity())
-            }
-        }
-        if(TextSecurePreferences.isWalletActive(requireContext())) {
+        AsyncStartWallet().execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+        if (TextSecurePreferences.isWalletActive(requireContext())) {
             showBlockProgressBar(viewModel.recipient.value)
 
             callShowPayAsYouChatBDXIcon(viewModel.recipient.value)
@@ -3461,6 +3457,23 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private fun checkIfFragmentAttached(operation: Context.() -> Unit) {
         if (isAdded && context != null) {
             operation(requireContext())
+        }
+    }
+    inner class AsyncStartWallet() : AsyncTaskCoroutine<Executor?, Boolean?>() {
+        override fun doInBackground(vararg params: Executor?): Boolean {
+            try {
+                viewModel.recipient.value?.let { thread ->
+                    if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && HomeActivity.reportIssueBChatID != thread.address.toString() && !thread.isLocalNumber && TextSecurePreferences.isWalletActive(requireContext())) {
+                        val activity = activity
+                        if (isAdded && activity != null) {
+                            listenerCallback!!.forceUpdate(activity)
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                println("start wallet exception $e")
+            }
+            return true
         }
     }
 }

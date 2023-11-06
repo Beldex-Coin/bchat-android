@@ -149,6 +149,10 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     //If Transaction successfully completed after call this function
     fun onTransactionSent(txId: String?) {
         hideProgress()
+        val activity = activity
+        if(isAdded && activity != null) {
+            this.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
         SendSuccessDialog(this).show(requireActivity().supportFragmentManager,"")
     }
 
@@ -631,6 +635,10 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     private fun onResumeFragment(){
         Helper.hideKeyboard(activity)
         isResume = true
+        val activity = activity
+        if(isAdded && activity != null) {
+            this.activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
         refreshTransactionDetails()
         if (pendingTransaction == null && !inProgress) {
             binding.sendButton.isEnabled=false

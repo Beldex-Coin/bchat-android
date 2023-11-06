@@ -272,6 +272,7 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
 
     private inner class StartWalletListener : Preference.OnPreferenceChangeListener {
         override fun onPreferenceChange(preference: Preference, newValue: Any): Boolean {
+            findPreference<Preference>(TextSecurePreferences.IS_WALLET_ACTIVE)!!.isEnabled = false
             val preferenceValue = newValue as Boolean
             if (!preferenceValue) {
                 setBooleanPreference(requireContext(), TextSecurePreferences.PAY_AS_YOU_CHAT_PREF, false)

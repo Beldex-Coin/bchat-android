@@ -196,25 +196,24 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             extras.putString(ConversationFragmentV2.TYPE,intent.getStringExtra(ConversationFragmentV2.TYPE))
             extras.putCharSequence(Intent.EXTRA_TEXT,intent.getCharSequenceExtra(Intent.EXTRA_TEXT))
 
+            val oldFragment = supportFragmentManager.findFragmentById(R.id.activity_home_frame_layout_container)
+            if (oldFragment != null) {
+                supportFragmentManager.beginTransaction().remove(oldFragment).commit()
+            }
             val homeFragment: Fragment = HomeFragment()
             homeFragment.arguments = extras
             supportFragmentManager
                 .beginTransaction()
-                .add(
-                    R.id.activity_home_frame_layout_container,
-                    homeFragment,
-                    HomeFragment::class.java.name
-                )
+                .replace(R.id.activity_home_frame_layout_container,homeFragment)
                 .commit()
         }else {
-            val homeFragment: Fragment = HomeFragment()
+            val oldFragment = supportFragmentManager.findFragmentById(R.id.activity_home_frame_layout_container)
+            if (oldFragment != null) {
+                supportFragmentManager.beginTransaction().remove(oldFragment).commit()
+            }
             supportFragmentManager
                 .beginTransaction()
-                .add(
-                    R.id.activity_home_frame_layout_container,
-                    homeFragment,
-                    HomeFragment::class.java.name
-                )
+                .replace(R.id.activity_home_frame_layout_container, HomeFragment())
                 .commit()
         }
 

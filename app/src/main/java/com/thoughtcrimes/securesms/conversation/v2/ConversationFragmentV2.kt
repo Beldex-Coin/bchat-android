@@ -732,6 +732,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         isNetworkAvailable = false
         networkChangedReceiver?.unregister(requireContext())
         networkChangedReceiver = null
+        val activity = activity
+        if(isAdded && activity != null) {
+            this.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
     }
 
     private fun networkChange(networkAvailable: Boolean) {
@@ -3209,6 +3213,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         Helper.hideKeyboard(activity)
         isResume = true
         transactionInProgress = true
+        val activity = activity
+        if(isAdded && activity != null) {
+            this.activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
         refreshTransactionDetails()
         if (pendingTransaction == null && !inProgress) {
             showProgress()
@@ -3257,6 +3265,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         //Payment Tag
         viewModel.sentPayment(sendBDXAmount.toString(), txId, viewModel.recipient.value)
         processMessageRequestApproval()
+        val activity = activity
+        if(isAdded && activity != null) {
+            this.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
         InChatSendSuccess(this).show(requireActivity().supportFragmentManager, "")
     }
 

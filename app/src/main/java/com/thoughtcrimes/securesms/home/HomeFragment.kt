@@ -1042,6 +1042,8 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
             extras.putParcelable(ConversationFragmentV2.URI,result.data!!.parcelable(ConversationFragmentV2.URI))
             extras.putString(ConversationFragmentV2.TYPE,result.data!!.getStringExtra(ConversationFragmentV2.TYPE))
             replaceFragment(ConversationFragmentV2(), null, extras)
+        }else {
+            homeAdapter.notifyDataSetChanged()
         }
     }
 

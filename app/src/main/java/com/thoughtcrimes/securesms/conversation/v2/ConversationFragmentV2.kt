@@ -2514,17 +2514,21 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun hideVoiceMessageUI() {
-        val chevronImageView = binding.inputBarRecordingView.chevronImageView
-        val slideToCancelTextView = binding.inputBarRecordingView.slideToCancelTextView
-        listOf(chevronImageView, slideToCancelTextView).forEach { view ->
-            val animation = ValueAnimator.ofObject(FloatEvaluator(), view.translationX, 0.0f)
-            animation.duration = 250L
-            animation.addUpdateListener { animator ->
-                view.translationX = animator.animatedValue as Float
+        try {
+            val chevronImageView = binding.inputBarRecordingView.chevronImageView
+            val slideToCancelTextView = binding.inputBarRecordingView.slideToCancelTextView
+            listOf(chevronImageView, slideToCancelTextView).forEach { view ->
+                val animation = ValueAnimator.ofObject(FloatEvaluator(), view.translationX, 0.0f)
+                animation.duration = 250L
+                animation.addUpdateListener { animator ->
+                    view.translationX = animator.animatedValue as Float
+                }
+                animation.start()
             }
-            animation.start()
+            binding.inputBarRecordingView.hide()
+        }catch(e:UninitializedPropertyAccessException){
+            println("Hide voice message -> ${e.localizedMessage}")
         }
-        binding.inputBarRecordingView.hide()
     }
 
     private fun isOutgoingMessageRequestThread(): Boolean {

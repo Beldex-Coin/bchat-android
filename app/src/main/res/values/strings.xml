@@ -1408,7 +1408,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="cannot_access_sync_option" translatable="false">Can\'t rescan or reconnect while wallet is syncing</string>
     <string name="validation_for_balance" translatable="false">You don\'t have enough balance</string>
     <string name="validation_for_start_wallet" translatable="false">Enable wallet start option in My Account</string>
-    <string name="wallet_setup_loading_content" translatable="false">Home screen is restart for wallet setup process... Please wait until complete!</string>
+    <string name="wallet_setup_loading_content" translatable="false">Home screen is restarting for the wallet setup process... Please wait until it is complete</string>
     <string name="wallet_setup_content_first" translatable="false">You can Send and Receive BDX with the BChat integrated wallet.</string>
     <string name="wallet_setup_content_second" translatable="false">The ‘Pay as you Chat’ feature is an easy-pay feature. You can send BDX to your friends right from the chat window</string>
     <string name="wallet_setup_content_third" translatable="false">The BChat wallet is beta. Constant updates are released in newer versions of the app to enhance the integrated wallet functionality.</string>

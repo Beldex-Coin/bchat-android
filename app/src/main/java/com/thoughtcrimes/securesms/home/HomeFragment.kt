@@ -187,7 +187,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
 
     private var items = arrayListOf(
         NavigationItemModel(R.drawable.ic_my_account, "My Account",0),
-        NavigationItemModel(R.drawable.ic_settings, "Settings",0),
+        NavigationItemModel(R.drawable.ic_drawer_settings, "Settings",0),
         NavigationItemModel(R.drawable.ic_notifications, "Notification",0),
         NavigationItemModel(R.drawable.ic_message_requests, "Message Requests",0),
         NavigationItemModel(R.drawable.ic_app_permissions, "App Permissions",0),
@@ -368,7 +368,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
             } else 0
             val messageRequestCount = threadDb.unapprovedConversationCount
             var requestData = emptyList<ThreadRecord>()
-            if (messageRequestCount > 0 && !(activity as HomeActivity).textSecurePreferences.hasHiddenMessageRequests()) {
+            if (messageRequestCount > 0 && !TextSecurePreferences.hasHiddenMessageRequests(requireContext())) {
                 requestData = if (newData.isEmpty()) {
                     listOf(ThreadRecord("", null, null, 0, 0, 0, 0, 0, 0, 0,0, false, 0, 0, 0, false, messageRequestCount))
                 } else {

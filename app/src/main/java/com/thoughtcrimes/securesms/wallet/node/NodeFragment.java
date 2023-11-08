@@ -553,20 +553,24 @@ public class NodeFragment extends Fragment
 
                         @Override
                         public void afterTextChanged(Editable editable) {
-                            testButton.setEnabled(!etNodeHost.getEditText().getText().toString().isEmpty());
+                            etNodeHost.setError(null);
+                            etNodeHost.setErrorEnabled(false);
                         }
                     });
                     testButton = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_NEUTRAL);
-                    testButton.setEnabled(!etNodeHost.getEditText().getText().toString().isEmpty());
                     testButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            testButton.setEnabled(false);
-                            progressBar = new ProgressDialog(getContext());
-                            progressBar.setCancelable(false);
-                            progressBar.setMessage(getString(R.string.testing_the_node));
-                            progressBar.show();
-                            test();
+                            if (!etNodeHost.getEditText().getText().toString().isEmpty()) {
+                                testButton.setEnabled(false);
+                                progressBar = new ProgressDialog(getContext());
+                                progressBar.setCancelable(false);
+                                progressBar.setMessage(getString(R.string.testing_the_node));
+                                progressBar.show();
+                                test();
+                            }else {
+                                etNodeHost.setError(getString(R.string.validation_for_empty_node_host));
+                            }
                         }
                     });
 

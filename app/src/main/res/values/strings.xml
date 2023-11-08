@@ -1415,4 +1415,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="wallet_setup_content_fourth" translatable="false">You can enable or disable the wallet using the Start wallet feature under Settings > Wallet settings.</string>
     <string name="yes_i_understand" translatable="false">Yes, I Understand</string>
     <string name="enable_wallet" translatable="false">Enable Wallet</string>
+    <string name="validation_for_empty_node_host" translatable="false">Please enter a node address</string>
 </resources>

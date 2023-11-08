@@ -1373,7 +1373,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             synced = false
             if(currentWallet is WalletFragment){
                 currentWallet.unsync()
-            invalidateOptionsMenu()
+                //invalidateOptionsMenu()
             }
         } catch (ex: java.lang.ClassCastException) {
             Timber.d(ex.localizedMessage)

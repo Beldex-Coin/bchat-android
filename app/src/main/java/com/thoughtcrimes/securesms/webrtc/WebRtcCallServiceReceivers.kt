@@ -4,14 +4,14 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
 import android.telephony.PhoneStateListener
 import android.telephony.TelephonyCallback
 import android.telephony.TelephonyManager
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getCallisActive
 import com.beldex.libsignal.utilities.Log
+import com.thoughtcrimes.securesms.ApplicationContext
 import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.webrtc.locks.LockManager
 
@@ -50,15 +50,8 @@ class PowerButtonReceiver : BroadcastReceiver() {
             try {
                 val serviceIntent = Intent(context, WebRtcCallService::class.java)
                     .setAction(WebRtcCallService.ACTION_SCREEN_OFF)
-                when {
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
-                        Handler(Looper.getMainLooper()).post {
-                            ContextCompat.startForegroundService(context, serviceIntent)
-                        }
-                    }
-                    else -> {
-                        context.startService(serviceIntent)
-                    }
+                if (getCallisActive(ApplicationContext.getInstance(context))) {
+                    ContextCompat.startForegroundService(context, serviceIntent)
                 }
             }catch (e:Exception){
                 Log.d("WebRtcCallServiceReceivers ", "ACTION_SCREEN_OFF $e")
@@ -70,15 +63,8 @@ class PowerButtonReceiver : BroadcastReceiver() {
             try {
                 val serviceIntent = Intent(context, WebRtcCallService::class.java)
                     .setAction(WebRtcCallService.ACTION_SCREEN_ON)
-                when {
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
-                        Handler(Looper.getMainLooper()).post {
-                            ContextCompat.startForegroundService(context, serviceIntent)
-                        }
-                    }
-                    else -> {
-                        context.startService(serviceIntent)
-                    }
+                if (getCallisActive(ApplicationContext.getInstance(context))) {
+                    ContextCompat.startForegroundService(context, serviceIntent)
                 }
             }catch (e:Exception){
                 Log.d("WebRtcCallServiceReceivers ", "ACTION_USER_PRESENT $e")

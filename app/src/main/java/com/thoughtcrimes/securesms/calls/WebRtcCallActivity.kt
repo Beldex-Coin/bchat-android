@@ -252,6 +252,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
         override fun onDestroy() {
             super.onDestroy()
             TextSecurePreferences.setCallisActive(this,false)
+            TextSecurePreferences.setMuteVide(this, false)
             hangupReceiver?.let { receiver ->
                 LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
             }

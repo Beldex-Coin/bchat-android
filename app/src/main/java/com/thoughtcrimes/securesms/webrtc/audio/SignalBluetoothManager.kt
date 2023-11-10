@@ -3,6 +3,7 @@ package com.thoughtcrimes.securesms.webrtc.audio
 import android.Manifest
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothHeadset
+import android.bluetooth.BluetoothManager
 import android.bluetooth.BluetoothProfile
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -57,7 +58,8 @@ class SignalBluetoothManager(
         bluetoothHeadset = null
         scoConnectionAttempts = 0
 
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+        val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        bluetoothAdapter = bluetoothManager.adapter
         if (bluetoothAdapter == null) {
             Log.i(TAG, "Device does not support Bluetooth")
             return
@@ -338,7 +340,7 @@ class SignalBluetoothManager(
     companion object {
         private val TAG = Log.tag(SignalBluetoothManager::class.java)
         private val SCO_TIMEOUT = TimeUnit.SECONDS.toMillis(4)
-        private const val MAX_CONNECTION_ATTEMPTS = 2
+        private const val MAX_CONNECTION_ATTEMPTS = 4
     }
 }
 

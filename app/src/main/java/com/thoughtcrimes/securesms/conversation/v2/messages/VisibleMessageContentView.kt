@@ -79,11 +79,12 @@ class VisibleMessageContentView : ConstraintLayout {
         // Background
         val background = getBackground(message.isOutgoing, isStartOfMessageCluster, isEndOfMessageCluster)
         val colorID = if (message.isOutgoing) {
-            if (message.isFailed && !message.isPayment) {
+            /*if (message.isFailed && !message.isPayment) {
                 R.attr.message_sent_background_transparent_color
             } else {
                 R.attr.message_sent_background_color
-            }
+            }*/
+            R.attr.message_sent_background_color
         } else {
             if(message.isPayment){
                 R.attr.payment_message_received_background_color
@@ -469,13 +470,14 @@ class VisibleMessageContentView : ConstraintLayout {
         fun getTextColor(context: Context, message: MessageRecord): Int {
             val isDayUiMode = UiModeUtilities.isDayUiMode(context)
             val colorID = if (message.isOutgoing) {
-                if (isDayUiMode) {
+                /*if (isDayUiMode) {
                     if (message.isFailed) {
                         R.color.black
                     } else {
                         R.color.white
                     }
-                } else R.color.white
+                } else R.color.white*/
+                R.color.white
             } else {
                 if (isDayUiMode) R.color.black else R.color.white
             }
@@ -499,17 +501,19 @@ class VisibleMessageContentView : ConstraintLayout {
                 val isDayUiMode = UiModeUtilities.isDayUiMode(context)
                 ds.color = if (message.isOutgoing) {
                         if (isDayUiMode) {
-                            if (message.isFailed) {
+                           /* if (message.isFailed) {
                                 ContextCompat.getColor(context, R.color.black)
                             } else {
                                 ContextCompat.getColor(context, R.color.black)
-                            }
+                            }*/
+                            ContextCompat.getColor(context, R.color.black)
                         } else ContextCompat.getColor(context, R.color.chat_id_card_background)
                     } else {
-                        if (isDayUiMode) ContextCompat.getColor(
+                        /*if (isDayUiMode) ContextCompat.getColor(
                             context,
                             R.color.send_message_background
-                        ) else ContextCompat.getColor(context, R.color.send_message_background)
+                        ) else ContextCompat.getColor(context, R.color.send_message_background)*/
+                        ContextCompat.getColor(context, R.color.send_message_background)
                     }
                /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     ds.color = if (message.isOutgoing) {
@@ -563,14 +567,16 @@ class VisibleMessageContentView : ConstraintLayout {
                 val isDayUiMode = UiModeUtilities.isDayUiMode(context)
                 ds.color = if (message.isOutgoing) {
                     if (isDayUiMode){
-                        if(message.isFailed) {
+                        /*if(message.isFailed) {
                             ContextCompat.getColor(context,R.color.black)
                         }else{
                             ContextCompat.getColor(context,R.color.black)
-                        }
+                        }*/
+                        ContextCompat.getColor(context,R.color.black)
                     }else ContextCompat.getColor(context,R.color.chat_id_card_background)
                 } else {
-                    if (isDayUiMode) ContextCompat.getColor(context,R.color.send_message_background) else ContextCompat.getColor(context,R.color.send_message_background)
+                    /*if (isDayUiMode) ContextCompat.getColor(context,R.color.send_message_background) else ContextCompat.getColor(context,R.color.send_message_background)*/
+                    ContextCompat.getColor(context,R.color.send_message_background)
                 }
                 /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     ds.color = if (message.isOutgoing) {

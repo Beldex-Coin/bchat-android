@@ -744,7 +744,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }, 3000)
         } else {
             binding.networkStatusLayout.visibility = View.VISIBLE
-            binding.connectedStatus.text = getString(R.string.try_to_connect)
+            binding.connectedStatus.text = getString(R.string.no_connection)
             binding.networkStatusImage.setImageResource(R.drawable.ic_try_to_connect)
         }
     }

@@ -9,6 +9,7 @@ import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.os.Environment
+import android.os.SystemClock
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.fragment.app.Fragment
@@ -50,6 +51,7 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
     private var logo: Bitmap? = null
     private val isLoaded = false
     var listenerCallback: Listener? = null
+    private var shareButtonLastClickTime: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,7 +107,10 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
             ) {}
         })
         binding.shareButton.setOnClickListener {
-            shareQrCode()
+            if (SystemClock.elapsedRealtime() - shareButtonLastClickTime >= 1000) {
+                shareButtonLastClickTime = SystemClock.elapsedRealtime()
+                shareQrCode()
+            }
         }
 
         binding.addressCopy.setOnClickListener {

@@ -8,6 +8,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.SystemClock
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
@@ -32,6 +33,7 @@ import com.thoughtcrimes.securesms.util.Helper
 
 class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
     private lateinit var binding: ActivityCreateNewPrivateChatBinding
+    private var shareButtonLastClickTime: Long = 0
 
     var isKeyboardShowing = false
         set(value) {
@@ -69,7 +71,12 @@ class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
             }
             publicKeyTextView.text = hexEncodedPublicKey
             copyButton.setOnClickListener { copyPublicKey() }
-            shareButton.setOnClickListener { sharePublicKey() }
+            shareButton.setOnClickListener {
+                if (SystemClock.elapsedRealtime() - shareButtonLastClickTime >= 1000) {
+                    shareButtonLastClickTime = SystemClock.elapsedRealtime()
+                    sharePublicKey()
+                }
+            }
             createPrivateChatButton.setOnClickListener {
                 if (publicKeyEditText.text.isEmpty()) {
                     Toast.makeText(

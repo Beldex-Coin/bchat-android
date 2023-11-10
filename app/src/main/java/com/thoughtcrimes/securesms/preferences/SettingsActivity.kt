@@ -16,7 +16,6 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
@@ -78,6 +77,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
     private lateinit var animation2: Animation
     private var isFrontOfCardShowing = true
     private val namePattern = Pattern.compile("[A-Za-z0-9]+")
+    private var shareButtonLastClickTime: Long = 0
 
     private fun getDisplayName(): String =
         TextSecurePreferences.getProfileName(this) ?: truncateIdForDisplay(hexEncodedPublicKey)
@@ -94,7 +94,12 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
         val size = toPx(280, resources)
         val qrCode = QRCodeUtilities.encode(hexEncodedPublicKey, size, false, false)
         binding.qrCodeImageView.setImageBitmap(qrCode)
-        binding.qrCodeShareButton.setOnClickListener { shareQRCode() }
+        binding.qrCodeShareButton.setOnClickListener {
+            if (SystemClock.elapsedRealtime() - shareButtonLastClickTime >= 1000) {
+                shareButtonLastClickTime = SystemClock.elapsedRealtime()
+                shareQRCode()
+            }
+        }
 
         // apply animation from to_middle
         animation1 = AnimationUtils.loadAnimation(this, R.anim.to_middle)

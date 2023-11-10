@@ -75,13 +75,13 @@ class BlockedContactsAdapter(private val context: BlockedContactsActivity) : Lis
                 binding.unblockButtonBlockedList.visibility = View.GONE
                 binding.selectButton.visibility = View.VISIBLE
                 binding.root.setOnClickListener { toggleSelection() }
+                binding.selectButton.setOnClickListener { toggleSelection() }
                 binding.selectButton.isSelected = isSelected
             }else{
                 binding.unblockButtonBlockedList.visibility = View.VISIBLE
                 binding.selectButton.visibility = View.GONE
                 binding.selectButton.isSelected = false
             }
-            binding.selectButton.isClickable = !context.selectedAll
 
         }
         fun getUserDisplayName(publicKey: String, context: Context): String {

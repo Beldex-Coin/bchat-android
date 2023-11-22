@@ -1,5 +1,6 @@
 package com.beldex.libbchat.messaging.file_server
 
+import com.beldex.libbchat.BuildConfig
 import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.functional.map
 import okhttp3.Headers
@@ -29,24 +30,9 @@ object FileServerAPIV2 {
     //const val server = "http://fs.rpcnode.stream"
     //10-06-2022
 
-    //Mainnet
-    private const val serverPublicKey = "f3024b309be838eff764c6804c417b667096d6c5301184f90fb66e9e4515444c"
-    const val server = "http://fs1.rpcnode.stream"
-
-    //Testnet
-    /*private const val serverPublicKey = "decc13c0a80cdd44926226f20b86c85525b001d9ab9850c95b281aa67ffebf6a"
-    const val server = "http://fileserver.rpcnode.stream"*/
+    private const val serverPublicKey = BuildConfig.SERVER_KEY
+    const val server = BuildConfig.SERVER
     const val maxFileSize = 10_000_000 // 10 MB
-
-    /**
-     * The file server has a file size limit of `maxFileSize`, which the Service Nodes try to enforce as well. However, the limit applied by the Service Nodes
-     * is on the **HTTP request** and not the actual file size. Because the file server expects the file data to be base 64 encoded, the size of the HTTP
-     * request for a given file will be at least `ceil(n / 3) * 4` bytes, where n is the file size in bytes. This is the minimum size because there might also
-     * be other parameters in the request. On average the multiplier appears to be about 1.5, so when checking whether the file will exceed the file size limit when
-     * uploading a file we just divide the size of the file by this number. The alternative would be to actually check the size of the HTTP request but that's only
-     * possible after proof of work has been calculated and the onion request encryption has happened, which takes several seconds.
-     */
-    const val fileSizeORMultiplier = 2 // TODO: It should be possible to set this to 1.5?
 
     sealed class Error(message: String) : Exception(message) {
         object ParsingFailed : Error("Invalid response.")
@@ -54,12 +40,12 @@ object FileServerAPIV2 {
     }
 
     data class Request(
-            val verb: HTTP.Verb,
-            val endpoint: String,
-            val queryParameters: Map<String, String> = mapOf(),
-            val parameters: Any? = null,
-            val headers: Map<String, String> = mapOf(),
-            /**
+        val verb: HTTP.Verb,
+        val endpoint: String,
+        val queryParameters: Map<String, String> = mapOf(),
+        val parameters: Any? = null,
+        val headers: Map<String, String> = mapOf(),
+        /**
          * Always `true` under normal circumstances. You might want to disable
          * this when running over Beldex.
          */

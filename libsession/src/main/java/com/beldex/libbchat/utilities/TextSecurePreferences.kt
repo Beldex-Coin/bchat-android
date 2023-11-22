@@ -13,6 +13,8 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import com.beldex.libbchat.R
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.CALL_NOTIFICATIONS_ENABLED
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_MUTE_VIDEO
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.LAST_VACUUM_TIME
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.SHOWN_CALL_NOTIFICATION
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.SHOWN_CALL_WARNING
 import com.beldex.libsignal.utilities.Log
@@ -244,6 +246,12 @@ interface TextSecurePreferences {
     fun setCopiedSeed(status: Boolean)
     fun isCopiedSeed():Boolean
 
+    fun getLastVacuum(): Long
+    fun setLastVacuumNow()
+    fun isWalletActive(): Boolean
+    fun setMuteVideo(status: Boolean)
+    fun getMuteVideo(): Boolean
+
 
     companion object {
         val TAG = TextSecurePreferences::class.simpleName
@@ -354,6 +362,9 @@ interface TextSecurePreferences {
         const val CHAT_FONT_SIZE =  "chat_font_size"
         const val PAY_AS_YOU_CHAT_PREF = "pref_pay_as_you_chat"
         const val COPIED_SEED = "copied_seed"
+        const val LAST_VACUUM_TIME = "pref_last_vacuum_time"
+        const val IS_WALLET_ACTIVE = "pref_is_wallet_active"
+        const val IS_MUTE_VIDEO = "is_mute_video"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -1344,6 +1355,30 @@ interface TextSecurePreferences {
             return getBooleanPreference(context, COPIED_SEED, true)
         }
 
+        @JvmStatic
+        fun getLastVacuumTime(context: Context): Long {
+            return getLongPreference(context, LAST_VACUUM_TIME, 0)
+        }
+
+        @JvmStatic
+        fun setLastVacuumNow(context: Context) {
+            setLongPreference(context, LAST_VACUUM_TIME, System.currentTimeMillis())
+        }
+        @JvmStatic
+        fun isWalletActive(context: Context): Boolean {
+            return getBooleanPreference(context, IS_WALLET_ACTIVE, false)
+        }
+
+        @JvmStatic
+        fun setMuteVide(context: Context,status: Boolean) {
+            setBooleanPreference(context, IS_MUTE_VIDEO, status)
+        }
+
+        @JvmStatic
+        fun getMuteVideo(context: Context):Boolean {
+            return getBooleanPreference(context, IS_MUTE_VIDEO, false)
+        }
+
     }
 }
 
@@ -2187,6 +2222,26 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun isCopiedSeed(): Boolean {
         return getBooleanPreference(TextSecurePreferences.COPIED_SEED,true)
+    }
+
+    override fun getLastVacuum(): Long {
+        return getLongPreference(LAST_VACUUM_TIME, 0)
+    }
+
+    override fun setLastVacuumNow() {
+        setLongPreference(LAST_VACUUM_TIME, System.currentTimeMillis())
+    }
+
+    override fun isWalletActive(): Boolean {
+        return getBooleanPreference(TextSecurePreferences.IS_WALLET_ACTIVE, false)
+    }
+
+    override fun setMuteVideo(status: Boolean) {
+       setBooleanPreference(IS_MUTE_VIDEO,status)
+    }
+
+    override fun getMuteVideo(): Boolean {
+        return getBooleanPreference(IS_MUTE_VIDEO,false)
     }
 
 

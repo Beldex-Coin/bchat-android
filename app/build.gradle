@@ -1,18 +1,3 @@
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.2'
-        classpath files('libs/gradle-witness.jar')
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlinVersion"
-        classpath "com.google.gms:google-services:4.3.15"
-        classpath "com.google.dagger:hilt-android-gradle-plugin:$daggerVersion"
-    }
-}
-
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'witness'
@@ -21,172 +6,13 @@ apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlinx-serialization'
 apply plugin: 'dagger.hilt.android.plugin'
+apply from: 'buildGradle/dependencies.gradle'
 
 configurations.all {
     exclude module: "commons-logging"
 }
-
-dependencies {
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0'
-    implementation 'com.google.android.material:material:1.2.1'
-    implementation 'androidx.legacy:legacy-support-v13:1.0.0'
-    implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.preference:preference-ktx:1.1.1'
-    implementation 'androidx.legacy:legacy-preference-v14:1.0.0'
-    implementation 'androidx.gridlayout:gridlayout:1.0.0'
-    implementation 'androidx.exifinterface:exifinterface:1.3.3'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
-    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycleVersion"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion"
-    implementation "androidx.lifecycle:lifecycle-process:$lifecycleVersion"
-    implementation 'androidx.activity:activity-ktx:1.2.2'
-    implementation 'androidx.fragment:fragment-ktx:1.3.2'
-    implementation "androidx.core:core-ktx:1.3.2"
-    implementation "androidx.work:work-runtime-ktx:2.7.1"
-    implementation ("com.google.firebase:firebase-messaging:23.1.1") {
-        exclude group: 'com.google.firebase', module: 'firebase-core'
-        exclude group: 'com.google.firebase', module: 'firebase-analytics'
-        exclude group: 'com.google.firebase', module: 'firebase-measurement-connector'
-    }
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.9.1'
-    implementation 'com.google.android.exoplayer:exoplayer-ui:2.9.1'
-    implementation 'org.conscrypt:conscrypt-android:2.0.0'
-    implementation 'org.signal:aesgcmprovider:0.0.3'
-    implementation 'org.webrtc:google-webrtc:1.0.32006'
-    //implementation 'org.whispersystems:webrtc-android:M74'
-    implementation "me.leolin:ShortcutBadger:1.1.16"
-    implementation 'se.emilsjolander:stickylistheaders:2.7.0'
-    implementation 'com.jpardogo.materialtabstrip:library:1.0.9'
-    implementation 'org.apache.httpcomponents:httpclient-android:4.3.5'
-    implementation 'commons-net:commons-net:3.7.2'
-    implementation 'com.github.chrisbanes:PhotoView:2.1.3'
-    implementation "com.github.bumptech.glide:glide:$glideVersion"
-    implementation 'com.google.firebase:firebase-crashlytics-buildtools:2.9.8'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
-    kapt "com.github.bumptech.glide:compiler:$glideVersion"
-    implementation 'com.makeramen:roundedimageview:2.1.0'
-    implementation 'com.pnikosis:materialish-progress:1.5'
-    implementation 'org.greenrobot:eventbus:3.0.0'
-    implementation 'pl.tajchert:waitingdots:0.1.0'
-    implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
-    implementation 'com.melnykov:floatingactionbutton:1.3.0'
-    implementation 'com.google.zxing:android-integration:3.1.0'
-    implementation "com.google.dagger:hilt-android:$daggerVersion"
-    kapt "com.google.dagger:hilt-compiler:$daggerVersion"
-    implementation 'mobi.upod:time-duration-picker:1.1.3'
-    implementation 'com.google.zxing:core:3.2.1'
-    implementation ('com.davemorrissey.labs:subsampling-scale-image-view:3.6.0') {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    }
-    implementation ('cn.carbswang.android:NumberPickerView:1.0.9') {
-        exclude group: 'com.android.support', module: 'appcompat-v7'
-    }
-    implementation ('com.tomergoldst.android:tooltips:1.0.6') {
-        exclude group: 'com.android.support', module: 'appcompat-v7'
-    }
-    implementation ('com.klinkerapps:android-smsmms:4.0.1') {
-        exclude group: 'com.squareup.okhttp', module: 'okhttp'
-        exclude group: 'com.squareup.okhttp', module: 'okhttp-urlconnection'
-    }
-    implementation 'com.annimon:stream:1.1.8'
-    implementation ('com.takisoft.fix:colorpicker:0.9.1') {
-        exclude group: 'com.android.support', module: 'appcompat-v7'
-        exclude group: 'com.android.support', module: 'recyclerview-v7'
-    }
-    implementation 'com.codewaves.stickyheadergrid:stickyheadergrid:0.9.4'
-    implementation 'com.github.dmytrodanylyk.circular-progress-button:library:1.1.3-S2'
-    implementation 'org.signal:android-database-sqlcipher:3.5.9-S3'
-    implementation ('com.googlecode.ez-vcard:ez-vcard:0.9.11') {
-        exclude group: 'com.fasterxml.jackson.core'
-        exclude group: 'org.freemarker'
-    }
-    implementation project(":libsignal")
-    implementation project(":libsession")
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxJsonVersion"
-    implementation "org.whispersystems:curve25519-java:$curve25519Version"
-    implementation 'com.goterl:lazysodium-android:5.0.2@aar'
-    implementation "net.java.dev.jna:jna:5.8.0@aar"
-    implementation "com.google.protobuf:protobuf-java:$protobufVersion"
-    implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonDatabindVersion"
-    implementation "com.squareup.okhttp3:okhttp:$okhttpVersion"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
-    implementation "nl.komponents.kovenant:kovenant:$kovenantVersion"
-    implementation "nl.komponents.kovenant:kovenant-android:$kovenantVersion"
-    implementation "com.github.lelloman:android-identicons:v11"
-    implementation "com.prof.rssparser:rssparser:2.0.4"
-    implementation "com.jakewharton.rxbinding3:rxbinding:3.1.0"
-    implementation "com.github.tbruyelle:rxpermissions:0.10.2"
-    implementation "com.github.ybq:Android-SpinKit:1.4.0"
-    implementation "com.opencsv:opencsv:4.6"
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'org.assertj:assertj-core:3.11.1'
-    testImplementation "org.mockito:mockito-inline:4.0.0"
-    testImplementation "org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion"
-    testImplementation 'org.powermock:powermock-api-mockito:1.6.1'
-    testImplementation 'org.powermock:powermock-module-junit4:1.6.1'
-    testImplementation 'org.powermock:powermock-module-junit4-rule:1.6.1'
-    testImplementation 'org.powermock:powermock-classloading-xstream:1.6.1'
-    testImplementation 'androidx.test:core:1.3.0'
-    testImplementation "androidx.arch.core:core-testing:2.1.0"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
-    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
-    // Core library
-    androidTestImplementation 'androidx.test:core:1.4.0'
-    androidTestImplementation('com.adevinta.android:barista:4.2.0') {
-        exclude group: 'org.jetbrains.kotlin'
-    }
-
-    // AndroidJUnitRunner and JUnit Rules
-    androidTestImplementation 'androidx.test:runner:1.4.0'
-    androidTestImplementation 'androidx.test:rules:1.4.0'
-
-    // Assertions
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.ext:truth:1.4.0'
-    androidTestImplementation 'com.google.truth:truth:1.0'
-
-    // Espresso dependencies
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.4.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.4.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-accessibility:3.4.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-web:3.4.0'
-    androidTestImplementation 'androidx.test.espresso.idling:idling-concurrent:3.4.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-idling-resource:3.4.0'
-    androidTestUtil 'androidx.test:orchestrator:1.4.0'
-
-    testImplementation 'org.robolectric:robolectric:4.4'
-    testImplementation 'org.robolectric:shadows-multidex:4.4'
-
-    //Lottie Animation
-    implementation 'com.airbnb.android:lottie:3.4.0'
-
-    //New Line//
-    compileOnly 'org.projectlombok:lombok:1.18.22'
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'
-    implementation 'com.jakewharton.timber:timber:5.0.1'
-    implementation "io.github.rburgst:okhttp-digest:2.5"
-    implementation 'com.google.android.play:core:1.8.3'
-
-    implementation 'dnsjava:dnsjava:3.4.2'
-    implementation 'org.jitsi:dnssecjava:2.0.0'
-    implementation 'me.dm7.barcodescanner:zxing:1.9.8'
-    implementation 'com.github.brnunes:swipeablerecyclerview:1.0.2'
-
-    implementation 'app.cash.copper:copper-flow:1.0.0'
-    implementation 'com.google.code.gson:gson:2.8.7'
-    //implementation 'com.google.firebase:firebase-crash:16.2.1'
-    implementation 'com.github.anrwatchdog:anrwatchdog:1.4.0'
-
-}
-
-def canonicalVersionCode = 34
-def canonicalVersionName = "2.1.1"
+def canonicalVersionCode = 35
+def canonicalVersionName = "2.2.0"
 
 //First Release Date 17-06-2022
 //Version Code 15 Version Name 1.0.0
@@ -248,6 +74,9 @@ def canonicalVersionName = "2.1.1"
 //Twentieth Release Date 29-08-2023
 //Version Code 34 Version Name 2.1.1
 
+//Twenty oneth Release Date 15-11-2023
+//Version Code 35 Version Name 2.2.0
+
 
 def postFixSize = 10
 def abiPostFix = ['armeabi-v7a' : 1,
@@ -256,13 +85,7 @@ def abiPostFix = ['armeabi-v7a' : 1,
                   'universal'   : 5]
 
 android {
-    compileSdkVersion androidCompileSdkVersion
-    buildToolsVersion '30.0.3'
     useLibrary 'org.apache.http.legacy'
-
-    dexOptions {
-        javaMaxHeapSize "4g"
-    }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -271,17 +94,16 @@ android {
 
     kotlinOptions {
         jvmTarget = '1.8'
+        freeCompilerArgs += [
+                "-Xjvm-default=all",
+        ]
+    }
+    packagingOptions {
+        resources {
+            excludes += ['LICENSE.txt', 'LICENSE', 'NOTICE', 'asm-license.txt', 'META-INF/LICENSE', 'META-INF/NOTICE', 'META-INF/proguard/androidx-annotations.pro']
+        }
     }
 
-    packagingOptions {
-        exclude 'LICENSE.txt'
-        exclude 'LICENSE'
-        exclude 'NOTICE'
-        exclude 'asm-license.txt'
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/proguard/androidx-annotations.pro'
-    }
 
     splits {
         abi {
@@ -297,7 +119,9 @@ android {
         versionName canonicalVersionName
 
         minSdkVersion androidMinimumSdkVersion
+        compileSdk androidCompileSdkVersion
         targetSdkVersion androidTargetSdkVersion
+        buildToolsVersion '30.0.3'
 
         multiDexEnabled = true
 
@@ -310,8 +134,8 @@ android {
         buildConfigField "String", "USER_AGENT", "\"OWA\""
         buildConfigField "String[]", "LANGUAGES", "new String[]{\"" + autoResConfig().collect { s -> s.replace('-r', '_') }.join('", "') + '"}'
         buildConfigField "int", "CANONICAL_VERSION_CODE", "$canonicalVersionCode"
-
         resConfigs autoResConfig()
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         // The following argument makes the Android Test Orchestrator run its
         // "pm clear" command after each test invocation. This command ensures
@@ -346,18 +170,37 @@ android {
         }
     }
 
-    flavorDimensions "distribution"
+    flavorDimensions = ["distribution", "targetNet"]
     productFlavors {
         play {
+            dimension "distribution"
+
             ext.websiteUpdateUrl = "null"
             buildConfigField "boolean", "PLAY_STORE_DISABLED", "false"
             buildConfigField "String", "NOPLAY_UPDATE_URL", "$ext.websiteUpdateUrl"
         }
-
         website {
+            dimension "distribution"
+
             ext.websiteUpdateUrl = "https://github.com/Beldex-Coin/bchat-android/releases"
             buildConfigField "boolean", "PLAY_STORE_DISABLED", "true"
             buildConfigField "String", "NOPLAY_UPDATE_URL", "\"$ext.websiteUpdateUrl\""
+        }
+        mainNet {
+            dimension "targetNet"
+
+            buildConfigField "String", "NETWORK_TYPE", "\"mainnet\""
+            buildConfigField "String", "REPORT_ISSUE_ID", "\"bdb890a974a25ef50c64cc4e3270c4c49c7096c433b8eecaf011c1ad000e426813\""
+            buildConfigField "boolean", "USE_TESTNET", "false"
+            buildConfigField "String", "EXPLORER_URL", "\"https://explorer.beldex.io\""
+        }
+        devNet {
+            dimension "targetNet"
+
+            buildConfigField "String", "NETWORK_TYPE", "\"devnet\""
+            buildConfigField "String", "REPORT_ISSUE_ID", "\"bd21c8c3179975fa082f221323ae47d44bf38b8f6e39f530c2d07ce7ad4892682d\""
+            buildConfigField "boolean", "USE_TESTNET", "true"
+            buildConfigField "String", "EXPLORER_URL", "\"http://154.26.139.105\""
         }
     }
 
@@ -372,10 +215,6 @@ android {
         }
     }
 
-    lintOptions {
-        abortOnError true
-        baseline file("lint-baseline.xml")
-    }
 
     testOptions {
         unitTests {
@@ -386,6 +225,10 @@ android {
     buildFeatures {
         dataBinding true
         viewBinding true
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.4.1"
     }
     externalNativeBuild {
         cmake {
@@ -393,6 +236,12 @@ android {
             version '3.10.2'
         }
     }
+    ndkVersion '25.2.9519653'
+    lint {
+        abortOnError true
+        baseline file('lint-baseline.xml')
+    }
+    namespace 'io.beldex.bchat'
 }
 
 static def getLastCommitTimestamp() {

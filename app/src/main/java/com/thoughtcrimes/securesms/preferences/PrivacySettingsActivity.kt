@@ -9,6 +9,7 @@ class PrivacySettingsActivity : PassphraseRequiredActionBarActivity() {
     override fun onCreate(savedInstanceState: Bundle?, isReady: Boolean) {
         super.onCreate(savedInstanceState, isReady)
         setContentView(R.layout.activity_fragment_wrapper)
+        supportActionBar!!.title = getString(R.string.activity_settings_title)
         val fragment =
             AppProtectionPreferenceFragment()
         val transaction = supportFragmentManager.beginTransaction()

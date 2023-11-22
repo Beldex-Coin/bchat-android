@@ -30,6 +30,7 @@ interface ConversationRepository {
     fun getRecipientForThreadId(threadId: Long): Recipient?
     fun saveDraft(threadId: Long, text: String)
     fun getDraft(threadId: Long): String?
+    fun clearDrafts(threadId: Long)
     fun inviteContacts(threadId: Long, contacts: List<Recipient>)
     //Payment Tah
     fun sentPayment(threadId: Long, amount: String, txnId: String?, recipient: Recipient?)
@@ -94,8 +95,9 @@ class DefaultConversationRepository @Inject constructor(
     override fun isBeldexHostedOpenGroup(threadId: Long): Boolean {
         val openGroup = beldexThreadDb.getOpenGroupChat(threadId)
         Log.d("Beldex","open group $openGroup")
-        return openGroup?.room == "bchat" || openGroup?.room == "beldex"
-                || openGroup?.room == "crypto"  || openGroup?.room == "masternode" || openGroup?.room == "belnet"
+        /*return openGroup?.room == "bchat" || openGroup?.room == "beldex"
+                || openGroup?.room == "crypto"  || openGroup?.room == "masternode" || openGroup?.room == "belnet"*/
+        return openGroup?.publicKey == OpenGroupAPIV2.defaultServerPublicKey
     }
 
     override fun getRecipientForThreadId(threadId: Long): Recipient? {
@@ -111,15 +113,18 @@ class DefaultConversationRepository @Inject constructor(
 
     override fun getDraft(threadId: Long): String? {
         val drafts = draftDb.getDrafts(threadId)
-        draftDb.clearDrafts(threadId)
         return drafts.find { it.type == DraftDatabase.Draft.TEXT }?.value
+    }
+
+    override fun clearDrafts(threadId: Long) {
+        draftDb.clearDrafts(threadId)
     }
 
     override fun inviteContacts(threadId: Long, contacts: List<Recipient>) {
         val openGroup = beldexThreadDb.getOpenGroupChat(threadId) ?: return
         for (contact in contacts) {
             val message = VisibleMessage()
-            message.sentTimestamp = System.currentTimeMillis()
+            message.sentTimestamp = MnodeAPI.nowWithOffset
             val openGroupInvitation = OpenGroupInvitation()
             openGroupInvitation.name = openGroup.name
             openGroupInvitation.url = openGroup.joinURL
@@ -129,14 +134,14 @@ class DefaultConversationRepository @Inject constructor(
                 contact,
                 message.sentTimestamp
             )
-            smsDb.insertMessageOutboxNew(-1, outgoingTextMessage, message.sentTimestamp!!)
+            smsDb.insertMessageOutboxNew(-1, outgoingTextMessage, message.sentTimestamp!!,true)
             MessageSender.send(message, contact.address)
         }
     }
 
     override fun sentPayment(threadId: Long, amount: String, txnId: String?, recipient: Recipient?) {
         val message = VisibleMessage()
-        message.sentTimestamp = System.currentTimeMillis()
+        message.sentTimestamp = MnodeAPI.nowWithOffset
         val payment = Payment()
         payment.amount = amount
         payment.txnId = txnId
@@ -146,7 +151,7 @@ class DefaultConversationRepository @Inject constructor(
             recipient,
             message.sentTimestamp
         )
-        smsDb.insertMessageOutboxNew(-1,outgoingTextMessage,message.sentTimestamp!!)
+        smsDb.insertMessageOutboxNew(-1,outgoingTextMessage,message.sentTimestamp!!,true)
         MessageSender.send(message,recipient!!.address)
     }
     override fun setBlocked(recipient: Recipient, blocked: Boolean) {

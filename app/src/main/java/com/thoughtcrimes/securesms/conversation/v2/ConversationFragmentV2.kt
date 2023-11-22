@@ -4,27 +4,49 @@ import android.Manifest
 import android.animation.FloatEvaluator
 import android.animation.ValueAnimator
 import android.app.Activity
-import android.content.*
+import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
+import android.content.DialogInterface
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.database.Cursor
-import android.graphics.*
+import android.graphics.Color
+import android.graphics.Rect
+import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import android.os.*
+import android.os.AsyncTask
+import android.os.Build
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.telephony.PhoneStateListener
 import android.telephony.TelephonyCallback
 import android.telephony.TelephonyManager
-import android.text.*
+import android.text.Html
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.util.Pair
 import android.util.TypedValue
-import android.view.*
-import android.widget.*
-import androidx.fragment.app.Fragment
+import android.view.ActionMode
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.ColorInt
 import androidx.annotation.DimenRes
@@ -33,7 +55,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.loader.app.LoaderManager
@@ -42,6 +66,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.annimon.stream.Stream
 import com.beldex.libbchat.messaging.contacts.Contact
+import com.beldex.libbchat.messaging.jobs.AttachmentDownloadJob
+import com.beldex.libbchat.messaging.jobs.JobQueue
 import com.beldex.libbchat.messaging.mentions.Mention
 import com.beldex.libbchat.messaging.mentions.MentionsManager
 import com.beldex.libbchat.messaging.messages.control.DataExtractionNotification
@@ -54,7 +80,12 @@ import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment
 import com.beldex.libbchat.messaging.sending_receiving.link_preview.LinkPreview
 import com.beldex.libbchat.messaging.sending_receiving.quotes.QuoteModel
+import com.beldex.libbchat.mnode.MnodeAPI
+import com.beldex.libbchat.utilities.Address
+import com.beldex.libbchat.utilities.MediaTypes
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.concurrent.SimpleTask
+import com.beldex.libbchat.utilities.isScrolledToBottom
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libbchat.utilities.recipients.RecipientModifiedListener
 import com.beldex.libsignal.crypto.MnemonicCodec
@@ -64,6 +95,8 @@ import com.beldex.libsignal.utilities.hexEncodedPrivateKey
 import com.thoughtcrimes.securesms.ApplicationContext
 import com.thoughtcrimes.securesms.ExpirationDialog
 import com.thoughtcrimes.securesms.audio.AudioRecorder
+import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
+import com.thoughtcrimes.securesms.contacts.SelectContactsActivity
 import com.thoughtcrimes.securesms.contactshare.SimpleTextWatcher
 import com.thoughtcrimes.securesms.conversation.v2.dialogs.BlockedDialog
 import com.thoughtcrimes.securesms.conversation.v2.dialogs.LinkPreviewDialog
@@ -79,28 +112,84 @@ import com.thoughtcrimes.securesms.conversation.v2.messages.VisibleMessageConten
 import com.thoughtcrimes.securesms.conversation.v2.messages.VisibleMessageView
 import com.thoughtcrimes.securesms.conversation.v2.search.SearchBottomBar
 import com.thoughtcrimes.securesms.conversation.v2.search.SearchViewModel
-import com.thoughtcrimes.securesms.conversation.v2.utilities.*
+import com.thoughtcrimes.securesms.conversation.v2.utilities.AttachmentManager
+import com.thoughtcrimes.securesms.conversation.v2.utilities.MentionManagerUtilities
+import com.thoughtcrimes.securesms.conversation.v2.utilities.MentionUtilities
+import com.thoughtcrimes.securesms.conversation.v2.utilities.ResendMessageUtilities
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
 import com.thoughtcrimes.securesms.crypto.MnemonicUtilities
-import com.thoughtcrimes.securesms.database.*
+import com.thoughtcrimes.securesms.data.NodeInfo
+import com.thoughtcrimes.securesms.data.PendingTx
+import com.thoughtcrimes.securesms.data.TxData
+import com.thoughtcrimes.securesms.data.UserNotes
+import com.thoughtcrimes.securesms.database.ThreadDatabase
 import com.thoughtcrimes.securesms.database.model.MessageRecord
 import com.thoughtcrimes.securesms.database.model.MmsMessageRecord
+import com.thoughtcrimes.securesms.delegates.WalletDelegates
+import com.thoughtcrimes.securesms.delegates.WalletDelegatesImpl
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
+import com.thoughtcrimes.securesms.giph.ui.GiphyActivity
+import com.thoughtcrimes.securesms.home.HomeActivity
+import com.thoughtcrimes.securesms.home.HomeFragment
 import com.thoughtcrimes.securesms.linkpreview.LinkPreviewRepository
 import com.thoughtcrimes.securesms.linkpreview.LinkPreviewUtil
 import com.thoughtcrimes.securesms.linkpreview.LinkPreviewViewModel
 import com.thoughtcrimes.securesms.mediasend.Media
 import com.thoughtcrimes.securesms.mediasend.MediaSendActivity
-import com.thoughtcrimes.securesms.mms.*
+import com.thoughtcrimes.securesms.mms.AudioSlide
+import com.thoughtcrimes.securesms.mms.GifSlide
+import com.thoughtcrimes.securesms.mms.GlideApp
+import com.thoughtcrimes.securesms.mms.ImageSlide
+import com.thoughtcrimes.securesms.mms.MediaConstraints
+import com.thoughtcrimes.securesms.mms.Slide
+import com.thoughtcrimes.securesms.mms.SlideDeck
+import com.thoughtcrimes.securesms.mms.VideoSlide
+import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
+import com.thoughtcrimes.securesms.model.PendingTransaction
+import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.permissions.Permissions
-import com.thoughtcrimes.securesms.util.*
+import com.thoughtcrimes.securesms.preferences.ChatSettingsActivity
+import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
+import com.thoughtcrimes.securesms.service.WebRtcCallService
+import com.thoughtcrimes.securesms.util.ActivityDispatcher
+import com.thoughtcrimes.securesms.util.BChatThreadPoolExecutor
+import com.thoughtcrimes.securesms.util.ConfigurationMessageUtilities
+import com.thoughtcrimes.securesms.util.DateUtils
+import com.thoughtcrimes.securesms.util.Helper
+import com.thoughtcrimes.securesms.util.MediaUtil
+import com.thoughtcrimes.securesms.util.SaveAttachmentTask
+import com.thoughtcrimes.securesms.util.getColorWithID
+import com.thoughtcrimes.securesms.util.isValidString
+import com.thoughtcrimes.securesms.util.parcelable
+import com.thoughtcrimes.securesms.util.slidetoact.SlideToActView
+import com.thoughtcrimes.securesms.util.slidetoact.SlideToActView.OnSlideCompleteListener
+import com.thoughtcrimes.securesms.util.toPx
+import com.thoughtcrimes.securesms.wallet.CheckOnline
+import com.thoughtcrimes.securesms.wallet.OnBackPressedListener
+import com.thoughtcrimes.securesms.wallet.send.interfaces.SendConfirm
+import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
+import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
+import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
+import com.thoughtcrimes.securesms.webrtc.CallViewModel
+import com.thoughtcrimes.securesms.webrtc.NetworkChangeReceiver
+import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.FragmentConversationV2Binding
+import io.beldex.bchat.databinding.ViewVisibleMessageBinding
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import nl.komponents.kovenant.ui.successUi
-import java.util.*
+import org.json.JSONException
+import org.json.JSONObject
+import timber.log.Timber
+import java.text.DecimalFormat
+import java.text.NumberFormat
+import java.util.Locale
 import java.util.concurrent.ExecutionException
+import java.util.concurrent.Executor
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
@@ -108,55 +197,18 @@ import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
-import androidx.lifecycle.Observer
-import com.beldex.libbchat.utilities.*
-import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
-import com.thoughtcrimes.securesms.contacts.SelectContactsActivity
-import com.thoughtcrimes.securesms.data.NodeInfo
-import com.thoughtcrimes.securesms.data.PendingTx
-import com.thoughtcrimes.securesms.data.TxData
-import com.thoughtcrimes.securesms.data.UserNotes
-import com.thoughtcrimes.securesms.giph.ui.GiphyActivity
-import com.thoughtcrimes.securesms.home.HomeActivity
-import com.thoughtcrimes.securesms.home.HomeFragment
-import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
-import com.thoughtcrimes.securesms.model.PendingTransaction
-import com.thoughtcrimes.securesms.model.Wallet
-import com.thoughtcrimes.securesms.preferences.ChatSettingsActivity
-import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
-import com.thoughtcrimes.securesms.service.WebRtcCallService
-import com.thoughtcrimes.securesms.util.slidetoact.SlideToActView
-import com.thoughtcrimes.securesms.wallet.CheckOnline
-import com.thoughtcrimes.securesms.wallet.OnBackPressedListener
-import com.thoughtcrimes.securesms.wallet.send.interfaces.SendConfirm
-import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
-import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
-import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
-import kotlinx.coroutines.withContext
-import org.json.JSONException
-import org.json.JSONObject
-import timber.log.Timber
-import java.lang.ClassCastException
-import java.lang.IllegalStateException
-import java.lang.NumberFormatException
-import java.text.DecimalFormat
-import java.text.NumberFormat
-import java.util.concurrent.Executor
-import com.thoughtcrimes.securesms.util.slidetoact.SlideToActView.OnSlideCompleteListener
-import com.thoughtcrimes.securesms.webrtc.CallViewModel
-import com.thoughtcrimes.securesms.webrtc.NetworkChangeReceiver
-import java.io.FileNotFoundException
 
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
+@AndroidEntryPoint
 class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     InputBarRecordingViewDelegate, AttachmentManager.AttachmentListener,
     ConversationActionModeCallbackDelegate, VisibleMessageContentViewDelegate,
     RecipientModifiedListener,
     SearchBottomBar.EventListener, LoaderManager.LoaderCallbacks<Cursor>,
-    ConversationMenuHelper.ConversationMenuListener, OnBackPressedListener,SendConfirm {
+    ConversationMenuHelper.ConversationMenuListener, OnBackPressedListener,SendConfirm, WalletDelegates by WalletDelegatesImpl() {
 
     private var param2: String? = null
 
@@ -168,18 +220,19 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             this, LinkPreviewViewModel.Factory(
                 LinkPreviewRepository(requireActivity())
             )
-        )
-            .get(LinkPreviewViewModel::class.java)
+        )[LinkPreviewViewModel::class.java]
     }
 
-    var threadId: Long? = -1L
+//    var threadId: Long? = -1L
+    @Inject
+    lateinit var threadDb: ThreadDatabase
 
     private val viewModel: ConversationViewModel by viewModels {
-        threadId = requireArguments().getLong(THREAD_ID,-1L)
+        var threadId = requireArguments().getLong(THREAD_ID,-1L)
         if (threadId == -1L) {
             requireArguments().getParcelable<Address>(ADDRESS)?.let { address ->
                 val recipient = Recipient.from(requireActivity(), address, false)
-                threadId = (activity as HomeActivity).threadDb.getOrCreateThreadIdFor(recipient)
+                threadId = threadDb.getOrCreateThreadIdFor(recipient)
             }
         }
         listenerCallback!!.getConversationViewModel().create(threadId!!)
@@ -187,16 +240,16 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     private fun callViewModel():Recipient?{
          val viewModels: ConversationViewModel by viewModels {
-            threadId = requireArguments().getLong(THREAD_ID,-1L)
+            var threadId = requireArguments().getLong(THREAD_ID,-1L)
             if (threadId == -1L) {
-                requireArguments().getParcelable<Address>(ADDRESS)?.let { address ->
+                requireArguments().parcelable<Address>(ADDRESS)?.let { address ->
                     val recipient = Recipient.from(requireActivity(), address, false)
-                    threadId = (activity as HomeActivity).threadDb.getOrCreateThreadIdFor(recipient)
+                    threadId = threadDb.getOrCreateThreadIdFor(recipient)
                 }
             }
             listenerCallback!!.getConversationViewModel().create(threadId!!)
         }
-        return viewModels.recipient
+        return viewModels.recipient.value
     }
 
     private val hexEncodedPublicKey: String
@@ -240,7 +293,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
 
     private val isScrolledToBottom: Boolean
-        get() = binding.conversationRecyclerView.isScrolledToBottom ?: true
+        get() = binding.conversationRecyclerView.isScrolledToBottom
 
     private val layoutManager: LinearLayoutManager?
         get() { return binding.conversationRecyclerView.layoutManager as LinearLayoutManager? }
@@ -264,7 +317,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     /*Hales63*/
     private val adapter by lazy {
-        val cursor = (activity as HomeActivity).mmsSmsDatabase.getConversation(viewModel.threadId, !isIncomingMessageRequestThread())
+        val cursor = viewModel.getConversationsCursor()
         val adapter = ConversationAdapter(
             requireActivity(),
             cursor,
@@ -277,12 +330,19 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             onItemLongPress = { message, position ->
                 handleLongPress(message, position)
             },
-            glide,
             onDeselect = { message, position ->
                 actionMode?.let {
                     onDeselect(message, position, it)
                 }
-            }
+            },
+            onAttachmentNeedsDownload = { attachmentId, mmsId ->
+                // Start download (on IO thread)
+                lifecycleScope.launch(Dispatchers.IO) {
+                    JobQueue.shared.add(AttachmentDownloadJob(attachmentId, mmsId))
+                }
+            },
+            glide = glide,
+            lifecycleCoroutineScope = lifecycleScope
         )
         adapter.visibleMessageContentViewDelegate = this
         adapter
@@ -355,11 +415,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         const val IS_UNSEND_REQUESTS_ENABLED = true
     }
 
-    var listenerCallback: Listener? = null
+    private var listenerCallback: Listener? = null
     private var mContext: Context? = null
 
     var senderBeldexAddress: String? = null
-    var sendBDXAmount: String? = null
+    private var sendBDXAmount: String? = null
 
     private fun getTxData(): TxData {
         return txData
@@ -370,10 +430,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     var pendingTransaction: PendingTransaction? = null
     var pendingTx: PendingTx? = null
     private var totalFunds: Long = 0
-    val MIXIN = 0
+    private val mixin = 0
     private var isResume: Boolean = false
-    private val CLEAN_FORMAT = "%." + Helper.BDX_DECIMALS.toString() + "f"
-    var committedTx: PendingTx? = null
+    private val cleanFormat = "%." + Helper.BDX_DECIMALS.toString() + "f"
+    private var committedTx: PendingTx? = null
 
     private var syncText: String? = null
     private var syncProgress = -1
@@ -385,11 +445,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private var walletSynchronized: Boolean = false
     private var blockProgressBarVisible: Boolean = false
     var transactionInProgress = false
-    var valueOfBalance = "--"
-    var valueOfUnLockedBalance = "--"
-    var valueOfWallet = "--"
-    var tooltipIsVisible = false
-    var dispatchTouched = false
+    private var valueOfBalance = "--"
+    private var valueOfUnLockedBalance = "--"
+    private var valueOfWallet = "--"
+    private var tooltipIsVisible = false
+    private var dispatchTouched = false
     private var networkChangedReceiver: NetworkChangeReceiver? = null
     private var isNetworkAvailable = true
     private var callViewModel : CallViewModel? =null
@@ -399,7 +459,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         fun getConversationViewModel(): ConversationViewModel.AssistedFactory
         fun gettextSecurePreferences(): TextSecurePreferences
         fun onDisposeRequest()
-        val totalFunds: Long
+        val getUnLockedBalance: Long
+        val getFullBalance: Long
         fun onPrepareSend(tag: String?, data: TxData?)
         fun onSend(notes: UserNotes?)
         fun onBackPressedFun()
@@ -414,12 +475,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         //SetDataAndType
         fun passSharedMessageToConversationScreen(thread: Recipient)
         fun getNode(): NodeInfo?
+        val isSynced: Boolean
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            threadId = it.getLong(THREAD_ID)
+//            threadId = it.getLong(THREAD_ID)
             param2 = it.getString(ARG_PARAM2)
         }
         setHasOptionsMenu(true)
@@ -437,24 +499,24 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        searchViewModel = ViewModelProvider(requireActivity()).get(SearchViewModel::class.java)
+        searchViewModel = ViewModelProvider(requireActivity())[SearchViewModel::class.java]
         audioRecorder = AudioRecorder(requireActivity().applicationContext)
 
-        val thread = (activity as HomeActivity).threadDb.getRecipientForThreadId(viewModel.threadId)
-        if (thread == null) {
-            Toast.makeText(requireActivity(), "This thread has been deleted.", Toast.LENGTH_LONG)
-                .show()
-            return backToHome()
+//        val thread = threadDb.getRecipientForThreadId(viewModel.threadId)
+        lifecycleScope.launch {
+            viewModel.backToHome.collectLatest {
+                if (it) {
+                    Toast.makeText(requireActivity(), "This thread has been deleted.", Toast.LENGTH_LONG)
+                        .show()
+                    backToHome()
+                }
+            }
         }
+
 
         // messageIdToScroll
         messageToScrollTimestamp.set(requireArguments().getLong(SCROLL_MESSAGE_ID, -1))
-        messageToScrollAuthor.set(requireArguments().getParcelable<Address>(SCROLL_MESSAGE_AUTHOR))
-
-        if (!thread.isGroupRecipient && thread.hasApprovedMe()) {
-            senderBeldexAddress = getBeldexAddress(thread.address)
-        }
+        messageToScrollAuthor.set(requireArguments().parcelable(SCROLL_MESSAGE_AUTHOR))
 
         networkChangedReceiver = NetworkChangeReceiver(::networkChange)
         networkChangedReceiver!!.register(requireContext())
@@ -462,12 +524,12 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             binding.networkStatusLayout.visibility = View.GONE
         }
 
+
         lifecycleScope.launch(Dispatchers.IO) {
-            unreadCount =
-                (activity as HomeActivity).mmsSmsDatabase.getUnreadCount(viewModel.threadId)
+            unreadCount = viewModel.getUnreadCount()
             withContext(Dispatchers.Main) {
                 setUpRecyclerView()
-                setUpTypingObserver(thread)
+                setUpTypingObserver(viewModel.recipient.value!!)
                 setUpRecipientObserver()
                 getLatestOpenGroupInfoIfNeeded()
                 setUpSearchResultObserver()
@@ -480,7 +542,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         restoreDraftIfNeeded()
         setUpUiStateObserver()
         setMediaControlForReportIssue()
-
         binding.scrollToBottomButton.setOnClickListener {
 
             val layoutManager = (binding.conversationRecyclerView.layoutManager as? LinearLayoutManager) ?: return@setOnClickListener
@@ -493,7 +554,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 // instead we check the current position and if there are more than 10 items to scroll
                 // we jump instantly to the 10th item and scroll from there (this should happen quick
                 // enough to give a similar scroll effect without having to load everything)
-                val position = layoutManager!!.findFirstVisibleItemPosition()
+                val position = layoutManager.findFirstVisibleItemPosition()
                 if (position > 10) {
                     binding.conversationRecyclerView.scrollToPosition(10)
                 }
@@ -504,6 +565,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
         }
 
+
         updateUnreadCountIndicator()
         updateSubtitle()
         setUpBlockedBanner()
@@ -512,32 +574,32 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         /*Hales63*/
         setUpMessageRequestsBar()
 
-        viewModel.recipient?.let { recipient ->
-            if (recipient.isOpenGroupRecipient) {
-                try {
-                    val openGroup =
-                        (activity as HomeActivity).beldexThreadDb.getOpenGroupChat(viewModel.threadId)
-                    if (openGroup == null) {
-                        Toast.makeText(
-                            requireContext(),
-                            "This thread has been deleted.",
-                            Toast.LENGTH_LONG
-                        ).show()
-                        return backToHome()
-                    }
-                } catch (ex: NullPointerException) {
-                    Log.d("Exception ", ex.message.toString())
-                }
-            }
-        }
-        if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && HomeActivity.reportIssueBChatID != thread.address.toString() && !thread.isLocalNumber) {
-            listenerCallback!!.forceUpdate(requireActivity())
-        }
-        showBlockProgressBar(thread)
 
-        callShowPayAsYouChatBDXIcon(thread)
+//        viewModel.recipient.value?.let { recipient ->
+//            if (recipient.isOpenGroupRecipient) {
+//                try {
+//                    val openGroup = beldexThreadDb.getOpenGroupChat(viewModel.threadId)
+//                    if (openGroup == null) {
+//                        Toast.makeText(
+//                            requireContext(),
+//                            "This thread has been deleted.",
+//                            Toast.LENGTH_LONG
+//                        ).show()
+//                        return backToHome()
+//                    }
+//                } catch (ex: NullPointerException) {
+//                    Log.d("Exception ", ex.message.toString())
+//                }
+//            }
+//        }
+        AsyncStartWallet().execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+        if (TextSecurePreferences.isWalletActive(requireContext())) {
+            showBlockProgressBar(viewModel.recipient.value)
 
-        showBalance(Helper.getDisplayAmount(0), Helper.getDisplayAmount(0), walletSynchronized)
+            callShowPayAsYouChatBDXIcon(viewModel.recipient.value)
+
+            showBalance(Helper.getDisplayAmount(0), Helper.getDisplayAmount(0), walletSynchronized)
+        }
 
         if (listenerCallback!!.getNode() == null) {
             setProgress(getString(R.string.failed_to_connect_to_node))
@@ -545,9 +607,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext,true,valueOfWallet)
         }
 
+
         binding.slideToPayButton.onSlideCompleteListener = object : OnSlideCompleteListener {
             override fun onSlideComplete(view: SlideToActView) {
-                binding.slideToPayButton.setCompleted(false, true)
+                binding.slideToPayButton.setCompleted(completed = false, withAnimation = true)
                 if (CheckOnline.isOnline(requireActivity())) {
                     if (blockProgressBarVisible) {
                         when {
@@ -559,13 +622,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                                 ).show()
                             }
                             senderBeldexAddress == null || senderBeldexAddress!!.isEmpty() -> {
-                                val thread =
-                                    (activity as HomeActivity).threadDb.getRecipientForThreadId(
-                                        viewModel.threadId
-                                    )
-                                if (thread != null) {
-                                    senderBeldexAddress = getBeldexAddress(thread.address)
-                                    if (senderBeldexAddress != null || senderBeldexAddress!!.isNotEmpty()) {
+                                if (viewModel.recipient.value != null) {
+                                    senderBeldexAddress = viewModel.getBeldexAddress(viewModel.recipient.value!!.address)
+                                    if (senderBeldexAddress.isValidString()) {
                                         if (validateBELDEXAmount(binding.inputBar.text)) {
                                             sendBDX()
                                         } else {
@@ -611,40 +670,38 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 }
             }
         }
-        callViewModel = ViewModelProvider(requireActivity()).get(CallViewModel::class.java)
+        callViewModel = ViewModelProvider(requireActivity())[CallViewModel::class.java]
     }
 
     override fun onResume() {
         super.onResume()
         ApplicationContext.getInstance(requireActivity()).messageNotifier.setVisibleThread(viewModel.threadId)
-        val recipient = viewModel.recipient ?: return
-        (activity as HomeActivity).threadDb.markAllAsRead(
-            viewModel.threadId,
-            recipient.isOpenGroupRecipient
-        )
+        if (!viewModel.markAllRead())
+            return
 
-        val thread = (activity as HomeActivity).threadDb.getRecipientForThreadId(viewModel.threadId)
-        if (thread != null) {
+        viewModel.recipient.value?.let { thread ->
             showBlockProgressBar(thread)
             callShowPayAsYouChatBDXIcon(thread)
-        }
-        if (TextSecurePreferences.isPayAsYouChat(requireActivity())) {
-            if (binding.inputBar.text!!.isNotEmpty() && binding.inputBar.text.matches(Regex("^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$"))) {
-                binding.inputBar.setTextColor(thread,HomeActivity.reportIssueBChatID,true)
-                showPayWithSlide(thread,true)
+
+            if (TextSecurePreferences.isPayAsYouChat(requireActivity())) {
+                if (binding.inputBar.text.isNotEmpty() && binding.inputBar.text.matches(Regex("^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$"))) {
+                    binding.inputBar.setTextColor(thread,HomeActivity.reportIssueBChatID,true)
+                    showPayWithSlide(thread,true)
+                } else {
+                    binding.inputBar.setTextColor(thread,HomeActivity.reportIssueBChatID,false)
+                    showPayWithSlide(thread,false)
+                }
+                if(syncText == getString(R.string.failed_to_connect_to_node) || syncText == getString(R.string.failed_connected_to_the_node)|| syncText == getString(R.string.no_node_connection)){
+                    binding.inputBar.showDrawableProgressBar(true,valueOfWallet)
+                }else{
+                    binding.inputBar.showDrawableProgressBar(false,valueOfWallet)
+                }
             } else {
                 binding.inputBar.setTextColor(thread,HomeActivity.reportIssueBChatID,false)
                 showPayWithSlide(thread,false)
             }
-            if(syncText == getString(R.string.failed_to_connect_to_node) || syncText == getString(R.string.failed_connected_to_the_node)|| syncText == getString(R.string.no_node_connection)){
-                binding.inputBar.showDrawableProgressBar(true,valueOfWallet)
-            }else{
-                binding.inputBar.showDrawableProgressBar(false,valueOfWallet)
-            }
-        } else {
-            binding.inputBar.setTextColor(thread,HomeActivity.reportIssueBChatID,false)
-            showPayWithSlide(thread,false)
         }
+
         //Minimized app
         if (onTransactionProgress) {
             onTransactionProgress = false
@@ -656,12 +713,25 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        /*These 2 lines are introduced to handle the visibility of keyboard on home screen after we put the
+        * app in background with this screen visible and keyboard opened. These lines can be removed if in future the issue is handled other
+        * way.*/
+        binding.inputBar.clearFocus()
+        Helper.hideKeyboard(requireActivity())
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         cancelVoiceMessage()
         isNetworkAvailable = false
         networkChangedReceiver?.unregister(requireContext())
         networkChangedReceiver = null
+        val activity = activity
+        if(isAdded && activity != null) {
+            this.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
     }
 
     private fun networkChange(networkAvailable: Boolean) {
@@ -674,7 +744,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }, 3000)
         } else {
             binding.networkStatusLayout.visibility = View.VISIBLE
-            binding.connectedStatus.text = getString(R.string.try_to_connect)
+            binding.connectedStatus.text = getString(R.string.no_connection)
             binding.networkStatusImage.setImageResource(R.drawable.ic_try_to_connect)
         }
     }
@@ -696,20 +766,20 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private fun showBlockProgressBar(thread: Recipient?) {
         try {
             if (thread != null) {
-                if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && TextSecurePreferences.isPayAsYouChat(
+                blockProgressBarVisible = if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && TextSecurePreferences.isPayAsYouChat(
                         requireActivity()
                     ) && thread.isApproved && HomeActivity.reportIssueBChatID != thread.address.toString() && !thread.isLocalNumber
                 ) {
                     binding.inputBar.showProgressBar(true)
-                    blockProgressBarVisible = true
+                    true
                 } else {
                     binding.inputBar.showFailedProgressBar(false)
                     binding.inputBar.showProgressBar(false)
-                    blockProgressBarVisible = false
+                    false
                 }
             }
         } catch (ex: IllegalStateException) {
-            Log.d("Exception", ex.toString())
+            Timber.tag("Exception").d(ex.toString())
         }
     }
 
@@ -722,7 +792,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         endActionMode()
         ApplicationContext.getInstance(requireActivity()).messageNotifier.setVisibleThread(-1)
         viewModel.saveDraft(binding.inputBar.text.trim())
-        val recipient = viewModel.recipient ?: return super.onPause()
+        val recipient = viewModel.recipient.value ?: return super.onPause()
         /*Hales63*/ // New Line
         if (TextSecurePreferences.getPlayerStatus(requireActivity())) {
             TextSecurePreferences.setPlayerStatus(requireActivity(), false)
@@ -809,7 +879,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         //New Line
         val params = binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
         params.bottomMargin = 16
-        val recipient = viewModel.recipient ?: return
+        val recipient = viewModel.recipient.value ?: return
         binding.inputBar.draftQuote(recipient, message, glide)
     }
 
@@ -837,11 +907,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun inputBarEditTextContentChanged(newContent: CharSequence) {
-        val inputBarText = binding.inputBar?.text ?: return
+        val inputBarText = binding.inputBar.text
         if (listenerCallback!!.gettextSecurePreferences().isLinkPreviewsEnabled()) {
             linkPreviewViewModel.onTextChanged(requireActivity(), inputBarText, 0, 0)
         }
-        val recipient = viewModel.recipient ?: return
+        val recipient = viewModel.recipient.value ?: return
         if (recipient.isGroupRecipient) {
             showOrHideMentionCandidatesIfNeeded(newContent)
         }
@@ -860,6 +930,14 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun toggleAttachmentOptions() {
+        val recipient = viewModel.recipient.value ?: return
+        if (recipient.isBlocked) {
+            BlockedDialog(recipient).show(
+                    requireActivity().supportFragmentManager,
+                    "Blocked Dialog"
+            )
+            return
+        }
         val targetAlpha = if (isShowingAttachmentOptions) 0.0f else 1.0f
         val allButtonContainers = listOfNotNull(
             binding.cameraButtonContainer,
@@ -974,17 +1052,15 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                             )
                         }
                         else -> {
-                            Log.d(
-                                "Beldex",
-                                "Asked to send an unexpected media type: '" + item.mimeType + "'. Skipping."
-                            )
+                            Timber.tag("Beldex")
+                                .d("Asked to send an unexpected media type: '" + item.mimeType + "'. Skipping.")
                         }
                     }
                 }
                 sendAttachments(slideDeck.asAttachments(), body)
             }
             INVITE_CONTACTS -> {
-                if (viewModel.recipient?.isOpenGroupRecipient != true) {
+                if (viewModel.recipient.value?.isOpenGroupRecipient != true) {
                     return
                 }
                 val extras = intent?.extras ?: return
@@ -1025,15 +1101,23 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun startRecordingVoiceMessage() {
+        val recipient = viewModel.recipient.value ?: return
+        if (recipient.isBlocked) {
+            BlockedDialog(recipient).show(
+                    requireActivity().supportFragmentManager,
+                    "Blocked Dialog"
+            )
+            return
+        }
         if(callViewModel?.callStartTime == -1L) {
             if (Permissions.hasAll(requireActivity(), Manifest.permission.RECORD_AUDIO)) {
                 showVoiceMessageUI()
                 this.activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 audioRecorder.startRecording()
                 stopAudioHandler.postDelayed(
-                    stopVoiceMessageRecordingTask,
-                    60000
-                ) // Limit voice messages to 1 minute each
+                        stopVoiceMessageRecordingTask,
+                        300000
+                ) // Limit voice messages to 5 minute each
             } else {
                 Permissions.with(this)
                     .request(Manifest.permission.RECORD_AUDIO)
@@ -1051,8 +1135,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     override fun onMicrophoneButtonMove(event: MotionEvent) {
         val rawX = event.rawX
-        val chevronImageView = binding.inputBarRecordingView.chevronImageView ?: return
-        val slideToCancelTextView = binding.inputBarRecordingView.slideToCancelTextView ?: return
+        val chevronImageView = binding.inputBarRecordingView.chevronImageView
+        val slideToCancelTextView = binding.inputBarRecordingView.slideToCancelTextView
         if (rawX < screenWidth / 2) {
             val translationX = rawX - screenWidth / 2
             val sign = -1.0f
@@ -1090,7 +1174,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (isValidLockViewLocation(x, y)) {
             binding.inputBarRecordingView.lock()
         } else {
-            val recordButtonOverlay = binding.inputBarRecordingView.recordButtonOverlay ?: return
+            val recordButtonOverlay = binding.inputBarRecordingView.recordButtonOverlay
             val location = IntArray(2) { 0 }
             recordButtonOverlay.getLocationOnScreen(location)
             val hitRect = Rect(
@@ -1108,7 +1192,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun sendMessage() {
-        val recipient = viewModel.recipient ?: callViewModel() ?: return
+        val recipient = viewModel.recipient.value ?: callViewModel() ?: return
         if (recipient.isContactRecipient && recipient.isBlocked) {
             BlockedDialog(recipient).show(
                 requireActivity().supportFragmentManager,
@@ -1116,31 +1200,24 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             )
             return
         }
-        if (CheckOnline.isOnline(requireActivity())) {
-            val binding = binding ?: return
-            if (binding.inputBar.text.trim().isEmpty()) {
-                Toast.makeText(
-                    requireActivity(),
-                    R.string.empty_message_toast,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }else if (binding.inputBar.linkPreview != null || binding.inputBar.quote != null) {
-                sendAttachments(
-                    listOf(),
-                    getMessageBody(),
-                    binding.inputBar.quote,
-                    binding.inputBar.linkPreview
-                )
-            }else {
-                Log.d("SendMessage ","5")
-                callSendTextOnlyMessage()
-            }
-        } else {
+
+        val binding = binding
+        if (binding.inputBar.text.trim().isEmpty()) {
             Toast.makeText(
                 requireActivity(),
-                R.string.please_check_your_internet_connection,
+                R.string.empty_message_toast,
                 Toast.LENGTH_SHORT
             ).show()
+        }else if (binding.inputBar.linkPreview != null || binding.inputBar.quote != null) {
+            sendAttachments(
+                listOf(),
+                getMessageBody(),
+                binding.inputBar.quote,
+                binding.inputBar.linkPreview
+            )
+        }else {
+            Timber.tag("SendMessage ").d("5")
+            callSendTextOnlyMessage()
         }
     }
 
@@ -1148,13 +1225,12 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         val maxValue = 150000000.00000
         val value = amount.replace(',', '.')
         val regExp = "^(([0-9]{0,9})?|[.][0-9]{0,5})?|([0-9]{0,9}+([.][0-9]{0,5}))\$"
-        var isValid = false
 
-        if (value.matches(Regex(regExp))) {
+        val isValid: Boolean = if (value.matches(Regex(regExp))) {
             if (value == ".") {
-                isValid = false
+                false
             } else {
-                isValid = try {
+                try {
                     val dValue = value.toDouble()
                     (dValue <= maxValue && dValue > 0)
                 } catch (e: java.lang.Exception) {
@@ -1162,7 +1238,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 }
             }
         } else {
-            isValid = false
+            false
         }
         return isValid
     }
@@ -1196,13 +1272,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 alert.show()
                 if (TextSecurePreferences.isPayAsYouChat(requireActivity())) {
                     enableInstruction.text =
-                        fromHtml("To disable pay as you chat, go to <b>My Account -> Chat Settings -> Pay As You Chat</b> to use this option")
+                        fromHtml("To disable pay as you chat, go to <b>Settings -> Wallet Settings -> Pay As You Chat</b> to use this option")
                 } else {
                     enableInstruction.text =
-                        fromHtml("Enable pay as you chat from <b>My Account -> Chat Settings -> Pay As You Chat</b> to use this option")
+                        fromHtml("Enable pay as you chat from <b>Settings -> Wallet Settings -> Pay As You Chat</b> to use this option")
                 }
                 okButton.setOnClickListener {
-                    val intent = Intent(requireActivity(), ChatSettingsActivity::class.java)
+                    val intent = Intent(requireActivity(), PrivacySettingsActivity::class.java)
                     this.activity?.startActivity(intent)
                     alert.dismiss()
                 }
@@ -1210,7 +1286,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     alert.dismiss()
                 }
         } catch (exception: Exception) {
-            Log.d("Beldex", "PayAsYouChat exception $exception")
+            Timber.tag("Beldex").d("PayAsYouChat exception $exception")
         }
     }
 
@@ -1327,7 +1403,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun commitInputContent(contentUri: Uri) {
-        val recipient = viewModel.recipient ?: return
+        val recipient = viewModel.recipient.value ?: return
         val media = Media(
             contentUri,
             MediaUtil.getMimeType(
@@ -1354,8 +1430,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun handleVoiceMessageUIHidden() {
-        val inputBar = binding.inputBar ?: return
-        val inputBarCard = binding.inputBarCard ?: return
+        val inputBar = binding.inputBar
+        val inputBarCard = binding.inputBarCard
         //New Line
         inputBar.visibility = View.VISIBLE
 
@@ -1408,14 +1484,14 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun deleteMessages(messages: Set<MessageRecord>) {
-        val recipient = viewModel.recipient ?: return
+        val recipient = viewModel.recipient.value ?: return
         if (!IS_UNSEND_REQUESTS_ENABLED) {
             deleteMessagesWithoutUnsendRequest(messages)
             return
         }
         val allSentByCurrentUser = messages.all { it.isOutgoing }
         val allHasHash =
-            messages.all { (activity as HomeActivity).beldexMessageDb.getMessageServerHash(it.id) != null }
+            messages.all { viewModel.getMessageServerHash(it.id) != null }
         if (recipient.isOpenGroupRecipient) {
             val messageCount = messages.size
             val builder = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog)
@@ -1548,7 +1624,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 var amount = ""
                 var direction = ""
                 try {
-                    val mainObject: JSONObject = JSONObject(message.body)
+                    val mainObject = JSONObject(message.body)
                     val uniObject = mainObject.getJSONObject("kind")
                     amount = uniObject.getString("amount")
                 } catch (e: JSONException) {
@@ -1615,11 +1691,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun showMessageDetail(messages: Set<MessageRecord>) {
-        val message = messages.first()
-        val intent = Intent(requireActivity(), MessageDetailActivity::class.java)
-        intent.putExtra(MessageDetailActivity.MESSAGE_TIMESTAMP, message.timestamp)
-        startActivity(intent)
-        endActionMode()
+        if(messages.isNotEmpty()) {
+            val message = messages.first()
+            val intent = Intent(requireActivity(), MessageDetailActivity::class.java)
+            intent.putExtra(MessageDetailActivity.MESSAGE_TIMESTAMP, message.timestamp)
+            startActivity(intent)
+            endActionMode()
+        }
     }
 
     override fun saveAttachment(messages: Set<MessageRecord>) {
@@ -1676,13 +1754,18 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun reply(messages: Set<MessageRecord>) {
-        val recipient = viewModel.recipient ?: return
+        val recipient = viewModel.recipient.value ?: return
         //New Line
         val params = binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
         params.bottomMargin = 16
-
-        binding.inputBar.draftQuote(recipient, messages.first(), glide)
+        if(messages.isNotEmpty()) {
+            binding.inputBar.draftQuote(recipient, messages.first(), glide)
+        }
         endActionMode()
+    }
+
+    override fun destroyActionMode() {
+        this.actionMode = null
     }
 
     //SteveJosephh21 - 08
@@ -1696,9 +1779,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             .setNegativeButton(android.R.string.cancel, null)
             .setPositiveButton(R.string.RecipientPreferenceActivity_block) { _, _ ->
                 viewModel.block()
-                val thread =
-                    (activity as HomeActivity).threadDb.getRecipientForThreadId(viewModel.threadId)
-                if (thread != null) {
+                viewModel.recipient.value?.let { thread ->
                     showBlockProgressBar(thread)
                 }
                 if (deleteThread) {
@@ -1722,9 +1803,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             .setNegativeButton(android.R.string.cancel, null)
             .setPositiveButton(R.string.ConversationActivity_unblock) { _, _ ->
                 viewModel.unblock()
-                val thread =
-                    (activity as HomeActivity).threadDb.getRecipientForThreadId(viewModel.threadId)
-                if (thread != null) {
+                viewModel.recipient.value?.let { thread ->
                     showBlockProgressBar(thread)
                 }
             }.show()
@@ -1752,17 +1831,16 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     override fun showExpiringMessagesDialog(thread: Recipient) {
         if (thread.isClosedGroupRecipient) {
-            val group =
-                (activity as HomeActivity).groupDb.getGroup(thread.address.toGroupString()).orNull()
+            val group = viewModel.getGroup(thread)
             if (group?.isActive == false) {
                 return
             }
         }
         ExpirationDialog.show(requireActivity(), thread.expireMessages) { expirationTime: Int ->
-            (activity as HomeActivity).recipientDatabase.setExpireMessages(thread, expirationTime)
+            viewModel.setExpireMessages(thread, expirationTime)
             val message = ExpirationTimerUpdate(expirationTime)
             message.recipient = thread.address.serialize()
-            message.sentTimestamp = System.currentTimeMillis()
+            message.sentTimestamp = MnodeAPI.nowWithOffset
             val expiringMessageManager =
                 ApplicationContext.getInstance(requireActivity()).expiringMessageManager
             expiringMessageManager.setExpirationTimer(message)
@@ -1781,8 +1859,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             return
         }
         val viewHolder =
-            binding.conversationRecyclerView.findViewHolderForAdapterPosition(indexInAdapter) as? ConversationAdapter.VisibleMessageViewHolder
-        viewHolder?.view?.playVoiceMessage()
+            binding.conversationRecyclerView.findViewHolderForAdapterPosition(indexInAdapter) as? ConversationAdapter.VisibleMessageViewHolder ?: return
+        val visibleMessageView = ViewVisibleMessageBinding.bind(viewHolder.view).visibleMessageView
+        visibleMessageView.playVoiceMessage()
     }
 
     fun onSearchOpened() {
@@ -1821,7 +1900,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     // region Animation & Updating
     override fun onModified(recipient: Recipient) {
         this.activity?.runOnUiThread {
-            val threadRecipient = viewModel.recipient ?: return@runOnUiThread
+            val threadRecipient = viewModel.recipient.value ?: return@runOnUiThread
             if (threadRecipient.isContactRecipient) {
                 binding.blockedBanner.isVisible = threadRecipient.isBlocked
                 callShowPayAsYouChatBDXIcon(threadRecipient)
@@ -1832,16 +1911,19 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             this.activity?.invalidateOptionsMenu()
             updateSubtitle()
             showOrHideInputIfNeeded()
-            binding.profilePictureView.update(recipient)
+            binding?.profilePictureView?.root?.update(threadRecipient)
             //New Line v32
-            binding.conversationTitleView.text = recipient.toShortString()
+            binding?.conversationTitleView?.text = when {
+                threadRecipient.isLocalNumber -> getString(R.string.note_to_self)
+                else -> threadRecipient.toShortString()
+            }
         }
     }
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
         return ConversationLoader(
             viewModel.threadId,
-            !isIncomingMessageRequestThread(),
+            !viewModel.isIncomingMessageRequestThread(),
             requireActivity()
         )
     }
@@ -1867,7 +1949,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         val layoutManager = LinearLayoutManager(
             requireActivity(),
             LinearLayoutManager.VERTICAL,
-            !isIncomingMessageRequestThread()
+            !viewModel.isIncomingMessageRequestThread()
         )
         binding.conversationRecyclerView.layoutManager = layoutManager
         // Workaround for the fact that CursorRecyclerViewAdapter doesn't auto-update automatically (even though it says it will)
@@ -1886,21 +1968,24 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun setUpToolBar() {
-        val recipient = viewModel.recipient ?: return
-        binding.conversationTitleView.text = recipient.toShortString()
+        val recipient = viewModel.recipient.value ?: return
+        binding.conversationTitleView.text = when {
+            recipient.isLocalNumber -> getString(R.string.note_to_self)
+            else -> recipient.toShortString()
+        }
         @DimenRes val sizeID: Int = if (recipient.isClosedGroupRecipient) {
             R.dimen.medium_profile_picture_size
         } else {
             R.dimen.small_profile_picture_size
         }
         val size = resources.getDimension(sizeID).roundToInt()
-        binding.profilePictureView.layoutParams = LinearLayout.LayoutParams(size, size)
-        binding.profilePictureView.glide = glide
+        binding.profilePictureView.root.layoutParams = LinearLayout.LayoutParams(size, size)
+        binding.profilePictureView.root.glide = glide
         MentionManagerUtilities.populateUserPublicKeyCacheIfNeeded(
             viewModel.threadId,
             requireActivity()
         )
-        binding.profilePictureView.update(recipient)
+        binding.profilePictureView.root.update(recipient)
         binding.layoutConversation.setOnClickListener()
         {
             ConversationMenuHelper.showAllMedia(recipient, listenerCallback)
@@ -1995,7 +2080,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     private fun restoreDraftIfNeeded() {
         //SetDataAndType
-        val mediaURI = requireArguments().getParcelable<Uri>(URI)
+        val mediaURI = requireArguments().parcelable<Uri>(URI)
         val mediaType = AttachmentManager.MediaType.from(requireArguments().getString(TYPE))
         if (mediaURI != null && mediaType != null) {
             if (AttachmentManager.MediaType.IMAGE == mediaType || AttachmentManager.MediaType.GIF == mediaType || AttachmentManager.MediaType.VIDEO == mediaType) {
@@ -2016,7 +2101,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     MediaSendActivity.buildEditorIntent(
                         requireActivity(),
                         listOf(media),
-                        viewModel.recipient!!,
+                        viewModel.recipient.value!!,
                         ""
                     ), PICK_FROM_LIBRARY
                 )
@@ -2066,14 +2151,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun setMediaControlForReportIssue() {
-        val recipient = viewModel.recipient ?: return
+        val recipient = viewModel.recipient.value ?: return
         if (recipient.address.toString() == HomeActivity.reportIssueBChatID) {
             binding.inputBar.showMediaControls = true
         }
     }
 
     private fun updateUnreadCountIndicator() {
-        val binding = binding ?: return
         val formattedUnreadCount = if (unreadCount < 10000) unreadCount.toString() else "9999+"
         binding.unreadCountTextView.text = formattedUnreadCount
         val textSize = if (unreadCount < 10000) 12.0f else 9.0f
@@ -2090,7 +2174,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             viewModel.threadId
         ).observe(requireActivity()) { state ->
             val recipients = if (state != null) state.typists else listOf()
-            val viewContainer = binding.typingIndicatorViewContainer ?: return@observe
+            val viewContainer = binding.typingIndicatorViewContainer
             viewContainer.isVisible = recipients.isNotEmpty() && isScrolledToBottom
             viewContainer.setTypists(recipients)
             inputBarHeightChanged(binding.inputBar.height)
@@ -2127,11 +2211,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun setUpRecipientObserver() {
-        viewModel.recipient?.addListener(this)
+        viewModel.recipient.value?.addListener(this)
     }
 
     private fun updateSubtitle() {
-        val recipient = viewModel.recipient ?: return
+        val recipient = viewModel.recipient.value ?: return
         binding.muteIconImageView.isVisible = recipient.isMuted
         binding.conversationSubtitleView.isVisible = true
         if (recipient.isMuted) {
@@ -2150,16 +2234,16 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
         } else if (recipient.isGroupRecipient) {
             try {
-                val openGroup =
-                    (activity as HomeActivity).beldexThreadDb.getOpenGroupChat(viewModel.threadId)
+                val openGroup = viewModel.getOpenGroupChat()
                 if (openGroup != null) {
-                    val userCount = (activity as HomeActivity).beldexApiDb.getUserCount(
-                        openGroup.room,
-                        openGroup.server
-                    ) ?: 0
+                    val userCount = viewModel.getUserCount(openGroup)
                     try {
-                        binding.conversationSubtitleView.text =
-                            getString(R.string.ConversationActivity_member_count, userCount)
+                        if (userCount != null) {
+                            binding.conversationSubtitleView.text =
+                                    getString(R.string.ConversationActivity_member_count, userCount)
+                        } else {
+                            binding.conversationSubtitleView.isVisible = false
+                        }
                     } catch (ex: IllegalStateException) {
                         Timber.w(ex.message)
                     }
@@ -2167,7 +2251,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     binding.conversationSubtitleView.isVisible = false
                 }
             } catch (ex: NullPointerException) {
-                Log.d("Exception ", ex.message.toString())
+                Timber.tag("Exception ").d(ex.message.toString())
             }
         } else {
             binding.conversationSubtitleView.isVisible = false
@@ -2178,7 +2262,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (item.itemId == android.R.id.home) {
             return false
         } else if (item.itemId == R.id.menu_call) {
-            val recipient = viewModel.recipient ?: return false
+            val recipient = viewModel.recipient.value ?: return false
             if (recipient.isContactRecipient && recipient.isBlocked) {
                 BlockedDialog(recipient).show(
                     requireActivity().supportFragmentManager,
@@ -2188,11 +2272,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 if (Helper.getPhoneStatePermission(requireActivity())) {
                     isMenuCall()
                 } else {
-                    Log.d("Beldex", "Permission not granted")
+                    Timber.tag("Beldex").d("Permission not granted")
                 }
             }
         }
-        return viewModel.recipient?.let { recipient ->
+        return viewModel.recipient.value?.let { recipient ->
             ConversationMenuHelper.onOptionItemSelected(
                 requireActivity(),
                 this,
@@ -2233,7 +2317,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
                                     }
                                     TelephonyManager.CALL_STATE_IDLE -> {
-                                        viewModel.recipient?.let { recipient ->
+                                        viewModel.recipient.value?.let { recipient ->
                                             call(requireActivity().applicationContext, recipient)
                                         }
                                     }
@@ -2262,7 +2346,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
                                 }
                                 TelephonyManager.CALL_STATE_IDLE -> {
-                                    viewModel.recipient?.let { recipient ->
+                                    viewModel.recipient.value?.let { recipient ->
                                         call(requireActivity(), recipient)
                                     }
                                 }
@@ -2271,7 +2355,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     }, PhoneStateListener.LISTEN_CALL_STATE)
                 }
             } else {
-                Log.d("Beldex", "Call state issue called else")
+                Timber.tag("Beldex").d("Call state issue called else")
             }
 
         } else {
@@ -2319,35 +2403,30 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     private fun getLatestOpenGroupInfoIfNeeded() {
         try {
-            val openGroup =
-                (activity as HomeActivity).beldexThreadDb.getOpenGroupChat(viewModel.threadId)
+            val openGroup = viewModel.getOpenGroupChat()
                     ?: return
             OpenGroupAPIV2.getMemberCount(openGroup.room, openGroup.server)
                 .successUi { updateSubtitle() }
         } catch (ex: NullPointerException) {
-            Log.d("Exception ", ex.message.toString())
+            Timber.tag("Exception ").d(ex.message.toString())
         }
     }
 
     private fun setUpBlockedBanner() {
-        val recipient = viewModel.recipient ?: return
+        val recipient = viewModel.recipient.value ?: return
         if (recipient.isGroupRecipient) {
             return
         }
-        val bchatID = recipient.address.toString()
-        val contact = (activity as HomeActivity).bchatContactDb.getContactWithBchatID(bchatID)
-        val name = contact?.displayName(Contact.ContactContext.REGULAR) ?: bchatID
+        val contact = viewModel.getContactWithBChatId()
+        val name = contact?.displayName(Contact.ContactContext.REGULAR) ?: recipient.address.toString()
         binding.blockedBannerTextView.text =
             resources.getString(R.string.activity_conversation_blocked_banner_text, name)
         binding.blockedBanner.isVisible = recipient.isBlocked
         callShowPayAsYouChatBDXIcon(recipient)
         showBlockProgressBar(recipient)
-        binding.blockedBanner.setOnClickListener { viewModel.unblock() }
         binding.unblockButton.setOnClickListener {
             viewModel.unblock()
-            val thread =
-                (activity as HomeActivity).threadDb.getRecipientForThreadId(viewModel.threadId)
-            if (thread != null) {
+            viewModel.recipient.value?.let { thread ->
                 showBlockProgressBar(thread)
             }
         }
@@ -2363,7 +2442,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     result.getResults()[result.position]?.let {
                         jumpToMessage(
                             it.messageRecipient.address,
-                            it.receivedTimestampMs,
+                            it.sentTimestampMs,
                             Runnable { searchViewModel!!.onMissingResult() })
                     }
                 }
@@ -2373,8 +2452,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
 
     private fun scrollToFirstUnreadMessageIfNeeded() {
-        val lastSeenTimestamp =
-            (activity as HomeActivity).threadDb.getLastSeenAndHasSent(viewModel.threadId).first()
+        val lastSeenTimestamp = viewModel.getLastSeenAndHasSent().first()
         val lastSeenItemPosition = adapter.findLastSeenItemPosition(lastSeenTimestamp) ?: return
         if (lastSeenItemPosition <= 3) {
             return
@@ -2383,7 +2461,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
-        val recipient = viewModel.recipient ?: return
+        val recipient = viewModel.recipient.value ?: return
         //New Line
         if (!isMessageRequestThread()) {
             ConversationMenuHelper.onPrepareOptionsMenu(
@@ -2399,9 +2477,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun showOrHideInputIfNeeded() {
-        val recipient = viewModel.recipient
+        val recipient = viewModel.recipient.value
         if (recipient != null && recipient.isClosedGroupRecipient && mContext != null) {
-            val group = (activity as HomeActivity).groupDb.getGroup(recipient.address.toGroupString()).orNull()
+            val group = viewModel.getGroup(recipient)
             val isActive = (group?.isActive == true)
             binding.inputBar.showInput = isActive
         } else {
@@ -2409,9 +2487,17 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
     }
 
+    private fun isIncomingMessageRequestThread(): Boolean {
+        val recipient = viewModel.recipient.value ?: return false
+        return !recipient.isGroupRecipient &&
+                !recipient.isApproved &&
+                !recipient.isLocalNumber &&
+                !threadDb.getLastSeenAndHasSent(viewModel.threadId).second() &&
+                threadDb.getMessageCount(viewModel.threadId) > 0
+    }
     /*Hales63*/
     private fun setUpMessageRequestsBar() {
-        val recipient = viewModel.recipient ?: return
+        val recipient = viewModel.recipient.value ?: return
         if (recipient.address.toString() != HomeActivity.reportIssueBChatID) {
             binding.inputBar.showMediaControls = !isOutgoingMessageRequestThread()
         }
@@ -2428,31 +2514,25 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun hideVoiceMessageUI() {
-        val chevronImageView = binding.inputBarRecordingView?.chevronImageView ?: return
-        val slideToCancelTextView = binding.inputBarRecordingView?.slideToCancelTextView ?: return
-        listOf(chevronImageView, slideToCancelTextView).forEach { view ->
-            val animation = ValueAnimator.ofObject(FloatEvaluator(), view.translationX, 0.0f)
-            animation.duration = 250L
-            animation.addUpdateListener { animator ->
-                view.translationX = animator.animatedValue as Float
+        try {
+            val chevronImageView = binding.inputBarRecordingView.chevronImageView
+            val slideToCancelTextView = binding.inputBarRecordingView.slideToCancelTextView
+            listOf(chevronImageView, slideToCancelTextView).forEach { view ->
+                val animation = ValueAnimator.ofObject(FloatEvaluator(), view.translationX, 0.0f)
+                animation.duration = 250L
+                animation.addUpdateListener { animator ->
+                    view.translationX = animator.animatedValue as Float
+                }
+                animation.start()
             }
-            animation.start()
+            binding.inputBarRecordingView.hide()
+        }catch(e:UninitializedPropertyAccessException){
+            println("Hide voice message -> ${e.localizedMessage}")
         }
-        binding.inputBarRecordingView?.hide()
-    }
-
-    private fun isIncomingMessageRequestThread(): Boolean {
-        val recipient = viewModel.recipient ?: return false
-        return !recipient.isGroupRecipient &&
-                !recipient.isApproved &&
-                !recipient.isLocalNumber &&
-                !(activity as HomeActivity).threadDb.getLastSeenAndHasSent(viewModel.threadId)
-                    .second() &&
-                (activity as HomeActivity).threadDb.getMessageCount(viewModel.threadId) > 0
     }
 
     private fun isOutgoingMessageRequestThread(): Boolean {
-        val recipient = viewModel.recipient ?: return false
+        val recipient = viewModel.recipient.value ?: return false
         return !recipient.isGroupRecipient &&
                 !recipient.isLocalNumber &&
                 !(recipient.hasApprovedMe() || viewModel.hasReceived())
@@ -2469,13 +2549,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             val lastCharIndex = text.lastIndex
             val lastChar = text[lastCharIndex]
             // Check if there is whitespace before the '@' or the '@' is the first character
-            val isCharacterBeforeLastWhiteSpaceOrStartOfLine: Boolean
-            if (text.length == 1) {
-                isCharacterBeforeLastWhiteSpaceOrStartOfLine = true // Start of line
+            val isCharacterBeforeLastWhiteSpaceOrStartOfLine: Boolean = if (text.length == 1) {
+                true // Start of line
             } else {
                 val charBeforeLast = text[lastCharIndex - 1]
-                isCharacterBeforeLastWhiteSpaceOrStartOfLine =
-                    Character.isWhitespace(charBeforeLast)
+                Character.isWhitespace(charBeforeLast)
             }
             if (lastChar == '@' && isCharacterBeforeLastWhiteSpaceOrStartOfLine) {
                 currentMentionStartIndex = lastCharIndex
@@ -2498,7 +2576,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private fun isValidLockViewLocation(x: Int, y: Int): Boolean {
         // We can be anywhere above the lock view and a bit to the side of it (at most `lockViewHitMargin`
         // to the side)
-        val binding = binding ?: return false
+        val binding = binding
         val lockViewLocation = IntArray(2) { 0 }
         binding.inputBarRecordingView.lockView.getLocationOnScreen(lockViewLocation)
         val hitRect = Rect(
@@ -2511,8 +2589,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun showVoiceMessageUI() {
+        Helper.hideKeyboard(activity)
         //New Line
-        binding.inputBar.visibility = View.GONE
+        binding.inputBar.visibility = View.INVISIBLE
 
         binding.inputBarRecordingView.show()
         binding.inputBarCard.alpha = 0.0f
@@ -2526,7 +2605,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun expandVoiceMessageLockView() {
-        val lockView = binding.inputBarRecordingView?.lockView ?: return
+        val lockView = binding.inputBarRecordingView.lockView
         val animation = ValueAnimator.ofObject(FloatEvaluator(), lockView.scaleX, 1.10f)
         animation.duration = 250L
         animation.addUpdateListener { animator ->
@@ -2537,7 +2616,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun collapseVoiceMessageLockView() {
-        val lockView = binding.inputBarRecordingView?.lockView ?: return
+        val lockView = binding.inputBarRecordingView.lockView
         val animation = ValueAnimator.ofObject(FloatEvaluator(), lockView.scaleX, 1.0f)
         animation.duration = 250L
         animation.addUpdateListener { animator ->
@@ -2553,13 +2632,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         quotedMessage: MessageRecord? = null,
         linkPreview: LinkPreview? = null
     ) {
-        val recipient = viewModel.recipient ?: return
+        val recipient = viewModel.recipient.value ?: return
         //New Line v32
         processMessageRequestApproval()
 
         // Create the message
         val message = VisibleMessage()
-        message.sentTimestamp = System.currentTimeMillis()
+        message.sentTimestamp = MnodeAPI.nowWithOffset
         message.text = body
         val quote = quotedMessage?.let {
             val quotedAttachments =
@@ -2573,15 +2652,14 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             if (it.isPayment) {
                 //Payment Tag
                 var amount = ""
-                var direction = ""
                 try {
-                    val mainObject: JSONObject = JSONObject(it.body)
+                    val mainObject = JSONObject(it.body)
                     val uniObject = mainObject.getJSONObject("kind")
                     amount = uniObject.getString("amount")
                 } catch (e: JSONException) {
                     e.printStackTrace()
                 }
-                direction = if (it.isOutgoing) {
+                val direction: String = if (it.isOutgoing) {
                     resources.getString(R.string.payment_sent)
                 } else {
                     resources.getString(R.string.payment_received)
@@ -2614,11 +2692,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             toggleAttachmentOptions()
         }
         // Put the message in the database
-        message.id = (activity as HomeActivity).mmsDb.insertMessageOutbox(
-            outgoingTextMessage,
-            viewModel.threadId,
-            false
-        ) { }
+        message.id = viewModel.insertMessageOutBox(outgoingTextMessage)
         // Send it
         MessageSender.send(message, recipient.address, attachments, quote, linkPreview)
         // Send a typing stopped message
@@ -2628,7 +2702,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun sendTextOnlyMessage(hasPermissionToSendSeed: Boolean = false) {
-        val recipient = viewModel.recipient ?: return
+        val recipient = viewModel.recipient.value ?: return
         //New Line v32
         processMessageRequestApproval()
 
@@ -2642,9 +2716,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
         // Create the message
         val message = VisibleMessage()
-        message.sentTimestamp = System.currentTimeMillis()
+        message.sentTimestamp = MnodeAPI.nowWithOffset
         message.text = text
-        val outgoingTextMessage = OutgoingTextMessage.from(message, viewModel.recipient)
+        val outgoingTextMessage = OutgoingTextMessage.from(message, viewModel.recipient.value)
         // Clear the input bar
         binding.inputBar.text = ""
         //New Line
@@ -2658,13 +2732,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         currentMentionStartIndex = -1
         mentions.clear()
         // Put the message in the database
-        message.id = (activity as HomeActivity).smsDb.insertMessageOutbox(
-            viewModel.threadId,
-            outgoingTextMessage,
-            false,
-            message.sentTimestamp!!,
-            null
-        )
+        message.id = viewModel.insertMessageOutBoxSMS(outgoingTextMessage, message.sentTimestamp)
 
         // Send it
         MessageSender.send(message, recipient.address)
@@ -2676,9 +2744,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     //New Line v32
     private fun processMessageRequestApproval() {
-        if (isIncomingMessageRequestThread()) {
+        if (viewModel.isIncomingMessageRequestThread()) {
             acceptMessageRequest()
-        } else if (viewModel.recipient?.isApproved == false) {
+        } else if (viewModel.recipient.value?.isApproved == false) {
             // edge case for new outgoing thread on new recipient without sending approval messages
             viewModel.setRecipientApproved()
         }
@@ -2686,7 +2754,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     // region General
     private fun getMessageBody(): String {
-        var result = binding.inputBar.text.trim() ?: return ""
+        var result = binding.inputBar.text.trim()
         for (mention in mentions) {
             try {
                 val startIndex = result.indexOf("@" + mention.displayName)
@@ -2697,7 +2765,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                         endIndex
                     )
             } catch (exception: Exception) {
-                Log.d("Beldex", "Failed to process mention due to error: $exception")
+                Timber.tag("Beldex").d("Failed to process mention due to error: $exception")
             }
         }
         return result
@@ -2754,16 +2822,12 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     private fun jumpToMessage(author: Address, timestamp: Long, onMessageNotFound: Runnable?) {
         SimpleTask.run(lifecycle, {
-            (activity as HomeActivity).mmsSmsDatabase.getMessagePositionInConversation(
-                viewModel.threadId,
-                timestamp,
-                author
-            )
+            viewModel.getMessagePositionInConversation(timestamp, author)
         }) { p: Int -> moveToMessagePosition(p, onMessageNotFound) }
     }
 
     private fun handleRecyclerViewScrolled() {
-        val binding = binding ?: return
+        val binding = binding
         val wasTypingIndicatorVisibleBefore = binding.typingIndicatorViewContainer.isVisible
         binding.typingIndicatorViewContainer.isVisible =
             wasTypingIndicatorVisibleBefore && isScrolledToBottom
@@ -2790,11 +2854,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun sendMediaSavedNotification() {
-        val recipient = viewModel.recipient ?: return
+        val recipient = viewModel.recipient.value ?: return
         if (recipient.isGroupRecipient) {
             return
         }
-        val timestamp = System.currentTimeMillis()
+        val timestamp = MnodeAPI.nowWithOffset
         val kind = DataExtractionNotification.Kind.MediaSaved(timestamp)
         val message = DataExtractionNotification(kind)
         MessageSender.send(message, recipient.address)
@@ -2826,7 +2890,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun pickFromLibrary() {
-        val recipient = viewModel.recipient ?: return
+        val recipient = viewModel.recipient.value ?: return
         binding.inputBar.text.trim().let { text ->
             AttachmentManager.selectGallery(
                 requireActivity(),
@@ -2836,7 +2900,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun showCamera() {
-        attachmentManager.capturePhoto(requireActivity(), TAKE_PHOTO, viewModel.recipient);
+        attachmentManager.capturePhoto(requireActivity(), TAKE_PHOTO, viewModel.recipient.value)
     }
 
     private fun hideMentionCandidates() {
@@ -2848,7 +2912,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             animation.addUpdateListener { animator ->
                 mentionCandidatesView.alpha = animator.animatedValue as Float
                 if (animator.animatedFraction == 1.0f) {
-                    binding.additionalContentContainer?.removeAllViews()
+                    binding.additionalContentContainer.removeAllViews()
                 }
             }
             animation.start()
@@ -2857,8 +2921,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun showOrUpdateMentionCandidatesIfNeeded(query: String = "") {
-        val additionalContentContainer = binding.additionalContentContainer ?: return
-        val recipient = viewModel.recipient ?: return
+        val additionalContentContainer = binding.additionalContentContainer
+        val recipient = viewModel.recipient.value ?: return
         if (!isShowingMentionCandidatesView) {
             additionalContentContainer.removeAllViews()
             val view = MentionCandidatesView(requireActivity())
@@ -2889,10 +2953,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             .setMessage(resources.getString(R.string.message_requests_accept_message))
             .setPositiveButton(R.string.accept) { _, _ ->
                 acceptMessageRequest()
-                val thread =
-                    (activity as HomeActivity).threadDb.getRecipientForThreadId(viewModel.threadId)
-                if (thread != null) {
-                    showBlockProgressBar(thread)
+                viewModel.recipient.value?.let {
+                    showBlockProgressBar(it)
                 }
             }
             .setNegativeButton(R.string.cancel) { _, _ ->
@@ -2914,7 +2976,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 lifecycleScope.launch(Dispatchers.IO) {
                     ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(requireActivity())
                 }
-                //finish()
+                backToHome()
             }
             .setNegativeButton(R.string.cancel) { _, _ ->
                 // Do nothing
@@ -2928,7 +2990,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun handleMentionSelected(mention: Mention) {
-        val binding = binding ?: return
+        val binding = binding
         if (currentMentionStartIndex == -1) {
             return
         }
@@ -2959,7 +3021,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     private fun isMessageRequestThread(): Boolean {
         //New Line v32
-        val recipient = viewModel.recipient ?: return false
+        val recipient = viewModel.recipient.value ?: return false
         return !recipient.isGroupRecipient && !recipient.isApproved
     }
 
@@ -2967,19 +3029,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         return false
     }
 
-    private fun getBeldexAddress(address: Address): String {
-        val contact =
-            (activity as HomeActivity).bchatContactDb.getContactWithBchatID(address.toString())
-        val beldexAddress =
-            contact?.displayBeldexAddress(Contact.ContactContext.REGULAR) ?: address.toString()
-        return beldexAddress
-    }
-
     //Payment Tag
     override fun sendBDX() {
         val txData: TxData = getTxData()
         txData.destinationAddress = senderBeldexAddress
-        txData.destinationAddress?.let { Log.d("SenderBeldexAddress txData->", it) }
+        txData.destinationAddress?.let { Timber.tag("SenderBeldexAddress txData->").d(it) }
         if (getCleanAmountString(getBDXAmount()).equals(
                 Wallet.getDisplayAmount(totalFunds)
             )
@@ -3007,7 +3061,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         } else {
             txData.priority = PendingTransaction.Priority.Priority_Flash
         }
-        txData.mixin = MIXIN
+        txData.mixin = mixin
         //Important
         val lockManager: LockManager<CustomPinActivity> =
             LockManager.getInstance() as LockManager<CustomPinActivity>
@@ -3074,15 +3128,15 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         transactionInProgress = false
     }
 
-    fun disposeTransaction() {
+    private fun disposeTransaction() {
         pendingTx = null
         listenerCallback!!.onDisposeRequest()
     }
 
-    var inProgress = false
+    private var inProgress = false
 
     //Minimized app
-    var onTransactionProgress = false
+    private var onTransactionProgress = false
 
     private fun hideProgress() {
         val transactionLoadingBar: Fragment? =
@@ -3139,7 +3193,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         return try {
             val amount = enteredAmount.toDouble()
             if (amount >= 0) {
-                String.format(Locale.US, CLEAN_FORMAT, amount)
+                String.format(Locale.US, cleanFormat, amount)
             } else {
                 null
             }
@@ -3159,6 +3213,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         Helper.hideKeyboard(activity)
         isResume = true
         transactionInProgress = true
+        val activity = activity
+        if(isAdded && activity != null) {
+            this.activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
         refreshTransactionDetails()
         if (pendingTransaction == null && !inProgress) {
             showProgress()
@@ -3184,7 +3242,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     )
                 }
             } catch (e: IndexOutOfBoundsException) {
-                e.message?.let { Log.d("ConversationFragmentV2->", it) }
+                e.message?.let { Timber.tag("ConversationFragmentV2->").d(it) }
             }
         }
         showProgress()
@@ -3197,7 +3255,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
 
     private fun getBDXAmount(): String {
-        sendBDXAmount = binding.inputBar.text.trim() ?: return ""
+        sendBDXAmount = binding.inputBar.text.trim()
         return sendBDXAmount as String
     }
 
@@ -3205,8 +3263,12 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     fun onTransactionSent(txId: String?) {
         hideProgress()
         //Payment Tag
-        viewModel.sentPayment(sendBDXAmount.toString(), txId, viewModel.recipient)
+        viewModel.sentPayment(sendBDXAmount.toString(), txId, viewModel.recipient.value)
         processMessageRequestApproval()
+        val activity = activity
+        if(isAdded && activity != null) {
+            this.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
         InChatSendSuccess(this).show(requireActivity().supportFragmentManager, "")
     }
 
@@ -3221,7 +3283,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
             syncText = text
         } catch (ex: IllegalStateException) {
-            Log.d("Exception", ex.toString())
+            Timber.tag("Exception").d(ex.toString())
         }
     }
 
@@ -3249,15 +3311,15 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     fun onRefreshed(wallet: Wallet, full: Boolean) {
-        val recipient = viewModel.recipient ?: return
+        val recipient = viewModel.recipient.value ?: return
         if (!recipient.isGroupRecipient && recipient.hasApprovedMe() && !recipient.isBlocked && HomeActivity.reportIssueBChatID != recipient.address.toString() && !recipient.isLocalNumber) {
-            if (full) {
+            if (full && listenerCallback!!.isSynced) {
                 if (CheckOnline.isOnline(requireContext())) {
                     check(listenerCallback!!.hasBoundService()) { "WalletService not bound." }
                     val daemonConnected: Wallet.ConnectionStatus = listenerCallback!!.connectionStatus!!
                     if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
+                        //getUnlockedBalance(wallet)
                         AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
-
                     }
                 }
             }
@@ -3266,72 +3328,68 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun updateStatus(wallet: Wallet) {
-            if (!isAdded) return
-            if (CheckOnline.isOnline(requireContext())) {
-                balance = wallet.balance
-                val sync: String
-                check(listenerCallback!!.hasBoundService()) { "WalletService not bound." }
-                val daemonConnected: Wallet.ConnectionStatus = listenerCallback!!.connectionStatus!!
-                if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
-                    val daemonHeight: Long = wallet.daemonBlockChainHeight
-                    val walletHeight: Long = wallet.blockChainHeight
-                    val df = DecimalFormat("#.##")
-                    val walletSyncPercentage = ((100.00 * walletHeight.toDouble()) / daemonHeight)
-                    if (!wallet.isSynchronized) {
-                        ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(
-                                true
-                        )
-                        val n = daemonHeight - walletHeight
-                        sync = formatter.format(n) + " " + getString(R.string.status_remaining)
-                        if (firstBlock == 0L) {
-                            firstBlock = walletHeight
-                        }
-                        var x = (100 - Math.round(100f * n / (1f * daemonHeight - firstBlock))).toInt()
-                        if (x == 0) x = 101 // indeterminate
-                        setProgress(x)
-                        valueOfWallet = "${df.format(walletSyncPercentage)}%"
-                        binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false, valueOfWallet)
-                    } else {
-                        ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(
-                                false
-                        )
-                        sync =
-                                getString(R.string.status_synchronized)
-                        valueOfWallet = "${df.format(walletSyncPercentage)}%"
-                        binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false, valueOfWallet)
-                        //SteveJosephh21
-                        setProgress(-2)
+        if (!isAdded) return
+        if (CheckOnline.isOnline(requireContext())) {
+            val daemonHeight: Long = wallet.daemonBlockChainHeight
+            val walletHeight: Long = wallet.blockChainHeight
+            val df = DecimalFormat("#.##")
+            val walletSyncPercentage = ((100.00 * walletHeight.toDouble()) / daemonHeight)
+            val sync: String
+            check(listenerCallback!!.hasBoundService()) { "WalletService not bound." }
+            val daemonConnected: Wallet.ConnectionStatus = listenerCallback!!.connectionStatus!!
+            if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
+                if (!wallet.isSynchronized) {
+                    ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(
+                        true
+                    )
+                    val n = daemonHeight - walletHeight
+                    sync = formatter.format(n) + " " + getString(R.string.status_remaining)
+                    if (firstBlock == 0L) {
+                        firstBlock = walletHeight
                     }
+                    var x = (100 - Math.round(100f * n / (1f * daemonHeight - firstBlock))).toInt()
+                    if (x == 0) x = 1 // indeterminate
+                    setProgress(x)
+                    valueOfWallet = "${df.format(walletSyncPercentage)}%"
+                    binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false,valueOfWallet)
                 } else {
-                    sync = getString(R.string.failed_connected_to_the_node)
-                    setProgress(-1)
-                    valueOfWallet = "--"
-                    binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, true, valueOfWallet)
+                    ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(
+                        false
+                    )
+                    sync =
+                    getString(R.string.status_synchronized)
+                    valueOfWallet = "${df.format(walletSyncPercentage)}%"
+                    binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false,valueOfWallet)
+                    //SteveJosephh21
+                    setProgress(-2)
                 }
-                setProgress(sync)
+            } else if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connecting) {
+                sync = getString(R.string.status_wallet_connecting)
+                setProgress(-1)
+                valueOfWallet = "--"
+                binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, true, valueOfWallet)
             } else {
-                setProgress(getString(R.string.no_node_connection))
+                sync = getString(R.string.failed_connected_to_the_node)
+                setProgress(-1)
                 valueOfWallet = "--"
                 binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, true, valueOfWallet)
             }
-            toolTip()
+            setProgress(sync)
+        } else {
+            setProgress(getString(R.string.no_node_connection))
+            valueOfWallet ="--"
+            binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, true,valueOfWallet)
         }
+        toolTip()
+    }
 
     private fun refreshBalance(synchronized: Boolean) {
-        val unlockedBalance: Double = Helper.getDecimalAmount(unlockedBalance).toDouble()
-        val balance: Double = Helper.getDecimalAmount(balance).toDouble()
-        if (balance > 0.0) {
-            showBalance(
-                Helper.getFormattedAmount(balance, true),
-                Helper.getFormattedAmount(unlockedBalance, true),
-                true
-            )
-        } else {
-            showBalance(
-                Helper.getFormattedAmount(balance, true),
-                Helper.getFormattedAmount(unlockedBalance, true),
-                synchronized
-            )
+        refreshBalance(
+            synchronized = synchronized,
+            unlockedBalance = unlockedBalance,
+            balance = balance,
+        ) { bal, unlockedBal, sync ->
+            showBalance(bal, unlockedBal, sync)
         }
     }
 
@@ -3340,59 +3398,37 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         walletUnlockedBalance: String?,
         synchronized: Boolean
     ) {
-        if (mContext != null) {
-            if (!synchronized) {
-                when {
-                    TextSecurePreferences.getDecimals(requireActivity()) == "2 - Two (0.00)" -> {
-                        valueOfBalance = "-.--"
-                        valueOfUnLockedBalance = "-.--"
-                    }
-                    TextSecurePreferences.getDecimals(requireActivity()) == "3 - Three (0.000)" -> {
-                        valueOfBalance = "-.---"
-                        valueOfUnLockedBalance = "-.---"
-                    }
-                    TextSecurePreferences.getDecimals(requireActivity()) == "0 - Zero (000)" -> {
-                        valueOfBalance = "-"
-                        valueOfUnLockedBalance = "-"
-                    }
-                    else -> {
-                        valueOfBalance = "-.----"
-                        valueOfUnLockedBalance = "-.----"
-                    }
-                }
-            } else {
-                when {
-                    TextSecurePreferences.getDecimals(requireActivity()) == "2 - Two (0.00)" -> {
-                        valueOfBalance =
-                            String.format("%.2f", walletBalance!!.replace(",", "").toDouble())
-                        valueOfUnLockedBalance = String.format(
-                            "%.2f",
-                            walletUnlockedBalance!!.replace(",", "").toDouble()
-                        )
-                    }
-                    TextSecurePreferences.getDecimals(requireActivity()) == "3 - Three (0.000)" -> {
-                        valueOfBalance =
-                            String.format("%.3f", walletBalance!!.replace(",", "").toDouble())
-                        valueOfUnLockedBalance = String.format(
-                            "%.3f",
-                            walletUnlockedBalance!!.replace(",", "").toDouble()
-                        )
-                    }
-                    TextSecurePreferences.getDecimals(requireActivity()) == "0 - Zero (000)" -> {
-                        valueOfBalance =
-                            String.format("%.0f", walletBalance!!.replace(",", "").toDouble())
-                        valueOfUnLockedBalance = String.format(
-                            "%.0f",
-                            walletUnlockedBalance!!.replace(",", "").toDouble()
-                        )
-                    }
-                    else -> {
-                        valueOfBalance = walletBalance!!
-                    }
-                }
+        showBalance(
+            walletBalance = walletBalance,
+            walletUnlockedBalance = walletUnlockedBalance,
+            synchronized = synchronized,
+            mContext = mContext,
+        ) { bal, unlockedBal ->
+            valueOfBalance = bal
+            unlockedBal?.let {
+                valueOfUnLockedBalance = it
             }
         }
         toolTip()
+    }
+
+    private fun getUnlockedBalance(wallet: Wallet) {
+        if (mContext != null && walletAvailableBalance != null) {
+            if (walletAvailableBalance!!.replace(",", "").toDouble() > 0.0) {
+                showBalance(walletAvailableBalance!!, unlockedBalance.toString(), true)
+            }
+        } else {
+            refreshBalance(false)
+        }
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                unlockedBalance = wallet.unlockedBalance
+                delay(100)
+                refreshBalance(wallet.isSynchronized)
+            } catch (e: Exception) {
+                Timber.tag("WalletFragment").d(e.toString())
+            }
+        }
     }
 
     inner class AsyncGetUnlockedBalance(val wallet: Wallet) :
@@ -3407,12 +3443,12 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 refreshBalance(false)
             }
         }
-
         override fun doInBackground(vararg params: Executor?): Boolean {
             try {
-                unlockedBalance = wallet.unlockedBalance
+                unlockedBalance = listenerCallback!!.getUnLockedBalance
+                balance = listenerCallback!!.getFullBalance
             } catch (e: Exception) {
-                Log.d("WalletFragment", e.toString())
+                Timber.tag("ConversationFragment").d(e.toString())
             }
             return true
         }
@@ -3425,6 +3461,23 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private fun checkIfFragmentAttached(operation: Context.() -> Unit) {
         if (isAdded && context != null) {
             operation(requireContext())
+        }
+    }
+    inner class AsyncStartWallet() : AsyncTaskCoroutine<Executor?, Boolean?>() {
+        override fun doInBackground(vararg params: Executor?): Boolean {
+            try {
+                viewModel.recipient.value?.let { thread ->
+                    if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && HomeActivity.reportIssueBChatID != thread.address.toString() && !thread.isLocalNumber && TextSecurePreferences.isWalletActive(requireContext())) {
+                        val activity = activity
+                        if (isAdded && activity != null) {
+                            listenerCallback!!.forceUpdate(activity)
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                println("start wallet exception $e")
+            }
+            return true
         }
     }
 }

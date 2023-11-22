@@ -7,7 +7,7 @@ import com.goterl.lazysodium.interfaces.Sign
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libsignal.utilities.Hex
 import com.beldex.libsignal.utilities.Log
-import com.beldex.libsignal.utilities.removing05PrefixIfNeeded
+import com.beldex.libsignal.utilities.removingbdPrefixIfNeeded
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender.Error
 
 
@@ -31,7 +31,7 @@ object MessageEncrypter {
         Log.d("--> userED25519KeyPair public key asHexString ",userED25519KeyPair.publicKey.asHexString)
         Log.d("--> userED25519KeyPair secret key asHexString ",userED25519KeyPair.secretKey.asHexString)
 
-        val recipientX25519PublicKey = Hex.fromStringCondensed(recipientHexEncodedX25519PublicKey.removing05PrefixIfNeeded())
+        val recipientX25519PublicKey = Hex.fromStringCondensed(recipientHexEncodedX25519PublicKey.removingbdPrefixIfNeeded())
 
         Log.d("--> recipientX25519PublicKey",recipientX25519PublicKey.toHexString())
 
@@ -100,7 +100,7 @@ object MessageEncrypter {
         //-Log.d("--> userED25519KeyPair public key asHexString ",userED25519KeyPair.publicKey.asHexString)
         //-Log.d("--> userED25519KeyPair secret key asHexString ",userED25519KeyPair.secretKey.asHexString)
 
-        val recipientX25519PublicKey = Hex.fromStringCondensed(recipientHexEncodedX25519PublicKey.removing05PrefixIfNeeded())
+        val recipientX25519PublicKey = Hex.fromStringCondensed(recipientHexEncodedX25519PublicKey.removingbdPrefixIfNeeded())
 
         //-Log.d("--> recipientX25519PublicKey",recipientX25519PublicKey.toHexString())
 

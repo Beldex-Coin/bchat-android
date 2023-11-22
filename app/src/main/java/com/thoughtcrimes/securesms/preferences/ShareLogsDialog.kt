@@ -22,7 +22,10 @@ import io.beldex.bchat.databinding.DialogShareLogsBinding
 import com.beldex.libsignal.utilities.ExternalStorageUtil
 import com.thoughtcrimes.securesms.ApplicationContext
 import com.thoughtcrimes.securesms.conversation.v2.utilities.BaseDialog
+import com.thoughtcrimes.securesms.util.FileProviderUtil
 import com.thoughtcrimes.securesms.util.StreamUtil
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -82,16 +85,22 @@ class ShareLogsDialog : BaseDialog() {
                     requireContext().contentResolver.update(mediaUri, updateValues, null, null)
                 }
 
-                val shareIntent = Intent().apply {
-                    action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_STREAM, mediaUri)
-                    data = mediaUri
-                    type = "text/plain"
+                val shareUri = if (mediaUri.scheme == ContentResolver.SCHEME_FILE) {
+                    FileProviderUtil.getUriFor(context, File(mediaUri.path!!))
+                } else {
+                    mediaUri
                 }
 
+                withContext(Main) {
+                    val shareIntent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(Intent.EXTRA_STREAM, shareUri)
+                        type = "text/plain"
+                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    }
+                    startActivity(Intent.createChooser(shareIntent, getString(R.string.share)))
+                }
                 dismiss()
-
-                startActivity(Intent.createChooser(shareIntent, getString(R.string.share)))
             } catch (e: Exception) {
                 Toast.makeText(context,"Error saving logs", Toast.LENGTH_LONG).show()
                 dismiss()

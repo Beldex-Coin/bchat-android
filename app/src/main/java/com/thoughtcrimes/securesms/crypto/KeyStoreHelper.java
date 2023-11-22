@@ -57,6 +57,7 @@ public final class KeyStoreHelper {
       byte[] data = cipher.doFinal(input);
 
       return new SealedData(iv, data);
+
     } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
       throw new AssertionError(e);
     }
@@ -69,19 +70,18 @@ public final class KeyStoreHelper {
     try {
       Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
       cipher.init(Cipher.DECRYPT_MODE, secretKey, new GCMParameterSpec(128, sealedData.iv));
-
       return cipher.doFinal(sealedData.data);
-    } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
+    } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException |
+             InvalidAlgorithmParameterException | IllegalBlockSizeException |
+             BadPaddingException e) {
       throw new AssertionError(e);
     }
   }
-
   @RequiresApi(Build.VERSION_CODES.M)
   private static SecretKey getOrCreateKeyStoreEntry() {
     if (hasKeyStoreEntry()) return getKeyStoreEntry();
     else                    return createKeyStoreEntry();
   }
-
   @RequiresApi(Build.VERSION_CODES.M)
   private static SecretKey createKeyStoreEntry() {
     try {
@@ -98,7 +98,6 @@ public final class KeyStoreHelper {
       throw new AssertionError(e);
     }
   }
-
   @RequiresApi(Build.VERSION_CODES.M)
   private static SecretKey getKeyStoreEntry() {
     KeyStore keyStore = getKeyStore();
@@ -136,6 +135,7 @@ public final class KeyStoreHelper {
       throw new AssertionError(e);
     }
   }
+
 
   @RequiresApi(Build.VERSION_CODES.M)
   private static boolean hasKeyStoreEntry() {
@@ -202,7 +202,5 @@ public final class KeyStoreHelper {
         return Base64.decode(p.getValueAsString(), Base64.NO_WRAP | Base64.NO_PADDING);
       }
     }
-
   }
-
 }

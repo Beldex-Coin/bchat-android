@@ -557,6 +557,7 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
 
     private fun handleSetMuteVideo(intent: Intent) {
         val muted = intent.getBooleanExtra(EXTRA_MUTE, false)
+        TextSecurePreferences.setMuteVide(this,!muted)
         callManager.handleSetMuteVideo(muted, lockManager)
     }
 

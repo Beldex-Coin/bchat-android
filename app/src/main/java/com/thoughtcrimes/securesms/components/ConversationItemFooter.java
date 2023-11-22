@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.beldex.libbchat.mnode.MnodeAPI;
 import com.thoughtcrimes.securesms.ApplicationContext;
 import com.thoughtcrimes.securesms.database.model.MessageRecord;
 import com.thoughtcrimes.securesms.service.ExpiringMessageManager;
@@ -110,7 +111,7 @@ public class ConversationItemFooter extends LinearLayout {
                                          messageRecord.getExpiresIn());
         this.timerView.startAnimation();
 
-        if (messageRecord.getExpireStarted() + messageRecord.getExpiresIn() <= System.currentTimeMillis()) {
+        if (messageRecord.getExpireStarted() + messageRecord.getExpiresIn() <= MnodeAPI.getNowWithOffset()) {
           ApplicationContext.getInstance(getContext()).getExpiringMessageManager().checkSchedule();
         }
       } else if (!messageRecord.isOutgoing() && !messageRecord.isMediaPending()) {

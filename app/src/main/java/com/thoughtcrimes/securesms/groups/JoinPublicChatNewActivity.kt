@@ -40,7 +40,9 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.view.inputmethod.EditorInfo
 import androidx.activity.result.contract.ActivityResultContracts
+import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
+import com.thoughtcrimes.securesms.util.Helper
 
 class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
     private lateinit var binding: ActivityJoinPublicChatNewBinding
@@ -171,6 +173,7 @@ class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        hideSoftKeyboard()
         binding.chatURLEditText.isFocusable = false
     }
 
@@ -255,6 +258,7 @@ class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
                     val openGroupID = "$sanitizedServer.${room!!}"
                     Log.d("Beldex","join group openGroupID in joinPublicChatIfPossible fun $openGroupID")
                     OpenGroupManager.add(sanitizedServer, room, publicKey!!, this@JoinPublicChatNewActivity)
+                    MessagingModuleConfiguration.shared.storage.onOpenGroupAdded(stringWithExplicitScheme)
                     val threadID = GroupManager.getOpenGroupThreadID(openGroupID, this@JoinPublicChatNewActivity)
                     Log.d("Beldex","join group threadID in joinPublicChatIfPossible fun $threadID")
                     val groupID = GroupUtil.getEncodedOpenGroupID(openGroupID.toByteArray())
@@ -299,6 +303,17 @@ class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
             setResult(RESULT_OK, returnIntent)
             finish()
         }
+    }
+    private fun hideSoftKeyboard() {
+        if (currentFocus != null) {
+            val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Helper.hideKeyboard(this)
     }
 
    /* private val viewModel: DefaultGroupsViewModel by lazy {

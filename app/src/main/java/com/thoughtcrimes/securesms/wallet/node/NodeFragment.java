@@ -34,6 +34,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.google.android.material.textfield.TextInputLayout;
 import com.thoughtcrimes.securesms.data.DefaultNodes;
+import com.thoughtcrimes.securesms.data.NetworkNodes;
 import com.thoughtcrimes.securesms.data.Node;
 import com.thoughtcrimes.securesms.data.NodeInfo;
 import com.thoughtcrimes.securesms.model.NetworkType;
@@ -267,8 +268,8 @@ public class NodeFragment extends Fragment
         @Override
         protected Boolean doInBackground(Integer... params) {
             if (params[0] == RESTORE_DEFAULTS) { // true = restore defaults
-                for (DefaultNodes node : DefaultNodes.values()) {
-                    NodeInfo nodeInfo = NodeInfo.fromString(node.getUri());
+                for (String node : NetworkNodes.INSTANCE.getNodes()) {
+                    NodeInfo nodeInfo = NodeInfo.fromString(node);
                     if (nodeInfo != null) {
                         nodeInfo.setFavourite(true);
                         nodeList.add(nodeInfo);
@@ -552,20 +553,24 @@ public class NodeFragment extends Fragment
 
                         @Override
                         public void afterTextChanged(Editable editable) {
-                            testButton.setEnabled(!etNodeHost.getEditText().getText().toString().isEmpty());
+                            etNodeHost.setError(null);
+                            etNodeHost.setErrorEnabled(false);
                         }
                     });
                     testButton = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_NEUTRAL);
-                    testButton.setEnabled(!etNodeHost.getEditText().getText().toString().isEmpty());
                     testButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            testButton.setEnabled(false);
-                            progressBar = new ProgressDialog(getContext());
-                            progressBar.setCancelable(false);
-                            progressBar.setMessage(getString(R.string.testing_the_node));
-                            progressBar.show();
-                            test();
+                            if (!etNodeHost.getEditText().getText().toString().isEmpty()) {
+                                testButton.setEnabled(false);
+                                progressBar = new ProgressDialog(getContext());
+                                progressBar.setCancelable(false);
+                                progressBar.setMessage(getString(R.string.testing_the_node));
+                                progressBar.show();
+                                test();
+                            }else {
+                                etNodeHost.setError(getString(R.string.validation_for_empty_node_host));
+                            }
                         }
                     });
 

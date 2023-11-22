@@ -81,7 +81,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
     interface Listener {
         val prefs: SharedPreferences?
-        val totalFunds: Long
+        val getUnLockedBalance: Long
         val isStreetMode: Boolean
 
         fun onPrepareSend(tag: String?, data: TxData?)
@@ -108,7 +108,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     }
     var onScanListener: OnScanListener? = null
     interface OnScanListener {
-        fun onScan()
+        fun onScan(view: View?)
     }
 
     fun onCreateTransactionFailed(errorText: String?) {
@@ -149,6 +149,10 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     //If Transaction successfully completed after call this function
     fun onTransactionSent(txId: String?) {
         hideProgress()
+        val activity = activity
+        if(isAdded && activity != null) {
+            this.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
         SendSuccessDialog(this).show(requireActivity().supportFragmentManager,"")
     }
 
@@ -173,6 +177,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
             f.arguments = args
             return f
         }
+        var scanFromGallery: Boolean = false
     }
 
     private val resultLaunchers = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -198,7 +203,8 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
             if(!CheckOnline.isOnline(requireActivity())) {
                 Toast.makeText(requireActivity(), R.string.please_check_your_internet_connection, Toast.LENGTH_SHORT).show()
             }else{
-                onScanListener?.onScan()
+                Helper.hideKeyboard(activity)
+                onScanListener?.onScan(requireView())
             }
         }
         binding.addressBook.setOnClickListener {
@@ -252,7 +258,29 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         })
 
         binding.beldexAmountEditTxtLayout.editText?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(editable: Editable) {
+            override fun afterTextChanged(s: Editable) {
+                if(scanFromGallery) {
+                    if (s.isNotEmpty()) {
+                        scanFromGallery = false
+                        if (validateBELDEXAmount(s.toString())) {
+                            hideErrorMessage()
+                            val bdx = getCleanAmountString(s.toString())
+                            val amount: BigDecimal = if (bdx != null) {
+                                BigDecimal(bdx.toDouble()).multiply(BigDecimal(price))
+                            } else {
+                                BigDecimal(0L).multiply(BigDecimal(price))
+                            }
+                            binding.currencyEditText.text = String.format("%.4f", amount)
+                        } else {
+                            binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.error_view_background)
+                            binding.beldexAmountErrorMessage.visibility = View.VISIBLE
+                            binding.beldexAmountErrorMessage.text = getString(R.string.beldex_amount_valid_error_message)
+                        }
+                    } else {
+                        hideErrorMessage()
+                        binding.currencyEditText.text = "0.00"
+                    }
+                }
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -299,10 +327,10 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
             createTransactionIfPossible()
         }
         if(TextSecurePreferences.getFeePriority(requireActivity())==0){
-            binding.estimatedFeeTextView.text = getString(R.string.estimated_fee,calculateEstimatedFee(1).toString())
+            AsyncCalculateEstimatedFee(1).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
             binding.estimatedFeeDescriptionTextView.text =getString(R.string.estimated_fee_description,"Slow")
         }else{
-            binding.estimatedFeeTextView.text = getString(R.string.estimated_fee,calculateEstimatedFee(5).toString())
+            AsyncCalculateEstimatedFee(5).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
             binding.estimatedFeeDescriptionTextView.text =getString(R.string.estimated_fee_description,"Flash")
         }
 
@@ -314,6 +342,33 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
     }
 
+    inner class AsyncCalculateEstimatedFee(val priority: Int) :
+        AsyncTaskCoroutine<Executor?, Double>() {
+        override fun onPreExecute() {
+            super.onPreExecute()
+            binding.estimatedFeeTextView.text = getString(R.string.estimated_fee,"0.00")
+        }
+        override fun doInBackground(vararg params: Executor?): Double {
+            return try {
+                if(WalletManager.getInstance().wallet!=null) {
+                    val wallet: Wallet = WalletManager.getInstance().wallet
+                    wallet.estimateTransactionFee(priority)
+                }else{
+                    0.00
+                }
+            }catch (e: Exception){
+                Log.d("Estimated Fee exception ",e.toString())
+                0.00
+            }
+        }
+        override fun onPostExecute(result: Double?) {
+            val activity = activity
+            if (isAdded && activity != null) {
+                binding.estimatedFeeTextView.text = getString(R.string.estimated_fee,result.toString())
+            }
+        }
+    }
+
     private fun hideErrorMessage(){
         binding.beldexAmountConstraintLayout.setBackgroundResource(R.drawable.bchat_id_text_view_background)
         binding.beldexAmountErrorMessage.visibility = View.GONE
@@ -322,6 +377,11 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
     private fun createTransactionIfPossible(){
         if(CheckOnline.isOnline(requireContext())) {
+            var getDisplayBalance = WalletFragment.getUserBalance
+            val getEnteredAmount = binding.beldexAmountEditTxtLayout.editText?.text.toString()
+            if (TextSecurePreferences.getDisplayBalanceAs(requireActivity()) == 2) {
+                getDisplayBalance = Helper.getDisplayAmount(totalFunds, Helper.DISPLAY_DIGITS_INFO).toString()
+            }
             if (!checkAddressNoError()) {
                 shakeAddress()
                 val enteredAddress: String =
@@ -331,7 +391,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                     Log.d("OpenAlias is %s", dnsOA)
                 }
                 dnsOA?.let { processOpenAlias(it) }
-            } else {
+            } else if(getDisplayBalance >  getEnteredAmount) {
                 if (binding.beldexAddressEditTxtLayout.editText?.text!!.isNotEmpty() && binding.beldexAmountEditTxtLayout.editText?.text!!.isNotEmpty() && validateBELDEXAmount(binding.beldexAmountEditTxtLayout.editText!!.text.toString()) && binding.beldexAmountEditTxtLayout.editText!!.text.toString()
                         .toDouble() > 0.00
                 ) {
@@ -409,13 +469,15 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                     binding.beldexAddressErrorMessage.visibility = View.VISIBLE
                     binding.beldexAddressErrorMessage.text=getString(R.string.beldex_address_error_message)
                 }
+            } else{
+                Toast.makeText(requireContext(), getString(R.string.validation_for_balance), Toast.LENGTH_SHORT).show()
             }
         } else {
             Toast.makeText(requireContext(), getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
         }
     }
 
-    inner class AsyncGetUnlockedBalance(val wallet: Listener?) :
+    inner class AsyncGetUnlockedBalance(val listener: Listener?) :
         AsyncTaskCoroutine<Executor?, Boolean?>() {
         override fun onPreExecute() {
             super.onPreExecute()
@@ -423,7 +485,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         }
 
         override fun doInBackground(vararg params: Executor?): Boolean {
-            totalFunds = wallet!!.totalFunds
+            totalFunds = listener!!.getUnLockedBalance
             return true
         }
 
@@ -573,6 +635,10 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     private fun onResumeFragment(){
         Helper.hideKeyboard(activity)
         isResume = true
+        val activity = activity
+        if(isAdded && activity != null) {
+            this.activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
         refreshTransactionDetails()
         if (pendingTransaction == null && !inProgress) {
             binding.sendButton.isEnabled=false
@@ -630,7 +696,9 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     }
     // QR Scan Stuff
     fun processScannedData(barcodeData: BarcodeData?) {
+        scanFromGallery = true
         activityCallback?.setBarcodeData(barcodeData)
+        processScannedData()
     }
 
     private fun processScannedData() {

@@ -25,6 +25,7 @@ import com.thoughtcrimes.securesms.data.UserNotes
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.model.TransactionInfo
 import com.thoughtcrimes.securesms.util.Helper
+import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
 import timber.log.Timber
 import java.text.SimpleDateFormat
@@ -234,8 +235,7 @@ class TransactionInfoAdapter(context: Context?)  :
             if(txId.text.isNotEmpty()){
                 txId.setOnClickListener {
                     try {
-                        val url = "https://explorer.beldex.io/tx/${txId.text}" // Mainnet
-                        //val url = "http://154.26.139.105/tx/${txId.text}" // Testnet
+                        val url = "${BuildConfig.EXPLORER_URL}/tx/${txId.text}"
                         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                         context!!.startActivity(intent)
                     } catch (e: Exception) {

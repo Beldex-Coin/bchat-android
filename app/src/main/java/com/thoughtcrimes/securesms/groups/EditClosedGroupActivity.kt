@@ -17,11 +17,6 @@ import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import io.beldex.bchat.R
-import nl.komponents.kovenant.Promise
-import nl.komponents.kovenant.task
-import nl.komponents.kovenant.ui.failUi
-import nl.komponents.kovenant.ui.successUi
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.messaging.sending_receiving.groupSizeLimit
 import com.beldex.libbchat.messaging.sending_receiving.notifications.PushNotificationAPI.context
@@ -35,8 +30,14 @@ import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
 import com.thoughtcrimes.securesms.contacts.SelectContactsActivity
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.mms.GlideApp
+import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.fadeIn
 import com.thoughtcrimes.securesms.util.fadeOut
+import io.beldex.bchat.R
+import nl.komponents.kovenant.Promise
+import nl.komponents.kovenant.task
+import nl.komponents.kovenant.ui.failUi
+import nl.komponents.kovenant.ui.successUi
 import java.io.IOException
 
 class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
@@ -156,6 +157,11 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
                 updateMembers()
             }
         })
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Helper.hideKeyboard(this)
     }
 
     override fun onDestroy() {

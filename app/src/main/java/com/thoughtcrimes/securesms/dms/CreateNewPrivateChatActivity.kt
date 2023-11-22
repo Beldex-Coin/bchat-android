@@ -8,6 +8,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.SystemClock
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
@@ -28,9 +29,11 @@ import com.beldex.libsignal.utilities.PublicKeyValidation
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
+import com.thoughtcrimes.securesms.util.Helper
 
 class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
     private lateinit var binding: ActivityCreateNewPrivateChatBinding
+    private var shareButtonLastClickTime: Long = 0
 
     var isKeyboardShowing = false
         set(value) {
@@ -68,7 +71,12 @@ class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
             }
             publicKeyTextView.text = hexEncodedPublicKey
             copyButton.setOnClickListener { copyPublicKey() }
-            shareButton.setOnClickListener { sharePublicKey() }
+            shareButton.setOnClickListener {
+                if (SystemClock.elapsedRealtime() - shareButtonLastClickTime >= 1000) {
+                    shareButtonLastClickTime = SystemClock.elapsedRealtime()
+                    sharePublicKey()
+                }
+            }
             createPrivateChatButton.setOnClickListener {
                 if (publicKeyEditText.text.isEmpty()) {
                     Toast.makeText(
@@ -159,6 +167,7 @@ class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        hideSoftKeyboard()
         binding.publicKeyEditText.isFocusable = false
     }
     // endregion
@@ -270,5 +279,16 @@ class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
                 finish()
             }
         }
+    }
+    private fun hideSoftKeyboard() {
+        if (currentFocus != null) {
+            val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Helper.hideKeyboard(this)
     }
 }

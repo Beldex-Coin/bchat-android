@@ -4,11 +4,10 @@ package com.thoughtcrimes.securesms.attachments;
 import android.net.Uri;
 import androidx.annotation.Nullable;
 
-import com.thoughtcrimes.securesms.database.MmsDatabase;
-
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentTransferProgress;
 
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment;
+import com.thoughtcrimes.securesms.database.MmsDatabase;
 
 public class MmsNotificationAttachment extends Attachment {
 

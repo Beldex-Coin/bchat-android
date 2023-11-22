@@ -2,20 +2,19 @@ package com.thoughtcrimes.securesms.database
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
 import com.beldex.libbchat.utilities.Debouncer
+import com.thoughtcrimes.securesms.ApplicationContext
 
 class ConversationNotificationDebouncer(private val context: Context) {
     private val threadIDs = mutableSetOf<Long>()
-    private val handler = Handler(Looper.getMainLooper())
-    private val debouncer =
-        Debouncer(handler, 250);
+    private val handler = (context.applicationContext as ApplicationContext).conversationListNotificationHandler
+    private val debouncer = Debouncer(handler, 100)
 
     companion object {
         @SuppressLint("StaticFieldLeak")
         lateinit var shared: ConversationNotificationDebouncer
 
+        @Synchronized
         fun get(context: Context): ConversationNotificationDebouncer {
             if (::shared.isInitialized) { return shared }
             shared = ConversationNotificationDebouncer(context)

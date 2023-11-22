@@ -3,6 +3,7 @@
 package com.beldex.libbchat.mnode
 
 import android.os.Build
+import com.beldex.libbchat.BuildConfig
 import com.goterl.lazysodium.LazySodiumAndroid
 import com.goterl.lazysodium.SodiumAndroid
 import com.goterl.lazysodium.exceptions.SodiumException
@@ -27,7 +28,7 @@ import kotlin.Pair
 
 object MnodeAPI {
     private val sodium by lazy { LazySodiumAndroid(SodiumAndroid()) }
-    private val database: BeldexAPIDatabaseProtocol
+    internal val database: BeldexAPIDatabaseProtocol
         get() = MnodeModule.shared.storage
     private val broadcaster: Broadcaster
         get() = MnodeModule.shared.broadcaster
@@ -41,6 +42,10 @@ object MnodeAPI {
      * user's clock is incorrect.
      */
     internal var clockOffset = 0L
+
+    @JvmStatic
+    public val nowWithOffset
+        get() = System.currentTimeMillis() + clockOffset
 
     // Settings
     private val maxRetryCount = 6
@@ -56,14 +61,14 @@ object MnodeAPI {
               setOf("http://38.242.196.72:19095","http://154.26.139.105:19095")
         } else {
             Log.d("beldex","here mainnet $useTestnet")
-            setOf("https://publicnode5.rpcnode.stream:$nodePort","https://publicnode1.rpcnode.stream:$nodePort","https://publicnode2.rpcnode.stream:$nodePort","https://publicnode3.rpcnode.stream:$nodePort","https://publicnode4.rpcnode.stream:$nodePort")//"https://mainnet.beldex.io:29095","https://explorer.beldex.io:19091","https://publicnode5.rpcnode.stream:29095","http://publicnode1.rpcnode.stream:29095","http://publicnode2.rpcnode.stream:29095","http://publicnode3.rpcnode.stream:29095","http://publicnode4.rpcnode.stream:29095"
+            setOf("https://publicnode1.rpcnode.stream:$nodePort","https://publicnode2.rpcnode.stream:$nodePort","https://publicnode3.rpcnode.stream:$nodePort","https://publicnode4.rpcnode.stream:$nodePort")//"https://mainnet.beldex.io:29095","https://explorer.beldex.io:19091","http://publicnode1.rpcnode.stream:29095","http://publicnode2.rpcnode.stream:29095","http://publicnode3.rpcnode.stream:29095","http://publicnode4.rpcnode.stream:29095"
         }
     }
     private val mnodeFailureThreshold = 3
     private val targetSwarmMnodeCount = 2
     private val useOnionRequests = true
 
-    internal val useTestnet = false
+    internal val useTestnet = BuildConfig.USE_TESTNET
 
     // Error
     internal sealed class Error(val description: String) : Exception(description) {
@@ -93,7 +98,8 @@ object MnodeAPI {
             ThreadUtils.queue {
                 val payload = mapOf( "method" to method.rawValue, "params" to parameters )
                 try {
-                    val json = HTTP.execute(HTTP.Verb.POST, url, payload)
+                    val response = HTTP.execute(HTTP.Verb.POST, url, payload).toString()
+                    val json = JsonUtil.fromJson(response, Map::class.java)
                     deferred.resolve(json)
                 } catch (exception: Exception) {
                     val httpRequestFailedException = exception as? HTTP.HTTPRequestFailedException
@@ -127,7 +133,12 @@ object MnodeAPI {
             deferred<Mnode, Exception>()
             ThreadUtils.queue {
                 try {
-                    val json = HTTP.execute(HTTP.Verb.POST, url, parameters, useSeedNodeConnection = true)
+                    val response = HTTP.execute(HTTP.Verb.POST, url, parameters, useSeedNodeConnection = true)
+                    val json = try {
+                        JsonUtil.fromJson(response, Map::class.java)
+                    } catch (exception: Exception) {
+                        mapOf( "result" to response.toString())
+                    }
                     //-Log.d("beldex","Json MnodeAPI $json")
                     val intermediate = json["result"] as? Map<*, *>
                     val rawMnodes = intermediate?.get("master_node_states") as? List<*>
@@ -281,7 +292,7 @@ object MnodeAPI {
             cachedSwarmCopy.addAll(cachedSwarm)
             return task { cachedSwarmCopy }
         } else {
-            val parameters = mapOf( "pubKey" to if (useTestnet) publicKey.removing05PrefixIfNeeded() else publicKey )
+            val parameters = mapOf( "pubKey" to if (useTestnet) publicKey.removingbdPrefixIfNeeded() else publicKey )
             return getRandomMnode().bind {
                 Log.d("Beldex", "invoke MnodeAPI.kt 2")
                 invoke(Mnode.Method.GetSwarm, it, publicKey, parameters)
@@ -309,7 +320,7 @@ object MnodeAPI {
 //        }
         // Make the request
         val parameters = mapOf(
-            "pubKey" to if (useTestnet) publicKey.removing05PrefixIfNeeded() else publicKey,
+            "pubKey" to if (useTestnet) publicKey.removingbdPrefixIfNeeded() else publicKey,
             "lastHash" to lastHashValue,
 //            "timestamp" to timestamp,
 //            "pubkey_ed25519" to ed25519PublicKey,
@@ -337,7 +348,7 @@ object MnodeAPI {
     }
 
     fun sendMessage(message: MnodeMessage): Promise<Set<RawResponsePromise>, Exception> {
-        val destination = if (useTestnet) message.recipient.removing05PrefixIfNeeded() else message.recipient
+        val destination = if (useTestnet) message.recipient.removingbdPrefixIfNeeded() else message.recipient
         Log.d("Beldex","bchat id validation -- check the test net  or mainnet for remove prefix")
         return retryIfNeeded(maxRetryCount) {
             getTargetMnodes(destination).map { swarm ->
@@ -455,7 +466,7 @@ object MnodeAPI {
         return if (messages != null) {
             updateLastMessageHashValueIfPossible(mnode, publicKey, messages)
             val newRawMessages = removeDuplicates(publicKey, messages)
-            return parseEnvelopes(newRawMessages);
+            return parseEnvelopes(newRawMessages)
         } else {
             listOf()
         }
@@ -472,7 +483,9 @@ object MnodeAPI {
     }
 
     private fun removeDuplicates(publicKey: String, rawMessages: List<*>): List<*> {
-        val receivedMessageHashValues = database.getReceivedMessageHashValues(publicKey)?.toMutableSet() ?: mutableSetOf()
+        /*val receivedMessageHashValues = database.getReceivedMessageHashValues(publicKey)?.toMutableSet() ?: mutableSetOf()*/
+        val originalMessageHashValues = database.getReceivedMessageHashValues(publicKey)?.toMutableSet() ?: mutableSetOf()
+        val receivedMessageHashValues = originalMessageHashValues.toMutableSet()
         val result = rawMessages.filter { rawMessage ->
             val rawMessageAsJSON = rawMessage as? Map<*, *>
             val hashValue = rawMessageAsJSON?.get("hash") as? String
@@ -485,7 +498,9 @@ object MnodeAPI {
                 false
             }
         }
-        database.setReceivedMessageHashValues(publicKey, receivedMessageHashValues)
+        if (originalMessageHashValues != receivedMessageHashValues) {
+            database.setReceivedMessageHashValues(publicKey, receivedMessageHashValues)
+        }
         return result
     }
 

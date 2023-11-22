@@ -6,6 +6,7 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.beldex.libbchat.mnode.MnodeAPI;
 import com.thoughtcrimes.securesms.util.Rfc5724Uri;
 
 import io.beldex.bchat.R;
@@ -51,7 +52,7 @@ public class QuickResponseService extends IntentService {
       if (!TextUtils.isEmpty(content)) {
         VisibleMessage message = new VisibleMessage();
         message.setText(content);
-        message.setSentTimestamp(System.currentTimeMillis());
+        message.setSentTimestamp(MnodeAPI.getNowWithOffset());
         MessageSender.send(message, Address.fromExternal(this, number));
       }
     } catch (URISyntaxException e) {

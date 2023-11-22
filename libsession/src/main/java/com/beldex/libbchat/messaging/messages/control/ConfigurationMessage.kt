@@ -12,7 +12,7 @@ import com.beldex.libsignal.crypto.ecc.DjbECPublicKey
 import com.beldex.libsignal.crypto.ecc.ECKeyPair
 import com.beldex.libsignal.protos.SignalServiceProtos
 import com.beldex.libsignal.utilities.Hex
-import com.beldex.libsignal.utilities.removing05PrefixIfNeeded
+import com.beldex.libsignal.utilities.removingbdPrefixIfNeeded
 import com.beldex.libsignal.utilities.toHexString
 
 class ConfigurationMessage(var closedGroups: List<ClosedGroup>, var openGroups: List<String>, var contacts: List<Contact>,
@@ -40,7 +40,7 @@ class ConfigurationMessage(var closedGroups: List<ClosedGroup>, var openGroups: 
                     ECKeyPair(
                         DjbECPublicKey(
                             encryptionKeyPairAsProto.publicKey.toByteArray()
-                                .removing05PrefixIfNeeded()
+                                .removingbdPrefixIfNeeded()
                         ),
                         DjbECPrivateKey(
                             encryptionKeyPairAsProto.privateKey.toByteArray()
@@ -58,7 +58,7 @@ class ConfigurationMessage(var closedGroups: List<ClosedGroup>, var openGroups: 
             result.publicKey = ByteString.copyFrom(Hex.fromStringCondensed(publicKey))
             result.name = name
             val encryptionKeyPairAsProto = SignalServiceProtos.KeyPair.newBuilder()
-            encryptionKeyPairAsProto.publicKey = ByteString.copyFrom(encryptionKeyPair!!.publicKey.serialize().removing05PrefixIfNeeded())
+            encryptionKeyPairAsProto.publicKey = ByteString.copyFrom(encryptionKeyPair!!.publicKey.serialize().removingbdPrefixIfNeeded())
             encryptionKeyPairAsProto.privateKey = ByteString.copyFrom(encryptionKeyPair!!.privateKey.serialize())
             result.encryptionKeyPair = encryptionKeyPairAsProto.build()
             result.addAllMembers(members.map { ByteString.copyFrom(Hex.fromStringCondensed(it)) })

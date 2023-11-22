@@ -27,7 +27,7 @@ public final class SignalServiceProtos {
      * @required
      * </pre>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.Envelope.Type getType();
+    SignalServiceProtos.Envelope.Type getType();
 
     // optional string source = 2;
     /**
@@ -145,7 +145,7 @@ public final class SignalServiceProtos {
             }
             case 8: {
               int rawValue = input.readEnum();
-              com.beldex.libsignal.protos.SignalServiceProtos.Envelope.Type value = com.beldex.libsignal.protos.SignalServiceProtos.Envelope.Type.valueOf(rawValue);
+              SignalServiceProtos.Envelope.Type value = SignalServiceProtos.Envelope.Type.valueOf(rawValue);
               if (value == null) {
                 unknownFields.mergeVarintField(1, rawValue);
               } else {
@@ -193,14 +193,14 @@ public final class SignalServiceProtos {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_Envelope_descriptor;
+      return SignalServiceProtos.internal_static_signalservice_Envelope_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_Envelope_fieldAccessorTable
+      return SignalServiceProtos.internal_static_signalservice_Envelope_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.beldex.libsignal.protos.SignalServiceProtos.Envelope.class, com.beldex.libsignal.protos.SignalServiceProtos.Envelope.Builder.class);
+              SignalServiceProtos.Envelope.class, SignalServiceProtos.Envelope.Builder.class);
     }
 
     public static com.google.protobuf.Parser<Envelope> PARSER =
@@ -275,7 +275,7 @@ public final class SignalServiceProtos {
       }
       public static final com.google.protobuf.Descriptors.EnumDescriptor
           getDescriptor() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.Envelope.getDescriptor().getEnumTypes().get(0);
+        return SignalServiceProtos.Envelope.getDescriptor().getEnumTypes().get(0);
       }
 
       private static final Type[] VALUES = values();
@@ -303,7 +303,7 @@ public final class SignalServiceProtos {
     private int bitField0_;
     // required .signalservice.Envelope.Type type = 1;
     public static final int TYPE_FIELD_NUMBER = 1;
-    private com.beldex.libsignal.protos.SignalServiceProtos.Envelope.Type type_;
+    private SignalServiceProtos.Envelope.Type type_;
     /**
      * <code>required .signalservice.Envelope.Type type = 1;</code>
      *
@@ -321,7 +321,7 @@ public final class SignalServiceProtos {
      * @required
      * </pre>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.Envelope.Type getType() {
+    public SignalServiceProtos.Envelope.Type getType() {
       return type_;
     }
 
@@ -441,7 +441,7 @@ public final class SignalServiceProtos {
     }
 
     private void initFields() {
-      type_ = com.beldex.libsignal.protos.SignalServiceProtos.Envelope.Type.BCHAT_MESSAGE;
+      type_ = SignalServiceProtos.Envelope.Type.BCHAT_MESSAGE;
       source_ = "";
       sourceDevice_ = 0;
       timestamp_ = 0L;
@@ -531,53 +531,53 @@ public final class SignalServiceProtos {
       return super.writeReplace();
     }
 
-    public static com.beldex.libsignal.protos.SignalServiceProtos.Envelope parseFrom(
+    public static SignalServiceProtos.Envelope parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.Envelope parseFrom(
+    public static SignalServiceProtos.Envelope parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.Envelope parseFrom(byte[] data)
+    public static SignalServiceProtos.Envelope parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.Envelope parseFrom(
+    public static SignalServiceProtos.Envelope parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.Envelope parseFrom(java.io.InputStream input)
+    public static SignalServiceProtos.Envelope parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.Envelope parseFrom(
+    public static SignalServiceProtos.Envelope parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.Envelope parseDelimitedFrom(java.io.InputStream input)
+    public static SignalServiceProtos.Envelope parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.Envelope parseDelimitedFrom(
+    public static SignalServiceProtos.Envelope parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.Envelope parseFrom(
+    public static SignalServiceProtos.Envelope parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.Envelope parseFrom(
+    public static SignalServiceProtos.Envelope parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -586,7 +586,7 @@ public final class SignalServiceProtos {
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.beldex.libsignal.protos.SignalServiceProtos.Envelope prototype) {
+    public static Builder newBuilder(SignalServiceProtos.Envelope prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
@@ -602,17 +602,17 @@ public final class SignalServiceProtos {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.beldex.libsignal.protos.SignalServiceProtos.EnvelopeOrBuilder {
+       implements SignalServiceProtos.EnvelopeOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_Envelope_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_Envelope_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_Envelope_fieldAccessorTable
+        return SignalServiceProtos.internal_static_signalservice_Envelope_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.beldex.libsignal.protos.SignalServiceProtos.Envelope.class, com.beldex.libsignal.protos.SignalServiceProtos.Envelope.Builder.class);
+                SignalServiceProtos.Envelope.class, SignalServiceProtos.Envelope.Builder.class);
       }
 
       // Construct using com.beldex.libsignal.protos.SignalServiceProtos.Envelope.newBuilder()
@@ -635,7 +635,7 @@ public final class SignalServiceProtos {
 
       public Builder clear() {
         super.clear();
-        type_ = com.beldex.libsignal.protos.SignalServiceProtos.Envelope.Type.BCHAT_MESSAGE;
+        type_ = SignalServiceProtos.Envelope.Type.BCHAT_MESSAGE;
         bitField0_ = (bitField0_ & ~0x00000001);
         source_ = "";
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -656,23 +656,23 @@ public final class SignalServiceProtos {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_Envelope_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_Envelope_descriptor;
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.Envelope getDefaultInstanceForType() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.Envelope.getDefaultInstance();
+      public SignalServiceProtos.Envelope getDefaultInstanceForType() {
+        return SignalServiceProtos.Envelope.getDefaultInstance();
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.Envelope build() {
-        com.beldex.libsignal.protos.SignalServiceProtos.Envelope result = buildPartial();
+      public SignalServiceProtos.Envelope build() {
+        SignalServiceProtos.Envelope result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.Envelope buildPartial() {
-        com.beldex.libsignal.protos.SignalServiceProtos.Envelope result = new com.beldex.libsignal.protos.SignalServiceProtos.Envelope(this);
+      public SignalServiceProtos.Envelope buildPartial() {
+        SignalServiceProtos.Envelope result = new SignalServiceProtos.Envelope(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -705,16 +705,16 @@ public final class SignalServiceProtos {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.beldex.libsignal.protos.SignalServiceProtos.Envelope) {
-          return mergeFrom((com.beldex.libsignal.protos.SignalServiceProtos.Envelope)other);
+        if (other instanceof SignalServiceProtos.Envelope) {
+          return mergeFrom((SignalServiceProtos.Envelope)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.beldex.libsignal.protos.SignalServiceProtos.Envelope other) {
-        if (other == com.beldex.libsignal.protos.SignalServiceProtos.Envelope.getDefaultInstance()) return this;
+      public Builder mergeFrom(SignalServiceProtos.Envelope other) {
+        if (other == SignalServiceProtos.Envelope.getDefaultInstance()) return this;
         if (other.hasType()) {
           setType(other.getType());
         }
@@ -755,11 +755,11 @@ public final class SignalServiceProtos {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.beldex.libsignal.protos.SignalServiceProtos.Envelope parsedMessage = null;
+        SignalServiceProtos.Envelope parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.beldex.libsignal.protos.SignalServiceProtos.Envelope) e.getUnfinishedMessage();
+          parsedMessage = (SignalServiceProtos.Envelope) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -771,7 +771,7 @@ public final class SignalServiceProtos {
       private int bitField0_;
 
       // required .signalservice.Envelope.Type type = 1;
-      private com.beldex.libsignal.protos.SignalServiceProtos.Envelope.Type type_ = com.beldex.libsignal.protos.SignalServiceProtos.Envelope.Type.BCHAT_MESSAGE;
+      private SignalServiceProtos.Envelope.Type type_ = SignalServiceProtos.Envelope.Type.BCHAT_MESSAGE;
       /**
        * <code>required .signalservice.Envelope.Type type = 1;</code>
        *
@@ -789,7 +789,7 @@ public final class SignalServiceProtos {
        * @required
        * </pre>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.Envelope.Type getType() {
+      public SignalServiceProtos.Envelope.Type getType() {
         return type_;
       }
       /**
@@ -799,7 +799,7 @@ public final class SignalServiceProtos {
        * @required
        * </pre>
        */
-      public Builder setType(com.beldex.libsignal.protos.SignalServiceProtos.Envelope.Type value) {
+      public Builder setType(SignalServiceProtos.Envelope.Type value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -817,7 +817,7 @@ public final class SignalServiceProtos {
        */
       public Builder clearType() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        type_ = com.beldex.libsignal.protos.SignalServiceProtos.Envelope.Type.BCHAT_MESSAGE;
+        type_ = SignalServiceProtos.Envelope.Type.BCHAT_MESSAGE;
         onChanged();
         return this;
       }
@@ -1095,7 +1095,7 @@ public final class SignalServiceProtos {
      * @required
      * </pre>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.Action getAction();
+    SignalServiceProtos.TypingMessage.Action getAction();
   }
   /**
    * Protobuf type {@code signalservice.TypingMessage}
@@ -1155,7 +1155,7 @@ public final class SignalServiceProtos {
             }
             case 16: {
               int rawValue = input.readEnum();
-              com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.Action value = com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.Action.valueOf(rawValue);
+              SignalServiceProtos.TypingMessage.Action value = SignalServiceProtos.TypingMessage.Action.valueOf(rawValue);
               if (value == null) {
                 unknownFields.mergeVarintField(2, rawValue);
               } else {
@@ -1178,14 +1178,14 @@ public final class SignalServiceProtos {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_TypingMessage_descriptor;
+      return SignalServiceProtos.internal_static_signalservice_TypingMessage_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_TypingMessage_fieldAccessorTable
+      return SignalServiceProtos.internal_static_signalservice_TypingMessage_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.class, com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.Builder.class);
+              SignalServiceProtos.TypingMessage.class, SignalServiceProtos.TypingMessage.Builder.class);
     }
 
     public static com.google.protobuf.Parser<TypingMessage> PARSER =
@@ -1260,7 +1260,7 @@ public final class SignalServiceProtos {
       }
       public static final com.google.protobuf.Descriptors.EnumDescriptor
           getDescriptor() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.getDescriptor().getEnumTypes().get(0);
+        return SignalServiceProtos.TypingMessage.getDescriptor().getEnumTypes().get(0);
       }
 
       private static final Action[] VALUES = values();
@@ -1312,7 +1312,7 @@ public final class SignalServiceProtos {
 
     // required .signalservice.TypingMessage.Action action = 2;
     public static final int ACTION_FIELD_NUMBER = 2;
-    private com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.Action action_;
+    private SignalServiceProtos.TypingMessage.Action action_;
     /**
      * <code>required .signalservice.TypingMessage.Action action = 2;</code>
      *
@@ -1330,13 +1330,13 @@ public final class SignalServiceProtos {
      * @required
      * </pre>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.Action getAction() {
+    public SignalServiceProtos.TypingMessage.Action getAction() {
       return action_;
     }
 
     private void initFields() {
       timestamp_ = 0L;
-      action_ = com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.Action.STARTED;
+      action_ = SignalServiceProtos.TypingMessage.Action.STARTED;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -1393,53 +1393,53 @@ public final class SignalServiceProtos {
       return super.writeReplace();
     }
 
-    public static com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage parseFrom(
+    public static SignalServiceProtos.TypingMessage parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage parseFrom(
+    public static SignalServiceProtos.TypingMessage parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage parseFrom(byte[] data)
+    public static SignalServiceProtos.TypingMessage parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage parseFrom(
+    public static SignalServiceProtos.TypingMessage parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage parseFrom(java.io.InputStream input)
+    public static SignalServiceProtos.TypingMessage parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage parseFrom(
+    public static SignalServiceProtos.TypingMessage parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage parseDelimitedFrom(java.io.InputStream input)
+    public static SignalServiceProtos.TypingMessage parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage parseDelimitedFrom(
+    public static SignalServiceProtos.TypingMessage parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage parseFrom(
+    public static SignalServiceProtos.TypingMessage parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage parseFrom(
+    public static SignalServiceProtos.TypingMessage parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1448,7 +1448,7 @@ public final class SignalServiceProtos {
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage prototype) {
+    public static Builder newBuilder(SignalServiceProtos.TypingMessage prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
@@ -1464,17 +1464,17 @@ public final class SignalServiceProtos {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.beldex.libsignal.protos.SignalServiceProtos.TypingMessageOrBuilder {
+       implements SignalServiceProtos.TypingMessageOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_TypingMessage_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_TypingMessage_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_TypingMessage_fieldAccessorTable
+        return SignalServiceProtos.internal_static_signalservice_TypingMessage_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.class, com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.Builder.class);
+                SignalServiceProtos.TypingMessage.class, SignalServiceProtos.TypingMessage.Builder.class);
       }
 
       // Construct using com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.newBuilder()
@@ -1499,7 +1499,7 @@ public final class SignalServiceProtos {
         super.clear();
         timestamp_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000001);
-        action_ = com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.Action.STARTED;
+        action_ = SignalServiceProtos.TypingMessage.Action.STARTED;
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
@@ -1510,23 +1510,23 @@ public final class SignalServiceProtos {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_TypingMessage_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_TypingMessage_descriptor;
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage getDefaultInstanceForType() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.getDefaultInstance();
+      public SignalServiceProtos.TypingMessage getDefaultInstanceForType() {
+        return SignalServiceProtos.TypingMessage.getDefaultInstance();
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage build() {
-        com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage result = buildPartial();
+      public SignalServiceProtos.TypingMessage build() {
+        SignalServiceProtos.TypingMessage result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage buildPartial() {
-        com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage result = new com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage(this);
+      public SignalServiceProtos.TypingMessage buildPartial() {
+        SignalServiceProtos.TypingMessage result = new SignalServiceProtos.TypingMessage(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -1543,16 +1543,16 @@ public final class SignalServiceProtos {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage) {
-          return mergeFrom((com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage)other);
+        if (other instanceof SignalServiceProtos.TypingMessage) {
+          return mergeFrom((SignalServiceProtos.TypingMessage)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage other) {
-        if (other == com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.getDefaultInstance()) return this;
+      public Builder mergeFrom(SignalServiceProtos.TypingMessage other) {
+        if (other == SignalServiceProtos.TypingMessage.getDefaultInstance()) return this;
         if (other.hasTimestamp()) {
           setTimestamp(other.getTimestamp());
         }
@@ -1579,11 +1579,11 @@ public final class SignalServiceProtos {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage parsedMessage = null;
+        SignalServiceProtos.TypingMessage parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage) e.getUnfinishedMessage();
+          parsedMessage = (SignalServiceProtos.TypingMessage) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -1644,7 +1644,7 @@ public final class SignalServiceProtos {
       }
 
       // required .signalservice.TypingMessage.Action action = 2;
-      private com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.Action action_ = com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.Action.STARTED;
+      private SignalServiceProtos.TypingMessage.Action action_ = SignalServiceProtos.TypingMessage.Action.STARTED;
       /**
        * <code>required .signalservice.TypingMessage.Action action = 2;</code>
        *
@@ -1662,7 +1662,7 @@ public final class SignalServiceProtos {
        * @required
        * </pre>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.Action getAction() {
+      public SignalServiceProtos.TypingMessage.Action getAction() {
         return action_;
       }
       /**
@@ -1672,7 +1672,7 @@ public final class SignalServiceProtos {
        * @required
        * </pre>
        */
-      public Builder setAction(com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.Action value) {
+      public Builder setAction(SignalServiceProtos.TypingMessage.Action value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -1690,7 +1690,7 @@ public final class SignalServiceProtos {
        */
       public Builder clearAction() {
         bitField0_ = (bitField0_ & ~0x00000002);
-        action_ = com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.Action.STARTED;
+        action_ = SignalServiceProtos.TypingMessage.Action.STARTED;
         onChanged();
         return this;
       }
@@ -1829,14 +1829,14 @@ public final class SignalServiceProtos {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_UnsendRequest_descriptor;
+      return SignalServiceProtos.internal_static_signalservice_UnsendRequest_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_UnsendRequest_fieldAccessorTable
+      return SignalServiceProtos.internal_static_signalservice_UnsendRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest.class, com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest.Builder.class);
+              SignalServiceProtos.UnsendRequest.class, SignalServiceProtos.UnsendRequest.Builder.class);
     }
 
     public static com.google.protobuf.Parser<UnsendRequest> PARSER =
@@ -1993,53 +1993,53 @@ public final class SignalServiceProtos {
       return super.writeReplace();
     }
 
-    public static com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest parseFrom(
+    public static SignalServiceProtos.UnsendRequest parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest parseFrom(
+    public static SignalServiceProtos.UnsendRequest parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest parseFrom(byte[] data)
+    public static SignalServiceProtos.UnsendRequest parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest parseFrom(
+    public static SignalServiceProtos.UnsendRequest parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest parseFrom(java.io.InputStream input)
+    public static SignalServiceProtos.UnsendRequest parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest parseFrom(
+    public static SignalServiceProtos.UnsendRequest parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest parseDelimitedFrom(java.io.InputStream input)
+    public static SignalServiceProtos.UnsendRequest parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest parseDelimitedFrom(
+    public static SignalServiceProtos.UnsendRequest parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest parseFrom(
+    public static SignalServiceProtos.UnsendRequest parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest parseFrom(
+    public static SignalServiceProtos.UnsendRequest parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -2048,7 +2048,7 @@ public final class SignalServiceProtos {
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest prototype) {
+    public static Builder newBuilder(SignalServiceProtos.UnsendRequest prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
@@ -2064,17 +2064,17 @@ public final class SignalServiceProtos {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequestOrBuilder {
+       implements SignalServiceProtos.UnsendRequestOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_UnsendRequest_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_UnsendRequest_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_UnsendRequest_fieldAccessorTable
+        return SignalServiceProtos.internal_static_signalservice_UnsendRequest_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest.class, com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest.Builder.class);
+                SignalServiceProtos.UnsendRequest.class, SignalServiceProtos.UnsendRequest.Builder.class);
       }
 
       // Construct using com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest.newBuilder()
@@ -2110,23 +2110,23 @@ public final class SignalServiceProtos {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_UnsendRequest_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_UnsendRequest_descriptor;
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest getDefaultInstanceForType() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest.getDefaultInstance();
+      public SignalServiceProtos.UnsendRequest getDefaultInstanceForType() {
+        return SignalServiceProtos.UnsendRequest.getDefaultInstance();
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest build() {
-        com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest result = buildPartial();
+      public SignalServiceProtos.UnsendRequest build() {
+        SignalServiceProtos.UnsendRequest result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest buildPartial() {
-        com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest result = new com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest(this);
+      public SignalServiceProtos.UnsendRequest buildPartial() {
+        SignalServiceProtos.UnsendRequest result = new SignalServiceProtos.UnsendRequest(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -2143,16 +2143,16 @@ public final class SignalServiceProtos {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest) {
-          return mergeFrom((com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest)other);
+        if (other instanceof SignalServiceProtos.UnsendRequest) {
+          return mergeFrom((SignalServiceProtos.UnsendRequest)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest other) {
-        if (other == com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest.getDefaultInstance()) return this;
+      public Builder mergeFrom(SignalServiceProtos.UnsendRequest other) {
+        if (other == SignalServiceProtos.UnsendRequest.getDefaultInstance()) return this;
         if (other.hasTimestamp()) {
           setTimestamp(other.getTimestamp());
         }
@@ -2181,11 +2181,11 @@ public final class SignalServiceProtos {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest parsedMessage = null;
+        SignalServiceProtos.UnsendRequest parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest) e.getUnfinishedMessage();
+          parsedMessage = (SignalServiceProtos.UnsendRequest) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -2365,11 +2365,11 @@ public final class SignalServiceProtos {
     /**
      * <code>optional .signalservice.DataMessage dataMessage = 1;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.DataMessage getDataMessage();
+    SignalServiceProtos.DataMessage getDataMessage();
     /**
      * <code>optional .signalservice.DataMessage dataMessage = 1;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.DataMessageOrBuilder getDataMessageOrBuilder();
+    SignalServiceProtos.DataMessageOrBuilder getDataMessageOrBuilder();
 
     // optional .signalservice.CallMessage callMessage = 3;
     /**
@@ -2379,11 +2379,11 @@ public final class SignalServiceProtos {
     /**
      * <code>optional .signalservice.CallMessage callMessage = 3;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.CallMessage getCallMessage();
+    SignalServiceProtos.CallMessage getCallMessage();
     /**
      * <code>optional .signalservice.CallMessage callMessage = 3;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.CallMessageOrBuilder getCallMessageOrBuilder();
+    SignalServiceProtos.CallMessageOrBuilder getCallMessageOrBuilder();
 
     // optional .signalservice.ReceiptMessage receiptMessage = 5;
     /**
@@ -2393,11 +2393,11 @@ public final class SignalServiceProtos {
     /**
      * <code>optional .signalservice.ReceiptMessage receiptMessage = 5;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage getReceiptMessage();
+    SignalServiceProtos.ReceiptMessage getReceiptMessage();
     /**
      * <code>optional .signalservice.ReceiptMessage receiptMessage = 5;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessageOrBuilder getReceiptMessageOrBuilder();
+    SignalServiceProtos.ReceiptMessageOrBuilder getReceiptMessageOrBuilder();
 
     // optional .signalservice.TypingMessage typingMessage = 6;
     /**
@@ -2407,11 +2407,11 @@ public final class SignalServiceProtos {
     /**
      * <code>optional .signalservice.TypingMessage typingMessage = 6;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage getTypingMessage();
+    SignalServiceProtos.TypingMessage getTypingMessage();
     /**
      * <code>optional .signalservice.TypingMessage typingMessage = 6;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.TypingMessageOrBuilder getTypingMessageOrBuilder();
+    SignalServiceProtos.TypingMessageOrBuilder getTypingMessageOrBuilder();
 
     // optional .signalservice.ConfigurationMessage configurationMessage = 7;
     /**
@@ -2421,11 +2421,11 @@ public final class SignalServiceProtos {
     /**
      * <code>optional .signalservice.ConfigurationMessage configurationMessage = 7;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage getConfigurationMessage();
+    SignalServiceProtos.ConfigurationMessage getConfigurationMessage();
     /**
      * <code>optional .signalservice.ConfigurationMessage configurationMessage = 7;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessageOrBuilder getConfigurationMessageOrBuilder();
+    SignalServiceProtos.ConfigurationMessageOrBuilder getConfigurationMessageOrBuilder();
 
     // optional .signalservice.DataExtractionNotification dataExtractionNotification = 8;
     /**
@@ -2435,11 +2435,11 @@ public final class SignalServiceProtos {
     /**
      * <code>optional .signalservice.DataExtractionNotification dataExtractionNotification = 8;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification getDataExtractionNotification();
+    SignalServiceProtos.DataExtractionNotification getDataExtractionNotification();
     /**
      * <code>optional .signalservice.DataExtractionNotification dataExtractionNotification = 8;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotificationOrBuilder getDataExtractionNotificationOrBuilder();
+    SignalServiceProtos.DataExtractionNotificationOrBuilder getDataExtractionNotificationOrBuilder();
 
     // optional .signalservice.UnsendRequest unsendRequest = 9;
     /**
@@ -2449,11 +2449,11 @@ public final class SignalServiceProtos {
     /**
      * <code>optional .signalservice.UnsendRequest unsendRequest = 9;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest getUnsendRequest();
+    SignalServiceProtos.UnsendRequest getUnsendRequest();
     /**
      * <code>optional .signalservice.UnsendRequest unsendRequest = 9;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequestOrBuilder getUnsendRequestOrBuilder();
+    SignalServiceProtos.UnsendRequestOrBuilder getUnsendRequestOrBuilder();
 
     // optional .signalservice.MessageRequestResponse messageRequestResponse = 10;
     /**
@@ -2463,11 +2463,11 @@ public final class SignalServiceProtos {
     /**
      * <code>optional .signalservice.MessageRequestResponse messageRequestResponse = 10;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse getMessageRequestResponse();
+    SignalServiceProtos.MessageRequestResponse getMessageRequestResponse();
     /**
      * <code>optional .signalservice.MessageRequestResponse messageRequestResponse = 10;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponseOrBuilder getMessageRequestResponseOrBuilder();
+    SignalServiceProtos.MessageRequestResponseOrBuilder getMessageRequestResponseOrBuilder();
   }
   /**
    * Protobuf type {@code signalservice.Content}
@@ -2521,11 +2521,11 @@ public final class SignalServiceProtos {
               break;
             }
             case 10: {
-              com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Builder subBuilder = null;
+              SignalServiceProtos.DataMessage.Builder subBuilder = null;
               if (((bitField0_ & 0x00000001) == 0x00000001)) {
                 subBuilder = dataMessage_.toBuilder();
               }
-              dataMessage_ = input.readMessage(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.PARSER, extensionRegistry);
+              dataMessage_ = input.readMessage(SignalServiceProtos.DataMessage.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(dataMessage_);
                 dataMessage_ = subBuilder.buildPartial();
@@ -2534,11 +2534,11 @@ public final class SignalServiceProtos {
               break;
             }
             case 26: {
-              com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Builder subBuilder = null;
+              SignalServiceProtos.CallMessage.Builder subBuilder = null;
               if (((bitField0_ & 0x00000002) == 0x00000002)) {
                 subBuilder = callMessage_.toBuilder();
               }
-              callMessage_ = input.readMessage(com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.PARSER, extensionRegistry);
+              callMessage_ = input.readMessage(SignalServiceProtos.CallMessage.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(callMessage_);
                 callMessage_ = subBuilder.buildPartial();
@@ -2547,11 +2547,11 @@ public final class SignalServiceProtos {
               break;
             }
             case 42: {
-              com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.Builder subBuilder = null;
+              SignalServiceProtos.ReceiptMessage.Builder subBuilder = null;
               if (((bitField0_ & 0x00000004) == 0x00000004)) {
                 subBuilder = receiptMessage_.toBuilder();
               }
-              receiptMessage_ = input.readMessage(com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.PARSER, extensionRegistry);
+              receiptMessage_ = input.readMessage(SignalServiceProtos.ReceiptMessage.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(receiptMessage_);
                 receiptMessage_ = subBuilder.buildPartial();
@@ -2560,11 +2560,11 @@ public final class SignalServiceProtos {
               break;
             }
             case 50: {
-              com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.Builder subBuilder = null;
+              SignalServiceProtos.TypingMessage.Builder subBuilder = null;
               if (((bitField0_ & 0x00000008) == 0x00000008)) {
                 subBuilder = typingMessage_.toBuilder();
               }
-              typingMessage_ = input.readMessage(com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.PARSER, extensionRegistry);
+              typingMessage_ = input.readMessage(SignalServiceProtos.TypingMessage.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(typingMessage_);
                 typingMessage_ = subBuilder.buildPartial();
@@ -2573,11 +2573,11 @@ public final class SignalServiceProtos {
               break;
             }
             case 58: {
-              com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Builder subBuilder = null;
+              SignalServiceProtos.ConfigurationMessage.Builder subBuilder = null;
               if (((bitField0_ & 0x00000010) == 0x00000010)) {
                 subBuilder = configurationMessage_.toBuilder();
               }
-              configurationMessage_ = input.readMessage(com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.PARSER, extensionRegistry);
+              configurationMessage_ = input.readMessage(SignalServiceProtos.ConfigurationMessage.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(configurationMessage_);
                 configurationMessage_ = subBuilder.buildPartial();
@@ -2586,11 +2586,11 @@ public final class SignalServiceProtos {
               break;
             }
             case 66: {
-              com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.Builder subBuilder = null;
+              SignalServiceProtos.DataExtractionNotification.Builder subBuilder = null;
               if (((bitField0_ & 0x00000020) == 0x00000020)) {
                 subBuilder = dataExtractionNotification_.toBuilder();
               }
-              dataExtractionNotification_ = input.readMessage(com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.PARSER, extensionRegistry);
+              dataExtractionNotification_ = input.readMessage(SignalServiceProtos.DataExtractionNotification.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(dataExtractionNotification_);
                 dataExtractionNotification_ = subBuilder.buildPartial();
@@ -2599,11 +2599,11 @@ public final class SignalServiceProtos {
               break;
             }
             case 74: {
-              com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest.Builder subBuilder = null;
+              SignalServiceProtos.UnsendRequest.Builder subBuilder = null;
               if (((bitField0_ & 0x00000040) == 0x00000040)) {
                 subBuilder = unsendRequest_.toBuilder();
               }
-              unsendRequest_ = input.readMessage(com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest.PARSER, extensionRegistry);
+              unsendRequest_ = input.readMessage(SignalServiceProtos.UnsendRequest.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(unsendRequest_);
                 unsendRequest_ = subBuilder.buildPartial();
@@ -2612,11 +2612,11 @@ public final class SignalServiceProtos {
               break;
             }
             case 82: {
-              com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse.Builder subBuilder = null;
+              SignalServiceProtos.MessageRequestResponse.Builder subBuilder = null;
               if (((bitField0_ & 0x00000080) == 0x00000080)) {
                 subBuilder = messageRequestResponse_.toBuilder();
               }
-              messageRequestResponse_ = input.readMessage(com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse.PARSER, extensionRegistry);
+              messageRequestResponse_ = input.readMessage(SignalServiceProtos.MessageRequestResponse.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(messageRequestResponse_);
                 messageRequestResponse_ = subBuilder.buildPartial();
@@ -2638,14 +2638,14 @@ public final class SignalServiceProtos {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_Content_descriptor;
+      return SignalServiceProtos.internal_static_signalservice_Content_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_Content_fieldAccessorTable
+      return SignalServiceProtos.internal_static_signalservice_Content_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.beldex.libsignal.protos.SignalServiceProtos.Content.class, com.beldex.libsignal.protos.SignalServiceProtos.Content.Builder.class);
+              SignalServiceProtos.Content.class, SignalServiceProtos.Content.Builder.class);
     }
 
     public static com.google.protobuf.Parser<Content> PARSER =
@@ -2666,7 +2666,7 @@ public final class SignalServiceProtos {
     private int bitField0_;
     // optional .signalservice.DataMessage dataMessage = 1;
     public static final int DATAMESSAGE_FIELD_NUMBER = 1;
-    private com.beldex.libsignal.protos.SignalServiceProtos.DataMessage dataMessage_;
+    private SignalServiceProtos.DataMessage dataMessage_;
     /**
      * <code>optional .signalservice.DataMessage dataMessage = 1;</code>
      */
@@ -2676,19 +2676,19 @@ public final class SignalServiceProtos {
     /**
      * <code>optional .signalservice.DataMessage dataMessage = 1;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage getDataMessage() {
+    public SignalServiceProtos.DataMessage getDataMessage() {
       return dataMessage_;
     }
     /**
      * <code>optional .signalservice.DataMessage dataMessage = 1;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.DataMessageOrBuilder getDataMessageOrBuilder() {
+    public SignalServiceProtos.DataMessageOrBuilder getDataMessageOrBuilder() {
       return dataMessage_;
     }
 
     // optional .signalservice.CallMessage callMessage = 3;
     public static final int CALLMESSAGE_FIELD_NUMBER = 3;
-    private com.beldex.libsignal.protos.SignalServiceProtos.CallMessage callMessage_;
+    private SignalServiceProtos.CallMessage callMessage_;
     /**
      * <code>optional .signalservice.CallMessage callMessage = 3;</code>
      */
@@ -2698,19 +2698,19 @@ public final class SignalServiceProtos {
     /**
      * <code>optional .signalservice.CallMessage callMessage = 3;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.CallMessage getCallMessage() {
+    public SignalServiceProtos.CallMessage getCallMessage() {
       return callMessage_;
     }
     /**
      * <code>optional .signalservice.CallMessage callMessage = 3;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.CallMessageOrBuilder getCallMessageOrBuilder() {
+    public SignalServiceProtos.CallMessageOrBuilder getCallMessageOrBuilder() {
       return callMessage_;
     }
 
     // optional .signalservice.ReceiptMessage receiptMessage = 5;
     public static final int RECEIPTMESSAGE_FIELD_NUMBER = 5;
-    private com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage receiptMessage_;
+    private SignalServiceProtos.ReceiptMessage receiptMessage_;
     /**
      * <code>optional .signalservice.ReceiptMessage receiptMessage = 5;</code>
      */
@@ -2720,19 +2720,19 @@ public final class SignalServiceProtos {
     /**
      * <code>optional .signalservice.ReceiptMessage receiptMessage = 5;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage getReceiptMessage() {
+    public SignalServiceProtos.ReceiptMessage getReceiptMessage() {
       return receiptMessage_;
     }
     /**
      * <code>optional .signalservice.ReceiptMessage receiptMessage = 5;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessageOrBuilder getReceiptMessageOrBuilder() {
+    public SignalServiceProtos.ReceiptMessageOrBuilder getReceiptMessageOrBuilder() {
       return receiptMessage_;
     }
 
     // optional .signalservice.TypingMessage typingMessage = 6;
     public static final int TYPINGMESSAGE_FIELD_NUMBER = 6;
-    private com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage typingMessage_;
+    private SignalServiceProtos.TypingMessage typingMessage_;
     /**
      * <code>optional .signalservice.TypingMessage typingMessage = 6;</code>
      */
@@ -2742,19 +2742,19 @@ public final class SignalServiceProtos {
     /**
      * <code>optional .signalservice.TypingMessage typingMessage = 6;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage getTypingMessage() {
+    public SignalServiceProtos.TypingMessage getTypingMessage() {
       return typingMessage_;
     }
     /**
      * <code>optional .signalservice.TypingMessage typingMessage = 6;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.TypingMessageOrBuilder getTypingMessageOrBuilder() {
+    public SignalServiceProtos.TypingMessageOrBuilder getTypingMessageOrBuilder() {
       return typingMessage_;
     }
 
     // optional .signalservice.ConfigurationMessage configurationMessage = 7;
     public static final int CONFIGURATIONMESSAGE_FIELD_NUMBER = 7;
-    private com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage configurationMessage_;
+    private SignalServiceProtos.ConfigurationMessage configurationMessage_;
     /**
      * <code>optional .signalservice.ConfigurationMessage configurationMessage = 7;</code>
      */
@@ -2764,19 +2764,19 @@ public final class SignalServiceProtos {
     /**
      * <code>optional .signalservice.ConfigurationMessage configurationMessage = 7;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage getConfigurationMessage() {
+    public SignalServiceProtos.ConfigurationMessage getConfigurationMessage() {
       return configurationMessage_;
     }
     /**
      * <code>optional .signalservice.ConfigurationMessage configurationMessage = 7;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessageOrBuilder getConfigurationMessageOrBuilder() {
+    public SignalServiceProtos.ConfigurationMessageOrBuilder getConfigurationMessageOrBuilder() {
       return configurationMessage_;
     }
 
     // optional .signalservice.DataExtractionNotification dataExtractionNotification = 8;
     public static final int DATAEXTRACTIONNOTIFICATION_FIELD_NUMBER = 8;
-    private com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification dataExtractionNotification_;
+    private SignalServiceProtos.DataExtractionNotification dataExtractionNotification_;
     /**
      * <code>optional .signalservice.DataExtractionNotification dataExtractionNotification = 8;</code>
      */
@@ -2786,19 +2786,19 @@ public final class SignalServiceProtos {
     /**
      * <code>optional .signalservice.DataExtractionNotification dataExtractionNotification = 8;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification getDataExtractionNotification() {
+    public SignalServiceProtos.DataExtractionNotification getDataExtractionNotification() {
       return dataExtractionNotification_;
     }
     /**
      * <code>optional .signalservice.DataExtractionNotification dataExtractionNotification = 8;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotificationOrBuilder getDataExtractionNotificationOrBuilder() {
+    public SignalServiceProtos.DataExtractionNotificationOrBuilder getDataExtractionNotificationOrBuilder() {
       return dataExtractionNotification_;
     }
 
     // optional .signalservice.UnsendRequest unsendRequest = 9;
     public static final int UNSENDREQUEST_FIELD_NUMBER = 9;
-    private com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest unsendRequest_;
+    private SignalServiceProtos.UnsendRequest unsendRequest_;
     /**
      * <code>optional .signalservice.UnsendRequest unsendRequest = 9;</code>
      */
@@ -2808,19 +2808,19 @@ public final class SignalServiceProtos {
     /**
      * <code>optional .signalservice.UnsendRequest unsendRequest = 9;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest getUnsendRequest() {
+    public SignalServiceProtos.UnsendRequest getUnsendRequest() {
       return unsendRequest_;
     }
     /**
      * <code>optional .signalservice.UnsendRequest unsendRequest = 9;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequestOrBuilder getUnsendRequestOrBuilder() {
+    public SignalServiceProtos.UnsendRequestOrBuilder getUnsendRequestOrBuilder() {
       return unsendRequest_;
     }
 
     // optional .signalservice.MessageRequestResponse messageRequestResponse = 10;
     public static final int MESSAGEREQUESTRESPONSE_FIELD_NUMBER = 10;
-    private com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse messageRequestResponse_;
+    private SignalServiceProtos.MessageRequestResponse messageRequestResponse_;
     /**
      * <code>optional .signalservice.MessageRequestResponse messageRequestResponse = 10;</code>
      */
@@ -2830,25 +2830,25 @@ public final class SignalServiceProtos {
     /**
      * <code>optional .signalservice.MessageRequestResponse messageRequestResponse = 10;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse getMessageRequestResponse() {
+    public SignalServiceProtos.MessageRequestResponse getMessageRequestResponse() {
       return messageRequestResponse_;
     }
     /**
      * <code>optional .signalservice.MessageRequestResponse messageRequestResponse = 10;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponseOrBuilder getMessageRequestResponseOrBuilder() {
+    public SignalServiceProtos.MessageRequestResponseOrBuilder getMessageRequestResponseOrBuilder() {
       return messageRequestResponse_;
     }
 
     private void initFields() {
-      dataMessage_ = com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.getDefaultInstance();
-      callMessage_ = com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.getDefaultInstance();
-      receiptMessage_ = com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.getDefaultInstance();
-      typingMessage_ = com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.getDefaultInstance();
-      configurationMessage_ = com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.getDefaultInstance();
-      dataExtractionNotification_ = com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.getDefaultInstance();
-      unsendRequest_ = com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest.getDefaultInstance();
-      messageRequestResponse_ = com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse.getDefaultInstance();
+      dataMessage_ = SignalServiceProtos.DataMessage.getDefaultInstance();
+      callMessage_ = SignalServiceProtos.CallMessage.getDefaultInstance();
+      receiptMessage_ = SignalServiceProtos.ReceiptMessage.getDefaultInstance();
+      typingMessage_ = SignalServiceProtos.TypingMessage.getDefaultInstance();
+      configurationMessage_ = SignalServiceProtos.ConfigurationMessage.getDefaultInstance();
+      dataExtractionNotification_ = SignalServiceProtos.DataExtractionNotification.getDefaultInstance();
+      unsendRequest_ = SignalServiceProtos.UnsendRequest.getDefaultInstance();
+      messageRequestResponse_ = SignalServiceProtos.MessageRequestResponse.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -2987,53 +2987,53 @@ public final class SignalServiceProtos {
       return super.writeReplace();
     }
 
-    public static com.beldex.libsignal.protos.SignalServiceProtos.Content parseFrom(
+    public static SignalServiceProtos.Content parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.Content parseFrom(
+    public static SignalServiceProtos.Content parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.Content parseFrom(byte[] data)
+    public static SignalServiceProtos.Content parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.Content parseFrom(
+    public static SignalServiceProtos.Content parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.Content parseFrom(java.io.InputStream input)
+    public static SignalServiceProtos.Content parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.Content parseFrom(
+    public static SignalServiceProtos.Content parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.Content parseDelimitedFrom(java.io.InputStream input)
+    public static SignalServiceProtos.Content parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.Content parseDelimitedFrom(
+    public static SignalServiceProtos.Content parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.Content parseFrom(
+    public static SignalServiceProtos.Content parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.Content parseFrom(
+    public static SignalServiceProtos.Content parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -3042,7 +3042,7 @@ public final class SignalServiceProtos {
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.beldex.libsignal.protos.SignalServiceProtos.Content prototype) {
+    public static Builder newBuilder(SignalServiceProtos.Content prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
@@ -3058,17 +3058,17 @@ public final class SignalServiceProtos {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.beldex.libsignal.protos.SignalServiceProtos.ContentOrBuilder {
+       implements SignalServiceProtos.ContentOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_Content_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_Content_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_Content_fieldAccessorTable
+        return SignalServiceProtos.internal_static_signalservice_Content_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.beldex.libsignal.protos.SignalServiceProtos.Content.class, com.beldex.libsignal.protos.SignalServiceProtos.Content.Builder.class);
+                SignalServiceProtos.Content.class, SignalServiceProtos.Content.Builder.class);
       }
 
       // Construct using com.beldex.libsignal.protos.SignalServiceProtos.Content.newBuilder()
@@ -3100,49 +3100,49 @@ public final class SignalServiceProtos {
       public Builder clear() {
         super.clear();
         if (dataMessageBuilder_ == null) {
-          dataMessage_ = com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.getDefaultInstance();
+          dataMessage_ = SignalServiceProtos.DataMessage.getDefaultInstance();
         } else {
           dataMessageBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000001);
         if (callMessageBuilder_ == null) {
-          callMessage_ = com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.getDefaultInstance();
+          callMessage_ = SignalServiceProtos.CallMessage.getDefaultInstance();
         } else {
           callMessageBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000002);
         if (receiptMessageBuilder_ == null) {
-          receiptMessage_ = com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.getDefaultInstance();
+          receiptMessage_ = SignalServiceProtos.ReceiptMessage.getDefaultInstance();
         } else {
           receiptMessageBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000004);
         if (typingMessageBuilder_ == null) {
-          typingMessage_ = com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.getDefaultInstance();
+          typingMessage_ = SignalServiceProtos.TypingMessage.getDefaultInstance();
         } else {
           typingMessageBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000008);
         if (configurationMessageBuilder_ == null) {
-          configurationMessage_ = com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.getDefaultInstance();
+          configurationMessage_ = SignalServiceProtos.ConfigurationMessage.getDefaultInstance();
         } else {
           configurationMessageBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000010);
         if (dataExtractionNotificationBuilder_ == null) {
-          dataExtractionNotification_ = com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.getDefaultInstance();
+          dataExtractionNotification_ = SignalServiceProtos.DataExtractionNotification.getDefaultInstance();
         } else {
           dataExtractionNotificationBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000020);
         if (unsendRequestBuilder_ == null) {
-          unsendRequest_ = com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest.getDefaultInstance();
+          unsendRequest_ = SignalServiceProtos.UnsendRequest.getDefaultInstance();
         } else {
           unsendRequestBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000040);
         if (messageRequestResponseBuilder_ == null) {
-          messageRequestResponse_ = com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse.getDefaultInstance();
+          messageRequestResponse_ = SignalServiceProtos.MessageRequestResponse.getDefaultInstance();
         } else {
           messageRequestResponseBuilder_.clear();
         }
@@ -3156,23 +3156,23 @@ public final class SignalServiceProtos {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_Content_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_Content_descriptor;
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.Content getDefaultInstanceForType() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.Content.getDefaultInstance();
+      public SignalServiceProtos.Content getDefaultInstanceForType() {
+        return SignalServiceProtos.Content.getDefaultInstance();
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.Content build() {
-        com.beldex.libsignal.protos.SignalServiceProtos.Content result = buildPartial();
+      public SignalServiceProtos.Content build() {
+        SignalServiceProtos.Content result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.Content buildPartial() {
-        com.beldex.libsignal.protos.SignalServiceProtos.Content result = new com.beldex.libsignal.protos.SignalServiceProtos.Content(this);
+      public SignalServiceProtos.Content buildPartial() {
+        SignalServiceProtos.Content result = new SignalServiceProtos.Content(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -3245,16 +3245,16 @@ public final class SignalServiceProtos {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.beldex.libsignal.protos.SignalServiceProtos.Content) {
-          return mergeFrom((com.beldex.libsignal.protos.SignalServiceProtos.Content)other);
+        if (other instanceof SignalServiceProtos.Content) {
+          return mergeFrom((SignalServiceProtos.Content)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.beldex.libsignal.protos.SignalServiceProtos.Content other) {
-        if (other == com.beldex.libsignal.protos.SignalServiceProtos.Content.getDefaultInstance()) return this;
+      public Builder mergeFrom(SignalServiceProtos.Content other) {
+        if (other == SignalServiceProtos.Content.getDefaultInstance()) return this;
         if (other.hasDataMessage()) {
           mergeDataMessage(other.getDataMessage());
         }
@@ -3339,11 +3339,11 @@ public final class SignalServiceProtos {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.beldex.libsignal.protos.SignalServiceProtos.Content parsedMessage = null;
+        SignalServiceProtos.Content parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.beldex.libsignal.protos.SignalServiceProtos.Content) e.getUnfinishedMessage();
+          parsedMessage = (SignalServiceProtos.Content) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -3355,9 +3355,9 @@ public final class SignalServiceProtos {
       private int bitField0_;
 
       // optional .signalservice.DataMessage dataMessage = 1;
-      private com.beldex.libsignal.protos.SignalServiceProtos.DataMessage dataMessage_ = com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.getDefaultInstance();
+      private SignalServiceProtos.DataMessage dataMessage_ = SignalServiceProtos.DataMessage.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataMessageOrBuilder> dataMessageBuilder_;
+          SignalServiceProtos.DataMessage, SignalServiceProtos.DataMessage.Builder, SignalServiceProtos.DataMessageOrBuilder> dataMessageBuilder_;
       /**
        * <code>optional .signalservice.DataMessage dataMessage = 1;</code>
        */
@@ -3367,7 +3367,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataMessage dataMessage = 1;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage getDataMessage() {
+      public SignalServiceProtos.DataMessage getDataMessage() {
         if (dataMessageBuilder_ == null) {
           return dataMessage_;
         } else {
@@ -3377,7 +3377,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataMessage dataMessage = 1;</code>
        */
-      public Builder setDataMessage(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage value) {
+      public Builder setDataMessage(SignalServiceProtos.DataMessage value) {
         if (dataMessageBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -3394,7 +3394,7 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.DataMessage dataMessage = 1;</code>
        */
       public Builder setDataMessage(
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Builder builderForValue) {
+          SignalServiceProtos.DataMessage.Builder builderForValue) {
         if (dataMessageBuilder_ == null) {
           dataMessage_ = builderForValue.build();
           onChanged();
@@ -3407,12 +3407,12 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataMessage dataMessage = 1;</code>
        */
-      public Builder mergeDataMessage(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage value) {
+      public Builder mergeDataMessage(SignalServiceProtos.DataMessage value) {
         if (dataMessageBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              dataMessage_ != com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.getDefaultInstance()) {
+              dataMessage_ != SignalServiceProtos.DataMessage.getDefaultInstance()) {
             dataMessage_ =
-              com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.newBuilder(dataMessage_).mergeFrom(value).buildPartial();
+              SignalServiceProtos.DataMessage.newBuilder(dataMessage_).mergeFrom(value).buildPartial();
           } else {
             dataMessage_ = value;
           }
@@ -3428,7 +3428,7 @@ public final class SignalServiceProtos {
        */
       public Builder clearDataMessage() {
         if (dataMessageBuilder_ == null) {
-          dataMessage_ = com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.getDefaultInstance();
+          dataMessage_ = SignalServiceProtos.DataMessage.getDefaultInstance();
           onChanged();
         } else {
           dataMessageBuilder_.clear();
@@ -3439,7 +3439,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataMessage dataMessage = 1;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Builder getDataMessageBuilder() {
+      public SignalServiceProtos.DataMessage.Builder getDataMessageBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getDataMessageFieldBuilder().getBuilder();
@@ -3447,7 +3447,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataMessage dataMessage = 1;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessageOrBuilder getDataMessageOrBuilder() {
+      public SignalServiceProtos.DataMessageOrBuilder getDataMessageOrBuilder() {
         if (dataMessageBuilder_ != null) {
           return dataMessageBuilder_.getMessageOrBuilder();
         } else {
@@ -3458,11 +3458,11 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.DataMessage dataMessage = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataMessageOrBuilder> 
+          SignalServiceProtos.DataMessage, SignalServiceProtos.DataMessage.Builder, SignalServiceProtos.DataMessageOrBuilder>
           getDataMessageFieldBuilder() {
         if (dataMessageBuilder_ == null) {
           dataMessageBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.beldex.libsignal.protos.SignalServiceProtos.DataMessage, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataMessageOrBuilder>(
+              SignalServiceProtos.DataMessage, SignalServiceProtos.DataMessage.Builder, SignalServiceProtos.DataMessageOrBuilder>(
                   dataMessage_,
                   getParentForChildren(),
                   isClean());
@@ -3472,9 +3472,9 @@ public final class SignalServiceProtos {
       }
 
       // optional .signalservice.CallMessage callMessage = 3;
-      private com.beldex.libsignal.protos.SignalServiceProtos.CallMessage callMessage_ = com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.getDefaultInstance();
+      private SignalServiceProtos.CallMessage callMessage_ = SignalServiceProtos.CallMessage.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.CallMessage, com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Builder, com.beldex.libsignal.protos.SignalServiceProtos.CallMessageOrBuilder> callMessageBuilder_;
+          SignalServiceProtos.CallMessage, SignalServiceProtos.CallMessage.Builder, SignalServiceProtos.CallMessageOrBuilder> callMessageBuilder_;
       /**
        * <code>optional .signalservice.CallMessage callMessage = 3;</code>
        */
@@ -3484,7 +3484,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.CallMessage callMessage = 3;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.CallMessage getCallMessage() {
+      public SignalServiceProtos.CallMessage getCallMessage() {
         if (callMessageBuilder_ == null) {
           return callMessage_;
         } else {
@@ -3494,7 +3494,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.CallMessage callMessage = 3;</code>
        */
-      public Builder setCallMessage(com.beldex.libsignal.protos.SignalServiceProtos.CallMessage value) {
+      public Builder setCallMessage(SignalServiceProtos.CallMessage value) {
         if (callMessageBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -3511,7 +3511,7 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.CallMessage callMessage = 3;</code>
        */
       public Builder setCallMessage(
-          com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Builder builderForValue) {
+          SignalServiceProtos.CallMessage.Builder builderForValue) {
         if (callMessageBuilder_ == null) {
           callMessage_ = builderForValue.build();
           onChanged();
@@ -3524,12 +3524,12 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.CallMessage callMessage = 3;</code>
        */
-      public Builder mergeCallMessage(com.beldex.libsignal.protos.SignalServiceProtos.CallMessage value) {
+      public Builder mergeCallMessage(SignalServiceProtos.CallMessage value) {
         if (callMessageBuilder_ == null) {
           if (((bitField0_ & 0x00000002) == 0x00000002) &&
-              callMessage_ != com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.getDefaultInstance()) {
+              callMessage_ != SignalServiceProtos.CallMessage.getDefaultInstance()) {
             callMessage_ =
-              com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.newBuilder(callMessage_).mergeFrom(value).buildPartial();
+              SignalServiceProtos.CallMessage.newBuilder(callMessage_).mergeFrom(value).buildPartial();
           } else {
             callMessage_ = value;
           }
@@ -3545,7 +3545,7 @@ public final class SignalServiceProtos {
        */
       public Builder clearCallMessage() {
         if (callMessageBuilder_ == null) {
-          callMessage_ = com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.getDefaultInstance();
+          callMessage_ = SignalServiceProtos.CallMessage.getDefaultInstance();
           onChanged();
         } else {
           callMessageBuilder_.clear();
@@ -3556,7 +3556,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.CallMessage callMessage = 3;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Builder getCallMessageBuilder() {
+      public SignalServiceProtos.CallMessage.Builder getCallMessageBuilder() {
         bitField0_ |= 0x00000002;
         onChanged();
         return getCallMessageFieldBuilder().getBuilder();
@@ -3564,7 +3564,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.CallMessage callMessage = 3;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.CallMessageOrBuilder getCallMessageOrBuilder() {
+      public SignalServiceProtos.CallMessageOrBuilder getCallMessageOrBuilder() {
         if (callMessageBuilder_ != null) {
           return callMessageBuilder_.getMessageOrBuilder();
         } else {
@@ -3575,11 +3575,11 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.CallMessage callMessage = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.CallMessage, com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Builder, com.beldex.libsignal.protos.SignalServiceProtos.CallMessageOrBuilder> 
+          SignalServiceProtos.CallMessage, SignalServiceProtos.CallMessage.Builder, SignalServiceProtos.CallMessageOrBuilder>
           getCallMessageFieldBuilder() {
         if (callMessageBuilder_ == null) {
           callMessageBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.beldex.libsignal.protos.SignalServiceProtos.CallMessage, com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Builder, com.beldex.libsignal.protos.SignalServiceProtos.CallMessageOrBuilder>(
+              SignalServiceProtos.CallMessage, SignalServiceProtos.CallMessage.Builder, SignalServiceProtos.CallMessageOrBuilder>(
                   callMessage_,
                   getParentForChildren(),
                   isClean());
@@ -3589,9 +3589,9 @@ public final class SignalServiceProtos {
       }
 
       // optional .signalservice.ReceiptMessage receiptMessage = 5;
-      private com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage receiptMessage_ = com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.getDefaultInstance();
+      private SignalServiceProtos.ReceiptMessage receiptMessage_ = SignalServiceProtos.ReceiptMessage.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage, com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.Builder, com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessageOrBuilder> receiptMessageBuilder_;
+          SignalServiceProtos.ReceiptMessage, SignalServiceProtos.ReceiptMessage.Builder, SignalServiceProtos.ReceiptMessageOrBuilder> receiptMessageBuilder_;
       /**
        * <code>optional .signalservice.ReceiptMessage receiptMessage = 5;</code>
        */
@@ -3601,7 +3601,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.ReceiptMessage receiptMessage = 5;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage getReceiptMessage() {
+      public SignalServiceProtos.ReceiptMessage getReceiptMessage() {
         if (receiptMessageBuilder_ == null) {
           return receiptMessage_;
         } else {
@@ -3611,7 +3611,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.ReceiptMessage receiptMessage = 5;</code>
        */
-      public Builder setReceiptMessage(com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage value) {
+      public Builder setReceiptMessage(SignalServiceProtos.ReceiptMessage value) {
         if (receiptMessageBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -3628,7 +3628,7 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.ReceiptMessage receiptMessage = 5;</code>
        */
       public Builder setReceiptMessage(
-          com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.Builder builderForValue) {
+          SignalServiceProtos.ReceiptMessage.Builder builderForValue) {
         if (receiptMessageBuilder_ == null) {
           receiptMessage_ = builderForValue.build();
           onChanged();
@@ -3641,12 +3641,12 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.ReceiptMessage receiptMessage = 5;</code>
        */
-      public Builder mergeReceiptMessage(com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage value) {
+      public Builder mergeReceiptMessage(SignalServiceProtos.ReceiptMessage value) {
         if (receiptMessageBuilder_ == null) {
           if (((bitField0_ & 0x00000004) == 0x00000004) &&
-              receiptMessage_ != com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.getDefaultInstance()) {
+              receiptMessage_ != SignalServiceProtos.ReceiptMessage.getDefaultInstance()) {
             receiptMessage_ =
-              com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.newBuilder(receiptMessage_).mergeFrom(value).buildPartial();
+              SignalServiceProtos.ReceiptMessage.newBuilder(receiptMessage_).mergeFrom(value).buildPartial();
           } else {
             receiptMessage_ = value;
           }
@@ -3662,7 +3662,7 @@ public final class SignalServiceProtos {
        */
       public Builder clearReceiptMessage() {
         if (receiptMessageBuilder_ == null) {
-          receiptMessage_ = com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.getDefaultInstance();
+          receiptMessage_ = SignalServiceProtos.ReceiptMessage.getDefaultInstance();
           onChanged();
         } else {
           receiptMessageBuilder_.clear();
@@ -3673,7 +3673,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.ReceiptMessage receiptMessage = 5;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.Builder getReceiptMessageBuilder() {
+      public SignalServiceProtos.ReceiptMessage.Builder getReceiptMessageBuilder() {
         bitField0_ |= 0x00000004;
         onChanged();
         return getReceiptMessageFieldBuilder().getBuilder();
@@ -3681,7 +3681,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.ReceiptMessage receiptMessage = 5;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessageOrBuilder getReceiptMessageOrBuilder() {
+      public SignalServiceProtos.ReceiptMessageOrBuilder getReceiptMessageOrBuilder() {
         if (receiptMessageBuilder_ != null) {
           return receiptMessageBuilder_.getMessageOrBuilder();
         } else {
@@ -3692,11 +3692,11 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.ReceiptMessage receiptMessage = 5;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage, com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.Builder, com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessageOrBuilder> 
+          SignalServiceProtos.ReceiptMessage, SignalServiceProtos.ReceiptMessage.Builder, SignalServiceProtos.ReceiptMessageOrBuilder>
           getReceiptMessageFieldBuilder() {
         if (receiptMessageBuilder_ == null) {
           receiptMessageBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage, com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.Builder, com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessageOrBuilder>(
+              SignalServiceProtos.ReceiptMessage, SignalServiceProtos.ReceiptMessage.Builder, SignalServiceProtos.ReceiptMessageOrBuilder>(
                   receiptMessage_,
                   getParentForChildren(),
                   isClean());
@@ -3706,9 +3706,9 @@ public final class SignalServiceProtos {
       }
 
       // optional .signalservice.TypingMessage typingMessage = 6;
-      private com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage typingMessage_ = com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.getDefaultInstance();
+      private SignalServiceProtos.TypingMessage typingMessage_ = SignalServiceProtos.TypingMessage.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage, com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.Builder, com.beldex.libsignal.protos.SignalServiceProtos.TypingMessageOrBuilder> typingMessageBuilder_;
+          SignalServiceProtos.TypingMessage, SignalServiceProtos.TypingMessage.Builder, SignalServiceProtos.TypingMessageOrBuilder> typingMessageBuilder_;
       /**
        * <code>optional .signalservice.TypingMessage typingMessage = 6;</code>
        */
@@ -3718,7 +3718,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.TypingMessage typingMessage = 6;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage getTypingMessage() {
+      public SignalServiceProtos.TypingMessage getTypingMessage() {
         if (typingMessageBuilder_ == null) {
           return typingMessage_;
         } else {
@@ -3728,7 +3728,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.TypingMessage typingMessage = 6;</code>
        */
-      public Builder setTypingMessage(com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage value) {
+      public Builder setTypingMessage(SignalServiceProtos.TypingMessage value) {
         if (typingMessageBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -3745,7 +3745,7 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.TypingMessage typingMessage = 6;</code>
        */
       public Builder setTypingMessage(
-          com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.Builder builderForValue) {
+          SignalServiceProtos.TypingMessage.Builder builderForValue) {
         if (typingMessageBuilder_ == null) {
           typingMessage_ = builderForValue.build();
           onChanged();
@@ -3758,12 +3758,12 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.TypingMessage typingMessage = 6;</code>
        */
-      public Builder mergeTypingMessage(com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage value) {
+      public Builder mergeTypingMessage(SignalServiceProtos.TypingMessage value) {
         if (typingMessageBuilder_ == null) {
           if (((bitField0_ & 0x00000008) == 0x00000008) &&
-              typingMessage_ != com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.getDefaultInstance()) {
+              typingMessage_ != SignalServiceProtos.TypingMessage.getDefaultInstance()) {
             typingMessage_ =
-              com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.newBuilder(typingMessage_).mergeFrom(value).buildPartial();
+              SignalServiceProtos.TypingMessage.newBuilder(typingMessage_).mergeFrom(value).buildPartial();
           } else {
             typingMessage_ = value;
           }
@@ -3779,7 +3779,7 @@ public final class SignalServiceProtos {
        */
       public Builder clearTypingMessage() {
         if (typingMessageBuilder_ == null) {
-          typingMessage_ = com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.getDefaultInstance();
+          typingMessage_ = SignalServiceProtos.TypingMessage.getDefaultInstance();
           onChanged();
         } else {
           typingMessageBuilder_.clear();
@@ -3790,7 +3790,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.TypingMessage typingMessage = 6;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.Builder getTypingMessageBuilder() {
+      public SignalServiceProtos.TypingMessage.Builder getTypingMessageBuilder() {
         bitField0_ |= 0x00000008;
         onChanged();
         return getTypingMessageFieldBuilder().getBuilder();
@@ -3798,7 +3798,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.TypingMessage typingMessage = 6;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.TypingMessageOrBuilder getTypingMessageOrBuilder() {
+      public SignalServiceProtos.TypingMessageOrBuilder getTypingMessageOrBuilder() {
         if (typingMessageBuilder_ != null) {
           return typingMessageBuilder_.getMessageOrBuilder();
         } else {
@@ -3809,11 +3809,11 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.TypingMessage typingMessage = 6;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage, com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.Builder, com.beldex.libsignal.protos.SignalServiceProtos.TypingMessageOrBuilder> 
+          SignalServiceProtos.TypingMessage, SignalServiceProtos.TypingMessage.Builder, SignalServiceProtos.TypingMessageOrBuilder>
           getTypingMessageFieldBuilder() {
         if (typingMessageBuilder_ == null) {
           typingMessageBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage, com.beldex.libsignal.protos.SignalServiceProtos.TypingMessage.Builder, com.beldex.libsignal.protos.SignalServiceProtos.TypingMessageOrBuilder>(
+              SignalServiceProtos.TypingMessage, SignalServiceProtos.TypingMessage.Builder, SignalServiceProtos.TypingMessageOrBuilder>(
                   typingMessage_,
                   getParentForChildren(),
                   isClean());
@@ -3823,9 +3823,9 @@ public final class SignalServiceProtos {
       }
 
       // optional .signalservice.ConfigurationMessage configurationMessage = 7;
-      private com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage configurationMessage_ = com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.getDefaultInstance();
+      private SignalServiceProtos.ConfigurationMessage configurationMessage_ = SignalServiceProtos.ConfigurationMessage.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Builder, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessageOrBuilder> configurationMessageBuilder_;
+          SignalServiceProtos.ConfigurationMessage, SignalServiceProtos.ConfigurationMessage.Builder, SignalServiceProtos.ConfigurationMessageOrBuilder> configurationMessageBuilder_;
       /**
        * <code>optional .signalservice.ConfigurationMessage configurationMessage = 7;</code>
        */
@@ -3835,7 +3835,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.ConfigurationMessage configurationMessage = 7;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage getConfigurationMessage() {
+      public SignalServiceProtos.ConfigurationMessage getConfigurationMessage() {
         if (configurationMessageBuilder_ == null) {
           return configurationMessage_;
         } else {
@@ -3845,7 +3845,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.ConfigurationMessage configurationMessage = 7;</code>
        */
-      public Builder setConfigurationMessage(com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage value) {
+      public Builder setConfigurationMessage(SignalServiceProtos.ConfigurationMessage value) {
         if (configurationMessageBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -3862,7 +3862,7 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.ConfigurationMessage configurationMessage = 7;</code>
        */
       public Builder setConfigurationMessage(
-          com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Builder builderForValue) {
+          SignalServiceProtos.ConfigurationMessage.Builder builderForValue) {
         if (configurationMessageBuilder_ == null) {
           configurationMessage_ = builderForValue.build();
           onChanged();
@@ -3875,12 +3875,12 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.ConfigurationMessage configurationMessage = 7;</code>
        */
-      public Builder mergeConfigurationMessage(com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage value) {
+      public Builder mergeConfigurationMessage(SignalServiceProtos.ConfigurationMessage value) {
         if (configurationMessageBuilder_ == null) {
           if (((bitField0_ & 0x00000010) == 0x00000010) &&
-              configurationMessage_ != com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.getDefaultInstance()) {
+              configurationMessage_ != SignalServiceProtos.ConfigurationMessage.getDefaultInstance()) {
             configurationMessage_ =
-              com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.newBuilder(configurationMessage_).mergeFrom(value).buildPartial();
+              SignalServiceProtos.ConfigurationMessage.newBuilder(configurationMessage_).mergeFrom(value).buildPartial();
           } else {
             configurationMessage_ = value;
           }
@@ -3896,7 +3896,7 @@ public final class SignalServiceProtos {
        */
       public Builder clearConfigurationMessage() {
         if (configurationMessageBuilder_ == null) {
-          configurationMessage_ = com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.getDefaultInstance();
+          configurationMessage_ = SignalServiceProtos.ConfigurationMessage.getDefaultInstance();
           onChanged();
         } else {
           configurationMessageBuilder_.clear();
@@ -3907,7 +3907,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.ConfigurationMessage configurationMessage = 7;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Builder getConfigurationMessageBuilder() {
+      public SignalServiceProtos.ConfigurationMessage.Builder getConfigurationMessageBuilder() {
         bitField0_ |= 0x00000010;
         onChanged();
         return getConfigurationMessageFieldBuilder().getBuilder();
@@ -3915,7 +3915,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.ConfigurationMessage configurationMessage = 7;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessageOrBuilder getConfigurationMessageOrBuilder() {
+      public SignalServiceProtos.ConfigurationMessageOrBuilder getConfigurationMessageOrBuilder() {
         if (configurationMessageBuilder_ != null) {
           return configurationMessageBuilder_.getMessageOrBuilder();
         } else {
@@ -3926,11 +3926,11 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.ConfigurationMessage configurationMessage = 7;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Builder, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessageOrBuilder> 
+          SignalServiceProtos.ConfigurationMessage, SignalServiceProtos.ConfigurationMessage.Builder, SignalServiceProtos.ConfigurationMessageOrBuilder>
           getConfigurationMessageFieldBuilder() {
         if (configurationMessageBuilder_ == null) {
           configurationMessageBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Builder, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessageOrBuilder>(
+              SignalServiceProtos.ConfigurationMessage, SignalServiceProtos.ConfigurationMessage.Builder, SignalServiceProtos.ConfigurationMessageOrBuilder>(
                   configurationMessage_,
                   getParentForChildren(),
                   isClean());
@@ -3940,9 +3940,9 @@ public final class SignalServiceProtos {
       }
 
       // optional .signalservice.DataExtractionNotification dataExtractionNotification = 8;
-      private com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification dataExtractionNotification_ = com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.getDefaultInstance();
+      private SignalServiceProtos.DataExtractionNotification dataExtractionNotification_ = SignalServiceProtos.DataExtractionNotification.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification, com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotificationOrBuilder> dataExtractionNotificationBuilder_;
+          SignalServiceProtos.DataExtractionNotification, SignalServiceProtos.DataExtractionNotification.Builder, SignalServiceProtos.DataExtractionNotificationOrBuilder> dataExtractionNotificationBuilder_;
       /**
        * <code>optional .signalservice.DataExtractionNotification dataExtractionNotification = 8;</code>
        */
@@ -3952,7 +3952,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataExtractionNotification dataExtractionNotification = 8;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification getDataExtractionNotification() {
+      public SignalServiceProtos.DataExtractionNotification getDataExtractionNotification() {
         if (dataExtractionNotificationBuilder_ == null) {
           return dataExtractionNotification_;
         } else {
@@ -3962,7 +3962,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataExtractionNotification dataExtractionNotification = 8;</code>
        */
-      public Builder setDataExtractionNotification(com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification value) {
+      public Builder setDataExtractionNotification(SignalServiceProtos.DataExtractionNotification value) {
         if (dataExtractionNotificationBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -3979,7 +3979,7 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.DataExtractionNotification dataExtractionNotification = 8;</code>
        */
       public Builder setDataExtractionNotification(
-          com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.Builder builderForValue) {
+          SignalServiceProtos.DataExtractionNotification.Builder builderForValue) {
         if (dataExtractionNotificationBuilder_ == null) {
           dataExtractionNotification_ = builderForValue.build();
           onChanged();
@@ -3992,12 +3992,12 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataExtractionNotification dataExtractionNotification = 8;</code>
        */
-      public Builder mergeDataExtractionNotification(com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification value) {
+      public Builder mergeDataExtractionNotification(SignalServiceProtos.DataExtractionNotification value) {
         if (dataExtractionNotificationBuilder_ == null) {
           if (((bitField0_ & 0x00000020) == 0x00000020) &&
-              dataExtractionNotification_ != com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.getDefaultInstance()) {
+              dataExtractionNotification_ != SignalServiceProtos.DataExtractionNotification.getDefaultInstance()) {
             dataExtractionNotification_ =
-              com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.newBuilder(dataExtractionNotification_).mergeFrom(value).buildPartial();
+              SignalServiceProtos.DataExtractionNotification.newBuilder(dataExtractionNotification_).mergeFrom(value).buildPartial();
           } else {
             dataExtractionNotification_ = value;
           }
@@ -4013,7 +4013,7 @@ public final class SignalServiceProtos {
        */
       public Builder clearDataExtractionNotification() {
         if (dataExtractionNotificationBuilder_ == null) {
-          dataExtractionNotification_ = com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.getDefaultInstance();
+          dataExtractionNotification_ = SignalServiceProtos.DataExtractionNotification.getDefaultInstance();
           onChanged();
         } else {
           dataExtractionNotificationBuilder_.clear();
@@ -4024,7 +4024,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataExtractionNotification dataExtractionNotification = 8;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.Builder getDataExtractionNotificationBuilder() {
+      public SignalServiceProtos.DataExtractionNotification.Builder getDataExtractionNotificationBuilder() {
         bitField0_ |= 0x00000020;
         onChanged();
         return getDataExtractionNotificationFieldBuilder().getBuilder();
@@ -4032,7 +4032,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataExtractionNotification dataExtractionNotification = 8;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotificationOrBuilder getDataExtractionNotificationOrBuilder() {
+      public SignalServiceProtos.DataExtractionNotificationOrBuilder getDataExtractionNotificationOrBuilder() {
         if (dataExtractionNotificationBuilder_ != null) {
           return dataExtractionNotificationBuilder_.getMessageOrBuilder();
         } else {
@@ -4043,11 +4043,11 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.DataExtractionNotification dataExtractionNotification = 8;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification, com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotificationOrBuilder> 
+          SignalServiceProtos.DataExtractionNotification, SignalServiceProtos.DataExtractionNotification.Builder, SignalServiceProtos.DataExtractionNotificationOrBuilder>
           getDataExtractionNotificationFieldBuilder() {
         if (dataExtractionNotificationBuilder_ == null) {
           dataExtractionNotificationBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification, com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotificationOrBuilder>(
+              SignalServiceProtos.DataExtractionNotification, SignalServiceProtos.DataExtractionNotification.Builder, SignalServiceProtos.DataExtractionNotificationOrBuilder>(
                   dataExtractionNotification_,
                   getParentForChildren(),
                   isClean());
@@ -4057,9 +4057,9 @@ public final class SignalServiceProtos {
       }
 
       // optional .signalservice.UnsendRequest unsendRequest = 9;
-      private com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest unsendRequest_ = com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest.getDefaultInstance();
+      private SignalServiceProtos.UnsendRequest unsendRequest_ = SignalServiceProtos.UnsendRequest.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest, com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest.Builder, com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequestOrBuilder> unsendRequestBuilder_;
+          SignalServiceProtos.UnsendRequest, SignalServiceProtos.UnsendRequest.Builder, SignalServiceProtos.UnsendRequestOrBuilder> unsendRequestBuilder_;
       /**
        * <code>optional .signalservice.UnsendRequest unsendRequest = 9;</code>
        */
@@ -4069,7 +4069,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.UnsendRequest unsendRequest = 9;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest getUnsendRequest() {
+      public SignalServiceProtos.UnsendRequest getUnsendRequest() {
         if (unsendRequestBuilder_ == null) {
           return unsendRequest_;
         } else {
@@ -4079,7 +4079,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.UnsendRequest unsendRequest = 9;</code>
        */
-      public Builder setUnsendRequest(com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest value) {
+      public Builder setUnsendRequest(SignalServiceProtos.UnsendRequest value) {
         if (unsendRequestBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -4096,7 +4096,7 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.UnsendRequest unsendRequest = 9;</code>
        */
       public Builder setUnsendRequest(
-          com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest.Builder builderForValue) {
+          SignalServiceProtos.UnsendRequest.Builder builderForValue) {
         if (unsendRequestBuilder_ == null) {
           unsendRequest_ = builderForValue.build();
           onChanged();
@@ -4109,12 +4109,12 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.UnsendRequest unsendRequest = 9;</code>
        */
-      public Builder mergeUnsendRequest(com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest value) {
+      public Builder mergeUnsendRequest(SignalServiceProtos.UnsendRequest value) {
         if (unsendRequestBuilder_ == null) {
           if (((bitField0_ & 0x00000040) == 0x00000040) &&
-              unsendRequest_ != com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest.getDefaultInstance()) {
+              unsendRequest_ != SignalServiceProtos.UnsendRequest.getDefaultInstance()) {
             unsendRequest_ =
-              com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest.newBuilder(unsendRequest_).mergeFrom(value).buildPartial();
+              SignalServiceProtos.UnsendRequest.newBuilder(unsendRequest_).mergeFrom(value).buildPartial();
           } else {
             unsendRequest_ = value;
           }
@@ -4130,7 +4130,7 @@ public final class SignalServiceProtos {
        */
       public Builder clearUnsendRequest() {
         if (unsendRequestBuilder_ == null) {
-          unsendRequest_ = com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest.getDefaultInstance();
+          unsendRequest_ = SignalServiceProtos.UnsendRequest.getDefaultInstance();
           onChanged();
         } else {
           unsendRequestBuilder_.clear();
@@ -4141,7 +4141,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.UnsendRequest unsendRequest = 9;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest.Builder getUnsendRequestBuilder() {
+      public SignalServiceProtos.UnsendRequest.Builder getUnsendRequestBuilder() {
         bitField0_ |= 0x00000040;
         onChanged();
         return getUnsendRequestFieldBuilder().getBuilder();
@@ -4149,7 +4149,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.UnsendRequest unsendRequest = 9;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequestOrBuilder getUnsendRequestOrBuilder() {
+      public SignalServiceProtos.UnsendRequestOrBuilder getUnsendRequestOrBuilder() {
         if (unsendRequestBuilder_ != null) {
           return unsendRequestBuilder_.getMessageOrBuilder();
         } else {
@@ -4160,11 +4160,11 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.UnsendRequest unsendRequest = 9;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest, com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest.Builder, com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequestOrBuilder> 
+          SignalServiceProtos.UnsendRequest, SignalServiceProtos.UnsendRequest.Builder, SignalServiceProtos.UnsendRequestOrBuilder>
           getUnsendRequestFieldBuilder() {
         if (unsendRequestBuilder_ == null) {
           unsendRequestBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest, com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequest.Builder, com.beldex.libsignal.protos.SignalServiceProtos.UnsendRequestOrBuilder>(
+              SignalServiceProtos.UnsendRequest, SignalServiceProtos.UnsendRequest.Builder, SignalServiceProtos.UnsendRequestOrBuilder>(
                   unsendRequest_,
                   getParentForChildren(),
                   isClean());
@@ -4174,9 +4174,9 @@ public final class SignalServiceProtos {
       }
 
       // optional .signalservice.MessageRequestResponse messageRequestResponse = 10;
-      private com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse messageRequestResponse_ = com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse.getDefaultInstance();
+      private SignalServiceProtos.MessageRequestResponse messageRequestResponse_ = SignalServiceProtos.MessageRequestResponse.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse, com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse.Builder, com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponseOrBuilder> messageRequestResponseBuilder_;
+          SignalServiceProtos.MessageRequestResponse, SignalServiceProtos.MessageRequestResponse.Builder, SignalServiceProtos.MessageRequestResponseOrBuilder> messageRequestResponseBuilder_;
       /**
        * <code>optional .signalservice.MessageRequestResponse messageRequestResponse = 10;</code>
        */
@@ -4186,7 +4186,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.MessageRequestResponse messageRequestResponse = 10;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse getMessageRequestResponse() {
+      public SignalServiceProtos.MessageRequestResponse getMessageRequestResponse() {
         if (messageRequestResponseBuilder_ == null) {
           return messageRequestResponse_;
         } else {
@@ -4196,7 +4196,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.MessageRequestResponse messageRequestResponse = 10;</code>
        */
-      public Builder setMessageRequestResponse(com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse value) {
+      public Builder setMessageRequestResponse(SignalServiceProtos.MessageRequestResponse value) {
         if (messageRequestResponseBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -4213,7 +4213,7 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.MessageRequestResponse messageRequestResponse = 10;</code>
        */
       public Builder setMessageRequestResponse(
-          com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse.Builder builderForValue) {
+          SignalServiceProtos.MessageRequestResponse.Builder builderForValue) {
         if (messageRequestResponseBuilder_ == null) {
           messageRequestResponse_ = builderForValue.build();
           onChanged();
@@ -4226,12 +4226,12 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.MessageRequestResponse messageRequestResponse = 10;</code>
        */
-      public Builder mergeMessageRequestResponse(com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse value) {
+      public Builder mergeMessageRequestResponse(SignalServiceProtos.MessageRequestResponse value) {
         if (messageRequestResponseBuilder_ == null) {
           if (((bitField0_ & 0x00000080) == 0x00000080) &&
-              messageRequestResponse_ != com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse.getDefaultInstance()) {
+              messageRequestResponse_ != SignalServiceProtos.MessageRequestResponse.getDefaultInstance()) {
             messageRequestResponse_ =
-              com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse.newBuilder(messageRequestResponse_).mergeFrom(value).buildPartial();
+              SignalServiceProtos.MessageRequestResponse.newBuilder(messageRequestResponse_).mergeFrom(value).buildPartial();
           } else {
             messageRequestResponse_ = value;
           }
@@ -4247,7 +4247,7 @@ public final class SignalServiceProtos {
        */
       public Builder clearMessageRequestResponse() {
         if (messageRequestResponseBuilder_ == null) {
-          messageRequestResponse_ = com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse.getDefaultInstance();
+          messageRequestResponse_ = SignalServiceProtos.MessageRequestResponse.getDefaultInstance();
           onChanged();
         } else {
           messageRequestResponseBuilder_.clear();
@@ -4258,7 +4258,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.MessageRequestResponse messageRequestResponse = 10;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse.Builder getMessageRequestResponseBuilder() {
+      public SignalServiceProtos.MessageRequestResponse.Builder getMessageRequestResponseBuilder() {
         bitField0_ |= 0x00000080;
         onChanged();
         return getMessageRequestResponseFieldBuilder().getBuilder();
@@ -4266,7 +4266,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.MessageRequestResponse messageRequestResponse = 10;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponseOrBuilder getMessageRequestResponseOrBuilder() {
+      public SignalServiceProtos.MessageRequestResponseOrBuilder getMessageRequestResponseOrBuilder() {
         if (messageRequestResponseBuilder_ != null) {
           return messageRequestResponseBuilder_.getMessageOrBuilder();
         } else {
@@ -4277,11 +4277,11 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.MessageRequestResponse messageRequestResponse = 10;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse, com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse.Builder, com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponseOrBuilder> 
+          SignalServiceProtos.MessageRequestResponse, SignalServiceProtos.MessageRequestResponse.Builder, SignalServiceProtos.MessageRequestResponseOrBuilder>
           getMessageRequestResponseFieldBuilder() {
         if (messageRequestResponseBuilder_ == null) {
           messageRequestResponseBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse, com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse.Builder, com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponseOrBuilder>(
+              SignalServiceProtos.MessageRequestResponse, SignalServiceProtos.MessageRequestResponse.Builder, SignalServiceProtos.MessageRequestResponseOrBuilder>(
                   messageRequestResponse_,
                   getParentForChildren(),
                   isClean());
@@ -4415,14 +4415,14 @@ public final class SignalServiceProtos {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_KeyPair_descriptor;
+      return SignalServiceProtos.internal_static_signalservice_KeyPair_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_KeyPair_fieldAccessorTable
+      return SignalServiceProtos.internal_static_signalservice_KeyPair_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.class, com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.Builder.class);
+              SignalServiceProtos.KeyPair.class, SignalServiceProtos.KeyPair.Builder.class);
     }
 
     public static com.google.protobuf.Parser<KeyPair> PARSER =
@@ -4548,53 +4548,53 @@ public final class SignalServiceProtos {
       return super.writeReplace();
     }
 
-    public static com.beldex.libsignal.protos.SignalServiceProtos.KeyPair parseFrom(
+    public static SignalServiceProtos.KeyPair parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.KeyPair parseFrom(
+    public static SignalServiceProtos.KeyPair parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.KeyPair parseFrom(byte[] data)
+    public static SignalServiceProtos.KeyPair parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.KeyPair parseFrom(
+    public static SignalServiceProtos.KeyPair parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.KeyPair parseFrom(java.io.InputStream input)
+    public static SignalServiceProtos.KeyPair parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.KeyPair parseFrom(
+    public static SignalServiceProtos.KeyPair parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.KeyPair parseDelimitedFrom(java.io.InputStream input)
+    public static SignalServiceProtos.KeyPair parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.KeyPair parseDelimitedFrom(
+    public static SignalServiceProtos.KeyPair parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.KeyPair parseFrom(
+    public static SignalServiceProtos.KeyPair parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.KeyPair parseFrom(
+    public static SignalServiceProtos.KeyPair parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -4603,7 +4603,7 @@ public final class SignalServiceProtos {
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.beldex.libsignal.protos.SignalServiceProtos.KeyPair prototype) {
+    public static Builder newBuilder(SignalServiceProtos.KeyPair prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
@@ -4619,17 +4619,17 @@ public final class SignalServiceProtos {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.beldex.libsignal.protos.SignalServiceProtos.KeyPairOrBuilder {
+       implements SignalServiceProtos.KeyPairOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_KeyPair_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_KeyPair_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_KeyPair_fieldAccessorTable
+        return SignalServiceProtos.internal_static_signalservice_KeyPair_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.class, com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.Builder.class);
+                SignalServiceProtos.KeyPair.class, SignalServiceProtos.KeyPair.Builder.class);
       }
 
       // Construct using com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.newBuilder()
@@ -4665,23 +4665,23 @@ public final class SignalServiceProtos {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_KeyPair_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_KeyPair_descriptor;
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.KeyPair getDefaultInstanceForType() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.getDefaultInstance();
+      public SignalServiceProtos.KeyPair getDefaultInstanceForType() {
+        return SignalServiceProtos.KeyPair.getDefaultInstance();
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.KeyPair build() {
-        com.beldex.libsignal.protos.SignalServiceProtos.KeyPair result = buildPartial();
+      public SignalServiceProtos.KeyPair build() {
+        SignalServiceProtos.KeyPair result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.KeyPair buildPartial() {
-        com.beldex.libsignal.protos.SignalServiceProtos.KeyPair result = new com.beldex.libsignal.protos.SignalServiceProtos.KeyPair(this);
+      public SignalServiceProtos.KeyPair buildPartial() {
+        SignalServiceProtos.KeyPair result = new SignalServiceProtos.KeyPair(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -4698,16 +4698,16 @@ public final class SignalServiceProtos {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.beldex.libsignal.protos.SignalServiceProtos.KeyPair) {
-          return mergeFrom((com.beldex.libsignal.protos.SignalServiceProtos.KeyPair)other);
+        if (other instanceof SignalServiceProtos.KeyPair) {
+          return mergeFrom((SignalServiceProtos.KeyPair)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.beldex.libsignal.protos.SignalServiceProtos.KeyPair other) {
-        if (other == com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.getDefaultInstance()) return this;
+      public Builder mergeFrom(SignalServiceProtos.KeyPair other) {
+        if (other == SignalServiceProtos.KeyPair.getDefaultInstance()) return this;
         if (other.hasPublicKey()) {
           setPublicKey(other.getPublicKey());
         }
@@ -4734,11 +4734,11 @@ public final class SignalServiceProtos {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.beldex.libsignal.protos.SignalServiceProtos.KeyPair parsedMessage = null;
+        SignalServiceProtos.KeyPair parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.beldex.libsignal.protos.SignalServiceProtos.KeyPair) e.getUnfinishedMessage();
+          parsedMessage = (SignalServiceProtos.KeyPair) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -4883,7 +4883,7 @@ public final class SignalServiceProtos {
      * @required
      * </pre>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.Type getType();
+    SignalServiceProtos.DataExtractionNotification.Type getType();
 
     // optional uint64 timestamp = 2;
     /**
@@ -4948,7 +4948,7 @@ public final class SignalServiceProtos {
             }
             case 8: {
               int rawValue = input.readEnum();
-              com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.Type value = com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.Type.valueOf(rawValue);
+              SignalServiceProtos.DataExtractionNotification.Type value = SignalServiceProtos.DataExtractionNotification.Type.valueOf(rawValue);
               if (value == null) {
                 unknownFields.mergeVarintField(1, rawValue);
               } else {
@@ -4976,14 +4976,14 @@ public final class SignalServiceProtos {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataExtractionNotification_descriptor;
+      return SignalServiceProtos.internal_static_signalservice_DataExtractionNotification_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataExtractionNotification_fieldAccessorTable
+      return SignalServiceProtos.internal_static_signalservice_DataExtractionNotification_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.class, com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.Builder.class);
+              SignalServiceProtos.DataExtractionNotification.class, SignalServiceProtos.DataExtractionNotification.Builder.class);
     }
 
     public static com.google.protobuf.Parser<DataExtractionNotification> PARSER =
@@ -5066,7 +5066,7 @@ public final class SignalServiceProtos {
       }
       public static final com.google.protobuf.Descriptors.EnumDescriptor
           getDescriptor() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.getDescriptor().getEnumTypes().get(0);
+        return SignalServiceProtos.DataExtractionNotification.getDescriptor().getEnumTypes().get(0);
       }
 
       private static final Type[] VALUES = values();
@@ -5094,7 +5094,7 @@ public final class SignalServiceProtos {
     private int bitField0_;
     // required .signalservice.DataExtractionNotification.Type type = 1;
     public static final int TYPE_FIELD_NUMBER = 1;
-    private com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.Type type_;
+    private SignalServiceProtos.DataExtractionNotification.Type type_;
     /**
      * <code>required .signalservice.DataExtractionNotification.Type type = 1;</code>
      *
@@ -5112,7 +5112,7 @@ public final class SignalServiceProtos {
      * @required
      * </pre>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.Type getType() {
+    public SignalServiceProtos.DataExtractionNotification.Type getType() {
       return type_;
     }
 
@@ -5133,7 +5133,7 @@ public final class SignalServiceProtos {
     }
 
     private void initFields() {
-      type_ = com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.Type.SCREENSHOT;
+      type_ = SignalServiceProtos.DataExtractionNotification.Type.SCREENSHOT;
       timestamp_ = 0L;
     }
     private byte memoizedIsInitialized = -1;
@@ -5187,53 +5187,53 @@ public final class SignalServiceProtos {
       return super.writeReplace();
     }
 
-    public static com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification parseFrom(
+    public static SignalServiceProtos.DataExtractionNotification parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification parseFrom(
+    public static SignalServiceProtos.DataExtractionNotification parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification parseFrom(byte[] data)
+    public static SignalServiceProtos.DataExtractionNotification parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification parseFrom(
+    public static SignalServiceProtos.DataExtractionNotification parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification parseFrom(java.io.InputStream input)
+    public static SignalServiceProtos.DataExtractionNotification parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification parseFrom(
+    public static SignalServiceProtos.DataExtractionNotification parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification parseDelimitedFrom(java.io.InputStream input)
+    public static SignalServiceProtos.DataExtractionNotification parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification parseDelimitedFrom(
+    public static SignalServiceProtos.DataExtractionNotification parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification parseFrom(
+    public static SignalServiceProtos.DataExtractionNotification parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification parseFrom(
+    public static SignalServiceProtos.DataExtractionNotification parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -5242,7 +5242,7 @@ public final class SignalServiceProtos {
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification prototype) {
+    public static Builder newBuilder(SignalServiceProtos.DataExtractionNotification prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
@@ -5258,17 +5258,17 @@ public final class SignalServiceProtos {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotificationOrBuilder {
+       implements SignalServiceProtos.DataExtractionNotificationOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataExtractionNotification_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_DataExtractionNotification_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataExtractionNotification_fieldAccessorTable
+        return SignalServiceProtos.internal_static_signalservice_DataExtractionNotification_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.class, com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.Builder.class);
+                SignalServiceProtos.DataExtractionNotification.class, SignalServiceProtos.DataExtractionNotification.Builder.class);
       }
 
       // Construct using com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.newBuilder()
@@ -5291,7 +5291,7 @@ public final class SignalServiceProtos {
 
       public Builder clear() {
         super.clear();
-        type_ = com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.Type.SCREENSHOT;
+        type_ = SignalServiceProtos.DataExtractionNotification.Type.SCREENSHOT;
         bitField0_ = (bitField0_ & ~0x00000001);
         timestamp_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -5304,23 +5304,23 @@ public final class SignalServiceProtos {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataExtractionNotification_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_DataExtractionNotification_descriptor;
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification getDefaultInstanceForType() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.getDefaultInstance();
+      public SignalServiceProtos.DataExtractionNotification getDefaultInstanceForType() {
+        return SignalServiceProtos.DataExtractionNotification.getDefaultInstance();
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification build() {
-        com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification result = buildPartial();
+      public SignalServiceProtos.DataExtractionNotification build() {
+        SignalServiceProtos.DataExtractionNotification result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification buildPartial() {
-        com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification result = new com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification(this);
+      public SignalServiceProtos.DataExtractionNotification buildPartial() {
+        SignalServiceProtos.DataExtractionNotification result = new SignalServiceProtos.DataExtractionNotification(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -5337,16 +5337,16 @@ public final class SignalServiceProtos {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification) {
-          return mergeFrom((com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification)other);
+        if (other instanceof SignalServiceProtos.DataExtractionNotification) {
+          return mergeFrom((SignalServiceProtos.DataExtractionNotification)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification other) {
-        if (other == com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.getDefaultInstance()) return this;
+      public Builder mergeFrom(SignalServiceProtos.DataExtractionNotification other) {
+        if (other == SignalServiceProtos.DataExtractionNotification.getDefaultInstance()) return this;
         if (other.hasType()) {
           setType(other.getType());
         }
@@ -5369,11 +5369,11 @@ public final class SignalServiceProtos {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification parsedMessage = null;
+        SignalServiceProtos.DataExtractionNotification parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification) e.getUnfinishedMessage();
+          parsedMessage = (SignalServiceProtos.DataExtractionNotification) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -5385,7 +5385,7 @@ public final class SignalServiceProtos {
       private int bitField0_;
 
       // required .signalservice.DataExtractionNotification.Type type = 1;
-      private com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.Type type_ = com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.Type.SCREENSHOT;
+      private SignalServiceProtos.DataExtractionNotification.Type type_ = SignalServiceProtos.DataExtractionNotification.Type.SCREENSHOT;
       /**
        * <code>required .signalservice.DataExtractionNotification.Type type = 1;</code>
        *
@@ -5403,7 +5403,7 @@ public final class SignalServiceProtos {
        * @required
        * </pre>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.Type getType() {
+      public SignalServiceProtos.DataExtractionNotification.Type getType() {
         return type_;
       }
       /**
@@ -5413,7 +5413,7 @@ public final class SignalServiceProtos {
        * @required
        * </pre>
        */
-      public Builder setType(com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.Type value) {
+      public Builder setType(SignalServiceProtos.DataExtractionNotification.Type value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -5431,7 +5431,7 @@ public final class SignalServiceProtos {
        */
       public Builder clearType() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        type_ = com.beldex.libsignal.protos.SignalServiceProtos.DataExtractionNotification.Type.SCREENSHOT;
+        type_ = SignalServiceProtos.DataExtractionNotification.Type.SCREENSHOT;
         onChanged();
         return this;
       }
@@ -5502,12 +5502,12 @@ public final class SignalServiceProtos {
     /**
      * <code>repeated .signalservice.AttachmentPointer attachments = 2;</code>
      */
-    java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer> 
+    java.util.List<SignalServiceProtos.AttachmentPointer>
         getAttachmentsList();
     /**
      * <code>repeated .signalservice.AttachmentPointer attachments = 2;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer getAttachments(int index);
+    SignalServiceProtos.AttachmentPointer getAttachments(int index);
     /**
      * <code>repeated .signalservice.AttachmentPointer attachments = 2;</code>
      */
@@ -5515,12 +5515,12 @@ public final class SignalServiceProtos {
     /**
      * <code>repeated .signalservice.AttachmentPointer attachments = 2;</code>
      */
-    java.util.List<? extends com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointerOrBuilder> 
+    java.util.List<? extends SignalServiceProtos.AttachmentPointerOrBuilder>
         getAttachmentsOrBuilderList();
     /**
      * <code>repeated .signalservice.AttachmentPointer attachments = 2;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointerOrBuilder getAttachmentsOrBuilder(
+    SignalServiceProtos.AttachmentPointerOrBuilder getAttachmentsOrBuilder(
         int index);
 
     // optional .signalservice.GroupContext group = 3;
@@ -5531,11 +5531,11 @@ public final class SignalServiceProtos {
     /**
      * <code>optional .signalservice.GroupContext group = 3;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.GroupContext getGroup();
+    SignalServiceProtos.GroupContext getGroup();
     /**
      * <code>optional .signalservice.GroupContext group = 3;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.GroupContextOrBuilder getGroupOrBuilder();
+    SignalServiceProtos.GroupContextOrBuilder getGroupOrBuilder();
 
     // optional uint32 flags = 4;
     /**
@@ -5585,22 +5585,22 @@ public final class SignalServiceProtos {
     /**
      * <code>optional .signalservice.DataMessage.Quote quote = 8;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote getQuote();
+    SignalServiceProtos.DataMessage.Quote getQuote();
     /**
      * <code>optional .signalservice.DataMessage.Quote quote = 8;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.QuoteOrBuilder getQuoteOrBuilder();
+    SignalServiceProtos.DataMessage.QuoteOrBuilder getQuoteOrBuilder();
 
     // repeated .signalservice.DataMessage.Preview preview = 10;
     /**
      * <code>repeated .signalservice.DataMessage.Preview preview = 10;</code>
      */
-    java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview> 
+    java.util.List<SignalServiceProtos.DataMessage.Preview>
         getPreviewList();
     /**
      * <code>repeated .signalservice.DataMessage.Preview preview = 10;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview getPreview(int index);
+    SignalServiceProtos.DataMessage.Preview getPreview(int index);
     /**
      * <code>repeated .signalservice.DataMessage.Preview preview = 10;</code>
      */
@@ -5608,12 +5608,12 @@ public final class SignalServiceProtos {
     /**
      * <code>repeated .signalservice.DataMessage.Preview preview = 10;</code>
      */
-    java.util.List<? extends com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.PreviewOrBuilder> 
+    java.util.List<? extends SignalServiceProtos.DataMessage.PreviewOrBuilder>
         getPreviewOrBuilderList();
     /**
      * <code>repeated .signalservice.DataMessage.Preview preview = 10;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.PreviewOrBuilder getPreviewOrBuilder(
+    SignalServiceProtos.DataMessage.PreviewOrBuilder getPreviewOrBuilder(
         int index);
 
     // optional .signalservice.DataMessage.BeldexProfile profile = 101;
@@ -5624,11 +5624,11 @@ public final class SignalServiceProtos {
     /**
      * <code>optional .signalservice.DataMessage.BeldexProfile profile = 101;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile getProfile();
+    SignalServiceProtos.DataMessage.BeldexProfile getProfile();
     /**
      * <code>optional .signalservice.DataMessage.BeldexProfile profile = 101;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfileOrBuilder getProfileOrBuilder();
+    SignalServiceProtos.DataMessage.BeldexProfileOrBuilder getProfileOrBuilder();
 
     // optional .signalservice.DataMessage.OpenGroupInvitation openGroupInvitation = 102;
     /**
@@ -5638,11 +5638,11 @@ public final class SignalServiceProtos {
     /**
      * <code>optional .signalservice.DataMessage.OpenGroupInvitation openGroupInvitation = 102;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation getOpenGroupInvitation();
+    SignalServiceProtos.DataMessage.OpenGroupInvitation getOpenGroupInvitation();
     /**
      * <code>optional .signalservice.DataMessage.OpenGroupInvitation openGroupInvitation = 102;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitationOrBuilder getOpenGroupInvitationOrBuilder();
+    SignalServiceProtos.DataMessage.OpenGroupInvitationOrBuilder getOpenGroupInvitationOrBuilder();
 
     // optional .signalservice.DataMessage.ClosedGroupControlMessage closedGroupControlMessage = 104;
     /**
@@ -5652,11 +5652,11 @@ public final class SignalServiceProtos {
     /**
      * <code>optional .signalservice.DataMessage.ClosedGroupControlMessage closedGroupControlMessage = 104;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage getClosedGroupControlMessage();
+    SignalServiceProtos.DataMessage.ClosedGroupControlMessage getClosedGroupControlMessage();
     /**
      * <code>optional .signalservice.DataMessage.ClosedGroupControlMessage closedGroupControlMessage = 104;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessageOrBuilder getClosedGroupControlMessageOrBuilder();
+    SignalServiceProtos.DataMessage.ClosedGroupControlMessageOrBuilder getClosedGroupControlMessageOrBuilder();
 
     // optional string syncTarget = 105;
     /**
@@ -5681,11 +5681,11 @@ public final class SignalServiceProtos {
     /**
      * <code>optional .signalservice.DataMessage.Payment payment = 106;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment getPayment();
+    SignalServiceProtos.DataMessage.Payment getPayment();
     /**
      * <code>optional .signalservice.DataMessage.Payment payment = 106;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.PaymentOrBuilder getPaymentOrBuilder();
+    SignalServiceProtos.DataMessage.PaymentOrBuilder getPaymentOrBuilder();
   }
   /**
    * Protobuf type {@code signalservice.DataMessage}
@@ -5745,18 +5745,18 @@ public final class SignalServiceProtos {
             }
             case 18: {
               if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-                attachments_ = new java.util.ArrayList<com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer>();
+                attachments_ = new java.util.ArrayList<SignalServiceProtos.AttachmentPointer>();
                 mutable_bitField0_ |= 0x00000002;
               }
-              attachments_.add(input.readMessage(com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.PARSER, extensionRegistry));
+              attachments_.add(input.readMessage(SignalServiceProtos.AttachmentPointer.PARSER, extensionRegistry));
               break;
             }
             case 26: {
-              com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.Builder subBuilder = null;
+              SignalServiceProtos.GroupContext.Builder subBuilder = null;
               if (((bitField0_ & 0x00000002) == 0x00000002)) {
                 subBuilder = group_.toBuilder();
               }
-              group_ = input.readMessage(com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.PARSER, extensionRegistry);
+              group_ = input.readMessage(SignalServiceProtos.GroupContext.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(group_);
                 group_ = subBuilder.buildPartial();
@@ -5785,11 +5785,11 @@ public final class SignalServiceProtos {
               break;
             }
             case 66: {
-              com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.Builder subBuilder = null;
+              SignalServiceProtos.DataMessage.Quote.Builder subBuilder = null;
               if (((bitField0_ & 0x00000040) == 0x00000040)) {
                 subBuilder = quote_.toBuilder();
               }
-              quote_ = input.readMessage(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.PARSER, extensionRegistry);
+              quote_ = input.readMessage(SignalServiceProtos.DataMessage.Quote.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(quote_);
                 quote_ = subBuilder.buildPartial();
@@ -5799,18 +5799,18 @@ public final class SignalServiceProtos {
             }
             case 82: {
               if (!((mutable_bitField0_ & 0x00000100) == 0x00000100)) {
-                preview_ = new java.util.ArrayList<com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview>();
+                preview_ = new java.util.ArrayList<SignalServiceProtos.DataMessage.Preview>();
                 mutable_bitField0_ |= 0x00000100;
               }
-              preview_.add(input.readMessage(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview.PARSER, extensionRegistry));
+              preview_.add(input.readMessage(SignalServiceProtos.DataMessage.Preview.PARSER, extensionRegistry));
               break;
             }
             case 810: {
-              com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile.Builder subBuilder = null;
+              SignalServiceProtos.DataMessage.BeldexProfile.Builder subBuilder = null;
               if (((bitField0_ & 0x00000080) == 0x00000080)) {
                 subBuilder = profile_.toBuilder();
               }
-              profile_ = input.readMessage(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile.PARSER, extensionRegistry);
+              profile_ = input.readMessage(SignalServiceProtos.DataMessage.BeldexProfile.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(profile_);
                 profile_ = subBuilder.buildPartial();
@@ -5819,11 +5819,11 @@ public final class SignalServiceProtos {
               break;
             }
             case 818: {
-              com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation.Builder subBuilder = null;
+              SignalServiceProtos.DataMessage.OpenGroupInvitation.Builder subBuilder = null;
               if (((bitField0_ & 0x00000100) == 0x00000100)) {
                 subBuilder = openGroupInvitation_.toBuilder();
               }
-              openGroupInvitation_ = input.readMessage(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation.PARSER, extensionRegistry);
+              openGroupInvitation_ = input.readMessage(SignalServiceProtos.DataMessage.OpenGroupInvitation.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(openGroupInvitation_);
                 openGroupInvitation_ = subBuilder.buildPartial();
@@ -5832,11 +5832,11 @@ public final class SignalServiceProtos {
               break;
             }
             case 834: {
-              com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Builder subBuilder = null;
+              SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Builder subBuilder = null;
               if (((bitField0_ & 0x00000200) == 0x00000200)) {
                 subBuilder = closedGroupControlMessage_.toBuilder();
               }
-              closedGroupControlMessage_ = input.readMessage(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.PARSER, extensionRegistry);
+              closedGroupControlMessage_ = input.readMessage(SignalServiceProtos.DataMessage.ClosedGroupControlMessage.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(closedGroupControlMessage_);
                 closedGroupControlMessage_ = subBuilder.buildPartial();
@@ -5850,11 +5850,11 @@ public final class SignalServiceProtos {
               break;
             }
             case 850: {
-              com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment.Builder subBuilder = null;
+              SignalServiceProtos.DataMessage.Payment.Builder subBuilder = null;
               if (((bitField0_ & 0x00000800) == 0x00000800)) {
                 subBuilder = payment_.toBuilder();
               }
-              payment_ = input.readMessage(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment.PARSER, extensionRegistry);
+              payment_ = input.readMessage(SignalServiceProtos.DataMessage.Payment.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(payment_);
                 payment_ = subBuilder.buildPartial();
@@ -5882,14 +5882,14 @@ public final class SignalServiceProtos {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_descriptor;
+      return SignalServiceProtos.internal_static_signalservice_DataMessage_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_fieldAccessorTable
+      return SignalServiceProtos.internal_static_signalservice_DataMessage_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.class, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Builder.class);
+              SignalServiceProtos.DataMessage.class, SignalServiceProtos.DataMessage.Builder.class);
     }
 
     public static com.google.protobuf.Parser<DataMessage> PARSER =
@@ -5955,7 +5955,7 @@ public final class SignalServiceProtos {
       }
       public static final com.google.protobuf.Descriptors.EnumDescriptor
           getDescriptor() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.getDescriptor().getEnumTypes().get(0);
+        return SignalServiceProtos.DataMessage.getDescriptor().getEnumTypes().get(0);
       }
 
       private static final Flags[] VALUES = values();
@@ -6047,12 +6047,12 @@ public final class SignalServiceProtos {
       /**
        * <code>repeated .signalservice.DataMessage.Quote.QuotedAttachment attachments = 4;</code>
        */
-      java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment> 
+      java.util.List<SignalServiceProtos.DataMessage.Quote.QuotedAttachment>
           getAttachmentsList();
       /**
        * <code>repeated .signalservice.DataMessage.Quote.QuotedAttachment attachments = 4;</code>
        */
-      com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment getAttachments(int index);
+      SignalServiceProtos.DataMessage.Quote.QuotedAttachment getAttachments(int index);
       /**
        * <code>repeated .signalservice.DataMessage.Quote.QuotedAttachment attachments = 4;</code>
        */
@@ -6060,12 +6060,12 @@ public final class SignalServiceProtos {
       /**
        * <code>repeated .signalservice.DataMessage.Quote.QuotedAttachment attachments = 4;</code>
        */
-      java.util.List<? extends com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachmentOrBuilder> 
+      java.util.List<? extends SignalServiceProtos.DataMessage.Quote.QuotedAttachmentOrBuilder>
           getAttachmentsOrBuilderList();
       /**
        * <code>repeated .signalservice.DataMessage.Quote.QuotedAttachment attachments = 4;</code>
        */
-      com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachmentOrBuilder getAttachmentsOrBuilder(
+      SignalServiceProtos.DataMessage.Quote.QuotedAttachmentOrBuilder getAttachmentsOrBuilder(
           int index);
     }
     /**
@@ -6136,10 +6136,10 @@ public final class SignalServiceProtos {
               }
               case 34: {
                 if (!((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
-                  attachments_ = new java.util.ArrayList<com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment>();
+                  attachments_ = new java.util.ArrayList<SignalServiceProtos.DataMessage.Quote.QuotedAttachment>();
                   mutable_bitField0_ |= 0x00000008;
                 }
-                attachments_.add(input.readMessage(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment.PARSER, extensionRegistry));
+                attachments_.add(input.readMessage(SignalServiceProtos.DataMessage.Quote.QuotedAttachment.PARSER, extensionRegistry));
                 break;
               }
             }
@@ -6159,14 +6159,14 @@ public final class SignalServiceProtos {
       }
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_Quote_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_DataMessage_Quote_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_Quote_fieldAccessorTable
+        return SignalServiceProtos.internal_static_signalservice_DataMessage_Quote_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.class, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.Builder.class);
+                SignalServiceProtos.DataMessage.Quote.class, SignalServiceProtos.DataMessage.Quote.Builder.class);
       }
 
       public static com.google.protobuf.Parser<Quote> PARSER =
@@ -6225,11 +6225,11 @@ public final class SignalServiceProtos {
         /**
          * <code>optional .signalservice.AttachmentPointer thumbnail = 3;</code>
          */
-        com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer getThumbnail();
+        SignalServiceProtos.AttachmentPointer getThumbnail();
         /**
          * <code>optional .signalservice.AttachmentPointer thumbnail = 3;</code>
          */
-        com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointerOrBuilder getThumbnailOrBuilder();
+        SignalServiceProtos.AttachmentPointerOrBuilder getThumbnailOrBuilder();
 
         // optional uint32 flags = 4;
         /**
@@ -6303,11 +6303,11 @@ public final class SignalServiceProtos {
                   break;
                 }
                 case 26: {
-                  com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.Builder subBuilder = null;
+                  SignalServiceProtos.AttachmentPointer.Builder subBuilder = null;
                   if (((bitField0_ & 0x00000004) == 0x00000004)) {
                     subBuilder = thumbnail_.toBuilder();
                   }
-                  thumbnail_ = input.readMessage(com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.PARSER, extensionRegistry);
+                  thumbnail_ = input.readMessage(SignalServiceProtos.AttachmentPointer.PARSER, extensionRegistry);
                   if (subBuilder != null) {
                     subBuilder.mergeFrom(thumbnail_);
                     thumbnail_ = subBuilder.buildPartial();
@@ -6334,14 +6334,14 @@ public final class SignalServiceProtos {
         }
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_Quote_QuotedAttachment_descriptor;
+          return SignalServiceProtos.internal_static_signalservice_DataMessage_Quote_QuotedAttachment_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_Quote_QuotedAttachment_fieldAccessorTable
+          return SignalServiceProtos.internal_static_signalservice_DataMessage_Quote_QuotedAttachment_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment.class, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment.Builder.class);
+                  SignalServiceProtos.DataMessage.Quote.QuotedAttachment.class, SignalServiceProtos.DataMessage.Quote.QuotedAttachment.Builder.class);
         }
 
         public static com.google.protobuf.Parser<QuotedAttachment> PARSER =
@@ -6407,7 +6407,7 @@ public final class SignalServiceProtos {
           }
           public static final com.google.protobuf.Descriptors.EnumDescriptor
               getDescriptor() {
-            return com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment.getDescriptor().getEnumTypes().get(0);
+            return SignalServiceProtos.DataMessage.Quote.QuotedAttachment.getDescriptor().getEnumTypes().get(0);
           }
 
           private static final Flags[] VALUES = values();
@@ -6521,7 +6521,7 @@ public final class SignalServiceProtos {
 
         // optional .signalservice.AttachmentPointer thumbnail = 3;
         public static final int THUMBNAIL_FIELD_NUMBER = 3;
-        private com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer thumbnail_;
+        private SignalServiceProtos.AttachmentPointer thumbnail_;
         /**
          * <code>optional .signalservice.AttachmentPointer thumbnail = 3;</code>
          */
@@ -6531,13 +6531,13 @@ public final class SignalServiceProtos {
         /**
          * <code>optional .signalservice.AttachmentPointer thumbnail = 3;</code>
          */
-        public com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer getThumbnail() {
+        public SignalServiceProtos.AttachmentPointer getThumbnail() {
           return thumbnail_;
         }
         /**
          * <code>optional .signalservice.AttachmentPointer thumbnail = 3;</code>
          */
-        public com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointerOrBuilder getThumbnailOrBuilder() {
+        public SignalServiceProtos.AttachmentPointerOrBuilder getThumbnailOrBuilder() {
           return thumbnail_;
         }
 
@@ -6560,7 +6560,7 @@ public final class SignalServiceProtos {
         private void initFields() {
           contentType_ = "";
           fileName_ = "";
-          thumbnail_ = com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.getDefaultInstance();
+          thumbnail_ = SignalServiceProtos.AttachmentPointer.getDefaultInstance();
           flags_ = 0;
         }
         private byte memoizedIsInitialized = -1;
@@ -6630,53 +6630,53 @@ public final class SignalServiceProtos {
           return super.writeReplace();
         }
 
-        public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment parseFrom(
+        public static SignalServiceProtos.DataMessage.Quote.QuotedAttachment parseFrom(
             com.google.protobuf.ByteString data)
             throws com.google.protobuf.InvalidProtocolBufferException {
           return PARSER.parseFrom(data);
         }
-        public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment parseFrom(
+        public static SignalServiceProtos.DataMessage.Quote.QuotedAttachment parseFrom(
             com.google.protobuf.ByteString data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
           return PARSER.parseFrom(data, extensionRegistry);
         }
-        public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment parseFrom(byte[] data)
+        public static SignalServiceProtos.DataMessage.Quote.QuotedAttachment parseFrom(byte[] data)
             throws com.google.protobuf.InvalidProtocolBufferException {
           return PARSER.parseFrom(data);
         }
-        public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment parseFrom(
+        public static SignalServiceProtos.DataMessage.Quote.QuotedAttachment parseFrom(
             byte[] data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
           return PARSER.parseFrom(data, extensionRegistry);
         }
-        public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment parseFrom(java.io.InputStream input)
+        public static SignalServiceProtos.DataMessage.Quote.QuotedAttachment parseFrom(java.io.InputStream input)
             throws java.io.IOException {
           return PARSER.parseFrom(input);
         }
-        public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment parseFrom(
+        public static SignalServiceProtos.DataMessage.Quote.QuotedAttachment parseFrom(
             java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
           return PARSER.parseFrom(input, extensionRegistry);
         }
-        public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment parseDelimitedFrom(java.io.InputStream input)
+        public static SignalServiceProtos.DataMessage.Quote.QuotedAttachment parseDelimitedFrom(java.io.InputStream input)
             throws java.io.IOException {
           return PARSER.parseDelimitedFrom(input);
         }
-        public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment parseDelimitedFrom(
+        public static SignalServiceProtos.DataMessage.Quote.QuotedAttachment parseDelimitedFrom(
             java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
           return PARSER.parseDelimitedFrom(input, extensionRegistry);
         }
-        public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment parseFrom(
+        public static SignalServiceProtos.DataMessage.Quote.QuotedAttachment parseFrom(
             com.google.protobuf.CodedInputStream input)
             throws java.io.IOException {
           return PARSER.parseFrom(input);
         }
-        public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment parseFrom(
+        public static SignalServiceProtos.DataMessage.Quote.QuotedAttachment parseFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
@@ -6685,7 +6685,7 @@ public final class SignalServiceProtos {
 
         public static Builder newBuilder() { return Builder.create(); }
         public Builder newBuilderForType() { return newBuilder(); }
-        public static Builder newBuilder(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment prototype) {
+        public static Builder newBuilder(SignalServiceProtos.DataMessage.Quote.QuotedAttachment prototype) {
           return newBuilder().mergeFrom(prototype);
         }
         public Builder toBuilder() { return newBuilder(this); }
@@ -6701,17 +6701,17 @@ public final class SignalServiceProtos {
          */
         public static final class Builder extends
             com.google.protobuf.GeneratedMessage.Builder<Builder>
-           implements com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachmentOrBuilder {
+           implements SignalServiceProtos.DataMessage.Quote.QuotedAttachmentOrBuilder {
           public static final com.google.protobuf.Descriptors.Descriptor
               getDescriptor() {
-            return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_Quote_QuotedAttachment_descriptor;
+            return SignalServiceProtos.internal_static_signalservice_DataMessage_Quote_QuotedAttachment_descriptor;
           }
 
           protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
               internalGetFieldAccessorTable() {
-            return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_Quote_QuotedAttachment_fieldAccessorTable
+            return SignalServiceProtos.internal_static_signalservice_DataMessage_Quote_QuotedAttachment_fieldAccessorTable
                 .ensureFieldAccessorsInitialized(
-                    com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment.class, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment.Builder.class);
+                    SignalServiceProtos.DataMessage.Quote.QuotedAttachment.class, SignalServiceProtos.DataMessage.Quote.QuotedAttachment.Builder.class);
           }
 
           // Construct using com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment.newBuilder()
@@ -6740,7 +6740,7 @@ public final class SignalServiceProtos {
             fileName_ = "";
             bitField0_ = (bitField0_ & ~0x00000002);
             if (thumbnailBuilder_ == null) {
-              thumbnail_ = com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.getDefaultInstance();
+              thumbnail_ = SignalServiceProtos.AttachmentPointer.getDefaultInstance();
             } else {
               thumbnailBuilder_.clear();
             }
@@ -6756,23 +6756,23 @@ public final class SignalServiceProtos {
 
           public com.google.protobuf.Descriptors.Descriptor
               getDescriptorForType() {
-            return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_Quote_QuotedAttachment_descriptor;
+            return SignalServiceProtos.internal_static_signalservice_DataMessage_Quote_QuotedAttachment_descriptor;
           }
 
-          public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment getDefaultInstanceForType() {
-            return com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment.getDefaultInstance();
+          public SignalServiceProtos.DataMessage.Quote.QuotedAttachment getDefaultInstanceForType() {
+            return SignalServiceProtos.DataMessage.Quote.QuotedAttachment.getDefaultInstance();
           }
 
-          public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment build() {
-            com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment result = buildPartial();
+          public SignalServiceProtos.DataMessage.Quote.QuotedAttachment build() {
+            SignalServiceProtos.DataMessage.Quote.QuotedAttachment result = buildPartial();
             if (!result.isInitialized()) {
               throw newUninitializedMessageException(result);
             }
             return result;
           }
 
-          public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment buildPartial() {
-            com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment result = new com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment(this);
+          public SignalServiceProtos.DataMessage.Quote.QuotedAttachment buildPartial() {
+            SignalServiceProtos.DataMessage.Quote.QuotedAttachment result = new SignalServiceProtos.DataMessage.Quote.QuotedAttachment(this);
             int from_bitField0_ = bitField0_;
             int to_bitField0_ = 0;
             if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -6801,16 +6801,16 @@ public final class SignalServiceProtos {
           }
 
           public Builder mergeFrom(com.google.protobuf.Message other) {
-            if (other instanceof com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment) {
-              return mergeFrom((com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment)other);
+            if (other instanceof SignalServiceProtos.DataMessage.Quote.QuotedAttachment) {
+              return mergeFrom((SignalServiceProtos.DataMessage.Quote.QuotedAttachment)other);
             } else {
               super.mergeFrom(other);
               return this;
             }
           }
 
-          public Builder mergeFrom(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment other) {
-            if (other == com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment.getDefaultInstance()) return this;
+          public Builder mergeFrom(SignalServiceProtos.DataMessage.Quote.QuotedAttachment other) {
+            if (other == SignalServiceProtos.DataMessage.Quote.QuotedAttachment.getDefaultInstance()) return this;
             if (other.hasContentType()) {
               bitField0_ |= 0x00000001;
               contentType_ = other.contentType_;
@@ -6845,11 +6845,11 @@ public final class SignalServiceProtos {
               com.google.protobuf.CodedInputStream input,
               com.google.protobuf.ExtensionRegistryLite extensionRegistry)
               throws java.io.IOException {
-            com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment parsedMessage = null;
+            SignalServiceProtos.DataMessage.Quote.QuotedAttachment parsedMessage = null;
             try {
               parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
             } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-              parsedMessage = (com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment) e.getUnfinishedMessage();
+              parsedMessage = (SignalServiceProtos.DataMessage.Quote.QuotedAttachment) e.getUnfinishedMessage();
               throw e;
             } finally {
               if (parsedMessage != null) {
@@ -7009,9 +7009,9 @@ public final class SignalServiceProtos {
           }
 
           // optional .signalservice.AttachmentPointer thumbnail = 3;
-          private com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer thumbnail_ = com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.getDefaultInstance();
+          private SignalServiceProtos.AttachmentPointer thumbnail_ = SignalServiceProtos.AttachmentPointer.getDefaultInstance();
           private com.google.protobuf.SingleFieldBuilder<
-              com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer, com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.Builder, com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointerOrBuilder> thumbnailBuilder_;
+              SignalServiceProtos.AttachmentPointer, SignalServiceProtos.AttachmentPointer.Builder, SignalServiceProtos.AttachmentPointerOrBuilder> thumbnailBuilder_;
           /**
            * <code>optional .signalservice.AttachmentPointer thumbnail = 3;</code>
            */
@@ -7021,7 +7021,7 @@ public final class SignalServiceProtos {
           /**
            * <code>optional .signalservice.AttachmentPointer thumbnail = 3;</code>
            */
-          public com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer getThumbnail() {
+          public SignalServiceProtos.AttachmentPointer getThumbnail() {
             if (thumbnailBuilder_ == null) {
               return thumbnail_;
             } else {
@@ -7031,7 +7031,7 @@ public final class SignalServiceProtos {
           /**
            * <code>optional .signalservice.AttachmentPointer thumbnail = 3;</code>
            */
-          public Builder setThumbnail(com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer value) {
+          public Builder setThumbnail(SignalServiceProtos.AttachmentPointer value) {
             if (thumbnailBuilder_ == null) {
               if (value == null) {
                 throw new NullPointerException();
@@ -7048,7 +7048,7 @@ public final class SignalServiceProtos {
            * <code>optional .signalservice.AttachmentPointer thumbnail = 3;</code>
            */
           public Builder setThumbnail(
-              com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.Builder builderForValue) {
+              SignalServiceProtos.AttachmentPointer.Builder builderForValue) {
             if (thumbnailBuilder_ == null) {
               thumbnail_ = builderForValue.build();
               onChanged();
@@ -7061,12 +7061,12 @@ public final class SignalServiceProtos {
           /**
            * <code>optional .signalservice.AttachmentPointer thumbnail = 3;</code>
            */
-          public Builder mergeThumbnail(com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer value) {
+          public Builder mergeThumbnail(SignalServiceProtos.AttachmentPointer value) {
             if (thumbnailBuilder_ == null) {
               if (((bitField0_ & 0x00000004) == 0x00000004) &&
-                  thumbnail_ != com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.getDefaultInstance()) {
+                  thumbnail_ != SignalServiceProtos.AttachmentPointer.getDefaultInstance()) {
                 thumbnail_ =
-                  com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.newBuilder(thumbnail_).mergeFrom(value).buildPartial();
+                  SignalServiceProtos.AttachmentPointer.newBuilder(thumbnail_).mergeFrom(value).buildPartial();
               } else {
                 thumbnail_ = value;
               }
@@ -7082,7 +7082,7 @@ public final class SignalServiceProtos {
            */
           public Builder clearThumbnail() {
             if (thumbnailBuilder_ == null) {
-              thumbnail_ = com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.getDefaultInstance();
+              thumbnail_ = SignalServiceProtos.AttachmentPointer.getDefaultInstance();
               onChanged();
             } else {
               thumbnailBuilder_.clear();
@@ -7093,7 +7093,7 @@ public final class SignalServiceProtos {
           /**
            * <code>optional .signalservice.AttachmentPointer thumbnail = 3;</code>
            */
-          public com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.Builder getThumbnailBuilder() {
+          public SignalServiceProtos.AttachmentPointer.Builder getThumbnailBuilder() {
             bitField0_ |= 0x00000004;
             onChanged();
             return getThumbnailFieldBuilder().getBuilder();
@@ -7101,7 +7101,7 @@ public final class SignalServiceProtos {
           /**
            * <code>optional .signalservice.AttachmentPointer thumbnail = 3;</code>
            */
-          public com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointerOrBuilder getThumbnailOrBuilder() {
+          public SignalServiceProtos.AttachmentPointerOrBuilder getThumbnailOrBuilder() {
             if (thumbnailBuilder_ != null) {
               return thumbnailBuilder_.getMessageOrBuilder();
             } else {
@@ -7112,11 +7112,11 @@ public final class SignalServiceProtos {
            * <code>optional .signalservice.AttachmentPointer thumbnail = 3;</code>
            */
           private com.google.protobuf.SingleFieldBuilder<
-              com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer, com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.Builder, com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointerOrBuilder> 
+              SignalServiceProtos.AttachmentPointer, SignalServiceProtos.AttachmentPointer.Builder, SignalServiceProtos.AttachmentPointerOrBuilder>
               getThumbnailFieldBuilder() {
             if (thumbnailBuilder_ == null) {
               thumbnailBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-                  com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer, com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.Builder, com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointerOrBuilder>(
+                  SignalServiceProtos.AttachmentPointer, SignalServiceProtos.AttachmentPointer.Builder, SignalServiceProtos.AttachmentPointerOrBuilder>(
                       thumbnail_,
                       getParentForChildren(),
                       isClean());
@@ -7294,17 +7294,17 @@ public final class SignalServiceProtos {
 
       // repeated .signalservice.DataMessage.Quote.QuotedAttachment attachments = 4;
       public static final int ATTACHMENTS_FIELD_NUMBER = 4;
-      private java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment> attachments_;
+      private java.util.List<SignalServiceProtos.DataMessage.Quote.QuotedAttachment> attachments_;
       /**
        * <code>repeated .signalservice.DataMessage.Quote.QuotedAttachment attachments = 4;</code>
        */
-      public java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment> getAttachmentsList() {
+      public java.util.List<SignalServiceProtos.DataMessage.Quote.QuotedAttachment> getAttachmentsList() {
         return attachments_;
       }
       /**
        * <code>repeated .signalservice.DataMessage.Quote.QuotedAttachment attachments = 4;</code>
        */
-      public java.util.List<? extends com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachmentOrBuilder> 
+      public java.util.List<? extends SignalServiceProtos.DataMessage.Quote.QuotedAttachmentOrBuilder>
           getAttachmentsOrBuilderList() {
         return attachments_;
       }
@@ -7317,13 +7317,13 @@ public final class SignalServiceProtos {
       /**
        * <code>repeated .signalservice.DataMessage.Quote.QuotedAttachment attachments = 4;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment getAttachments(int index) {
+      public SignalServiceProtos.DataMessage.Quote.QuotedAttachment getAttachments(int index) {
         return attachments_.get(index);
       }
       /**
        * <code>repeated .signalservice.DataMessage.Quote.QuotedAttachment attachments = 4;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachmentOrBuilder getAttachmentsOrBuilder(
+      public SignalServiceProtos.DataMessage.Quote.QuotedAttachmentOrBuilder getAttachmentsOrBuilder(
           int index) {
         return attachments_.get(index);
       }
@@ -7409,53 +7409,53 @@ public final class SignalServiceProtos {
         return super.writeReplace();
       }
 
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote parseFrom(
+      public static SignalServiceProtos.DataMessage.Quote parseFrom(
           com.google.protobuf.ByteString data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote parseFrom(
+      public static SignalServiceProtos.DataMessage.Quote parseFrom(
           com.google.protobuf.ByteString data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote parseFrom(byte[] data)
+      public static SignalServiceProtos.DataMessage.Quote parseFrom(byte[] data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote parseFrom(
+      public static SignalServiceProtos.DataMessage.Quote parseFrom(
           byte[] data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote parseFrom(java.io.InputStream input)
+      public static SignalServiceProtos.DataMessage.Quote parseFrom(java.io.InputStream input)
           throws java.io.IOException {
         return PARSER.parseFrom(input);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote parseFrom(
+      public static SignalServiceProtos.DataMessage.Quote parseFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return PARSER.parseFrom(input, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote parseDelimitedFrom(java.io.InputStream input)
+      public static SignalServiceProtos.DataMessage.Quote parseDelimitedFrom(java.io.InputStream input)
           throws java.io.IOException {
         return PARSER.parseDelimitedFrom(input);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote parseDelimitedFrom(
+      public static SignalServiceProtos.DataMessage.Quote parseDelimitedFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return PARSER.parseDelimitedFrom(input, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote parseFrom(
+      public static SignalServiceProtos.DataMessage.Quote parseFrom(
           com.google.protobuf.CodedInputStream input)
           throws java.io.IOException {
         return PARSER.parseFrom(input);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote parseFrom(
+      public static SignalServiceProtos.DataMessage.Quote parseFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -7464,7 +7464,7 @@ public final class SignalServiceProtos {
 
       public static Builder newBuilder() { return Builder.create(); }
       public Builder newBuilderForType() { return newBuilder(); }
-      public static Builder newBuilder(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote prototype) {
+      public static Builder newBuilder(SignalServiceProtos.DataMessage.Quote prototype) {
         return newBuilder().mergeFrom(prototype);
       }
       public Builder toBuilder() { return newBuilder(this); }
@@ -7480,17 +7480,17 @@ public final class SignalServiceProtos {
        */
       public static final class Builder extends
           com.google.protobuf.GeneratedMessage.Builder<Builder>
-         implements com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.QuoteOrBuilder {
+         implements SignalServiceProtos.DataMessage.QuoteOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_Quote_descriptor;
+          return SignalServiceProtos.internal_static_signalservice_DataMessage_Quote_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_Quote_fieldAccessorTable
+          return SignalServiceProtos.internal_static_signalservice_DataMessage_Quote_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.class, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.Builder.class);
+                  SignalServiceProtos.DataMessage.Quote.class, SignalServiceProtos.DataMessage.Quote.Builder.class);
         }
 
         // Construct using com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.newBuilder()
@@ -7535,23 +7535,23 @@ public final class SignalServiceProtos {
 
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_Quote_descriptor;
+          return SignalServiceProtos.internal_static_signalservice_DataMessage_Quote_descriptor;
         }
 
-        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote getDefaultInstanceForType() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.getDefaultInstance();
+        public SignalServiceProtos.DataMessage.Quote getDefaultInstanceForType() {
+          return SignalServiceProtos.DataMessage.Quote.getDefaultInstance();
         }
 
-        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote build() {
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote result = buildPartial();
+        public SignalServiceProtos.DataMessage.Quote build() {
+          SignalServiceProtos.DataMessage.Quote result = buildPartial();
           if (!result.isInitialized()) {
             throw newUninitializedMessageException(result);
           }
           return result;
         }
 
-        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote buildPartial() {
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote result = new com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote(this);
+        public SignalServiceProtos.DataMessage.Quote buildPartial() {
+          SignalServiceProtos.DataMessage.Quote result = new SignalServiceProtos.DataMessage.Quote(this);
           int from_bitField0_ = bitField0_;
           int to_bitField0_ = 0;
           if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -7581,16 +7581,16 @@ public final class SignalServiceProtos {
         }
 
         public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote) {
-            return mergeFrom((com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote)other);
+          if (other instanceof SignalServiceProtos.DataMessage.Quote) {
+            return mergeFrom((SignalServiceProtos.DataMessage.Quote)other);
           } else {
             super.mergeFrom(other);
             return this;
           }
         }
 
-        public Builder mergeFrom(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote other) {
-          if (other == com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.getDefaultInstance()) return this;
+        public Builder mergeFrom(SignalServiceProtos.DataMessage.Quote other) {
+          if (other == SignalServiceProtos.DataMessage.Quote.getDefaultInstance()) return this;
           if (other.hasId()) {
             setId(other.getId());
           }
@@ -7656,11 +7656,11 @@ public final class SignalServiceProtos {
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote parsedMessage = null;
+          SignalServiceProtos.DataMessage.Quote parsedMessage = null;
           try {
             parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
           } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            parsedMessage = (com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote) e.getUnfinishedMessage();
+            parsedMessage = (SignalServiceProtos.DataMessage.Quote) e.getUnfinishedMessage();
             throw e;
           } finally {
             if (parsedMessage != null) {
@@ -7893,22 +7893,22 @@ public final class SignalServiceProtos {
         }
 
         // repeated .signalservice.DataMessage.Quote.QuotedAttachment attachments = 4;
-        private java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment> attachments_ =
+        private java.util.List<SignalServiceProtos.DataMessage.Quote.QuotedAttachment> attachments_ =
           java.util.Collections.emptyList();
         private void ensureAttachmentsIsMutable() {
           if (!((bitField0_ & 0x00000008) == 0x00000008)) {
-            attachments_ = new java.util.ArrayList<com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment>(attachments_);
+            attachments_ = new java.util.ArrayList<SignalServiceProtos.DataMessage.Quote.QuotedAttachment>(attachments_);
             bitField0_ |= 0x00000008;
            }
         }
 
         private com.google.protobuf.RepeatedFieldBuilder<
-            com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachmentOrBuilder> attachmentsBuilder_;
+            SignalServiceProtos.DataMessage.Quote.QuotedAttachment, SignalServiceProtos.DataMessage.Quote.QuotedAttachment.Builder, SignalServiceProtos.DataMessage.Quote.QuotedAttachmentOrBuilder> attachmentsBuilder_;
 
         /**
          * <code>repeated .signalservice.DataMessage.Quote.QuotedAttachment attachments = 4;</code>
          */
-        public java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment> getAttachmentsList() {
+        public java.util.List<SignalServiceProtos.DataMessage.Quote.QuotedAttachment> getAttachmentsList() {
           if (attachmentsBuilder_ == null) {
             return java.util.Collections.unmodifiableList(attachments_);
           } else {
@@ -7928,7 +7928,7 @@ public final class SignalServiceProtos {
         /**
          * <code>repeated .signalservice.DataMessage.Quote.QuotedAttachment attachments = 4;</code>
          */
-        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment getAttachments(int index) {
+        public SignalServiceProtos.DataMessage.Quote.QuotedAttachment getAttachments(int index) {
           if (attachmentsBuilder_ == null) {
             return attachments_.get(index);
           } else {
@@ -7939,7 +7939,7 @@ public final class SignalServiceProtos {
          * <code>repeated .signalservice.DataMessage.Quote.QuotedAttachment attachments = 4;</code>
          */
         public Builder setAttachments(
-            int index, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment value) {
+            int index, SignalServiceProtos.DataMessage.Quote.QuotedAttachment value) {
           if (attachmentsBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
@@ -7956,7 +7956,7 @@ public final class SignalServiceProtos {
          * <code>repeated .signalservice.DataMessage.Quote.QuotedAttachment attachments = 4;</code>
          */
         public Builder setAttachments(
-            int index, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment.Builder builderForValue) {
+            int index, SignalServiceProtos.DataMessage.Quote.QuotedAttachment.Builder builderForValue) {
           if (attachmentsBuilder_ == null) {
             ensureAttachmentsIsMutable();
             attachments_.set(index, builderForValue.build());
@@ -7969,7 +7969,7 @@ public final class SignalServiceProtos {
         /**
          * <code>repeated .signalservice.DataMessage.Quote.QuotedAttachment attachments = 4;</code>
          */
-        public Builder addAttachments(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment value) {
+        public Builder addAttachments(SignalServiceProtos.DataMessage.Quote.QuotedAttachment value) {
           if (attachmentsBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
@@ -7986,7 +7986,7 @@ public final class SignalServiceProtos {
          * <code>repeated .signalservice.DataMessage.Quote.QuotedAttachment attachments = 4;</code>
          */
         public Builder addAttachments(
-            int index, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment value) {
+            int index, SignalServiceProtos.DataMessage.Quote.QuotedAttachment value) {
           if (attachmentsBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
@@ -8003,7 +8003,7 @@ public final class SignalServiceProtos {
          * <code>repeated .signalservice.DataMessage.Quote.QuotedAttachment attachments = 4;</code>
          */
         public Builder addAttachments(
-            com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment.Builder builderForValue) {
+            SignalServiceProtos.DataMessage.Quote.QuotedAttachment.Builder builderForValue) {
           if (attachmentsBuilder_ == null) {
             ensureAttachmentsIsMutable();
             attachments_.add(builderForValue.build());
@@ -8017,7 +8017,7 @@ public final class SignalServiceProtos {
          * <code>repeated .signalservice.DataMessage.Quote.QuotedAttachment attachments = 4;</code>
          */
         public Builder addAttachments(
-            int index, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment.Builder builderForValue) {
+            int index, SignalServiceProtos.DataMessage.Quote.QuotedAttachment.Builder builderForValue) {
           if (attachmentsBuilder_ == null) {
             ensureAttachmentsIsMutable();
             attachments_.add(index, builderForValue.build());
@@ -8031,7 +8031,7 @@ public final class SignalServiceProtos {
          * <code>repeated .signalservice.DataMessage.Quote.QuotedAttachment attachments = 4;</code>
          */
         public Builder addAllAttachments(
-            java.lang.Iterable<? extends com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment> values) {
+            java.lang.Iterable<? extends SignalServiceProtos.DataMessage.Quote.QuotedAttachment> values) {
           if (attachmentsBuilder_ == null) {
             ensureAttachmentsIsMutable();
             super.addAll(values, attachments_);
@@ -8070,14 +8070,14 @@ public final class SignalServiceProtos {
         /**
          * <code>repeated .signalservice.DataMessage.Quote.QuotedAttachment attachments = 4;</code>
          */
-        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment.Builder getAttachmentsBuilder(
+        public SignalServiceProtos.DataMessage.Quote.QuotedAttachment.Builder getAttachmentsBuilder(
             int index) {
           return getAttachmentsFieldBuilder().getBuilder(index);
         }
         /**
          * <code>repeated .signalservice.DataMessage.Quote.QuotedAttachment attachments = 4;</code>
          */
-        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachmentOrBuilder getAttachmentsOrBuilder(
+        public SignalServiceProtos.DataMessage.Quote.QuotedAttachmentOrBuilder getAttachmentsOrBuilder(
             int index) {
           if (attachmentsBuilder_ == null) {
             return attachments_.get(index);  } else {
@@ -8087,7 +8087,7 @@ public final class SignalServiceProtos {
         /**
          * <code>repeated .signalservice.DataMessage.Quote.QuotedAttachment attachments = 4;</code>
          */
-        public java.util.List<? extends com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachmentOrBuilder> 
+        public java.util.List<? extends SignalServiceProtos.DataMessage.Quote.QuotedAttachmentOrBuilder>
              getAttachmentsOrBuilderList() {
           if (attachmentsBuilder_ != null) {
             return attachmentsBuilder_.getMessageOrBuilderList();
@@ -8098,31 +8098,31 @@ public final class SignalServiceProtos {
         /**
          * <code>repeated .signalservice.DataMessage.Quote.QuotedAttachment attachments = 4;</code>
          */
-        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment.Builder addAttachmentsBuilder() {
+        public SignalServiceProtos.DataMessage.Quote.QuotedAttachment.Builder addAttachmentsBuilder() {
           return getAttachmentsFieldBuilder().addBuilder(
-              com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment.getDefaultInstance());
+              SignalServiceProtos.DataMessage.Quote.QuotedAttachment.getDefaultInstance());
         }
         /**
          * <code>repeated .signalservice.DataMessage.Quote.QuotedAttachment attachments = 4;</code>
          */
-        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment.Builder addAttachmentsBuilder(
+        public SignalServiceProtos.DataMessage.Quote.QuotedAttachment.Builder addAttachmentsBuilder(
             int index) {
           return getAttachmentsFieldBuilder().addBuilder(
-              index, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment.getDefaultInstance());
+              index, SignalServiceProtos.DataMessage.Quote.QuotedAttachment.getDefaultInstance());
         }
         /**
          * <code>repeated .signalservice.DataMessage.Quote.QuotedAttachment attachments = 4;</code>
          */
-        public java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment.Builder> 
+        public java.util.List<SignalServiceProtos.DataMessage.Quote.QuotedAttachment.Builder>
              getAttachmentsBuilderList() {
           return getAttachmentsFieldBuilder().getBuilderList();
         }
         private com.google.protobuf.RepeatedFieldBuilder<
-            com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachmentOrBuilder> 
+            SignalServiceProtos.DataMessage.Quote.QuotedAttachment, SignalServiceProtos.DataMessage.Quote.QuotedAttachment.Builder, SignalServiceProtos.DataMessage.Quote.QuotedAttachmentOrBuilder>
             getAttachmentsFieldBuilder() {
           if (attachmentsBuilder_ == null) {
             attachmentsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-                com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachment.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.QuotedAttachmentOrBuilder>(
+                SignalServiceProtos.DataMessage.Quote.QuotedAttachment, SignalServiceProtos.DataMessage.Quote.QuotedAttachment.Builder, SignalServiceProtos.DataMessage.Quote.QuotedAttachmentOrBuilder>(
                     attachments_,
                     ((bitField0_ & 0x00000008) == 0x00000008),
                     getParentForChildren(),
@@ -8196,11 +8196,11 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.AttachmentPointer image = 3;</code>
        */
-      com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer getImage();
+      SignalServiceProtos.AttachmentPointer getImage();
       /**
        * <code>optional .signalservice.AttachmentPointer image = 3;</code>
        */
-      com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointerOrBuilder getImageOrBuilder();
+      SignalServiceProtos.AttachmentPointerOrBuilder getImageOrBuilder();
     }
     /**
      * Protobuf type {@code signalservice.DataMessage.Preview}
@@ -8264,11 +8264,11 @@ public final class SignalServiceProtos {
                 break;
               }
               case 26: {
-                com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.Builder subBuilder = null;
+                SignalServiceProtos.AttachmentPointer.Builder subBuilder = null;
                 if (((bitField0_ & 0x00000004) == 0x00000004)) {
                   subBuilder = image_.toBuilder();
                 }
-                image_ = input.readMessage(com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.PARSER, extensionRegistry);
+                image_ = input.readMessage(SignalServiceProtos.AttachmentPointer.PARSER, extensionRegistry);
                 if (subBuilder != null) {
                   subBuilder.mergeFrom(image_);
                   image_ = subBuilder.buildPartial();
@@ -8290,14 +8290,14 @@ public final class SignalServiceProtos {
       }
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_Preview_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_DataMessage_Preview_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_Preview_fieldAccessorTable
+        return SignalServiceProtos.internal_static_signalservice_DataMessage_Preview_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview.class, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview.Builder.class);
+                SignalServiceProtos.DataMessage.Preview.class, SignalServiceProtos.DataMessage.Preview.Builder.class);
       }
 
       public static com.google.protobuf.Parser<Preview> PARSER =
@@ -8416,7 +8416,7 @@ public final class SignalServiceProtos {
 
       // optional .signalservice.AttachmentPointer image = 3;
       public static final int IMAGE_FIELD_NUMBER = 3;
-      private com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer image_;
+      private SignalServiceProtos.AttachmentPointer image_;
       /**
        * <code>optional .signalservice.AttachmentPointer image = 3;</code>
        */
@@ -8426,20 +8426,20 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.AttachmentPointer image = 3;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer getImage() {
+      public SignalServiceProtos.AttachmentPointer getImage() {
         return image_;
       }
       /**
        * <code>optional .signalservice.AttachmentPointer image = 3;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointerOrBuilder getImageOrBuilder() {
+      public SignalServiceProtos.AttachmentPointerOrBuilder getImageOrBuilder() {
         return image_;
       }
 
       private void initFields() {
         url_ = "";
         title_ = "";
-        image_ = com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.getDefaultInstance();
+        image_ = SignalServiceProtos.AttachmentPointer.getDefaultInstance();
       }
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
@@ -8505,53 +8505,53 @@ public final class SignalServiceProtos {
         return super.writeReplace();
       }
 
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview parseFrom(
+      public static SignalServiceProtos.DataMessage.Preview parseFrom(
           com.google.protobuf.ByteString data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview parseFrom(
+      public static SignalServiceProtos.DataMessage.Preview parseFrom(
           com.google.protobuf.ByteString data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview parseFrom(byte[] data)
+      public static SignalServiceProtos.DataMessage.Preview parseFrom(byte[] data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview parseFrom(
+      public static SignalServiceProtos.DataMessage.Preview parseFrom(
           byte[] data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview parseFrom(java.io.InputStream input)
+      public static SignalServiceProtos.DataMessage.Preview parseFrom(java.io.InputStream input)
           throws java.io.IOException {
         return PARSER.parseFrom(input);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview parseFrom(
+      public static SignalServiceProtos.DataMessage.Preview parseFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return PARSER.parseFrom(input, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview parseDelimitedFrom(java.io.InputStream input)
+      public static SignalServiceProtos.DataMessage.Preview parseDelimitedFrom(java.io.InputStream input)
           throws java.io.IOException {
         return PARSER.parseDelimitedFrom(input);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview parseDelimitedFrom(
+      public static SignalServiceProtos.DataMessage.Preview parseDelimitedFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return PARSER.parseDelimitedFrom(input, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview parseFrom(
+      public static SignalServiceProtos.DataMessage.Preview parseFrom(
           com.google.protobuf.CodedInputStream input)
           throws java.io.IOException {
         return PARSER.parseFrom(input);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview parseFrom(
+      public static SignalServiceProtos.DataMessage.Preview parseFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -8560,7 +8560,7 @@ public final class SignalServiceProtos {
 
       public static Builder newBuilder() { return Builder.create(); }
       public Builder newBuilderForType() { return newBuilder(); }
-      public static Builder newBuilder(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview prototype) {
+      public static Builder newBuilder(SignalServiceProtos.DataMessage.Preview prototype) {
         return newBuilder().mergeFrom(prototype);
       }
       public Builder toBuilder() { return newBuilder(this); }
@@ -8576,17 +8576,17 @@ public final class SignalServiceProtos {
        */
       public static final class Builder extends
           com.google.protobuf.GeneratedMessage.Builder<Builder>
-         implements com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.PreviewOrBuilder {
+         implements SignalServiceProtos.DataMessage.PreviewOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_Preview_descriptor;
+          return SignalServiceProtos.internal_static_signalservice_DataMessage_Preview_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_Preview_fieldAccessorTable
+          return SignalServiceProtos.internal_static_signalservice_DataMessage_Preview_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview.class, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview.Builder.class);
+                  SignalServiceProtos.DataMessage.Preview.class, SignalServiceProtos.DataMessage.Preview.Builder.class);
         }
 
         // Construct using com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview.newBuilder()
@@ -8615,7 +8615,7 @@ public final class SignalServiceProtos {
           title_ = "";
           bitField0_ = (bitField0_ & ~0x00000002);
           if (imageBuilder_ == null) {
-            image_ = com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.getDefaultInstance();
+            image_ = SignalServiceProtos.AttachmentPointer.getDefaultInstance();
           } else {
             imageBuilder_.clear();
           }
@@ -8629,23 +8629,23 @@ public final class SignalServiceProtos {
 
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_Preview_descriptor;
+          return SignalServiceProtos.internal_static_signalservice_DataMessage_Preview_descriptor;
         }
 
-        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview getDefaultInstanceForType() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview.getDefaultInstance();
+        public SignalServiceProtos.DataMessage.Preview getDefaultInstanceForType() {
+          return SignalServiceProtos.DataMessage.Preview.getDefaultInstance();
         }
 
-        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview build() {
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview result = buildPartial();
+        public SignalServiceProtos.DataMessage.Preview build() {
+          SignalServiceProtos.DataMessage.Preview result = buildPartial();
           if (!result.isInitialized()) {
             throw newUninitializedMessageException(result);
           }
           return result;
         }
 
-        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview buildPartial() {
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview result = new com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview(this);
+        public SignalServiceProtos.DataMessage.Preview buildPartial() {
+          SignalServiceProtos.DataMessage.Preview result = new SignalServiceProtos.DataMessage.Preview(this);
           int from_bitField0_ = bitField0_;
           int to_bitField0_ = 0;
           if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -8670,16 +8670,16 @@ public final class SignalServiceProtos {
         }
 
         public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview) {
-            return mergeFrom((com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview)other);
+          if (other instanceof SignalServiceProtos.DataMessage.Preview) {
+            return mergeFrom((SignalServiceProtos.DataMessage.Preview)other);
           } else {
             super.mergeFrom(other);
             return this;
           }
         }
 
-        public Builder mergeFrom(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview other) {
-          if (other == com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview.getDefaultInstance()) return this;
+        public Builder mergeFrom(SignalServiceProtos.DataMessage.Preview other) {
+          if (other == SignalServiceProtos.DataMessage.Preview.getDefaultInstance()) return this;
           if (other.hasUrl()) {
             bitField0_ |= 0x00000001;
             url_ = other.url_;
@@ -8715,11 +8715,11 @@ public final class SignalServiceProtos {
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview parsedMessage = null;
+          SignalServiceProtos.DataMessage.Preview parsedMessage = null;
           try {
             parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
           } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            parsedMessage = (com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview) e.getUnfinishedMessage();
+            parsedMessage = (SignalServiceProtos.DataMessage.Preview) e.getUnfinishedMessage();
             throw e;
           } finally {
             if (parsedMessage != null) {
@@ -8903,9 +8903,9 @@ public final class SignalServiceProtos {
         }
 
         // optional .signalservice.AttachmentPointer image = 3;
-        private com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer image_ = com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.getDefaultInstance();
+        private SignalServiceProtos.AttachmentPointer image_ = SignalServiceProtos.AttachmentPointer.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
-            com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer, com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.Builder, com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointerOrBuilder> imageBuilder_;
+            SignalServiceProtos.AttachmentPointer, SignalServiceProtos.AttachmentPointer.Builder, SignalServiceProtos.AttachmentPointerOrBuilder> imageBuilder_;
         /**
          * <code>optional .signalservice.AttachmentPointer image = 3;</code>
          */
@@ -8915,7 +8915,7 @@ public final class SignalServiceProtos {
         /**
          * <code>optional .signalservice.AttachmentPointer image = 3;</code>
          */
-        public com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer getImage() {
+        public SignalServiceProtos.AttachmentPointer getImage() {
           if (imageBuilder_ == null) {
             return image_;
           } else {
@@ -8925,7 +8925,7 @@ public final class SignalServiceProtos {
         /**
          * <code>optional .signalservice.AttachmentPointer image = 3;</code>
          */
-        public Builder setImage(com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer value) {
+        public Builder setImage(SignalServiceProtos.AttachmentPointer value) {
           if (imageBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
@@ -8942,7 +8942,7 @@ public final class SignalServiceProtos {
          * <code>optional .signalservice.AttachmentPointer image = 3;</code>
          */
         public Builder setImage(
-            com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.Builder builderForValue) {
+            SignalServiceProtos.AttachmentPointer.Builder builderForValue) {
           if (imageBuilder_ == null) {
             image_ = builderForValue.build();
             onChanged();
@@ -8955,12 +8955,12 @@ public final class SignalServiceProtos {
         /**
          * <code>optional .signalservice.AttachmentPointer image = 3;</code>
          */
-        public Builder mergeImage(com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer value) {
+        public Builder mergeImage(SignalServiceProtos.AttachmentPointer value) {
           if (imageBuilder_ == null) {
             if (((bitField0_ & 0x00000004) == 0x00000004) &&
-                image_ != com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.getDefaultInstance()) {
+                image_ != SignalServiceProtos.AttachmentPointer.getDefaultInstance()) {
               image_ =
-                com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.newBuilder(image_).mergeFrom(value).buildPartial();
+                SignalServiceProtos.AttachmentPointer.newBuilder(image_).mergeFrom(value).buildPartial();
             } else {
               image_ = value;
             }
@@ -8976,7 +8976,7 @@ public final class SignalServiceProtos {
          */
         public Builder clearImage() {
           if (imageBuilder_ == null) {
-            image_ = com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.getDefaultInstance();
+            image_ = SignalServiceProtos.AttachmentPointer.getDefaultInstance();
             onChanged();
           } else {
             imageBuilder_.clear();
@@ -8987,7 +8987,7 @@ public final class SignalServiceProtos {
         /**
          * <code>optional .signalservice.AttachmentPointer image = 3;</code>
          */
-        public com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.Builder getImageBuilder() {
+        public SignalServiceProtos.AttachmentPointer.Builder getImageBuilder() {
           bitField0_ |= 0x00000004;
           onChanged();
           return getImageFieldBuilder().getBuilder();
@@ -8995,7 +8995,7 @@ public final class SignalServiceProtos {
         /**
          * <code>optional .signalservice.AttachmentPointer image = 3;</code>
          */
-        public com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointerOrBuilder getImageOrBuilder() {
+        public SignalServiceProtos.AttachmentPointerOrBuilder getImageOrBuilder() {
           if (imageBuilder_ != null) {
             return imageBuilder_.getMessageOrBuilder();
           } else {
@@ -9006,11 +9006,11 @@ public final class SignalServiceProtos {
          * <code>optional .signalservice.AttachmentPointer image = 3;</code>
          */
         private com.google.protobuf.SingleFieldBuilder<
-            com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer, com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.Builder, com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointerOrBuilder> 
+            SignalServiceProtos.AttachmentPointer, SignalServiceProtos.AttachmentPointer.Builder, SignalServiceProtos.AttachmentPointerOrBuilder>
             getImageFieldBuilder() {
           if (imageBuilder_ == null) {
             imageBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-                com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer, com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.Builder, com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointerOrBuilder>(
+                SignalServiceProtos.AttachmentPointer, SignalServiceProtos.AttachmentPointer.Builder, SignalServiceProtos.AttachmentPointerOrBuilder>(
                     image_,
                     getParentForChildren(),
                     isClean());
@@ -9138,14 +9138,14 @@ public final class SignalServiceProtos {
       }
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_BeldexProfile_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_DataMessage_BeldexProfile_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_BeldexProfile_fieldAccessorTable
+        return SignalServiceProtos.internal_static_signalservice_DataMessage_BeldexProfile_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile.class, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile.Builder.class);
+                SignalServiceProtos.DataMessage.BeldexProfile.class, SignalServiceProtos.DataMessage.BeldexProfile.Builder.class);
       }
 
       public static com.google.protobuf.Parser<BeldexProfile> PARSER =
@@ -9301,53 +9301,53 @@ public final class SignalServiceProtos {
         return super.writeReplace();
       }
 
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile parseFrom(
+      public static SignalServiceProtos.DataMessage.BeldexProfile parseFrom(
           com.google.protobuf.ByteString data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile parseFrom(
+      public static SignalServiceProtos.DataMessage.BeldexProfile parseFrom(
           com.google.protobuf.ByteString data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile parseFrom(byte[] data)
+      public static SignalServiceProtos.DataMessage.BeldexProfile parseFrom(byte[] data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile parseFrom(
+      public static SignalServiceProtos.DataMessage.BeldexProfile parseFrom(
           byte[] data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile parseFrom(java.io.InputStream input)
+      public static SignalServiceProtos.DataMessage.BeldexProfile parseFrom(java.io.InputStream input)
           throws java.io.IOException {
         return PARSER.parseFrom(input);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile parseFrom(
+      public static SignalServiceProtos.DataMessage.BeldexProfile parseFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return PARSER.parseFrom(input, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile parseDelimitedFrom(java.io.InputStream input)
+      public static SignalServiceProtos.DataMessage.BeldexProfile parseDelimitedFrom(java.io.InputStream input)
           throws java.io.IOException {
         return PARSER.parseDelimitedFrom(input);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile parseDelimitedFrom(
+      public static SignalServiceProtos.DataMessage.BeldexProfile parseDelimitedFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return PARSER.parseDelimitedFrom(input, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile parseFrom(
+      public static SignalServiceProtos.DataMessage.BeldexProfile parseFrom(
           com.google.protobuf.CodedInputStream input)
           throws java.io.IOException {
         return PARSER.parseFrom(input);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile parseFrom(
+      public static SignalServiceProtos.DataMessage.BeldexProfile parseFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -9356,7 +9356,7 @@ public final class SignalServiceProtos {
 
       public static Builder newBuilder() { return Builder.create(); }
       public Builder newBuilderForType() { return newBuilder(); }
-      public static Builder newBuilder(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile prototype) {
+      public static Builder newBuilder(SignalServiceProtos.DataMessage.BeldexProfile prototype) {
         return newBuilder().mergeFrom(prototype);
       }
       public Builder toBuilder() { return newBuilder(this); }
@@ -9372,17 +9372,17 @@ public final class SignalServiceProtos {
        */
       public static final class Builder extends
           com.google.protobuf.GeneratedMessage.Builder<Builder>
-         implements com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfileOrBuilder {
+         implements SignalServiceProtos.DataMessage.BeldexProfileOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_BeldexProfile_descriptor;
+          return SignalServiceProtos.internal_static_signalservice_DataMessage_BeldexProfile_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_BeldexProfile_fieldAccessorTable
+          return SignalServiceProtos.internal_static_signalservice_DataMessage_BeldexProfile_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile.class, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile.Builder.class);
+                  SignalServiceProtos.DataMessage.BeldexProfile.class, SignalServiceProtos.DataMessage.BeldexProfile.Builder.class);
         }
 
         // Construct using com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile.newBuilder()
@@ -9418,23 +9418,23 @@ public final class SignalServiceProtos {
 
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_BeldexProfile_descriptor;
+          return SignalServiceProtos.internal_static_signalservice_DataMessage_BeldexProfile_descriptor;
         }
 
-        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile getDefaultInstanceForType() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile.getDefaultInstance();
+        public SignalServiceProtos.DataMessage.BeldexProfile getDefaultInstanceForType() {
+          return SignalServiceProtos.DataMessage.BeldexProfile.getDefaultInstance();
         }
 
-        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile build() {
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile result = buildPartial();
+        public SignalServiceProtos.DataMessage.BeldexProfile build() {
+          SignalServiceProtos.DataMessage.BeldexProfile result = buildPartial();
           if (!result.isInitialized()) {
             throw newUninitializedMessageException(result);
           }
           return result;
         }
 
-        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile buildPartial() {
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile result = new com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile(this);
+        public SignalServiceProtos.DataMessage.BeldexProfile buildPartial() {
+          SignalServiceProtos.DataMessage.BeldexProfile result = new SignalServiceProtos.DataMessage.BeldexProfile(this);
           int from_bitField0_ = bitField0_;
           int to_bitField0_ = 0;
           if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -9451,16 +9451,16 @@ public final class SignalServiceProtos {
         }
 
         public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile) {
-            return mergeFrom((com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile)other);
+          if (other instanceof SignalServiceProtos.DataMessage.BeldexProfile) {
+            return mergeFrom((SignalServiceProtos.DataMessage.BeldexProfile)other);
           } else {
             super.mergeFrom(other);
             return this;
           }
         }
 
-        public Builder mergeFrom(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile other) {
-          if (other == com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile.getDefaultInstance()) return this;
+        public Builder mergeFrom(SignalServiceProtos.DataMessage.BeldexProfile other) {
+          if (other == SignalServiceProtos.DataMessage.BeldexProfile.getDefaultInstance()) return this;
           if (other.hasDisplayName()) {
             bitField0_ |= 0x00000001;
             displayName_ = other.displayName_;
@@ -9483,11 +9483,11 @@ public final class SignalServiceProtos {
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile parsedMessage = null;
+          SignalServiceProtos.DataMessage.BeldexProfile parsedMessage = null;
           try {
             parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
           } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            parsedMessage = (com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile) e.getUnfinishedMessage();
+            parsedMessage = (SignalServiceProtos.DataMessage.BeldexProfile) e.getUnfinishedMessage();
             throw e;
           } finally {
             if (parsedMessage != null) {
@@ -9789,14 +9789,14 @@ public final class SignalServiceProtos {
       }
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_OpenGroupInvitation_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_DataMessage_OpenGroupInvitation_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_OpenGroupInvitation_fieldAccessorTable
+        return SignalServiceProtos.internal_static_signalservice_DataMessage_OpenGroupInvitation_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation.class, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation.Builder.class);
+                SignalServiceProtos.DataMessage.OpenGroupInvitation.class, SignalServiceProtos.DataMessage.OpenGroupInvitation.Builder.class);
       }
 
       public static com.google.protobuf.Parser<OpenGroupInvitation> PARSER =
@@ -9984,53 +9984,53 @@ public final class SignalServiceProtos {
         return super.writeReplace();
       }
 
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation parseFrom(
+      public static SignalServiceProtos.DataMessage.OpenGroupInvitation parseFrom(
           com.google.protobuf.ByteString data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation parseFrom(
+      public static SignalServiceProtos.DataMessage.OpenGroupInvitation parseFrom(
           com.google.protobuf.ByteString data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation parseFrom(byte[] data)
+      public static SignalServiceProtos.DataMessage.OpenGroupInvitation parseFrom(byte[] data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation parseFrom(
+      public static SignalServiceProtos.DataMessage.OpenGroupInvitation parseFrom(
           byte[] data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation parseFrom(java.io.InputStream input)
+      public static SignalServiceProtos.DataMessage.OpenGroupInvitation parseFrom(java.io.InputStream input)
           throws java.io.IOException {
         return PARSER.parseFrom(input);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation parseFrom(
+      public static SignalServiceProtos.DataMessage.OpenGroupInvitation parseFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return PARSER.parseFrom(input, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation parseDelimitedFrom(java.io.InputStream input)
+      public static SignalServiceProtos.DataMessage.OpenGroupInvitation parseDelimitedFrom(java.io.InputStream input)
           throws java.io.IOException {
         return PARSER.parseDelimitedFrom(input);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation parseDelimitedFrom(
+      public static SignalServiceProtos.DataMessage.OpenGroupInvitation parseDelimitedFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return PARSER.parseDelimitedFrom(input, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation parseFrom(
+      public static SignalServiceProtos.DataMessage.OpenGroupInvitation parseFrom(
           com.google.protobuf.CodedInputStream input)
           throws java.io.IOException {
         return PARSER.parseFrom(input);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation parseFrom(
+      public static SignalServiceProtos.DataMessage.OpenGroupInvitation parseFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -10039,7 +10039,7 @@ public final class SignalServiceProtos {
 
       public static Builder newBuilder() { return Builder.create(); }
       public Builder newBuilderForType() { return newBuilder(); }
-      public static Builder newBuilder(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation prototype) {
+      public static Builder newBuilder(SignalServiceProtos.DataMessage.OpenGroupInvitation prototype) {
         return newBuilder().mergeFrom(prototype);
       }
       public Builder toBuilder() { return newBuilder(this); }
@@ -10055,17 +10055,17 @@ public final class SignalServiceProtos {
        */
       public static final class Builder extends
           com.google.protobuf.GeneratedMessage.Builder<Builder>
-         implements com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitationOrBuilder {
+         implements SignalServiceProtos.DataMessage.OpenGroupInvitationOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_OpenGroupInvitation_descriptor;
+          return SignalServiceProtos.internal_static_signalservice_DataMessage_OpenGroupInvitation_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_OpenGroupInvitation_fieldAccessorTable
+          return SignalServiceProtos.internal_static_signalservice_DataMessage_OpenGroupInvitation_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation.class, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation.Builder.class);
+                  SignalServiceProtos.DataMessage.OpenGroupInvitation.class, SignalServiceProtos.DataMessage.OpenGroupInvitation.Builder.class);
         }
 
         // Construct using com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation.newBuilder()
@@ -10101,23 +10101,23 @@ public final class SignalServiceProtos {
 
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_OpenGroupInvitation_descriptor;
+          return SignalServiceProtos.internal_static_signalservice_DataMessage_OpenGroupInvitation_descriptor;
         }
 
-        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation getDefaultInstanceForType() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation.getDefaultInstance();
+        public SignalServiceProtos.DataMessage.OpenGroupInvitation getDefaultInstanceForType() {
+          return SignalServiceProtos.DataMessage.OpenGroupInvitation.getDefaultInstance();
         }
 
-        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation build() {
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation result = buildPartial();
+        public SignalServiceProtos.DataMessage.OpenGroupInvitation build() {
+          SignalServiceProtos.DataMessage.OpenGroupInvitation result = buildPartial();
           if (!result.isInitialized()) {
             throw newUninitializedMessageException(result);
           }
           return result;
         }
 
-        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation buildPartial() {
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation result = new com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation(this);
+        public SignalServiceProtos.DataMessage.OpenGroupInvitation buildPartial() {
+          SignalServiceProtos.DataMessage.OpenGroupInvitation result = new SignalServiceProtos.DataMessage.OpenGroupInvitation(this);
           int from_bitField0_ = bitField0_;
           int to_bitField0_ = 0;
           if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -10134,16 +10134,16 @@ public final class SignalServiceProtos {
         }
 
         public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation) {
-            return mergeFrom((com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation)other);
+          if (other instanceof SignalServiceProtos.DataMessage.OpenGroupInvitation) {
+            return mergeFrom((SignalServiceProtos.DataMessage.OpenGroupInvitation)other);
           } else {
             super.mergeFrom(other);
             return this;
           }
         }
 
-        public Builder mergeFrom(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation other) {
-          if (other == com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation.getDefaultInstance()) return this;
+        public Builder mergeFrom(SignalServiceProtos.DataMessage.OpenGroupInvitation other) {
+          if (other == SignalServiceProtos.DataMessage.OpenGroupInvitation.getDefaultInstance()) return this;
           if (other.hasUrl()) {
             bitField0_ |= 0x00000001;
             url_ = other.url_;
@@ -10174,11 +10174,11 @@ public final class SignalServiceProtos {
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation parsedMessage = null;
+          SignalServiceProtos.DataMessage.OpenGroupInvitation parsedMessage = null;
           try {
             parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
           } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            parsedMessage = (com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation) e.getUnfinishedMessage();
+            parsedMessage = (SignalServiceProtos.DataMessage.OpenGroupInvitation) e.getUnfinishedMessage();
             throw e;
           } finally {
             if (parsedMessage != null) {
@@ -10528,14 +10528,14 @@ public final class SignalServiceProtos {
       }
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_Payment_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_DataMessage_Payment_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_Payment_fieldAccessorTable
+        return SignalServiceProtos.internal_static_signalservice_DataMessage_Payment_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment.class, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment.Builder.class);
+                SignalServiceProtos.DataMessage.Payment.class, SignalServiceProtos.DataMessage.Payment.Builder.class);
       }
 
       public static com.google.protobuf.Parser<Payment> PARSER =
@@ -10723,53 +10723,53 @@ public final class SignalServiceProtos {
         return super.writeReplace();
       }
 
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment parseFrom(
+      public static SignalServiceProtos.DataMessage.Payment parseFrom(
           com.google.protobuf.ByteString data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment parseFrom(
+      public static SignalServiceProtos.DataMessage.Payment parseFrom(
           com.google.protobuf.ByteString data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment parseFrom(byte[] data)
+      public static SignalServiceProtos.DataMessage.Payment parseFrom(byte[] data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment parseFrom(
+      public static SignalServiceProtos.DataMessage.Payment parseFrom(
           byte[] data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment parseFrom(java.io.InputStream input)
+      public static SignalServiceProtos.DataMessage.Payment parseFrom(java.io.InputStream input)
           throws java.io.IOException {
         return PARSER.parseFrom(input);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment parseFrom(
+      public static SignalServiceProtos.DataMessage.Payment parseFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return PARSER.parseFrom(input, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment parseDelimitedFrom(java.io.InputStream input)
+      public static SignalServiceProtos.DataMessage.Payment parseDelimitedFrom(java.io.InputStream input)
           throws java.io.IOException {
         return PARSER.parseDelimitedFrom(input);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment parseDelimitedFrom(
+      public static SignalServiceProtos.DataMessage.Payment parseDelimitedFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return PARSER.parseDelimitedFrom(input, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment parseFrom(
+      public static SignalServiceProtos.DataMessage.Payment parseFrom(
           com.google.protobuf.CodedInputStream input)
           throws java.io.IOException {
         return PARSER.parseFrom(input);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment parseFrom(
+      public static SignalServiceProtos.DataMessage.Payment parseFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -10778,7 +10778,7 @@ public final class SignalServiceProtos {
 
       public static Builder newBuilder() { return Builder.create(); }
       public Builder newBuilderForType() { return newBuilder(); }
-      public static Builder newBuilder(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment prototype) {
+      public static Builder newBuilder(SignalServiceProtos.DataMessage.Payment prototype) {
         return newBuilder().mergeFrom(prototype);
       }
       public Builder toBuilder() { return newBuilder(this); }
@@ -10794,17 +10794,17 @@ public final class SignalServiceProtos {
        */
       public static final class Builder extends
           com.google.protobuf.GeneratedMessage.Builder<Builder>
-         implements com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.PaymentOrBuilder {
+         implements SignalServiceProtos.DataMessage.PaymentOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_Payment_descriptor;
+          return SignalServiceProtos.internal_static_signalservice_DataMessage_Payment_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_Payment_fieldAccessorTable
+          return SignalServiceProtos.internal_static_signalservice_DataMessage_Payment_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment.class, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment.Builder.class);
+                  SignalServiceProtos.DataMessage.Payment.class, SignalServiceProtos.DataMessage.Payment.Builder.class);
         }
 
         // Construct using com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment.newBuilder()
@@ -10840,23 +10840,23 @@ public final class SignalServiceProtos {
 
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_Payment_descriptor;
+          return SignalServiceProtos.internal_static_signalservice_DataMessage_Payment_descriptor;
         }
 
-        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment getDefaultInstanceForType() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment.getDefaultInstance();
+        public SignalServiceProtos.DataMessage.Payment getDefaultInstanceForType() {
+          return SignalServiceProtos.DataMessage.Payment.getDefaultInstance();
         }
 
-        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment build() {
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment result = buildPartial();
+        public SignalServiceProtos.DataMessage.Payment build() {
+          SignalServiceProtos.DataMessage.Payment result = buildPartial();
           if (!result.isInitialized()) {
             throw newUninitializedMessageException(result);
           }
           return result;
         }
 
-        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment buildPartial() {
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment result = new com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment(this);
+        public SignalServiceProtos.DataMessage.Payment buildPartial() {
+          SignalServiceProtos.DataMessage.Payment result = new SignalServiceProtos.DataMessage.Payment(this);
           int from_bitField0_ = bitField0_;
           int to_bitField0_ = 0;
           if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -10873,16 +10873,16 @@ public final class SignalServiceProtos {
         }
 
         public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment) {
-            return mergeFrom((com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment)other);
+          if (other instanceof SignalServiceProtos.DataMessage.Payment) {
+            return mergeFrom((SignalServiceProtos.DataMessage.Payment)other);
           } else {
             super.mergeFrom(other);
             return this;
           }
         }
 
-        public Builder mergeFrom(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment other) {
-          if (other == com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment.getDefaultInstance()) return this;
+        public Builder mergeFrom(SignalServiceProtos.DataMessage.Payment other) {
+          if (other == SignalServiceProtos.DataMessage.Payment.getDefaultInstance()) return this;
           if (other.hasAmount()) {
             bitField0_ |= 0x00000001;
             amount_ = other.amount_;
@@ -10913,11 +10913,11 @@ public final class SignalServiceProtos {
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment parsedMessage = null;
+          SignalServiceProtos.DataMessage.Payment parsedMessage = null;
           try {
             parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
           } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            parsedMessage = (com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment) e.getUnfinishedMessage();
+            parsedMessage = (SignalServiceProtos.DataMessage.Payment) e.getUnfinishedMessage();
             throw e;
           } finally {
             if (parsedMessage != null) {
@@ -11154,7 +11154,7 @@ public final class SignalServiceProtos {
        * @required
        * </pre>
        */
-      com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Type getType();
+      SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Type getType();
 
       // optional bytes publicKey = 2;
       /**
@@ -11189,11 +11189,11 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.KeyPair encryptionKeyPair = 4;</code>
        */
-      com.beldex.libsignal.protos.SignalServiceProtos.KeyPair getEncryptionKeyPair();
+      SignalServiceProtos.KeyPair getEncryptionKeyPair();
       /**
        * <code>optional .signalservice.KeyPair encryptionKeyPair = 4;</code>
        */
-      com.beldex.libsignal.protos.SignalServiceProtos.KeyPairOrBuilder getEncryptionKeyPairOrBuilder();
+      SignalServiceProtos.KeyPairOrBuilder getEncryptionKeyPairOrBuilder();
 
       // repeated bytes members = 5;
       /**
@@ -11227,12 +11227,12 @@ public final class SignalServiceProtos {
       /**
        * <code>repeated .signalservice.DataMessage.ClosedGroupControlMessage.KeyPairWrapper wrappers = 7;</code>
        */
-      java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper> 
+      java.util.List<SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper>
           getWrappersList();
       /**
        * <code>repeated .signalservice.DataMessage.ClosedGroupControlMessage.KeyPairWrapper wrappers = 7;</code>
        */
-      com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper getWrappers(int index);
+      SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper getWrappers(int index);
       /**
        * <code>repeated .signalservice.DataMessage.ClosedGroupControlMessage.KeyPairWrapper wrappers = 7;</code>
        */
@@ -11240,12 +11240,12 @@ public final class SignalServiceProtos {
       /**
        * <code>repeated .signalservice.DataMessage.ClosedGroupControlMessage.KeyPairWrapper wrappers = 7;</code>
        */
-      java.util.List<? extends com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapperOrBuilder> 
+      java.util.List<? extends SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapperOrBuilder>
           getWrappersOrBuilderList();
       /**
        * <code>repeated .signalservice.DataMessage.ClosedGroupControlMessage.KeyPairWrapper wrappers = 7;</code>
        */
-      com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapperOrBuilder getWrappersOrBuilder(
+      SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapperOrBuilder getWrappersOrBuilder(
           int index);
 
       // optional uint32 expirationTimer = 8;
@@ -11311,7 +11311,7 @@ public final class SignalServiceProtos {
               }
               case 8: {
                 int rawValue = input.readEnum();
-                com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Type value = com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Type.valueOf(rawValue);
+                SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Type value = SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Type.valueOf(rawValue);
                 if (value == null) {
                   unknownFields.mergeVarintField(1, rawValue);
                 } else {
@@ -11331,11 +11331,11 @@ public final class SignalServiceProtos {
                 break;
               }
               case 34: {
-                com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.Builder subBuilder = null;
+                SignalServiceProtos.KeyPair.Builder subBuilder = null;
                 if (((bitField0_ & 0x00000008) == 0x00000008)) {
                   subBuilder = encryptionKeyPair_.toBuilder();
                 }
-                encryptionKeyPair_ = input.readMessage(com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.PARSER, extensionRegistry);
+                encryptionKeyPair_ = input.readMessage(SignalServiceProtos.KeyPair.PARSER, extensionRegistry);
                 if (subBuilder != null) {
                   subBuilder.mergeFrom(encryptionKeyPair_);
                   encryptionKeyPair_ = subBuilder.buildPartial();
@@ -11361,10 +11361,10 @@ public final class SignalServiceProtos {
               }
               case 58: {
                 if (!((mutable_bitField0_ & 0x00000040) == 0x00000040)) {
-                  wrappers_ = new java.util.ArrayList<com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper>();
+                  wrappers_ = new java.util.ArrayList<SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper>();
                   mutable_bitField0_ |= 0x00000040;
                 }
-                wrappers_.add(input.readMessage(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.PARSER, extensionRegistry));
+                wrappers_.add(input.readMessage(SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.PARSER, extensionRegistry));
                 break;
               }
               case 64: {
@@ -11395,14 +11395,14 @@ public final class SignalServiceProtos {
       }
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_ClosedGroupControlMessage_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_DataMessage_ClosedGroupControlMessage_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_ClosedGroupControlMessage_fieldAccessorTable
+        return SignalServiceProtos.internal_static_signalservice_DataMessage_ClosedGroupControlMessage_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.class, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Builder.class);
+                SignalServiceProtos.DataMessage.ClosedGroupControlMessage.class, SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Builder.class);
       }
 
       public static com.google.protobuf.Parser<ClosedGroupControlMessage> PARSER =
@@ -11553,7 +11553,7 @@ public final class SignalServiceProtos {
         }
         public static final com.google.protobuf.Descriptors.EnumDescriptor
             getDescriptor() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.getDescriptor().getEnumTypes().get(0);
+          return SignalServiceProtos.DataMessage.ClosedGroupControlMessage.getDescriptor().getEnumTypes().get(0);
         }
 
         private static final Type[] VALUES = values();
@@ -11692,14 +11692,14 @@ public final class SignalServiceProtos {
         }
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_ClosedGroupControlMessage_KeyPairWrapper_descriptor;
+          return SignalServiceProtos.internal_static_signalservice_DataMessage_ClosedGroupControlMessage_KeyPairWrapper_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_ClosedGroupControlMessage_KeyPairWrapper_fieldAccessorTable
+          return SignalServiceProtos.internal_static_signalservice_DataMessage_ClosedGroupControlMessage_KeyPairWrapper_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.class, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.Builder.class);
+                  SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.class, SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.Builder.class);
         }
 
         public static com.google.protobuf.Parser<KeyPairWrapper> PARSER =
@@ -11825,53 +11825,53 @@ public final class SignalServiceProtos {
           return super.writeReplace();
         }
 
-        public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper parseFrom(
+        public static SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper parseFrom(
             com.google.protobuf.ByteString data)
             throws com.google.protobuf.InvalidProtocolBufferException {
           return PARSER.parseFrom(data);
         }
-        public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper parseFrom(
+        public static SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper parseFrom(
             com.google.protobuf.ByteString data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
           return PARSER.parseFrom(data, extensionRegistry);
         }
-        public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper parseFrom(byte[] data)
+        public static SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper parseFrom(byte[] data)
             throws com.google.protobuf.InvalidProtocolBufferException {
           return PARSER.parseFrom(data);
         }
-        public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper parseFrom(
+        public static SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper parseFrom(
             byte[] data,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
           return PARSER.parseFrom(data, extensionRegistry);
         }
-        public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper parseFrom(java.io.InputStream input)
+        public static SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper parseFrom(java.io.InputStream input)
             throws java.io.IOException {
           return PARSER.parseFrom(input);
         }
-        public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper parseFrom(
+        public static SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper parseFrom(
             java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
           return PARSER.parseFrom(input, extensionRegistry);
         }
-        public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper parseDelimitedFrom(java.io.InputStream input)
+        public static SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper parseDelimitedFrom(java.io.InputStream input)
             throws java.io.IOException {
           return PARSER.parseDelimitedFrom(input);
         }
-        public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper parseDelimitedFrom(
+        public static SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper parseDelimitedFrom(
             java.io.InputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
           return PARSER.parseDelimitedFrom(input, extensionRegistry);
         }
-        public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper parseFrom(
+        public static SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper parseFrom(
             com.google.protobuf.CodedInputStream input)
             throws java.io.IOException {
           return PARSER.parseFrom(input);
         }
-        public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper parseFrom(
+        public static SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper parseFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
@@ -11880,7 +11880,7 @@ public final class SignalServiceProtos {
 
         public static Builder newBuilder() { return Builder.create(); }
         public Builder newBuilderForType() { return newBuilder(); }
-        public static Builder newBuilder(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper prototype) {
+        public static Builder newBuilder(SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper prototype) {
           return newBuilder().mergeFrom(prototype);
         }
         public Builder toBuilder() { return newBuilder(this); }
@@ -11896,17 +11896,17 @@ public final class SignalServiceProtos {
          */
         public static final class Builder extends
             com.google.protobuf.GeneratedMessage.Builder<Builder>
-           implements com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapperOrBuilder {
+           implements SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapperOrBuilder {
           public static final com.google.protobuf.Descriptors.Descriptor
               getDescriptor() {
-            return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_ClosedGroupControlMessage_KeyPairWrapper_descriptor;
+            return SignalServiceProtos.internal_static_signalservice_DataMessage_ClosedGroupControlMessage_KeyPairWrapper_descriptor;
           }
 
           protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
               internalGetFieldAccessorTable() {
-            return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_ClosedGroupControlMessage_KeyPairWrapper_fieldAccessorTable
+            return SignalServiceProtos.internal_static_signalservice_DataMessage_ClosedGroupControlMessage_KeyPairWrapper_fieldAccessorTable
                 .ensureFieldAccessorsInitialized(
-                    com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.class, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.Builder.class);
+                    SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.class, SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.Builder.class);
           }
 
           // Construct using com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.newBuilder()
@@ -11942,23 +11942,23 @@ public final class SignalServiceProtos {
 
           public com.google.protobuf.Descriptors.Descriptor
               getDescriptorForType() {
-            return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_ClosedGroupControlMessage_KeyPairWrapper_descriptor;
+            return SignalServiceProtos.internal_static_signalservice_DataMessage_ClosedGroupControlMessage_KeyPairWrapper_descriptor;
           }
 
-          public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper getDefaultInstanceForType() {
-            return com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.getDefaultInstance();
+          public SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper getDefaultInstanceForType() {
+            return SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.getDefaultInstance();
           }
 
-          public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper build() {
-            com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper result = buildPartial();
+          public SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper build() {
+            SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper result = buildPartial();
             if (!result.isInitialized()) {
               throw newUninitializedMessageException(result);
             }
             return result;
           }
 
-          public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper buildPartial() {
-            com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper result = new com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper(this);
+          public SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper buildPartial() {
+            SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper result = new SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper(this);
             int from_bitField0_ = bitField0_;
             int to_bitField0_ = 0;
             if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -11975,16 +11975,16 @@ public final class SignalServiceProtos {
           }
 
           public Builder mergeFrom(com.google.protobuf.Message other) {
-            if (other instanceof com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper) {
-              return mergeFrom((com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper)other);
+            if (other instanceof SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper) {
+              return mergeFrom((SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper)other);
             } else {
               super.mergeFrom(other);
               return this;
             }
           }
 
-          public Builder mergeFrom(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper other) {
-            if (other == com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.getDefaultInstance()) return this;
+          public Builder mergeFrom(SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper other) {
+            if (other == SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.getDefaultInstance()) return this;
             if (other.hasPublicKey()) {
               setPublicKey(other.getPublicKey());
             }
@@ -12011,11 +12011,11 @@ public final class SignalServiceProtos {
               com.google.protobuf.CodedInputStream input,
               com.google.protobuf.ExtensionRegistryLite extensionRegistry)
               throws java.io.IOException {
-            com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper parsedMessage = null;
+            SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper parsedMessage = null;
             try {
               parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
             } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-              parsedMessage = (com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper) e.getUnfinishedMessage();
+              parsedMessage = (SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper) e.getUnfinishedMessage();
               throw e;
             } finally {
               if (parsedMessage != null) {
@@ -12144,7 +12144,7 @@ public final class SignalServiceProtos {
       private int bitField0_;
       // required .signalservice.DataMessage.ClosedGroupControlMessage.Type type = 1;
       public static final int TYPE_FIELD_NUMBER = 1;
-      private com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Type type_;
+      private SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Type type_;
       /**
        * <code>required .signalservice.DataMessage.ClosedGroupControlMessage.Type type = 1;</code>
        *
@@ -12162,7 +12162,7 @@ public final class SignalServiceProtos {
        * @required
        * </pre>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Type getType() {
+      public SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Type getType() {
         return type_;
       }
 
@@ -12227,7 +12227,7 @@ public final class SignalServiceProtos {
 
       // optional .signalservice.KeyPair encryptionKeyPair = 4;
       public static final int ENCRYPTIONKEYPAIR_FIELD_NUMBER = 4;
-      private com.beldex.libsignal.protos.SignalServiceProtos.KeyPair encryptionKeyPair_;
+      private SignalServiceProtos.KeyPair encryptionKeyPair_;
       /**
        * <code>optional .signalservice.KeyPair encryptionKeyPair = 4;</code>
        */
@@ -12237,13 +12237,13 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.KeyPair encryptionKeyPair = 4;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.KeyPair getEncryptionKeyPair() {
+      public SignalServiceProtos.KeyPair getEncryptionKeyPair() {
         return encryptionKeyPair_;
       }
       /**
        * <code>optional .signalservice.KeyPair encryptionKeyPair = 4;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.KeyPairOrBuilder getEncryptionKeyPairOrBuilder() {
+      public SignalServiceProtos.KeyPairOrBuilder getEncryptionKeyPairOrBuilder() {
         return encryptionKeyPair_;
       }
 
@@ -12295,17 +12295,17 @@ public final class SignalServiceProtos {
 
       // repeated .signalservice.DataMessage.ClosedGroupControlMessage.KeyPairWrapper wrappers = 7;
       public static final int WRAPPERS_FIELD_NUMBER = 7;
-      private java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper> wrappers_;
+      private java.util.List<SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper> wrappers_;
       /**
        * <code>repeated .signalservice.DataMessage.ClosedGroupControlMessage.KeyPairWrapper wrappers = 7;</code>
        */
-      public java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper> getWrappersList() {
+      public java.util.List<SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper> getWrappersList() {
         return wrappers_;
       }
       /**
        * <code>repeated .signalservice.DataMessage.ClosedGroupControlMessage.KeyPairWrapper wrappers = 7;</code>
        */
-      public java.util.List<? extends com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapperOrBuilder> 
+      public java.util.List<? extends SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapperOrBuilder>
           getWrappersOrBuilderList() {
         return wrappers_;
       }
@@ -12318,13 +12318,13 @@ public final class SignalServiceProtos {
       /**
        * <code>repeated .signalservice.DataMessage.ClosedGroupControlMessage.KeyPairWrapper wrappers = 7;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper getWrappers(int index) {
+      public SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper getWrappers(int index) {
         return wrappers_.get(index);
       }
       /**
        * <code>repeated .signalservice.DataMessage.ClosedGroupControlMessage.KeyPairWrapper wrappers = 7;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapperOrBuilder getWrappersOrBuilder(
+      public SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapperOrBuilder getWrappersOrBuilder(
           int index) {
         return wrappers_.get(index);
       }
@@ -12346,10 +12346,10 @@ public final class SignalServiceProtos {
       }
 
       private void initFields() {
-        type_ = com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Type.NEW;
+        type_ = SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Type.NEW;
         publicKey_ = com.google.protobuf.ByteString.EMPTY;
         name_ = "";
-        encryptionKeyPair_ = com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.getDefaultInstance();
+        encryptionKeyPair_ = SignalServiceProtos.KeyPair.getDefaultInstance();
         members_ = java.util.Collections.emptyList();
         admins_ = java.util.Collections.emptyList();
         wrappers_ = java.util.Collections.emptyList();
@@ -12470,53 +12470,53 @@ public final class SignalServiceProtos {
         return super.writeReplace();
       }
 
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage parseFrom(
+      public static SignalServiceProtos.DataMessage.ClosedGroupControlMessage parseFrom(
           com.google.protobuf.ByteString data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage parseFrom(
+      public static SignalServiceProtos.DataMessage.ClosedGroupControlMessage parseFrom(
           com.google.protobuf.ByteString data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage parseFrom(byte[] data)
+      public static SignalServiceProtos.DataMessage.ClosedGroupControlMessage parseFrom(byte[] data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage parseFrom(
+      public static SignalServiceProtos.DataMessage.ClosedGroupControlMessage parseFrom(
           byte[] data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage parseFrom(java.io.InputStream input)
+      public static SignalServiceProtos.DataMessage.ClosedGroupControlMessage parseFrom(java.io.InputStream input)
           throws java.io.IOException {
         return PARSER.parseFrom(input);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage parseFrom(
+      public static SignalServiceProtos.DataMessage.ClosedGroupControlMessage parseFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return PARSER.parseFrom(input, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage parseDelimitedFrom(java.io.InputStream input)
+      public static SignalServiceProtos.DataMessage.ClosedGroupControlMessage parseDelimitedFrom(java.io.InputStream input)
           throws java.io.IOException {
         return PARSER.parseDelimitedFrom(input);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage parseDelimitedFrom(
+      public static SignalServiceProtos.DataMessage.ClosedGroupControlMessage parseDelimitedFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return PARSER.parseDelimitedFrom(input, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage parseFrom(
+      public static SignalServiceProtos.DataMessage.ClosedGroupControlMessage parseFrom(
           com.google.protobuf.CodedInputStream input)
           throws java.io.IOException {
         return PARSER.parseFrom(input);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage parseFrom(
+      public static SignalServiceProtos.DataMessage.ClosedGroupControlMessage parseFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -12525,7 +12525,7 @@ public final class SignalServiceProtos {
 
       public static Builder newBuilder() { return Builder.create(); }
       public Builder newBuilderForType() { return newBuilder(); }
-      public static Builder newBuilder(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage prototype) {
+      public static Builder newBuilder(SignalServiceProtos.DataMessage.ClosedGroupControlMessage prototype) {
         return newBuilder().mergeFrom(prototype);
       }
       public Builder toBuilder() { return newBuilder(this); }
@@ -12541,17 +12541,17 @@ public final class SignalServiceProtos {
        */
       public static final class Builder extends
           com.google.protobuf.GeneratedMessage.Builder<Builder>
-         implements com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessageOrBuilder {
+         implements SignalServiceProtos.DataMessage.ClosedGroupControlMessageOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_ClosedGroupControlMessage_descriptor;
+          return SignalServiceProtos.internal_static_signalservice_DataMessage_ClosedGroupControlMessage_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_ClosedGroupControlMessage_fieldAccessorTable
+          return SignalServiceProtos.internal_static_signalservice_DataMessage_ClosedGroupControlMessage_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.class, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Builder.class);
+                  SignalServiceProtos.DataMessage.ClosedGroupControlMessage.class, SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Builder.class);
         }
 
         // Construct using com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.newBuilder()
@@ -12576,14 +12576,14 @@ public final class SignalServiceProtos {
 
         public Builder clear() {
           super.clear();
-          type_ = com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Type.NEW;
+          type_ = SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Type.NEW;
           bitField0_ = (bitField0_ & ~0x00000001);
           publicKey_ = com.google.protobuf.ByteString.EMPTY;
           bitField0_ = (bitField0_ & ~0x00000002);
           name_ = "";
           bitField0_ = (bitField0_ & ~0x00000004);
           if (encryptionKeyPairBuilder_ == null) {
-            encryptionKeyPair_ = com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.getDefaultInstance();
+            encryptionKeyPair_ = SignalServiceProtos.KeyPair.getDefaultInstance();
           } else {
             encryptionKeyPairBuilder_.clear();
           }
@@ -12609,23 +12609,23 @@ public final class SignalServiceProtos {
 
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_ClosedGroupControlMessage_descriptor;
+          return SignalServiceProtos.internal_static_signalservice_DataMessage_ClosedGroupControlMessage_descriptor;
         }
 
-        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage getDefaultInstanceForType() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.getDefaultInstance();
+        public SignalServiceProtos.DataMessage.ClosedGroupControlMessage getDefaultInstanceForType() {
+          return SignalServiceProtos.DataMessage.ClosedGroupControlMessage.getDefaultInstance();
         }
 
-        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage build() {
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage result = buildPartial();
+        public SignalServiceProtos.DataMessage.ClosedGroupControlMessage build() {
+          SignalServiceProtos.DataMessage.ClosedGroupControlMessage result = buildPartial();
           if (!result.isInitialized()) {
             throw newUninitializedMessageException(result);
           }
           return result;
         }
 
-        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage buildPartial() {
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage result = new com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage(this);
+        public SignalServiceProtos.DataMessage.ClosedGroupControlMessage buildPartial() {
+          SignalServiceProtos.DataMessage.ClosedGroupControlMessage result = new SignalServiceProtos.DataMessage.ClosedGroupControlMessage(this);
           int from_bitField0_ = bitField0_;
           int to_bitField0_ = 0;
           if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -12677,16 +12677,16 @@ public final class SignalServiceProtos {
         }
 
         public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage) {
-            return mergeFrom((com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage)other);
+          if (other instanceof SignalServiceProtos.DataMessage.ClosedGroupControlMessage) {
+            return mergeFrom((SignalServiceProtos.DataMessage.ClosedGroupControlMessage)other);
           } else {
             super.mergeFrom(other);
             return this;
           }
         }
 
-        public Builder mergeFrom(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage other) {
-          if (other == com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.getDefaultInstance()) return this;
+        public Builder mergeFrom(SignalServiceProtos.DataMessage.ClosedGroupControlMessage other) {
+          if (other == SignalServiceProtos.DataMessage.ClosedGroupControlMessage.getDefaultInstance()) return this;
           if (other.hasType()) {
             setType(other.getType());
           }
@@ -12778,11 +12778,11 @@ public final class SignalServiceProtos {
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage parsedMessage = null;
+          SignalServiceProtos.DataMessage.ClosedGroupControlMessage parsedMessage = null;
           try {
             parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
           } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            parsedMessage = (com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage) e.getUnfinishedMessage();
+            parsedMessage = (SignalServiceProtos.DataMessage.ClosedGroupControlMessage) e.getUnfinishedMessage();
             throw e;
           } finally {
             if (parsedMessage != null) {
@@ -12794,7 +12794,7 @@ public final class SignalServiceProtos {
         private int bitField0_;
 
         // required .signalservice.DataMessage.ClosedGroupControlMessage.Type type = 1;
-        private com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Type type_ = com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Type.NEW;
+        private SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Type type_ = SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Type.NEW;
         /**
          * <code>required .signalservice.DataMessage.ClosedGroupControlMessage.Type type = 1;</code>
          *
@@ -12812,7 +12812,7 @@ public final class SignalServiceProtos {
          * @required
          * </pre>
          */
-        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Type getType() {
+        public SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Type getType() {
           return type_;
         }
         /**
@@ -12822,7 +12822,7 @@ public final class SignalServiceProtos {
          * @required
          * </pre>
          */
-        public Builder setType(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Type value) {
+        public Builder setType(SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Type value) {
           if (value == null) {
             throw new NullPointerException();
           }
@@ -12840,7 +12840,7 @@ public final class SignalServiceProtos {
          */
         public Builder clearType() {
           bitField0_ = (bitField0_ & ~0x00000001);
-          type_ = com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Type.NEW;
+          type_ = SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Type.NEW;
           onChanged();
           return this;
         }
@@ -12956,9 +12956,9 @@ public final class SignalServiceProtos {
         }
 
         // optional .signalservice.KeyPair encryptionKeyPair = 4;
-        private com.beldex.libsignal.protos.SignalServiceProtos.KeyPair encryptionKeyPair_ = com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.getDefaultInstance();
+        private SignalServiceProtos.KeyPair encryptionKeyPair_ = SignalServiceProtos.KeyPair.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
-            com.beldex.libsignal.protos.SignalServiceProtos.KeyPair, com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.Builder, com.beldex.libsignal.protos.SignalServiceProtos.KeyPairOrBuilder> encryptionKeyPairBuilder_;
+            SignalServiceProtos.KeyPair, SignalServiceProtos.KeyPair.Builder, SignalServiceProtos.KeyPairOrBuilder> encryptionKeyPairBuilder_;
         /**
          * <code>optional .signalservice.KeyPair encryptionKeyPair = 4;</code>
          */
@@ -12968,7 +12968,7 @@ public final class SignalServiceProtos {
         /**
          * <code>optional .signalservice.KeyPair encryptionKeyPair = 4;</code>
          */
-        public com.beldex.libsignal.protos.SignalServiceProtos.KeyPair getEncryptionKeyPair() {
+        public SignalServiceProtos.KeyPair getEncryptionKeyPair() {
           if (encryptionKeyPairBuilder_ == null) {
             return encryptionKeyPair_;
           } else {
@@ -12978,7 +12978,7 @@ public final class SignalServiceProtos {
         /**
          * <code>optional .signalservice.KeyPair encryptionKeyPair = 4;</code>
          */
-        public Builder setEncryptionKeyPair(com.beldex.libsignal.protos.SignalServiceProtos.KeyPair value) {
+        public Builder setEncryptionKeyPair(SignalServiceProtos.KeyPair value) {
           if (encryptionKeyPairBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
@@ -12995,7 +12995,7 @@ public final class SignalServiceProtos {
          * <code>optional .signalservice.KeyPair encryptionKeyPair = 4;</code>
          */
         public Builder setEncryptionKeyPair(
-            com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.Builder builderForValue) {
+            SignalServiceProtos.KeyPair.Builder builderForValue) {
           if (encryptionKeyPairBuilder_ == null) {
             encryptionKeyPair_ = builderForValue.build();
             onChanged();
@@ -13008,12 +13008,12 @@ public final class SignalServiceProtos {
         /**
          * <code>optional .signalservice.KeyPair encryptionKeyPair = 4;</code>
          */
-        public Builder mergeEncryptionKeyPair(com.beldex.libsignal.protos.SignalServiceProtos.KeyPair value) {
+        public Builder mergeEncryptionKeyPair(SignalServiceProtos.KeyPair value) {
           if (encryptionKeyPairBuilder_ == null) {
             if (((bitField0_ & 0x00000008) == 0x00000008) &&
-                encryptionKeyPair_ != com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.getDefaultInstance()) {
+                encryptionKeyPair_ != SignalServiceProtos.KeyPair.getDefaultInstance()) {
               encryptionKeyPair_ =
-                com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.newBuilder(encryptionKeyPair_).mergeFrom(value).buildPartial();
+                SignalServiceProtos.KeyPair.newBuilder(encryptionKeyPair_).mergeFrom(value).buildPartial();
             } else {
               encryptionKeyPair_ = value;
             }
@@ -13029,7 +13029,7 @@ public final class SignalServiceProtos {
          */
         public Builder clearEncryptionKeyPair() {
           if (encryptionKeyPairBuilder_ == null) {
-            encryptionKeyPair_ = com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.getDefaultInstance();
+            encryptionKeyPair_ = SignalServiceProtos.KeyPair.getDefaultInstance();
             onChanged();
           } else {
             encryptionKeyPairBuilder_.clear();
@@ -13040,7 +13040,7 @@ public final class SignalServiceProtos {
         /**
          * <code>optional .signalservice.KeyPair encryptionKeyPair = 4;</code>
          */
-        public com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.Builder getEncryptionKeyPairBuilder() {
+        public SignalServiceProtos.KeyPair.Builder getEncryptionKeyPairBuilder() {
           bitField0_ |= 0x00000008;
           onChanged();
           return getEncryptionKeyPairFieldBuilder().getBuilder();
@@ -13048,7 +13048,7 @@ public final class SignalServiceProtos {
         /**
          * <code>optional .signalservice.KeyPair encryptionKeyPair = 4;</code>
          */
-        public com.beldex.libsignal.protos.SignalServiceProtos.KeyPairOrBuilder getEncryptionKeyPairOrBuilder() {
+        public SignalServiceProtos.KeyPairOrBuilder getEncryptionKeyPairOrBuilder() {
           if (encryptionKeyPairBuilder_ != null) {
             return encryptionKeyPairBuilder_.getMessageOrBuilder();
           } else {
@@ -13059,11 +13059,11 @@ public final class SignalServiceProtos {
          * <code>optional .signalservice.KeyPair encryptionKeyPair = 4;</code>
          */
         private com.google.protobuf.SingleFieldBuilder<
-            com.beldex.libsignal.protos.SignalServiceProtos.KeyPair, com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.Builder, com.beldex.libsignal.protos.SignalServiceProtos.KeyPairOrBuilder> 
+            SignalServiceProtos.KeyPair, SignalServiceProtos.KeyPair.Builder, SignalServiceProtos.KeyPairOrBuilder>
             getEncryptionKeyPairFieldBuilder() {
           if (encryptionKeyPairBuilder_ == null) {
             encryptionKeyPairBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-                com.beldex.libsignal.protos.SignalServiceProtos.KeyPair, com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.Builder, com.beldex.libsignal.protos.SignalServiceProtos.KeyPairOrBuilder>(
+                SignalServiceProtos.KeyPair, SignalServiceProtos.KeyPair.Builder, SignalServiceProtos.KeyPairOrBuilder>(
                     encryptionKeyPair_,
                     getParentForChildren(),
                     isClean());
@@ -13217,22 +13217,22 @@ public final class SignalServiceProtos {
         }
 
         // repeated .signalservice.DataMessage.ClosedGroupControlMessage.KeyPairWrapper wrappers = 7;
-        private java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper> wrappers_ =
+        private java.util.List<SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper> wrappers_ =
           java.util.Collections.emptyList();
         private void ensureWrappersIsMutable() {
           if (!((bitField0_ & 0x00000040) == 0x00000040)) {
-            wrappers_ = new java.util.ArrayList<com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper>(wrappers_);
+            wrappers_ = new java.util.ArrayList<SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper>(wrappers_);
             bitField0_ |= 0x00000040;
            }
         }
 
         private com.google.protobuf.RepeatedFieldBuilder<
-            com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapperOrBuilder> wrappersBuilder_;
+            SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper, SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.Builder, SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapperOrBuilder> wrappersBuilder_;
 
         /**
          * <code>repeated .signalservice.DataMessage.ClosedGroupControlMessage.KeyPairWrapper wrappers = 7;</code>
          */
-        public java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper> getWrappersList() {
+        public java.util.List<SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper> getWrappersList() {
           if (wrappersBuilder_ == null) {
             return java.util.Collections.unmodifiableList(wrappers_);
           } else {
@@ -13252,7 +13252,7 @@ public final class SignalServiceProtos {
         /**
          * <code>repeated .signalservice.DataMessage.ClosedGroupControlMessage.KeyPairWrapper wrappers = 7;</code>
          */
-        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper getWrappers(int index) {
+        public SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper getWrappers(int index) {
           if (wrappersBuilder_ == null) {
             return wrappers_.get(index);
           } else {
@@ -13263,7 +13263,7 @@ public final class SignalServiceProtos {
          * <code>repeated .signalservice.DataMessage.ClosedGroupControlMessage.KeyPairWrapper wrappers = 7;</code>
          */
         public Builder setWrappers(
-            int index, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper value) {
+            int index, SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper value) {
           if (wrappersBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
@@ -13280,7 +13280,7 @@ public final class SignalServiceProtos {
          * <code>repeated .signalservice.DataMessage.ClosedGroupControlMessage.KeyPairWrapper wrappers = 7;</code>
          */
         public Builder setWrappers(
-            int index, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.Builder builderForValue) {
+            int index, SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.Builder builderForValue) {
           if (wrappersBuilder_ == null) {
             ensureWrappersIsMutable();
             wrappers_.set(index, builderForValue.build());
@@ -13293,7 +13293,7 @@ public final class SignalServiceProtos {
         /**
          * <code>repeated .signalservice.DataMessage.ClosedGroupControlMessage.KeyPairWrapper wrappers = 7;</code>
          */
-        public Builder addWrappers(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper value) {
+        public Builder addWrappers(SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper value) {
           if (wrappersBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
@@ -13310,7 +13310,7 @@ public final class SignalServiceProtos {
          * <code>repeated .signalservice.DataMessage.ClosedGroupControlMessage.KeyPairWrapper wrappers = 7;</code>
          */
         public Builder addWrappers(
-            int index, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper value) {
+            int index, SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper value) {
           if (wrappersBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
@@ -13327,7 +13327,7 @@ public final class SignalServiceProtos {
          * <code>repeated .signalservice.DataMessage.ClosedGroupControlMessage.KeyPairWrapper wrappers = 7;</code>
          */
         public Builder addWrappers(
-            com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.Builder builderForValue) {
+            SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.Builder builderForValue) {
           if (wrappersBuilder_ == null) {
             ensureWrappersIsMutable();
             wrappers_.add(builderForValue.build());
@@ -13341,7 +13341,7 @@ public final class SignalServiceProtos {
          * <code>repeated .signalservice.DataMessage.ClosedGroupControlMessage.KeyPairWrapper wrappers = 7;</code>
          */
         public Builder addWrappers(
-            int index, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.Builder builderForValue) {
+            int index, SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.Builder builderForValue) {
           if (wrappersBuilder_ == null) {
             ensureWrappersIsMutable();
             wrappers_.add(index, builderForValue.build());
@@ -13355,7 +13355,7 @@ public final class SignalServiceProtos {
          * <code>repeated .signalservice.DataMessage.ClosedGroupControlMessage.KeyPairWrapper wrappers = 7;</code>
          */
         public Builder addAllWrappers(
-            java.lang.Iterable<? extends com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper> values) {
+            java.lang.Iterable<? extends SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper> values) {
           if (wrappersBuilder_ == null) {
             ensureWrappersIsMutable();
             super.addAll(values, wrappers_);
@@ -13394,14 +13394,14 @@ public final class SignalServiceProtos {
         /**
          * <code>repeated .signalservice.DataMessage.ClosedGroupControlMessage.KeyPairWrapper wrappers = 7;</code>
          */
-        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.Builder getWrappersBuilder(
+        public SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.Builder getWrappersBuilder(
             int index) {
           return getWrappersFieldBuilder().getBuilder(index);
         }
         /**
          * <code>repeated .signalservice.DataMessage.ClosedGroupControlMessage.KeyPairWrapper wrappers = 7;</code>
          */
-        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapperOrBuilder getWrappersOrBuilder(
+        public SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapperOrBuilder getWrappersOrBuilder(
             int index) {
           if (wrappersBuilder_ == null) {
             return wrappers_.get(index);  } else {
@@ -13411,7 +13411,7 @@ public final class SignalServiceProtos {
         /**
          * <code>repeated .signalservice.DataMessage.ClosedGroupControlMessage.KeyPairWrapper wrappers = 7;</code>
          */
-        public java.util.List<? extends com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapperOrBuilder> 
+        public java.util.List<? extends SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapperOrBuilder>
              getWrappersOrBuilderList() {
           if (wrappersBuilder_ != null) {
             return wrappersBuilder_.getMessageOrBuilderList();
@@ -13422,31 +13422,31 @@ public final class SignalServiceProtos {
         /**
          * <code>repeated .signalservice.DataMessage.ClosedGroupControlMessage.KeyPairWrapper wrappers = 7;</code>
          */
-        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.Builder addWrappersBuilder() {
+        public SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.Builder addWrappersBuilder() {
           return getWrappersFieldBuilder().addBuilder(
-              com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.getDefaultInstance());
+              SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.getDefaultInstance());
         }
         /**
          * <code>repeated .signalservice.DataMessage.ClosedGroupControlMessage.KeyPairWrapper wrappers = 7;</code>
          */
-        public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.Builder addWrappersBuilder(
+        public SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.Builder addWrappersBuilder(
             int index) {
           return getWrappersFieldBuilder().addBuilder(
-              index, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.getDefaultInstance());
+              index, SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.getDefaultInstance());
         }
         /**
          * <code>repeated .signalservice.DataMessage.ClosedGroupControlMessage.KeyPairWrapper wrappers = 7;</code>
          */
-        public java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.Builder> 
+        public java.util.List<SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.Builder>
              getWrappersBuilderList() {
           return getWrappersFieldBuilder().getBuilderList();
         }
         private com.google.protobuf.RepeatedFieldBuilder<
-            com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapperOrBuilder> 
+            SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper, SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.Builder, SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapperOrBuilder>
             getWrappersFieldBuilder() {
           if (wrappersBuilder_ == null) {
             wrappersBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-                com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapperOrBuilder>(
+                SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper, SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapper.Builder, SignalServiceProtos.DataMessage.ClosedGroupControlMessage.KeyPairWrapperOrBuilder>(
                     wrappers_,
                     ((bitField0_ & 0x00000040) == 0x00000040),
                     getParentForChildren(),
@@ -13546,17 +13546,17 @@ public final class SignalServiceProtos {
 
     // repeated .signalservice.AttachmentPointer attachments = 2;
     public static final int ATTACHMENTS_FIELD_NUMBER = 2;
-    private java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer> attachments_;
+    private java.util.List<SignalServiceProtos.AttachmentPointer> attachments_;
     /**
      * <code>repeated .signalservice.AttachmentPointer attachments = 2;</code>
      */
-    public java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer> getAttachmentsList() {
+    public java.util.List<SignalServiceProtos.AttachmentPointer> getAttachmentsList() {
       return attachments_;
     }
     /**
      * <code>repeated .signalservice.AttachmentPointer attachments = 2;</code>
      */
-    public java.util.List<? extends com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointerOrBuilder> 
+    public java.util.List<? extends SignalServiceProtos.AttachmentPointerOrBuilder>
         getAttachmentsOrBuilderList() {
       return attachments_;
     }
@@ -13569,20 +13569,20 @@ public final class SignalServiceProtos {
     /**
      * <code>repeated .signalservice.AttachmentPointer attachments = 2;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer getAttachments(int index) {
+    public SignalServiceProtos.AttachmentPointer getAttachments(int index) {
       return attachments_.get(index);
     }
     /**
      * <code>repeated .signalservice.AttachmentPointer attachments = 2;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointerOrBuilder getAttachmentsOrBuilder(
+    public SignalServiceProtos.AttachmentPointerOrBuilder getAttachmentsOrBuilder(
         int index) {
       return attachments_.get(index);
     }
 
     // optional .signalservice.GroupContext group = 3;
     public static final int GROUP_FIELD_NUMBER = 3;
-    private com.beldex.libsignal.protos.SignalServiceProtos.GroupContext group_;
+    private SignalServiceProtos.GroupContext group_;
     /**
      * <code>optional .signalservice.GroupContext group = 3;</code>
      */
@@ -13592,13 +13592,13 @@ public final class SignalServiceProtos {
     /**
      * <code>optional .signalservice.GroupContext group = 3;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.GroupContext getGroup() {
+    public SignalServiceProtos.GroupContext getGroup() {
       return group_;
     }
     /**
      * <code>optional .signalservice.GroupContext group = 3;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.GroupContextOrBuilder getGroupOrBuilder() {
+    public SignalServiceProtos.GroupContextOrBuilder getGroupOrBuilder() {
       return group_;
     }
 
@@ -13668,7 +13668,7 @@ public final class SignalServiceProtos {
 
     // optional .signalservice.DataMessage.Quote quote = 8;
     public static final int QUOTE_FIELD_NUMBER = 8;
-    private com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote quote_;
+    private SignalServiceProtos.DataMessage.Quote quote_;
     /**
      * <code>optional .signalservice.DataMessage.Quote quote = 8;</code>
      */
@@ -13678,29 +13678,29 @@ public final class SignalServiceProtos {
     /**
      * <code>optional .signalservice.DataMessage.Quote quote = 8;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote getQuote() {
+    public SignalServiceProtos.DataMessage.Quote getQuote() {
       return quote_;
     }
     /**
      * <code>optional .signalservice.DataMessage.Quote quote = 8;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.QuoteOrBuilder getQuoteOrBuilder() {
+    public SignalServiceProtos.DataMessage.QuoteOrBuilder getQuoteOrBuilder() {
       return quote_;
     }
 
     // repeated .signalservice.DataMessage.Preview preview = 10;
     public static final int PREVIEW_FIELD_NUMBER = 10;
-    private java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview> preview_;
+    private java.util.List<SignalServiceProtos.DataMessage.Preview> preview_;
     /**
      * <code>repeated .signalservice.DataMessage.Preview preview = 10;</code>
      */
-    public java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview> getPreviewList() {
+    public java.util.List<SignalServiceProtos.DataMessage.Preview> getPreviewList() {
       return preview_;
     }
     /**
      * <code>repeated .signalservice.DataMessage.Preview preview = 10;</code>
      */
-    public java.util.List<? extends com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.PreviewOrBuilder> 
+    public java.util.List<? extends SignalServiceProtos.DataMessage.PreviewOrBuilder>
         getPreviewOrBuilderList() {
       return preview_;
     }
@@ -13713,20 +13713,20 @@ public final class SignalServiceProtos {
     /**
      * <code>repeated .signalservice.DataMessage.Preview preview = 10;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview getPreview(int index) {
+    public SignalServiceProtos.DataMessage.Preview getPreview(int index) {
       return preview_.get(index);
     }
     /**
      * <code>repeated .signalservice.DataMessage.Preview preview = 10;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.PreviewOrBuilder getPreviewOrBuilder(
+    public SignalServiceProtos.DataMessage.PreviewOrBuilder getPreviewOrBuilder(
         int index) {
       return preview_.get(index);
     }
 
     // optional .signalservice.DataMessage.BeldexProfile profile = 101;
     public static final int PROFILE_FIELD_NUMBER = 101;
-    private com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile profile_;
+    private SignalServiceProtos.DataMessage.BeldexProfile profile_;
     /**
      * <code>optional .signalservice.DataMessage.BeldexProfile profile = 101;</code>
      */
@@ -13736,19 +13736,19 @@ public final class SignalServiceProtos {
     /**
      * <code>optional .signalservice.DataMessage.BeldexProfile profile = 101;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile getProfile() {
+    public SignalServiceProtos.DataMessage.BeldexProfile getProfile() {
       return profile_;
     }
     /**
      * <code>optional .signalservice.DataMessage.BeldexProfile profile = 101;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfileOrBuilder getProfileOrBuilder() {
+    public SignalServiceProtos.DataMessage.BeldexProfileOrBuilder getProfileOrBuilder() {
       return profile_;
     }
 
     // optional .signalservice.DataMessage.OpenGroupInvitation openGroupInvitation = 102;
     public static final int OPENGROUPINVITATION_FIELD_NUMBER = 102;
-    private com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation openGroupInvitation_;
+    private SignalServiceProtos.DataMessage.OpenGroupInvitation openGroupInvitation_;
     /**
      * <code>optional .signalservice.DataMessage.OpenGroupInvitation openGroupInvitation = 102;</code>
      */
@@ -13758,19 +13758,19 @@ public final class SignalServiceProtos {
     /**
      * <code>optional .signalservice.DataMessage.OpenGroupInvitation openGroupInvitation = 102;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation getOpenGroupInvitation() {
+    public SignalServiceProtos.DataMessage.OpenGroupInvitation getOpenGroupInvitation() {
       return openGroupInvitation_;
     }
     /**
      * <code>optional .signalservice.DataMessage.OpenGroupInvitation openGroupInvitation = 102;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitationOrBuilder getOpenGroupInvitationOrBuilder() {
+    public SignalServiceProtos.DataMessage.OpenGroupInvitationOrBuilder getOpenGroupInvitationOrBuilder() {
       return openGroupInvitation_;
     }
 
     // optional .signalservice.DataMessage.ClosedGroupControlMessage closedGroupControlMessage = 104;
     public static final int CLOSEDGROUPCONTROLMESSAGE_FIELD_NUMBER = 104;
-    private com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage closedGroupControlMessage_;
+    private SignalServiceProtos.DataMessage.ClosedGroupControlMessage closedGroupControlMessage_;
     /**
      * <code>optional .signalservice.DataMessage.ClosedGroupControlMessage closedGroupControlMessage = 104;</code>
      */
@@ -13780,13 +13780,13 @@ public final class SignalServiceProtos {
     /**
      * <code>optional .signalservice.DataMessage.ClosedGroupControlMessage closedGroupControlMessage = 104;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage getClosedGroupControlMessage() {
+    public SignalServiceProtos.DataMessage.ClosedGroupControlMessage getClosedGroupControlMessage() {
       return closedGroupControlMessage_;
     }
     /**
      * <code>optional .signalservice.DataMessage.ClosedGroupControlMessage closedGroupControlMessage = 104;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessageOrBuilder getClosedGroupControlMessageOrBuilder() {
+    public SignalServiceProtos.DataMessage.ClosedGroupControlMessageOrBuilder getClosedGroupControlMessageOrBuilder() {
       return closedGroupControlMessage_;
     }
 
@@ -13835,7 +13835,7 @@ public final class SignalServiceProtos {
 
     // optional .signalservice.DataMessage.Payment payment = 106;
     public static final int PAYMENT_FIELD_NUMBER = 106;
-    private com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment payment_;
+    private SignalServiceProtos.DataMessage.Payment payment_;
     /**
      * <code>optional .signalservice.DataMessage.Payment payment = 106;</code>
      */
@@ -13845,31 +13845,31 @@ public final class SignalServiceProtos {
     /**
      * <code>optional .signalservice.DataMessage.Payment payment = 106;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment getPayment() {
+    public SignalServiceProtos.DataMessage.Payment getPayment() {
       return payment_;
     }
     /**
      * <code>optional .signalservice.DataMessage.Payment payment = 106;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.PaymentOrBuilder getPaymentOrBuilder() {
+    public SignalServiceProtos.DataMessage.PaymentOrBuilder getPaymentOrBuilder() {
       return payment_;
     }
 
     private void initFields() {
       body_ = "";
       attachments_ = java.util.Collections.emptyList();
-      group_ = com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.getDefaultInstance();
+      group_ = SignalServiceProtos.GroupContext.getDefaultInstance();
       flags_ = 0;
       expireTimer_ = 0;
       profileKey_ = com.google.protobuf.ByteString.EMPTY;
       timestamp_ = 0L;
-      quote_ = com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.getDefaultInstance();
+      quote_ = SignalServiceProtos.DataMessage.Quote.getDefaultInstance();
       preview_ = java.util.Collections.emptyList();
-      profile_ = com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile.getDefaultInstance();
-      openGroupInvitation_ = com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation.getDefaultInstance();
-      closedGroupControlMessage_ = com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.getDefaultInstance();
+      profile_ = SignalServiceProtos.DataMessage.BeldexProfile.getDefaultInstance();
+      openGroupInvitation_ = SignalServiceProtos.DataMessage.OpenGroupInvitation.getDefaultInstance();
+      closedGroupControlMessage_ = SignalServiceProtos.DataMessage.ClosedGroupControlMessage.getDefaultInstance();
       syncTarget_ = "";
-      payment_ = com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment.getDefaultInstance();
+      payment_ = SignalServiceProtos.DataMessage.Payment.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -14044,53 +14044,53 @@ public final class SignalServiceProtos {
       return super.writeReplace();
     }
 
-    public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage parseFrom(
+    public static SignalServiceProtos.DataMessage parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage parseFrom(
+    public static SignalServiceProtos.DataMessage parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage parseFrom(byte[] data)
+    public static SignalServiceProtos.DataMessage parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage parseFrom(
+    public static SignalServiceProtos.DataMessage parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage parseFrom(java.io.InputStream input)
+    public static SignalServiceProtos.DataMessage parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage parseFrom(
+    public static SignalServiceProtos.DataMessage parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage parseDelimitedFrom(java.io.InputStream input)
+    public static SignalServiceProtos.DataMessage parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage parseDelimitedFrom(
+    public static SignalServiceProtos.DataMessage parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage parseFrom(
+    public static SignalServiceProtos.DataMessage parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.DataMessage parseFrom(
+    public static SignalServiceProtos.DataMessage parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -14099,7 +14099,7 @@ public final class SignalServiceProtos {
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage prototype) {
+    public static Builder newBuilder(SignalServiceProtos.DataMessage prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
@@ -14115,17 +14115,17 @@ public final class SignalServiceProtos {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.beldex.libsignal.protos.SignalServiceProtos.DataMessageOrBuilder {
+       implements SignalServiceProtos.DataMessageOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_DataMessage_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_fieldAccessorTable
+        return SignalServiceProtos.internal_static_signalservice_DataMessage_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.class, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Builder.class);
+                SignalServiceProtos.DataMessage.class, SignalServiceProtos.DataMessage.Builder.class);
       }
 
       // Construct using com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.newBuilder()
@@ -14165,7 +14165,7 @@ public final class SignalServiceProtos {
           attachmentsBuilder_.clear();
         }
         if (groupBuilder_ == null) {
-          group_ = com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.getDefaultInstance();
+          group_ = SignalServiceProtos.GroupContext.getDefaultInstance();
         } else {
           groupBuilder_.clear();
         }
@@ -14179,7 +14179,7 @@ public final class SignalServiceProtos {
         timestamp_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000040);
         if (quoteBuilder_ == null) {
-          quote_ = com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.getDefaultInstance();
+          quote_ = SignalServiceProtos.DataMessage.Quote.getDefaultInstance();
         } else {
           quoteBuilder_.clear();
         }
@@ -14191,19 +14191,19 @@ public final class SignalServiceProtos {
           previewBuilder_.clear();
         }
         if (profileBuilder_ == null) {
-          profile_ = com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile.getDefaultInstance();
+          profile_ = SignalServiceProtos.DataMessage.BeldexProfile.getDefaultInstance();
         } else {
           profileBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000200);
         if (openGroupInvitationBuilder_ == null) {
-          openGroupInvitation_ = com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation.getDefaultInstance();
+          openGroupInvitation_ = SignalServiceProtos.DataMessage.OpenGroupInvitation.getDefaultInstance();
         } else {
           openGroupInvitationBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000400);
         if (closedGroupControlMessageBuilder_ == null) {
-          closedGroupControlMessage_ = com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.getDefaultInstance();
+          closedGroupControlMessage_ = SignalServiceProtos.DataMessage.ClosedGroupControlMessage.getDefaultInstance();
         } else {
           closedGroupControlMessageBuilder_.clear();
         }
@@ -14211,7 +14211,7 @@ public final class SignalServiceProtos {
         syncTarget_ = "";
         bitField0_ = (bitField0_ & ~0x00001000);
         if (paymentBuilder_ == null) {
-          payment_ = com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment.getDefaultInstance();
+          payment_ = SignalServiceProtos.DataMessage.Payment.getDefaultInstance();
         } else {
           paymentBuilder_.clear();
         }
@@ -14225,23 +14225,23 @@ public final class SignalServiceProtos {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_DataMessage_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_DataMessage_descriptor;
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage getDefaultInstanceForType() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.getDefaultInstance();
+      public SignalServiceProtos.DataMessage getDefaultInstanceForType() {
+        return SignalServiceProtos.DataMessage.getDefaultInstance();
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage build() {
-        com.beldex.libsignal.protos.SignalServiceProtos.DataMessage result = buildPartial();
+      public SignalServiceProtos.DataMessage build() {
+        SignalServiceProtos.DataMessage result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage buildPartial() {
-        com.beldex.libsignal.protos.SignalServiceProtos.DataMessage result = new com.beldex.libsignal.protos.SignalServiceProtos.DataMessage(this);
+      public SignalServiceProtos.DataMessage buildPartial() {
+        SignalServiceProtos.DataMessage result = new SignalServiceProtos.DataMessage(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -14340,16 +14340,16 @@ public final class SignalServiceProtos {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.beldex.libsignal.protos.SignalServiceProtos.DataMessage) {
-          return mergeFrom((com.beldex.libsignal.protos.SignalServiceProtos.DataMessage)other);
+        if (other instanceof SignalServiceProtos.DataMessage) {
+          return mergeFrom((SignalServiceProtos.DataMessage)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage other) {
-        if (other == com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.getDefaultInstance()) return this;
+      public Builder mergeFrom(SignalServiceProtos.DataMessage other) {
+        if (other == SignalServiceProtos.DataMessage.getDefaultInstance()) return this;
         if (other.hasBody()) {
           bitField0_ |= 0x00000001;
           body_ = other.body_;
@@ -14496,11 +14496,11 @@ public final class SignalServiceProtos {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.beldex.libsignal.protos.SignalServiceProtos.DataMessage parsedMessage = null;
+        SignalServiceProtos.DataMessage parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.beldex.libsignal.protos.SignalServiceProtos.DataMessage) e.getUnfinishedMessage();
+          parsedMessage = (SignalServiceProtos.DataMessage) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -14586,22 +14586,22 @@ public final class SignalServiceProtos {
       }
 
       // repeated .signalservice.AttachmentPointer attachments = 2;
-      private java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer> attachments_ =
+      private java.util.List<SignalServiceProtos.AttachmentPointer> attachments_ =
         java.util.Collections.emptyList();
       private void ensureAttachmentsIsMutable() {
         if (!((bitField0_ & 0x00000002) == 0x00000002)) {
-          attachments_ = new java.util.ArrayList<com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer>(attachments_);
+          attachments_ = new java.util.ArrayList<SignalServiceProtos.AttachmentPointer>(attachments_);
           bitField0_ |= 0x00000002;
          }
       }
 
       private com.google.protobuf.RepeatedFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer, com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.Builder, com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointerOrBuilder> attachmentsBuilder_;
+          SignalServiceProtos.AttachmentPointer, SignalServiceProtos.AttachmentPointer.Builder, SignalServiceProtos.AttachmentPointerOrBuilder> attachmentsBuilder_;
 
       /**
        * <code>repeated .signalservice.AttachmentPointer attachments = 2;</code>
        */
-      public java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer> getAttachmentsList() {
+      public java.util.List<SignalServiceProtos.AttachmentPointer> getAttachmentsList() {
         if (attachmentsBuilder_ == null) {
           return java.util.Collections.unmodifiableList(attachments_);
         } else {
@@ -14621,7 +14621,7 @@ public final class SignalServiceProtos {
       /**
        * <code>repeated .signalservice.AttachmentPointer attachments = 2;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer getAttachments(int index) {
+      public SignalServiceProtos.AttachmentPointer getAttachments(int index) {
         if (attachmentsBuilder_ == null) {
           return attachments_.get(index);
         } else {
@@ -14632,7 +14632,7 @@ public final class SignalServiceProtos {
        * <code>repeated .signalservice.AttachmentPointer attachments = 2;</code>
        */
       public Builder setAttachments(
-          int index, com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer value) {
+          int index, SignalServiceProtos.AttachmentPointer value) {
         if (attachmentsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -14649,7 +14649,7 @@ public final class SignalServiceProtos {
        * <code>repeated .signalservice.AttachmentPointer attachments = 2;</code>
        */
       public Builder setAttachments(
-          int index, com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.Builder builderForValue) {
+          int index, SignalServiceProtos.AttachmentPointer.Builder builderForValue) {
         if (attachmentsBuilder_ == null) {
           ensureAttachmentsIsMutable();
           attachments_.set(index, builderForValue.build());
@@ -14662,7 +14662,7 @@ public final class SignalServiceProtos {
       /**
        * <code>repeated .signalservice.AttachmentPointer attachments = 2;</code>
        */
-      public Builder addAttachments(com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer value) {
+      public Builder addAttachments(SignalServiceProtos.AttachmentPointer value) {
         if (attachmentsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -14679,7 +14679,7 @@ public final class SignalServiceProtos {
        * <code>repeated .signalservice.AttachmentPointer attachments = 2;</code>
        */
       public Builder addAttachments(
-          int index, com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer value) {
+          int index, SignalServiceProtos.AttachmentPointer value) {
         if (attachmentsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -14696,7 +14696,7 @@ public final class SignalServiceProtos {
        * <code>repeated .signalservice.AttachmentPointer attachments = 2;</code>
        */
       public Builder addAttachments(
-          com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.Builder builderForValue) {
+          SignalServiceProtos.AttachmentPointer.Builder builderForValue) {
         if (attachmentsBuilder_ == null) {
           ensureAttachmentsIsMutable();
           attachments_.add(builderForValue.build());
@@ -14710,7 +14710,7 @@ public final class SignalServiceProtos {
        * <code>repeated .signalservice.AttachmentPointer attachments = 2;</code>
        */
       public Builder addAttachments(
-          int index, com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.Builder builderForValue) {
+          int index, SignalServiceProtos.AttachmentPointer.Builder builderForValue) {
         if (attachmentsBuilder_ == null) {
           ensureAttachmentsIsMutable();
           attachments_.add(index, builderForValue.build());
@@ -14724,7 +14724,7 @@ public final class SignalServiceProtos {
        * <code>repeated .signalservice.AttachmentPointer attachments = 2;</code>
        */
       public Builder addAllAttachments(
-          java.lang.Iterable<? extends com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer> values) {
+          java.lang.Iterable<? extends SignalServiceProtos.AttachmentPointer> values) {
         if (attachmentsBuilder_ == null) {
           ensureAttachmentsIsMutable();
           super.addAll(values, attachments_);
@@ -14763,14 +14763,14 @@ public final class SignalServiceProtos {
       /**
        * <code>repeated .signalservice.AttachmentPointer attachments = 2;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.Builder getAttachmentsBuilder(
+      public SignalServiceProtos.AttachmentPointer.Builder getAttachmentsBuilder(
           int index) {
         return getAttachmentsFieldBuilder().getBuilder(index);
       }
       /**
        * <code>repeated .signalservice.AttachmentPointer attachments = 2;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointerOrBuilder getAttachmentsOrBuilder(
+      public SignalServiceProtos.AttachmentPointerOrBuilder getAttachmentsOrBuilder(
           int index) {
         if (attachmentsBuilder_ == null) {
           return attachments_.get(index);  } else {
@@ -14780,7 +14780,7 @@ public final class SignalServiceProtos {
       /**
        * <code>repeated .signalservice.AttachmentPointer attachments = 2;</code>
        */
-      public java.util.List<? extends com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointerOrBuilder> 
+      public java.util.List<? extends SignalServiceProtos.AttachmentPointerOrBuilder>
            getAttachmentsOrBuilderList() {
         if (attachmentsBuilder_ != null) {
           return attachmentsBuilder_.getMessageOrBuilderList();
@@ -14791,31 +14791,31 @@ public final class SignalServiceProtos {
       /**
        * <code>repeated .signalservice.AttachmentPointer attachments = 2;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.Builder addAttachmentsBuilder() {
+      public SignalServiceProtos.AttachmentPointer.Builder addAttachmentsBuilder() {
         return getAttachmentsFieldBuilder().addBuilder(
-            com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.getDefaultInstance());
+            SignalServiceProtos.AttachmentPointer.getDefaultInstance());
       }
       /**
        * <code>repeated .signalservice.AttachmentPointer attachments = 2;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.Builder addAttachmentsBuilder(
+      public SignalServiceProtos.AttachmentPointer.Builder addAttachmentsBuilder(
           int index) {
         return getAttachmentsFieldBuilder().addBuilder(
-            index, com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.getDefaultInstance());
+            index, SignalServiceProtos.AttachmentPointer.getDefaultInstance());
       }
       /**
        * <code>repeated .signalservice.AttachmentPointer attachments = 2;</code>
        */
-      public java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.Builder> 
+      public java.util.List<SignalServiceProtos.AttachmentPointer.Builder>
            getAttachmentsBuilderList() {
         return getAttachmentsFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer, com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.Builder, com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointerOrBuilder> 
+          SignalServiceProtos.AttachmentPointer, SignalServiceProtos.AttachmentPointer.Builder, SignalServiceProtos.AttachmentPointerOrBuilder>
           getAttachmentsFieldBuilder() {
         if (attachmentsBuilder_ == null) {
           attachmentsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-              com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer, com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.Builder, com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointerOrBuilder>(
+              SignalServiceProtos.AttachmentPointer, SignalServiceProtos.AttachmentPointer.Builder, SignalServiceProtos.AttachmentPointerOrBuilder>(
                   attachments_,
                   ((bitField0_ & 0x00000002) == 0x00000002),
                   getParentForChildren(),
@@ -14826,9 +14826,9 @@ public final class SignalServiceProtos {
       }
 
       // optional .signalservice.GroupContext group = 3;
-      private com.beldex.libsignal.protos.SignalServiceProtos.GroupContext group_ = com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.getDefaultInstance();
+      private SignalServiceProtos.GroupContext group_ = SignalServiceProtos.GroupContext.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.GroupContext, com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.Builder, com.beldex.libsignal.protos.SignalServiceProtos.GroupContextOrBuilder> groupBuilder_;
+          SignalServiceProtos.GroupContext, SignalServiceProtos.GroupContext.Builder, SignalServiceProtos.GroupContextOrBuilder> groupBuilder_;
       /**
        * <code>optional .signalservice.GroupContext group = 3;</code>
        */
@@ -14838,7 +14838,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.GroupContext group = 3;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.GroupContext getGroup() {
+      public SignalServiceProtos.GroupContext getGroup() {
         if (groupBuilder_ == null) {
           return group_;
         } else {
@@ -14848,7 +14848,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.GroupContext group = 3;</code>
        */
-      public Builder setGroup(com.beldex.libsignal.protos.SignalServiceProtos.GroupContext value) {
+      public Builder setGroup(SignalServiceProtos.GroupContext value) {
         if (groupBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -14865,7 +14865,7 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.GroupContext group = 3;</code>
        */
       public Builder setGroup(
-          com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.Builder builderForValue) {
+          SignalServiceProtos.GroupContext.Builder builderForValue) {
         if (groupBuilder_ == null) {
           group_ = builderForValue.build();
           onChanged();
@@ -14878,12 +14878,12 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.GroupContext group = 3;</code>
        */
-      public Builder mergeGroup(com.beldex.libsignal.protos.SignalServiceProtos.GroupContext value) {
+      public Builder mergeGroup(SignalServiceProtos.GroupContext value) {
         if (groupBuilder_ == null) {
           if (((bitField0_ & 0x00000004) == 0x00000004) &&
-              group_ != com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.getDefaultInstance()) {
+              group_ != SignalServiceProtos.GroupContext.getDefaultInstance()) {
             group_ =
-              com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.newBuilder(group_).mergeFrom(value).buildPartial();
+              SignalServiceProtos.GroupContext.newBuilder(group_).mergeFrom(value).buildPartial();
           } else {
             group_ = value;
           }
@@ -14899,7 +14899,7 @@ public final class SignalServiceProtos {
        */
       public Builder clearGroup() {
         if (groupBuilder_ == null) {
-          group_ = com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.getDefaultInstance();
+          group_ = SignalServiceProtos.GroupContext.getDefaultInstance();
           onChanged();
         } else {
           groupBuilder_.clear();
@@ -14910,7 +14910,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.GroupContext group = 3;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.Builder getGroupBuilder() {
+      public SignalServiceProtos.GroupContext.Builder getGroupBuilder() {
         bitField0_ |= 0x00000004;
         onChanged();
         return getGroupFieldBuilder().getBuilder();
@@ -14918,7 +14918,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.GroupContext group = 3;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.GroupContextOrBuilder getGroupOrBuilder() {
+      public SignalServiceProtos.GroupContextOrBuilder getGroupOrBuilder() {
         if (groupBuilder_ != null) {
           return groupBuilder_.getMessageOrBuilder();
         } else {
@@ -14929,11 +14929,11 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.GroupContext group = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.GroupContext, com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.Builder, com.beldex.libsignal.protos.SignalServiceProtos.GroupContextOrBuilder> 
+          SignalServiceProtos.GroupContext, SignalServiceProtos.GroupContext.Builder, SignalServiceProtos.GroupContextOrBuilder>
           getGroupFieldBuilder() {
         if (groupBuilder_ == null) {
           groupBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.beldex.libsignal.protos.SignalServiceProtos.GroupContext, com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.Builder, com.beldex.libsignal.protos.SignalServiceProtos.GroupContextOrBuilder>(
+              SignalServiceProtos.GroupContext, SignalServiceProtos.GroupContext.Builder, SignalServiceProtos.GroupContextOrBuilder>(
                   group_,
                   getParentForChildren(),
                   isClean());
@@ -15078,9 +15078,9 @@ public final class SignalServiceProtos {
       }
 
       // optional .signalservice.DataMessage.Quote quote = 8;
-      private com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote quote_ = com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.getDefaultInstance();
+      private SignalServiceProtos.DataMessage.Quote quote_ = SignalServiceProtos.DataMessage.Quote.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.QuoteOrBuilder> quoteBuilder_;
+          SignalServiceProtos.DataMessage.Quote, SignalServiceProtos.DataMessage.Quote.Builder, SignalServiceProtos.DataMessage.QuoteOrBuilder> quoteBuilder_;
       /**
        * <code>optional .signalservice.DataMessage.Quote quote = 8;</code>
        */
@@ -15090,7 +15090,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataMessage.Quote quote = 8;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote getQuote() {
+      public SignalServiceProtos.DataMessage.Quote getQuote() {
         if (quoteBuilder_ == null) {
           return quote_;
         } else {
@@ -15100,7 +15100,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataMessage.Quote quote = 8;</code>
        */
-      public Builder setQuote(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote value) {
+      public Builder setQuote(SignalServiceProtos.DataMessage.Quote value) {
         if (quoteBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -15117,7 +15117,7 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.DataMessage.Quote quote = 8;</code>
        */
       public Builder setQuote(
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.Builder builderForValue) {
+          SignalServiceProtos.DataMessage.Quote.Builder builderForValue) {
         if (quoteBuilder_ == null) {
           quote_ = builderForValue.build();
           onChanged();
@@ -15130,12 +15130,12 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataMessage.Quote quote = 8;</code>
        */
-      public Builder mergeQuote(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote value) {
+      public Builder mergeQuote(SignalServiceProtos.DataMessage.Quote value) {
         if (quoteBuilder_ == null) {
           if (((bitField0_ & 0x00000080) == 0x00000080) &&
-              quote_ != com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.getDefaultInstance()) {
+              quote_ != SignalServiceProtos.DataMessage.Quote.getDefaultInstance()) {
             quote_ =
-              com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.newBuilder(quote_).mergeFrom(value).buildPartial();
+              SignalServiceProtos.DataMessage.Quote.newBuilder(quote_).mergeFrom(value).buildPartial();
           } else {
             quote_ = value;
           }
@@ -15151,7 +15151,7 @@ public final class SignalServiceProtos {
        */
       public Builder clearQuote() {
         if (quoteBuilder_ == null) {
-          quote_ = com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.getDefaultInstance();
+          quote_ = SignalServiceProtos.DataMessage.Quote.getDefaultInstance();
           onChanged();
         } else {
           quoteBuilder_.clear();
@@ -15162,7 +15162,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataMessage.Quote quote = 8;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.Builder getQuoteBuilder() {
+      public SignalServiceProtos.DataMessage.Quote.Builder getQuoteBuilder() {
         bitField0_ |= 0x00000080;
         onChanged();
         return getQuoteFieldBuilder().getBuilder();
@@ -15170,7 +15170,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataMessage.Quote quote = 8;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.QuoteOrBuilder getQuoteOrBuilder() {
+      public SignalServiceProtos.DataMessage.QuoteOrBuilder getQuoteOrBuilder() {
         if (quoteBuilder_ != null) {
           return quoteBuilder_.getMessageOrBuilder();
         } else {
@@ -15181,11 +15181,11 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.DataMessage.Quote quote = 8;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.QuoteOrBuilder> 
+          SignalServiceProtos.DataMessage.Quote, SignalServiceProtos.DataMessage.Quote.Builder, SignalServiceProtos.DataMessage.QuoteOrBuilder>
           getQuoteFieldBuilder() {
         if (quoteBuilder_ == null) {
           quoteBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Quote.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.QuoteOrBuilder>(
+              SignalServiceProtos.DataMessage.Quote, SignalServiceProtos.DataMessage.Quote.Builder, SignalServiceProtos.DataMessage.QuoteOrBuilder>(
                   quote_,
                   getParentForChildren(),
                   isClean());
@@ -15195,22 +15195,22 @@ public final class SignalServiceProtos {
       }
 
       // repeated .signalservice.DataMessage.Preview preview = 10;
-      private java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview> preview_ =
+      private java.util.List<SignalServiceProtos.DataMessage.Preview> preview_ =
         java.util.Collections.emptyList();
       private void ensurePreviewIsMutable() {
         if (!((bitField0_ & 0x00000100) == 0x00000100)) {
-          preview_ = new java.util.ArrayList<com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview>(preview_);
+          preview_ = new java.util.ArrayList<SignalServiceProtos.DataMessage.Preview>(preview_);
           bitField0_ |= 0x00000100;
          }
       }
 
       private com.google.protobuf.RepeatedFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.PreviewOrBuilder> previewBuilder_;
+          SignalServiceProtos.DataMessage.Preview, SignalServiceProtos.DataMessage.Preview.Builder, SignalServiceProtos.DataMessage.PreviewOrBuilder> previewBuilder_;
 
       /**
        * <code>repeated .signalservice.DataMessage.Preview preview = 10;</code>
        */
-      public java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview> getPreviewList() {
+      public java.util.List<SignalServiceProtos.DataMessage.Preview> getPreviewList() {
         if (previewBuilder_ == null) {
           return java.util.Collections.unmodifiableList(preview_);
         } else {
@@ -15230,7 +15230,7 @@ public final class SignalServiceProtos {
       /**
        * <code>repeated .signalservice.DataMessage.Preview preview = 10;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview getPreview(int index) {
+      public SignalServiceProtos.DataMessage.Preview getPreview(int index) {
         if (previewBuilder_ == null) {
           return preview_.get(index);
         } else {
@@ -15241,7 +15241,7 @@ public final class SignalServiceProtos {
        * <code>repeated .signalservice.DataMessage.Preview preview = 10;</code>
        */
       public Builder setPreview(
-          int index, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview value) {
+          int index, SignalServiceProtos.DataMessage.Preview value) {
         if (previewBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -15258,7 +15258,7 @@ public final class SignalServiceProtos {
        * <code>repeated .signalservice.DataMessage.Preview preview = 10;</code>
        */
       public Builder setPreview(
-          int index, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview.Builder builderForValue) {
+          int index, SignalServiceProtos.DataMessage.Preview.Builder builderForValue) {
         if (previewBuilder_ == null) {
           ensurePreviewIsMutable();
           preview_.set(index, builderForValue.build());
@@ -15271,7 +15271,7 @@ public final class SignalServiceProtos {
       /**
        * <code>repeated .signalservice.DataMessage.Preview preview = 10;</code>
        */
-      public Builder addPreview(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview value) {
+      public Builder addPreview(SignalServiceProtos.DataMessage.Preview value) {
         if (previewBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -15288,7 +15288,7 @@ public final class SignalServiceProtos {
        * <code>repeated .signalservice.DataMessage.Preview preview = 10;</code>
        */
       public Builder addPreview(
-          int index, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview value) {
+          int index, SignalServiceProtos.DataMessage.Preview value) {
         if (previewBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -15305,7 +15305,7 @@ public final class SignalServiceProtos {
        * <code>repeated .signalservice.DataMessage.Preview preview = 10;</code>
        */
       public Builder addPreview(
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview.Builder builderForValue) {
+          SignalServiceProtos.DataMessage.Preview.Builder builderForValue) {
         if (previewBuilder_ == null) {
           ensurePreviewIsMutable();
           preview_.add(builderForValue.build());
@@ -15319,7 +15319,7 @@ public final class SignalServiceProtos {
        * <code>repeated .signalservice.DataMessage.Preview preview = 10;</code>
        */
       public Builder addPreview(
-          int index, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview.Builder builderForValue) {
+          int index, SignalServiceProtos.DataMessage.Preview.Builder builderForValue) {
         if (previewBuilder_ == null) {
           ensurePreviewIsMutable();
           preview_.add(index, builderForValue.build());
@@ -15333,7 +15333,7 @@ public final class SignalServiceProtos {
        * <code>repeated .signalservice.DataMessage.Preview preview = 10;</code>
        */
       public Builder addAllPreview(
-          java.lang.Iterable<? extends com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview> values) {
+          java.lang.Iterable<? extends SignalServiceProtos.DataMessage.Preview> values) {
         if (previewBuilder_ == null) {
           ensurePreviewIsMutable();
           super.addAll(values, preview_);
@@ -15372,14 +15372,14 @@ public final class SignalServiceProtos {
       /**
        * <code>repeated .signalservice.DataMessage.Preview preview = 10;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview.Builder getPreviewBuilder(
+      public SignalServiceProtos.DataMessage.Preview.Builder getPreviewBuilder(
           int index) {
         return getPreviewFieldBuilder().getBuilder(index);
       }
       /**
        * <code>repeated .signalservice.DataMessage.Preview preview = 10;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.PreviewOrBuilder getPreviewOrBuilder(
+      public SignalServiceProtos.DataMessage.PreviewOrBuilder getPreviewOrBuilder(
           int index) {
         if (previewBuilder_ == null) {
           return preview_.get(index);  } else {
@@ -15389,7 +15389,7 @@ public final class SignalServiceProtos {
       /**
        * <code>repeated .signalservice.DataMessage.Preview preview = 10;</code>
        */
-      public java.util.List<? extends com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.PreviewOrBuilder> 
+      public java.util.List<? extends SignalServiceProtos.DataMessage.PreviewOrBuilder>
            getPreviewOrBuilderList() {
         if (previewBuilder_ != null) {
           return previewBuilder_.getMessageOrBuilderList();
@@ -15400,31 +15400,31 @@ public final class SignalServiceProtos {
       /**
        * <code>repeated .signalservice.DataMessage.Preview preview = 10;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview.Builder addPreviewBuilder() {
+      public SignalServiceProtos.DataMessage.Preview.Builder addPreviewBuilder() {
         return getPreviewFieldBuilder().addBuilder(
-            com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview.getDefaultInstance());
+            SignalServiceProtos.DataMessage.Preview.getDefaultInstance());
       }
       /**
        * <code>repeated .signalservice.DataMessage.Preview preview = 10;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview.Builder addPreviewBuilder(
+      public SignalServiceProtos.DataMessage.Preview.Builder addPreviewBuilder(
           int index) {
         return getPreviewFieldBuilder().addBuilder(
-            index, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview.getDefaultInstance());
+            index, SignalServiceProtos.DataMessage.Preview.getDefaultInstance());
       }
       /**
        * <code>repeated .signalservice.DataMessage.Preview preview = 10;</code>
        */
-      public java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview.Builder> 
+      public java.util.List<SignalServiceProtos.DataMessage.Preview.Builder>
            getPreviewBuilderList() {
         return getPreviewFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.PreviewOrBuilder> 
+          SignalServiceProtos.DataMessage.Preview, SignalServiceProtos.DataMessage.Preview.Builder, SignalServiceProtos.DataMessage.PreviewOrBuilder>
           getPreviewFieldBuilder() {
         if (previewBuilder_ == null) {
           previewBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-              com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Preview.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.PreviewOrBuilder>(
+              SignalServiceProtos.DataMessage.Preview, SignalServiceProtos.DataMessage.Preview.Builder, SignalServiceProtos.DataMessage.PreviewOrBuilder>(
                   preview_,
                   ((bitField0_ & 0x00000100) == 0x00000100),
                   getParentForChildren(),
@@ -15435,9 +15435,9 @@ public final class SignalServiceProtos {
       }
 
       // optional .signalservice.DataMessage.BeldexProfile profile = 101;
-      private com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile profile_ = com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile.getDefaultInstance();
+      private SignalServiceProtos.DataMessage.BeldexProfile profile_ = SignalServiceProtos.DataMessage.BeldexProfile.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfileOrBuilder> profileBuilder_;
+          SignalServiceProtos.DataMessage.BeldexProfile, SignalServiceProtos.DataMessage.BeldexProfile.Builder, SignalServiceProtos.DataMessage.BeldexProfileOrBuilder> profileBuilder_;
       /**
        * <code>optional .signalservice.DataMessage.BeldexProfile profile = 101;</code>
        */
@@ -15447,7 +15447,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataMessage.BeldexProfile profile = 101;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile getProfile() {
+      public SignalServiceProtos.DataMessage.BeldexProfile getProfile() {
         if (profileBuilder_ == null) {
           return profile_;
         } else {
@@ -15457,7 +15457,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataMessage.BeldexProfile profile = 101;</code>
        */
-      public Builder setProfile(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile value) {
+      public Builder setProfile(SignalServiceProtos.DataMessage.BeldexProfile value) {
         if (profileBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -15474,7 +15474,7 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.DataMessage.BeldexProfile profile = 101;</code>
        */
       public Builder setProfile(
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile.Builder builderForValue) {
+          SignalServiceProtos.DataMessage.BeldexProfile.Builder builderForValue) {
         if (profileBuilder_ == null) {
           profile_ = builderForValue.build();
           onChanged();
@@ -15487,12 +15487,12 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataMessage.BeldexProfile profile = 101;</code>
        */
-      public Builder mergeProfile(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile value) {
+      public Builder mergeProfile(SignalServiceProtos.DataMessage.BeldexProfile value) {
         if (profileBuilder_ == null) {
           if (((bitField0_ & 0x00000200) == 0x00000200) &&
-              profile_ != com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile.getDefaultInstance()) {
+              profile_ != SignalServiceProtos.DataMessage.BeldexProfile.getDefaultInstance()) {
             profile_ =
-              com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile.newBuilder(profile_).mergeFrom(value).buildPartial();
+              SignalServiceProtos.DataMessage.BeldexProfile.newBuilder(profile_).mergeFrom(value).buildPartial();
           } else {
             profile_ = value;
           }
@@ -15508,7 +15508,7 @@ public final class SignalServiceProtos {
        */
       public Builder clearProfile() {
         if (profileBuilder_ == null) {
-          profile_ = com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile.getDefaultInstance();
+          profile_ = SignalServiceProtos.DataMessage.BeldexProfile.getDefaultInstance();
           onChanged();
         } else {
           profileBuilder_.clear();
@@ -15519,7 +15519,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataMessage.BeldexProfile profile = 101;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile.Builder getProfileBuilder() {
+      public SignalServiceProtos.DataMessage.BeldexProfile.Builder getProfileBuilder() {
         bitField0_ |= 0x00000200;
         onChanged();
         return getProfileFieldBuilder().getBuilder();
@@ -15527,7 +15527,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataMessage.BeldexProfile profile = 101;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfileOrBuilder getProfileOrBuilder() {
+      public SignalServiceProtos.DataMessage.BeldexProfileOrBuilder getProfileOrBuilder() {
         if (profileBuilder_ != null) {
           return profileBuilder_.getMessageOrBuilder();
         } else {
@@ -15538,11 +15538,11 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.DataMessage.BeldexProfile profile = 101;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfileOrBuilder> 
+          SignalServiceProtos.DataMessage.BeldexProfile, SignalServiceProtos.DataMessage.BeldexProfile.Builder, SignalServiceProtos.DataMessage.BeldexProfileOrBuilder>
           getProfileFieldBuilder() {
         if (profileBuilder_ == null) {
           profileBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfile.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.BeldexProfileOrBuilder>(
+              SignalServiceProtos.DataMessage.BeldexProfile, SignalServiceProtos.DataMessage.BeldexProfile.Builder, SignalServiceProtos.DataMessage.BeldexProfileOrBuilder>(
                   profile_,
                   getParentForChildren(),
                   isClean());
@@ -15552,9 +15552,9 @@ public final class SignalServiceProtos {
       }
 
       // optional .signalservice.DataMessage.OpenGroupInvitation openGroupInvitation = 102;
-      private com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation openGroupInvitation_ = com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation.getDefaultInstance();
+      private SignalServiceProtos.DataMessage.OpenGroupInvitation openGroupInvitation_ = SignalServiceProtos.DataMessage.OpenGroupInvitation.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitationOrBuilder> openGroupInvitationBuilder_;
+          SignalServiceProtos.DataMessage.OpenGroupInvitation, SignalServiceProtos.DataMessage.OpenGroupInvitation.Builder, SignalServiceProtos.DataMessage.OpenGroupInvitationOrBuilder> openGroupInvitationBuilder_;
       /**
        * <code>optional .signalservice.DataMessage.OpenGroupInvitation openGroupInvitation = 102;</code>
        */
@@ -15564,7 +15564,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataMessage.OpenGroupInvitation openGroupInvitation = 102;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation getOpenGroupInvitation() {
+      public SignalServiceProtos.DataMessage.OpenGroupInvitation getOpenGroupInvitation() {
         if (openGroupInvitationBuilder_ == null) {
           return openGroupInvitation_;
         } else {
@@ -15574,7 +15574,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataMessage.OpenGroupInvitation openGroupInvitation = 102;</code>
        */
-      public Builder setOpenGroupInvitation(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation value) {
+      public Builder setOpenGroupInvitation(SignalServiceProtos.DataMessage.OpenGroupInvitation value) {
         if (openGroupInvitationBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -15591,7 +15591,7 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.DataMessage.OpenGroupInvitation openGroupInvitation = 102;</code>
        */
       public Builder setOpenGroupInvitation(
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation.Builder builderForValue) {
+          SignalServiceProtos.DataMessage.OpenGroupInvitation.Builder builderForValue) {
         if (openGroupInvitationBuilder_ == null) {
           openGroupInvitation_ = builderForValue.build();
           onChanged();
@@ -15604,12 +15604,12 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataMessage.OpenGroupInvitation openGroupInvitation = 102;</code>
        */
-      public Builder mergeOpenGroupInvitation(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation value) {
+      public Builder mergeOpenGroupInvitation(SignalServiceProtos.DataMessage.OpenGroupInvitation value) {
         if (openGroupInvitationBuilder_ == null) {
           if (((bitField0_ & 0x00000400) == 0x00000400) &&
-              openGroupInvitation_ != com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation.getDefaultInstance()) {
+              openGroupInvitation_ != SignalServiceProtos.DataMessage.OpenGroupInvitation.getDefaultInstance()) {
             openGroupInvitation_ =
-              com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation.newBuilder(openGroupInvitation_).mergeFrom(value).buildPartial();
+              SignalServiceProtos.DataMessage.OpenGroupInvitation.newBuilder(openGroupInvitation_).mergeFrom(value).buildPartial();
           } else {
             openGroupInvitation_ = value;
           }
@@ -15625,7 +15625,7 @@ public final class SignalServiceProtos {
        */
       public Builder clearOpenGroupInvitation() {
         if (openGroupInvitationBuilder_ == null) {
-          openGroupInvitation_ = com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation.getDefaultInstance();
+          openGroupInvitation_ = SignalServiceProtos.DataMessage.OpenGroupInvitation.getDefaultInstance();
           onChanged();
         } else {
           openGroupInvitationBuilder_.clear();
@@ -15636,7 +15636,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataMessage.OpenGroupInvitation openGroupInvitation = 102;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation.Builder getOpenGroupInvitationBuilder() {
+      public SignalServiceProtos.DataMessage.OpenGroupInvitation.Builder getOpenGroupInvitationBuilder() {
         bitField0_ |= 0x00000400;
         onChanged();
         return getOpenGroupInvitationFieldBuilder().getBuilder();
@@ -15644,7 +15644,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataMessage.OpenGroupInvitation openGroupInvitation = 102;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitationOrBuilder getOpenGroupInvitationOrBuilder() {
+      public SignalServiceProtos.DataMessage.OpenGroupInvitationOrBuilder getOpenGroupInvitationOrBuilder() {
         if (openGroupInvitationBuilder_ != null) {
           return openGroupInvitationBuilder_.getMessageOrBuilder();
         } else {
@@ -15655,11 +15655,11 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.DataMessage.OpenGroupInvitation openGroupInvitation = 102;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitationOrBuilder> 
+          SignalServiceProtos.DataMessage.OpenGroupInvitation, SignalServiceProtos.DataMessage.OpenGroupInvitation.Builder, SignalServiceProtos.DataMessage.OpenGroupInvitationOrBuilder>
           getOpenGroupInvitationFieldBuilder() {
         if (openGroupInvitationBuilder_ == null) {
           openGroupInvitationBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitation.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.OpenGroupInvitationOrBuilder>(
+              SignalServiceProtos.DataMessage.OpenGroupInvitation, SignalServiceProtos.DataMessage.OpenGroupInvitation.Builder, SignalServiceProtos.DataMessage.OpenGroupInvitationOrBuilder>(
                   openGroupInvitation_,
                   getParentForChildren(),
                   isClean());
@@ -15669,9 +15669,9 @@ public final class SignalServiceProtos {
       }
 
       // optional .signalservice.DataMessage.ClosedGroupControlMessage closedGroupControlMessage = 104;
-      private com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage closedGroupControlMessage_ = com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.getDefaultInstance();
+      private SignalServiceProtos.DataMessage.ClosedGroupControlMessage closedGroupControlMessage_ = SignalServiceProtos.DataMessage.ClosedGroupControlMessage.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessageOrBuilder> closedGroupControlMessageBuilder_;
+          SignalServiceProtos.DataMessage.ClosedGroupControlMessage, SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Builder, SignalServiceProtos.DataMessage.ClosedGroupControlMessageOrBuilder> closedGroupControlMessageBuilder_;
       /**
        * <code>optional .signalservice.DataMessage.ClosedGroupControlMessage closedGroupControlMessage = 104;</code>
        */
@@ -15681,7 +15681,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataMessage.ClosedGroupControlMessage closedGroupControlMessage = 104;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage getClosedGroupControlMessage() {
+      public SignalServiceProtos.DataMessage.ClosedGroupControlMessage getClosedGroupControlMessage() {
         if (closedGroupControlMessageBuilder_ == null) {
           return closedGroupControlMessage_;
         } else {
@@ -15691,7 +15691,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataMessage.ClosedGroupControlMessage closedGroupControlMessage = 104;</code>
        */
-      public Builder setClosedGroupControlMessage(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage value) {
+      public Builder setClosedGroupControlMessage(SignalServiceProtos.DataMessage.ClosedGroupControlMessage value) {
         if (closedGroupControlMessageBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -15708,7 +15708,7 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.DataMessage.ClosedGroupControlMessage closedGroupControlMessage = 104;</code>
        */
       public Builder setClosedGroupControlMessage(
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Builder builderForValue) {
+          SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Builder builderForValue) {
         if (closedGroupControlMessageBuilder_ == null) {
           closedGroupControlMessage_ = builderForValue.build();
           onChanged();
@@ -15721,12 +15721,12 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataMessage.ClosedGroupControlMessage closedGroupControlMessage = 104;</code>
        */
-      public Builder mergeClosedGroupControlMessage(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage value) {
+      public Builder mergeClosedGroupControlMessage(SignalServiceProtos.DataMessage.ClosedGroupControlMessage value) {
         if (closedGroupControlMessageBuilder_ == null) {
           if (((bitField0_ & 0x00000800) == 0x00000800) &&
-              closedGroupControlMessage_ != com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.getDefaultInstance()) {
+              closedGroupControlMessage_ != SignalServiceProtos.DataMessage.ClosedGroupControlMessage.getDefaultInstance()) {
             closedGroupControlMessage_ =
-              com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.newBuilder(closedGroupControlMessage_).mergeFrom(value).buildPartial();
+              SignalServiceProtos.DataMessage.ClosedGroupControlMessage.newBuilder(closedGroupControlMessage_).mergeFrom(value).buildPartial();
           } else {
             closedGroupControlMessage_ = value;
           }
@@ -15742,7 +15742,7 @@ public final class SignalServiceProtos {
        */
       public Builder clearClosedGroupControlMessage() {
         if (closedGroupControlMessageBuilder_ == null) {
-          closedGroupControlMessage_ = com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.getDefaultInstance();
+          closedGroupControlMessage_ = SignalServiceProtos.DataMessage.ClosedGroupControlMessage.getDefaultInstance();
           onChanged();
         } else {
           closedGroupControlMessageBuilder_.clear();
@@ -15753,7 +15753,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataMessage.ClosedGroupControlMessage closedGroupControlMessage = 104;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Builder getClosedGroupControlMessageBuilder() {
+      public SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Builder getClosedGroupControlMessageBuilder() {
         bitField0_ |= 0x00000800;
         onChanged();
         return getClosedGroupControlMessageFieldBuilder().getBuilder();
@@ -15761,7 +15761,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataMessage.ClosedGroupControlMessage closedGroupControlMessage = 104;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessageOrBuilder getClosedGroupControlMessageOrBuilder() {
+      public SignalServiceProtos.DataMessage.ClosedGroupControlMessageOrBuilder getClosedGroupControlMessageOrBuilder() {
         if (closedGroupControlMessageBuilder_ != null) {
           return closedGroupControlMessageBuilder_.getMessageOrBuilder();
         } else {
@@ -15772,11 +15772,11 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.DataMessage.ClosedGroupControlMessage closedGroupControlMessage = 104;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessageOrBuilder> 
+          SignalServiceProtos.DataMessage.ClosedGroupControlMessage, SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Builder, SignalServiceProtos.DataMessage.ClosedGroupControlMessageOrBuilder>
           getClosedGroupControlMessageFieldBuilder() {
         if (closedGroupControlMessageBuilder_ == null) {
           closedGroupControlMessageBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.ClosedGroupControlMessageOrBuilder>(
+              SignalServiceProtos.DataMessage.ClosedGroupControlMessage, SignalServiceProtos.DataMessage.ClosedGroupControlMessage.Builder, SignalServiceProtos.DataMessage.ClosedGroupControlMessageOrBuilder>(
                   closedGroupControlMessage_,
                   getParentForChildren(),
                   isClean());
@@ -15860,9 +15860,9 @@ public final class SignalServiceProtos {
       }
 
       // optional .signalservice.DataMessage.Payment payment = 106;
-      private com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment payment_ = com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment.getDefaultInstance();
+      private SignalServiceProtos.DataMessage.Payment payment_ = SignalServiceProtos.DataMessage.Payment.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.PaymentOrBuilder> paymentBuilder_;
+          SignalServiceProtos.DataMessage.Payment, SignalServiceProtos.DataMessage.Payment.Builder, SignalServiceProtos.DataMessage.PaymentOrBuilder> paymentBuilder_;
       /**
        * <code>optional .signalservice.DataMessage.Payment payment = 106;</code>
        */
@@ -15872,7 +15872,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataMessage.Payment payment = 106;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment getPayment() {
+      public SignalServiceProtos.DataMessage.Payment getPayment() {
         if (paymentBuilder_ == null) {
           return payment_;
         } else {
@@ -15882,7 +15882,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataMessage.Payment payment = 106;</code>
        */
-      public Builder setPayment(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment value) {
+      public Builder setPayment(SignalServiceProtos.DataMessage.Payment value) {
         if (paymentBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -15899,7 +15899,7 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.DataMessage.Payment payment = 106;</code>
        */
       public Builder setPayment(
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment.Builder builderForValue) {
+          SignalServiceProtos.DataMessage.Payment.Builder builderForValue) {
         if (paymentBuilder_ == null) {
           payment_ = builderForValue.build();
           onChanged();
@@ -15912,12 +15912,12 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataMessage.Payment payment = 106;</code>
        */
-      public Builder mergePayment(com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment value) {
+      public Builder mergePayment(SignalServiceProtos.DataMessage.Payment value) {
         if (paymentBuilder_ == null) {
           if (((bitField0_ & 0x00002000) == 0x00002000) &&
-              payment_ != com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment.getDefaultInstance()) {
+              payment_ != SignalServiceProtos.DataMessage.Payment.getDefaultInstance()) {
             payment_ =
-              com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment.newBuilder(payment_).mergeFrom(value).buildPartial();
+              SignalServiceProtos.DataMessage.Payment.newBuilder(payment_).mergeFrom(value).buildPartial();
           } else {
             payment_ = value;
           }
@@ -15933,7 +15933,7 @@ public final class SignalServiceProtos {
        */
       public Builder clearPayment() {
         if (paymentBuilder_ == null) {
-          payment_ = com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment.getDefaultInstance();
+          payment_ = SignalServiceProtos.DataMessage.Payment.getDefaultInstance();
           onChanged();
         } else {
           paymentBuilder_.clear();
@@ -15944,7 +15944,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataMessage.Payment payment = 106;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment.Builder getPaymentBuilder() {
+      public SignalServiceProtos.DataMessage.Payment.Builder getPaymentBuilder() {
         bitField0_ |= 0x00002000;
         onChanged();
         return getPaymentFieldBuilder().getBuilder();
@@ -15952,7 +15952,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.DataMessage.Payment payment = 106;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.PaymentOrBuilder getPaymentOrBuilder() {
+      public SignalServiceProtos.DataMessage.PaymentOrBuilder getPaymentOrBuilder() {
         if (paymentBuilder_ != null) {
           return paymentBuilder_.getMessageOrBuilder();
         } else {
@@ -15963,11 +15963,11 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.DataMessage.Payment payment = 106;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.PaymentOrBuilder> 
+          SignalServiceProtos.DataMessage.Payment, SignalServiceProtos.DataMessage.Payment.Builder, SignalServiceProtos.DataMessage.PaymentOrBuilder>
           getPaymentFieldBuilder() {
         if (paymentBuilder_ == null) {
           paymentBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.Payment.Builder, com.beldex.libsignal.protos.SignalServiceProtos.DataMessage.PaymentOrBuilder>(
+              SignalServiceProtos.DataMessage.Payment, SignalServiceProtos.DataMessage.Payment.Builder, SignalServiceProtos.DataMessage.PaymentOrBuilder>(
                   payment_,
                   getParentForChildren(),
                   isClean());
@@ -16006,7 +16006,7 @@ public final class SignalServiceProtos {
      * @required
      * </pre>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type getType();
+    SignalServiceProtos.CallMessage.Type getType();
 
     // repeated string sdps = 2;
     /**
@@ -16142,7 +16142,7 @@ public final class SignalServiceProtos {
             }
             case 8: {
               int rawValue = input.readEnum();
-              com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type value = com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type.valueOf(rawValue);
+              SignalServiceProtos.CallMessage.Type value = SignalServiceProtos.CallMessage.Type.valueOf(rawValue);
               if (value == null) {
                 unknownFields.mergeVarintField(1, rawValue);
               } else {
@@ -16216,14 +16216,14 @@ public final class SignalServiceProtos {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_CallMessage_descriptor;
+      return SignalServiceProtos.internal_static_signalservice_CallMessage_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_CallMessage_fieldAccessorTable
+      return SignalServiceProtos.internal_static_signalservice_CallMessage_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.class, com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Builder.class);
+              SignalServiceProtos.CallMessage.class, SignalServiceProtos.CallMessage.Builder.class);
     }
 
     public static com.google.protobuf.Parser<CallMessage> PARSER =
@@ -16334,7 +16334,7 @@ public final class SignalServiceProtos {
       }
       public static final com.google.protobuf.Descriptors.EnumDescriptor
           getDescriptor() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.getDescriptor().getEnumTypes().get(0);
+        return SignalServiceProtos.CallMessage.getDescriptor().getEnumTypes().get(0);
       }
 
       private static final Type[] VALUES = values();
@@ -16362,7 +16362,7 @@ public final class SignalServiceProtos {
     private int bitField0_;
     // required .signalservice.CallMessage.Type type = 1;
     public static final int TYPE_FIELD_NUMBER = 1;
-    private com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type type_;
+    private SignalServiceProtos.CallMessage.Type type_;
     /**
      * <code>required .signalservice.CallMessage.Type type = 1;</code>
      *
@@ -16380,7 +16380,7 @@ public final class SignalServiceProtos {
      * @required
      * </pre>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type getType() {
+    public SignalServiceProtos.CallMessage.Type getType() {
       return type_;
     }
 
@@ -16523,7 +16523,7 @@ public final class SignalServiceProtos {
     }
 
     private void initFields() {
-      type_ = com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type.PRE_OFFER;
+      type_ = SignalServiceProtos.CallMessage.Type.PRE_OFFER;
       sdps_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       sdpMLineIndexes_ = java.util.Collections.emptyList();
       sdpMids_ = com.google.protobuf.LazyStringArrayList.EMPTY;
@@ -16620,53 +16620,53 @@ public final class SignalServiceProtos {
       return super.writeReplace();
     }
 
-    public static com.beldex.libsignal.protos.SignalServiceProtos.CallMessage parseFrom(
+    public static SignalServiceProtos.CallMessage parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.CallMessage parseFrom(
+    public static SignalServiceProtos.CallMessage parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.CallMessage parseFrom(byte[] data)
+    public static SignalServiceProtos.CallMessage parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.CallMessage parseFrom(
+    public static SignalServiceProtos.CallMessage parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.CallMessage parseFrom(java.io.InputStream input)
+    public static SignalServiceProtos.CallMessage parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.CallMessage parseFrom(
+    public static SignalServiceProtos.CallMessage parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.CallMessage parseDelimitedFrom(java.io.InputStream input)
+    public static SignalServiceProtos.CallMessage parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.CallMessage parseDelimitedFrom(
+    public static SignalServiceProtos.CallMessage parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.CallMessage parseFrom(
+    public static SignalServiceProtos.CallMessage parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.CallMessage parseFrom(
+    public static SignalServiceProtos.CallMessage parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -16675,7 +16675,7 @@ public final class SignalServiceProtos {
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.beldex.libsignal.protos.SignalServiceProtos.CallMessage prototype) {
+    public static Builder newBuilder(SignalServiceProtos.CallMessage prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
@@ -16691,17 +16691,17 @@ public final class SignalServiceProtos {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.beldex.libsignal.protos.SignalServiceProtos.CallMessageOrBuilder {
+       implements SignalServiceProtos.CallMessageOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_CallMessage_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_CallMessage_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_CallMessage_fieldAccessorTable
+        return SignalServiceProtos.internal_static_signalservice_CallMessage_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.class, com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Builder.class);
+                SignalServiceProtos.CallMessage.class, SignalServiceProtos.CallMessage.Builder.class);
       }
 
       // Construct using com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.newBuilder()
@@ -16724,7 +16724,7 @@ public final class SignalServiceProtos {
 
       public Builder clear() {
         super.clear();
-        type_ = com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type.PRE_OFFER;
+        type_ = SignalServiceProtos.CallMessage.Type.PRE_OFFER;
         bitField0_ = (bitField0_ & ~0x00000001);
         sdps_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -16743,23 +16743,23 @@ public final class SignalServiceProtos {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_CallMessage_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_CallMessage_descriptor;
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.CallMessage getDefaultInstanceForType() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.getDefaultInstance();
+      public SignalServiceProtos.CallMessage getDefaultInstanceForType() {
+        return SignalServiceProtos.CallMessage.getDefaultInstance();
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.CallMessage build() {
-        com.beldex.libsignal.protos.SignalServiceProtos.CallMessage result = buildPartial();
+      public SignalServiceProtos.CallMessage build() {
+        SignalServiceProtos.CallMessage result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.CallMessage buildPartial() {
-        com.beldex.libsignal.protos.SignalServiceProtos.CallMessage result = new com.beldex.libsignal.protos.SignalServiceProtos.CallMessage(this);
+      public SignalServiceProtos.CallMessage buildPartial() {
+        SignalServiceProtos.CallMessage result = new SignalServiceProtos.CallMessage(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -16793,16 +16793,16 @@ public final class SignalServiceProtos {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.beldex.libsignal.protos.SignalServiceProtos.CallMessage) {
-          return mergeFrom((com.beldex.libsignal.protos.SignalServiceProtos.CallMessage)other);
+        if (other instanceof SignalServiceProtos.CallMessage) {
+          return mergeFrom((SignalServiceProtos.CallMessage)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.beldex.libsignal.protos.SignalServiceProtos.CallMessage other) {
-        if (other == com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.getDefaultInstance()) return this;
+      public Builder mergeFrom(SignalServiceProtos.CallMessage other) {
+        if (other == SignalServiceProtos.CallMessage.getDefaultInstance()) return this;
         if (other.hasType()) {
           setType(other.getType());
         }
@@ -16861,11 +16861,11 @@ public final class SignalServiceProtos {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.beldex.libsignal.protos.SignalServiceProtos.CallMessage parsedMessage = null;
+        SignalServiceProtos.CallMessage parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.beldex.libsignal.protos.SignalServiceProtos.CallMessage) e.getUnfinishedMessage();
+          parsedMessage = (SignalServiceProtos.CallMessage) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -16877,7 +16877,7 @@ public final class SignalServiceProtos {
       private int bitField0_;
 
       // required .signalservice.CallMessage.Type type = 1;
-      private com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type type_ = com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type.PRE_OFFER;
+      private SignalServiceProtos.CallMessage.Type type_ = SignalServiceProtos.CallMessage.Type.PRE_OFFER;
       /**
        * <code>required .signalservice.CallMessage.Type type = 1;</code>
        *
@@ -16895,7 +16895,7 @@ public final class SignalServiceProtos {
        * @required
        * </pre>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type getType() {
+      public SignalServiceProtos.CallMessage.Type getType() {
         return type_;
       }
       /**
@@ -16905,7 +16905,7 @@ public final class SignalServiceProtos {
        * @required
        * </pre>
        */
-      public Builder setType(com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type value) {
+      public Builder setType(SignalServiceProtos.CallMessage.Type value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -16923,7 +16923,7 @@ public final class SignalServiceProtos {
        */
       public Builder clearType() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        type_ = com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type.PRE_OFFER;
+        type_ = SignalServiceProtos.CallMessage.Type.PRE_OFFER;
         onChanged();
         return this;
       }
@@ -17296,12 +17296,12 @@ public final class SignalServiceProtos {
     /**
      * <code>repeated .signalservice.ConfigurationMessage.ClosedGroup closedGroups = 1;</code>
      */
-    java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup> 
+    java.util.List<SignalServiceProtos.ConfigurationMessage.ClosedGroup>
         getClosedGroupsList();
     /**
      * <code>repeated .signalservice.ConfigurationMessage.ClosedGroup closedGroups = 1;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup getClosedGroups(int index);
+    SignalServiceProtos.ConfigurationMessage.ClosedGroup getClosedGroups(int index);
     /**
      * <code>repeated .signalservice.ConfigurationMessage.ClosedGroup closedGroups = 1;</code>
      */
@@ -17309,12 +17309,12 @@ public final class SignalServiceProtos {
     /**
      * <code>repeated .signalservice.ConfigurationMessage.ClosedGroup closedGroups = 1;</code>
      */
-    java.util.List<? extends com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroupOrBuilder> 
+    java.util.List<? extends SignalServiceProtos.ConfigurationMessage.ClosedGroupOrBuilder>
         getClosedGroupsOrBuilderList();
     /**
      * <code>repeated .signalservice.ConfigurationMessage.ClosedGroup closedGroups = 1;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroupOrBuilder getClosedGroupsOrBuilder(
+    SignalServiceProtos.ConfigurationMessage.ClosedGroupOrBuilder getClosedGroupsOrBuilder(
         int index);
 
     // repeated string openGroups = 2;
@@ -17381,12 +17381,12 @@ public final class SignalServiceProtos {
     /**
      * <code>repeated .signalservice.ConfigurationMessage.Contact contacts = 6;</code>
      */
-    java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact> 
+    java.util.List<SignalServiceProtos.ConfigurationMessage.Contact>
         getContactsList();
     /**
      * <code>repeated .signalservice.ConfigurationMessage.Contact contacts = 6;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact getContacts(int index);
+    SignalServiceProtos.ConfigurationMessage.Contact getContacts(int index);
     /**
      * <code>repeated .signalservice.ConfigurationMessage.Contact contacts = 6;</code>
      */
@@ -17394,12 +17394,12 @@ public final class SignalServiceProtos {
     /**
      * <code>repeated .signalservice.ConfigurationMessage.Contact contacts = 6;</code>
      */
-    java.util.List<? extends com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ContactOrBuilder> 
+    java.util.List<? extends SignalServiceProtos.ConfigurationMessage.ContactOrBuilder>
         getContactsOrBuilderList();
     /**
      * <code>repeated .signalservice.ConfigurationMessage.Contact contacts = 6;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ContactOrBuilder getContactsOrBuilder(
+    SignalServiceProtos.ConfigurationMessage.ContactOrBuilder getContactsOrBuilder(
         int index);
   }
   /**
@@ -17455,10 +17455,10 @@ public final class SignalServiceProtos {
             }
             case 10: {
               if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-                closedGroups_ = new java.util.ArrayList<com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup>();
+                closedGroups_ = new java.util.ArrayList<SignalServiceProtos.ConfigurationMessage.ClosedGroup>();
                 mutable_bitField0_ |= 0x00000001;
               }
-              closedGroups_.add(input.readMessage(com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup.PARSER, extensionRegistry));
+              closedGroups_.add(input.readMessage(SignalServiceProtos.ConfigurationMessage.ClosedGroup.PARSER, extensionRegistry));
               break;
             }
             case 18: {
@@ -17486,10 +17486,10 @@ public final class SignalServiceProtos {
             }
             case 50: {
               if (!((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
-                contacts_ = new java.util.ArrayList<com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact>();
+                contacts_ = new java.util.ArrayList<SignalServiceProtos.ConfigurationMessage.Contact>();
                 mutable_bitField0_ |= 0x00000020;
               }
-              contacts_.add(input.readMessage(com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact.PARSER, extensionRegistry));
+              contacts_.add(input.readMessage(SignalServiceProtos.ConfigurationMessage.Contact.PARSER, extensionRegistry));
               break;
             }
           }
@@ -17515,14 +17515,14 @@ public final class SignalServiceProtos {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_ConfigurationMessage_descriptor;
+      return SignalServiceProtos.internal_static_signalservice_ConfigurationMessage_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_ConfigurationMessage_fieldAccessorTable
+      return SignalServiceProtos.internal_static_signalservice_ConfigurationMessage_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.class, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Builder.class);
+              SignalServiceProtos.ConfigurationMessage.class, SignalServiceProtos.ConfigurationMessage.Builder.class);
     }
 
     public static com.google.protobuf.Parser<ConfigurationMessage> PARSER =
@@ -17576,11 +17576,11 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.KeyPair encryptionKeyPair = 3;</code>
        */
-      com.beldex.libsignal.protos.SignalServiceProtos.KeyPair getEncryptionKeyPair();
+      SignalServiceProtos.KeyPair getEncryptionKeyPair();
       /**
        * <code>optional .signalservice.KeyPair encryptionKeyPair = 3;</code>
        */
-      com.beldex.libsignal.protos.SignalServiceProtos.KeyPairOrBuilder getEncryptionKeyPairOrBuilder();
+      SignalServiceProtos.KeyPairOrBuilder getEncryptionKeyPairOrBuilder();
 
       // repeated bytes members = 4;
       /**
@@ -17682,11 +17682,11 @@ public final class SignalServiceProtos {
                 break;
               }
               case 26: {
-                com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.Builder subBuilder = null;
+                SignalServiceProtos.KeyPair.Builder subBuilder = null;
                 if (((bitField0_ & 0x00000004) == 0x00000004)) {
                   subBuilder = encryptionKeyPair_.toBuilder();
                 }
-                encryptionKeyPair_ = input.readMessage(com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.PARSER, extensionRegistry);
+                encryptionKeyPair_ = input.readMessage(SignalServiceProtos.KeyPair.PARSER, extensionRegistry);
                 if (subBuilder != null) {
                   subBuilder.mergeFrom(encryptionKeyPair_);
                   encryptionKeyPair_ = subBuilder.buildPartial();
@@ -17735,14 +17735,14 @@ public final class SignalServiceProtos {
       }
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_ConfigurationMessage_ClosedGroup_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_ConfigurationMessage_ClosedGroup_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_ConfigurationMessage_ClosedGroup_fieldAccessorTable
+        return SignalServiceProtos.internal_static_signalservice_ConfigurationMessage_ClosedGroup_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup.class, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup.Builder.class);
+                SignalServiceProtos.ConfigurationMessage.ClosedGroup.class, SignalServiceProtos.ConfigurationMessage.ClosedGroup.Builder.class);
       }
 
       public static com.google.protobuf.Parser<ClosedGroup> PARSER =
@@ -17822,7 +17822,7 @@ public final class SignalServiceProtos {
 
       // optional .signalservice.KeyPair encryptionKeyPair = 3;
       public static final int ENCRYPTIONKEYPAIR_FIELD_NUMBER = 3;
-      private com.beldex.libsignal.protos.SignalServiceProtos.KeyPair encryptionKeyPair_;
+      private SignalServiceProtos.KeyPair encryptionKeyPair_;
       /**
        * <code>optional .signalservice.KeyPair encryptionKeyPair = 3;</code>
        */
@@ -17832,13 +17832,13 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.KeyPair encryptionKeyPair = 3;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.KeyPair getEncryptionKeyPair() {
+      public SignalServiceProtos.KeyPair getEncryptionKeyPair() {
         return encryptionKeyPair_;
       }
       /**
        * <code>optional .signalservice.KeyPair encryptionKeyPair = 3;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.KeyPairOrBuilder getEncryptionKeyPairOrBuilder() {
+      public SignalServiceProtos.KeyPairOrBuilder getEncryptionKeyPairOrBuilder() {
         return encryptionKeyPair_;
       }
 
@@ -17907,7 +17907,7 @@ public final class SignalServiceProtos {
       private void initFields() {
         publicKey_ = com.google.protobuf.ByteString.EMPTY;
         name_ = "";
-        encryptionKeyPair_ = com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.getDefaultInstance();
+        encryptionKeyPair_ = SignalServiceProtos.KeyPair.getDefaultInstance();
         members_ = java.util.Collections.emptyList();
         admins_ = java.util.Collections.emptyList();
         expirationTimer_ = 0;
@@ -18003,53 +18003,53 @@ public final class SignalServiceProtos {
         return super.writeReplace();
       }
 
-      public static com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup parseFrom(
+      public static SignalServiceProtos.ConfigurationMessage.ClosedGroup parseFrom(
           com.google.protobuf.ByteString data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup parseFrom(
+      public static SignalServiceProtos.ConfigurationMessage.ClosedGroup parseFrom(
           com.google.protobuf.ByteString data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup parseFrom(byte[] data)
+      public static SignalServiceProtos.ConfigurationMessage.ClosedGroup parseFrom(byte[] data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup parseFrom(
+      public static SignalServiceProtos.ConfigurationMessage.ClosedGroup parseFrom(
           byte[] data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup parseFrom(java.io.InputStream input)
+      public static SignalServiceProtos.ConfigurationMessage.ClosedGroup parseFrom(java.io.InputStream input)
           throws java.io.IOException {
         return PARSER.parseFrom(input);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup parseFrom(
+      public static SignalServiceProtos.ConfigurationMessage.ClosedGroup parseFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return PARSER.parseFrom(input, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup parseDelimitedFrom(java.io.InputStream input)
+      public static SignalServiceProtos.ConfigurationMessage.ClosedGroup parseDelimitedFrom(java.io.InputStream input)
           throws java.io.IOException {
         return PARSER.parseDelimitedFrom(input);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup parseDelimitedFrom(
+      public static SignalServiceProtos.ConfigurationMessage.ClosedGroup parseDelimitedFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return PARSER.parseDelimitedFrom(input, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup parseFrom(
+      public static SignalServiceProtos.ConfigurationMessage.ClosedGroup parseFrom(
           com.google.protobuf.CodedInputStream input)
           throws java.io.IOException {
         return PARSER.parseFrom(input);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup parseFrom(
+      public static SignalServiceProtos.ConfigurationMessage.ClosedGroup parseFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -18058,7 +18058,7 @@ public final class SignalServiceProtos {
 
       public static Builder newBuilder() { return Builder.create(); }
       public Builder newBuilderForType() { return newBuilder(); }
-      public static Builder newBuilder(com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup prototype) {
+      public static Builder newBuilder(SignalServiceProtos.ConfigurationMessage.ClosedGroup prototype) {
         return newBuilder().mergeFrom(prototype);
       }
       public Builder toBuilder() { return newBuilder(this); }
@@ -18074,17 +18074,17 @@ public final class SignalServiceProtos {
        */
       public static final class Builder extends
           com.google.protobuf.GeneratedMessage.Builder<Builder>
-         implements com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroupOrBuilder {
+         implements SignalServiceProtos.ConfigurationMessage.ClosedGroupOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_ConfigurationMessage_ClosedGroup_descriptor;
+          return SignalServiceProtos.internal_static_signalservice_ConfigurationMessage_ClosedGroup_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_ConfigurationMessage_ClosedGroup_fieldAccessorTable
+          return SignalServiceProtos.internal_static_signalservice_ConfigurationMessage_ClosedGroup_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup.class, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup.Builder.class);
+                  SignalServiceProtos.ConfigurationMessage.ClosedGroup.class, SignalServiceProtos.ConfigurationMessage.ClosedGroup.Builder.class);
         }
 
         // Construct using com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup.newBuilder()
@@ -18113,7 +18113,7 @@ public final class SignalServiceProtos {
           name_ = "";
           bitField0_ = (bitField0_ & ~0x00000002);
           if (encryptionKeyPairBuilder_ == null) {
-            encryptionKeyPair_ = com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.getDefaultInstance();
+            encryptionKeyPair_ = SignalServiceProtos.KeyPair.getDefaultInstance();
           } else {
             encryptionKeyPairBuilder_.clear();
           }
@@ -18133,23 +18133,23 @@ public final class SignalServiceProtos {
 
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_ConfigurationMessage_ClosedGroup_descriptor;
+          return SignalServiceProtos.internal_static_signalservice_ConfigurationMessage_ClosedGroup_descriptor;
         }
 
-        public com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup getDefaultInstanceForType() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup.getDefaultInstance();
+        public SignalServiceProtos.ConfigurationMessage.ClosedGroup getDefaultInstanceForType() {
+          return SignalServiceProtos.ConfigurationMessage.ClosedGroup.getDefaultInstance();
         }
 
-        public com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup build() {
-          com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup result = buildPartial();
+        public SignalServiceProtos.ConfigurationMessage.ClosedGroup build() {
+          SignalServiceProtos.ConfigurationMessage.ClosedGroup result = buildPartial();
           if (!result.isInitialized()) {
             throw newUninitializedMessageException(result);
           }
           return result;
         }
 
-        public com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup buildPartial() {
-          com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup result = new com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup(this);
+        public SignalServiceProtos.ConfigurationMessage.ClosedGroup buildPartial() {
+          SignalServiceProtos.ConfigurationMessage.ClosedGroup result = new SignalServiceProtos.ConfigurationMessage.ClosedGroup(this);
           int from_bitField0_ = bitField0_;
           int to_bitField0_ = 0;
           if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -18188,16 +18188,16 @@ public final class SignalServiceProtos {
         }
 
         public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup) {
-            return mergeFrom((com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup)other);
+          if (other instanceof SignalServiceProtos.ConfigurationMessage.ClosedGroup) {
+            return mergeFrom((SignalServiceProtos.ConfigurationMessage.ClosedGroup)other);
           } else {
             super.mergeFrom(other);
             return this;
           }
         }
 
-        public Builder mergeFrom(com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup other) {
-          if (other == com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup.getDefaultInstance()) return this;
+        public Builder mergeFrom(SignalServiceProtos.ConfigurationMessage.ClosedGroup other) {
+          if (other == SignalServiceProtos.ConfigurationMessage.ClosedGroup.getDefaultInstance()) return this;
           if (other.hasPublicKey()) {
             setPublicKey(other.getPublicKey());
           }
@@ -18250,11 +18250,11 @@ public final class SignalServiceProtos {
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-          com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup parsedMessage = null;
+          SignalServiceProtos.ConfigurationMessage.ClosedGroup parsedMessage = null;
           try {
             parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
           } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            parsedMessage = (com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup) e.getUnfinishedMessage();
+            parsedMessage = (SignalServiceProtos.ConfigurationMessage.ClosedGroup) e.getUnfinishedMessage();
             throw e;
           } finally {
             if (parsedMessage != null) {
@@ -18376,9 +18376,9 @@ public final class SignalServiceProtos {
         }
 
         // optional .signalservice.KeyPair encryptionKeyPair = 3;
-        private com.beldex.libsignal.protos.SignalServiceProtos.KeyPair encryptionKeyPair_ = com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.getDefaultInstance();
+        private SignalServiceProtos.KeyPair encryptionKeyPair_ = SignalServiceProtos.KeyPair.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
-            com.beldex.libsignal.protos.SignalServiceProtos.KeyPair, com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.Builder, com.beldex.libsignal.protos.SignalServiceProtos.KeyPairOrBuilder> encryptionKeyPairBuilder_;
+            SignalServiceProtos.KeyPair, SignalServiceProtos.KeyPair.Builder, SignalServiceProtos.KeyPairOrBuilder> encryptionKeyPairBuilder_;
         /**
          * <code>optional .signalservice.KeyPair encryptionKeyPair = 3;</code>
          */
@@ -18388,7 +18388,7 @@ public final class SignalServiceProtos {
         /**
          * <code>optional .signalservice.KeyPair encryptionKeyPair = 3;</code>
          */
-        public com.beldex.libsignal.protos.SignalServiceProtos.KeyPair getEncryptionKeyPair() {
+        public SignalServiceProtos.KeyPair getEncryptionKeyPair() {
           if (encryptionKeyPairBuilder_ == null) {
             return encryptionKeyPair_;
           } else {
@@ -18398,7 +18398,7 @@ public final class SignalServiceProtos {
         /**
          * <code>optional .signalservice.KeyPair encryptionKeyPair = 3;</code>
          */
-        public Builder setEncryptionKeyPair(com.beldex.libsignal.protos.SignalServiceProtos.KeyPair value) {
+        public Builder setEncryptionKeyPair(SignalServiceProtos.KeyPair value) {
           if (encryptionKeyPairBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
@@ -18415,7 +18415,7 @@ public final class SignalServiceProtos {
          * <code>optional .signalservice.KeyPair encryptionKeyPair = 3;</code>
          */
         public Builder setEncryptionKeyPair(
-            com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.Builder builderForValue) {
+            SignalServiceProtos.KeyPair.Builder builderForValue) {
           if (encryptionKeyPairBuilder_ == null) {
             encryptionKeyPair_ = builderForValue.build();
             onChanged();
@@ -18428,12 +18428,12 @@ public final class SignalServiceProtos {
         /**
          * <code>optional .signalservice.KeyPair encryptionKeyPair = 3;</code>
          */
-        public Builder mergeEncryptionKeyPair(com.beldex.libsignal.protos.SignalServiceProtos.KeyPair value) {
+        public Builder mergeEncryptionKeyPair(SignalServiceProtos.KeyPair value) {
           if (encryptionKeyPairBuilder_ == null) {
             if (((bitField0_ & 0x00000004) == 0x00000004) &&
-                encryptionKeyPair_ != com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.getDefaultInstance()) {
+                encryptionKeyPair_ != SignalServiceProtos.KeyPair.getDefaultInstance()) {
               encryptionKeyPair_ =
-                com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.newBuilder(encryptionKeyPair_).mergeFrom(value).buildPartial();
+                SignalServiceProtos.KeyPair.newBuilder(encryptionKeyPair_).mergeFrom(value).buildPartial();
             } else {
               encryptionKeyPair_ = value;
             }
@@ -18449,7 +18449,7 @@ public final class SignalServiceProtos {
          */
         public Builder clearEncryptionKeyPair() {
           if (encryptionKeyPairBuilder_ == null) {
-            encryptionKeyPair_ = com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.getDefaultInstance();
+            encryptionKeyPair_ = SignalServiceProtos.KeyPair.getDefaultInstance();
             onChanged();
           } else {
             encryptionKeyPairBuilder_.clear();
@@ -18460,7 +18460,7 @@ public final class SignalServiceProtos {
         /**
          * <code>optional .signalservice.KeyPair encryptionKeyPair = 3;</code>
          */
-        public com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.Builder getEncryptionKeyPairBuilder() {
+        public SignalServiceProtos.KeyPair.Builder getEncryptionKeyPairBuilder() {
           bitField0_ |= 0x00000004;
           onChanged();
           return getEncryptionKeyPairFieldBuilder().getBuilder();
@@ -18468,7 +18468,7 @@ public final class SignalServiceProtos {
         /**
          * <code>optional .signalservice.KeyPair encryptionKeyPair = 3;</code>
          */
-        public com.beldex.libsignal.protos.SignalServiceProtos.KeyPairOrBuilder getEncryptionKeyPairOrBuilder() {
+        public SignalServiceProtos.KeyPairOrBuilder getEncryptionKeyPairOrBuilder() {
           if (encryptionKeyPairBuilder_ != null) {
             return encryptionKeyPairBuilder_.getMessageOrBuilder();
           } else {
@@ -18479,11 +18479,11 @@ public final class SignalServiceProtos {
          * <code>optional .signalservice.KeyPair encryptionKeyPair = 3;</code>
          */
         private com.google.protobuf.SingleFieldBuilder<
-            com.beldex.libsignal.protos.SignalServiceProtos.KeyPair, com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.Builder, com.beldex.libsignal.protos.SignalServiceProtos.KeyPairOrBuilder> 
+            SignalServiceProtos.KeyPair, SignalServiceProtos.KeyPair.Builder, SignalServiceProtos.KeyPairOrBuilder>
             getEncryptionKeyPairFieldBuilder() {
           if (encryptionKeyPairBuilder_ == null) {
             encryptionKeyPairBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-                com.beldex.libsignal.protos.SignalServiceProtos.KeyPair, com.beldex.libsignal.protos.SignalServiceProtos.KeyPair.Builder, com.beldex.libsignal.protos.SignalServiceProtos.KeyPairOrBuilder>(
+                SignalServiceProtos.KeyPair, SignalServiceProtos.KeyPair.Builder, SignalServiceProtos.KeyPairOrBuilder>(
                     encryptionKeyPair_,
                     getParentForChildren(),
                     isClean());
@@ -18883,14 +18883,14 @@ public final class SignalServiceProtos {
       }
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_ConfigurationMessage_Contact_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_ConfigurationMessage_Contact_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_ConfigurationMessage_Contact_fieldAccessorTable
+        return SignalServiceProtos.internal_static_signalservice_ConfigurationMessage_Contact_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact.class, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact.Builder.class);
+                SignalServiceProtos.ConfigurationMessage.Contact.class, SignalServiceProtos.ConfigurationMessage.Contact.Builder.class);
       }
 
       public static com.google.protobuf.Parser<Contact> PARSER =
@@ -19194,53 +19194,53 @@ public final class SignalServiceProtos {
         return super.writeReplace();
       }
 
-      public static com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact parseFrom(
+      public static SignalServiceProtos.ConfigurationMessage.Contact parseFrom(
           com.google.protobuf.ByteString data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact parseFrom(
+      public static SignalServiceProtos.ConfigurationMessage.Contact parseFrom(
           com.google.protobuf.ByteString data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact parseFrom(byte[] data)
+      public static SignalServiceProtos.ConfigurationMessage.Contact parseFrom(byte[] data)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact parseFrom(
+      public static SignalServiceProtos.ConfigurationMessage.Contact parseFrom(
           byte[] data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact parseFrom(java.io.InputStream input)
+      public static SignalServiceProtos.ConfigurationMessage.Contact parseFrom(java.io.InputStream input)
           throws java.io.IOException {
         return PARSER.parseFrom(input);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact parseFrom(
+      public static SignalServiceProtos.ConfigurationMessage.Contact parseFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return PARSER.parseFrom(input, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact parseDelimitedFrom(java.io.InputStream input)
+      public static SignalServiceProtos.ConfigurationMessage.Contact parseDelimitedFrom(java.io.InputStream input)
           throws java.io.IOException {
         return PARSER.parseDelimitedFrom(input);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact parseDelimitedFrom(
+      public static SignalServiceProtos.ConfigurationMessage.Contact parseDelimitedFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         return PARSER.parseDelimitedFrom(input, extensionRegistry);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact parseFrom(
+      public static SignalServiceProtos.ConfigurationMessage.Contact parseFrom(
           com.google.protobuf.CodedInputStream input)
           throws java.io.IOException {
         return PARSER.parseFrom(input);
       }
-      public static com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact parseFrom(
+      public static SignalServiceProtos.ConfigurationMessage.Contact parseFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -19249,7 +19249,7 @@ public final class SignalServiceProtos {
 
       public static Builder newBuilder() { return Builder.create(); }
       public Builder newBuilderForType() { return newBuilder(); }
-      public static Builder newBuilder(com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact prototype) {
+      public static Builder newBuilder(SignalServiceProtos.ConfigurationMessage.Contact prototype) {
         return newBuilder().mergeFrom(prototype);
       }
       public Builder toBuilder() { return newBuilder(this); }
@@ -19265,17 +19265,17 @@ public final class SignalServiceProtos {
        */
       public static final class Builder extends
           com.google.protobuf.GeneratedMessage.Builder<Builder>
-         implements com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ContactOrBuilder {
+         implements SignalServiceProtos.ConfigurationMessage.ContactOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_ConfigurationMessage_Contact_descriptor;
+          return SignalServiceProtos.internal_static_signalservice_ConfigurationMessage_Contact_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_ConfigurationMessage_Contact_fieldAccessorTable
+          return SignalServiceProtos.internal_static_signalservice_ConfigurationMessage_Contact_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact.class, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact.Builder.class);
+                  SignalServiceProtos.ConfigurationMessage.Contact.class, SignalServiceProtos.ConfigurationMessage.Contact.Builder.class);
         }
 
         // Construct using com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact.newBuilder()
@@ -19321,23 +19321,23 @@ public final class SignalServiceProtos {
 
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_ConfigurationMessage_Contact_descriptor;
+          return SignalServiceProtos.internal_static_signalservice_ConfigurationMessage_Contact_descriptor;
         }
 
-        public com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact getDefaultInstanceForType() {
-          return com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact.getDefaultInstance();
+        public SignalServiceProtos.ConfigurationMessage.Contact getDefaultInstanceForType() {
+          return SignalServiceProtos.ConfigurationMessage.Contact.getDefaultInstance();
         }
 
-        public com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact build() {
-          com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact result = buildPartial();
+        public SignalServiceProtos.ConfigurationMessage.Contact build() {
+          SignalServiceProtos.ConfigurationMessage.Contact result = buildPartial();
           if (!result.isInitialized()) {
             throw newUninitializedMessageException(result);
           }
           return result;
         }
 
-        public com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact buildPartial() {
-          com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact result = new com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact(this);
+        public SignalServiceProtos.ConfigurationMessage.Contact buildPartial() {
+          SignalServiceProtos.ConfigurationMessage.Contact result = new SignalServiceProtos.ConfigurationMessage.Contact(this);
           int from_bitField0_ = bitField0_;
           int to_bitField0_ = 0;
           if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -19374,16 +19374,16 @@ public final class SignalServiceProtos {
         }
 
         public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact) {
-            return mergeFrom((com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact)other);
+          if (other instanceof SignalServiceProtos.ConfigurationMessage.Contact) {
+            return mergeFrom((SignalServiceProtos.ConfigurationMessage.Contact)other);
           } else {
             super.mergeFrom(other);
             return this;
           }
         }
 
-        public Builder mergeFrom(com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact other) {
-          if (other == com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact.getDefaultInstance()) return this;
+        public Builder mergeFrom(SignalServiceProtos.ConfigurationMessage.Contact other) {
+          if (other == SignalServiceProtos.ConfigurationMessage.Contact.getDefaultInstance()) return this;
           if (other.hasPublicKey()) {
             setPublicKey(other.getPublicKey());
           }
@@ -19429,11 +19429,11 @@ public final class SignalServiceProtos {
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-          com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact parsedMessage = null;
+          SignalServiceProtos.ConfigurationMessage.Contact parsedMessage = null;
           try {
             parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
           } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            parsedMessage = (com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact) e.getUnfinishedMessage();
+            parsedMessage = (SignalServiceProtos.ConfigurationMessage.Contact) e.getUnfinishedMessage();
             throw e;
           } finally {
             if (parsedMessage != null) {
@@ -19817,17 +19817,17 @@ public final class SignalServiceProtos {
     private int bitField0_;
     // repeated .signalservice.ConfigurationMessage.ClosedGroup closedGroups = 1;
     public static final int CLOSEDGROUPS_FIELD_NUMBER = 1;
-    private java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup> closedGroups_;
+    private java.util.List<SignalServiceProtos.ConfigurationMessage.ClosedGroup> closedGroups_;
     /**
      * <code>repeated .signalservice.ConfigurationMessage.ClosedGroup closedGroups = 1;</code>
      */
-    public java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup> getClosedGroupsList() {
+    public java.util.List<SignalServiceProtos.ConfigurationMessage.ClosedGroup> getClosedGroupsList() {
       return closedGroups_;
     }
     /**
      * <code>repeated .signalservice.ConfigurationMessage.ClosedGroup closedGroups = 1;</code>
      */
-    public java.util.List<? extends com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroupOrBuilder> 
+    public java.util.List<? extends SignalServiceProtos.ConfigurationMessage.ClosedGroupOrBuilder>
         getClosedGroupsOrBuilderList() {
       return closedGroups_;
     }
@@ -19840,13 +19840,13 @@ public final class SignalServiceProtos {
     /**
      * <code>repeated .signalservice.ConfigurationMessage.ClosedGroup closedGroups = 1;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup getClosedGroups(int index) {
+    public SignalServiceProtos.ConfigurationMessage.ClosedGroup getClosedGroups(int index) {
       return closedGroups_.get(index);
     }
     /**
      * <code>repeated .signalservice.ConfigurationMessage.ClosedGroup closedGroups = 1;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroupOrBuilder getClosedGroupsOrBuilder(
+    public SignalServiceProtos.ConfigurationMessage.ClosedGroupOrBuilder getClosedGroupsOrBuilder(
         int index) {
       return closedGroups_.get(index);
     }
@@ -19985,17 +19985,17 @@ public final class SignalServiceProtos {
 
     // repeated .signalservice.ConfigurationMessage.Contact contacts = 6;
     public static final int CONTACTS_FIELD_NUMBER = 6;
-    private java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact> contacts_;
+    private java.util.List<SignalServiceProtos.ConfigurationMessage.Contact> contacts_;
     /**
      * <code>repeated .signalservice.ConfigurationMessage.Contact contacts = 6;</code>
      */
-    public java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact> getContactsList() {
+    public java.util.List<SignalServiceProtos.ConfigurationMessage.Contact> getContactsList() {
       return contacts_;
     }
     /**
      * <code>repeated .signalservice.ConfigurationMessage.Contact contacts = 6;</code>
      */
-    public java.util.List<? extends com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ContactOrBuilder> 
+    public java.util.List<? extends SignalServiceProtos.ConfigurationMessage.ContactOrBuilder>
         getContactsOrBuilderList() {
       return contacts_;
     }
@@ -20008,13 +20008,13 @@ public final class SignalServiceProtos {
     /**
      * <code>repeated .signalservice.ConfigurationMessage.Contact contacts = 6;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact getContacts(int index) {
+    public SignalServiceProtos.ConfigurationMessage.Contact getContacts(int index) {
       return contacts_.get(index);
     }
     /**
      * <code>repeated .signalservice.ConfigurationMessage.Contact contacts = 6;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ContactOrBuilder getContactsOrBuilder(
+    public SignalServiceProtos.ConfigurationMessage.ContactOrBuilder getContactsOrBuilder(
         int index) {
       return contacts_.get(index);
     }
@@ -20119,53 +20119,53 @@ public final class SignalServiceProtos {
       return super.writeReplace();
     }
 
-    public static com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage parseFrom(
+    public static SignalServiceProtos.ConfigurationMessage parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage parseFrom(
+    public static SignalServiceProtos.ConfigurationMessage parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage parseFrom(byte[] data)
+    public static SignalServiceProtos.ConfigurationMessage parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage parseFrom(
+    public static SignalServiceProtos.ConfigurationMessage parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage parseFrom(java.io.InputStream input)
+    public static SignalServiceProtos.ConfigurationMessage parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage parseFrom(
+    public static SignalServiceProtos.ConfigurationMessage parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage parseDelimitedFrom(java.io.InputStream input)
+    public static SignalServiceProtos.ConfigurationMessage parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage parseDelimitedFrom(
+    public static SignalServiceProtos.ConfigurationMessage parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage parseFrom(
+    public static SignalServiceProtos.ConfigurationMessage parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage parseFrom(
+    public static SignalServiceProtos.ConfigurationMessage parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -20174,7 +20174,7 @@ public final class SignalServiceProtos {
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage prototype) {
+    public static Builder newBuilder(SignalServiceProtos.ConfigurationMessage prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
@@ -20190,17 +20190,17 @@ public final class SignalServiceProtos {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessageOrBuilder {
+       implements SignalServiceProtos.ConfigurationMessageOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_ConfigurationMessage_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_ConfigurationMessage_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_ConfigurationMessage_fieldAccessorTable
+        return SignalServiceProtos.internal_static_signalservice_ConfigurationMessage_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.class, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Builder.class);
+                SignalServiceProtos.ConfigurationMessage.class, SignalServiceProtos.ConfigurationMessage.Builder.class);
       }
 
       // Construct using com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.newBuilder()
@@ -20254,23 +20254,23 @@ public final class SignalServiceProtos {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_ConfigurationMessage_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_ConfigurationMessage_descriptor;
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage getDefaultInstanceForType() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.getDefaultInstance();
+      public SignalServiceProtos.ConfigurationMessage getDefaultInstanceForType() {
+        return SignalServiceProtos.ConfigurationMessage.getDefaultInstance();
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage build() {
-        com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage result = buildPartial();
+      public SignalServiceProtos.ConfigurationMessage build() {
+        SignalServiceProtos.ConfigurationMessage result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage buildPartial() {
-        com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage result = new com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage(this);
+      public SignalServiceProtos.ConfigurationMessage buildPartial() {
+        SignalServiceProtos.ConfigurationMessage result = new SignalServiceProtos.ConfigurationMessage(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (closedGroupsBuilder_ == null) {
@@ -20315,16 +20315,16 @@ public final class SignalServiceProtos {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage) {
-          return mergeFrom((com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage)other);
+        if (other instanceof SignalServiceProtos.ConfigurationMessage) {
+          return mergeFrom((SignalServiceProtos.ConfigurationMessage)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage other) {
-        if (other == com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.getDefaultInstance()) return this;
+      public Builder mergeFrom(SignalServiceProtos.ConfigurationMessage other) {
+        if (other == SignalServiceProtos.ConfigurationMessage.getDefaultInstance()) return this;
         if (closedGroupsBuilder_ == null) {
           if (!other.closedGroups_.isEmpty()) {
             if (closedGroups_.isEmpty()) {
@@ -20424,11 +20424,11 @@ public final class SignalServiceProtos {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage parsedMessage = null;
+        SignalServiceProtos.ConfigurationMessage parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage) e.getUnfinishedMessage();
+          parsedMessage = (SignalServiceProtos.ConfigurationMessage) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -20440,22 +20440,22 @@ public final class SignalServiceProtos {
       private int bitField0_;
 
       // repeated .signalservice.ConfigurationMessage.ClosedGroup closedGroups = 1;
-      private java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup> closedGroups_ =
+      private java.util.List<SignalServiceProtos.ConfigurationMessage.ClosedGroup> closedGroups_ =
         java.util.Collections.emptyList();
       private void ensureClosedGroupsIsMutable() {
         if (!((bitField0_ & 0x00000001) == 0x00000001)) {
-          closedGroups_ = new java.util.ArrayList<com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup>(closedGroups_);
+          closedGroups_ = new java.util.ArrayList<SignalServiceProtos.ConfigurationMessage.ClosedGroup>(closedGroups_);
           bitField0_ |= 0x00000001;
          }
       }
 
       private com.google.protobuf.RepeatedFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup.Builder, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroupOrBuilder> closedGroupsBuilder_;
+          SignalServiceProtos.ConfigurationMessage.ClosedGroup, SignalServiceProtos.ConfigurationMessage.ClosedGroup.Builder, SignalServiceProtos.ConfigurationMessage.ClosedGroupOrBuilder> closedGroupsBuilder_;
 
       /**
        * <code>repeated .signalservice.ConfigurationMessage.ClosedGroup closedGroups = 1;</code>
        */
-      public java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup> getClosedGroupsList() {
+      public java.util.List<SignalServiceProtos.ConfigurationMessage.ClosedGroup> getClosedGroupsList() {
         if (closedGroupsBuilder_ == null) {
           return java.util.Collections.unmodifiableList(closedGroups_);
         } else {
@@ -20475,7 +20475,7 @@ public final class SignalServiceProtos {
       /**
        * <code>repeated .signalservice.ConfigurationMessage.ClosedGroup closedGroups = 1;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup getClosedGroups(int index) {
+      public SignalServiceProtos.ConfigurationMessage.ClosedGroup getClosedGroups(int index) {
         if (closedGroupsBuilder_ == null) {
           return closedGroups_.get(index);
         } else {
@@ -20486,7 +20486,7 @@ public final class SignalServiceProtos {
        * <code>repeated .signalservice.ConfigurationMessage.ClosedGroup closedGroups = 1;</code>
        */
       public Builder setClosedGroups(
-          int index, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup value) {
+          int index, SignalServiceProtos.ConfigurationMessage.ClosedGroup value) {
         if (closedGroupsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -20503,7 +20503,7 @@ public final class SignalServiceProtos {
        * <code>repeated .signalservice.ConfigurationMessage.ClosedGroup closedGroups = 1;</code>
        */
       public Builder setClosedGroups(
-          int index, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup.Builder builderForValue) {
+          int index, SignalServiceProtos.ConfigurationMessage.ClosedGroup.Builder builderForValue) {
         if (closedGroupsBuilder_ == null) {
           ensureClosedGroupsIsMutable();
           closedGroups_.set(index, builderForValue.build());
@@ -20516,7 +20516,7 @@ public final class SignalServiceProtos {
       /**
        * <code>repeated .signalservice.ConfigurationMessage.ClosedGroup closedGroups = 1;</code>
        */
-      public Builder addClosedGroups(com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup value) {
+      public Builder addClosedGroups(SignalServiceProtos.ConfigurationMessage.ClosedGroup value) {
         if (closedGroupsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -20533,7 +20533,7 @@ public final class SignalServiceProtos {
        * <code>repeated .signalservice.ConfigurationMessage.ClosedGroup closedGroups = 1;</code>
        */
       public Builder addClosedGroups(
-          int index, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup value) {
+          int index, SignalServiceProtos.ConfigurationMessage.ClosedGroup value) {
         if (closedGroupsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -20550,7 +20550,7 @@ public final class SignalServiceProtos {
        * <code>repeated .signalservice.ConfigurationMessage.ClosedGroup closedGroups = 1;</code>
        */
       public Builder addClosedGroups(
-          com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup.Builder builderForValue) {
+          SignalServiceProtos.ConfigurationMessage.ClosedGroup.Builder builderForValue) {
         if (closedGroupsBuilder_ == null) {
           ensureClosedGroupsIsMutable();
           closedGroups_.add(builderForValue.build());
@@ -20564,7 +20564,7 @@ public final class SignalServiceProtos {
        * <code>repeated .signalservice.ConfigurationMessage.ClosedGroup closedGroups = 1;</code>
        */
       public Builder addClosedGroups(
-          int index, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup.Builder builderForValue) {
+          int index, SignalServiceProtos.ConfigurationMessage.ClosedGroup.Builder builderForValue) {
         if (closedGroupsBuilder_ == null) {
           ensureClosedGroupsIsMutable();
           closedGroups_.add(index, builderForValue.build());
@@ -20578,7 +20578,7 @@ public final class SignalServiceProtos {
        * <code>repeated .signalservice.ConfigurationMessage.ClosedGroup closedGroups = 1;</code>
        */
       public Builder addAllClosedGroups(
-          java.lang.Iterable<? extends com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup> values) {
+          java.lang.Iterable<? extends SignalServiceProtos.ConfigurationMessage.ClosedGroup> values) {
         if (closedGroupsBuilder_ == null) {
           ensureClosedGroupsIsMutable();
           super.addAll(values, closedGroups_);
@@ -20617,14 +20617,14 @@ public final class SignalServiceProtos {
       /**
        * <code>repeated .signalservice.ConfigurationMessage.ClosedGroup closedGroups = 1;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup.Builder getClosedGroupsBuilder(
+      public SignalServiceProtos.ConfigurationMessage.ClosedGroup.Builder getClosedGroupsBuilder(
           int index) {
         return getClosedGroupsFieldBuilder().getBuilder(index);
       }
       /**
        * <code>repeated .signalservice.ConfigurationMessage.ClosedGroup closedGroups = 1;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroupOrBuilder getClosedGroupsOrBuilder(
+      public SignalServiceProtos.ConfigurationMessage.ClosedGroupOrBuilder getClosedGroupsOrBuilder(
           int index) {
         if (closedGroupsBuilder_ == null) {
           return closedGroups_.get(index);  } else {
@@ -20634,7 +20634,7 @@ public final class SignalServiceProtos {
       /**
        * <code>repeated .signalservice.ConfigurationMessage.ClosedGroup closedGroups = 1;</code>
        */
-      public java.util.List<? extends com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroupOrBuilder> 
+      public java.util.List<? extends SignalServiceProtos.ConfigurationMessage.ClosedGroupOrBuilder>
            getClosedGroupsOrBuilderList() {
         if (closedGroupsBuilder_ != null) {
           return closedGroupsBuilder_.getMessageOrBuilderList();
@@ -20645,31 +20645,31 @@ public final class SignalServiceProtos {
       /**
        * <code>repeated .signalservice.ConfigurationMessage.ClosedGroup closedGroups = 1;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup.Builder addClosedGroupsBuilder() {
+      public SignalServiceProtos.ConfigurationMessage.ClosedGroup.Builder addClosedGroupsBuilder() {
         return getClosedGroupsFieldBuilder().addBuilder(
-            com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup.getDefaultInstance());
+            SignalServiceProtos.ConfigurationMessage.ClosedGroup.getDefaultInstance());
       }
       /**
        * <code>repeated .signalservice.ConfigurationMessage.ClosedGroup closedGroups = 1;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup.Builder addClosedGroupsBuilder(
+      public SignalServiceProtos.ConfigurationMessage.ClosedGroup.Builder addClosedGroupsBuilder(
           int index) {
         return getClosedGroupsFieldBuilder().addBuilder(
-            index, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup.getDefaultInstance());
+            index, SignalServiceProtos.ConfigurationMessage.ClosedGroup.getDefaultInstance());
       }
       /**
        * <code>repeated .signalservice.ConfigurationMessage.ClosedGroup closedGroups = 1;</code>
        */
-      public java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup.Builder> 
+      public java.util.List<SignalServiceProtos.ConfigurationMessage.ClosedGroup.Builder>
            getClosedGroupsBuilderList() {
         return getClosedGroupsFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup.Builder, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroupOrBuilder> 
+          SignalServiceProtos.ConfigurationMessage.ClosedGroup, SignalServiceProtos.ConfigurationMessage.ClosedGroup.Builder, SignalServiceProtos.ConfigurationMessage.ClosedGroupOrBuilder>
           getClosedGroupsFieldBuilder() {
         if (closedGroupsBuilder_ == null) {
           closedGroupsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-              com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroup.Builder, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ClosedGroupOrBuilder>(
+              SignalServiceProtos.ConfigurationMessage.ClosedGroup, SignalServiceProtos.ConfigurationMessage.ClosedGroup.Builder, SignalServiceProtos.ConfigurationMessage.ClosedGroupOrBuilder>(
                   closedGroups_,
                   ((bitField0_ & 0x00000001) == 0x00000001),
                   getParentForChildren(),
@@ -20957,22 +20957,22 @@ public final class SignalServiceProtos {
       }
 
       // repeated .signalservice.ConfigurationMessage.Contact contacts = 6;
-      private java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact> contacts_ =
+      private java.util.List<SignalServiceProtos.ConfigurationMessage.Contact> contacts_ =
         java.util.Collections.emptyList();
       private void ensureContactsIsMutable() {
         if (!((bitField0_ & 0x00000020) == 0x00000020)) {
-          contacts_ = new java.util.ArrayList<com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact>(contacts_);
+          contacts_ = new java.util.ArrayList<SignalServiceProtos.ConfigurationMessage.Contact>(contacts_);
           bitField0_ |= 0x00000020;
          }
       }
 
       private com.google.protobuf.RepeatedFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact.Builder, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ContactOrBuilder> contactsBuilder_;
+          SignalServiceProtos.ConfigurationMessage.Contact, SignalServiceProtos.ConfigurationMessage.Contact.Builder, SignalServiceProtos.ConfigurationMessage.ContactOrBuilder> contactsBuilder_;
 
       /**
        * <code>repeated .signalservice.ConfigurationMessage.Contact contacts = 6;</code>
        */
-      public java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact> getContactsList() {
+      public java.util.List<SignalServiceProtos.ConfigurationMessage.Contact> getContactsList() {
         if (contactsBuilder_ == null) {
           return java.util.Collections.unmodifiableList(contacts_);
         } else {
@@ -20992,7 +20992,7 @@ public final class SignalServiceProtos {
       /**
        * <code>repeated .signalservice.ConfigurationMessage.Contact contacts = 6;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact getContacts(int index) {
+      public SignalServiceProtos.ConfigurationMessage.Contact getContacts(int index) {
         if (contactsBuilder_ == null) {
           return contacts_.get(index);
         } else {
@@ -21003,7 +21003,7 @@ public final class SignalServiceProtos {
        * <code>repeated .signalservice.ConfigurationMessage.Contact contacts = 6;</code>
        */
       public Builder setContacts(
-          int index, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact value) {
+          int index, SignalServiceProtos.ConfigurationMessage.Contact value) {
         if (contactsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -21020,7 +21020,7 @@ public final class SignalServiceProtos {
        * <code>repeated .signalservice.ConfigurationMessage.Contact contacts = 6;</code>
        */
       public Builder setContacts(
-          int index, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact.Builder builderForValue) {
+          int index, SignalServiceProtos.ConfigurationMessage.Contact.Builder builderForValue) {
         if (contactsBuilder_ == null) {
           ensureContactsIsMutable();
           contacts_.set(index, builderForValue.build());
@@ -21033,7 +21033,7 @@ public final class SignalServiceProtos {
       /**
        * <code>repeated .signalservice.ConfigurationMessage.Contact contacts = 6;</code>
        */
-      public Builder addContacts(com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact value) {
+      public Builder addContacts(SignalServiceProtos.ConfigurationMessage.Contact value) {
         if (contactsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -21050,7 +21050,7 @@ public final class SignalServiceProtos {
        * <code>repeated .signalservice.ConfigurationMessage.Contact contacts = 6;</code>
        */
       public Builder addContacts(
-          int index, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact value) {
+          int index, SignalServiceProtos.ConfigurationMessage.Contact value) {
         if (contactsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -21067,7 +21067,7 @@ public final class SignalServiceProtos {
        * <code>repeated .signalservice.ConfigurationMessage.Contact contacts = 6;</code>
        */
       public Builder addContacts(
-          com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact.Builder builderForValue) {
+          SignalServiceProtos.ConfigurationMessage.Contact.Builder builderForValue) {
         if (contactsBuilder_ == null) {
           ensureContactsIsMutable();
           contacts_.add(builderForValue.build());
@@ -21081,7 +21081,7 @@ public final class SignalServiceProtos {
        * <code>repeated .signalservice.ConfigurationMessage.Contact contacts = 6;</code>
        */
       public Builder addContacts(
-          int index, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact.Builder builderForValue) {
+          int index, SignalServiceProtos.ConfigurationMessage.Contact.Builder builderForValue) {
         if (contactsBuilder_ == null) {
           ensureContactsIsMutable();
           contacts_.add(index, builderForValue.build());
@@ -21095,7 +21095,7 @@ public final class SignalServiceProtos {
        * <code>repeated .signalservice.ConfigurationMessage.Contact contacts = 6;</code>
        */
       public Builder addAllContacts(
-          java.lang.Iterable<? extends com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact> values) {
+          java.lang.Iterable<? extends SignalServiceProtos.ConfigurationMessage.Contact> values) {
         if (contactsBuilder_ == null) {
           ensureContactsIsMutable();
           super.addAll(values, contacts_);
@@ -21134,14 +21134,14 @@ public final class SignalServiceProtos {
       /**
        * <code>repeated .signalservice.ConfigurationMessage.Contact contacts = 6;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact.Builder getContactsBuilder(
+      public SignalServiceProtos.ConfigurationMessage.Contact.Builder getContactsBuilder(
           int index) {
         return getContactsFieldBuilder().getBuilder(index);
       }
       /**
        * <code>repeated .signalservice.ConfigurationMessage.Contact contacts = 6;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ContactOrBuilder getContactsOrBuilder(
+      public SignalServiceProtos.ConfigurationMessage.ContactOrBuilder getContactsOrBuilder(
           int index) {
         if (contactsBuilder_ == null) {
           return contacts_.get(index);  } else {
@@ -21151,7 +21151,7 @@ public final class SignalServiceProtos {
       /**
        * <code>repeated .signalservice.ConfigurationMessage.Contact contacts = 6;</code>
        */
-      public java.util.List<? extends com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ContactOrBuilder> 
+      public java.util.List<? extends SignalServiceProtos.ConfigurationMessage.ContactOrBuilder>
            getContactsOrBuilderList() {
         if (contactsBuilder_ != null) {
           return contactsBuilder_.getMessageOrBuilderList();
@@ -21162,31 +21162,31 @@ public final class SignalServiceProtos {
       /**
        * <code>repeated .signalservice.ConfigurationMessage.Contact contacts = 6;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact.Builder addContactsBuilder() {
+      public SignalServiceProtos.ConfigurationMessage.Contact.Builder addContactsBuilder() {
         return getContactsFieldBuilder().addBuilder(
-            com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact.getDefaultInstance());
+            SignalServiceProtos.ConfigurationMessage.Contact.getDefaultInstance());
       }
       /**
        * <code>repeated .signalservice.ConfigurationMessage.Contact contacts = 6;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact.Builder addContactsBuilder(
+      public SignalServiceProtos.ConfigurationMessage.Contact.Builder addContactsBuilder(
           int index) {
         return getContactsFieldBuilder().addBuilder(
-            index, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact.getDefaultInstance());
+            index, SignalServiceProtos.ConfigurationMessage.Contact.getDefaultInstance());
       }
       /**
        * <code>repeated .signalservice.ConfigurationMessage.Contact contacts = 6;</code>
        */
-      public java.util.List<com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact.Builder> 
+      public java.util.List<SignalServiceProtos.ConfigurationMessage.Contact.Builder>
            getContactsBuilderList() {
         return getContactsFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact.Builder, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ContactOrBuilder> 
+          SignalServiceProtos.ConfigurationMessage.Contact, SignalServiceProtos.ConfigurationMessage.Contact.Builder, SignalServiceProtos.ConfigurationMessage.ContactOrBuilder>
           getContactsFieldBuilder() {
         if (contactsBuilder_ == null) {
           contactsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-              com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.Contact.Builder, com.beldex.libsignal.protos.SignalServiceProtos.ConfigurationMessage.ContactOrBuilder>(
+              SignalServiceProtos.ConfigurationMessage.Contact, SignalServiceProtos.ConfigurationMessage.Contact.Builder, SignalServiceProtos.ConfigurationMessage.ContactOrBuilder>(
                   contacts_,
                   ((bitField0_ & 0x00000020) == 0x00000020),
                   getParentForChildren(),
@@ -21298,14 +21298,14 @@ public final class SignalServiceProtos {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_MessageRequestResponse_descriptor;
+      return SignalServiceProtos.internal_static_signalservice_MessageRequestResponse_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_MessageRequestResponse_fieldAccessorTable
+      return SignalServiceProtos.internal_static_signalservice_MessageRequestResponse_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse.class, com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse.Builder.class);
+              SignalServiceProtos.MessageRequestResponse.class, SignalServiceProtos.MessageRequestResponse.Builder.class);
     }
 
     public static com.google.protobuf.Parser<MessageRequestResponse> PARSER =
@@ -21395,53 +21395,53 @@ public final class SignalServiceProtos {
       return super.writeReplace();
     }
 
-    public static com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse parseFrom(
+    public static SignalServiceProtos.MessageRequestResponse parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse parseFrom(
+    public static SignalServiceProtos.MessageRequestResponse parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse parseFrom(byte[] data)
+    public static SignalServiceProtos.MessageRequestResponse parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse parseFrom(
+    public static SignalServiceProtos.MessageRequestResponse parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse parseFrom(java.io.InputStream input)
+    public static SignalServiceProtos.MessageRequestResponse parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse parseFrom(
+    public static SignalServiceProtos.MessageRequestResponse parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse parseDelimitedFrom(java.io.InputStream input)
+    public static SignalServiceProtos.MessageRequestResponse parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse parseDelimitedFrom(
+    public static SignalServiceProtos.MessageRequestResponse parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse parseFrom(
+    public static SignalServiceProtos.MessageRequestResponse parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse parseFrom(
+    public static SignalServiceProtos.MessageRequestResponse parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -21450,7 +21450,7 @@ public final class SignalServiceProtos {
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse prototype) {
+    public static Builder newBuilder(SignalServiceProtos.MessageRequestResponse prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
@@ -21466,17 +21466,17 @@ public final class SignalServiceProtos {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponseOrBuilder {
+       implements SignalServiceProtos.MessageRequestResponseOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_MessageRequestResponse_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_MessageRequestResponse_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_MessageRequestResponse_fieldAccessorTable
+        return SignalServiceProtos.internal_static_signalservice_MessageRequestResponse_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse.class, com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse.Builder.class);
+                SignalServiceProtos.MessageRequestResponse.class, SignalServiceProtos.MessageRequestResponse.Builder.class);
       }
 
       // Construct using com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse.newBuilder()
@@ -21510,23 +21510,23 @@ public final class SignalServiceProtos {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_MessageRequestResponse_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_MessageRequestResponse_descriptor;
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse getDefaultInstanceForType() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse.getDefaultInstance();
+      public SignalServiceProtos.MessageRequestResponse getDefaultInstanceForType() {
+        return SignalServiceProtos.MessageRequestResponse.getDefaultInstance();
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse build() {
-        com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse result = buildPartial();
+      public SignalServiceProtos.MessageRequestResponse build() {
+        SignalServiceProtos.MessageRequestResponse result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse buildPartial() {
-        com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse result = new com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse(this);
+      public SignalServiceProtos.MessageRequestResponse buildPartial() {
+        SignalServiceProtos.MessageRequestResponse result = new SignalServiceProtos.MessageRequestResponse(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -21539,16 +21539,16 @@ public final class SignalServiceProtos {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse) {
-          return mergeFrom((com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse)other);
+        if (other instanceof SignalServiceProtos.MessageRequestResponse) {
+          return mergeFrom((SignalServiceProtos.MessageRequestResponse)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse other) {
-        if (other == com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse.getDefaultInstance()) return this;
+      public Builder mergeFrom(SignalServiceProtos.MessageRequestResponse other) {
+        if (other == SignalServiceProtos.MessageRequestResponse.getDefaultInstance()) return this;
         if (other.hasIsApproved()) {
           setIsApproved(other.getIsApproved());
         }
@@ -21568,11 +21568,11 @@ public final class SignalServiceProtos {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse parsedMessage = null;
+        SignalServiceProtos.MessageRequestResponse parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.beldex.libsignal.protos.SignalServiceProtos.MessageRequestResponse) e.getUnfinishedMessage();
+          parsedMessage = (SignalServiceProtos.MessageRequestResponse) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -21662,7 +21662,7 @@ public final class SignalServiceProtos {
      * @required
      * </pre>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.Type getType();
+    SignalServiceProtos.ReceiptMessage.Type getType();
 
     // repeated uint64 timestamp = 2;
     /**
@@ -21731,7 +21731,7 @@ public final class SignalServiceProtos {
             }
             case 8: {
               int rawValue = input.readEnum();
-              com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.Type value = com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.Type.valueOf(rawValue);
+              SignalServiceProtos.ReceiptMessage.Type value = SignalServiceProtos.ReceiptMessage.Type.valueOf(rawValue);
               if (value == null) {
                 unknownFields.mergeVarintField(1, rawValue);
               } else {
@@ -21778,14 +21778,14 @@ public final class SignalServiceProtos {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_ReceiptMessage_descriptor;
+      return SignalServiceProtos.internal_static_signalservice_ReceiptMessage_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_ReceiptMessage_fieldAccessorTable
+      return SignalServiceProtos.internal_static_signalservice_ReceiptMessage_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.class, com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.Builder.class);
+              SignalServiceProtos.ReceiptMessage.class, SignalServiceProtos.ReceiptMessage.Builder.class);
     }
 
     public static com.google.protobuf.Parser<ReceiptMessage> PARSER =
@@ -21860,7 +21860,7 @@ public final class SignalServiceProtos {
       }
       public static final com.google.protobuf.Descriptors.EnumDescriptor
           getDescriptor() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.getDescriptor().getEnumTypes().get(0);
+        return SignalServiceProtos.ReceiptMessage.getDescriptor().getEnumTypes().get(0);
       }
 
       private static final Type[] VALUES = values();
@@ -21888,7 +21888,7 @@ public final class SignalServiceProtos {
     private int bitField0_;
     // required .signalservice.ReceiptMessage.Type type = 1;
     public static final int TYPE_FIELD_NUMBER = 1;
-    private com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.Type type_;
+    private SignalServiceProtos.ReceiptMessage.Type type_;
     /**
      * <code>required .signalservice.ReceiptMessage.Type type = 1;</code>
      *
@@ -21906,7 +21906,7 @@ public final class SignalServiceProtos {
      * @required
      * </pre>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.Type getType() {
+    public SignalServiceProtos.ReceiptMessage.Type getType() {
       return type_;
     }
 
@@ -21934,7 +21934,7 @@ public final class SignalServiceProtos {
     }
 
     private void initFields() {
-      type_ = com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.Type.DELIVERY;
+      type_ = SignalServiceProtos.ReceiptMessage.Type.DELIVERY;
       timestamp_ = java.util.Collections.emptyList();
     }
     private byte memoizedIsInitialized = -1;
@@ -21993,53 +21993,53 @@ public final class SignalServiceProtos {
       return super.writeReplace();
     }
 
-    public static com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage parseFrom(
+    public static SignalServiceProtos.ReceiptMessage parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage parseFrom(
+    public static SignalServiceProtos.ReceiptMessage parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage parseFrom(byte[] data)
+    public static SignalServiceProtos.ReceiptMessage parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage parseFrom(
+    public static SignalServiceProtos.ReceiptMessage parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage parseFrom(java.io.InputStream input)
+    public static SignalServiceProtos.ReceiptMessage parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage parseFrom(
+    public static SignalServiceProtos.ReceiptMessage parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage parseDelimitedFrom(java.io.InputStream input)
+    public static SignalServiceProtos.ReceiptMessage parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage parseDelimitedFrom(
+    public static SignalServiceProtos.ReceiptMessage parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage parseFrom(
+    public static SignalServiceProtos.ReceiptMessage parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage parseFrom(
+    public static SignalServiceProtos.ReceiptMessage parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -22048,7 +22048,7 @@ public final class SignalServiceProtos {
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage prototype) {
+    public static Builder newBuilder(SignalServiceProtos.ReceiptMessage prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
@@ -22064,17 +22064,17 @@ public final class SignalServiceProtos {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessageOrBuilder {
+       implements SignalServiceProtos.ReceiptMessageOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_ReceiptMessage_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_ReceiptMessage_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_ReceiptMessage_fieldAccessorTable
+        return SignalServiceProtos.internal_static_signalservice_ReceiptMessage_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.class, com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.Builder.class);
+                SignalServiceProtos.ReceiptMessage.class, SignalServiceProtos.ReceiptMessage.Builder.class);
       }
 
       // Construct using com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.newBuilder()
@@ -22097,7 +22097,7 @@ public final class SignalServiceProtos {
 
       public Builder clear() {
         super.clear();
-        type_ = com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.Type.DELIVERY;
+        type_ = SignalServiceProtos.ReceiptMessage.Type.DELIVERY;
         bitField0_ = (bitField0_ & ~0x00000001);
         timestamp_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -22110,23 +22110,23 @@ public final class SignalServiceProtos {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_ReceiptMessage_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_ReceiptMessage_descriptor;
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage getDefaultInstanceForType() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.getDefaultInstance();
+      public SignalServiceProtos.ReceiptMessage getDefaultInstanceForType() {
+        return SignalServiceProtos.ReceiptMessage.getDefaultInstance();
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage build() {
-        com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage result = buildPartial();
+      public SignalServiceProtos.ReceiptMessage build() {
+        SignalServiceProtos.ReceiptMessage result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage buildPartial() {
-        com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage result = new com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage(this);
+      public SignalServiceProtos.ReceiptMessage buildPartial() {
+        SignalServiceProtos.ReceiptMessage result = new SignalServiceProtos.ReceiptMessage(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -22144,16 +22144,16 @@ public final class SignalServiceProtos {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage) {
-          return mergeFrom((com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage)other);
+        if (other instanceof SignalServiceProtos.ReceiptMessage) {
+          return mergeFrom((SignalServiceProtos.ReceiptMessage)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage other) {
-        if (other == com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.getDefaultInstance()) return this;
+      public Builder mergeFrom(SignalServiceProtos.ReceiptMessage other) {
+        if (other == SignalServiceProtos.ReceiptMessage.getDefaultInstance()) return this;
         if (other.hasType()) {
           setType(other.getType());
         }
@@ -22183,11 +22183,11 @@ public final class SignalServiceProtos {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage parsedMessage = null;
+        SignalServiceProtos.ReceiptMessage parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage) e.getUnfinishedMessage();
+          parsedMessage = (SignalServiceProtos.ReceiptMessage) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -22199,7 +22199,7 @@ public final class SignalServiceProtos {
       private int bitField0_;
 
       // required .signalservice.ReceiptMessage.Type type = 1;
-      private com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.Type type_ = com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.Type.DELIVERY;
+      private SignalServiceProtos.ReceiptMessage.Type type_ = SignalServiceProtos.ReceiptMessage.Type.DELIVERY;
       /**
        * <code>required .signalservice.ReceiptMessage.Type type = 1;</code>
        *
@@ -22217,7 +22217,7 @@ public final class SignalServiceProtos {
        * @required
        * </pre>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.Type getType() {
+      public SignalServiceProtos.ReceiptMessage.Type getType() {
         return type_;
       }
       /**
@@ -22227,7 +22227,7 @@ public final class SignalServiceProtos {
        * @required
        * </pre>
        */
-      public Builder setType(com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.Type value) {
+      public Builder setType(SignalServiceProtos.ReceiptMessage.Type value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -22245,7 +22245,7 @@ public final class SignalServiceProtos {
        */
       public Builder clearType() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        type_ = com.beldex.libsignal.protos.SignalServiceProtos.ReceiptMessage.Type.DELIVERY;
+        type_ = SignalServiceProtos.ReceiptMessage.Type.DELIVERY;
         onChanged();
         return this;
       }
@@ -22603,14 +22603,14 @@ public final class SignalServiceProtos {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_AttachmentPointer_descriptor;
+      return SignalServiceProtos.internal_static_signalservice_AttachmentPointer_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_AttachmentPointer_fieldAccessorTable
+      return SignalServiceProtos.internal_static_signalservice_AttachmentPointer_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.class, com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.Builder.class);
+              SignalServiceProtos.AttachmentPointer.class, SignalServiceProtos.AttachmentPointer.Builder.class);
     }
 
     public static com.google.protobuf.Parser<AttachmentPointer> PARSER =
@@ -22676,7 +22676,7 @@ public final class SignalServiceProtos {
       }
       public static final com.google.protobuf.Descriptors.EnumDescriptor
           getDescriptor() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.getDescriptor().getEnumTypes().get(0);
+        return SignalServiceProtos.AttachmentPointer.getDescriptor().getEnumTypes().get(0);
       }
 
       private static final Flags[] VALUES = values();
@@ -23145,53 +23145,53 @@ public final class SignalServiceProtos {
       return super.writeReplace();
     }
 
-    public static com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer parseFrom(
+    public static SignalServiceProtos.AttachmentPointer parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer parseFrom(
+    public static SignalServiceProtos.AttachmentPointer parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer parseFrom(byte[] data)
+    public static SignalServiceProtos.AttachmentPointer parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer parseFrom(
+    public static SignalServiceProtos.AttachmentPointer parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer parseFrom(java.io.InputStream input)
+    public static SignalServiceProtos.AttachmentPointer parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer parseFrom(
+    public static SignalServiceProtos.AttachmentPointer parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer parseDelimitedFrom(java.io.InputStream input)
+    public static SignalServiceProtos.AttachmentPointer parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer parseDelimitedFrom(
+    public static SignalServiceProtos.AttachmentPointer parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer parseFrom(
+    public static SignalServiceProtos.AttachmentPointer parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer parseFrom(
+    public static SignalServiceProtos.AttachmentPointer parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -23200,7 +23200,7 @@ public final class SignalServiceProtos {
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer prototype) {
+    public static Builder newBuilder(SignalServiceProtos.AttachmentPointer prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
@@ -23216,17 +23216,17 @@ public final class SignalServiceProtos {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointerOrBuilder {
+       implements SignalServiceProtos.AttachmentPointerOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_AttachmentPointer_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_AttachmentPointer_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_AttachmentPointer_fieldAccessorTable
+        return SignalServiceProtos.internal_static_signalservice_AttachmentPointer_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.class, com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.Builder.class);
+                SignalServiceProtos.AttachmentPointer.class, SignalServiceProtos.AttachmentPointer.Builder.class);
       }
 
       // Construct using com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.newBuilder()
@@ -23282,23 +23282,23 @@ public final class SignalServiceProtos {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_AttachmentPointer_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_AttachmentPointer_descriptor;
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer getDefaultInstanceForType() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.getDefaultInstance();
+      public SignalServiceProtos.AttachmentPointer getDefaultInstanceForType() {
+        return SignalServiceProtos.AttachmentPointer.getDefaultInstance();
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer build() {
-        com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer result = buildPartial();
+      public SignalServiceProtos.AttachmentPointer build() {
+        SignalServiceProtos.AttachmentPointer result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer buildPartial() {
-        com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer result = new com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer(this);
+      public SignalServiceProtos.AttachmentPointer buildPartial() {
+        SignalServiceProtos.AttachmentPointer result = new SignalServiceProtos.AttachmentPointer(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -23355,16 +23355,16 @@ public final class SignalServiceProtos {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer) {
-          return mergeFrom((com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer)other);
+        if (other instanceof SignalServiceProtos.AttachmentPointer) {
+          return mergeFrom((SignalServiceProtos.AttachmentPointer)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer other) {
-        if (other == com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.getDefaultInstance()) return this;
+      public Builder mergeFrom(SignalServiceProtos.AttachmentPointer other) {
+        if (other == SignalServiceProtos.AttachmentPointer.getDefaultInstance()) return this;
         if (other.hasId()) {
           setId(other.getId());
         }
@@ -23425,11 +23425,11 @@ public final class SignalServiceProtos {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer parsedMessage = null;
+        SignalServiceProtos.AttachmentPointer parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer) e.getUnfinishedMessage();
+          parsedMessage = (SignalServiceProtos.AttachmentPointer) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -24073,7 +24073,7 @@ public final class SignalServiceProtos {
      * @required
      * </pre>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.Type getType();
+    SignalServiceProtos.GroupContext.Type getType();
 
     // optional string name = 3;
     /**
@@ -24118,11 +24118,11 @@ public final class SignalServiceProtos {
     /**
      * <code>optional .signalservice.AttachmentPointer avatar = 5;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer getAvatar();
+    SignalServiceProtos.AttachmentPointer getAvatar();
     /**
      * <code>optional .signalservice.AttachmentPointer avatar = 5;</code>
      */
-    com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointerOrBuilder getAvatarOrBuilder();
+    SignalServiceProtos.AttachmentPointerOrBuilder getAvatarOrBuilder();
 
     // repeated string admins = 6;
     /**
@@ -24202,7 +24202,7 @@ public final class SignalServiceProtos {
             }
             case 16: {
               int rawValue = input.readEnum();
-              com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.Type value = com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.Type.valueOf(rawValue);
+              SignalServiceProtos.GroupContext.Type value = SignalServiceProtos.GroupContext.Type.valueOf(rawValue);
               if (value == null) {
                 unknownFields.mergeVarintField(2, rawValue);
               } else {
@@ -24225,11 +24225,11 @@ public final class SignalServiceProtos {
               break;
             }
             case 42: {
-              com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.Builder subBuilder = null;
+              SignalServiceProtos.AttachmentPointer.Builder subBuilder = null;
               if (((bitField0_ & 0x00000008) == 0x00000008)) {
                 subBuilder = avatar_.toBuilder();
               }
-              avatar_ = input.readMessage(com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.PARSER, extensionRegistry);
+              avatar_ = input.readMessage(SignalServiceProtos.AttachmentPointer.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(avatar_);
                 avatar_ = subBuilder.buildPartial();
@@ -24265,14 +24265,14 @@ public final class SignalServiceProtos {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_GroupContext_descriptor;
+      return SignalServiceProtos.internal_static_signalservice_GroupContext_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_GroupContext_fieldAccessorTable
+      return SignalServiceProtos.internal_static_signalservice_GroupContext_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.class, com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.Builder.class);
+              SignalServiceProtos.GroupContext.class, SignalServiceProtos.GroupContext.Builder.class);
     }
 
     public static com.google.protobuf.Parser<GroupContext> PARSER =
@@ -24374,7 +24374,7 @@ public final class SignalServiceProtos {
       }
       public static final com.google.protobuf.Descriptors.EnumDescriptor
           getDescriptor() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.getDescriptor().getEnumTypes().get(0);
+        return SignalServiceProtos.GroupContext.getDescriptor().getEnumTypes().get(0);
       }
 
       private static final Type[] VALUES = values();
@@ -24426,7 +24426,7 @@ public final class SignalServiceProtos {
 
     // optional .signalservice.GroupContext.Type type = 2;
     public static final int TYPE_FIELD_NUMBER = 2;
-    private com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.Type type_;
+    private SignalServiceProtos.GroupContext.Type type_;
     /**
      * <code>optional .signalservice.GroupContext.Type type = 2;</code>
      *
@@ -24444,7 +24444,7 @@ public final class SignalServiceProtos {
      * @required
      * </pre>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.Type getType() {
+    public SignalServiceProtos.GroupContext.Type getType() {
       return type_;
     }
 
@@ -24523,7 +24523,7 @@ public final class SignalServiceProtos {
 
     // optional .signalservice.AttachmentPointer avatar = 5;
     public static final int AVATAR_FIELD_NUMBER = 5;
-    private com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer avatar_;
+    private SignalServiceProtos.AttachmentPointer avatar_;
     /**
      * <code>optional .signalservice.AttachmentPointer avatar = 5;</code>
      */
@@ -24533,13 +24533,13 @@ public final class SignalServiceProtos {
     /**
      * <code>optional .signalservice.AttachmentPointer avatar = 5;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer getAvatar() {
+    public SignalServiceProtos.AttachmentPointer getAvatar() {
       return avatar_;
     }
     /**
      * <code>optional .signalservice.AttachmentPointer avatar = 5;</code>
      */
-    public com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointerOrBuilder getAvatarOrBuilder() {
+    public SignalServiceProtos.AttachmentPointerOrBuilder getAvatarOrBuilder() {
       return avatar_;
     }
 
@@ -24575,10 +24575,10 @@ public final class SignalServiceProtos {
 
     private void initFields() {
       id_ = com.google.protobuf.ByteString.EMPTY;
-      type_ = com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.Type.UNKNOWN;
+      type_ = SignalServiceProtos.GroupContext.Type.UNKNOWN;
       name_ = "";
       members_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-      avatar_ = com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.getDefaultInstance();
+      avatar_ = SignalServiceProtos.AttachmentPointer.getDefaultInstance();
       admins_ = com.google.protobuf.LazyStringArrayList.EMPTY;
     }
     private byte memoizedIsInitialized = -1;
@@ -24672,53 +24672,53 @@ public final class SignalServiceProtos {
       return super.writeReplace();
     }
 
-    public static com.beldex.libsignal.protos.SignalServiceProtos.GroupContext parseFrom(
+    public static SignalServiceProtos.GroupContext parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.GroupContext parseFrom(
+    public static SignalServiceProtos.GroupContext parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.GroupContext parseFrom(byte[] data)
+    public static SignalServiceProtos.GroupContext parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.GroupContext parseFrom(
+    public static SignalServiceProtos.GroupContext parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.GroupContext parseFrom(java.io.InputStream input)
+    public static SignalServiceProtos.GroupContext parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.GroupContext parseFrom(
+    public static SignalServiceProtos.GroupContext parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.GroupContext parseDelimitedFrom(java.io.InputStream input)
+    public static SignalServiceProtos.GroupContext parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.GroupContext parseDelimitedFrom(
+    public static SignalServiceProtos.GroupContext parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.GroupContext parseFrom(
+    public static SignalServiceProtos.GroupContext parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.beldex.libsignal.protos.SignalServiceProtos.GroupContext parseFrom(
+    public static SignalServiceProtos.GroupContext parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -24727,7 +24727,7 @@ public final class SignalServiceProtos {
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.beldex.libsignal.protos.SignalServiceProtos.GroupContext prototype) {
+    public static Builder newBuilder(SignalServiceProtos.GroupContext prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
@@ -24743,17 +24743,17 @@ public final class SignalServiceProtos {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.beldex.libsignal.protos.SignalServiceProtos.GroupContextOrBuilder {
+       implements SignalServiceProtos.GroupContextOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_GroupContext_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_GroupContext_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_GroupContext_fieldAccessorTable
+        return SignalServiceProtos.internal_static_signalservice_GroupContext_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.class, com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.Builder.class);
+                SignalServiceProtos.GroupContext.class, SignalServiceProtos.GroupContext.Builder.class);
       }
 
       // Construct using com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.newBuilder()
@@ -24779,14 +24779,14 @@ public final class SignalServiceProtos {
         super.clear();
         id_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000001);
-        type_ = com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.Type.UNKNOWN;
+        type_ = SignalServiceProtos.GroupContext.Type.UNKNOWN;
         bitField0_ = (bitField0_ & ~0x00000002);
         name_ = "";
         bitField0_ = (bitField0_ & ~0x00000004);
         members_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000008);
         if (avatarBuilder_ == null) {
-          avatar_ = com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.getDefaultInstance();
+          avatar_ = SignalServiceProtos.AttachmentPointer.getDefaultInstance();
         } else {
           avatarBuilder_.clear();
         }
@@ -24802,23 +24802,23 @@ public final class SignalServiceProtos {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.internal_static_signalservice_GroupContext_descriptor;
+        return SignalServiceProtos.internal_static_signalservice_GroupContext_descriptor;
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.GroupContext getDefaultInstanceForType() {
-        return com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.getDefaultInstance();
+      public SignalServiceProtos.GroupContext getDefaultInstanceForType() {
+        return SignalServiceProtos.GroupContext.getDefaultInstance();
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.GroupContext build() {
-        com.beldex.libsignal.protos.SignalServiceProtos.GroupContext result = buildPartial();
+      public SignalServiceProtos.GroupContext build() {
+        SignalServiceProtos.GroupContext result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.beldex.libsignal.protos.SignalServiceProtos.GroupContext buildPartial() {
-        com.beldex.libsignal.protos.SignalServiceProtos.GroupContext result = new com.beldex.libsignal.protos.SignalServiceProtos.GroupContext(this);
+      public SignalServiceProtos.GroupContext buildPartial() {
+        SignalServiceProtos.GroupContext result = new SignalServiceProtos.GroupContext(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -24859,16 +24859,16 @@ public final class SignalServiceProtos {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.beldex.libsignal.protos.SignalServiceProtos.GroupContext) {
-          return mergeFrom((com.beldex.libsignal.protos.SignalServiceProtos.GroupContext)other);
+        if (other instanceof SignalServiceProtos.GroupContext) {
+          return mergeFrom((SignalServiceProtos.GroupContext)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.beldex.libsignal.protos.SignalServiceProtos.GroupContext other) {
-        if (other == com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.getDefaultInstance()) return this;
+      public Builder mergeFrom(SignalServiceProtos.GroupContext other) {
+        if (other == SignalServiceProtos.GroupContext.getDefaultInstance()) return this;
         if (other.hasId()) {
           setId(other.getId());
         }
@@ -24921,11 +24921,11 @@ public final class SignalServiceProtos {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.beldex.libsignal.protos.SignalServiceProtos.GroupContext parsedMessage = null;
+        SignalServiceProtos.GroupContext parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.beldex.libsignal.protos.SignalServiceProtos.GroupContext) e.getUnfinishedMessage();
+          parsedMessage = (SignalServiceProtos.GroupContext) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -24989,7 +24989,7 @@ public final class SignalServiceProtos {
       }
 
       // optional .signalservice.GroupContext.Type type = 2;
-      private com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.Type type_ = com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.Type.UNKNOWN;
+      private SignalServiceProtos.GroupContext.Type type_ = SignalServiceProtos.GroupContext.Type.UNKNOWN;
       /**
        * <code>optional .signalservice.GroupContext.Type type = 2;</code>
        *
@@ -25007,7 +25007,7 @@ public final class SignalServiceProtos {
        * @required
        * </pre>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.Type getType() {
+      public SignalServiceProtos.GroupContext.Type getType() {
         return type_;
       }
       /**
@@ -25017,7 +25017,7 @@ public final class SignalServiceProtos {
        * @required
        * </pre>
        */
-      public Builder setType(com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.Type value) {
+      public Builder setType(SignalServiceProtos.GroupContext.Type value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -25035,7 +25035,7 @@ public final class SignalServiceProtos {
        */
       public Builder clearType() {
         bitField0_ = (bitField0_ & ~0x00000002);
-        type_ = com.beldex.libsignal.protos.SignalServiceProtos.GroupContext.Type.UNKNOWN;
+        type_ = SignalServiceProtos.GroupContext.Type.UNKNOWN;
         onChanged();
         return this;
       }
@@ -25208,9 +25208,9 @@ public final class SignalServiceProtos {
       }
 
       // optional .signalservice.AttachmentPointer avatar = 5;
-      private com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer avatar_ = com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.getDefaultInstance();
+      private SignalServiceProtos.AttachmentPointer avatar_ = SignalServiceProtos.AttachmentPointer.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer, com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.Builder, com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointerOrBuilder> avatarBuilder_;
+          SignalServiceProtos.AttachmentPointer, SignalServiceProtos.AttachmentPointer.Builder, SignalServiceProtos.AttachmentPointerOrBuilder> avatarBuilder_;
       /**
        * <code>optional .signalservice.AttachmentPointer avatar = 5;</code>
        */
@@ -25220,7 +25220,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.AttachmentPointer avatar = 5;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer getAvatar() {
+      public SignalServiceProtos.AttachmentPointer getAvatar() {
         if (avatarBuilder_ == null) {
           return avatar_;
         } else {
@@ -25230,7 +25230,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.AttachmentPointer avatar = 5;</code>
        */
-      public Builder setAvatar(com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer value) {
+      public Builder setAvatar(SignalServiceProtos.AttachmentPointer value) {
         if (avatarBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -25247,7 +25247,7 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.AttachmentPointer avatar = 5;</code>
        */
       public Builder setAvatar(
-          com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.Builder builderForValue) {
+          SignalServiceProtos.AttachmentPointer.Builder builderForValue) {
         if (avatarBuilder_ == null) {
           avatar_ = builderForValue.build();
           onChanged();
@@ -25260,12 +25260,12 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.AttachmentPointer avatar = 5;</code>
        */
-      public Builder mergeAvatar(com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer value) {
+      public Builder mergeAvatar(SignalServiceProtos.AttachmentPointer value) {
         if (avatarBuilder_ == null) {
           if (((bitField0_ & 0x00000010) == 0x00000010) &&
-              avatar_ != com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.getDefaultInstance()) {
+              avatar_ != SignalServiceProtos.AttachmentPointer.getDefaultInstance()) {
             avatar_ =
-              com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.newBuilder(avatar_).mergeFrom(value).buildPartial();
+              SignalServiceProtos.AttachmentPointer.newBuilder(avatar_).mergeFrom(value).buildPartial();
           } else {
             avatar_ = value;
           }
@@ -25281,7 +25281,7 @@ public final class SignalServiceProtos {
        */
       public Builder clearAvatar() {
         if (avatarBuilder_ == null) {
-          avatar_ = com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.getDefaultInstance();
+          avatar_ = SignalServiceProtos.AttachmentPointer.getDefaultInstance();
           onChanged();
         } else {
           avatarBuilder_.clear();
@@ -25292,7 +25292,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.AttachmentPointer avatar = 5;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.Builder getAvatarBuilder() {
+      public SignalServiceProtos.AttachmentPointer.Builder getAvatarBuilder() {
         bitField0_ |= 0x00000010;
         onChanged();
         return getAvatarFieldBuilder().getBuilder();
@@ -25300,7 +25300,7 @@ public final class SignalServiceProtos {
       /**
        * <code>optional .signalservice.AttachmentPointer avatar = 5;</code>
        */
-      public com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointerOrBuilder getAvatarOrBuilder() {
+      public SignalServiceProtos.AttachmentPointerOrBuilder getAvatarOrBuilder() {
         if (avatarBuilder_ != null) {
           return avatarBuilder_.getMessageOrBuilder();
         } else {
@@ -25311,11 +25311,11 @@ public final class SignalServiceProtos {
        * <code>optional .signalservice.AttachmentPointer avatar = 5;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer, com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.Builder, com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointerOrBuilder> 
+          SignalServiceProtos.AttachmentPointer, SignalServiceProtos.AttachmentPointer.Builder, SignalServiceProtos.AttachmentPointerOrBuilder>
           getAvatarFieldBuilder() {
         if (avatarBuilder_ == null) {
           avatarBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer, com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointer.Builder, com.beldex.libsignal.protos.SignalServiceProtos.AttachmentPointerOrBuilder>(
+              SignalServiceProtos.AttachmentPointer, SignalServiceProtos.AttachmentPointer.Builder, SignalServiceProtos.AttachmentPointerOrBuilder>(
                   avatar_,
                   getParentForChildren(),
                   isClean());

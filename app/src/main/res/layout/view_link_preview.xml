@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/mainLinkPreviewContainer"
+<com.thoughtcrimes.securesms.conversation.v2.messages.LinkPreviewView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="300dp"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainLinkPreviewContainer"
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -25,7 +26,7 @@
                 android:src="@drawable/ic_link"
                 app:tint="@color/text" />
 
-            <com.thoughtcrimes.securesms.conversation.v2.utilities.KThumbnailView
+            <include layout="@layout/thumbnail_view"
                 android:id="@+id/thumbnailImageView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -51,4 +52,4 @@
 
     </LinearLayout>
 
-</LinearLayout>
+</com.thoughtcrimes.securesms.conversation.v2.messages.LinkPreviewView>

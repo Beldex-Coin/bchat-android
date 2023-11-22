@@ -1,5 +1,7 @@
 package com.thoughtcrimes.securesms.model;
 
+import io.beldex.bchat.BuildConfig;
+
 public enum NetworkType {
     NetworkType_Mainnet(0),
     NetworkType_Testnet(1),
@@ -18,7 +20,11 @@ public enum NetworkType {
     }
 
     public int getValue() {
-        return value;
+        if (BuildConfig.USE_TESTNET) {
+            return 1;
+        } else {
+            return value;
+        }
     }//value
 
     private int value;

@@ -3,13 +3,18 @@ package com.thoughtcrimes.securesms.util
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import io.beldex.bchat.R
 import com.thoughtcrimes.securesms.BaseActionBarActivity
 import com.thoughtcrimes.securesms.conversation.v2.utilities.BaseDialog
+
+val defaultBchatRequestCode: Int
+    get() = 42
 
 fun BaseActionBarActivity.setUpActionBarBchatLogo(title: String, hideBackButton: Boolean = false) {
     val actionbar = supportActionBar!!
@@ -23,12 +28,12 @@ fun BaseActionBarActivity.setUpActionBarBchatLogo(title: String, hideBackButton:
     actionbar.setDisplayShowCustomEnabled(true)
 
     val rootView: Toolbar = actionbar.customView!!.parent as Toolbar
-    rootView.setPadding(0,0,0,0)
-    rootView.setContentInsetsAbsolute(0,0);
+    rootView.setPadding(0, 0, 0, 0)
+    rootView.setContentInsetsAbsolute(0, 0);
 
     val backButton = actionbar.customView!!.findViewById<View>(R.id.back_button)
     val titleName = actionbar.customView!!.findViewById<TextView>(R.id.title_name)
-    titleName.text=title
+    titleName.text = title
     if (hideBackButton) {
         backButton.visibility = View.GONE
     } else {
@@ -38,9 +43,6 @@ fun BaseActionBarActivity.setUpActionBarBchatLogo(title: String, hideBackButton:
         }
     }
 }
-
-val AppCompatActivity.defaultBchatRequestCode: Int
-    get() = 42
 
 fun AppCompatActivity.push(intent: Intent, isForResult: Boolean = false) {
     if (isForResult) {
@@ -68,4 +70,6 @@ interface ActivityDispatcher {
     }
     fun dispatchIntent(body: (Context)->Intent?)
     fun showDialog(baseDialog: BaseDialog, tag: String? = null)
+    fun showBottomSheetDialog(bottomSheetDialogFragment: BottomSheetDialogFragment,tag: String? = null)
+    fun showBottomSheetDialogWithBundle(bottomSheetDialogFragment: BottomSheetDialogFragment,tag: String? = null, bundle: Bundle)
 }

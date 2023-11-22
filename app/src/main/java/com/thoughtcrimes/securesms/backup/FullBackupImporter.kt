@@ -7,7 +7,7 @@ import android.net.Uri
 import androidx.annotation.WorkerThread
 import com.beldex.libbchat.avatars.AvatarHelper
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentId
-import net.sqlcipher.database.SQLiteDatabase
+import net.zetetic.database.sqlcipher.SQLiteDatabase
 import org.greenrobot.eventbus.EventBus
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.Conversions
@@ -51,7 +51,7 @@ object FullBackupImporter {
                       passphrase: String) {
 
         val baseInputStream = context.contentResolver.openInputStream(fileUri)
-                ?: throw IOException("Cannot open an input stream for the file URI: $fileUri")
+            ?: throw IOException("Cannot open an input stream for the file URI: $fileUri")
 
         var count = 0
         try {
@@ -126,14 +126,14 @@ object FullBackupImporter {
         contentValues.put(AttachmentDatabase.THUMBNAIL, null as String?)
         contentValues.put(AttachmentDatabase.DATA_RANDOM, output.first)
         db.update(AttachmentDatabase.TABLE_NAME, contentValues,
-                "${AttachmentDatabase.ROW_ID} = ? AND ${AttachmentDatabase.UNIQUE_ID} = ?",
-                arrayOf(attachment.rowId.toString(), attachment.attachmentId.toString()))
+            "${AttachmentDatabase.ROW_ID} = ? AND ${AttachmentDatabase.UNIQUE_ID} = ?",
+            arrayOf(attachment.rowId.toString(), attachment.attachmentId.toString()))
     }
 
     @Throws(IOException::class)
     private fun processAvatar(context: Context, avatar: Avatar, inputStream: BackupRecordInputStream) {
         inputStream.readAttachmentTo(FileOutputStream(
-                AvatarHelper.getAvatarFile(context, Address.fromExternal(context, avatar.name))), avatar.length)
+            AvatarHelper.getAvatarFile(context, Address.fromExternal(context, avatar.name))), avatar.length)
     }
 
     @SuppressLint("ApplySharedPref")
@@ -146,13 +146,13 @@ object FullBackupImporter {
         when {
             key.startsWith(PREF_PREFIX_TYPE_INT) ->
                 preferences.edit().putInt(
-                        key.substring(PREF_PREFIX_TYPE_INT.length),
-                        value.toInt()
+                    key.substring(PREF_PREFIX_TYPE_INT.length),
+                    value.toInt()
                 ).commit()
             key.startsWith(PREF_PREFIX_TYPE_BOOLEAN) ->
                 preferences.edit().putBoolean(
-                        key.substring(PREF_PREFIX_TYPE_BOOLEAN.length),
-                        value.toBoolean()
+                    key.substring(PREF_PREFIX_TYPE_BOOLEAN.length),
+                    value.toBoolean()
                 ).commit()
             else ->
                 preferences.edit().putString(key, value).commit()
@@ -172,25 +172,25 @@ object FullBackupImporter {
     }
 
     private fun trimEntriesForExpiredMessages(context: Context, db: SQLiteDatabase) {
-        val trimmedCondition = " NOT IN (SELECT ${MmsDatabase.ID} FROM ${MmsDatabase.TABLE_NAME})"
+        val trimmedCondition = " NOT IN (SELECT ${MmsSmsColumns.ID} FROM ${MmsDatabase.TABLE_NAME})"
         db.delete(GroupReceiptDatabase.TABLE_NAME, GroupReceiptDatabase.MMS_ID + trimmedCondition, null)
         val columns = arrayOf(AttachmentDatabase.ROW_ID, AttachmentDatabase.UNIQUE_ID)
         val where = AttachmentDatabase.MMS_ID + trimmedCondition
         db.query(AttachmentDatabase.TABLE_NAME, columns, where, null, null, null, null).use { cursor ->
             while (cursor != null && cursor.moveToNext()) {
                 DatabaseComponent.get(context).attachmentDatabase()
-                        .deleteAttachment(
-                            AttachmentId(
-                                cursor.getLong(0),
-                                cursor.getLong(1)
-                            )
+                    .deleteAttachment(
+                        AttachmentId(
+                            cursor.getLong(0),
+                            cursor.getLong(1)
                         )
+                    )
             }
         }
         db.query(
             ThreadDatabase.TABLE_NAME, arrayOf(
                 ThreadDatabase.ID),
-                ThreadDatabase.EXPIRES_IN + " > 0", null, null, null, null).use { cursor ->
+            ThreadDatabase.EXPIRES_IN + " > 0", null, null, null, null).use { cursor ->
             while (cursor != null && cursor.moveToNext()) {
                 DatabaseComponent.get(context).threadDatabase().update(cursor.getLong(0), false)
             }
@@ -335,5 +335,5 @@ object FullBackupImporter {
     }
 
     class DatabaseDowngradeException internal constructor(currentVersion: Int, backupVersion: Int) :
-            IOException("Tried to import a backup with version $backupVersion into a database with version $currentVersion")
+        IOException("Tried to import a backup with version $backupVersion into a database with version $currentVersion")
 }

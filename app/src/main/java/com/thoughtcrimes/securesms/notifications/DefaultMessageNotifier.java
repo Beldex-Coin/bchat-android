@@ -39,6 +39,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.beldex.libbchat.mnode.MnodeAPI;
 import com.thoughtcrimes.securesms.ApplicationContext;
 import com.thoughtcrimes.securesms.contactshare.ContactUtil;
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2;
@@ -146,7 +147,7 @@ public class DefaultMessageNotifier implements MessageNotifier {
       intent.putExtra(ConversationFragmentV2.ADDRESS, recipient.getAddress());
       intent.putExtra(ConversationFragmentV2.THREAD_ID, threadId);
       intent.putExtra(HomeActivity.SHORTCUT_LAUNCHER,true); //- New
-      intent.setData((Uri.parse("custom://" + System.currentTimeMillis())));
+      intent.setData((Uri.parse("custom://" + MnodeAPI.getNowWithOffset())));
 
       FailedNotificationBuilder builder = new FailedNotificationBuilder(context, TextSecurePreferences.getNotificationPrivacy(context), intent);
       ((NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE))
@@ -301,10 +302,10 @@ public class DefaultMessageNotifier implements MessageNotifier {
       }
       try{
       if (notificationState.hasMultipleThreads()) {
+        sendMultipleThreadNotification(context, notificationState, signal);
         for (long threadId : notificationState.getThreads()) {
           sendSingleThreadNotification(context, new NotificationState(notificationState.getNotificationsForThread(threadId)), false, true);
         }
-        sendMultipleThreadNotification(context, notificationState, signal);
       } else if (notificationState.getMessageCount() > 0) {
         sendSingleThreadNotification(context, notificationState, signal, false);
       } else {
@@ -325,7 +326,6 @@ public class DefaultMessageNotifier implements MessageNotifier {
     }
   }
 
-  private String getTrimmedText(CharSequence text) {    String trimmedText = "";    if (text != null) {      int trimEnd = Math.min(text.length(), 50);      trimmedText = text.subSequence(0,trimEnd) + (text.length() > 50 ? "..." : "");    }    return trimmedText;  }
 
   private void sendSingleThreadNotification(@NonNull  Context context,
                                             @NonNull  NotificationState notificationState,
@@ -359,13 +359,12 @@ public class DefaultMessageNotifier implements MessageNotifier {
     builder.putStringExtra(LATEST_MESSAGE_ID_TAG, messageIdTag);
 
     CharSequence text = notifications.get(0).getText();
-    String trimmedText = getTrimmedText(text);
 
     builder.setThread(notifications.get(0).getRecipient());
     builder.setMessageCount(notificationState.getMessageCount());
     MentionManagerUtilities.INSTANCE.populateUserPublicKeyCacheIfNeeded(notifications.get(0).getThreadId(),context);
     builder.setPrimaryMessageBody(recipient, notifications.get(0).getIndividualRecipient(),
-                                  MentionUtilities.highlightMentions(trimmedText,
+                                          MentionUtilities.highlightMentions(text == null ? "" : text,
                                           notifications.get(0).getThreadId(),
                                           context),
                                   notifications.get(0).getSlideDeck());

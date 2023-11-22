@@ -12,6 +12,7 @@ import com.beldex.libsignal.utilities.JsonUtil;
 import com.beldex.libsignal.utilities.guava.Optional;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class LinkPreview {
 
@@ -73,5 +74,18 @@ public class LinkPreview {
 
   public static LinkPreview deserialize(@NonNull String serialized) throws IOException {
     return JsonUtil.fromJson(serialized, LinkPreview.class);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    LinkPreview that = (LinkPreview) o;
+    return Objects.equals(url, that.url) && Objects.equals(title, that.title) && Objects.equals(attachmentId, that.attachmentId) && Objects.equals(thumbnail, that.thumbnail);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(url, title, attachmentId, thumbnail);
   }
 }

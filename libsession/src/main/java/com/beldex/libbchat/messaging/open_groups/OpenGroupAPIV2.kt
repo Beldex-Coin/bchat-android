@@ -1,5 +1,6 @@
 package com.beldex.libbchat.messaging.open_groups
 
+import com.beldex.libbchat.BuildConfig
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
@@ -39,15 +40,10 @@ object OpenGroupAPIV2 {
     }
     //http://3.110.218.201:9999/aaaa?public_key=01d5d2697273975ce5056dfb5331e8926f4ea4322a8023e245235eef0fefd67f
     /* Beldex default group */
-    /*private const val defaultServerPublicKey = "efcaecf00aebf5b75e62cf1fd550c6052842e1415a9339406e256c8b27cd2039"
+    /*const val defaultServerPublicKey = "efcaecf00aebf5b75e62cf1fd550c6052842e1415a9339406e256c8b27cd2039"
     const val defaultServer = "http://13.233.251.36:8081"*/
-
-    //Mainnet
-    private const val defaultServerPublicKey = "0cfdbcc8bba5989a6787019c6635c08415c103174609360f9c3e4e764ef48073"
-    const val defaultServer = "http://social.beldex.io"
-    //Testnet
-    /*private const val defaultServerPublicKey = "7c4dc4a0d6eddcdbbed85487f6ccc3425284ad03bbcd33de2c4ce8cbb303a946"
-    const val defaultServer = "http://social.rpcnode.stream:8080"*/
+    const val defaultServerPublicKey = BuildConfig.DEFAULT_SERVER_KEY
+    const val defaultServer = BuildConfig.DEFAULT_SERVER
 
     sealed class Error(message: String) : Exception(message) {
         object Generic : Error("An error occurred.")
@@ -91,7 +87,7 @@ object OpenGroupAPIV2 {
         val parameters: Any? = null,
         val headers: Map<String, String> = mapOf(),
         val isAuthRequired: Boolean = true,
-            /**
+        /**
          * Always `true` under normal circumstances. You might want to disable
          * this when running over Beldex.
          */
@@ -196,6 +192,9 @@ object OpenGroupAPIV2 {
                 .success { authToken ->
                     storage.setAuthToken(room, server, authToken)
                 }
+                .fail { exception ->
+                    Log.e("Beldex", "Failed to get auth token", exception)
+                }
         }
     }
 
@@ -262,7 +261,7 @@ object OpenGroupAPIV2 {
         val request = Request(verb = POST, room = room, server = server, endpoint = "messages", parameters = jsonMessage)
         return send(request).map { json ->
             @Suppress("UNCHECKED_CAST") val rawMessage = json["message"] as? Map<String, Any>
-                    ?: throw Error.ParsingFailed
+                ?: throw Error.ParsingFailed
             val result = OpenGroupMessageV2.fromJSON(rawMessage) ?: throw Error.ParsingFailed
             val storage = MessagingModuleConfiguration.shared.storage
             storage.addReceivedMessageTimestamp(result.sentTimestamp)
@@ -295,7 +294,7 @@ object OpenGroupAPIV2 {
                 val sender = message.sender
                 val data = decode(message.base64EncodedData)
                 val signature = decode(message.base64EncodedSignature)
-                val publicKey = Hex.fromStringCondensed(sender.removing05PrefixIfNeeded())
+                val publicKey = Hex.fromStringCondensed(sender.removingbdPrefixIfNeeded())
                 val isValid = curve.verifySignature(publicKey, data, signature)
                 if (!isValid) {
                     Log.d("Beldex", "Ignoring message with invalid signature.")
@@ -393,7 +392,7 @@ object OpenGroupAPIV2 {
         val context = MessagingModuleConfiguration.shared.context
         val timeSinceLastOpen = this.timeSinceLastOpen
         val useMessageLimit = (hasPerformedInitialPoll[server] != true
-            && timeSinceLastOpen > OpenGroupPollerV2.maxInactivityPeriod)
+                && timeSinceLastOpen > OpenGroupPollerV2.maxInactivityPeriod)
         hasPerformedInitialPoll[server] = true
         if (!hasUpdatedLastOpenDate) {
             hasUpdatedLastOpenDate = true

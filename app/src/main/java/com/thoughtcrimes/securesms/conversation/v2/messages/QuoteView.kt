@@ -7,7 +7,9 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.annotation.ColorInt
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.content.res.use
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,27 +40,30 @@ import kotlin.math.min
 // • Quoted voice messages and documents in both private chats and group chats
 // • All of the above in both dark mode and light mode
 @AndroidEntryPoint
-class QuoteView : LinearLayout {
+class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : ConstraintLayout(context, attrs) {
 
     @Inject lateinit var contactDb: BchatContactDatabase
 
-    private lateinit var binding: ViewQuoteBinding
-    private lateinit var mode: Mode
+    private val binding: ViewQuoteBinding by lazy { ViewQuoteBinding.bind(this) }
+    private val mode: Mode
     private val vPadding by lazy { toPx(6, resources) }
     var delegate: QuoteViewDelegate? = null
 
     enum class Mode { Regular, Draft }
 
     // region Lifecycle
-    constructor(context: Context) : this(context, Mode.Regular)
-    constructor(context: Context, attrs: AttributeSet) : this(context,  Mode.Regular, attrs)
+    init {
+        mode = attrs?.let { attrSet ->
+            context.obtainStyledAttributes(attrSet, R.styleable.QuoteView).use { typedArray ->
+                val modeIndex = typedArray.getInt(R.styleable.QuoteView_quote_mode,  0)
+                Mode.values()[modeIndex]
+            }
+        } ?: Mode.Regular
+    }
 
-    constructor(context: Context, mode: Mode, attrs: AttributeSet? = null) : super(context, attrs) {
-        this.mode = mode
-        binding = ViewQuoteBinding.inflate(LayoutInflater.from(context), this, true)
-        // Add padding here (not on binding.mainQuoteViewContainer) to get a bit of a top inset while avoiding
-        // the clipping issue described in getIntrinsicHeight(maxContentWidth:).
-        setPadding(0, toPx(6, resources), 0, 0)
+    // region Lifecycle
+    override fun onFinishInflate() {
+        super.onFinishInflate()
         when (mode) {
             Mode.Draft -> binding.quoteViewCancelButton.setOnClickListener { delegate?.cancelQuoteDraft(1)}
             Mode.Regular -> {
@@ -69,62 +74,17 @@ class QuoteView : LinearLayout {
     }
     // endregion
 
-    // region General
-    fun getIntrinsicContentHeight(maxContentWidth: Int): Int {
-        // If we're showing an attachment thumbnail, just constrain to the height of that
-        if (binding.quoteViewAttachmentPreviewContainer.isVisible) { return toPx(40, resources) }
-        var result = 0
-        val authorTextViewIntrinsicHeight: Int
-        if (binding.quoteViewAuthorTextView.isVisible) {
-            val author = binding.quoteViewAuthorTextView.text
-            authorTextViewIntrinsicHeight = TextUtilities.getIntrinsicHeight(author, binding.quoteViewAuthorTextView.paint, maxContentWidth)
-            result += authorTextViewIntrinsicHeight
-        }
-        val body = binding.quoteViewBodyTextView.text
-        val bodyTextViewIntrinsicHeight = TextUtilities.getIntrinsicHeight(body, binding.quoteViewBodyTextView.paint, maxContentWidth)
-        val staticLayout = TextUtilities.getIntrinsicLayout(body, binding.quoteViewBodyTextView.paint, maxContentWidth)
-        result += bodyTextViewIntrinsicHeight
-        if (!binding.quoteViewAuthorTextView.isVisible) {
-            // We want to at least be as high as the cancel button 36DP, and no higher than 3 lines of text.
-            // Height from intrinsic layout is the height of the text before truncation so we shorten
-            // proportionally to our max lines setting.
-            return max(toPx(32, resources) ,min((result / staticLayout.lineCount) * 3, result))
-        } else {
-            // Because we're showing the author text view, we should have a height of at least 32 DP
-            // anyway, so there's no need to constrain to that. We constrain to a max height of 56 DP
-            // because that's approximately the height of the author text view + 2 lines of the body
-            // text view.
-            return min(result, toPx(56, resources))
-        }
-    }
-
-    fun getIntrinsicHeight(maxContentWidth: Int): Int {
-        // The way all this works is that we just calculate the total height the quote view should be
-        // and then center everything inside vertically. This effectively means we're applying padding.
-        // Applying padding the regular way results in a clipping issue though due to a bug in
-        // RelativeLayout.
-        return getIntrinsicContentHeight(maxContentWidth)  + (2 * vPadding )
-    }
-    // endregion
-
     // region Updating
     fun bind(
         authorPublicKey: String, body: String?, attachments: SlideDeck?, thread: Recipient,
         isOutgoingMessage: Boolean, isOpenGroupInvitation: Boolean, isPayment: Boolean,
         outgoing: Boolean, threadID: Long, isOriginalMissing: Boolean, glide: GlideRequests
     ) {
-        // Reduce the max body text view line count to 2 if this is a group thread because
-        // we'll be showing the author text view and we don't want the overall quote view height
-        // to get too big.
-        binding.quoteViewBodyTextView.maxLines = if (thread.isGroupRecipient) 2 else 3
         // Author
-        if (thread.isGroupRecipient) {
-            val author = contactDb.getContactWithBchatID(authorPublicKey)
-            val authorDisplayName = author?.displayName(Contact.contextForRecipient(thread)) ?: authorPublicKey
-            binding.quoteViewAuthorTextView.text = authorDisplayName
-            binding.quoteViewAuthorTextView.setTextColor(getTextColor(isOutgoingMessage))
-        }
-        binding.quoteViewAuthorTextView.isVisible = thread.isGroupRecipient
+        val author = contactDb.getContactWithBchatID(authorPublicKey)
+        val authorDisplayName = author?.displayName(Contact.contextForRecipient(thread)) ?: "${authorPublicKey.take(4)}...${authorPublicKey.takeLast(4)}"
+        binding.quoteViewAuthorTextView.text = authorDisplayName
+        binding.quoteViewAuthorTextView.setTextColor(getTextColor(isOutgoingMessage))
         // Body
         binding.quoteViewBodyTextView.text = when {
             isOpenGroupInvitation -> {
@@ -204,7 +164,7 @@ class QuoteView : LinearLayout {
             val backgroundColor = ResourcesCompat.getColor(resources, backgroundColorID, context.theme)
             binding.quoteViewAttachmentPreviewContainer.backgroundTintList = ColorStateList.valueOf(backgroundColor)
             binding.quoteViewAttachmentPreviewImageView.isVisible = false
-            binding.quoteViewAttachmentThumbnailImageView.isVisible = false
+            binding.quoteViewAttachmentThumbnailImageView.root.isVisible = false
             when {
                 attachments.audioSlide != null -> {
                     binding.quoteViewAttachmentPreviewImageView.setImageResource(R.drawable.ic_microphone)
@@ -219,9 +179,9 @@ class QuoteView : LinearLayout {
                 attachments.thumbnailSlide != null -> {
                     val slide = attachments.thumbnailSlide!!
                     // This internally fetches the thumbnail
-                    binding.quoteViewAttachmentThumbnailImageView.radius = toPx(4, resources)
-                    binding.quoteViewAttachmentThumbnailImageView.setImageResource(glide, slide, false, false)
-                    binding.quoteViewAttachmentThumbnailImageView.isVisible = true
+                    binding.quoteViewAttachmentThumbnailImageView.root.radius = toPx(4, resources)
+                    binding.quoteViewAttachmentThumbnailImageView.root.setImageResource(glide, slide, false, null)
+                    binding.quoteViewAttachmentThumbnailImageView.root.isVisible = true
                     binding.quoteViewBodyTextView.text = if (MediaUtil.isVideo(slide.asAttachment())) resources.getString(R.string.Slide_video) else resources.getString(R.string.Slide_image)
                 }
             }
@@ -263,31 +223,6 @@ class QuoteView : LinearLayout {
         }else {
             ResourcesCompat.getColor(resources, R.color.white, context.theme)
         }
-    }
-
-    fun calculateWidth(quote: Quote, bodyWidth: Int, maxContentWidth: Int, thread: Recipient): Int {
-        binding.quoteViewAuthorTextView.isVisible = thread.isGroupRecipient
-        var paddingWidth = resources.getDimensionPixelSize(R.dimen.medium_spacing) * 5 // initial horizontal padding
-        with (binding) {
-            if (quoteViewAttachmentPreviewContainer.isVisible) {
-                paddingWidth += toPx(40, resources)
-            }
-            if (quoteViewAccentLine.isVisible) {
-                paddingWidth += resources.getDimensionPixelSize(R.dimen.accent_line_thickness)
-            }
-        }
-        val quoteBodyWidth = StaticLayout.getDesiredWidth(binding.quoteViewBodyTextView.text, binding.quoteViewBodyTextView.paint).toInt() + paddingWidth
-
-        val quoteAuthorWidth = if (thread.isGroupRecipient) {
-            val authorPublicKey = quote.author.serialize()
-            val author = contactDb.getContactWithBchatID(authorPublicKey)
-            val authorDisplayName = author?.displayName(Contact.contextForRecipient(thread)) ?: authorPublicKey
-            StaticLayout.getDesiredWidth(authorDisplayName, binding.quoteViewBodyTextView.paint).toInt() + paddingWidth
-        } else 0
-
-        val quoteWidth = max(quoteBodyWidth, quoteAuthorWidth)
-        val usedWidth = max(quoteWidth, bodyWidth)
-        return min(maxContentWidth, usedWidth)
     }
     // endregion
 }

@@ -264,7 +264,7 @@ public class QuoteView extends FrameLayout implements RecipientModifiedListener 
       }
       glideRequests.load(new DecryptableStreamUriLoader.DecryptableUri(imageVideoSlides.get(0).getThumbnailUri()))
                    .centerCrop()
-                   .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                   .diskCacheStrategy(DiskCacheStrategy.NONE)
                    .into(thumbnailView);
     } else if (!documentSlides.isEmpty()){
       thumbnailView.setVisibility(GONE);

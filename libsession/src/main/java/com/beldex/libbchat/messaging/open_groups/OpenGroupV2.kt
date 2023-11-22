@@ -2,14 +2,15 @@ package com.beldex.libbchat.messaging.open_groups
 
 import com.beldex.libsignal.utilities.JsonUtil
 import com.beldex.libsignal.utilities.Log
-import java.util.*
+import okhttp3.HttpUrl
+import java.util.Locale
 
 data class OpenGroupV2(
     val server: String,
     val room: String,
     val id: String,
     val name: String,
-    val publicKey: String
+    var publicKey: String
 ) {
 
     constructor(server: String, room: String, name: String, publicKey: String) : this(
@@ -35,6 +36,16 @@ data class OpenGroupV2(
                 Log.w("Beldex", "Couldn't parse social group from JSON: $jsonAsString.", e);
                 null
             }
+        }
+
+        fun getServer(urlAsString: String): HttpUrl? {
+            val url = HttpUrl.parse(urlAsString) ?: return null
+            val builder = HttpUrl.Builder().scheme(url.scheme()).host(url.host())
+            if (url.port() != 80 || url.port() != 443) {
+                // Non-standard port; add to server
+                builder.port(url.port())
+            }
+            return builder.build()
         }
 
     }

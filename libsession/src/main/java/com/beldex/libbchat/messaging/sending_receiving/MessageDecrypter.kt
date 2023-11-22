@@ -9,7 +9,7 @@ import com.goterl.lazysodium.SodiumAndroid
 import com.goterl.lazysodium.interfaces.Box
 import com.goterl.lazysodium.interfaces.Sign
 import com.beldex.libsignal.utilities.hexEncodedPublicKey
-import com.beldex.libsignal.utilities.removing05PrefixIfNeeded
+import com.beldex.libsignal.utilities.removingbdPrefixIfNeeded
 import com.beldex.libsignal.utilities.toHexString
 import java.nio.charset.StandardCharsets
 
@@ -39,7 +39,7 @@ object MessageDecrypter {
         val recipientX25519PrivateKey = x25519KeyPair.privateKey.serialize()
         Log.d("D--> recipientX25519PrivateKey ",recipientX25519PrivateKey.toHexString())
 
-        val recipientX25519PublicKey = Hex.fromStringCondensed(x25519KeyPair.hexEncodedPublicKey.removing05PrefixIfNeeded())
+        val recipientX25519PublicKey = Hex.fromStringCondensed(x25519KeyPair.hexEncodedPublicKey.removingbdPrefixIfNeeded())
         Log.d("D--> recipientX25519PublicKey ",recipientX25519PublicKey.toHexString())
 
         val signatureSize = Sign.BYTES
@@ -90,7 +90,7 @@ object MessageDecrypter {
         val recipientX25519PrivateKey = x25519KeyPair.privateKey.serialize()
         //-Log.d("D--> recipientX25519PrivateKey ",recipientX25519PrivateKey.toHexString())
 
-        val recipientX25519PublicKey = Hex.fromStringCondensed(x25519KeyPair.hexEncodedPublicKey.removing05PrefixIfNeeded())
+        val recipientX25519PublicKey = Hex.fromStringCondensed(x25519KeyPair.hexEncodedPublicKey.removingbdPrefixIfNeeded())
         //-Log.d("D--> recipientX25519PublicKey ",recipientX25519PublicKey.toHexString())
 
         val signatureSize = Sign.BYTES

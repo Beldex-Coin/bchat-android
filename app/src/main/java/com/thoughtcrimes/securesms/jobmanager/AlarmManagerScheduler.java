@@ -31,37 +31,37 @@ import java.util.UUID;
  */
 public class AlarmManagerScheduler implements Scheduler {
 
-  private static final String TAG = AlarmManagerScheduler.class.getSimpleName();
+    private static final String TAG = AlarmManagerScheduler.class.getSimpleName();
 
-  private final Application application;
+    private final Application application;
 
-  AlarmManagerScheduler(@NonNull Application application) {
-    this.application = application;
-  }
-
-  @Override
-  public void schedule(long delay, @NonNull List<Constraint> constraints) {
-    if (delay > 0 && Stream.of(constraints).allMatch(Constraint::isMet)) {
-      setUniqueAlarm(application, System.currentTimeMillis() + delay);
+    AlarmManagerScheduler(@NonNull Application application) {
+        this.application = application;
     }
-  }
-
-  private void setUniqueAlarm(@NonNull Context context, long time) {
-    AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-    Intent       intent       = new Intent(context, RetryReceiver.class);
-
-    intent.setAction(BuildConfig.APPLICATION_ID + UUID.randomUUID().toString());
-    alarmManager.set(AlarmManager.RTC_WAKEUP, time, PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE));//0
-
-    Log.i(TAG, "Set an alarm to retry a job in " + (time - System.currentTimeMillis()) + " ms.");
-  }
-
-  public static class RetryReceiver extends BroadcastReceiver {
 
     @Override
-    public void onReceive(Context context, Intent intent) {
-      Log.i(TAG, "Received an alarm to retry a job.");
-      ApplicationContext.getInstance(context).getJobManager().wakeUp();
+    public void schedule(long delay, @NonNull List<Constraint> constraints) {
+        if (delay > 0 && Stream.of(constraints).allMatch(Constraint::isMet)) {
+            setUniqueAlarm(application, System.currentTimeMillis() + delay);
+        }
     }
-  }
+
+    private void setUniqueAlarm(@NonNull Context context, long time) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent       intent       = new Intent(context, RetryReceiver.class);
+
+        intent.setAction(BuildConfig.APPLICATION_ID + UUID.randomUUID().toString());
+        alarmManager.set(AlarmManager.RTC_WAKEUP, time, PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE));//0
+
+        Log.i(TAG, "Set an alarm to retry a job in " + (time - System.currentTimeMillis()) + " ms.");
+    }
+
+    public static class RetryReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i(TAG, "Received an alarm to retry a job.");
+            ApplicationContext.getInstance(context).getJobManager().wakeUp();
+        }
+    }
 }

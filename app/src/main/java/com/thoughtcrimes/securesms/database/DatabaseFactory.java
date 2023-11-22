@@ -19,7 +19,7 @@ package com.thoughtcrimes.securesms.database;
 
 import android.content.Context;
 
-import net.sqlcipher.database.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
 import com.thoughtcrimes.securesms.database.helpers.SQLCipherOpenHelper;
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent;

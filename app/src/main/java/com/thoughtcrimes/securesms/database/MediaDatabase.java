@@ -7,8 +7,9 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import net.sqlcipher.database.DatabaseObjectNotClosedException;
-import net.sqlcipher.database.SQLiteDatabase;
+
+import net.zetetic.database.sqlcipher.DatabaseObjectNotClosedException;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
 import com.beldex.libbchat.messaging.sending_receiving.attachments.DatabaseAttachment;
 import com.beldex.libbchat.utilities.Address;

@@ -579,6 +579,10 @@
     <string name="preferences_chat_font_medium" translatable="false">Medium</string>
     <string name="preferences_chat_font_large" translatable="false">large</string>
     <string name="preferences_chat_pay_as_you_chat_title" translatable="false">Pay as you chat</string>
+    <string name="preferences_wallet_title" translatable="false">Wallet</string>
+    <string name="preferences_start_wallet_subtitle" translatable="false">Enabling wallet will allow you to send and receive BDX</string>
+    <string name="preferences_pay_as_you_chat_subTitle" translatable="false">Enabling \‘Pay As You Chat\’ will allow you to send and receive BDX right from the chat window</string>
+
 
     <!-- **************************************** -->
     <!-- menus -->
@@ -1236,7 +1240,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="confirmation_alert_dialog_box_message" translatable="false">Do you wish to continue to sign-in and restore your account?</string>
     <string name="checkPasswordDescriptionsTextView" translatable="false">This is the PIN you set to your <font color='#128D15'>BChat account.</font></string>
     <string name="checkPasswordDescriptionTextView" translatable="false">Enter your PIN to verify</string>
-    <string name="activity_restore_from_height_missing_error" translatable="false">Please pick a restore height or restore from date</string>
     <string name="please_pick_a_restore_height" translatable="false">Please pick a restore height</string>
     <string name="please_pick_a_restore_from_date" translatable="false">Please pick a restore from date</string>
 
@@ -1296,6 +1299,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="enter_bdx_to_send" translatable="false">Enter BDX to send</string>
     <string name="amount_hint" translatable="false">Amount</string>
     <string name="restore_height_error_message" translatable="false">Enter a valid blockheight</string>
+    <string name="restore_height_excess_error_message" translatable="false">Enter blockheight less than current blockheight.</string>
     <string name="change_pin_confirmation_message" translatable="false">New pin and old pin can\'t be same, Please enter a different pin</string>
     <string name="failed_connected_to_the_node" translatable="false">Failed to connect to the node</string>
     <string name="reconnecting" translatable="false">Reconnecting...</string>
@@ -1371,7 +1375,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="receiver_address_is_not_available" translatable="false">Receiver address is not available</string>
     <string name="hold_to_enable_option" translatable="false">Hold to Enable Pay as you chat</string>
     <string name="connected" translatable="false">Connected</string>
-    <string name="try_to_connect" translatable="false">Try to connect</string>
+    <string name="no_connection" translatable="false">No connection</string>
     <string name="please_enter_your_four_digit_pin" translatable="false">Please enter your 4 digit PIN.</string>
     <string name="invalid_password" translatable="false">Invalid Password.</string>
     <string name="please_copy_and_save_your_seed" translatable="false">Please copy and save your seed</string>
@@ -1385,6 +1389,31 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="record_voice_restriction" translatable="false">Can\'t record voice messages during a BChat call.</string>
     <string name="failed_to_connect" translatable="false">Failed to Connect</string>
     <string name="invalid_qr_code" translatable="false">Invalid QR Code</string>
+    <string name="invitation_msg">Hey, I\'ve been using BChat to chat with complete privacy and security. Come join me! Download it at https://play.google.com/store/apps/details?id=io.beldex.bchat. My Chat ID is %s !</string>
+    <string name="id_format">ID: %s</string>
+    <string name="bchat" translatable="false">BChat</string>
+    <string name="activity_settings_profile_picture" translatable="false">Profile Picture</string>
+    <string name="activity_settings_upload" translatable="false">Upload</string>
+    <string name="activity_settings_remove" translatable="false">Remove Picture</string>
+    <string name="activity_restore_from_height_missing_error" translatable="false">Please enter a restore height</string>
+    <string name="activity_restore_from_date_missing_error" translatable="false">Please pick a restore date</string>
+    <string name="restored_via_seed" translatable="false">You restored via Seed!</string>
+    <string name="display_name_validation" translatable="false">Please enter a valid name</string>
     <string name="sync_fail_content" translatable="false">It seems there is an issue with connecting to the node, please try to reconnect or switch the node.</string>
     <string name="notification_enable_content" translatable="false">We recommend you to allow permission for notifications for BChat app to notify you for new messages and calls.</string>
+    <string name="invalid_qr_code_image" translatable="false">Unable to recognized a valid code from uploaded image</string>
+    <string name="upload_from_gallery" translatable="false">Upload from gallery</string>
+    <string name="join_social_group_content" translatable="false">Scan a Social group\'s QR code for Joining a social group. QR Codes can be found on the social group website link.</string>
+    <string name="wallet_scan_qr_content" translatable="false">Scan a receiver\'s QR code to send BDX. QR Codes can be found by clicking on receiver button in Wallet Dashboard.</string>
+    <string name="cannot_access_sync_option" translatable="false">Can\'t rescan or reconnect while wallet is syncing</string>
+    <string name="validation_for_balance" translatable="false">You don\'t have enough balance</string>
+    <string name="validation_for_start_wallet" translatable="false">Enable wallet start option in My Account</string>
+    <string name="wallet_setup_loading_content" translatable="false">Home screen is restarting for the wallet setup process... Please wait until it is complete</string>
+    <string name="wallet_setup_content_first" translatable="false">You can Send and Receive BDX with the BChat integrated wallet.</string>
+    <string name="wallet_setup_content_second" translatable="false">The ‘Pay as you Chat’ feature is an easy-pay feature. You can send BDX to your friends right from the chat window</string>
+    <string name="wallet_setup_content_third" translatable="false">The BChat wallet is beta. Constant updates are released in newer versions of the app to enhance the integrated wallet functionality.</string>
+    <string name="wallet_setup_content_fourth" translatable="false">You can enable or disable the wallet using the Start wallet feature under Settings > Wallet settings.</string>
+    <string name="yes_i_understand" translatable="false">Yes, I Understand</string>
+    <string name="enable_wallet" translatable="false">Enable Wallet</string>
+    <string name="validation_for_empty_node_host" translatable="false">Please enter a node address</string>
 </resources>

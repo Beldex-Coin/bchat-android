@@ -9,7 +9,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="0dp"
-    android:background="@color/default_dialog_background_color_inset"
+    android:background="@color/page_background"
     android:orientation="vertical"
     tools:context="com.thoughtcrimes.securesms.wallet.rescan.RescanDialog">
 

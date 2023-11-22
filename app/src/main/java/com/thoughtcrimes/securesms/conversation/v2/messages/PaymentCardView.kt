@@ -11,6 +11,7 @@ import androidx.annotation.ColorInt
 import com.beldex.libbchat.messaging.utilities.UpdateMessageData
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.database.model.MessageRecord
+import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewPaymentCardBinding
 
@@ -44,8 +45,7 @@ class PaymentCardView : LinearLayout {
             paymentCardViewMessageTextView.textAlignment = if(message.isOutgoing) TEXT_ALIGNMENT_TEXT_END else TEXT_ALIGNMENT_TEXT_START
             viewPaymentCard.setOnClickListener{
                 try {
-                    val url = "https://explorer.beldex.io/tx/${data.txnId}" // Mainnet
-                    //val url = "http://154.26.139.105/tx/${data.txnId}" // Testnet
+                    val url = "${BuildConfig.EXPLORER_URL}/tx/${data.txnId}"
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                     context.startActivity(intent)
                 } catch (e: Exception) {

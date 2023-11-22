@@ -13,12 +13,8 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 
 import com.annimon.stream.Stream;
-import com.thoughtcrimes.securesms.database.JobDatabase;
+import com.beldex.libbchat.messaging.jobs.RetrieveProfileAvatarJob;
 import com.thoughtcrimes.securesms.jobmanager.impl.JsonDataSerializer;
-import com.thoughtcrimes.securesms.jobmanager.persistence.ConstraintSpec;
-import com.thoughtcrimes.securesms.jobmanager.persistence.DependencySpec;
-import com.thoughtcrimes.securesms.jobmanager.persistence.FullSpec;
-import com.thoughtcrimes.securesms.jobmanager.persistence.JobSpec;
 
 import org.junit.Assert;
 import org.junit.Test;

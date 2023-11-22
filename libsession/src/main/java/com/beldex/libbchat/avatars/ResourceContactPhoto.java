@@ -8,6 +8,7 @@ import android.graphics.drawable.LayerDrawable;
 import android.widget.ImageView;
 
 import androidx.annotation.DrawableRes;
+import androidx.core.content.ContextCompat;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.makeramen.roundedimageview.RoundedDrawable;
@@ -31,17 +32,18 @@ public class ResourceContactPhoto implements FallbackContactPhoto {
 
   @Override
   public Drawable asDrawable(Context context, int color, boolean inverted) {
-    Drawable        background = TextDrawable.builder().buildRound(" ", inverted ? Color.WHITE : color);
-    RoundedDrawable foreground = (RoundedDrawable) RoundedDrawable.fromDrawable(context.getResources().getDrawable(resourceId));
+    Drawable        background = TextDrawable.builder().buildRound(" ", inverted ? Color.WHITE :color);
+    RoundedDrawable foreground = (RoundedDrawable) RoundedDrawable.fromDrawable(ContextCompat.getDrawable(context,resourceId));
 
-    foreground.setScaleType(ImageView.ScaleType.CENTER);
+    assert foreground != null;
+    foreground.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
 
     if (inverted) {
       foreground.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
     }
 
-    Drawable gradient = context.getResources().getDrawable(ThemeUtil.isDarkTheme(context) ? R.drawable.avatar_gradient_dark
-                                                                                          : R.drawable.avatar_gradient_light);
+    Drawable gradient = ContextCompat.getDrawable(context,ThemeUtil.isDarkTheme(context) ? R.drawable.avatar_gradient_dark
+            : R.drawable.avatar_gradient_light);
 
     return new ExpandingLayerDrawable(new Drawable[] {background, foreground, gradient});
   }

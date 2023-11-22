@@ -8,12 +8,15 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.annotation.DimenRes
+import com.beldex.libbchat.avatars.ContactColors
+import com.beldex.libbchat.avatars.PlaceholderAvatarPhoto
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterInside
 import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewProfilePictureBinding
 import com.beldex.libbchat.avatars.ProfileContactPhoto
+import com.beldex.libbchat.avatars.ResourceContactPhoto
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
@@ -21,8 +24,10 @@ import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.util.AvatarPlaceholderGenerator
 
-class ProfilePictureView : RelativeLayout {
-    private lateinit var binding: ViewProfilePictureBinding
+class ProfilePictureView @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null
+) : RelativeLayout(context, attrs) {
+    private val binding: ViewProfilePictureBinding by lazy { ViewProfilePictureBinding.bind(this) }
     lateinit var glide: GlideRequests
     var publicKey: String? = null
     var displayName: String? = null
@@ -31,17 +36,10 @@ class ProfilePictureView : RelativeLayout {
     var isLarge = false
 
     private val profilePicturesCache = mutableMapOf<String, String?>()
-
-    // region Lifecycle
-    constructor(context: Context) : super(context) { initialize() }
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) { initialize() }
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) { initialize() }
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) { initialize() }
-
-    private fun initialize() {
-        binding = ViewProfilePictureBinding.inflate(LayoutInflater.from(context), this, true)
-    }
-    // endregion
+    private val unknownRecipientDrawable = ResourceContactPhoto(R.drawable.ic_profile_default)
+        .asDrawable(context, ContactColors.UNKNOWN_COLOR.toConversationColor(context), false)
+    private val unknownOpenGroupDrawable = ResourceContactPhoto(R.drawable.ic_notification_)
+        .asDrawable(context, ContactColors.UNKNOWN_COLOR.toConversationColor(context), false)
 
     // region Updating
     fun update(recipient: Recipient) {
@@ -49,6 +47,7 @@ class ProfilePictureView : RelativeLayout {
             val contact = DatabaseComponent.get(context).bchatContactDatabase().getContactWithBchatID(publicKey)
             return contact?.displayName(Contact.ContactContext.REGULAR) ?: publicKey
         }
+
         fun isOpenGroupWithProfilePicture(recipient: Recipient): Boolean {
             return recipient.isOpenGroupRecipient && recipient.groupAvatarId != null
         }
@@ -113,27 +112,41 @@ class ProfilePictureView : RelativeLayout {
             if (profilePicturesCache.containsKey(publicKey) && profilePicturesCache[publicKey] == recipient.profileAvatar) return
             val signalProfilePicture = recipient.contactPhoto
             val avatar = (signalProfilePicture as? ProfileContactPhoto)?.avatarObject
+
             if (signalProfilePicture != null && avatar != "0" && avatar != "") {
                 glide.clear(imageView)
-                //glide.load(signalProfilePicture).diskCacheStrategy(DiskCacheStrategy.AUTOMATIC).circleCrop().into(imageView)
                 //New Line
-                glide.load(signalProfilePicture).diskCacheStrategy(DiskCacheStrategy.AUTOMATIC).transform(
+               /* glide.load(signalProfilePicture).diskCacheStrategy(DiskCacheStrategy.AUTOMATIC).transform(
                     CenterInside(),
-                    GranularRoundedCorners(20f, 20f, 20f, 20f)).into(imageView)
-
-                profilePicturesCache[publicKey] = recipient.profileAvatar
-            } else {
-                val sizeInPX = resources.getDimensionPixelSize(sizeResId)
+                    GranularRoundedCorners(20f, 20f, 20f, 20f)).into(imageView)*/
+                glide.load(signalProfilePicture)
+                    .placeholder(unknownRecipientDrawable)
+                    .error(unknownRecipientDrawable)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .transform(CenterInside(),
+                        GranularRoundedCorners(20f, 20f, 20f, 20f))
+                    .into(imageView)
+            } else if (recipient.isOpenGroupRecipient && recipient.groupAvatarId == null) {
                 glide.clear(imageView)
-                //glide.load(AvatarPlaceholderGenerator.generate(context, sizeInPX, publicKey, displayName)).diskCacheStrategy(DiskCacheStrategy.ALL).circleCrop().into(imageView)
+                imageView.setImageDrawable(unknownOpenGroupDrawable)
+
+            } else {
+                val placeholder = PlaceholderAvatarPhoto(publicKey, displayName ?: "${publicKey.take(4)}...${publicKey.takeLast(4)}")
+
+                glide.clear(imageView)
                 //New Line
-                glide.load(AvatarPlaceholderGenerator.generate(context, sizeInPX, publicKey, displayName)).diskCacheStrategy(DiskCacheStrategy.ALL).transform(
+                /*glide.load(AvatarPlaceholderGenerator.generate(context, sizeInPX, publicKey, displayName)).diskCacheStrategy(DiskCacheStrategy.ALL).transform(
                     CenterInside(),
                     GranularRoundedCorners(20f, 20f, 20f, 20f)
-                ).into(imageView)
-
-                profilePicturesCache[publicKey] = recipient.profileAvatar
+                ).into(imageView)*/
+                glide.load(placeholder)
+                    .placeholder(unknownRecipientDrawable)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE).transform(
+                        CenterInside(),
+                        GranularRoundedCorners(20f, 20f, 20f, 20f)
+                    ).into(imageView)
             }
+            profilePicturesCache[publicKey] = recipient.profileAvatar
         } else {
             imageView.setImageDrawable(null)
         }

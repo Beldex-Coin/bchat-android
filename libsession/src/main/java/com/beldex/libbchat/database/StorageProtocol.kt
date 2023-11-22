@@ -10,6 +10,7 @@ import com.beldex.libbchat.messaging.jobs.MessageSendJob
 import com.beldex.libbchat.messaging.messages.control.ConfigurationMessage
 import com.beldex.libbchat.messaging.messages.control.MessageRequestResponse
 import com.beldex.libbchat.messaging.messages.visible.Attachment
+import com.beldex.libbchat.messaging.messages.visible.Profile
 import com.beldex.libbchat.messaging.messages.visible.VisibleMessage
 import com.beldex.libbchat.messaging.open_groups.OpenGroupV2
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentId
@@ -30,9 +31,7 @@ interface StorageProtocol {
     // General
     fun getUserPublicKey(): String?
     fun getUserX25519KeyPair(): ECKeyPair
-    fun getUserDisplayName(): String?
-    fun getUserProfileKey(): ByteArray?
-    fun getUserProfilePictureURL(): String?
+    fun getUserProfile(): Profile
     fun setUserProfilePictureURL(newProfilePicture: String)
     // Signal
     fun getOrGenerateRegistrationID(): Int
@@ -60,6 +59,8 @@ interface StorageProtocol {
     fun getAllV2OpenGroups(): Map<Long, OpenGroupV2>
     fun getV2OpenGroup(threadId: Long): OpenGroupV2?
     fun addOpenGroup(urlAsString: String)
+    fun onOpenGroupAdded(urlAsString: String)
+    fun hasBackgroundGroupAddJob(groupJoinUrl: String): Boolean
     fun setOpenGroupServerMessageID(messageID: Long, serverID: Long, threadID: Long, isSms: Boolean)
 
     // Social Group Public Keys
@@ -97,6 +98,7 @@ interface StorageProtocol {
     fun markAsSent(timestamp: Long, author: String)
     fun markUnidentified(timestamp: Long, author: String)
     fun setErrorMessage(timestamp: Long, author: String, error: Exception)
+    fun clearErrorMessage(messageID: Long)
     fun setMessageServerHash(messageID: Long, serverHash: String)
 
     // Secret Groups
@@ -140,6 +142,7 @@ interface StorageProtocol {
     fun getThreadIdForMms(mmsId: Long): Long
     fun getLastUpdated(threadID: Long): Long
     fun trimThread(threadID: Long, threadLimit: Int)
+    fun deleteConversation(threadId: Long)
 
     // Contacts
     fun getContactWithBchatID(bchatID: String): Contact?
@@ -159,6 +162,9 @@ interface StorageProtocol {
      * Returns the ID of the `TSIncomingMessage` that was constructed.
      */
     fun persist(message: VisibleMessage, quotes: QuoteModel?, linkPreview: List<LinkPreview?>, groupPublicKey: String?, openGroupID: String?, attachments: List<Attachment>,runIncrement:Boolean,runThreadUpdate:Boolean): Long?
+    fun markConversationAsRead(threadId: Long, updateLastSeen: Boolean)
+    fun incrementUnread(threadId: Long, amount: Int)
+    fun updateThread(threadId: Long, unarchive: Boolean)
     fun insertDataExtractionNotificationMessage(senderPublicKey: String, message: DataExtractionNotificationInfoMessage, sentTimestamp: Long)
     fun insertCallMessage(senderPublicKey: String, callMessageType: CallMessageType, sentTimestamp: Long)
     /*Hales63*/

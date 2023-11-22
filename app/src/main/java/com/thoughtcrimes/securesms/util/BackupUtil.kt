@@ -24,7 +24,6 @@ import com.thoughtcrimes.securesms.crypto.AttachmentSecretProvider
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
 import com.thoughtcrimes.securesms.database.BackupFileRecord
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
-import com.thoughtcrimes.securesms.service.LocalBackupListener
 import java.io.IOException
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
@@ -43,73 +42,35 @@ object BackupUtil {
         val preferences = context.getSharedPreferences(prefName, 0)
         val prefList = LinkedList<SharedPreference>()
         prefList.add(SharedPreference.newBuilder()
-                .setFile(prefName)
-                .setKey(IdentityKeyUtil.IDENTITY_PUBLIC_KEY_PREF)
-                .setValue(preferences.getString(IdentityKeyUtil.IDENTITY_PUBLIC_KEY_PREF, null))
-                .build())
+            .setFile(prefName)
+            .setKey(IdentityKeyUtil.IDENTITY_PUBLIC_KEY_PREF)
+            .setValue(preferences.getString(IdentityKeyUtil.IDENTITY_PUBLIC_KEY_PREF, null))
+            .build())
         prefList.add(SharedPreference.newBuilder()
-                .setFile(prefName)
-                .setKey(IdentityKeyUtil.IDENTITY_PRIVATE_KEY_PREF)
-                .setValue(preferences.getString(IdentityKeyUtil.IDENTITY_PRIVATE_KEY_PREF, null))
-                .build())
+            .setFile(prefName)
+            .setKey(IdentityKeyUtil.IDENTITY_PRIVATE_KEY_PREF)
+            .setValue(preferences.getString(IdentityKeyUtil.IDENTITY_PRIVATE_KEY_PREF, null))
+            .build())
         if (preferences.contains(IdentityKeyUtil.ED25519_PUBLIC_KEY)) {
             prefList.add(SharedPreference.newBuilder()
-                    .setFile(prefName)
-                    .setKey(IdentityKeyUtil.ED25519_PUBLIC_KEY)
-                    .setValue(preferences.getString(IdentityKeyUtil.ED25519_PUBLIC_KEY, null))
-                    .build())
+                .setFile(prefName)
+                .setKey(IdentityKeyUtil.ED25519_PUBLIC_KEY)
+                .setValue(preferences.getString(IdentityKeyUtil.ED25519_PUBLIC_KEY, null))
+                .build())
         }
         if (preferences.contains(IdentityKeyUtil.ED25519_SECRET_KEY)) {
             prefList.add(SharedPreference.newBuilder()
-                    .setFile(prefName)
-                    .setKey(IdentityKeyUtil.ED25519_SECRET_KEY)
-                    .setValue(preferences.getString(IdentityKeyUtil.ED25519_SECRET_KEY, null))
-                    .build())
+                .setFile(prefName)
+                .setKey(IdentityKeyUtil.ED25519_SECRET_KEY)
+                .setValue(preferences.getString(IdentityKeyUtil.ED25519_SECRET_KEY, null))
+                .build())
         }
         prefList.add(SharedPreference.newBuilder()
-                .setFile(prefName)
-                .setKey(IdentityKeyUtil.BELDEX_SEED)
-                .setValue(preferences.getString(IdentityKeyUtil.BELDEX_SEED, null))
-                .build())
+            .setFile(prefName)
+            .setKey(IdentityKeyUtil.BELDEX_SEED)
+            .setValue(preferences.getString(IdentityKeyUtil.BELDEX_SEED, null))
+            .build())
         return prefList
-    }
-
-    /**
-     * Set app-wide configuration to enable the backups and schedule them.
-     *
-     * Make sure that the backup dir is selected prior activating the backup.
-     * Use [BackupDirSelector] or [setBackupDirUri] manually.
-     */
-    @JvmStatic
-    @Throws(IOException::class)
-    fun enableBackups(context: Context, password: String) {
-        val backupDir = getBackupDirUri(context)
-        if (backupDir == null || !validateDirAccess(context, backupDir)) {
-            throw IOException("Backup dir is not set or invalid.")
-        }
-
-        BackupPassphrase.set(context, password)
-        TextSecurePreferences.setBackupEnabled(context, true)
-        LocalBackupListener.schedule(context)
-    }
-
-    /**
-     * Set app-wide configuration to disable the backups.
-     *
-     * This call resets the backup dir value.
-     * Make sure to call [setBackupDirUri] prior next call to [enableBackups].
-     *
-     * @param deleteBackupFiles if true, deletes all the previously created backup files
-     * (if the app has access to them)
-     */
-    @JvmStatic
-    fun disableBackups(context: Context, deleteBackupFiles: Boolean) {
-        BackupPassphrase.set(context, null)
-        TextSecurePreferences.setBackupEnabled(context, false)
-        if (deleteBackupFiles) {
-            deleteAllBackupFiles(context)
-        }
-        setBackupDirUri(context, null)
     }
 
     @JvmStatic
@@ -184,20 +145,20 @@ object BackupUtil {
     @Throws(IOException::class)
     fun createBackupFile(context: Context): BackupFileRecord {
         val backupPassword = BackupPassphrase.get(context)
-                ?: throw IOException("Backup password is null")
+            ?: throw IOException("Backup password is null")
 
         val dirUri = getSelectedBackupDirIfValid(context)
-                ?: throw IOException("Backup save directory is not selected or invalid")
+            ?: throw IOException("Backup save directory is not selected or invalid")
 
         val date = Date()
         val timestamp = SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.US).format(date)
         val fileName = String.format("bchat-%s.backup", timestamp)
 
         val fileUri = DocumentsContract.createDocument(
-                context.contentResolver,
-                DocumentFile.fromTreeUri(context, dirUri)!!.uri,
-                BACKUP_FILE_MIME_TYPE,
-                fileName)
+            context.contentResolver,
+            DocumentFile.fromTreeUri(context, dirUri)!!.uri,
+            BACKUP_FILE_MIME_TYPE,
+            fileName)
 
         if (fileUri == null) {
             Toast.makeText(context, "Cannot create writable file in the dir $dirUri", Toast.LENGTH_LONG).show()
@@ -218,7 +179,7 @@ object BackupUtil {
 
         //TODO Use real file size.
         val record = DatabaseComponent.get(context).beldexBackupFilesDatabase()
-                .insertBackupFile(BackupFileRecord(fileUri, -1, date))
+            .insertBackupFile(BackupFileRecord(fileUri, -1, date))
 
         Log.v(TAG, "A backup file was created: $fileUri")
 
@@ -318,7 +279,7 @@ class BackupDirSelector(private val contextProvider: ContextProvider) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val dirUri = BackupUtil.getBackupDirUri(context)
             intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, dirUri
-                    ?: Uri.fromFile(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)))
+                ?: Uri.fromFile(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)))
         }
 
         if (onSelectedListener != null) {

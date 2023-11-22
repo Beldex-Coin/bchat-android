@@ -5,7 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.text.TextUtils;
 
-import net.sqlcipher.database.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
 import com.beldex.libbchat.utilities.Document;
 import com.beldex.libbchat.utilities.IdentityKeyMismatch;
@@ -41,6 +41,7 @@ public abstract class MessagingDatabase extends Database implements MmsSmsColumn
   public abstract void markAsDeleted(long messageId, boolean read);
 
   public abstract boolean deleteMessage(long messageId);
+  public abstract boolean deleteMessages(long[] messageId, long threadId);
 
   public void addMismatchedIdentity(long messageId, Address address, IdentityKey identityKey) {
     try {

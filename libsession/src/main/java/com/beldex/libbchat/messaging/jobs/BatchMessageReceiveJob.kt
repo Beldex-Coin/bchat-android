@@ -1,13 +1,25 @@
 package com.beldex.libbchat.messaging.jobs
 
+import com.beldex.libbchat.database.StorageProtocol
+import com.beldex.libbchat.messaging.MessagingModuleConfiguration
+import com.beldex.libbchat.messaging.messages.Message
+import com.beldex.libbchat.messaging.messages.control.ExpirationTimerUpdate
+import com.beldex.libbchat.messaging.messages.visible.ParsedMessage
+import com.beldex.libbchat.messaging.messages.visible.VisibleMessage
 import com.google.protobuf.ByteString
 import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.task
 import com.beldex.libbchat.messaging.sending_receiving.MessageReceiver
 import com.beldex.libbchat.messaging.sending_receiving.handle
+import com.beldex.libbchat.messaging.sending_receiving.handleVisibleMessage
 import com.beldex.libbchat.messaging.utilities.Data
+import com.beldex.libbchat.utilities.SSKEnvironment
 import com.beldex.libsignal.protos.UtilProtos
 import com.beldex.libsignal.utilities.Log
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.runBlocking
 
 data class MessageReceiveParameters(
     val data: ByteArray,
@@ -23,13 +35,15 @@ class BatchMessageReceiveJob(
     override var delegate: JobDelegate? = null
     override var id: String? = null
     override var failureCount: Int = 0
-    override val maxFailureCount: Int = 10
+    override val maxFailureCount: Int = 1 // handled in JobQueue onJobFailed
     // Failure Exceptions must be retryable if they're a  MessageReceiver.Error
     val failures = mutableListOf<MessageReceiveParameters>()
 
     companion object {
         const val TAG = "BatchMessageReceiveJob"
         const val KEY = "BatchMessageReceiveJob"
+
+        const val BATCH_DEFAULT_NUMBER = 512
 
         // Keys used for database storage
         private val NUM_MESSAGES_KEY = "numMessages"
@@ -39,18 +53,39 @@ class BatchMessageReceiveJob(
         private val OPEN_GROUP_ID_KEY = "open_group_id"
     }
 
+    private fun getThreadId(message: Message, storage: StorageProtocol): Long {
+        val senderOrSync = when (message) {
+            is VisibleMessage -> message.syncTarget ?: message.sender!!
+            is ExpirationTimerUpdate -> message.syncTarget ?: message.sender!!
+            else -> message.sender!!
+        }
+        return storage.getOrCreateThreadIdFor(senderOrSync, message.groupPublicKey, openGroupID)
+    }
+
     override fun execute() {
         executeAsync().get()
     }
 
     fun executeAsync(): Promise<Unit, Exception> {
         return task {
+            val threadMap = mutableMapOf<Long, MutableList<ParsedMessage>>()
+            val storage = MessagingModuleConfiguration.shared.storage
+            val context = MessagingModuleConfiguration.shared.context
+            val localUserPublicKey = storage.getUserPublicKey()
+
+            // parse and collect IDs
             messages.iterator().forEach { messageParameters ->
                 val (data, serverHash, openGroupMessageServerID) = messageParameters
                 try {
                     val (message, proto) = MessageReceiver.parse(data, openGroupMessageServerID)
                     message.serverHash = serverHash
-                    MessageReceiver.handle(message, proto, this.openGroupID)
+                    val threadID = getThreadId(message, storage)
+                    val parsedParams = ParsedMessage(messageParameters, message, proto)
+                    if (!threadMap.containsKey(threadID)) {
+                        threadMap[threadID] = mutableListOf(parsedParams)
+                    } else {
+                        threadMap[threadID]!! += parsedParams
+                    }
                 } catch (e: Exception) {
                     when (e) {
                         is MessageReceiver.Error.DuplicateMessage, MessageReceiver.Error.SelfSend -> {
@@ -72,6 +107,53 @@ class BatchMessageReceiveJob(
                         }
                     }
                 }
+            }
+            // iterate over threads and persist them (persistence is the longest constant in the batch process operation)
+            runBlocking(Dispatchers.IO) {
+                val deferredThreadMap = threadMap.entries.map { (threadId, messages) ->
+                    async {
+                        val messageIds = mutableListOf<Pair<Long, Boolean>>()
+                        messages.forEach { (parameters, message, proto) ->
+                            try {
+                                if (message is VisibleMessage) {
+                                    val messageId = MessageReceiver.handleVisibleMessage(message, proto, openGroupID,
+                                        runIncrement = false,
+                                        runThreadUpdate = false,
+                                        runProfileUpdate = true
+                                    )
+                                    if (messageId != null) {
+                                        messageIds += messageId to (message.sender == localUserPublicKey)
+                                    }
+                                } else {
+                                    MessageReceiver.handle(message, proto, openGroupID)
+                                }
+                            } catch (e: Exception) {
+                                Log.e(TAG, "Couldn't process message.", e)
+                                if (e is MessageReceiver.Error && !e.isRetryable) {
+                                    Log.e(TAG, "Message failed permanently",e)
+                                } else {
+                                    Log.e(TAG, "Message failed",e)
+                                    failures += parameters
+                                }
+                            }
+                        }
+                        // increment unreads, notify, and update thread
+                        val unreadFromMine = messageIds.indexOfLast { (_,fromMe) -> fromMe }
+                        var trueUnreadCount = messageIds.filter { (_,fromMe) -> !fromMe }.size
+                        if (unreadFromMine >= 0) {
+                            trueUnreadCount -= (unreadFromMine + 1)
+                            storage.markConversationAsRead(threadId, false)
+                        }
+                        if (trueUnreadCount > 0) {
+                            storage.incrementUnread(threadId, trueUnreadCount)
+                        }
+                        storage.updateThread(threadId, true)
+                        SSKEnvironment.shared.notificationManager.updateNotification(context, threadId)
+                    }
+                }
+
+                // await all thread processing
+                deferredThreadMap.awaitAll()
             }
             if (failures.isEmpty()) {
                 handleSuccess()

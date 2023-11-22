@@ -244,7 +244,8 @@ class BeldexAPIDatabase(context: Context, helper: SQLCipherOpenHelper) : Databas
         val database = databaseHelper.writableDatabase
         val row = wrap(mapOf( Companion.mnode to mnode.toString(), Companion.publicKey to publicKey, lastMessageHashValue to newValue ))
         val query = "${Companion.mnode} = ? AND ${Companion.publicKey} = ?"
-        database.insertOrUpdate(lastMessageHashValueTable2, row, query, arrayOf( mnode.toString(), publicKey ))
+        //database.insertOrUpdate(lastMessageHashValueTable2, row, query, arrayOf( mnode.toString(), publicKey ))
+        val lastHash = database.insertOrUpdate(lastMessageHashValueTable2, row, query, arrayOf( mnode.toString(), publicKey))
     }
 
     override fun getReceivedMessageHashValues(publicKey: String): Set<String>? {
@@ -386,7 +387,7 @@ class BeldexAPIDatabase(context: Context, helper: SQLCipherOpenHelper) : Databas
         val keyPair = IdentityKeyUtil.getIdentityKeyPair(context)
         return ECKeyPair(
             DjbECPublicKey(
-                keyPair.publicKey.serialize().removing05PrefixIfNeeded()
+                keyPair.publicKey.serialize().removingbdPrefixIfNeeded()
             ),
             DjbECPrivateKey(keyPair.privateKey.serialize())
         )
@@ -396,7 +397,7 @@ class BeldexAPIDatabase(context: Context, helper: SQLCipherOpenHelper) : Databas
         val database = databaseHelper.writableDatabase
         val timestamp = Date().time.toString()
         val index = "$groupPublicKey-$timestamp"
-        val encryptionKeyPairPublicKey = encryptionKeyPair.publicKey.serialize().toHexString().removing05PrefixIfNeeded()
+        val encryptionKeyPairPublicKey = encryptionKeyPair.publicKey.serialize().toHexString().removingbdPrefixIfNeeded()
         val encryptionKeyPairPrivateKey = encryptionKeyPair.privateKey.serialize().toHexString()
         val row = wrap(mapOf(closedGroupsEncryptionKeyPairIndex to index, Companion.encryptionKeyPairPublicKey to encryptionKeyPairPublicKey,
                 Companion.encryptionKeyPairPrivateKey to encryptionKeyPairPrivateKey ))

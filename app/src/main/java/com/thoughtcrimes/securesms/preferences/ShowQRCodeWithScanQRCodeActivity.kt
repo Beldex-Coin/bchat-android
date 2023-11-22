@@ -5,9 +5,9 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Environment
+import android.os.SystemClock
 import androidx.activity.result.contract.ActivityResultContracts
 import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityAppLockBinding.inflate
 import io.beldex.bchat.databinding.ActivityShowQrcodeWithScanQrcodeBinding
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
@@ -18,6 +18,7 @@ import java.io.FileOutputStream
 
 class ShowQRCodeWithScanQRCodeActivity :  PassphraseRequiredActionBarActivity(){
     private lateinit var binding: ActivityShowQrcodeWithScanQrcodeBinding
+    private var shareButtonLastClickTime: Long = 0
 
     private val hexEncodedPublicKey: String
         get() {
@@ -38,7 +39,12 @@ class ShowQRCodeWithScanQRCodeActivity :  PassphraseRequiredActionBarActivity(){
 //        val explanation = SpannableStringBuilder("This is your unique public QR code. Other users can scan this to start a conversation with you.")
 //        explanation.setSpan(StyleSpan(Typeface.BOLD), 8, 34, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         //binding.explanationTextView.text = resources.getString(R.string.fragment_view_my_qr_code_explanation)
-        binding.shareButton.setOnClickListener { shareQRCode() }
+        binding.shareButton.setOnClickListener {
+            if (SystemClock.elapsedRealtime() - shareButtonLastClickTime >= 1000) {
+                shareButtonLastClickTime = SystemClock.elapsedRealtime()
+                shareQRCode()
+            }
+        }
         binding.scanButton.setOnClickListener {
             /*val intent = Intent(this,ScanQRCodeActivity::class.java)
             push(intent)

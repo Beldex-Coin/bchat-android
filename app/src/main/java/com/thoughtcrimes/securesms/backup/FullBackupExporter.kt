@@ -11,7 +11,7 @@ import com.beldex.libbchat.avatars.AvatarHelper
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentId
 import com.beldex.libbchat.utilities.Conversions
 import com.google.protobuf.ByteString
-import net.sqlcipher.database.SQLiteDatabase
+import net.zetetic.database.sqlcipher.SQLiteDatabase
 import org.greenrobot.eventbus.EventBus
 
 import com.thoughtcrimes.securesms.backup.BackupProtos.*
@@ -48,7 +48,7 @@ object FullBackupExporter {
                passphrase: String) {
 
         val baseOutputStream = context.contentResolver.openOutputStream(fileUri)
-                ?: throw IOException("Cannot open an output stream for the file URI: $fileUri")
+            ?: throw IOException("Cannot open an output stream for the file URI: $fileUri")
 
         var count = 0
         try {
@@ -59,32 +59,32 @@ object FullBackupExporter {
                     count = when (table) {
                         SmsDatabase.TABLE_NAME, MmsDatabase.TABLE_NAME -> {
                             exportTable(table, input, outputStream,
-                                    { cursor: Cursor ->
-                                        cursor.getInt(cursor.getColumnIndexOrThrow(
-                                            MmsSmsColumns.EXPIRES_IN)) <= 0
-                                    },
-                                    null,
-                                    count)
+                                { cursor: Cursor ->
+                                    cursor.getInt(cursor.getColumnIndexOrThrow(
+                                        MmsSmsColumns.EXPIRES_IN)) <= 0
+                                },
+                                null,
+                                count)
                         }
                         GroupReceiptDatabase.TABLE_NAME -> {
                             exportTable(table, input, outputStream,
-                                    { cursor: Cursor ->
-                                        isForNonExpiringMessage(input, cursor.getLong(cursor.getColumnIndexOrThrow(
-                                            GroupReceiptDatabase.MMS_ID)))
-                                    },
-                                    null,
-                                    count)
+                                { cursor: Cursor ->
+                                    isForNonExpiringMessage(input, cursor.getLong(cursor.getColumnIndexOrThrow(
+                                        GroupReceiptDatabase.MMS_ID)))
+                                },
+                                null,
+                                count)
                         }
                         AttachmentDatabase.TABLE_NAME -> {
                             exportTable(table, input, outputStream,
-                                    { cursor: Cursor ->
-                                        isForNonExpiringMessage(input, cursor.getLong(cursor.getColumnIndexOrThrow(
-                                            AttachmentDatabase.MMS_ID)))
-                                    },
-                                    { cursor: Cursor ->
-                                        exportAttachment(attachmentSecret, cursor, outputStream)
-                                    },
-                                    count)
+                                { cursor: Cursor ->
+                                    isForNonExpiringMessage(input, cursor.getLong(cursor.getColumnIndexOrThrow(
+                                        AttachmentDatabase.MMS_ID)))
+                                },
+                                { cursor: Cursor ->
+                                    exportAttachment(attachmentSecret, cursor, outputStream)
+                                },
+                                count)
                         }
                         else -> {
                             exportTable(table, input, outputStream, null, null, count)
@@ -175,23 +175,23 @@ object FullBackupExporter {
                     when (cursor.getType(i)) {
                         Cursor.FIELD_TYPE_STRING -> {
                             statementBuilder.addParameters(SqlStatement.SqlParameter.newBuilder()
-                                    .setStringParamter(cursor.getString(i)))
+                                .setStringParamter(cursor.getString(i)))
                         }
                         Cursor.FIELD_TYPE_FLOAT -> {
                             statementBuilder.addParameters(SqlStatement.SqlParameter.newBuilder()
-                                    .setDoubleParameter(cursor.getDouble(i)))
+                                .setDoubleParameter(cursor.getDouble(i)))
                         }
                         Cursor.FIELD_TYPE_INTEGER -> {
                             statementBuilder.addParameters(SqlStatement.SqlParameter.newBuilder()
-                                    .setIntegerParameter(cursor.getLong(i)))
+                                .setIntegerParameter(cursor.getLong(i)))
                         }
                         Cursor.FIELD_TYPE_BLOB -> {
                             statementBuilder.addParameters(SqlStatement.SqlParameter.newBuilder()
-                                    .setBlobParameter(ByteString.copyFrom(cursor.getBlob(i))))
+                                .setBlobParameter(ByteString.copyFrom(cursor.getBlob(i))))
                         }
                         Cursor.FIELD_TYPE_NULL -> {
                             statementBuilder.addParameters(SqlStatement.SqlParameter.newBuilder()
-                                    .setNullparameter(true))
+                                .setNullparameter(true))
                         }
                         else -> {
                             throw AssertionError("unknown type?" + cursor.getType(i))
@@ -253,8 +253,8 @@ object FullBackupExporter {
     }
 
     private fun isForNonExpiringMessage(db: SQLiteDatabase, mmsId: Long): Boolean {
-        val columns = arrayOf(MmsDatabase.EXPIRES_IN)
-        val where = MmsDatabase.ID + " = ?"
+        val columns = arrayOf(MmsSmsColumns.EXPIRES_IN)
+        val where = MmsSmsColumns.ID + " = ?"
         val args = arrayOf(mmsId.toString())
         db.query(MmsDatabase.TABLE_NAME, columns, where, args, null, null, null).use { mmsCursor ->
             if (mmsCursor != null && mmsCursor.moveToFirst()) {
@@ -290,9 +290,9 @@ object FullBackupExporter {
                 counter = Conversions.byteArrayToInt(iv)
                 mac.init(SecretKeySpec(macKey, "HmacSHA256"))
                 val header = BackupFrame.newBuilder().setHeader(Header.newBuilder()
-                        .setIv(ByteString.copyFrom(iv))
-                        .setSalt(ByteString.copyFrom(salt)))
-                        .build().toByteArray()
+                    .setIv(ByteString.copyFrom(iv))
+                    .setSalt(ByteString.copyFrom(salt)))
+                    .build().toByteArray()
                 outputStream.write(Conversions.intToByteArray(header.size))
                 outputStream.write(header)
             } catch (e: Exception) {
@@ -320,42 +320,42 @@ object FullBackupExporter {
         @Throws(IOException::class)
         fun writeAvatar(avatarName: String, inputStream: InputStream, size: Long) {
             write(outputStream, BackupFrame.newBuilder()
-                    .setAvatar(Avatar.newBuilder()
-                            .setName(avatarName)
-                            .setLength(Util.toIntExact(size))
-                            .build())
+                .setAvatar(Avatar.newBuilder()
+                    .setName(avatarName)
+                    .setLength(Util.toIntExact(size))
                     .build())
+                .build())
             writeStream(inputStream)
         }
 
         @Throws(IOException::class)
         fun writeAttachment(attachmentId: AttachmentId, inputStream: InputStream, size: Long) {
             write(outputStream, BackupFrame.newBuilder()
-                    .setAttachment(Attachment.newBuilder()
-                            .setRowId(attachmentId.rowId)
-                            .setAttachmentId(attachmentId.uniqueId)
-                            .setLength(Util.toIntExact(size))
-                            .build())
+                .setAttachment(Attachment.newBuilder()
+                    .setRowId(attachmentId.rowId)
+                    .setAttachmentId(attachmentId.uniqueId)
+                    .setLength(Util.toIntExact(size))
                     .build())
+                .build())
             writeStream(inputStream)
         }
 
         @Throws(IOException::class)
         fun writeSticker(rowId: Long, inputStream: InputStream, size: Long) {
             write(outputStream, BackupFrame.newBuilder()
-                    .setSticker(Sticker.newBuilder()
-                            .setRowId(rowId)
-                            .setLength(Util.toIntExact(size))
-                            .build())
+                .setSticker(Sticker.newBuilder()
+                    .setRowId(rowId)
+                    .setLength(Util.toIntExact(size))
                     .build())
+                .build())
             writeStream(inputStream)
         }
 
         @Throws(IOException::class)
         fun writeDatabaseVersion(version: Int) {
             write(outputStream, BackupFrame.newBuilder()
-                    .setVersion(DatabaseVersion.newBuilder().setVersion(version))
-                    .build())
+                .setVersion(DatabaseVersion.newBuilder().setVersion(version))
+                .build())
         }
 
         @Throws(IOException::class)

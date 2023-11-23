@@ -26,59 +26,59 @@ import com.thoughtcrimes.securesms.jobmanager.Job;
 
 public class TrimThreadJob extends BaseJob {
 
-  public static final String KEY = "TrimThreadJob";
+    public static final String KEY = "TrimThreadJob";
 
-  private static final String TAG = TrimThreadJob.class.getSimpleName();
+    private static final String TAG = TrimThreadJob.class.getSimpleName();
 
-  private static final String KEY_THREAD_ID = "thread_id";
+    private static final String KEY_THREAD_ID = "thread_id";
 
-  private long threadId;
+    private long threadId;
 
-  public TrimThreadJob(long threadId) {
-    this(new Job.Parameters.Builder().setQueue("TrimThreadJob").build(), threadId);
-  }
-
-  private TrimThreadJob(@NonNull Job.Parameters parameters, long threadId) {
-    super(parameters);
-    this.threadId = threadId;
-  }
-
-  @Override
-  public @NonNull
-  Data serialize() {
-    return new Data.Builder().putLong(KEY_THREAD_ID, threadId).build();
-  }
-
-  @Override
-  public @NonNull String getFactoryKey() {
-    return KEY;
-  }
-
-  @Override
-  public void onRun() {
-    boolean trimmingEnabled   = TextSecurePreferences.isThreadLengthTrimmingEnabled(context);
-    int     threadLengthLimit = TextSecurePreferences.getThreadTrimLength(context);
-
-    if (!trimmingEnabled)
-      return;
-
-    DatabaseComponent.get(context).threadDatabase().trimThread(threadId, threadLengthLimit);
-  }
-
-  @Override
-  public boolean onShouldRetry(@NonNull Exception exception) {
-    return false;
-  }
-
-  @Override
-  public void onCanceled() {
-    Log.w(TAG, "Canceling trim attempt: " + threadId);
-  }
-
-  public static final class Factory implements Job.Factory<TrimThreadJob> {
-    @Override
-    public @NonNull TrimThreadJob create(@NonNull Parameters parameters, @NonNull Data data) {
-      return new TrimThreadJob(parameters, data.getLong(KEY_THREAD_ID));
+    public TrimThreadJob(long threadId) {
+        this(new Job.Parameters.Builder().setQueue("TrimThreadJob").build(), threadId);
     }
-  }
+
+    private TrimThreadJob(@NonNull Job.Parameters parameters, long threadId) {
+        super(parameters);
+        this.threadId = threadId;
+    }
+
+    @Override
+    public @NonNull
+    Data serialize() {
+        return new Data.Builder().putLong(KEY_THREAD_ID, threadId).build();
+    }
+
+    @Override
+    public @NonNull String getFactoryKey() {
+        return KEY;
+    }
+
+    @Override
+    public void onRun() {
+        boolean trimmingEnabled   = TextSecurePreferences.isThreadLengthTrimmingEnabled(context);
+        int     threadLengthLimit = TextSecurePreferences.getThreadTrimLength(context);
+
+        if (!trimmingEnabled)
+            return;
+
+        DatabaseComponent.get(context).threadDatabase().trimThread(threadId, threadLengthLimit);
+    }
+
+    @Override
+    public boolean onShouldRetry(@NonNull Exception exception) {
+        return false;
+    }
+
+    @Override
+    public void onCanceled() {
+        Log.w(TAG, "Canceling trim attempt: " + threadId);
+    }
+
+    public static final class Factory implements Job.Factory<TrimThreadJob> {
+        @Override
+        public @NonNull TrimThreadJob create(@NonNull Parameters parameters, @NonNull Data data) {
+            return new TrimThreadJob(parameters, data.getLong(KEY_THREAD_ID));
+        }
+    }
 }

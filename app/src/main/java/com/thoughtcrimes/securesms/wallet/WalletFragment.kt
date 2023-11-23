@@ -65,7 +65,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
     private var walletSynchronized:Boolean = false
 
     fun setProgress(text: String?) {
-        if(text==getString(R.string.reconnecting) || text==getString(R.string.status_wallet_connecting)){
+        if(text==getString(R.string.reconnecting) || text == getString(R.string.status_wallet_loading) || text==getString(R.string.status_wallet_connecting)){
            binding.syncStatusIcon.visibility=View.GONE
             binding.syncFailIcon.visibility = View.GONE
         }
@@ -129,7 +129,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
 
     @SuppressLint("ResourceType")
     fun onSynced() {
-        if (!activityCallback?.isWatchOnly!! && walletSynchronized) {
+        if (activityCallback!!.isSynced) {
             binding.sendCardViewButton.isEnabled = true
             binding.sendCardViewButton.setBackgroundResource(R.drawable.send_card_enabled_background)
             binding.sendCardViewButtonText.setTextColor(ContextCompat.getColor(requireActivity(),R.color.white))
@@ -139,7 +139,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
     }
 
     fun unsync() {
-        if (!activityCallback!!.isWatchOnly) {
+        if (!activityCallback!!.isSynced) {
             binding.sendCardViewButton.isEnabled = false
             binding.sendCardViewButtonText.setTextColor(ContextCompat.getColor(requireActivity(),R.color.send_button_disable_color))
             binding.scanQrCodeImg.isEnabled = false
@@ -232,6 +232,23 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         )
     }
 
+    inner class AsyncRefreshHistory(val wallet: Wallet) :
+        AsyncTaskCoroutine<Executor?, Boolean?>() {
+
+        override fun doInBackground(vararg params: Executor?): Boolean {
+            try {
+                wallet.refreshHistory()
+            }catch (e: Exception){
+                Log.d("RefreshHistory exception ",e.toString())
+            }
+            return true
+        }
+
+        override fun onPostExecute(result: Boolean?) {
+            callRefreshHistory(wallet)
+        }
+    }
+
     inner class AsyncGetUnlockedBalance(val wallet: Wallet) :
         AsyncTaskCoroutine<Executor?, Boolean?>() {
         override fun onPreExecute() {
@@ -251,7 +268,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
 
         override fun doInBackground(vararg params: Executor?): Boolean {
             try {
-                unlockedBalance = wallet.unlockedBalance
+                unlockedBalance = activityCallback!!.getUnLockedBalance
             }catch (e: Exception){
                 Log.d("WalletFragment",e.toString())
             }
@@ -260,6 +277,36 @@ class WalletFragment : Fragment(),OnBackPressedListener {
 
         override fun onPostExecute(result: Boolean?) {
              refreshBalance(wallet.isSynchronized)
+        }
+    }
+
+    inner class AsyncGetFullBalance(val wallet: Wallet) : AsyncTaskCoroutine<Executor?, Boolean?>() {
+        override fun onPreExecute() {
+            super.onPreExecute()
+            if (mContext != null && walletAvailableBalance != null) {
+                if (TextSecurePreferences.getDisplayBalanceAs(mContext!!) == 1 || TextSecurePreferences.getDisplayBalanceAs(mContext!!) == 0) {
+                    if (walletAvailableBalance!!.replace(",", "").toDouble() > 0.0) {
+                        showSelectedDecimalBalance(walletAvailableBalance!!, true)
+                    } else {
+                        refreshBalance(false)
+                    }
+                }
+            } else {
+                refreshBalance(false)
+            }
+        }
+
+        override fun doInBackground(vararg params: Executor?): Boolean {
+            try {
+                balance = activityCallback!!.getFullBalance
+            } catch (e: Exception) {
+                Log.d("WalletFragment", e.toString())
+            }
+            return true
+        }
+
+        override fun onPostExecute(result: Boolean?) {
+            refreshBalance(wallet.isSynchronized)
         }
     }
 
@@ -276,6 +323,10 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         super.onPause()
     }
 
+    companion object{
+        var syncingBlocks : Long = 0
+        var getUserBalance: String = "0"
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -305,7 +356,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         binding.sendCardViewButtonText.setTextColor(ContextCompat.getColor(requireActivity(),R.color.send_button_disable_color))
         binding.scanQrCodeImg.isEnabled = false
         binding.scanQrCodeImg.setImageResource(R.drawable.ic_wallet_scan_qr_disable)
-        showBalance(Helper.getDisplayAmount(0),walletSynchronized,Helper.getDisplayAmount(0))
+//        showBalance(Helper.getDisplayAmount(0),walletSynchronized,Helper.getDisplayAmount(0))
 
         adapter = TransactionInfoAdapter(activity)
         binding.transactionList.adapter = adapter
@@ -322,18 +373,15 @@ class WalletFragment : Fragment(),OnBackPressedListener {
             setProgress(101)
             binding.syncStatus.setTextColor(ContextCompat.getColor(requireActivity().applicationContext, R.color.red))
             binding.progressBar.indeterminateDrawable.setColorFilter(
-                ContextCompat.getColor(requireActivity().applicationContext,R.color.red),
-                android.graphics.PorterDuff.Mode.SRC_IN)
+                ContextCompat.getColor(requireActivity().applicationContext,R.color.red), PorterDuff.Mode.SRC_IN)
         }
 
         binding.sendCardViewButton.isClickable= true
         binding.receiveCardViewButton.isClickable= true
         binding.sendCardViewButton.setOnClickListener { v: View? ->
-            binding.sendCardViewButton.isClickable= false
             activityCallback!!.onSendRequest(v)
         }
         binding.receiveCardViewButton.setOnClickListener { v: View? ->
-            binding.receiveCardViewButton.isClickable= false
             activityCallback!!.onWalletReceive(v)
         }
 
@@ -456,7 +504,11 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         }
 
         binding.toolBarRescan.setOnClickListener {
-            activityCallback?.callToolBarRescan()
+            if (activityCallback!!.isSynced) {
+                activityCallback?.callToolBarRescan()
+            } else {
+                Toast.makeText(context, getString(R.string.cannot_access_sync_option), Toast.LENGTH_SHORT).show()
+            }
         }
         binding.toolBarSettings.setOnClickListener {
             activityCallback?.callToolBarSettings()
@@ -552,27 +604,13 @@ class WalletFragment : Fragment(),OnBackPressedListener {
             true
         }
     }
-
-    private fun setActivityTitle(wallet: Wallet?) {
-        if (wallet == null) return
-        walletTitle = wallet.name
-        binding.transactionTitle.visibility = View.VISIBLE
-        binding.transactionLayoutCardView.visibility = View.VISIBLE
-    }
-
     private var firstBlock: Long = 0
     private var unlockedBalance: Long = -1
     private var balance: Long = 0
-    private var accountIdx = -1
 
     private fun updateStatus(wallet: Wallet) {
         if (!isAdded) return
-        if (walletTitle == null || accountIdx != wallet.accountIndex) {
-            accountIdx = wallet.accountIndex
-            setActivityTitle(wallet)
-        }
         if(CheckOnline.isOnline(requireContext())) {
-            balance = wallet.balance
             val sync: String
             check(activityCallback!!.hasBoundService()) { "WalletService not bound." }
             val daemonConnected: Wallet.ConnectionStatus = activityCallback!!.connectionStatus!!
@@ -583,11 +621,12 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                     val walletHeight = wallet.blockChainHeight
                     val n = daemonHeight - walletHeight
                     sync = formatter.format(n) + " " + getString(R.string.status_remaining)
+                    syncingBlocks = n
                     if (firstBlock == 0L) {
                         firstBlock = walletHeight
                     }
                     var x = (100 - Math.round(100f * n / (1f * daemonHeight  - firstBlock))).toInt()
-                    if (x == 0) x = 101 // indeterminate
+                    if (x == 0) x = 1 // indeterminate
                     setProgress(x)
                     binding.filterTransactionsIcon.isClickable = false
                     binding.syncStatusIcon.visibility=View.GONE
@@ -598,7 +637,10 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                             R.color.green_color
                         )
                     )
+                    binding.progressBar.indeterminateDrawable.setColorFilter(
+                            ContextCompat.getColor(requireActivity().applicationContext,R.color.green_color), PorterDuff.Mode.SRC_IN)
                 } else {
+                    syncingBlocks = 0
                     ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(false)
                     sync = getString(R.string.status_synchronized)//getString(R.string.status_synced) + " " + formatter.format(wallet.blockChainHeight)
                     binding.syncStatus.setTextColor(
@@ -607,6 +649,8 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                             R.color.green_color
                         )
                     )
+                    binding.progressBar.indeterminateDrawable.setColorFilter(
+                            ContextCompat.getColor(requireActivity().applicationContext,R.color.green_color), PorterDuff.Mode.SRC_IN)
                     setProgress(-2)
                     binding.filterTransactionsIcon.isClickable =
                         true //default = adapter!!.itemCount > 0
@@ -620,6 +664,20 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                         }
                     }
                 }
+            } else if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connecting) {
+                binding.syncStatusIcon.visibility = View.GONE
+                binding.syncFailIcon.visibility = View.GONE
+                sync = getString(R.string.status_wallet_connecting)
+                setProgress(101)
+                binding.syncStatus.setTextColor(
+                        ContextCompat.getColor(
+                                requireActivity().applicationContext,
+                                R.color.green_color
+                        )
+                )
+                binding.progressBar.indeterminateDrawable.setColorFilter(
+                        ContextCompat.getColor(requireActivity().applicationContext, R.color.green_color), PorterDuff.Mode.SRC_IN)
+
             } else {
                 binding.syncStatusIcon.visibility=View.GONE
                 binding.syncFailIcon.visibility=View.VISIBLE
@@ -636,6 +694,9 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                         R.color.red
                     )
                 )
+                binding.progressBar.indeterminateDrawable.setColorFilter(
+                        ContextCompat.getColor(requireActivity().applicationContext,R.color.red),
+                    android.graphics.PorterDuff.Mode.SRC_IN)
             }
             setProgress(sync)
         }
@@ -689,22 +750,19 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         }
     }
 
-    fun updateNodeFailureStatus() {
+    fun updateNodeConnectingStatus() {
         binding.syncStatusIcon.visibility = View.GONE
-        binding.syncFailIcon.visibility = View.VISIBLE
-        binding.syncFailIcon.setOnClickListener {
-            if (CheckOnline.isOnline(requireActivity())) {
-                checkSyncFailInfo(requireActivity())
-            }
-        }
-        setProgress(getString(R.string.failed_connected_to_the_node))
+        binding.syncFailIcon.visibility = View.GONE
+        setProgress(getString(R.string.status_wallet_connecting))
         setProgress(101)
         binding.syncStatus.setTextColor(
                 ContextCompat.getColor(
                         requireActivity().applicationContext,
-                        R.color.red
+                        R.color.green_color
                 )
         )
+        binding.progressBar.indeterminateDrawable.setColorFilter(
+                ContextCompat.getColor(requireActivity().applicationContext,R.color.green_color), PorterDuff.Mode.SRC_IN)
     }
 
     private fun refreshBalance(synchronized: Boolean) {
@@ -716,7 +774,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                 true,
                 Helper.getFormattedAmount(amountFullBdx, true)
             )
-        }else{
+        } else {
             showBalance(
                 Helper.getFormattedAmount(amountBdx, true),
                 synchronized,
@@ -747,7 +805,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                     binding.tvBalance.text = "-.----"
                 }
             }
-            if (!activityCallback!!.isWatchOnly) {
+            if (!activityCallback!!.isSynced) {
                 binding.sendCardViewButton.isEnabled = false
                 binding.sendCardViewButtonText.setTextColor(ContextCompat.getColor(requireActivity(),R.color.send_button_disable_color))
                 binding.scanQrCodeImg.isEnabled = false
@@ -771,7 +829,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                 }
             }
             //SteveJosephh21
-            if (!activityCallback?.isWatchOnly!! && activityCallback!!.isSynced) {
+            if (activityCallback!!.isSynced) {
                 binding.sendCardViewButton.isEnabled = true
                 binding.sendCardViewButton.setBackgroundResource(R.drawable.send_card_enabled_background)
                 binding.sendCardViewButtonText.setTextColor(ContextCompat.getColor(requireActivity(),R.color.white))
@@ -779,6 +837,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                 binding.scanQrCodeImg.setImageResource(R.drawable.ic_scan_qr)
             }
         }
+        getUserBalance = binding.tvBalance.text.toString()
         //Update Fiat Currency
         updateFiatCurrency(balance)
     }
@@ -863,7 +922,6 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         val isSynced: Boolean
         val isStreetMode: Boolean
         val streetModeHeight: Long
-        val isWatchOnly: Boolean
 
         fun getTxKey(txId: String?): String?
         fun onWalletReceive(view: View?)
@@ -884,6 +942,8 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         fun callToolBarSettings()
 
         fun walletOnBackPressed() //-
+        val getUnLockedBalance: Long
+        val getFullBalance: Long
     }
 
     private var accountIndex = 0
@@ -893,42 +953,49 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         if (adapter!!.needsTransactionUpdateOnNewBlock()) {
             full = true
         }
-        if (full) {
-            val list: MutableList<TransactionInfo> = ArrayList()
-            val streetHeight: Long = activityCallback!!.streetModeHeight
-            wallet.refreshHistory()
-            for (info in wallet.history.all) {
-                if ((info.isPending || info.blockheight >= streetHeight)
-                    && !dismissedTransactions.contains(info.hash)
-                ) list.add(info)
-            }
-            adapter!!.setInfos(list)
-            adapterItems.clear()
-            adapterItems.addAll(adapter!!.infoItems!!)
-            if (accountIndex != wallet.accountIndex) {
-                accountIndex = wallet.accountIndex
-                binding.transactionList.scrollToPosition(0)
-            }
+        if (full && activityCallback!!.isSynced) {
+            AsyncRefreshHistory(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+        }
+        updateStatus(wallet)
+    }
 
-            //SteveJosephh21
-            if (adapter!!.itemCount > 0) {
-                binding.transactionList.visibility = View.VISIBLE
-                binding.emptyContainerLayout.visibility = View.GONE
-            } else {
-                binding.filterTransactionsIcon.isClickable = true // default = false
-                binding.transactionList.visibility = View.GONE
-                binding.emptyContainerLayout.visibility = View.VISIBLE
-            }
-            //Steve Josephh21 ANRS
-            if(CheckOnline.isOnline(requireContext())) {
-                check(activityCallback!!.hasBoundService()) { "WalletService not bound." }
-                val daemonConnected: Wallet.ConnectionStatus = activityCallback!!.connectionStatus!!
-                if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
+    fun callRefreshHistory(wallet:Wallet){
+        val list: MutableList<TransactionInfo> = ArrayList()
+        val streetHeight: Long = activityCallback!!.streetModeHeight
+        for (info in wallet.history.all) {
+            if ((info.isPending || info.blockheight >= streetHeight)
+                && !dismissedTransactions.contains(info.hash)
+            ) list.add(info)
+        }
+        adapter!!.setInfos(list)
+        adapterItems.clear()
+        adapterItems.addAll(adapter!!.infoItems!!)
+        if (accountIndex != wallet.accountIndex) {
+            accountIndex = wallet.accountIndex
+            binding.transactionList.scrollToPosition(0)
+        }
+
+        //SteveJosephh21
+        if (adapter!!.itemCount > 0) {
+            binding.transactionList.visibility = View.VISIBLE
+            binding.emptyContainerLayout.visibility = View.GONE
+        } else {
+            binding.filterTransactionsIcon.isClickable = true // default = false
+            binding.transactionList.visibility = View.GONE
+            binding.emptyContainerLayout.visibility = View.VISIBLE
+        }
+        //Steve Josephh21 ANRS
+        if(CheckOnline.isOnline(requireContext())) {
+            check(activityCallback!!.hasBoundService()) { "WalletService not bound." }
+            val daemonConnected: Wallet.ConnectionStatus = activityCallback!!.connectionStatus!!
+            if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {
+                if (TextSecurePreferences.getDisplayBalanceAs(mContext!!) == 1) {
                     AsyncGetUnlockedBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+                } else if (TextSecurePreferences.getDisplayBalanceAs(mContext!!) == 0) {
+                    AsyncGetFullBalance(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
                 }
             }
         }
-        updateStatus(wallet)
     }
 
 

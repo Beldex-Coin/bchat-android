@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.min
 
 class ClosedGroupPollerV2 {
-    private val executorService = Executors.newScheduledThreadPool(4)
+    private val executorService = Executors.newScheduledThreadPool(1)
     private var isPolling = mutableMapOf<String, Boolean>()
     private var futures = mutableMapOf<String, ScheduledFuture<*>>()
 
@@ -74,7 +74,12 @@ class ClosedGroupPollerV2 {
         // reasonable fake time interval to use instead.
         val storage = MessagingModuleConfiguration.shared.storage
         val groupID = GroupUtil.doubleEncodeGroupID(groupPublicKey)
-        val threadID = storage.getThreadId(groupID) ?: return
+        val threadID = storage.getThreadId(groupID)
+        if (threadID == null) {
+            Log.d("Beldex", "Stopping group poller due to missing thread for secret group: $groupPublicKey.")
+            stopPolling(groupPublicKey)
+            return
+        }
         val lastUpdated = storage.getLastUpdated(threadID)
         val timeSinceLastMessage = if (lastUpdated != -1L) Date().time - lastUpdated else 5 * 60 * 1000
         val minPollInterval = Companion.minPollInterval

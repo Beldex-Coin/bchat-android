@@ -306,7 +306,7 @@ public class Recipient implements RecipientModifiedListener {
   }
 
   public synchronized @Nullable String getName() {
-    StorageProtocol storage = MessagingModuleConfiguration.shared.getStorage();
+    StorageProtocol storage = MessagingModuleConfiguration.getShared().getStorage();
     String bchatID = this.address.toString();
     if (isGroupRecipient()) {
       if (this.name == null) {

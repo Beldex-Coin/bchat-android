@@ -7,7 +7,7 @@ import com.beldex.libbchat.messaging.utilities.Data
 import com.beldex.libsignal.utilities.Log
 import com.thoughtcrimes.securesms.database.helpers.SQLCipherOpenHelper
 import com.thoughtcrimes.securesms.jobmanager.impl.JsonDataSerializer
-import net.sqlcipher.Cursor
+import android.database.Cursor
 
 class BchatJobDatabase(context: Context, helper: SQLCipherOpenHelper) : Database(context, helper) {
 
@@ -128,6 +128,13 @@ class BchatJobDatabase(context: Context, helper: SQLCipherOpenHelper) : Database
         job.id = cursor.getString(jobID)
         job.failureCount = cursor.getInt(failureCount)
         return job
+    }
+
+    fun hasBackgroundGroupAddJob(groupJoinUrl: String): Boolean {
+        val database = databaseHelper.readableDatabase
+        return database.getAll(bchatJobTable, "$jobType = ?", arrayOf(BackgroundGroupAddJob.KEY)) { cursor ->
+            jobFromCursor(cursor) as? BackgroundGroupAddJob
+        }.filterNotNull().any { it.joinUrl == groupJoinUrl }
     }
 }
 

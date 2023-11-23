@@ -54,7 +54,7 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentUserDetailsBottomSheetBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -66,10 +66,10 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
         val recipient = Recipient.from(requireContext(), Address.fromSerialized(publicKey), false)
         val threadRecipient = threadDb.getRecipientForThreadId(threadID) ?: return dismiss()
         with(binding) {
-            profilePictureView.publicKey = publicKey
-            profilePictureView.glide = GlideApp.with(this@UserDetailsBottomSheet)
-            profilePictureView.isLarge = true
-            profilePictureView.update(recipient)
+            profilePictureView.root.publicKey = publicKey
+            profilePictureView.root.glide = GlideApp.with(this@UserDetailsBottomSheet)
+            profilePictureView.root.isLarge = true
+            profilePictureView.root.update(recipient)
             nameTextViewContainer.visibility = View.VISIBLE
             nameTextViewContainer.setOnClickListener {
                 nameTextViewContainer.visibility = View.INVISIBLE
@@ -132,23 +132,21 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
         window.setDimAmount(if (isLightMode) 0.1f else 0.75f)
     }
 
-    fun saveNickName(recipient: Recipient) = with(binding) {
-        nicknameEditText.clearFocus()
-        hideSoftKeyboard()
-        nameTextViewContainer.visibility = View.VISIBLE
-        nameEditTextContainer.visibility = View.INVISIBLE
-        var newNickName: String? = null
-        if (nicknameEditText.text.trim().isNotEmpty()) {
-            newNickName = nicknameEditText.text.toString()
-        }else{
+    private fun saveNickName(recipient: Recipient) = with(binding) {
+        if (nicknameEditText.text.trim().isEmpty()) {
             Toast.makeText(context,R.string.enter_a_valid_nickname,Toast.LENGTH_SHORT).show()
+        }else{
+            nicknameEditText.clearFocus()
+            hideSoftKeyboard()
+            nameTextViewContainer.visibility = View.VISIBLE
+            nameEditTextContainer.visibility = View.INVISIBLE
+            val publicKey = recipient.address.serialize()
+            val contactDB = DatabaseComponent.get(requireContext()).bchatContactDatabase()
+            val contact = contactDB.getContactWithBchatID(publicKey) ?: Contact(publicKey)
+            contact.nickname = nicknameEditText.text.toString()
+            contactDB.setContact(contact)
+            nameTextView.text = recipient.name ?: publicKey // Uses the Contact API internally
         }
-        val publicKey = recipient.address.serialize()
-        val contactDB = DatabaseComponent.get(requireContext()).bchatContactDatabase()
-        val contact = contactDB.getContactWithBchatID(publicKey) ?: Contact(publicKey)
-        contact.nickname = newNickName
-        contactDB.setContact(contact)
-        nameTextView.text = recipient.name ?: publicKey // Uses the Contact API internally
     }
 
     @SuppressLint("ServiceCast")

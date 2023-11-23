@@ -26,13 +26,12 @@ object MentionUtilities {
     @JvmStatic
     fun highlightMentions(text: CharSequence, isOutgoingMessage: Boolean, threadID: Long, context: Context): SpannableString {
         @Suppress("NAME_SHADOWING") var text = text
-        val threadDB = DatabaseComponent.get(context).threadDatabase()
-        val isOpenGroup = threadDB.getRecipientForThreadId(threadID)?.isOpenGroupRecipient ?: false
         val pattern = Pattern.compile("@[0-9a-fA-F]*")
         var matcher = pattern.matcher(text)
         val mentions = mutableListOf<Tuple2<Range<Int>, String>>()
         var startIndex = 0
         val userPublicKey = TextSecurePreferences.getLocalNumber(context)!!
+        val openGroup = DatabaseComponent.get(context).storage().getV2OpenGroup(threadID)
         if (matcher.find(startIndex)) {
             while (true) {
                 val publicKey = text.subSequence(matcher.start() + 1, matcher.end()).toString() // +1 to get rid of the @
@@ -40,7 +39,7 @@ object MentionUtilities {
                     TextSecurePreferences.getProfileName(context)
                 } else {
                     val contact = DatabaseComponent.get(context).bchatContactDatabase().getContactWithBchatID(publicKey)
-                    @Suppress("NAME_SHADOWING") val context = if (isOpenGroup) Contact.ContactContext.OPEN_GROUP else Contact.ContactContext.REGULAR
+                    @Suppress("NAME_SHADOWING") val context = if (openGroup!=null) Contact.ContactContext.OPEN_GROUP else Contact.ContactContext.REGULAR
                     contact?.displayName(context)
                 }
                 if (userDisplayName != null) {

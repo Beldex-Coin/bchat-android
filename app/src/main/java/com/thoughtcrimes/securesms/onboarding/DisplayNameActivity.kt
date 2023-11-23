@@ -14,6 +14,7 @@ import com.beldex.libbchat.utilities.SSKEnvironment.ProfileManagerProtocol
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.BaseActionBarActivity
 import com.thoughtcrimes.securesms.data.DefaultNodes
+import com.thoughtcrimes.securesms.data.NetworkNodes
 import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
 import com.thoughtcrimes.securesms.model.NetworkType
@@ -25,6 +26,7 @@ import timber.log.Timber
 import java.io.File
 import java.util.*
 import java.util.concurrent.Executor
+import java.util.regex.Pattern
 
 
 class DisplayNameActivity : BaseActionBarActivity() {
@@ -37,6 +39,7 @@ class DisplayNameActivity : BaseActionBarActivity() {
     private val PREF_DAEMON_TESTNET = "daemon_testnet"
     private val PREF_DAEMON_STAGENET = "daemon_stagenet"
     private val PREF_DAEMON_MAINNET = "daemon_mainnet"
+    private val namePattern = Pattern.compile("[A-Za-z0-9]+")
 
     private var node: NodeInfo? = null
 
@@ -82,10 +85,10 @@ class DisplayNameActivity : BaseActionBarActivity() {
 
     fun getOrPopulateFavourites(): Set<NodeInfo?> {
         if (favouriteNodes.isEmpty()) {
-            for (node in DefaultNodes.values()) {
-                val nodeInfo = NodeInfo.fromString(node.uri)
+            for (node in NetworkNodes.getNodes()) {
+                val nodeInfo = NodeInfo.fromString(node)
                 if (nodeInfo != null) {
-                    nodeInfo.setFavourite(true)
+                    nodeInfo.isFavourite = true
                     favouriteNodes.add(nodeInfo)
                 }
             }
@@ -269,8 +272,14 @@ class DisplayNameActivity : BaseActionBarActivity() {
                 removeWallet()
             }
         }
+        if (!displayName.matches(namePattern.toRegex())) {
+            return Toast.makeText(
+                    this,
+                    R.string.display_name_validation,
+                    Toast.LENGTH_SHORT
+            ).show()
+        }
         binding.registerButton.isEnabled = false
-
         val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(binding.displayNameEditText.windowToken, 0)
         TextSecurePreferences.setProfileName(this, displayName)
@@ -279,10 +288,6 @@ class DisplayNameActivity : BaseActionBarActivity() {
         val uuid = UUID.randomUUID()
         val password = uuid.toString()
         _createWallet(displayName, password)
-
-        //Important
-        /*val intent = Intent(this, RegisterActivity::class.java)
-        push(intent)*/
     }
     //New Line
     private fun removeWallet(){

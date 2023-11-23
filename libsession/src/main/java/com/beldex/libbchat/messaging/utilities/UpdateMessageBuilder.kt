@@ -7,16 +7,17 @@ import com.beldex.libbchat.messaging.calls.CallMessageType
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.messaging.sending_receiving.data_extraction.DataExtractionNotificationInfoMessage
 import com.beldex.libbchat.utilities.ExpirationUtil
+import com.beldex.libbchat.utilities.truncateIdForDisplay
 
 object UpdateMessageBuilder {
 
-    fun buildGroupUpdateMessage(context: Context, updateMessageData: UpdateMessageData, sender: String? = null, isOutgoing: Boolean = false): String {
+    fun buildGroupUpdateMessage(context: Context, updateMessageData: UpdateMessageData, senderId: String? = null, isOutgoing: Boolean = false): String {
         var message = ""
         val updateData = updateMessageData.kind ?: return message
-        if (!isOutgoing && sender == null) return message
+        if (!isOutgoing && senderId == null) return message
         val storage = MessagingModuleConfiguration.shared.storage
         val senderName: String = if (!isOutgoing) {
-            storage.getContactWithBchatID(sender!!)?.displayName(Contact.ContactContext.REGULAR) ?: sender
+            storage.getContactWithBchatID(senderId!!)?.displayName(Contact.ContactContext.REGULAR) ?: truncateIdForDisplay(senderId)
         } else { context.getString(R.string.MessageRecord_you) }
 
         when (updateData) {
@@ -73,15 +74,16 @@ object UpdateMessageBuilder {
                     context.getString(R.string.ConversationItem_group_action_left, senderName)
                 }
             }
+            else -> Unit
         }
         return message
     }
 
-    fun buildExpirationTimerMessage(context: Context, duration: Long, sender: String? = null, isOutgoing: Boolean = false): String {
-        if (!isOutgoing && sender == null) return ""
+    fun buildExpirationTimerMessage(context: Context, duration: Long, senderId: String? = null, isOutgoing: Boolean = false): String {
+        if (!isOutgoing && senderId == null) return ""
         val storage = MessagingModuleConfiguration.shared.storage
         val senderName: String? = if (!isOutgoing) {
-            storage.getContactWithBchatID(sender!!)?.displayName(Contact.ContactContext.REGULAR) ?: sender
+            storage.getContactWithBchatID(senderId!!)?.displayName(Contact.ContactContext.REGULAR) ?: truncateIdForDisplay(senderId)
         } else { context.getString(R.string.MessageRecord_you) }
         return if (duration <= 0) {
             if (isOutgoing) context.getString(R.string.MessageRecord_you_disabled_disappearing_messages)
@@ -93,9 +95,9 @@ object UpdateMessageBuilder {
         }
     }
 
-    fun buildDataExtractionMessage(context: Context, kind: DataExtractionNotificationInfoMessage.Kind, sender: String? = null): String {
+    fun buildDataExtractionMessage(context: Context, kind: DataExtractionNotificationInfoMessage.Kind, senderId: String? = null): String {
         val storage = MessagingModuleConfiguration.shared.storage
-        val senderName = storage.getContactWithBchatID(sender!!)?.displayName(Contact.ContactContext.REGULAR) ?: sender!!
+        val senderName = storage.getContactWithBchatID(senderId!!)?.displayName(Contact.ContactContext.REGULAR) ?: truncateIdForDisplay(senderId)
         return when (kind) {
             DataExtractionNotificationInfoMessage.Kind.SCREENSHOT ->
                 context.getString(R.string.MessageRecord_s_took_a_screenshot, senderName)
@@ -105,9 +107,9 @@ object UpdateMessageBuilder {
     }
 
     //New Line
-    fun buildCallMessage(context: Context, type: CallMessageType, sender: String): String {
+    fun buildCallMessage(context: Context, type: CallMessageType, senderId: String): String {
         val storage = MessagingModuleConfiguration.shared.storage
-        val senderName = storage.getContactWithBchatID(sender)?.displayName(Contact.ContactContext.REGULAR) ?: sender
+        val senderName = storage.getContactWithBchatID(senderId)?.displayName(Contact.ContactContext.REGULAR) ?: truncateIdForDisplay(senderId)
         return when (type) {
             CallMessageType.CALL_MISSED ->
                 context.getString(R.string.MessageRecord_missed_call_from, senderName)

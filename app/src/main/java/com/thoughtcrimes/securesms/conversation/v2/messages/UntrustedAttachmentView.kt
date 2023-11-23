@@ -14,7 +14,7 @@ import io.beldex.bchat.databinding.ViewUntrustedAttachmentBinding
 import java.util.Locale
 
 class UntrustedAttachmentView: LinearLayout {
-    private lateinit var binding: ViewUntrustedAttachmentBinding
+    private val binding: ViewUntrustedAttachmentBinding by lazy { ViewUntrustedAttachmentBinding.bind(this) }
     enum class AttachmentType {
         AUDIO,
         DOCUMENT,
@@ -22,13 +22,9 @@ class UntrustedAttachmentView: LinearLayout {
     }
 
     // region Lifecycle
-    constructor(context: Context) : super(context) { initialize() }
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) { initialize() }
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) { initialize() }
-
-    private fun initialize() {
-        binding = ViewUntrustedAttachmentBinding.inflate(LayoutInflater.from(context), this, true)
-    }
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
     // endregion
 
     // region Updating

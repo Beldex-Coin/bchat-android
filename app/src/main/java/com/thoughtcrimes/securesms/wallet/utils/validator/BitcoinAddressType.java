@@ -8,9 +8,8 @@ public enum BitcoinAddressType {
     DASH(Type.DASH, null),
     DOGE(Type.DOGE, null);
 
-    @Getter
     private final byte[] production;
-    @Getter
+
     private final byte[] testnet;
 
     public byte[] getTestnet() {

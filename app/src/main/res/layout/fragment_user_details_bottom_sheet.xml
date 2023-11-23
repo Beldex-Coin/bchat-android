@@ -7,13 +7,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:gravity="center_horizontal"
+    android:background="@color/page_background"
     android:paddingLeft="@dimen/large_spacing"
     android:paddingRight="@dimen/large_spacing"
     android:paddingBottom="@dimen/large_spacing"
     app:behavior_hideable="true"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-    <com.thoughtcrimes.securesms.components.ProfilePictureView
+    <include layout="@layout/view_profile_picture"
         android:id="@+id/profilePictureView"
         android:layout_width="@dimen/large_profile_picture_size"
         android:layout_height="@dimen/large_profile_picture_size"
@@ -84,6 +85,7 @@
                 android:layout_marginStart="@dimen/small_spacing"
                 android:layout_marginEnd="@dimen/small_spacing"
                 android:textAlignment="center"
+                android:maxLength="26"
                 android:paddingTop="12dp"
                 android:paddingBottom="12dp"
                 android:inputType="text"

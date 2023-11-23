@@ -68,8 +68,8 @@ class LogFile {
       try {
         cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(secret, "AES"), new IvParameterSpec(ivBuffer));
 
-        int    cipherLength = cipher.getOutputSize(plaintext.length);
-        byte[] ciphertext   = ciphertextBuffer.get(cipherLength);
+        int cipherLength = cipher.getOutputSize(plaintext.length);
+        byte[] ciphertext = ciphertextBuffer.get(cipherLength);
         cipherLength = cipher.doFinal(plaintext, 0, plaintext.length, ciphertext);
 
         outputStream.write(ivBuffer);

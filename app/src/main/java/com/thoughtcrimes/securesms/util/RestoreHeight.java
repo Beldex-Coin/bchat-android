@@ -85,6 +85,9 @@ public class RestoreHeight {
         blockheight.put("2023-06-01", 2289269L);
         blockheight.put("2023-07-01", 2363143L);
         blockheight.put("2023-08-01", 2420443L);
+        blockheight.put("2023-09-01", 2503900L);
+        blockheight.put("2023-10-01", 2585550L);
+        blockheight.put("2023-11-01", 2696980L);
     }
 
     public long getHeight(String date) {

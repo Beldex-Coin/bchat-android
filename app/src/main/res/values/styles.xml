@@ -20,7 +20,7 @@
     </style>
 
     <style name="Widget.Bchat.SearchView" parent="@style/Widget.AppCompat.SearchView">
-        <item name="closeIcon">@drawable/ic_clear</item>
+        <item name="closeIcon">@drawable/ic_baseline_clear_24</item>
     </style>
 
     <style name="ThemeOverlay.Bchat.AlertDialog" parent="ThemeOverlay.AppCompat.Dialog.Alert">
@@ -173,6 +173,7 @@
     </style>
 
     <style name="Widget.Bchat.Button.Dialog" parent="">
+        <item name="android:gravity">center</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textSize">@dimen/small_font_size</item>
         <item name="android:textColor">?android:textColorPrimary</item>
@@ -680,9 +681,9 @@
         <item name="itemFillColor">@color/button_green</item>
         <item name="itemTextColor">@color/default_background_start</item>
         <item name="itemStrokeWidth">2dp</item>
-        <item name="itemShapeAppearance">
+      <!--  <item name="itemShapeAppearance">
             @style/Test.ShapeAppearanceOverlay.MaterialComponents.MaterialCalendar.Day
-        </item>
+        </item>-->
     </style>
 
 
@@ -735,11 +736,17 @@
         <item name="android:textColor">@color/green_color</item>
     </style>
 
-    <style name="FullScreenDialogTheme" parent="Theme.AppCompat.Light.DialogWhenLarge">
+    <style name="FullScreenDialogTheme" parent="AppTheme">
         <item name="android:windowNoTitle">true</item>
-        <item name="android:windowActionBar">true</item>
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowBackground">@color/transparent</item>
+    </style>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DialogWhenLarge">
+        <item name="colorPrimary">@color/action_bar_background</item>
+        <item name="colorPrimaryDark">@color/action_bar_background</item>
+        <item name="colorAccent">@color/accent</item>
     </style>
 
     <style name="SlideToActView">
@@ -750,6 +757,39 @@
         <item name="outer_color">?colorAccent</item>
         <item name="slider_locked">false</item>
         <item name="image_color">@color/green_color</item>
+    </style>
+
+    <style name="Widget.Bchat.Button.Dialog.UnimportantText">
+        <item name="android:background">@drawable/unimportant_dialog_text_button_background</item>
+    </style>
+
+    <style name="Widget.Bchat.Button.Dialog.DestructiveText">
+        <item name="android:background">@drawable/destructive_dialog_text_button_background</item>
+        <item name="android:textColor">@color/destructive</item>
+    </style>
+
+    <style name="Bchat_Profile_Change_dialog_Save">
+        <item name="android:fontFamily">@font/open_sans_semi_bold</item>
+        <item name="android:background">@drawable/prominent_filled_button_medium_background</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:gravity">center</item>
+        <item name="android:drawableTint" tools:ignore="NewApi">?android:textColorPrimary</item>
+    </style>
+
+    <style name="Bchat_Profile_Change_dialog_Remove">
+        <item name="android:fontFamily">@font/open_sans_semi_bold</item>
+        <item name="android:background">@drawable/profile_picture_remove_button_background</item>
+        <item name="android:shadowColor">@color/black</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:gravity">center</item>
+        <item name="android:drawableTint" tools:ignore="NewApi">?android:textColorPrimary</item>
+    </style>
+
+    <style name="profile_backgroundColor" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="android:background">@color/page_background</item>
+        <item name="android:windowBackground">@drawable/profile_picture_change_background</item>
     </style>
 
 </resources>

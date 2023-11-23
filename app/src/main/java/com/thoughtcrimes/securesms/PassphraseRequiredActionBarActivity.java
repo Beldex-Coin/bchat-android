@@ -66,12 +66,17 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
     Log.i(TAG, "onPause()");
     super.onPause();
     //SteveJosephh21 -
-    if (TextSecurePreferences.getCallisActive(ApplicationContext.getInstance(this))) {
+    if (TextSecurePreferences.getCallisActive(ApplicationContext.getInstance(this)) && TextSecurePreferences.getMuteVideo(ApplicationContext.getInstance(this))) {
       if (powerButtonReceiver == null) {
         powerButtonReceiver = new PowerButtonReceiver();
       }
       if (powerButtonReceiver != null) {
         registerReceiver(powerButtonReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
+      }
+    } else {
+      if (powerButtonReceiver != null) {
+        this.unregisterReceiver(powerButtonReceiver);
+        powerButtonReceiver = null;
       }
     }
   }
@@ -82,12 +87,17 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
     Log.i(TAG, "onResume()");
     super.onResume();
 
-    if (TextSecurePreferences.getCallisActive(ApplicationContext.getInstance(this))) {
+    if (TextSecurePreferences.getCallisActive(ApplicationContext.getInstance(this)) && TextSecurePreferences.getMuteVideo(ApplicationContext.getInstance(this))) {
       if (powerButtonReceiver == null) {
         powerButtonReceiver = new PowerButtonReceiver();
       }
       if (powerButtonReceiver != null) {
         registerReceiver(powerButtonReceiver, new IntentFilter(Intent.ACTION_USER_PRESENT));
+      }
+    } else {
+      if (powerButtonReceiver != null) {
+        this.unregisterReceiver(powerButtonReceiver);
+        powerButtonReceiver = null;
       }
     }
   }

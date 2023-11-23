@@ -13,8 +13,6 @@ import android.widget.Toast
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityCreateClosedGroupBinding
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.messaging.sending_receiving.groupSizeLimit
 import com.beldex.libbchat.utilities.Address
@@ -25,12 +23,15 @@ import com.thoughtcrimes.securesms.contacts.SelectContactsAdapter
 import com.thoughtcrimes.securesms.contacts.SelectContactsLoader
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
+import com.thoughtcrimes.securesms.mms.GlideApp
+import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.UiModeUtilities
 import com.thoughtcrimes.securesms.util.fadeIn
 import com.thoughtcrimes.securesms.util.fadeOut
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ActivityCreateClosedGroupBinding
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
-import com.thoughtcrimes.securesms.mms.GlideApp
 
 class CreateClosedGroupActivity : PassphraseRequiredActionBarActivity(), LoaderManager.LoaderCallbacks<List<String>> {
     private lateinit var binding: ActivityCreateClosedGroupBinding
@@ -82,12 +83,14 @@ class CreateClosedGroupActivity : PassphraseRequiredActionBarActivity(), LoaderM
                     false
                 }
             }
+            loaderContainer.setOnClickListener {  }
         }
         LoaderManager.getInstance(this).initLoader(0, null, this)
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        hideSoftKeyboard()
         binding.nameEditText.isFocusable = false
     }
 
@@ -157,8 +160,9 @@ class CreateClosedGroupActivity : PassphraseRequiredActionBarActivity(), LoaderM
         val userPublicKey = TextSecurePreferences.getLocalNumber(this)!!
         isLoading = true
         binding.loaderContainer.fadeIn()
+        hideSoftKeyboard()
         binding.nameEditText.text.clear()
-        binding.nameEditText.isFocusable = false
+        binding.nameEditText.clearFocus()
         MessageSender.createClosedGroup(name.toString(), selectedMembers + setOf( userPublicKey )).successUi { groupID ->
             binding.nameEditText.isFocusable = true
             binding.loaderContainer.fadeOut()
@@ -182,6 +186,17 @@ class CreateClosedGroupActivity : PassphraseRequiredActionBarActivity(), LoaderM
         returnIntent.putExtra(ConversationFragmentV2.THREAD_ID,threadId)
         returnIntent.putExtra(ConversationFragmentV2.ADDRESS,recipient.address)
         setResult(RESULT_OK, returnIntent)
+    }
+    private fun hideSoftKeyboard() {
+        if (currentFocus != null) {
+            val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Helper.hideKeyboard(this)
     }
     // endregion
 }

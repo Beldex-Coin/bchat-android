@@ -45,7 +45,7 @@ public class DatabaseContentProviders {
 
     @Override
     public boolean onCreate() {
-      return false;
+      return true;
     }
 
     @Nullable

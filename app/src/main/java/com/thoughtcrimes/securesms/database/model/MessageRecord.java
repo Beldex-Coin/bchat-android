@@ -33,6 +33,7 @@ import com.beldex.libbchat.utilities.NetworkFailure;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The base class for message record models that are displayed in
@@ -141,6 +142,7 @@ public abstract class MessageRecord extends DisplayRecord {
     return spannable;
   }
 
+  @Override
   public boolean equals(Object other) {
     return other instanceof MessageRecord
       && ((MessageRecord) other).getId() == getId()
@@ -148,6 +150,6 @@ public abstract class MessageRecord extends DisplayRecord {
   }
 
   public int hashCode() {
-    return (int)getId();
+    return Objects.hash(id, isMms());
   }
 }

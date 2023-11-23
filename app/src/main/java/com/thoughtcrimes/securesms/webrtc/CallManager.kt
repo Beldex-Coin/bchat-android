@@ -1,18 +1,17 @@
 package com.thoughtcrimes.securesms.webrtc
 
-import android.Manifest.permission.READ_PHONE_STATE
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.telephony.PhoneStateListener
 import android.telephony.TelephonyCallback
 import android.telephony.TelephonyManager
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.beldex.libbchat.database.StorageProtocol
 import com.beldex.libbchat.messaging.calls.CallMessageType
 import com.beldex.libbchat.messaging.messages.control.CallMessage
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
+import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.Debouncer
 import com.beldex.libbchat.utilities.Util
@@ -38,7 +37,6 @@ import com.thoughtcrimes.securesms.webrtc.data.State as CallState
 import com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type.ICE_CANDIDATES
 import com.thoughtcrimes.securesms.ApplicationContext
 import com.thoughtcrimes.securesms.service.WebRtcCallService
-import com.thoughtcrimes.securesms.util.Helper
 import nl.komponents.kovenant.functional.bind
 
 class CallManager(context: Context, audioManager: AudioManagerCompat, private val storage: StorageProtocol): PeerConnection.Observer,
@@ -610,7 +608,7 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
         }
     }
 
-    fun insertCallMessage(threadPublicKey: String, callMessageType: CallMessageType, signal: Boolean = false, sentTimestamp: Long = System.currentTimeMillis()) {
+    fun insertCallMessage(threadPublicKey: String, callMessageType: CallMessageType, signal: Boolean = false, sentTimestamp: Long = MnodeAPI.nowWithOffset) {
         storage.insertCallMessage(threadPublicKey, callMessageType, sentTimestamp)
     }
 

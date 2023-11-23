@@ -1,28 +1,30 @@
 package com.thoughtcrimes.securesms.home
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.*
-import android.database.Cursor
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
+import android.provider.Settings
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.loader.app.LoaderManager
-import androidx.loader.content.Loader
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -34,43 +36,61 @@ import com.beldex.libsignal.utilities.ThreadUtils
 import com.beldex.libsignal.utilities.toHexString
 import com.thoughtcrimes.securesms.ApplicationContext
 import com.thoughtcrimes.securesms.MuteDialog
+import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.components.ProfilePictureView
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.conversation.v2.utilities.NotificationUtils
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
 import com.thoughtcrimes.securesms.data.NodeInfo
-import com.thoughtcrimes.securesms.database.MmsSmsDatabase
+import com.thoughtcrimes.securesms.database.*
 import com.thoughtcrimes.securesms.database.model.ThreadRecord
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
+import com.thoughtcrimes.securesms.dms.CreateNewPrivateChatActivity
 import com.thoughtcrimes.securesms.drawer.ClickListener
 import com.thoughtcrimes.securesms.drawer.NavigationItemModel
 import com.thoughtcrimes.securesms.drawer.NavigationRVAdapter
 import com.thoughtcrimes.securesms.drawer.RecyclerTouchListener
+import com.thoughtcrimes.securesms.groups.CreateClosedGroupActivity
+import com.thoughtcrimes.securesms.groups.JoinPublicChatNewActivity
 import com.thoughtcrimes.securesms.groups.OpenGroupManager
 import com.thoughtcrimes.securesms.home.search.GlobalSearchAdapter
 import com.thoughtcrimes.securesms.home.search.GlobalSearchInputLayout
+import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
 import com.thoughtcrimes.securesms.mms.GlideApp
 import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
 import com.thoughtcrimes.securesms.model.Wallet
+import com.thoughtcrimes.securesms.onboarding.AboutActivity
+import com.thoughtcrimes.securesms.preferences.NotificationSettingsActivity
+import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
+import com.thoughtcrimes.securesms.preferences.SettingsActivity
+import com.thoughtcrimes.securesms.preferences.ShowQRCodeWithScanQRCodeActivity
+import com.thoughtcrimes.securesms.seed.SeedPermissionActivity
 import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.util.*
 import com.thoughtcrimes.securesms.wallet.CheckOnline
+import com.thoughtcrimes.securesms.wallet.WalletFragment
+import com.thoughtcrimes.securesms.wallet.info.WalletInfoActivity
+import com.thoughtcrimes.securesms.wallet.startwallet.StartWalletInfo
+import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
+import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
+import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.FragmentHomeBinding
 import io.beldex.bchat.databinding.ViewMessageRequestBannerBinding
 import kotlinx.coroutines.*
 import org.apache.commons.lang3.time.DurationFormatUtils
+import timber.log.Timber
 import java.io.IOException
-import java.lang.IllegalStateException
 import java.util.*
-import android.view.MotionEvent
+import javax.inject.Inject
 
-class HomeFragment : Fragment(),ConversationClickListener,
+@AndroidEntryPoint
+class HomeFragment : BaseFragment(),ConversationClickListener,
     NewConversationButtonSetViewDelegate,
-    LoaderManager.LoaderCallbacks<Cursor>,
-    GlobalSearchInputLayout.GlobalSearchInputLayoutListener{
+    GlobalSearchInputLayout.GlobalSearchInputLayoutListener {
 
     //Shortcut launcher
     companion object{
@@ -85,54 +105,75 @@ class HomeFragment : Fragment(),ConversationClickListener,
             }
     }
 
+    val homeViewModel: HomeFragmentViewModel by viewModels()
+
+    @Inject
+    lateinit var threadDb: ThreadDatabase
+    @Inject
+    lateinit var mmsSmsDatabase: MmsSmsDatabase
+    @Inject
+    lateinit var recipientDatabase: RecipientDatabase
+    @Inject
+    lateinit var groupDb: GroupDatabase
+    @Inject
+    lateinit var beldexThreadDb: BeldexThreadDatabase
+    @Inject
+    lateinit var bchatContactDb: BchatContactDatabase
+    @Inject
+    lateinit var beldexApiDb: BeldexAPIDatabase
+    @Inject
+    lateinit var smsDb: SmsDatabase
+    @Inject
+    lateinit var mmsDb: MmsDatabase
+    @Inject
+    lateinit var beldexMessageDb: BeldexMessageDatabase
     private lateinit var binding: FragmentHomeBinding
     private lateinit var glide: GlideRequests
     private var broadcastReceiver: BroadcastReceiver? = null
     private var uiJob: Job? = null
     private var viewModel : CallViewModel? =null // by viewModels<CallViewModel>()
-    private val CALLDURATIONFORMAT = "HH:mm:ss"
+    private val callDurationFormat = "HH:mm:ss"
 
     private val publicKey: String
         get() = TextSecurePreferences.getLocalNumber(requireActivity().applicationContext)!!
 
     /*Hales63*/
     private val homeAdapter: HomeAdapter by lazy {
-        HomeAdapter(context = requireActivity(), cursor = (activity as HomeActivity).threadDb.approvedConversationList, listener = this)
+        HomeAdapter(context = requireActivity(), listener = this, threadDB = threadDb)
     }
 
     private val globalSearchAdapter = GlobalSearchAdapter { model ->
         when (model) {
             is GlobalSearchAdapter.Model.Message -> {
                 val threadId = model.messageResult.threadId
-                val timestamp = model.messageResult.receivedTimestampMs
+                val timestamp = model.messageResult.sentTimestampMs
                 val author = model.messageResult.messageRecipient.address
                 if (binding.globalSearchRecycler.isVisible) {
                     binding.globalSearchInputLayout.clearSearch(true)
                 }
-                activityCallback?.passGlobalSearchAdapterModelMessageValue(threadId,timestamp,author)
+                passGlobalSearchAdapterModelMessageValue(threadId,timestamp,author)
             }
             is GlobalSearchAdapter.Model.SavedMessages -> {
                 if (binding.globalSearchRecycler.isVisible) {
                     binding.globalSearchInputLayout.clearSearch(true)
                 }
-                activityCallback?.passGlobalSearchAdapterModelSavedMessagesValue(Address.fromSerialized(model.currentUserPublicKey))
+                passGlobalSearchAdapterModelSavedMessagesValue(Address.fromSerialized(model.currentUserPublicKey))
             }
             is GlobalSearchAdapter.Model.Contact -> {
                 val address = model.contact.bchatID
                 if (binding.globalSearchRecycler.isVisible) {
                     binding.globalSearchInputLayout.clearSearch(true)
                 }
-                activityCallback?.passGlobalSearchAdapterModelContactValue(Address.fromSerialized(address))
+                passGlobalSearchAdapterModelContactValue(Address.fromSerialized(address))
             }
             is GlobalSearchAdapter.Model.GroupConversation -> {
                 val groupAddress = Address.fromSerialized(model.groupRecord.encodedId)
-                val threadId =
-                    (activity as HomeActivity).threadDb.getThreadIdIfExistsFor(Recipient.from(requireActivity().applicationContext, groupAddress, false))
+                val threadId = threadDb.getThreadIdIfExistsFor(Recipient.from(requireActivity().applicationContext, groupAddress, false))
                 if (threadId >= 0) {
                     if (binding.globalSearchRecycler.isVisible) {
                         binding.globalSearchInputLayout.clearSearch(true)
                     }
-                    activityCallback?.passGlobalSearchAdapterModelGroupConversationValue(threadId)
+                    passGlobalSearchAdapterModelGroupConversationValue(threadId)
                 }
             }
             else -> {
@@ -146,12 +187,12 @@ class HomeFragment : Fragment(),ConversationClickListener,
 
     private var items = arrayListOf(
         NavigationItemModel(R.drawable.ic_my_account, "My Account",0),
-        NavigationItemModel(R.drawable.ic_wallet, "My Wallet",R.drawable.ic_beta),
+        NavigationItemModel(R.drawable.ic_drawer_settings, "Settings",0),
         NavigationItemModel(R.drawable.ic_notifications, "Notification",0),
         NavigationItemModel(R.drawable.ic_message_requests, "Message Requests",0),
-        NavigationItemModel(R.drawable.ic_privacy, "Privacy",0),
         NavigationItemModel(R.drawable.ic_app_permissions, "App Permissions",0),
         NavigationItemModel(R.drawable.ic_recovery_seed, "Recovery Seed",0),
+        NavigationItemModel(R.drawable.ic_wallet, "Wallet",R.drawable.ic_beta),
         NavigationItemModel(R.drawable.ic_report_issue,"Report Issue",0),
         NavigationItemModel(R.drawable.ic_help, "Help",0),
         NavigationItemModel(R.drawable.ic_invite, "Invite",0),
@@ -179,15 +220,6 @@ class HomeFragment : Fragment(),ConversationClickListener,
         }
     }
 
-    override fun onDetach() {
-        super.onDetach()
-    }
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -203,13 +235,12 @@ class HomeFragment : Fragment(),ConversationClickListener,
         super.onViewCreated(view, savedInstanceState)
 
         //New Line
-        val notification = TextSecurePreferences.isNotificationsEnabled(requireActivity().applicationContext)
-        viewModel = ViewModelProvider(requireActivity()).get(CallViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity())[CallViewModel::class.java]
 
         // Set up Glide
         glide = GlideApp.with(this)
         // Set up toolbar buttons
-        binding.profileButton.glide = glide
+        binding.profileButton.root.glide = glide
 
         //New Line
         // Setup Recyclerview's Layout
@@ -223,36 +254,39 @@ class HomeFragment : Fragment(),ConversationClickListener,
                 when (position) {
                     0 -> {
                         // # Account Activity
-                        activityCallback?.openSettings()
+                        openSettings()
                     }
                     1 -> {
-                        // # My Wallet Activity
-                        if(CheckOnline.isOnline(requireActivity().applicationContext)) {
-                            activityCallback?.openMyWallet()
-                        }
-                        else {
-                            Toast.makeText(requireActivity().applicationContext,getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
-                        }
+                        // # Privacy Activity
+                        showPrivacySettings()
                     }
                     2 -> {
                         // # Notification Activity
-                        activityCallback?.showNotificationSettings()
+                        showNotificationSettings()
                     }
                     3 -> {
                         // # Message Requests Activity
-                        activityCallback?.showMessageRequests()
+                        showMessageRequests()
                     }
                     4 -> {
-                        // # Privacy Activity
-                        activityCallback?.showPrivacySettings()
+                        // # App Permissions Activity
+                        callAppPermission()
                     }
                     5 -> {
-                        // # App Permissions Activity
-                        activityCallback?.callAppPermission()
+                        // # Recovery Seed Activity
+                        showSeed()
                     }
                     6 -> {
-                        // # Recovery Seed Activity
-                        activityCallback?.showSeed()
+                        // # My Wallet Activity
+                        if (CheckOnline.isOnline(requireActivity().applicationContext)) {
+                            if (TextSecurePreferences.isWalletActive(requireContext())) {
+                                openMyWallet()
+                            } else {
+                                openStartWalletInfo()
+                            }
+                        } else {
+                            Toast.makeText(requireActivity().applicationContext, getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
+                        }
                     }
                     7 -> {
                         // # Support
@@ -260,27 +294,27 @@ class HomeFragment : Fragment(),ConversationClickListener,
                     }
                     8 -> {
                         // # Help Activity
-                        activityCallback?.help()
+                        help()
                     }
                     9 -> {
                         // # Invite Activity
-                        activityCallback?.sendInvitation(hexEncodedPublicKey)
+                        sendInvitation(hexEncodedPublicKey)
                     }
                     10 -> {
                         // # About Activity
-                        activityCallback?.showAbout()
+                        showAbout()
                     }
                 }
                 // Don't highlight the 'Profile' and 'Like us on Facebook' item row
                 if (position != 6 && position != 4) {
                     updateAdapter(position)
                 }
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     binding.drawerLayout.closeDrawer(GravityCompat.END)
                 }, 200)
             }
         }))
-        binding.profileButton.setOnClickListener {
+        binding.profileButton.root.setOnClickListener {
             binding.drawerLayout.openDrawer(GravityCompat.END)
         }
         binding.drawerCloseIcon.setOnClickListener { binding.drawerLayout.closeDrawer(GravityCompat.END) }
@@ -301,20 +335,20 @@ class HomeFragment : Fragment(),ConversationClickListener,
             event.actionMasked == MotionEvent.ACTION_MOVE
         }
         binding.drawerQrcodeImg.setOnClickListener {
-            activityCallback?.showQRCode()
-            Handler().postDelayed({
+            showQRCode()
+            Handler(Looper.getMainLooper()).postDelayed({
                 binding.drawerLayout.closeDrawer(GravityCompat.END)
             }, 200)
         }
-        binding.drawerProfileIcon.glide = glide
-        binding.drawerProfileId.text = "ID: $hexEncodedPublicKey"
+        binding.drawerProfileIcon.root.glide = glide
+        binding.drawerProfileId.text = String.format(requireContext().resources.getString(R.string.id_format), hexEncodedPublicKey)
 
         binding.searchViewContainer.setOnClickListener {
             binding.globalSearchInputLayout.requestFocus()
         }
         binding.bchatToolbar.disableClipping()
 
-        setupMessageRequestsBanner()
+//        setupMessageRequestsBanner()
         setupHeaderImage()
         // Set up recycler view
         binding.globalSearchInputLayout.listener = this
@@ -324,8 +358,35 @@ class HomeFragment : Fragment(),ConversationClickListener,
         binding.globalSearchRecycler.adapter = globalSearchAdapter
         // Set up empty state view
         binding.createNewPrivateChatButton.setOnClickListener { createNewPrivateChat() }
-        // This is a workaround for the fact that CursorRecyclerViewAdapter doesn't actually auto-update (even though it says it will)
-        LoaderManager.getInstance(this).restartLoader(0, null, this)
+        homeViewModel.getObservable(requireActivity().applicationContext).observe(requireActivity()) { newData ->
+            val manager = binding.recyclerView.layoutManager as LinearLayoutManager
+            val firstPos = manager.findFirstCompletelyVisibleItemPosition()
+            val offsetTop = if(firstPos >= 0) {
+                manager.findViewByPosition(firstPos)?.let { view ->
+                    manager.getDecoratedTop(view) - manager.getTopDecorationHeight(view)
+                } ?: 0
+            } else 0
+            val messageRequestCount = threadDb.unapprovedConversationCount
+            var requestData = emptyList<ThreadRecord>()
+            if (messageRequestCount > 0 && !TextSecurePreferences.hasHiddenMessageRequests(requireContext())) {
+                requestData = if (newData.isEmpty()) {
+                    listOf(ThreadRecord("", null, null, 0, 0, 0, 0, 0, 0, 0,0, false, 0, 0, 0, false, messageRequestCount))
+                } else {
+                    listOf(newData[0])
+                }
+                homeAdapter.setHasMessageRequestCount(true)
+            } else {
+                homeAdapter.setHasMessageRequestCount(false)
+            }
+            homeAdapter.data = requestData + newData
+            if(firstPos >= 0) { manager.scrollToPositionWithOffset(firstPos, offsetTop) }
+//            setupMessageRequestsBanner()
+            updateEmptyState()
+        }
+        ApplicationContext.getInstance(requireActivity()).typingStatusRepository.typingThreads.observe(requireActivity()) { threadIds ->
+            homeAdapter.typingThreadIDs = (threadIds ?: setOf())
+        }
+        homeViewModel.tryUpdateChannel()
         // Set up new conversation button set
         binding.newConversationButtonSet.delegate = this
         // Observe blocked contacts changed events
@@ -337,46 +398,59 @@ class HomeFragment : Fragment(),ConversationClickListener,
         this.broadcastReceiver = broadcastReceiver
         LocalBroadcastManager.getInstance(requireActivity().applicationContext)
             .registerReceiver(broadcastReceiver, IntentFilter("blockedContactsChanged"))
-        activityCallback?.callLifeCycleScope(binding.recyclerView,binding.globalSearchInputLayout,(activity as HomeActivity).mmsSmsDatabase,globalSearchAdapter,publicKey,binding.profileButton,binding.drawerProfileName,binding.drawerProfileIcon)
+        activityCallback?.callLifeCycleScope(binding.recyclerView,binding.globalSearchInputLayout, mmsSmsDatabase,globalSearchAdapter,publicKey,binding.profileButton.root,binding.drawerProfileName,binding.drawerProfileIcon.root)
 
     }
 
 
     /*Hales63*/
-    private fun setupMessageRequestsBanner() {
-            val messageRequestCount = (activity as HomeActivity).threadDb.unapprovedConversationCount
-            // Set up message requests
-            if (messageRequestCount > 0 && !(activity as HomeActivity).textSecurePreferences.hasHiddenMessageRequests()) {
-                with(ViewMessageRequestBannerBinding.inflate(layoutInflater)) {
-                    unreadCountTextView.text = messageRequestCount.toString()
-                    timestampTextView.text = DateUtils.getDisplayFormattedTimeSpanString(
-                        requireActivity().applicationContext,
-                        Locale.getDefault(),
-                        (activity as HomeActivity).threadDb.latestUnapprovedConversationTimestamp
-                    )
-                    root.setOnClickListener { activityCallback?.showMessageRequests() }
-                    expandMessageRequest.setOnClickListener { activityCallback?.showMessageRequests() }
-                    root.setOnLongClickListener { hideMessageRequests(); true }
-                    root.layoutParams = RecyclerView.LayoutParams(
-                        RecyclerView.LayoutParams.MATCH_PARENT,
-                        RecyclerView.LayoutParams.WRAP_CONTENT
-                    )
-                    homeAdapter.headerView = root
-                    homeAdapter.notifyItemChanged(0)
-                }
-            } else {
-                homeAdapter.headerView = null
-            }
-    }
+//    private fun setupMessageRequestsBanner() {
+//        println(">>>>>setting banner")
+//            val messageRequestCount = threadDb.unapprovedConversationCount
+//            // Set up message requests
+//            if (messageRequestCount > 0 && !(activity as HomeActivity).textSecurePreferences.hasHiddenMessageRequests()) {
+//                println(">>>>>setting banner:$messageRequestCount")
+//                with(ViewMessageRequestBannerBinding.inflate(layoutInflater)) {
+//                    unreadCountTextView.text = messageRequestCount.toString()
+//                    timestampTextView.text = DateUtils.getDisplayFormattedTimeSpanString(
+//                        requireActivity().applicationContext,
+//                        Locale.getDefault(),
+//                        threadDb.latestUnapprovedConversationTimestamp
+//                    )
+//                    root.setOnClickListener { showMessageRequests() }
+//                    expandMessageRequest.setOnClickListener { showMessageRequests() }
+//                    root.setOnLongClickListener { hideMessageRequests(); true }
+//                    root.layoutParams = RecyclerView.LayoutParams(
+//                        RecyclerView.LayoutParams.MATCH_PARENT,
+//                        RecyclerView.LayoutParams.WRAP_CONTENT
+//                    )
+//                    val hadHeader = homeAdapter.hasHeaderView()
+//                    homeAdapter.header = root
+//                    if (hadHeader) {
+//                        println(">>>>updating item")
+//                        homeAdapter.notifyItemRemoved(0)
+//                    } else {
+//                        println(">>>>adding item")
+//                        homeAdapter.notifyItemInserted(0)
+//                    }
+//                }
+//            } else {
+//                val hadHeader = homeAdapter.hasHeaderView()
+//                homeAdapter.header = null
+//                if (hadHeader) {
+//                    homeAdapter.notifyItemRemoved(0)
+//                }
+//            }
+//    }
 
-    private fun hideMessageRequests() {
+    override fun hideMessageRequests() {
         val dialog = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog_New)
             .setTitle("Hide message requests?")
             .setMessage("Once they are hidden, you can access them from Settings > Message Requests")
             .setPositiveButton(R.string.yes) { _, _ ->
                 (activity as HomeActivity).textSecurePreferences.setHasHiddenMessageRequests()
-                setupMessageRequestsBanner()
-                LoaderManager.getInstance(this).restartLoader(0, null, this)
+//                setupMessageRequestsBanner()
+                homeViewModel.tryUpdateChannel()
             }
             .setNegativeButton(R.string.no) { _, _ ->
                 // Do nothing
@@ -405,7 +479,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
                             binding.toolbarCall.isVisible = true
                             binding.callDurationCall.text = DurationFormatUtils.formatDuration(
                                 System.currentTimeMillis() - startTime,
-                                CALLDURATIONFORMAT
+                                callDurationFormat
                             )
                         }
 
@@ -420,7 +494,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
             Toast.makeText(requireActivity().applicationContext, "Call ended", Toast.LENGTH_SHORT).show()
         }
         binding.toolbarCall.setOnClickListener {
-            activityCallback?.toolBarCall()
+            toolBarCall()
         }
     }
 
@@ -449,12 +523,10 @@ class HomeFragment : Fragment(),ConversationClickListener,
     private fun setSearchShown(isShown: Boolean) {
         //New Line
         binding.searchBarLayout.isVisible = isShown
-        binding.searchBarLayout.setOnClickListener {
-            onBackPressed()
-        }
         binding.searchBarBackButton.setOnClickListener {
             binding.globalSearchInputLayout.onFocus()
             binding.globalSearchInputLayout.clearSearch(true)
+            onBackPressed()
         }
 
         binding.searchToolbar.isVisible = isShown
@@ -476,34 +548,22 @@ class HomeFragment : Fragment(),ConversationClickListener,
         binding.newConversationButtonSet.isVisible = !isShown
     }
 
-    override fun onCreateLoader(id: Int, bundle: Bundle?): Loader<Cursor> {
-        return HomeLoader(requireActivity().applicationContext)
-    }
-
-    override fun onLoadFinished(loader: Loader<Cursor>, cursor: Cursor?) {
-        homeAdapter.changeCursor(cursor)
-        setupMessageRequestsBanner()
-        updateEmptyState()
-    }
-
-    override fun onLoaderReset(cursor: Loader<Cursor>) {
-        homeAdapter.changeCursor(null)
-    }
-
     override fun onResume() {
         super.onResume()
         setupCallActionBar()
-        pingSelectedNode()
+        if(TextSecurePreferences.isWalletActive(requireContext())) {
+            pingSelectedNode()
+        }
         ApplicationContext.getInstance(requireActivity().applicationContext).messageNotifier.setHomeScreenVisible(false)
         if (TextSecurePreferences.getLocalNumber(requireActivity().applicationContext) == null) {
             return; } // This can be the case after a secondary device is auto-cleared
         IdentityKeyUtil.checkUpdate(requireActivity().applicationContext)
-        binding.profileButton.recycle() // clear cached image before update tje profilePictureView
-        binding.profileButton.update()
+        binding.profileButton.root.recycle() // clear cached image before update tje profilePictureView
+        binding.profileButton.root.update()
 
         //New Line
-        binding.drawerProfileIcon.recycle()
-        binding.drawerProfileIcon.update()
+        binding.drawerProfileIcon.root.recycle()
+        binding.drawerProfileIcon.root.update()
 
         if (TextSecurePreferences.getConfigurationMessageSynced(requireActivity().applicationContext)) {
             lifecycleScope.launch(Dispatchers.IO) {
@@ -520,10 +580,13 @@ class HomeFragment : Fragment(),ConversationClickListener,
         //Shortcut launcher
         if(arguments?.getBoolean(ConversationFragmentV2.SHORTCUT_LAUNCHER,false) == true){
             arguments?.remove(ConversationFragmentV2.SHORTCUT_LAUNCHER)
-            activityCallback?.callConversationScreen(requireArguments().getLong(
-                ConversationFragmentV2.THREAD_ID,-1L),requireArguments().getParcelable<Address>(
-                ConversationFragmentV2.ADDRESS
-            ),requireArguments().getParcelable<Uri>(ConversationFragmentV2.URI),requireArguments().getString(ConversationFragmentV2.TYPE),requireArguments().getCharSequence(Intent.EXTRA_TEXT))
+            callConversationScreen(
+                requireArguments().getLong(ConversationFragmentV2.THREAD_ID,-1L),
+                requireArguments().parcelable(ConversationFragmentV2.ADDRESS),
+                requireArguments().parcelable(ConversationFragmentV2.URI),
+                requireArguments().getString(ConversationFragmentV2.TYPE),
+                requireArguments().getCharSequence(Intent.EXTRA_TEXT)
+            )
         }
         if(!TextSecurePreferences.isCopiedSeed(requireActivity().applicationContext)){
             showSaveYourSeedDialog()
@@ -534,11 +597,13 @@ class HomeFragment : Fragment(),ConversationClickListener,
         try {
             activityCallback?.let {
                 SaveYourSeedDialogBox(
-                    it
+                    showSeed = {
+                        showSeed()
+                    }
                 ).show(requireActivity().supportFragmentManager, "")
             }
         } catch (exception: Exception) {
-            android.util.Log.d("Beldex", "Save your seed dialog box exception $exception")
+            Timber.tag("Beldex").d("Save your seed dialog box exception $exception")
         }
     }
 
@@ -559,30 +624,33 @@ class HomeFragment : Fragment(),ConversationClickListener,
     }
 
     private fun updateEmptyState() {
-        val threadCount = (binding.recyclerView.adapter as HomeAdapter).itemCount
+        val threadCount = (binding.recyclerView.adapter)!!.itemCount
         binding.emptyStateContainer.isVisible = threadCount == 0 && binding.recyclerView.isVisible
         binding.emptyStateContainerText.isVisible =
             threadCount == 0 && binding.recyclerView.isVisible
-        val isDayUiMode = UiModeUtilities.isDayUiMode(requireActivity())
-        (if (isDayUiMode) R.drawable.ic_doodle_3_2 else R.drawable.ic_doodle_3_1).also {
-            binding.emptyStateImageView.setImageResource(
-                it
-            )
+        val activity =activity
+        if(isAdded && activity !=null) {
+            val isDayUiMode = UiModeUtilities.isDayUiMode(requireActivity())
+            (if (isDayUiMode) R.drawable.ic_doodle_3_2 else R.drawable.ic_doodle_3_1).also {
+                binding.emptyStateImageView.setImageResource(
+                    it
+                )
+            }
         }
     }
 
     fun updateProfileButton() {
-        binding.profileButton.publicKey = publicKey
-        binding.profileButton.displayName = TextSecurePreferences.getProfileName(requireActivity().applicationContext)
-        binding.profileButton.recycle()
-        binding.profileButton.update()
+        binding.profileButton.root.publicKey = publicKey
+        binding.profileButton.root.displayName = TextSecurePreferences.getProfileName(requireActivity().applicationContext)
+        binding.profileButton.root.recycle()
+        binding.profileButton.root.update()
 
         //New Line
         binding.drawerProfileName.text = TextSecurePreferences.getProfileName(requireActivity().applicationContext)
-        binding.drawerProfileIcon.publicKey = publicKey
-        binding.drawerProfileIcon.displayName = TextSecurePreferences.getProfileName(requireActivity().applicationContext)
-        binding.drawerProfileIcon.recycle()
-        binding.drawerProfileIcon.update()
+        binding.drawerProfileIcon.root.publicKey = publicKey
+        binding.drawerProfileIcon.root.displayName = TextSecurePreferences.getProfileName(requireActivity().applicationContext)
+        binding.drawerProfileIcon.root.recycle()
+        binding.drawerProfileIcon.root.update()
     }
 
     fun onBackPressed() {
@@ -593,7 +661,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
 
 
     override fun onConversationClick(thread: ThreadRecord) {
-        activityCallback?.onConversationClick(thread.threadId)
+        onConversationClick(thread.threadId)
     }
 
     override fun onLongConversationClick(thread: ThreadRecord) {
@@ -607,7 +675,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
                 UserDetailsBottomSheet.ARGUMENT_THREAD_ID to thread.threadId
             )
             userDetailsBottomSheet.arguments = bundle
-            userDetailsBottomSheet.show(requireActivity().supportFragmentManager, userDetailsBottomSheet.tag)
+            userDetailsBottomSheet.show(childFragmentManager, userDetailsBottomSheet.tag)
         }
         bottomSheet.onBlockTapped = {
             bottomSheet.dismiss()
@@ -637,11 +705,11 @@ class HomeFragment : Fragment(),ConversationClickListener,
         }
         bottomSheet.onPinTapped = {
             bottomSheet.dismiss()
-            setConversationPinned(thread.threadId, true,this)
+            setConversationPinned(thread.threadId, true)
         }
         bottomSheet.onUnpinTapped = {
             bottomSheet.dismiss()
-            setConversationPinned(thread.threadId, false, this)
+            setConversationPinned(thread.threadId, false)
         }
         bottomSheet.onMarkAllAsReadTapped = {
             bottomSheet.dismiss()
@@ -657,7 +725,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
             .setNegativeButton(android.R.string.cancel, null)
             .setPositiveButton(R.string.RecipientPreferenceActivity_block) { dialog, _ ->
                 lifecycleScope.launch(Dispatchers.IO) {
-                    (activity as HomeActivity).recipientDatabase.setBlocked(thread.recipient, true)
+                    recipientDatabase.setBlocked(thread.recipient, true)
                     withContext(Dispatchers.Main) {
                         binding.recyclerView.adapter!!.notifyDataSetChanged()
                         dialog.dismiss()
@@ -677,7 +745,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
             .setNegativeButton(android.R.string.cancel, null)
             .setPositiveButton(R.string.RecipientPreferenceActivity_unblock) { dialog, _ ->
                 lifecycleScope.launch(Dispatchers.IO) {
-                    (activity as HomeActivity).recipientDatabase.setBlocked(thread.recipient, false)
+                    recipientDatabase.setBlocked(thread.recipient, false)
                     withContext(Dispatchers.Main) {
                         binding.recyclerView.adapter!!.notifyDataSetChanged()
                         dialog.dismiss()
@@ -694,7 +762,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
     private fun setConversationMuted(thread: ThreadRecord, isMuted: Boolean) {
         if (!isMuted) {
             lifecycleScope.launch(Dispatchers.IO) {
-                (activity as HomeActivity).recipientDatabase.setMuted(thread.recipient, 0)
+                recipientDatabase.setMuted(thread.recipient, 0)
                 withContext(Dispatchers.Main) {
                     binding.recyclerView.adapter!!.notifyDataSetChanged()
                 }
@@ -702,7 +770,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
         } else {
             MuteDialog.show(requireActivity()) { until: Long ->
                 lifecycleScope.launch(Dispatchers.IO) {
-                    (activity as HomeActivity).recipientDatabase.setMuted(thread.recipient, until)
+                    recipientDatabase.setMuted(thread.recipient, until)
                     withContext(Dispatchers.Main) {
                         binding.recyclerView.adapter!!.notifyDataSetChanged()
                     }
@@ -713,7 +781,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
 
     private fun setNotifyType(thread: ThreadRecord, newNotifyType: Int) {
         lifecycleScope.launch(Dispatchers.IO) {
-            (activity as HomeActivity).recipientDatabase.setNotifyType(thread.recipient, newNotifyType)
+            recipientDatabase.setNotifyType(thread.recipient, newNotifyType)
             withContext(Dispatchers.Main) {
                 binding.recyclerView.adapter!!.notifyDataSetChanged()
             }
@@ -722,20 +790,17 @@ class HomeFragment : Fragment(),ConversationClickListener,
 
     private fun setConversationPinned(
         threadId: Long,
-        pinned: Boolean,
-        homeFragment: HomeFragment
+        pinned: Boolean
     ) {
         lifecycleScope.launch(Dispatchers.IO) {
-            (activity as HomeActivity).threadDb.setPinned(threadId, pinned)
-            withContext(Dispatchers.Main) {
-                LoaderManager.getInstance(homeFragment).restartLoader(0, null, homeFragment)
-            }
+            threadDb.setPinned(threadId, pinned)
+            homeViewModel.tryUpdateChannel()
         }
     }
 
     private fun markAllAsRead(thread: ThreadRecord) {
         ThreadUtils.queue {
-            (activity as HomeActivity).threadDb.markAllAsRead(thread.threadId, thread.recipient.isOpenGroupRecipient)
+            threadDb.markAllAsRead(thread.threadId, thread.recipient.isOpenGroupRecipient)
         }
     }
 
@@ -743,7 +808,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
         val threadID = thread.threadId
         val recipient = thread.recipient
         val message = if (recipient.isGroupRecipient) {
-            val group = (activity as HomeActivity).groupDb.getGroup(recipient.address.toString()).orNull()
+            val group = groupDb.getGroup(recipient.address.toString()).orNull()
             if (group != null && group.admins.map { it.toString() }
                     .contains(TextSecurePreferences.getLocalNumber(requireActivity()))) {
                 "Because you are the creator of this group it will be deleted for everyone. This cannot be undone."
@@ -793,7 +858,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
                         )
                     } else {
                         lifecycleScope.launch(Dispatchers.IO) {
-                            (activity as HomeActivity).threadDb.deleteConversation(threadID)
+                            threadDb.deleteConversation(threadID)
                         }
                     }
                     // Update the badge count
@@ -812,20 +877,9 @@ class HomeFragment : Fragment(),ConversationClickListener,
 
         //New Line
         val textView: TextView? = dialog.findViewById(android.R.id.message)
-        val face: Typeface = Typeface.createFromAsset(requireActivity().assets, "fonts/open_sans_medium.ttf")
+        val face: Typeface =
+            Typeface.createFromAsset(requireActivity().assets, "fonts/open_sans_medium.ttf")
         textView!!.typeface = face
-    }
-
-    override fun createNewPrivateChat() {
-        activityCallback?.createNewPrivateChat()
-    }
-
-    override fun createNewSecretGroup() {
-        activityCallback?.createNewSecretGroup()
-    }
-
-    override fun joinSocialGroup() {
-        activityCallback?.joinSocialGroup()
     }
 
     interface HomeFragmentListener{
@@ -839,33 +893,7 @@ class HomeFragment : Fragment(),ConversationClickListener,
             drawerProfileName: TextView,
             drawerProfileIcon: ProfilePictureView
         )
-        fun onConversationClick(threadId:Long)
-        fun openSettings()
-        fun openMyWallet()
-        fun showNotificationSettings()
-        fun showPrivacySettings()
-        fun showQRCode()
-        fun showSeed()
-        fun showAbout()
-        fun showPath()
-        fun showMessageRequests()
         fun sendMessageToSupport()
-        fun help()
-        fun sendInvitation(hexEncodedPublicKey:String)
-        fun createNewPrivateChat()
-        fun createNewSecretGroup()
-        fun joinSocialGroup()
-        fun toolBarCall()
-        fun callAppPermission()
-        fun passGlobalSearchAdapterModelMessageValue(
-            threadId: Long,
-            timestamp: Long,
-            author: Address
-        )
-        fun passGlobalSearchAdapterModelSavedMessagesValue(address: Address)
-        fun passGlobalSearchAdapterModelContactValue(address: Address)
-        fun passGlobalSearchAdapterModelGroupConversationValue(threadId: Long)
-        
         //Node Connection
         fun getFavouriteNodes(): MutableSet<NodeInfo>
         fun getOrPopulateFavourites(): MutableSet<NodeInfo>
@@ -875,8 +903,6 @@ class HomeFragment : Fragment(),ConversationClickListener,
         //Wallet
         fun hasBoundService(): Boolean
         val connectionStatus: Wallet.ConnectionStatus?
-        //Shortcut launcher
-        fun callConversationScreen(threadId: Long, address: Address?, uri: Uri?, type: String?, extraText: CharSequence?)
     }
 
     fun dispatchTouchEvent() {
@@ -885,31 +911,28 @@ class HomeFragment : Fragment(),ConversationClickListener,
         }
     }
 
-    fun pingSelectedNode() {
-        val PING_SELECTED = 0
-        val FIND_BEST = 1
-        AsyncFindBestNode(PING_SELECTED, FIND_BEST).execute<Int>(PING_SELECTED)
+    private fun pingSelectedNode() {
+        val pingSelected = 0
+        val findBest = 1
+        AsyncFindBestNode(pingSelected, findBest).execute<Int>(pingSelected)
     }
 
-    inner class AsyncFindBestNode(val PING_SELECTED: Int, val FIND_BEST: Int) :
+    inner class AsyncFindBestNode(private val pingSelected: Int, private val findBest: Int) :
         AsyncTaskCoroutine<Int?, NodeInfo?>() {
-        override fun onPreExecute() {
-            super.onPreExecute()
-        }
 
         override fun doInBackground(vararg params: Int?): NodeInfo? {
             val favourites: Set<NodeInfo?> = activityCallback!!.getOrPopulateFavourites()
             var selectedNode: NodeInfo?
-            if (params[0] == FIND_BEST) {
+            if (params[0] == findBest) {
                 selectedNode = autoselect(favourites)
-            } else if (params[0] == PING_SELECTED) {
+            } else if (params[0] == pingSelected) {
                 selectedNode = activityCallback!!.getNode()
-                if (selectedNode == null)
-                    Log.d("Beldex","selected node $selectedNode")
-                for (node in favourites) {
-                    if (node!!.isSelected) {
-                        selectedNode = node
-                        break
+                if (selectedNode == null) {
+                    for (node in favourites) {
+                        if (node!!.isSelected) {
+                            selectedNode = node
+                            break
+                        }
                     }
                 }
                 if (selectedNode == null) { // autoselect
@@ -945,5 +968,259 @@ class HomeFragment : Fragment(),ConversationClickListener,
         return nodeList[rnd]
     }
 
+    private fun showAbout() {
+        Intent(requireContext(), AboutActivity::class.java).also {
+            show(it)
+        }
+    }
+
+    private fun sendInvitation(hexEncodedPublicKey:String) {
+        val intent = Intent()
+        intent.action = Intent.ACTION_SEND
+        val invitation = String.format(requireContext().resources.getString(R.string.invitation_msg), hexEncodedPublicKey)
+        intent.putExtra(Intent.EXTRA_TEXT, invitation)
+        intent.type = "text/plain"
+        val chooser = Intent.createChooser(intent, getString(R.string.activity_settings_invite_button_title))
+        startActivity(chooser)
+    }
+
+    private fun help() {
+        val intent = Intent(Intent.ACTION_SENDTO)
+        intent.data = Uri.parse("mailto:") // only email apps should handle this
+        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("support@beldex.io"))
+        intent.putExtra(Intent.EXTRA_SUBJECT, "")
+        startActivity(intent)
+    }
+
+    private fun showSeed() {
+        Intent(requireContext(), SeedPermissionActivity::class.java).also {
+            show(it)
+        }
+    }
+
+    private fun callAppPermission() {
+        val intent = Intent()
+        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+        val uri = Uri.fromParts("package", requireActivity().packageName, null)
+        intent.data = uri
+        push(intent)
+    }
+
+    private fun showPrivacySettings() {
+        Intent(requireContext(), PrivacySettingsActivity::class.java).also {
+            push(it)
+        }
+    }
+
+    private fun showNotificationSettings() {
+        Intent(requireContext(), NotificationSettingsActivity::class.java).also {
+            push(it)
+        }
+    }
+
+    private fun onConversationClick(threadId: Long) {
+        val extras = Bundle()
+        extras.putLong(ConversationFragmentV2.THREAD_ID, threadId)
+        replaceFragment(ConversationFragmentV2(), null, extras)
+    }
+
+    private fun openSettings() {
+        val activity = activity
+        if(isAdded && activity !=null) {
+            Intent(activity, SettingsActivity::class.java).also {
+                callSettingsActivityResultLauncher.launch(it)
+            }
+        }
+    }
+
+    private var callSettingsActivityResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val extras = Bundle()
+            extras.putParcelable(ConversationFragmentV2.ADDRESS,result.data!!.parcelable(ConversationFragmentV2.ADDRESS))
+            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
+            extras.putParcelable(ConversationFragmentV2.URI,result.data!!.parcelable(ConversationFragmentV2.URI))
+            extras.putString(ConversationFragmentV2.TYPE,result.data!!.getStringExtra(ConversationFragmentV2.TYPE))
+            replaceFragment(ConversationFragmentV2(), null, extras)
+        }else {
+            homeAdapter.notifyDataSetChanged()
+        }
+    }
+
+    private fun openMyWallet() {
+        val walletName = TextSecurePreferences.getWalletName(requireContext())
+        val walletPassword = TextSecurePreferences.getWalletPassword(requireContext())
+        if (walletName != null && walletPassword !=null) {
+            //startWallet(walletName, walletPassword, fingerprintUsed = false, streetmode = false)
+            val lockManager: LockManager<CustomPinActivity> = LockManager.getInstance() as LockManager<CustomPinActivity>
+            lockManager.enableAppLock(requireContext(), CustomPinActivity::class.java)
+            Intent(requireContext(), CustomPinActivity::class.java).also {
+                if(TextSecurePreferences.getWalletEntryPassword(requireContext())!=null) {
+                    it.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN)
+                    it.putExtra("change_pin",false)
+                    it.putExtra("send_authentication",false)
+                    customPinActivityResultLauncher.launch(it)
+                } else{
+                    it.putExtra(AppLock.EXTRA_TYPE, AppLock.ENABLE_PINLOCK)
+                    it.putExtra("change_pin",false)
+                    it.putExtra("send_authentication",false)
+                    customPinActivityResultLauncher.launch(it)
+                }
+            }
+        }else{
+            Intent(requireContext(), WalletInfoActivity::class.java).also {
+                push(it)
+            }
+        }
+    }
+
+    private fun openStartWalletInfo(){
+        Intent(requireContext(), StartWalletInfo::class.java).also {
+            push(it)
+        }
+    }
+
+    private var customPinActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            replaceFragment(WalletFragment(), WalletFragment::class.java.name, null)
+        }
+    }
+
+    private fun showQRCode() {
+        Intent(requireContext(), ShowQRCodeWithScanQRCodeActivity::class.java).also {
+            showQRCodeWithScanQRCodeActivityResultLauncher.launch(it)
+        }
+    }
+
+    private var showQRCodeWithScanQRCodeActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val extras = Bundle()
+            extras.putParcelable(ConversationFragmentV2.ADDRESS,result.data!!.parcelable(ConversationFragmentV2.ADDRESS))
+            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
+            extras.putParcelable(ConversationFragmentV2.URI,result.data!!.parcelable(ConversationFragmentV2.URI))
+            extras.putString(ConversationFragmentV2.TYPE,result.data!!.getStringExtra(ConversationFragmentV2.TYPE))
+            replaceFragment(ConversationFragmentV2(), null, extras)
+        }
+    }
+
+    private fun showPath() {
+        Intent(requireContext(), PathActivity::class.java).also {
+            show(it)
+        }
+    }
+
+    override fun showMessageRequests() {
+        Intent(requireContext(), MessageRequestsActivity::class.java).also {
+            resultLauncher.launch(it)
+        }
+    }
+
+    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val extras = Bundle()
+            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
+            replaceFragment(ConversationFragmentV2(), null, extras)
+        }
+    }
+
+    override fun createNewPrivateChat() {
+        val intent = Intent(requireContext(), CreateNewPrivateChatActivity::class.java)
+        createNewPrivateChatResultLauncher.launch(intent)
+    }
+
+    private var createNewPrivateChatResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val extras = Bundle()
+            extras.putParcelable(ConversationFragmentV2.ADDRESS,result.data!!.parcelable(ConversationFragmentV2.ADDRESS))
+            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
+            extras.putParcelable(ConversationFragmentV2.URI,result.data!!.parcelable(ConversationFragmentV2.URI))
+            extras.putString(ConversationFragmentV2.TYPE,result.data!!.getStringExtra(ConversationFragmentV2.TYPE))
+            replaceFragment(ConversationFragmentV2(), null, extras)
+        }
+    }
+
+    override fun createNewSecretGroup() {
+        val intent = Intent(requireContext(), CreateClosedGroupActivity::class.java)
+        createClosedGroupActivityResultLauncher.launch(intent)
+    }
+
+    private var createClosedGroupActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val extras = Bundle()
+            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
+            extras.putParcelable(ConversationFragmentV2.ADDRESS,result.data!!.parcelable(ConversationFragmentV2.ADDRESS))
+            replaceFragment(ConversationFragmentV2(), null, extras)
+        }
+        if (result.resultCode == CreateClosedGroupActivity.closedGroupCreatedResultCode) {
+            createNewPrivateChat()
+        }
+    }
+
+    override fun joinSocialGroup() {
+        Intent(requireContext(), JoinPublicChatNewActivity::class.java).also {
+            joinPublicChatNewActivityResultLauncher.launch(it)
+        }
+    }
+
+    private var joinPublicChatNewActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val extras = Bundle()
+            extras.putLong(
+                ConversationFragmentV2.THREAD_ID,
+                result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID, -1)
+            )
+            extras.putParcelable(
+                ConversationFragmentV2.ADDRESS,
+                result.data!!.parcelable(ConversationFragmentV2.ADDRESS)
+            )
+            replaceFragment(ConversationFragmentV2(), null, extras)
+        }
+    }
+
+    private fun toolBarCall() {
+        Intent(requireContext(), WebRtcCallActivity::class.java).also {
+            push(it)
+        }
+    }
+
+    private fun passGlobalSearchAdapterModelSavedMessagesValue(address: Address) {
+        val extras = Bundle()
+        extras.putParcelable(ConversationFragmentV2.ADDRESS,address)
+        replaceFragment(ConversationFragmentV2(),null,extras)
+    }
+
+    private fun passGlobalSearchAdapterModelContactValue(address: Address) {
+        val extras = Bundle()
+        extras.putParcelable(ConversationFragmentV2.ADDRESS,address)
+        replaceFragment(ConversationFragmentV2(),null,extras)
+    }
+
+    private fun passGlobalSearchAdapterModelGroupConversationValue(threadId: Long) {
+        val extras = Bundle()
+        extras.putLong(ConversationFragmentV2.THREAD_ID,threadId)
+        replaceFragment(ConversationFragmentV2(),null,extras)
+    }
+
+    private fun passGlobalSearchAdapterModelMessageValue(
+        threadId: Long,
+        timestamp: Long,
+        author: Address
+    ) {
+        val extras = Bundle()
+        extras.putLong(ConversationFragmentV2.THREAD_ID,threadId)
+        extras.putLong(ConversationFragmentV2.SCROLL_MESSAGE_ID,timestamp)
+        extras.putParcelable(ConversationFragmentV2.SCROLL_MESSAGE_AUTHOR,author)
+        replaceFragment(ConversationFragmentV2(),null,extras)
+    }
+
+    private fun callConversationScreen(threadId: Long, address: Address?, uri: Uri?, type: String?, extraText: CharSequence?) {
+        val extras = Bundle()
+        extras.putParcelable(ConversationFragmentV2.ADDRESS,address)
+        extras.putLong(ConversationFragmentV2.THREAD_ID, threadId)
+        extras.putParcelable(ConversationFragmentV2.URI,uri)
+        extras.putString(ConversationFragmentV2.TYPE,type)
+        extras.putCharSequence(Intent.EXTRA_TEXT,extraText)
+        replaceFragment(ConversationFragmentV2(), null, extras)
+    }
 }
 //endregion

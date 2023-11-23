@@ -27,22 +27,16 @@
                     app:cardBackgroundColor="@color/card_color"
                     app:cardCornerRadius="10dp">
 
-                    <LinearLayout
+                    <EditText
+                        android:id="@+id/nameEditText"
+                        style="@style/SmallBchatEditText"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <EditText
-                            android:id="@+id/nameEditText"
-                            style="@style/SmallBchatEditText"
-                            android:layout_width="match_parent"
-                            android:layout_height="64dp"
-                            android:gravity="center_vertical"
-                            android:hint="@string/activity_create_closed_group_edit_text_hint"
-                            android:imeOptions="actionDone"
-                            android:inputType="textMultiLine"
-                            android:maxLines="3" />
-
-                    </LinearLayout>
+                        android:layout_height="64dp"
+                        android:gravity="center_vertical"
+                        android:hint="@string/activity_create_closed_group_edit_text_hint"
+                        android:imeOptions="actionDone"
+                        android:inputType="textMultiLine"
+                        android:maxLines="3" />
                 </androidx.cardview.widget.CardView>
 
                 <View

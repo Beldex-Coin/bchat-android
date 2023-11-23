@@ -209,4 +209,5 @@
     <color name="in_chat_payment_field">#383848</color>
     <color name="in_chat_payment_dialog_background">#272733</color>
     <color name="in_chat_amount_divider">#4E4E67</color>
+    <color name="scan_qr_content_background">#22222266</color>
 </resources>

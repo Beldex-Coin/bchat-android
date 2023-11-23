@@ -31,12 +31,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.annimon.stream.Stream;
+import com.beldex.libbchat.mnode.MnodeAPI;
 import com.thoughtcrimes.securesms.ApplicationContext;
 import com.thoughtcrimes.securesms.mms.Slide;
 import com.thoughtcrimes.securesms.mms.SlideDeck;
 import com.thoughtcrimes.securesms.util.BchatMetaProtocol;
 
-import net.sqlcipher.database.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
 import com.beldex.libbchat.utilities.Address;
 import com.beldex.libbchat.utilities.Contact;
@@ -138,7 +139,7 @@ public class ThreadDatabase extends Database {
 
   private long createThreadForRecipient(Address address, boolean group, int distributionType) {
     ContentValues contentValues = new ContentValues(4);
-    long date                   = System.currentTimeMillis();
+    long date                   = MnodeAPI.getNowWithOffset();
 
     contentValues.put(DATE, date - date % 1000);
     contentValues.put(ADDRESS, address.serialize());
@@ -284,7 +285,7 @@ public class ThreadDatabase extends Database {
     contentValues.put(UNREAD_COUNT, 0);
 
     if (lastSeen) {
-      contentValues.put(LAST_SEEN, System.currentTimeMillis());
+      contentValues.put(LAST_SEEN, MnodeAPI.getNowWithOffset());
     }
 
     SQLiteDatabase db = databaseHelper.getWritableDatabase();
@@ -402,9 +403,9 @@ public class ThreadDatabase extends Database {
               " ON " + TABLE_NAME + "." + ADDRESS + " = " + RecipientDatabase.TABLE_NAME + "." + RecipientDatabase.ADDRESS +
               " LEFT OUTER JOIN " + GroupDatabase.TABLE_NAME +
               " ON " + TABLE_NAME + "." + ADDRESS + " = " + GroupDatabase.TABLE_NAME + "." + GROUP_ID +
-              " WHERE " + MESSAGE_COUNT + " != 0 AND " + ARCHIVED + " = 0 AND " + HAS_SENT + " = 0 AND " + MESSAGE_COUNT + " = " + UNREAD_COUNT + " AND " +
-              RecipientDatabase.TABLE_NAME + "." + RecipientDatabase.BLOCK + " = 0 AND " +
+              " WHERE " + MESSAGE_COUNT + " != 0 AND " + ARCHIVED + " = 0 AND " + HAS_SENT + " = 0 AND " +
               RecipientDatabase.TABLE_NAME + "." + RecipientDatabase.APPROVED + " = 0 AND " +
+              RecipientDatabase.TABLE_NAME + "." + RecipientDatabase.BLOCK + " = 0 AND " +
               GroupDatabase.TABLE_NAME + "." + GROUP_ID + " IS NULL";
       cursor          = db.rawQuery(query, null);
 
@@ -498,13 +499,21 @@ public class ThreadDatabase extends Database {
     return db.rawQuery(query, null);
   }
 
-  public void setLastSeen(long threadId) {
+  public void setLastSeen(long threadId,long timestamp) {
     SQLiteDatabase db = databaseHelper.getWritableDatabase();
     ContentValues contentValues = new ContentValues(1);
-    contentValues.put(LAST_SEEN, System.currentTimeMillis());
+    if (timestamp == -1) {
+      contentValues.put(LAST_SEEN, MnodeAPI.getNowWithOffset());
+    } else {
+      contentValues.put(LAST_SEEN, timestamp);
+    }
 
     db.update(TABLE_NAME, contentValues, ID_WHERE, new String[] {String.valueOf(threadId)});
     notifyConversationListListeners();
+  }
+
+  public void setLastSeen(long threadId) {
+    setLastSeen(threadId, -1);
   }
 
   public Pair<Long, Boolean> getLastSeenAndHasSent(long threadId) {
@@ -595,6 +604,17 @@ public class ThreadDatabase extends Database {
 
   public long getOrCreateThreadIdFor(Recipient recipient) {
     return getOrCreateThreadIdFor(recipient, DistributionTypes.DEFAULT);
+  }
+
+  public void setThreadArchived(long threadId) {
+    ContentValues contentValues = new ContentValues(1);
+    contentValues.put(ARCHIVED, 1);
+
+    databaseHelper.getWritableDatabase().update(TABLE_NAME, contentValues, ID_WHERE,
+            new String[] {String.valueOf(threadId)});
+
+    notifyConversationListListeners();
+    notifyConversationListeners(threadId);
   }
 
   public long getOrCreateThreadIdFor(Recipient recipient, int distributionType) {
@@ -864,6 +884,7 @@ public class ThreadDatabase extends Database {
       long               lastSeen             = cursor.getLong(cursor.getColumnIndexOrThrow(ThreadDatabase.LAST_SEEN));
       Uri                snippetUri           = getSnippetUri(cursor);
       boolean            pinned              = cursor.getInt(cursor.getColumnIndexOrThrow(ThreadDatabase.IS_PINNED)) != 0;
+      int                messageRequestCount  = getUnapprovedConversationCount();
 
       if (!TextSecurePreferences.isReadReceiptsEnabled(context)) {
         readReceiptCount = 0;
@@ -871,7 +892,7 @@ public class ThreadDatabase extends Database {
 
       return new ThreadRecord(body, snippetUri, recipient, date, count,
                               unreadCount, threadId, deliveryReceiptCount, status, type,
-                              distributionType, archived, expiresIn, lastSeen, readReceiptCount, pinned);
+                              distributionType, archived, expiresIn, lastSeen, readReceiptCount, pinned,messageRequestCount);
     }
 
     private @Nullable Uri getSnippetUri(Cursor cursor) {

@@ -50,7 +50,8 @@ class ProfileManager : SSKEnvironment.ProfileManagerProtocol {
             recipient,
             profilePictureURL
         )
-        ApplicationContext.getInstance(context).jobManager.add(job)
+        val jobManager = ApplicationContext.getInstance(context).jobManager
+        jobManager.add(job)
         val bchatID = recipient.address.serialize()
         val contactDatabase = DatabaseComponent.get(context).bchatContactDatabase()
         var contact = contactDatabase.getContactWithBchatID(bchatID)

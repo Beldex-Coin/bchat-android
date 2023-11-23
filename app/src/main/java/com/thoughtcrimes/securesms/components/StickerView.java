@@ -7,15 +7,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.thoughtcrimes.securesms.mms.Slide;
-import com.thoughtcrimes.securesms.mms.SlideClickListener;
-import com.thoughtcrimes.securesms.mms.SlidesClickedListener;
 import com.thoughtcrimes.securesms.conversation.v2.utilities.ThumbnailView;
-import com.thoughtcrimes.securesms.mms.GlideRequests;
-
-import com.thoughtcrimes.securesms.mms.Slide;
-import com.thoughtcrimes.securesms.mms.SlideClickListener;
-import com.thoughtcrimes.securesms.mms.SlidesClickedListener;
 
 import io.beldex.bchat.R;
 
@@ -54,20 +46,5 @@ public class StickerView extends FrameLayout {
   @Override
   public void setOnLongClickListener(@Nullable OnLongClickListener l) {
     image.setOnLongClickListener(l);
-  }
-
-  public void setSticker(@NonNull GlideRequests glideRequests, @NonNull Slide stickerSlide) {
-    boolean showControls = stickerSlide.asAttachment().getDataUri() == null;
-
-    image.setImageResource(glideRequests, stickerSlide, showControls, false);
-    missingShade.setVisibility(showControls ? View.VISIBLE : View.GONE);
-  }
-
-  public void setThumbnailClickListener(@NonNull SlideClickListener listener) {
-    image.setThumbnailClickListener(listener);
-  }
-
-  public void setDownloadClickListener(@NonNull SlidesClickedListener listener) {
-    image.setDownloadClickListener(listener);
   }
 }

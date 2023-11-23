@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
 
 import com.annimon.stream.Stream;
 
-import net.sqlcipher.database.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
 import com.beldex.libbchat.messaging.sending_receiving.MessageDecrypter;
 import com.beldex.libbchat.utilities.Address;

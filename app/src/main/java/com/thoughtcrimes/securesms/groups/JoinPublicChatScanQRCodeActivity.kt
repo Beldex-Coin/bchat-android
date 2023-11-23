@@ -75,6 +75,7 @@ class JoinPublicChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
             val scanQRCodeFragment = ScanQRCodeFragment()
             scanQRCodeFragment.scanListener = this
             scanQRCodeFragment.message = message
+            intent.putExtra(ScanQRCodeFragment.FROM_NEW_CHAT_SCREEN, false)
             fragment = scanQRCodeFragment
         } else {
             val scanQRCodePlaceholderFragment = ScanQRCodePlaceholderFragment()

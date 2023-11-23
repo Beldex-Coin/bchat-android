@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 
@@ -53,7 +54,7 @@ public class GeneratedContactPhoto implements FallbackContactPhoto {
                                   .endConfig()
                                   .buildRound(character, inverted ? Color.WHITE : color);
 
-      Drawable gradient = context.getResources().getDrawable(ThemeUtil.isDarkTheme(context) ? R.drawable.avatar_gradient_dark
+      Drawable gradient = ContextCompat.getDrawable(context,ThemeUtil.isDarkTheme(context) ? R.drawable.avatar_gradient_dark
                                                                                             : R.drawable.avatar_gradient_light);
       return new LayerDrawable(new Drawable[] { base, gradient });
     }

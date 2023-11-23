@@ -1,5 +1,6 @@
 package com.beldex.libsignal.streams;
 
+
 import com.beldex.libsignal.utilities.Util;
 
 import java.io.FilterInputStream;
@@ -66,7 +67,6 @@ public class ProfileCipherInputStream extends FilterInputStream {
         if (cipher.getOutputSize(0) > outputLength) {
           throw new AssertionError("Need: " + cipher.getOutputSize(0) + " but only have: " + outputLength);
         }
-
         finished = true;
         return cipher.doFinal(output, outputOffset);
       } else {

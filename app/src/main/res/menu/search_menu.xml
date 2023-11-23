@@ -12,6 +12,6 @@
         android:icon="@drawable/ic_baseline_search_24"
         android:title="Search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="ifRoom|collapseActionView" />
+        app:showAsAction="always|collapseActionView" />
 
 </menu>

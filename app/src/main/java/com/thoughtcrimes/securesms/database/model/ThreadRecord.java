@@ -53,12 +53,17 @@ public class ThreadRecord extends DisplayRecord {
   private           final long    expiresIn;
   private           final long    lastSeen;
   private           final boolean pinned;
+  /*This variable was introduced to handle the problem of nickname
+  * not updating in home screen after we update it from detail sheet.
+  * This was to make sure HomeDifUtil returns a difference between old and new list*/
+  private           final String  nickName;
+  private           final int messageRequestCount;
 
   public ThreadRecord(@NonNull String body, @Nullable Uri snippetUri,
-                      @NonNull Recipient recipient, long date, long count, int unreadCount,
+                      Recipient recipient, long date, long count, int unreadCount,
                       long threadId, int deliveryReceiptCount, int status, long snippetType,
                       int distributionType, boolean archived, long expiresIn, long lastSeen,
-                      int readReceiptCount, boolean pinned)
+                      int readReceiptCount, boolean pinned, int messageRequestCount)
   {
     super(body, recipient, date, date, threadId, status, deliveryReceiptCount, snippetType, readReceiptCount);
     this.snippetUri       = snippetUri;
@@ -68,7 +73,9 @@ public class ThreadRecord extends DisplayRecord {
     this.archived         = archived;
     this.expiresIn        = expiresIn;
     this.lastSeen         = lastSeen;
-    this.pinned         = pinned;
+    this.pinned           = pinned;
+    this.nickName         = recipient == null ? null : recipient.getName();
+    this.messageRequestCount = messageRequestCount;
   }
 
   public @Nullable Uri getSnippetUri() {
@@ -77,7 +84,6 @@ public class ThreadRecord extends DisplayRecord {
 
   @Override
   public SpannableString getDisplayBody(@NonNull Context context) {
-    Recipient recipient = getRecipient();
     if (isGroupUpdateMessage()) {
       return emphasisAdded(context.getString(R.string.ThreadRecord_group_updated));
     } else if (isOpenGroupInvitation()) {
@@ -189,5 +195,13 @@ public class ThreadRecord extends DisplayRecord {
 
   public boolean isPinned() {
     return pinned;
+  }
+
+  public String getNickName() {
+    return nickName;
+  }
+
+  public int getMessageRequestCount() {
+    return messageRequestCount;
   }
 }

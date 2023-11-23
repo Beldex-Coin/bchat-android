@@ -9,7 +9,7 @@ import com.thoughtcrimes.securesms.home.HomeFragment
 import io.beldex.bchat.databinding.SaveYourSeedDialogBoxBinding
 
 class SaveYourSeedDialogBox(
-    private val listener: HomeFragment.HomeFragmentListener,
+    private val showSeed: () -> Unit,
 ) : BaseDialog() {
     private lateinit var binding: SaveYourSeedDialogBoxBinding
 
@@ -20,7 +20,7 @@ class SaveYourSeedDialogBox(
         with(binding) {
             okButton.setOnClickListener {
                 TextSecurePreferences.setCopiedSeed(requireContext(),true)
-                listener.showSeed()
+                showSeed()
                 dismiss()
             }
         }

@@ -253,6 +253,41 @@
           "description":"- Minor Bug fixes"
         }
       ]
+    },
+    {
+      "title": "2.2.0",
+      "descriptions": [
+        {
+          "description":"- Provided wallet as Opt-in feature"
+        },
+        {
+          "description":"- Provided Scan from gallery feature"
+        },
+        {
+          "description":"- User can remove profile picture now"
+        },
+        {
+          "description":"- Improved user experience when there is no internet"
+        },
+        {
+          "description":"- Profile picture in note to self issue fixed"
+        },
+        {
+          "description":"- Fixed app crash issue while changing theme"
+        },
+        {
+          "description":"- Node validation improved in Add node feature"
+        },
+        {
+          "description":"- Fixed Crash and ANR issues"
+        },
+        {
+          "description":"- Fixed crash issues in low speed network in wallet"
+        },
+        {
+          "description":"- Fixed issue in message request count"
+        }
+      ]
     }
   ]
 }

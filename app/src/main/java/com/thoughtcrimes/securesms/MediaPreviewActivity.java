@@ -63,6 +63,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.beldex.libbchat.messaging.messages.control.DataExtractionNotification;
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender;
 import com.beldex.libbchat.messaging.sending_receiving.attachments.DatabaseAttachment;
+import com.beldex.libbchat.mnode.MnodeAPI;
 import com.beldex.libbchat.utilities.Address;
 import com.beldex.libbchat.utilities.Util;
 import com.beldex.libbchat.utilities.recipients.Recipient;
@@ -441,7 +442,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
       Intent composeIntent = new Intent(this, ShareActivity.class);
       composeIntent.putExtra(Intent.EXTRA_STREAM, mediaItem.uri);
       composeIntent.setType(mediaItem.type);
-      composeIntent.putExtra(ShareActivity.MEDIA_PREVIEW_PAGE, !albumThumbnailView);
+      //composeIntent.putExtra(ShareActivity.MEDIA_PREVIEW_PAGE, !albumThumbnailView);
       resultLauncher.launch(composeIntent);
     }
   }
@@ -460,7 +461,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
               .onAnyDenied(() -> Toast.makeText(this, R.string.MediaPreviewActivity_unable_to_write_to_external_storage_without_permission, Toast.LENGTH_LONG).show())
               .onAllGranted(() -> {
                 SaveAttachmentTask saveTask = new SaveAttachmentTask(MediaPreviewActivity.this);
-                long saveDate = (mediaItem.date > 0) ? mediaItem.date : System.currentTimeMillis();
+                long saveDate = (mediaItem.date > 0) ? mediaItem.date : MnodeAPI.getNowWithOffset();
                 saveTask.executeOnExecutor(
                         AsyncTask.THREAD_POOL_EXECUTOR,
                         new Attachment(mediaItem.uri, mediaItem.type, saveDate, null));
@@ -474,7 +475,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
 
   private void sendMediaSavedNotificationIfNeeded() {
     if (conversationRecipient.isGroupRecipient()) return;
-    DataExtractionNotification message = new DataExtractionNotification(new DataExtractionNotification.Kind.MediaSaved(System.currentTimeMillis()));
+    DataExtractionNotification message = new DataExtractionNotification(new DataExtractionNotification.Kind.MediaSaved(MnodeAPI.getNowWithOffset()));
     MessageSender.send(message, conversationRecipient.getAddress());
   }
 

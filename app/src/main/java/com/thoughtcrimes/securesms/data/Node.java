@@ -12,6 +12,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
 
+import io.beldex.bchat.BuildConfig;
 import lombok.Getter;
 import lombok.Setter;
 import timber.log.Timber;
@@ -21,28 +22,21 @@ public class Node {
     static public final String STAGENET = "stagenet";
     static public final String TESTNET = "testnet";
 
-    @Getter
     private String name = null;
-    @Getter
+
     final private NetworkType networkType;
     InetAddress hostAddress;
-    @Getter
     private String host;
-    @Getter
-    @Setter
+
     int rpcPort = 0;
     private int levinPort = 0;
-    @Getter
-    @Setter
+
     private String username = "";
-    @Getter
-    @Setter
+
     private String password = "";
-    @Getter
-    @Setter
+
     private boolean favourite = false;
-    @Getter
-    @Setter
+
     private boolean selected = false;
 
     @Override
@@ -104,7 +98,7 @@ public class Node {
         String host = da[0];
 
         if (daParts.length == 1) {
-            networkType = NetworkType.NetworkType_Mainnet;
+            networkType = BuildConfig.USE_TESTNET ? NetworkType.NetworkType_Testnet : NetworkType.NetworkType_Mainnet;
         } else {
             switch (daParts[1]) {
                 case MAINNET:

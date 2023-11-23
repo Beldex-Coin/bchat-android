@@ -23,27 +23,27 @@ import java.util.List;
  */
 class InAppScheduler implements Scheduler {
 
-  private static final String TAG = InAppScheduler.class.getSimpleName();
+    private static final String TAG = InAppScheduler.class.getSimpleName();
 
-  private final JobManager jobManager;
-  private final Handler     handler;
+    private final JobManager jobManager;
+    private final Handler     handler;
 
-  InAppScheduler(@NonNull JobManager jobManager) {
-    HandlerThread handlerThread = new HandlerThread("InAppScheduler");
-    handlerThread.start();
+    InAppScheduler(@NonNull JobManager jobManager) {
+        HandlerThread handlerThread = new HandlerThread("InAppScheduler");
+        handlerThread.start();
 
-    this.jobManager = jobManager;
-    this.handler    = new Handler(handlerThread.getLooper());
-  }
-
-  @Override
-  public void schedule(long delay, @NonNull List<Constraint> constraints) {
-    if (delay > 0 && Stream.of(constraints).allMatch(Constraint::isMet)) {
-      Log.i(TAG, "Scheduling a retry in " + delay + " ms.");
-      handler.postDelayed(() -> {
-        Log.i(TAG, "Triggering a job retry.");
-        jobManager.wakeUp();
-      }, delay);
+        this.jobManager = jobManager;
+        this.handler    = new Handler(handlerThread.getLooper());
     }
-  }
+
+    @Override
+    public void schedule(long delay, @NonNull List<Constraint> constraints) {
+        if (delay > 0 && Stream.of(constraints).allMatch(Constraint::isMet)) {
+            Log.i(TAG, "Scheduling a retry in " + delay + " ms.");
+            handler.postDelayed(() -> {
+                Log.i(TAG, "Triggering a job retry.");
+                jobManager.wakeUp();
+            }, delay);
+        }
+    }
 }

@@ -9,7 +9,7 @@
     android:gravity="center_vertical"
     android:background="@color/page_background"
     android:id="@+id/backgroundContainer">
-    <com.thoughtcrimes.securesms.components.ProfilePictureView
+    <include layout="@layout/view_profile_picture"
         android:id="@+id/profilePictureView"
         android:layout_height="@dimen/medium_profile_picture_size"
         android:layout_width="@dimen/medium_profile_picture_size"

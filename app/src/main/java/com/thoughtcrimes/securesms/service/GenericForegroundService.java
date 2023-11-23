@@ -14,7 +14,6 @@ import androidx.core.content.ContextCompat;
 
 import com.thoughtcrimes.securesms.home.HomeActivity;
 import com.beldex.libsignal.utilities.Log;
-import com.thoughtcrimes.securesms.home.HomeActivity;
 import com.thoughtcrimes.securesms.notifications.NotificationChannels;
 import com.beldex.libsignal.utilities.guava.Preconditions;
 

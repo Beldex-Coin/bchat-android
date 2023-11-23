@@ -4,12 +4,6 @@
         <domain includeSubdomains="true">127.0.0.1</domain>
     </domain-config>
     <domain-config cleartextTrafficPermitted="false">
-        <domain includeSubdomains="false">publicnode5.rpcnode.stream</domain>
-        <trust-anchors>
-            <certificates src="@raw/publicnode5"/>
-        </trust-anchors>
-    </domain-config>
-    <domain-config cleartextTrafficPermitted="false">
         <domain includeSubdomains="false">publicnode1.rpcnode.stream</domain>
         <trust-anchors>
             <certificates src="@raw/publicnode1"/>
@@ -43,12 +37,6 @@
 <domain-config cleartextTrafficPermitted="true">
     <domain includeSubdomains="true">127.0.0.1</domain>
 </domain-config>
-    <domain-config cleartextTrafficPermitted="false">
-        <domain includeSubdomains="false">publicnode5.rpcnode.stream</domain>
-        <trust-anchors>
-            <certificates src="@raw/publicnode5"/>
-        </trust-anchors>
-    </domain-config>
     <domain-config cleartextTrafficPermitted="false">
         <domain includeSubdomains="false">publicnode1.rpcnode.stream</domain>
         <trust-anchors>

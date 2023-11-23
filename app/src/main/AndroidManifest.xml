@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="io.beldex.bchat">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-sdk tools:overrideLibrary="com.amulyakhare.textdrawable,com.astuetz.pagerslidingtabstrip,pl.tajchert.waitingdots,com.h6ah4i.android.multiselectlistpreferencecompat,android.support.v13,com.davemorrissey.labs.subscaleview,com.tomergoldst.tooltips,com.klinker.android.send_message,com.takisoft.colorpicker,android.support.v14.preference" />
 
@@ -88,11 +87,6 @@
             android:name="com.thoughtcrimes.securesms.wallet.TransactionDetails"
             android:exported="false"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.thoughtcrimes.securesms.wallet.utils.common.LoadingActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.info.WalletInfoSeedActivity"
             android:exported="false"
@@ -248,6 +242,10 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" /> <!-- Disable all analytics -->
+        <activity
+            android:name="com.thoughtcrimes.securesms.wallet.startwallet.StartWalletInfo"
+            android:screenOrientation="portrait"
+            android:exported="false" />
         <meta-data
             android:name="firebase_analytics_collection_deactivated"
             android:value="true" />
@@ -318,7 +316,8 @@
             android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"/>
 
         <activity-alias
             android:name=".RoutingActivity"
@@ -390,7 +389,6 @@
         <activity
             android:name="com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity"
             android:exported="false"
-            android:label="@string/activity_privacy_settings_title"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.thoughtcrimes.securesms.preferences.NotificationSettingsActivity"
@@ -674,6 +672,7 @@
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE"
             tools:targetApi="26" />
+
         <service
             android:name="com.thoughtcrimes.securesms.jobmanager.KeepAliveService"
             android:enabled="@bool/enable_alarm_manager"
@@ -683,6 +682,7 @@
             android:name="com.thoughtcrimes.securesms.jobmanager.AlarmManagerScheduler$RetryReceiver"
             android:enabled="@bool/enable_alarm_manager"
             android:exported="false" /> <!-- Probably don't need this one -->
+
         <uses-library
             android:name="com.sec.android.app.multiwindow"
             android:required="false" />

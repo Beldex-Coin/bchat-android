@@ -24,6 +24,7 @@ import com.beldex.libsignal.protos.SignalServiceProtos
 import com.beldex.libsignal.utilities.Base64
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.hexEncodedPublicKey
+import java.util.concurrent.atomic.AtomicInteger
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment as SignalAttachment
 import com.beldex.libbchat.messaging.sending_receiving.link_preview.LinkPreview as SignalLinkPreview
 import com.beldex.libbchat.messaging.sending_receiving.quotes.QuoteModel as SignalQuote
@@ -67,7 +68,7 @@ object MessageSender {
         Log.d("Beldex","bchat id validation -- get user public key")
         // Set the timestamp, sender and recipient
         if (message.sentTimestamp == null) {
-            message.sentTimestamp = System.currentTimeMillis() // Visible messages will already have their sent timestamp set
+            message.sentTimestamp = MnodeAPI.nowWithOffset // Visible messages will already have their sent timestamp set
         }
         Log.d("Beldex","bchat id validation -- check send id and user public key")
         message.sender = userPublicKey
@@ -103,15 +104,11 @@ object MessageSender {
             }
             // Attach the user's profile if needed
             if (message is VisibleMessage) {
-                val displayName = storage.getUserDisplayName()!!
-                val profileKey = storage.getUserProfileKey()
-                val profilePictureUrl = storage.getUserProfilePictureURL()
-                if (profileKey != null && profilePictureUrl != null) {
-                    message.profile = Profile(displayName, profileKey, profilePictureUrl)
-                } else {
-                    message.profile = Profile(displayName)
-                }
+                message.profile = storage.getUserProfile()
             }
+            /*if (message is MessageRequestResponse) {
+                message.profile = storage.getUserProfile()
+            }*/
             // Convert it to protobuf
             val proto = message.toProto() ?: throw Error.ProtoConversionFailed
             // Serialize the protobuf
@@ -160,7 +157,7 @@ object MessageSender {
             MnodeAPI.sendMessage(mnodeMessage).success { promises: Set<RawResponsePromise> ->
                 var isSuccess = false
                 val promiseCount = promises.size
-                var errorCount = 0
+                var errorCount =  AtomicInteger(0)
                 promises.iterator().forEach { promise: RawResponsePromise ->
                     promise.success {
                         if (isSuccess) { return@success } // Succeed as soon as the first promise succeeds
@@ -184,8 +181,8 @@ object MessageSender {
                         deferred.resolve(Unit)
                     }
                     promise.fail {
-                        errorCount += 1
-                        if (errorCount != promiseCount) { return@fail } // Only error out if all promises failed
+                        errorCount.getAndIncrement()
+                        if (errorCount.get() != promiseCount) { return@fail } // Only error out if all promises failed
                         handleFailure(it)
                     }
                 }
@@ -204,7 +201,7 @@ object MessageSender {
         val deferred = deferred<Unit, Exception>()
         val storage = MessagingModuleConfiguration.shared.storage
         if (message.sentTimestamp == null) {
-            message.sentTimestamp = System.currentTimeMillis()
+            message.sentTimestamp = MnodeAPI.nowWithOffset
         }
         message.sender = storage.getUserPublicKey()
         // Set the failure handler (need it here already for precondition failure handling)
@@ -221,14 +218,7 @@ object MessageSender {
                     val room = destination.room
                     // Attach the user's profile if needed
                     if (message is VisibleMessage) {
-                        val displayName = storage.getUserDisplayName()!!
-                        val profileKey = storage.getUserProfileKey()
-                        val profilePictureUrl = storage.getUserProfilePictureURL()
-                        if (profileKey != null && profilePictureUrl != null) {
-                            message.profile = Profile(displayName, profileKey, profilePictureUrl)
-                        } else {
-                            message.profile = Profile(displayName)
-                        }
+                        message.profile = storage.getUserProfile()
                     }
                     // Validate the message
                     if (message !is VisibleMessage || !message.isValid()) {
@@ -274,6 +264,8 @@ object MessageSender {
             message.serverHash?.let {
                 storage.setMessageServerHash(messageID, it)
             }
+            // in case any errors from previous sends
+            storage.clearErrorMessage(messageID)
             // Track the social group server message ID
             if (message.openGroupServerMessageID != null && destination is Destination.OpenGroupV2) {
                 val encoded = GroupUtil.getEncodedOpenGroupID("${destination.server}.${destination.room}".toByteArray())

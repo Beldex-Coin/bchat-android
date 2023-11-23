@@ -6,6 +6,7 @@ import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.messages.Message
 import com.beldex.libbchat.messaging.messages.control.*
 import com.beldex.libbchat.messaging.messages.visible.VisibleMessage
+import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libsignal.crypto.PushTransportDetails
 import com.beldex.libsignal.protos.SignalServiceProtos
 
@@ -40,7 +41,9 @@ object MessageReceiver {
         // Parse the envelope
         val envelope = SignalServiceProtos.Envelope.parseFrom(data)
         // Decrypt the contents
-        val ciphertext = envelope.content ?: throw Error.NoData
+        val ciphertext = envelope.content ?: run {
+            throw Error.NoData
+        }
         var plaintext: ByteArray? = null
         var sender: String? = null
         var groupPublicKey: String? = null
@@ -88,11 +91,15 @@ object MessageReceiver {
                     groupPublicKey = envelope.source
                     decrypt()
                 }
-                else -> throw Error.UnknownEnvelopeType
+                else -> {
+                    throw Error.UnknownEnvelopeType
+                }
             }
         }
         // Don't process the envelope any further if the sender is blocked
-        if (isBlocked(sender!!)) throw Error.SenderBlocked
+        if (isBlocked(sender!!)) {
+            throw Error.SenderBlocked
+        }
         // Parse the proto
         val proto = SignalServiceProtos.Content.parseFrom(
             PushTransportDetails.getStrippedPaddingMessageBody(plaintext))
@@ -107,16 +114,20 @@ object MessageReceiver {
         CallMessage.fromProto(proto)?:
         /*Hales63*/
         MessageRequestResponse.fromProto(proto) ?:
-        VisibleMessage.fromProto(proto,address!!) ?: throw Error.UnknownMessage
+        VisibleMessage.fromProto(proto,address!!) ?: run {
+            throw Error.UnknownMessage
+        }
         // Ignore self send if needed
         if (!message.isSelfSendValid && sender == userPublicKey) throw Error.SelfSend
         // Guard against control messages in social groups
-        if (isOpenGroupMessage && message !is VisibleMessage) throw Error.InvalidMessage
+        if (isOpenGroupMessage && message !is VisibleMessage) {
+            throw Error.InvalidMessage
+        }
         // Finish parsing
         message.sender = sender
         message.recipient = userPublicKey
         message.sentTimestamp = envelope.timestamp
-        message.receivedTimestamp = if (envelope.hasServerTimestamp()) envelope.serverTimestamp else System.currentTimeMillis()
+        message.receivedTimestamp = if (envelope.hasServerTimestamp()) envelope.serverTimestamp else MnodeAPI.nowWithOffset
         message.groupPublicKey = groupPublicKey
         message.openGroupServerMessageID = openGroupServerID
         // Validate
@@ -127,7 +138,9 @@ object MessageReceiver {
         Log.d("DataMessage message-> ",(message is VisibleMessage).toString())
         Log.d("DataMessage attachmentCount-> ",proto.dataMessage.attachmentsCount.toString())
         if (message is VisibleMessage && !isValid && proto.dataMessage.attachmentsCount != 0) { isValid = true }
-        if (!isValid) { throw Error.InvalidMessage }
+        if (!isValid) {
+            throw Error.InvalidMessage
+        }
         // If the message failed to process the first time around we retry it later (if the error is retryable). In this case the timestamp
         // will already be in the database but we don't want to treat the message as a duplicate. The isRetry flag is a simple workaround
         // for this issue.

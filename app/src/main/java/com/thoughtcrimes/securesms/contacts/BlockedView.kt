@@ -59,8 +59,8 @@ class BlockedView : LinearLayout {
         ) // FIXME: This is a bad place to do this
         val address = recipient.address.serialize()
 
-        binding.profilePictureView.glide = glide
-        binding.profilePictureView.update(recipient)
+        binding.profilePictureView.root.glide = glide
+        binding.profilePictureView.root.update(recipient)
         binding.nameTextView.text =
             if (recipient.isGroupRecipient) recipient.name else getUserDisplayName(address)
     }

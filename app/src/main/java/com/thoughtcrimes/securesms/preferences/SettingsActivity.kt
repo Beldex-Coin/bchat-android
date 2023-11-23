@@ -31,16 +31,16 @@ import com.beldex.libbchat.utilities.ProfileKeyUtil
 import com.beldex.libbchat.utilities.ProfilePictureUtilities
 import com.beldex.libbchat.utilities.SSKEnvironment.ProfileManagerProtocol
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.beldex.libbchat.utilities.truncateIdForDisplay
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
 import com.thoughtcrimes.securesms.applock.AppLockDetailsActivity
 import com.thoughtcrimes.securesms.avatar.AvatarSelection
 import com.thoughtcrimes.securesms.changelog.ChangeLogActivity
-import com.thoughtcrimes.securesms.contacts.BlockedContactActivity
+import com.thoughtcrimes.securesms.components.ProfilePictureView
 import com.thoughtcrimes.securesms.contacts.blocked.BlockedContactsActivity
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
 import com.thoughtcrimes.securesms.home.PathActivity
-import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
 import com.thoughtcrimes.securesms.mms.GlideApp
 import com.thoughtcrimes.securesms.util.*
 import java.io.File
@@ -50,6 +50,9 @@ import java.util.Date
 import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.permissions.Permissions
 import com.thoughtcrimes.securesms.profiles.ProfileMediaConstraints
+import com.thoughtcrimes.securesms.showCustomDialog
+import com.thoughtcrimes.securesms.wallet.CheckOnline
+import java.util.regex.Pattern
 
 class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.AnimationListener {
     private lateinit var binding: ActivitySettingsBinding
@@ -58,8 +61,6 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             field = value; handleDisplayNameEditActionModeChanged()
         }
     private lateinit var glide: GlideRequests
-    private var displayNameToBeUploaded: String? = null
-    private var profilePictureToBeUploaded: ByteArray? = null
     private var tempFile: File? = null
 
     private val hexEncodedPublicKey: String
@@ -75,6 +76,11 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
     private lateinit var animation1: Animation
     private lateinit var animation2: Animation
     private var isFrontOfCardShowing = true
+    private val namePattern = Pattern.compile("[A-Za-z0-9]+")
+    private var shareButtonLastClickTime: Long = 0
+
+    private fun getDisplayName(): String =
+        TextSecurePreferences.getProfileName(this) ?: truncateIdForDisplay(hexEncodedPublicKey)
 
     // region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?, isReady: Boolean) {
@@ -82,13 +88,18 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setUpActionBarBchatLogo("My Account")
-        val displayName = TextSecurePreferences.getProfileName(this) ?: hexEncodedPublicKey
+        val displayName = getDisplayName()
         glide = GlideApp.with(this)
 
         val size = toPx(280, resources)
         val qrCode = QRCodeUtilities.encode(hexEncodedPublicKey, size, false, false)
         binding.qrCodeImageView.setImageBitmap(qrCode)
-        binding.qrCodeShareButton.setOnClickListener { shareQRCode() }
+        binding.qrCodeShareButton.setOnClickListener {
+            if (SystemClock.elapsedRealtime() - shareButtonLastClickTime >= 1000) {
+                shareButtonLastClickTime = SystemClock.elapsedRealtime()
+                shareQRCode()
+            }
+        }
 
         // apply animation from to_middle
         animation1 = AnimationUtils.loadAnimation(this, R.anim.to_middle)
@@ -99,13 +110,9 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
         animation2.setAnimationListener(this)
 
         with(binding) {
-            profilePictureView.glide = glide
-            profilePictureView.publicKey = hexEncodedPublicKey
-            profilePictureView.displayName = displayName
-            profilePictureView.isLarge = true
-            profilePictureView.update()
+            setupProfilePictureView(profilePictureView.root)
             //New Line
-            profilePictureView.setOnClickListener { showEditProfilePictureUI() }
+            profilePictureView.root.setOnClickListener { showEditProfilePictureUI() }
 
             profilePictureViewButton.setOnClickListener { showEditProfilePictureUI() }
             ctnGroupNameSection.setOnClickListener {
@@ -163,6 +170,18 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
 
             beldexAddressCardView.setOnClickListener { copyBeldexAddress() }
             beldexAddressShareButton.setOnClickListener { shareBeldexAddress() }
+
+            loader.setOnClickListener {  }
+        }
+    }
+
+    private fun setupProfilePictureView(view: ProfilePictureView) {
+        view.glide = glide
+        view.apply {
+            publicKey = hexEncodedPublicKey
+            displayName = getDisplayName()
+            isLarge = true
+            update()
         }
     }
 
@@ -269,13 +288,13 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
                 }
                 AsyncTask.execute {
                     try {
-                        profilePictureToBeUploaded = BitmapUtil.createScaledBytes(
+                        val profilePictureToBeUploaded = BitmapUtil.createScaledBytes(
                             this@SettingsActivity,
                             AvatarSelection.getResultUri(data),
                             ProfileMediaConstraints()
                         ).bitmap
                         Handler(Looper.getMainLooper()).post {
-                            updateProfile(true)
+                            updateProfile(true,profilePictureToBeUploaded)
                         }
                     } catch (e: BitmapDecodingException) {
                         e.printStackTrace()
@@ -317,27 +336,31 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
         }
     }
 
-    private fun updateProfile(isUpdatingProfilePicture: Boolean) {
+    private fun updateProfile(isUpdatingProfilePicture: Boolean, profilePicture: ByteArray? = null,
+                              displayName: String? = null) {
         binding.loader.isVisible = true
         val promises = mutableListOf<Promise<*, Exception>>()
-        val displayName = displayNameToBeUploaded
         if (displayName != null) {
             TextSecurePreferences.setProfileName(this, displayName)
         }
-        val profilePicture = profilePictureToBeUploaded
         val encodedProfileKey = ProfileKeyUtil.generateEncodedProfileKey(this)
-        if (isUpdatingProfilePicture && profilePicture != null) {
-            promises.add(ProfilePictureUtilities.upload(profilePicture, encodedProfileKey, this))
+        if (isUpdatingProfilePicture) {
+            if (profilePicture != null) {
+                promises.add(ProfilePictureUtilities.upload(profilePicture, encodedProfileKey, this))
+            } else {
+                TextSecurePreferences.setLastProfilePictureUpload(this, System.currentTimeMillis())
+                TextSecurePreferences.setProfilePictureURL(this, null)
+            }
         }
         val compoundPromise = all(promises)
         compoundPromise.successUi { // Do this on the UI thread so that it happens before the alwaysUi clause below
-            if (isUpdatingProfilePicture && profilePicture != null) {
+            if (isUpdatingProfilePicture) {
                 AvatarHelper.setAvatar(
                     this,
                     Address.fromSerialized(TextSecurePreferences.getLocalNumber(this)!!),
                     profilePicture
                 )
-                TextSecurePreferences.setProfileAvatarId(this, SecureRandom().nextInt())
+                TextSecurePreferences.setProfileAvatarId(this,profilePicture?.let { SecureRandom().nextInt() } ?: 0)
                 TextSecurePreferences.setLastProfilePictureUpload(this, Date().time)
                 ProfileKeyUtil.setEncodedProfileKey(this, encodedProfileKey)
             }
@@ -349,12 +372,10 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             if (displayName != null) {
                 binding.btnGroupNameDisplay.text = displayName
             }
-            if (isUpdatingProfilePicture && profilePicture != null) {
-                binding.profilePictureView.recycle() // Clear the cached image before updating
-                binding.profilePictureView.update()
+            if (isUpdatingProfilePicture) {
+                binding.profilePictureView.root.recycle() // Clear the cached image before updating
+                binding.profilePictureView.root.update()
             }
-            displayNameToBeUploaded = null
-            profilePictureToBeUploaded = null
             binding.loader.isVisible = false
         }
     }
@@ -389,8 +410,15 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             ).show()
             return false
         }
-        displayNameToBeUploaded = displayName
-        updateProfile(false)
+        if (!displayName.matches(namePattern.toRegex())) {
+            Toast.makeText(
+                    this,
+                    R.string.display_name_validation,
+                    Toast.LENGTH_SHORT
+            ).show()
+            return false
+        }
+        updateProfile(false, displayName = displayName)
         return true
     }
 
@@ -416,13 +444,37 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
     }
 
     private fun showEditProfilePictureUI() {
+        showCustomDialog {
+            title(getString(R.string.activity_settings_profile_picture))
+            icon(R.drawable.ic_close)
+            view(R.layout.dialog_change_avatar)
+            removeButton(R.string.activity_settings_remove) { removeAvatar() }
+            button(R.string.activity_settings_upload) { startAvatarSelection() }
+        }.apply {
+            findViewById<ProfilePictureView>(R.id.profile_picture_view)?.let(::setupProfilePictureView)
+        }
+    }
+
+    private fun removeAvatar() {
+        updateProfile(true)
+    }
+
+    private fun startAvatarSelection() {
         // Ask for an optional camera permission.
-        Permissions.with(this)
-            .request(Manifest.permission.CAMERA)
-            .onAnyResult {
-                tempFile = AvatarSelection.startAvatarSelection(this, false, true)
-            }
-            .execute()
+        if (CheckOnline.isOnline(this)) {
+            Permissions.with(this)
+                    .request(Manifest.permission.CAMERA)
+                    .onAnyResult {
+                        tempFile = AvatarSelection.startAvatarSelection(this, false, true)
+                    }
+                    .execute()
+        } else {
+            Toast.makeText(
+                    this,
+                    getString(R.string.please_check_your_internet_connection),
+                    Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private fun copyPublicKey() {

@@ -6,54 +6,93 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.cash.copper.flow.observeQuery
+import com.thoughtcrimes.securesms.data.NetworkNodes
+import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.database.DatabaseContentProviders
 import com.thoughtcrimes.securesms.database.ThreadDatabase
 import com.thoughtcrimes.securesms.database.model.ThreadRecord
+import com.thoughtcrimes.securesms.util.Helper
+import com.thoughtcrimes.securesms.util.SharedPreferenceUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
-import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val threadDb: ThreadDatabase): ViewModel() {
+class HomeViewModel @Inject constructor(
+    private val threadDb: ThreadDatabase,
+    private val sharedPreferenceUtil: SharedPreferenceUtil
+): ViewModel() {
 
-    private val executor = viewModelScope + SupervisorJob()
+    private val _favouritesNodes = MutableStateFlow<HashSet<NodeInfo>?>(null)
+    val favouritesNodes: StateFlow<HashSet<NodeInfo>?> = _favouritesNodes
 
-    private val _conversations = MutableLiveData<List<ThreadRecord>>()
-    val conversations: LiveData<List<ThreadRecord>> = _conversations
-
-    private val listUpdateChannel = Channel<Unit>(capacity = Channel.CONFLATED)
-
-    fun tryUpdateChannel() = listUpdateChannel.trySend(Unit)
-
-    fun getObservable(context: Context): LiveData<List<ThreadRecord>> {
-        executor.launch(Dispatchers.IO) {
-            context.contentResolver
-                .observeQuery(DatabaseContentProviders.ConversationList.CONTENT_URI)
-                .onEach { listUpdateChannel.trySend(Unit) }
-                .collect()
+    fun loadFavouritesWithNetwork() {
+        Helper.runWithNetwork {
+            loadFavoriteNodes()
+            true
         }
-        executor.launch(Dispatchers.IO) {
-            for (update in listUpdateChannel) {
-                threadDb.approvedConversationList.use { openCursor ->
-                    val reader = threadDb.readerFor(openCursor)
-                    val threads = mutableListOf<ThreadRecord>()
-                    while (true) {
-                        threads += reader.next ?: break
-                    }
-                    withContext(Dispatchers.Main) {
-                        _conversations.value = threads
-                    }
+    }
+
+    private fun loadFavoriteNodes() {
+        val selectedNodeId = sharedPreferenceUtil.getSelectedNodeId()
+        val storedNodes = sharedPreferenceUtil.getStoredNodes().all
+        val nodes = mutableSetOf<NodeInfo>()
+        for (nodeEntry in storedNodes.entries) {
+            val nodeId = nodeEntry.value as String
+            val nodeInfo = NodeInfo.fromString(nodeId)
+            nodeInfo?.let {
+                nodeInfo.isFavourite = true
+                if (nodeId == selectedNodeId) {
+                    nodeInfo.isSelected = true
+                }
+                nodes.add(nodeInfo)
+            } ?: Timber.w("nodeString invalid: %s", nodeId)
+        }
+        _favouritesNodes.value = nodes.toHashSet()
+    }
+
+    fun loadLegacyList(legacyListString: String?) {
+        if (legacyListString == null) return
+        val nodeStrings = legacyListString.split(";".toRegex()).toTypedArray()
+        val nodes = mutableSetOf<NodeInfo>()
+        for (nodeString in nodeStrings) {
+            val nodeInfo = NodeInfo.fromString(nodeString)
+            nodeInfo?.let {
+                nodeInfo.isFavourite = true
+                nodes.add(nodeInfo)
+            } ?: Timber.w("nodeString invalid: %s", nodeString)
+        }
+        _favouritesNodes.value = nodes.toHashSet()
+    }
+
+    fun getOrPopulateFavourites(): MutableSet<NodeInfo> {
+        val newSet = favouritesNodes.value ?: hashSetOf()
+        if (newSet.isEmpty()) {
+            for (node in NetworkNodes.getNodes()) {
+                val nodeInfo = NodeInfo.fromString(node)
+                if (nodeInfo != null) {
+                    nodeInfo.isFavourite = true
+                    newSet.add(nodeInfo)
                 }
             }
+            sharedPreferenceUtil.saveFavourites(newSet)
+            _favouritesNodes.value = newSet
         }
-        return conversations
+        return newSet
+    }
+
+    fun setFavouriteNodes(nodes: MutableCollection<NodeInfo>?) {
+        val newNodes = hashSetOf<NodeInfo>()
+        nodes?.forEach { node ->
+            if (node.isFavourite) newNodes.add(node)
+        }
+        sharedPreferenceUtil.saveFavourites(newNodes)
     }
 
 }

@@ -11,8 +11,8 @@ import com.beldex.libbchat.utilities.AESGCM
 import com.beldex.libsignal.utilities.*
 import com.beldex.libsignal.utilities.Mnode
 import com.beldex.libbchat.utilities.AESGCM.EncryptionResult
-import com.beldex.libbchat.utilities.getBodyForOnionRequest
-import com.beldex.libbchat.utilities.getHeadersForOnionRequest
+import com.beldex.libbchat.mnode.utilities.getBodyForOnionRequest
+import com.beldex.libbchat.mnode.utilities.getHeadersForOnionRequest
 import com.beldex.libsignal.crypto.getRandomElement
 import com.beldex.libsignal.crypto.getRandomElementOrNull
 import com.beldex.libsignal.utilities.Broadcaster
@@ -95,7 +95,8 @@ object OnionRequestAPI {
         ThreadUtils.queue { // No need to block the shared context for this
             val url = "${mnode.address}:${mnode.port}/get_stats/v1"
             try {
-                val json = HTTP.execute(HTTP.Verb.GET, url, 3)
+                val response = HTTP.execute(HTTP.Verb.GET, url, 3).decodeToString()
+                val json = JsonUtil.fromJson(response, Map::class.java)
                 val version = json["version"] as? String
                 if (version == null) { deferred.reject(Exception("Missing mnode version.")); return@queue }
                 if (version >= "2.0.7") {
@@ -136,13 +137,7 @@ object OnionRequestAPI {
                     testMnode(candidate).success {
                         deferred.resolve(candidate)
                     }.fail {
-                        getGuardMnode().success {
-                            deferred.resolve(candidate)
-                        }.fail { exception ->
-                            if (exception is InsufficientMnodesException) {
-                                deferred.reject(exception)
-                            }
-                        }
+                        deferred.reject(it)
                     }
                     return deferred.promise
                 }
@@ -327,14 +322,15 @@ object OnionRequestAPI {
      */
     private fun sendOnionRequest(destination: Destination, payload: Map<*, *>): Promise<Map<*, *>, Exception> {
         val deferred = deferred<Map<*, *>, Exception>()
-        lateinit var guardMnode: Mnode
+        var guardMnode: Mnode? = null
         Log.d("Beldex --> payload onion req uest ","$payload")
         Log.d("Beldex --> destination onion request ","$destination")
         buildOnionForDestination(payload, destination).success { result ->
             guardMnode = result.guardMnode
             Log.d("Beldex","guard node-- $guardMnode")
             //Original
-            val url = "${guardMnode.address}:${guardMnode.port}/onion_req/v2"
+            val nonNullGuardSnode = result.guardMnode
+            val url = "${nonNullGuardSnode.address}:${nonNullGuardSnode.port}/onion_req/v2"
 
             //10-05-2022 - 5.21 PM
             //val url = "https://13.233.54.176:19090/onion_req/v2"
@@ -361,7 +357,12 @@ object OnionRequestAPI {
             ThreadUtils.queue {
                 try {
                     Log.d("Beldex","am try in Onion req")
-                    val json = HTTP.execute(HTTP.Verb.POST, url, body)
+                    val response = HTTP.execute(HTTP.Verb.POST, url, body)
+                    val json = try {
+                        JsonUtil.fromJson(response, Map::class.java)
+                    } catch (exception: Exception) {
+                        mapOf( "result" to response.decodeToString())
+                    }
                     //-Log.d("Beldex","json Onion request $json")
                     val base64EncodedIVAndCiphertext = json["result"] as? String ?: return@queue deferred.reject(Exception("Invalid JSON"))
                     val ivAndCiphertext = Base64.decode(base64EncodedIVAndCiphertext)
@@ -377,12 +378,12 @@ object OnionRequestAPI {
                                 val exception = HTTPRequestFailedAtDestinationException(statusCode, body, destination.description)
                                 return@queue deferred.reject(exception)
                             } else if (json["body"] != null) {
-                                @Suppress("NAME_SHADOWING") val body: Map<*, *>
-                                if (json["body"] is Map<*, *>) {
-                                    body = json["body"] as Map<*, *>
+                                @Suppress("NAME_SHADOWING")
+                                val body: Map<*, *> = if (json["body"] is Map<*, *>) {
+                                    json["body"] as Map<*, *>
                                 } else {
                                     val bodyAsString = json["body"] as String
-                                    body = JsonUtil.fromJson(bodyAsString, Map::class.java)
+                                    JsonUtil.fromJson(bodyAsString, Map::class.java)
                                 }
                                 if (body["t"] != null) {
                                     val timestamp = body["t"] as Long
@@ -424,7 +425,7 @@ object OnionRequestAPI {
                     var pathFailureCount = OnionRequestAPI.pathFailureCount[path] ?: 0
                     pathFailureCount += 1
                     if (pathFailureCount >= pathFailureThreshold) {
-                        dropGuardMnode(guardMnode)
+                        guardMnode?.let { dropGuardMnode(it) }
                         path.forEach { mnode ->
                             @Suppress("ThrowableNotThrown")
                             MnodeAPI.handleMnodeError(exception.statusCode, exception.json, mnode, null) // Intentionally don't throw

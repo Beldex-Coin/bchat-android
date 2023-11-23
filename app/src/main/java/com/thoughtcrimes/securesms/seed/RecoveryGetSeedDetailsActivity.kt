@@ -7,21 +7,19 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.util.ArrayMap
 import android.util.Log
-import android.view.KeyEvent
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.DatePicker
 import android.widget.TextView
 import android.widget.Toast
-import com.goterl.lazysodium.utils.KeyPair
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityRecoveryGetSeedDetailsBinding
+import androidx.core.view.isVisible
 import com.beldex.libbchat.utilities.SSKEnvironment
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.crypto.ecc.ECKeyPair
+import com.goterl.lazysodium.utils.KeyPair
 import com.thoughtcrimes.securesms.BaseActionBarActivity
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
-import com.thoughtcrimes.securesms.data.DefaultNodes
+import com.thoughtcrimes.securesms.data.NetworkNodes
 import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
 import com.thoughtcrimes.securesms.model.NetworkType
@@ -29,16 +27,27 @@ import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.model.WalletManager
 import com.thoughtcrimes.securesms.onboarding.AppLockActivity
 import com.thoughtcrimes.securesms.onboarding.CreatePasswordActivity
-import com.thoughtcrimes.securesms.util.*
+import com.thoughtcrimes.securesms.util.BChatThreadPoolExecutor
+import com.thoughtcrimes.securesms.util.Helper
+import com.thoughtcrimes.securesms.util.NodePinger
+import com.thoughtcrimes.securesms.util.RestoreHeight
+import com.thoughtcrimes.securesms.util.push
+import com.thoughtcrimes.securesms.util.setUpActionBarBchatLogo
+import com.thoughtcrimes.securesms.wallet.CheckOnline
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ActivityRecoveryGetSeedDetailsBinding
 import timber.log.Timber
 import java.io.File
 import java.math.BigInteger
 import java.text.SimpleDateFormat
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.util.*
+import java.util.Calendar
+import java.util.Collections
+import java.util.Date
+import java.util.Locale
+import java.util.UUID
 import java.util.concurrent.Executor
-import kotlin.collections.ArrayList
+import java.util.regex.Pattern
 
 class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
     private lateinit var binding:ActivityRecoveryGetSeedDetailsBinding
@@ -65,6 +74,9 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
     private var restoreFromDateHeight = 0
     private val dateFormat = SimpleDateFormat("yyyy-MM", Locale.US)
     private var dates = ArrayMap<String,Int>()
+    private val namePattern = Pattern.compile("[A-Za-z0-9]+")
+    private val myFormat = "yyyy-MM-dd" // mention the format you need
+    val sdf = SimpleDateFormat(myFormat, Locale.US)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -132,15 +144,13 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
 
         getSeed = intent.extras?.getString("seed")
         // create an OnDateSetListener
-        val dateSetListener = object : DatePickerDialog.OnDateSetListener {
-            override fun onDateSet(view: DatePicker, year: Int, monthOfYear: Int,
-                                   dayOfMonth: Int) {
+        val dateSetListener =
+            DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
                 cal.set(Calendar.YEAR, year)
                 cal.set(Calendar.MONTH, monthOfYear)
                 cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
                 updateDateInView()
             }
-        }
 
         with(binding){
             /*restoreSeedWalletRestoreDate.setOnClickListener {
@@ -213,46 +223,30 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
             restoreSeedRestoreButton.setOnClickListener { register() }
         }
 
+        binding.restoreFromDateButton.setOnClickListener {
+            binding.restoreSeedWalletRestoreDateCard.visibility = View.VISIBLE
+            binding.restoreSeedWalletRestoreHeightCard.visibility = View.GONE
+            binding.restoreFromHeightButton.visibility = View.VISIBLE
+            binding.restoreFromDateButton.visibility = View.GONE
+        }
+        binding.restoreFromHeightButton.setOnClickListener {
+            binding.restoreSeedWalletRestoreDateCard.visibility = View.GONE
+            binding.restoreSeedWalletRestoreHeightCard.visibility = View.VISIBLE
+            binding.restoreFromHeightButton.visibility = View.GONE
+            binding.restoreFromDateButton.visibility = View.VISIBLE
+        }
+
+
         //New Line load favourites with network function
-        loadFavouritesWithNetwork()
+        if (CheckOnline.isOnline(this)) {
+            loadFavouritesWithNetwork()
+        }
     }
     private fun updateDateInView() {
-        val myFormat = "yyyy-MM-dd" // mention the format you need
-        val sdf = SimpleDateFormat(myFormat, Locale.US)
         binding.restoreSeedWalletRestoreDate.text = sdf.format(cal.time)
-
         if (cal.time != null) {
-           restoreFromDateHeight = getHeightByDate(cal.time,sdf)
+            restoreFromDateHeight = RestoreHeight.getInstance().getHeight(sdf.format(cal.time)).toInt()
         }
-    }
-
-    private fun getHeightByDate(date: Date, sdf: SimpleDateFormat): Int {
-        val sdfDate = sdf.parse(sdf.format(date))
-
-        val monthFormat = "MM"
-        val monthSdfFormat = SimpleDateFormat(monthFormat, Locale.US)
-        val monthVal = monthSdfFormat.format(date).toInt()
-        val month = if (monthVal < 10) "0${monthVal}" else "$monthVal"
-
-        val yearFormat = "yyyy"
-        val yearSdfFormat = SimpleDateFormat(yearFormat, Locale.US)
-        val yearVal = yearSdfFormat.format(date).toInt()
-
-        val raw = "${yearVal}-$month"
-        val firstDate = dateFormat.parse(dates.keys.first())
-
-        Log.d("Beldex","Restore Height -->$raw")
-
-        var height = dates[raw]?:0
-
-        if (height != null) {
-            if (height <= 0 && sdfDate.after(firstDate)) {
-                height = dates.values.last()
-            }
-        }
-        Log.d("Beldex","Restore Height --> $height")
-
-        return height
     }
 
     private fun register() {
@@ -266,25 +260,43 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
             return Toast.makeText(this, R.string.activity_display_name_display_name_too_long_error, Toast.LENGTH_SHORT).show()
         }
 
+        if (!displayName.matches(namePattern.toRegex())) {
+            return Toast.makeText(
+                    this,
+                    R.string.display_name_validation,
+                    Toast.LENGTH_SHORT
+            ).show()
+        }
+
         val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(binding.restoreSeedWalletName.windowToken, 0)
         TextSecurePreferences.setProfileName(this, displayName)
         val uuid = UUID.randomUUID()
         val password = uuid.toString()
         //SteveJosephh21
-        if (restoreHeight.isNotEmpty()){
+        if (restoreHeight.isNotEmpty() && binding.restoreSeedWalletRestoreHeightCard.isVisible) {
             val restoreHeightBig = BigInteger(restoreHeight)
-            if(restoreHeightBig.toLong()>=0) {
-                binding.restoreSeedWalletRestoreDate.text = ""
-                _recoveryWallet(displayName, password, getSeed, restoreHeight.toLong())
-            }else{
-                Toast.makeText(this,getString(R.string.restore_height_error_message),Toast.LENGTH_SHORT).show()
+            if (restoreHeightBig.toLong() >= 0) {
+                val currentDate = sdf.format(Date())
+                val currentHeight = RestoreHeight.getInstance().getHeight(currentDate)
+                if (restoreHeightBig.toLong() <= currentHeight) {
+                    binding.restoreSeedWalletRestoreDate.text = ""
+                    binding.restoreSeedRestoreButton.isEnabled = false
+                    _recoveryWallet(displayName, password, getSeed, restoreHeight.toLong())
+                } else {
+                    Toast.makeText(this, getString(R.string.restore_height_excess_error_message), Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(this, getString(R.string.restore_height_error_message), Toast.LENGTH_SHORT).show()
             }
-        }else if(restoreFromDate.isNotEmpty()){
+        } else if (restoreFromDate.isNotEmpty() && binding.restoreSeedWalletRestoreDateCard.isVisible) {
             binding.restoreSeedWalletRestoreHeight.setText("")
+            binding.restoreSeedRestoreButton.isEnabled = false
             _recoveryWallet(displayName, password, getSeed, restoreFromDateHeight.toLong())
-        }else{
-            Toast.makeText(this,getString(R.string.activity_restore_from_height_missing_error),Toast.LENGTH_SHORT).show()
+        } else if (restoreHeight.isEmpty() && binding.restoreSeedWalletRestoreDateCard.isVisible) {
+            Toast.makeText(this, getString(R.string.activity_restore_from_date_missing_error), Toast.LENGTH_SHORT).show()
+        } else if (restoreFromDate.isEmpty() && binding.restoreSeedWalletRestoreHeightCard.isVisible) {
+            Toast.makeText(this, getString(R.string.activity_restore_from_height_missing_error), Toast.LENGTH_SHORT).show()
         }
     }
     // region Updating
@@ -334,10 +346,10 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
 
     fun getOrPopulateFavourites(): Set<NodeInfo?> {
         if (favouriteNodes.isEmpty()) {
-            for (node in DefaultNodes.values()) {
-                val nodeInfo = NodeInfo.fromString(node.name)
+            for (node in NetworkNodes.getNodes()) {
+                val nodeInfo = NodeInfo.fromString(node)
                 if (nodeInfo != null) {
-                    nodeInfo.setFavourite(true)
+                    nodeInfo.isFavourite = true
                     favouriteNodes.add(nodeInfo)
                 }
             }

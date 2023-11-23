@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -305,7 +306,11 @@ public class Permissions {
 
     @Override
     public void requestPermissions(int requestCode, String... permissions) {
-      Permissions.requestPermissions(activity, requestCode, permissions);
+      try {
+        Permissions.requestPermissions(activity, requestCode, permissions);
+      }catch (IllegalArgumentException ex){
+        Log.d("Exception ",ex.getMessage().toString());
+      }
     }
   }
 

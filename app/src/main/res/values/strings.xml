@@ -1416,4 +1416,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="yes_i_understand" translatable="false">Yes, I Understand</string>
     <string name="enable_wallet" translatable="false">Enable Wallet</string>
     <string name="validation_for_empty_node_host" translatable="false">Please enter a node address</string>
+    <string name="back">Back</string>
 </resources>

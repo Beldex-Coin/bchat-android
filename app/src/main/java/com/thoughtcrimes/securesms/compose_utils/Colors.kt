@@ -1,5 +1,92 @@
 package com.thoughtcrimes.securesms.compose_utils
 
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
-val TextColor = Color(0xFFFFFFFF)
+val TextColor = Color(0xFFEBEBEB)
+val TextColorLight = Color(0xFF333333)
+val BackgroundColor = Color(0xFF11111A)
+val Primary = Color(0xFF1C1C26)
+val PrimaryLight = Color(0xFFF0F0F0)
+val OnPrimary = Color(0xFFFFFFFF)
+val Background = Color(0xFF1C1C26)
+val BackgroundLight = Color(0xFFF0F0F0)
+val OnBackgroundLight = Color(0xFF333333)
+val Outline = Color(0xFF4B4B64)
+val OutlineLight = Color(0xFFA7A7BA)
+val SurfaceLight = Color(0xFFF8F8F8)
+
+class Colors(
+    val primaryButtonColor: Color,
+    val secondaryButtonColor: Color,
+    val backgroundColor: Color,
+    val secondaryContentColor: Color,
+    val editTextPlaceholder: Color,
+    val focusedEditTextColor: Color,
+    val textFieldFocusedColor: Color,
+    val textFieldUnfocusedColor: Color,
+    val textFieldCursorColor: Color,
+    val textFieldTextColor: Color,
+    val tertiaryButtonColor: Color,
+    val disabledPrimaryButtonContentColor: Color,
+    val onMainContainerTextColor: Color,
+    val secondaryTextColor: Color,
+    val editTextBackground: Color,
+    val editTextColor: Color,
+    val editTextHint: Color,
+    val titleTextColor: Color
+)
+
+val lightColors = Colors(
+    primaryButtonColor = Color(0xFF00BD40),
+    secondaryButtonColor = Color(0xFFEFEFEF),
+    backgroundColor = Color(0xFFEBEBEB),
+    secondaryContentColor = Color(0xFF333333),
+    editTextPlaceholder = Color(0xFFA7A7BA),
+    focusedEditTextColor = Color(0xFF333333),
+    textFieldFocusedColor = Color(0xFF00BD40),
+    textFieldUnfocusedColor = Color(0xFFA7A7BA),
+    textFieldCursorColor = Color(0x66222222),
+    textFieldTextColor = Color(0xFF333333),
+    tertiaryButtonColor = Color(0xFF0085FF),
+    disabledPrimaryButtonContentColor = Color(0xFFF8F8F8),
+    onMainContainerTextColor = Color(0xFF333333),
+    secondaryTextColor = Color(0xFF8A8A9D),
+    editTextBackground = Color(0xFFF8F8F8),
+    editTextColor = Color(0xFF333333),
+    editTextHint = Color(0xFFA7A7BA),
+    titleTextColor = Color(0xFF333333)
+)
+
+val darkColors = Colors(
+    primaryButtonColor = Color(0xFF00BD40),
+    secondaryButtonColor = Color(0xFF282836),
+    backgroundColor = Color(0xFF11111A),
+    secondaryContentColor = Color(0xFFFFFFFF),
+    editTextPlaceholder = Color(0xFFA7A7BA),
+    focusedEditTextColor = Color(0x80FFFFFF),
+    textFieldFocusedColor = Color(0xFF00BD40),
+    textFieldUnfocusedColor = Color(0xFF4B4B64),
+    textFieldCursorColor = Color(0x66FFFFFF),
+    textFieldTextColor = Color(0x80FFFFFF),
+    tertiaryButtonColor = Color(0xFF0085FF),
+    disabledPrimaryButtonContentColor = Color(0xFF6C6C78),
+    onMainContainerTextColor = Color(0xFFFFFFFF),
+    secondaryTextColor = Color(0xFFA7A7BA),
+    editTextBackground = Color(0xFF1C1C26),
+    editTextColor = Color(0xFFEBEBEB),
+    editTextHint = Color(0xFFA7A7BA),
+    titleTextColor = Color(0xFFEBEBEB)
+)
+
+
+
+val LocalAppColors = staticCompositionLocalOf {
+    darkColors
+}
+
+val MaterialTheme.appColors: Colors
+    @Composable
+    get() = LocalAppColors.current

@@ -224,12 +224,14 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         }
 
         binding.restoreFromDateButton.setOnClickListener {
+            binding.restoreFromSeedBlockHeightTitle.text = getString(R.string.restore_from_date_title)
             binding.restoreSeedWalletRestoreDateCard.visibility = View.VISIBLE
             binding.restoreSeedWalletRestoreHeightCard.visibility = View.GONE
             binding.restoreFromHeightButton.visibility = View.VISIBLE
             binding.restoreFromDateButton.visibility = View.GONE
         }
         binding.restoreFromHeightButton.setOnClickListener {
+            binding.restoreFromSeedBlockHeightTitle.text = getString(R.string.restore_from_height_title)
             binding.restoreSeedWalletRestoreDateCard.visibility = View.GONE
             binding.restoreSeedWalletRestoreHeightCard.visibility = View.VISIBLE
             binding.restoreFromHeightButton.visibility = View.GONE

@@ -3,18 +3,11 @@ package com.thoughtcrimes.securesms.onboarding
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
-import android.text.Spannable
-import android.text.SpannableStringBuilder
 import android.text.TextWatcher
-import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
-import android.text.style.StyleSpan
-import android.view.View
 import android.widget.Toast
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.crypto.MnemonicCodec
@@ -57,23 +50,6 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
                 Toast.makeText(this,"Please enter valid seed",Toast.LENGTH_SHORT).show()
             }
         }
-        val termsExplanation = SpannableStringBuilder("By using this service, you agree to our Terms of Service and Privacy Policy")
-        termsExplanation.setSpan(StyleSpan(Typeface.BOLD), 40, 56, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        termsExplanation.setSpan(object : ClickableSpan() {
-
-            override fun onClick(widget: View) {
-                openURL("https://www.beldex.io/")
-            }
-        }, 40, 56, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        termsExplanation.setSpan(StyleSpan(Typeface.BOLD), 61, 75, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        termsExplanation.setSpan(object : ClickableSpan() {
-
-            override fun onClick(widget: View) {
-                openURL("https://www.beldex.io/")
-            }
-        }, 61, 75, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        binding.termsTextView.movementMethod = LinkMovementMethod.getInstance()
-        binding.termsTextView.text = termsExplanation
 
         binding.mnemonicEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -100,11 +76,6 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
             binding.mnemonicEditText.text.clear()
             binding.recoveryPhraseCountWord.text = "0/25"
         }
-
-       /* binding.recoveryPhrasePasteIcon?.setOnClickListener {
-            val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-            binding.mnemonicEditText.setText(clipboard.text.toString())
-        }*/
 
         binding.recoveryPhrasePasteIcon.setOnClickListener {
             val clipboard = this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager

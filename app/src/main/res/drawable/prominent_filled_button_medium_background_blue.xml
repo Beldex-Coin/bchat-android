@@ -5,7 +5,7 @@
 
     <solid  android:color="@color/beldex_address" />
 
-    <corners android:radius="@dimen/medium_button_corner_radius" />
+    <corners android:radius="40dp" />
 
     <stroke android:width="@dimen/border_thickness" android:color="@color/beldex_address" />
 </shape>

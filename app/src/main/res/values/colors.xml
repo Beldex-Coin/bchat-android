@@ -94,11 +94,11 @@
 
     <color name="default_background_start">#121212</color>
     <color name="default_background_end">#171717</color>
-    <color name="button_green">#128D15</color>
+    <color name="button_green">#00BD40</color>
     <color name="text_white">#FFFFFF</color>
     <color name="sign_in_black">#3F3E4A</color>
-    <color name="card_color">#343441</color>
-    <color name="page_background">#24242F</color>
+    <color name="card_color">#1C1C26</color>
+    <color name="page_background">#11111A</color>
     <color name="welcome_bg">#EDEDED</color>
     <color name="play_button">#000000</color>
     <color name="drawer_card_color">#16161f</color>
@@ -210,4 +210,5 @@
     <color name="in_chat_payment_dialog_background">#272733</color>
     <color name="in_chat_amount_divider">#4E4E67</color>
     <color name="scan_qr_content_background">#22222266</color>
+    <color name="edit_text_title">#EBEBEB</color>
 </resources>

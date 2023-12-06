@@ -279,12 +279,6 @@
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="com.thoughtcrimes.securesms.onboarding.LinkDeviceActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
             android:name="com.thoughtcrimes.securesms.onboarding.DisplayNameActivity"
             android:exported="false"
             android:screenOrientation="portrait"
@@ -326,7 +320,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
             </intent-filter>
 
@@ -521,7 +515,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
             </intent-filter>
 

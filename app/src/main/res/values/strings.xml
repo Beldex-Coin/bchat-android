@@ -997,7 +997,7 @@
     <string name="seed_permission_important_description" translatable="false">Your seed can be used to restore your account. Never share it with anyone or store a digital copy of it. Never enter your seed in any other website or application other than BChat or the Beldex official wallet.</string>
     <string name="seed_permission_important_confirmTitle" translatable="false">Check your surroundings to ensure no one is overlooking. Do you want to proceed?</string>
     <string name="seed_permission_important_confirmButton" translatable="false">Yes, I\'m Safe.</string>
-    <string name="mnemonic_edit_text_hint" translatable="false">Enter your recovery seed to restore your account.</string>
+    <string name="mnemonic_edit_text_hint" translatable="false">Enter your Seed</string>
     <string name="password_screen_description_content" translatable="false">Enter your four digit pin to unlock your account</string>
     <string name="check_password_description_content_seed" translatable="false">Enter your password to view your seed. Write it down on paper.</string>
     <string name="check_password_description_content_keys" translatable="false">Enter your password to view your restore key. Write it down on paper.</string>
@@ -1076,8 +1076,8 @@
     <string name="activity_rescan_page_title" translatable="false">Rescan</string>
     <string name="enter_amount" translatable="false">Enter amount</string>
     <string name="current_blockheight" translatable="false">Current Blockheight : </string>
-    <string name="restore_from_height" translatable="false">Restore from height</string>
-    <string name="restore_from_date" translatable="false"> Restore from date</string>
+    <string name="restore_from_height" translatable="false">Restore from Height</string>
+    <string name="restore_from_date" translatable="false"> Restore from Date</string>
     <string name="activity_new_node_page_title" translatable="false">New Node</string>
     <string name="node_address" translatable="false">Node address</string>
     <string name="node_port" translatable="false">Node port</string>
@@ -1417,4 +1417,10 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="enable_wallet" translatable="false">Enable Wallet</string>
     <string name="validation_for_empty_node_host" translatable="false">Please enter a node address</string>
     <string name="back">Back</string>
+    <string name="restore_from_block_height_hint" translatable="false">Enter Block height to Restore</string>
+    <string name="restore_from_date_hint" translatable="false">Enter Date</string>
+    <string name="restore_from_height_title" translatable="false">Pick a restore height</string>
+    <string name="restore_from_date_title" translatable="false">Pick a Date</string>
+    <string name="display_name" translatable="false">Display Name</string>
+    <string name="enter_name" translatable="false">Enter name</string>
 </resources>

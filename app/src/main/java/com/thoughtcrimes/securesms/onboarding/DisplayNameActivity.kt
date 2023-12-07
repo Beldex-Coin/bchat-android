@@ -2,12 +2,15 @@ package com.thoughtcrimes.securesms.onboarding
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityDisplayNameBinding
 import com.beldex.libbchat.utilities.SSKEnvironment.ProfileManagerProtocol
@@ -66,7 +69,89 @@ class DisplayNameActivity : BaseActionBarActivity() {
                     }
                     false
                 })
-            registerButton.setOnClickListener { register() }
+
+            registerButton.setTextColor(
+                ContextCompat.getColor(
+                    this@DisplayNameActivity,
+                    R.color.disable_button_text_color
+                )
+            )
+            if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                registerButton.setBackgroundDrawable(
+                    ContextCompat.getDrawable(
+                        this@DisplayNameActivity,
+                        R.drawable.disabled_button_background
+                    )
+                );
+            } else {
+                registerButton.background =
+                    ContextCompat.getDrawable(
+                        this@DisplayNameActivity,
+                        R.drawable.disabled_button_background
+                    );
+            }
+            registerButton.isEnabled = displayNameEditText.text.isNotEmpty()
+            displayNameEditText.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable) {}
+                override fun beforeTextChanged(
+                    s: CharSequence, start: Int,
+                    count: Int, after: Int
+                ) {
+                }
+
+                override fun onTextChanged(
+                    s: CharSequence, start: Int,
+                    before: Int, count: Int
+                ) {
+                    if (s.isEmpty() && s.isBlank()) {
+                        registerButton.isEnabled = false
+                        registerButton.setTextColor(
+                            ContextCompat.getColor(
+                                this@DisplayNameActivity,
+                                R.color.disable_button_text_color
+                            )
+                        )
+                        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                            registerButton.setBackgroundDrawable(
+                                ContextCompat.getDrawable(
+                                    this@DisplayNameActivity,
+                                    R.drawable.disabled_button_background
+                                )
+                            );
+                        } else {
+                            registerButton.background =
+                                ContextCompat.getDrawable(
+                                    this@DisplayNameActivity,
+                                    R.drawable.disabled_button_background
+                                );
+                        }
+                    } else {
+                        registerButton.isEnabled = true
+                        registerButton.setTextColor(
+                            ContextCompat.getColor(
+                                this@DisplayNameActivity, R.color.white
+                            )
+                        )
+                        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                            registerButton.setBackgroundDrawable(
+                                ContextCompat.getDrawable(
+                                    this@DisplayNameActivity,
+                                    R.drawable.prominent_filled_button_medium_background
+                                )
+                            );
+                        } else {
+                            registerButton.background =
+                                ContextCompat.getDrawable(
+                                    this@DisplayNameActivity,
+                                    R.drawable.prominent_filled_button_medium_background
+                                );
+                        }
+                    }
+                }
+            })
+            registerButton.setOnClickListener {
+                register()
+            }
         }
         //New Line load favourites with network function
         if (CheckOnline.isOnline(this)) {

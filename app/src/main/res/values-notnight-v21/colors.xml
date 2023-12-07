@@ -71,7 +71,7 @@
     <color name="copy_and_share">#F5F5F5</color>
     <color name="alert_ok">#138B20</color>
     <color name="default_group_bg">#F5F5F5</color>
-    <color name="text_hint">#272727</color>
+    <color name="text_hint">#333333</color>
 
     <color name="keyboard_background">#D1D5DB</color>
     <color name="button_background">#F2F2F2</color>
@@ -84,8 +84,8 @@
     <color name="end_color">#ededed</color>
     <color name="stroke_color">#afafaf</color>
     <color name="chat_user_name_color">#159B24</color>
-    <color name="disable_button_text_color">#686774</color>
-    <color name="disable_button_background_color">#D8D8D8</color>
+    <color name="disable_button_text_color">#A7A7BA</color>
+    <color name="disable_button_background_color">#F8F8F8</color>
     <color name="animation_popup_background">#1C1C26</color>
     <color name="color_action_icon_background">#F2F2F2</color>
     <color name="remote_parent_background">#FFFFFF</color>
@@ -133,4 +133,5 @@
     <color name="in_chat_payment_dialog_background">#FFFFFF</color>
     <color name="in_chat_amount_divider">#C9C9C9</color>
     <color name="edit_text_title">#EBEBEB</color>
+    <color name="recovery_seed_content">#ECAB0F</color>
 </resources>

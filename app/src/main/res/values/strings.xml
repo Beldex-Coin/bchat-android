@@ -705,6 +705,7 @@
     <string name="activity_display_name_edit_text_hint" translatable="false">Enter a display name</string>
     <string name="activity_display_name_display_name_missing_error" translatable="false">Please pick a display name</string>
     <string name="activity_display_name_display_name_too_long_error" translatable="false">Please pick a shorter display name</string>
+    <string name="activity_display_name_hint" translatable="false">You can change it anytime :)</string>
 
     <string name="activity_pn_mode_recommended_option_tag" translatable="false">Recommended</string>
     <string name="activity_pn_mode_no_option_picked_dialog_title" translatable="false">Please Pick an Option</string>
@@ -991,7 +992,7 @@
     <string name="register_screen_chat_id_description_content" translatable="false">Your BChat ID is like your username. You can share it with your friends to begin a conversation.</string>
     <string name="register_screen_beldex_address_description_content" translatable="false">Your Beldex address is connected to your BChat ID. You can use this address to receive BDX.</string>
     <string name="create_password_screen_description_content" translatable="false">Enter a four digit pin to add an additional layer of security to your BChat account. Your pin is required to unlock your account or view your recovery keys and recovery seed once you\'re logged in.</string>
-    <string name="recovery_phrase_screen_description_content" translatable="false"><font color='#FF0000'>Note: </font> Save your recovery seed! Only your recovery seed can be used to recover your account on another device. Copy the recovery seed to continue.</string>
+    <string name="recovery_phrase_screen_description_content" translatable="false">Copy your Recovery Seed and keep it safe.</string>
     <string name="new_chat_screen_description_content" translatable="false">Share your BChat ID with your friends. You can find your BChat ID below.</string>
     <string name="never_share_your_seed_with_anyone" translatable="false">Never share your seed with anyone!</string>
     <string name="seed_permission_important_description" translatable="false">Your seed can be used to restore your account. Never share it with anyone or store a digital copy of it. Never enter your seed in any other website or application other than BChat or the Beldex official wallet.</string>
@@ -1423,4 +1424,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="restore_from_date_title" translatable="false">Pick a Date</string>
     <string name="display_name" translatable="false">Display Name</string>
     <string name="enter_name" translatable="false">Enter name</string>
+    <string name="copied" translatable="false">Copied!</string>
 </resources>

@@ -5,7 +5,7 @@
 
     <solid  android:color="@color/sign_in_black" />
 
-    <corners android:radius="40dp" />
+    <corners android:radius="16dp" />
 
     <stroke android:width="@dimen/border_thickness" android:color="#4B4B64" />
 </shape>

@@ -63,7 +63,7 @@ class RecoveryPhraseActivity : BaseActionBarActivity() {
                     homepage()
                 }
             }
-            recoveryPhraseCopyIcon.setOnClickListener() {
+            copyButton?.setOnClickListener() {
                 copiedSeed = true
                 copySeed()
             }
@@ -108,7 +108,7 @@ class RecoveryPhraseActivity : BaseActionBarActivity() {
         clipboard.setPrimaryClip(clip)
         Toast.makeText(this, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
         binding.registerButton.isEnabled = true
-        binding.hint?.visibility = View.GONE
+        binding.hint.visibility = View.GONE
         binding.registerButton.setTextColor(ContextCompat.getColor(this, R.color.white))
         if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
             binding.registerButton.setBackgroundDrawable(

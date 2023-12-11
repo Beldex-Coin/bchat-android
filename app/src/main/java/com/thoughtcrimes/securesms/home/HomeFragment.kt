@@ -60,6 +60,8 @@ import com.thoughtcrimes.securesms.mms.GlideApp
 import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
 import com.thoughtcrimes.securesms.model.Wallet
+import com.thoughtcrimes.securesms.my_account.ui.MyAccountActivity
+import com.thoughtcrimes.securesms.my_account.ui.MyAccountScreens
 import com.thoughtcrimes.securesms.onboarding.AboutActivity
 import com.thoughtcrimes.securesms.preferences.NotificationSettingsActivity
 import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
@@ -1027,7 +1029,8 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     private fun openSettings() {
         val activity = activity
         if(isAdded && activity !=null) {
-            Intent(activity, SettingsActivity::class.java).also {
+            Intent(activity, MyAccountActivity::class.java).also {
+                it.putExtra(MyAccountActivity.extraStartDestination, MyAccountScreens.SettingsScreen.route)
                 callSettingsActivityResultLauncher.launch(it)
             }
         }
@@ -1087,8 +1090,12 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     }
 
     private fun showQRCode() {
-        Intent(requireContext(), ShowQRCodeWithScanQRCodeActivity::class.java).also {
-            showQRCodeWithScanQRCodeActivityResultLauncher.launch(it)
+//        Intent(requireContext(), ShowQRCodeWithScanQRCodeActivity::class.java).also {
+//            showQRCodeWithScanQRCodeActivityResultLauncher.launch(it)
+//        }
+        Intent(activity, MyAccountActivity::class.java).also {
+            it.putExtra(MyAccountActivity.extraStartDestination, MyAccountScreens.MyAccountScreen.route)
+            startActivity(it)
         }
     }
 

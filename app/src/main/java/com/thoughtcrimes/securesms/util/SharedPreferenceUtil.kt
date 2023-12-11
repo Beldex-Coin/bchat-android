@@ -2,6 +2,8 @@ package com.thoughtcrimes.securesms.util
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.beldex.libbchat.utilities.truncateIdForDisplay
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
 import com.thoughtcrimes.securesms.data.NodeInfo
 
@@ -58,6 +60,14 @@ class SharedPreferenceUtil(
             editor.putString("0", nodeInfo.toNodeString())
         }
         editor.apply()
+    }
+
+    fun getProfileName(): String? {
+        return TextSecurePreferences.getProfileName(context)
+    }
+
+    fun getPublicKey(): String {
+        return TextSecurePreferences.getLocalNumber(context)!!
     }
 
 }

@@ -36,7 +36,10 @@ class Colors(
     val editTextBackground: Color,
     val editTextColor: Color,
     val editTextHint: Color,
-    val titleTextColor: Color
+    val titleTextColor: Color,
+    val iconColor: Color,
+    val beldexAddressColor: Color,
+    val cardBackground: Color,
 )
 
 val lightColors = Colors(
@@ -57,7 +60,10 @@ val lightColors = Colors(
     editTextBackground = Color(0xFFF8F8F8),
     editTextColor = Color(0xFF333333),
     editTextHint = Color(0xFFA7A7BA),
-    titleTextColor = Color(0xFF333333)
+    titleTextColor = Color(0xFF333333),
+    iconColor = Color(0xFF717194),
+    beldexAddressColor = Color(0xFF00A3FF),
+    cardBackground = Color(0xFFFFFFFF),
 )
 
 val darkColors = Colors(
@@ -78,7 +84,10 @@ val darkColors = Colors(
     editTextBackground = Color(0xFF1C1C26),
     editTextColor = Color(0xFFEBEBEB),
     editTextHint = Color(0xFFA7A7BA),
-    titleTextColor = Color(0xFFEBEBEB)
+    titleTextColor = Color(0xFFEBEBEB),
+    iconColor = Color(0xFF717194),
+    beldexAddressColor = Color(0xFF00A3FF),
+    cardBackground = Color(0xFF282836)
 )
 
 

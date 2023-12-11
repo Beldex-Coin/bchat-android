@@ -169,7 +169,8 @@ dependencies {
     implementation 'androidx.compose.ui:ui-tooling-preview'
     debugImplementation 'androidx.compose.ui:ui-tooling'
     implementation 'androidx.compose.material:material-icons-extended'
-    implementation "androidx.navigation:navigation-compose:$compose_nav_version"
+    implementation("androidx.navigation:navigation-compose:$composeNavVersion")
+    implementation("androidx.hilt:hilt-navigation-compose:$hiltNavigationCompose")
 
     //memory leak dependency
 //    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'

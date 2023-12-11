@@ -528,6 +528,13 @@
 
         </activity>
 
+        <activity
+            android:name="com.thoughtcrimes.securesms.my_account.ui.MyAccountActivity"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
+            android:exported="true">
+
+        </activity>
+
         <service
             android:name="com.thoughtcrimes.securesms.notifications.PushNotificationService"
             android:enabled="true"

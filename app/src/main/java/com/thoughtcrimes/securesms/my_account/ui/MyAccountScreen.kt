@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -141,7 +142,7 @@ fun MyAccountScreen(
             )
 
             Text(
-                text = "Share",
+                text = stringResource(id = R.string.share),
                 style = MaterialTheme.typography.bodyMedium.copy(
                     color = Color.White
                 ),
@@ -203,7 +204,7 @@ fun AccountHeader(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "BChat ID",
+            text = stringResource(id = R.string.chatid),
             style = MaterialTheme.typography.bodyMedium.copy(
                 color = MaterialTheme.appColors.primaryButtonColor
             ),
@@ -224,7 +225,7 @@ fun AccountHeader(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Beldex Address",
+            text = stringResource(id = R.string.beldex_address),
             style = MaterialTheme.typography.bodyMedium.copy(
                 color = MaterialTheme.appColors.beldexAddressColor
             ),

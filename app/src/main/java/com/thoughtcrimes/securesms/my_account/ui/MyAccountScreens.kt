@@ -3,4 +3,6 @@ package com.thoughtcrimes.securesms.my_account.ui
 sealed class MyAccountScreens(val route: String) {
     data object MyAccountScreen: MyAccountScreens("/my-account")
     data object SettingsScreen: MyAccountScreens("/settings")
+    data object HopsScreen: MyAccountScreens("/hops")
+    data object ChangeLogScreen: MyAccountScreens("/change-logs")
 }

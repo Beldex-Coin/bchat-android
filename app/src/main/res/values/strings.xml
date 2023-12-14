@@ -1425,4 +1425,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="display_name" translatable="false">Display Name</string>
     <string name="enter_name" translatable="false">Enter name</string>
     <string name="copied" translatable="false">Copied!</string>
+    <string name="my_account">My Account</string>
 </resources>

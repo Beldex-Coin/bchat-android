@@ -40,6 +40,9 @@ class Colors(
     val iconColor: Color,
     val beldexAddressColor: Color,
     val cardBackground: Color,
+    val iconTint: Color,
+    val changeLogColor: Color,
+    val changeLogBackground: Color
 )
 
 val lightColors = Colors(
@@ -64,6 +67,9 @@ val lightColors = Colors(
     iconColor = Color(0xFF717194),
     beldexAddressColor = Color(0xFF00A3FF),
     cardBackground = Color(0xFFFFFFFF),
+    iconTint = Color(0xFF333333),
+    changeLogColor = Color(0xFF333333),
+    changeLogBackground = Color(0xFFF4F4F4)
 )
 
 val darkColors = Colors(
@@ -87,7 +93,10 @@ val darkColors = Colors(
     titleTextColor = Color(0xFFEBEBEB),
     iconColor = Color(0xFF717194),
     beldexAddressColor = Color(0xFF00A3FF),
-    cardBackground = Color(0xFF282836)
+    cardBackground = Color(0xFF282836),
+    iconTint = Color(0xFFFFFFFF),
+    changeLogColor = Color(0xFFEBEBEB),
+    changeLogBackground = Color.Transparent
 )
 
 

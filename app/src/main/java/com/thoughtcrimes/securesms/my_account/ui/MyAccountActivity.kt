@@ -41,11 +41,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.thoughtcrimes.securesms.applock.AppLockDetailsActivity
-import com.thoughtcrimes.securesms.changelog.ChangeLogActivity
 import com.thoughtcrimes.securesms.compose_utils.BChatTheme
 import com.thoughtcrimes.securesms.compose_utils.appColors
 import com.thoughtcrimes.securesms.contacts.blocked.BlockedContactsActivity
-import com.thoughtcrimes.securesms.home.PathActivity
 import com.thoughtcrimes.securesms.preferences.ChatSettingsActivity
 import com.thoughtcrimes.securesms.util.UiMode
 import com.thoughtcrimes.securesms.util.UiModeUtilities
@@ -96,6 +94,7 @@ fun MyAccountNavHost(
     val startActivity: (Intent) -> Unit = {
         context.startActivity(it)
     }
+    val viewModel: MyAccountViewModel = hiltViewModel()
     NavHost(
         navController = navController,
         startDestination = startDestination,
@@ -104,10 +103,9 @@ fun MyAccountNavHost(
         composable(
             route = MyAccountScreens.MyAccountScreen.route
         ) {
-            val viewModel: MyAccountViewModel = hiltViewModel()
             val uiState by viewModel.uiState.collectAsState()
             MyAccountScreenContainer(
-                title = "My Account",
+                title = stringResource(R.string.my_account),
                 onBackClick = {}
             ) {
                 MyAccountScreen(
@@ -119,19 +117,19 @@ fun MyAccountNavHost(
         composable(
             route = MyAccountScreens.SettingsScreen.route
         ) {
-            val viewModel: MyAccountViewModel = hiltViewModel()
-            val uiState by viewModel.uiState.collectAsState()
             MyAccountScreenContainer(
-                title = "Settings",
+                title = stringResource(id = R.string.activity_settings_title),
                 onBackClick = {}
             ) {
                 SettingsScreen(
                     navigate = {
                         when (it) {
                             SettingItem.Hops -> {
-                                Intent(context, PathActivity::class.java).also { intent ->
-                                    startActivity(intent)
-                                }
+//                                Intent(context, PathActivity::class.java).also { intent ->
+//                                    startActivity(intent)
+//                                }
+                                viewModel.getPathNodes()
+                                navController.navigate(MyAccountScreens.HopsScreen.route)
                             }
                             SettingItem.AppLock -> {
                                 Intent(context, AppLockDetailsActivity::class.java).also { intent ->
@@ -168,12 +166,43 @@ fun MyAccountNavHost(
                                 }
                             }
                             SettingItem.ChangeLog -> {
-                                Intent(context, ChangeLogActivity::class.java).also { intent ->
-                                    startActivity(intent)
-                                }
+//                                Intent(context, ChangeLogActivity::class.java).also { intent ->
+//                                    startActivity(intent)
+//                                }
+                                navController.navigate(MyAccountScreens.ChangeLogScreen.route)
                             }
                         }
                     }
+                )
+            }
+        }
+
+        composable(
+            route = MyAccountScreens.HopsScreen.route
+        ) {
+            val nodes by viewModel.pathState.collectAsState()
+            MyAccountScreenContainer(
+                title = stringResource(id = R.string.activity_path_title),
+                onBackClick = {}
+            ) {
+                HopsScreen(
+                    nodes = nodes
+                )
+            }
+        }
+
+        composable(
+            route = MyAccountScreens.ChangeLogScreen.route
+        ) {
+            val changeLogViewModel: ChangeLogViewModel = hiltViewModel()
+            val changeLogs by changeLogViewModel.changeLogs.collectAsState()
+
+            MyAccountScreenContainer(
+                title = stringResource(id = R.string.changelog),
+                onBackClick = {}
+            ) {
+                ChangeLogScreen(
+                    changeLogs = changeLogs
                 )
             }
         }

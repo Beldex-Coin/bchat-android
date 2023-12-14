@@ -36,9 +36,9 @@ class LandingActivity : AppCompatActivity() {
             TermsandCondtionsTxt.setOnClickListener { link() }
             val isDayUiMode = UiModeUtilities.isDayUiMode(this@LandingActivity)
             (if (isDayUiMode) R.raw.landing_animation_light_theme else R.raw.landing_animation_dark_theme).also {
-                img.setAnimation(
-                    it
-                )
+//                img.setAnimation(
+//                    it
+//                )
             }
         }
         IdentityKeyUtil.generateIdentityKeyPair(this)

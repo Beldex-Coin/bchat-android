@@ -390,6 +390,22 @@ object OnionRequestAPI {
                                     val offset = timestamp - Date().time
                                     MnodeAPI.clockOffset = offset
                                 }
+                                if (body.containsKey("hf")) {
+                                    @Suppress("UNCHECKED_CAST")
+                                    val currentHf = body["hf"] as List<Int>
+                                    if (currentHf.size < 2) {
+                                        Log.e("Beldex", "Response contains fork information but doesn't have a hard and soft number")
+                                    } else {
+                                        val hf = currentHf[0]
+                                        val sf = currentHf[1]
+                                        val newForkInfo = ForkInfo(hf, sf)
+                                        if (newForkInfo > MnodeAPI.forkInfo) {
+                                            MnodeAPI.forkInfo = ForkInfo(hf,sf)
+                                        } else if (newForkInfo < MnodeAPI.forkInfo) {
+                                            Log.w("Beldex", "Got a new mnode info fork version that was $newForkInfo, less than current known ${MnodeAPI.forkInfo}")
+                                        }
+                                    }
+                                }
                                 if (statusCode != 200) {
                                     val exception = HTTPRequestFailedAtDestinationException(statusCode, body, destination.description)
                                     return@queue deferred.reject(exception)

@@ -19,7 +19,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -144,7 +143,7 @@ class VisibleMessageContentView : ConstraintLayout {
 
 
         binding.untrustedView.root.isVisible =
-            !contactIsTrusted && message is MmsMessageRecord && message.quote == null
+            !contactIsTrusted && message is MmsMessageRecord && message.quote == null && message.linkPreviews.isEmpty()
         binding.voiceMessageView.root.isVisible =
             contactIsTrusted && message is MmsMessageRecord && message.slideDeck.audioSlide != null
         binding.documentView.root.isVisible =

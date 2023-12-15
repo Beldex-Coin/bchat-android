@@ -72,8 +72,10 @@ public class SQLCipherOpenHelper extends SQLiteOpenHelper {
   //New
   private static final int beldexV32                          = 53;
 
+  private static final int beldexV33                          = 54;
+
   // beldex - onUpgrade(...) must be updated to use beldex version numbers if Signal makes any database changes
-  private static final int    DATABASE_VERSION = beldexV32;
+  private static final int    DATABASE_VERSION = beldexV33;
   private static final int    MIN_DATABASE_VERSION     = beldexV7;
   public static final String DATABASE_NAME    = "bchat_v4.db";
   private static final String CIPHER3_DATABASE_NAME    = "bchat.db";
@@ -240,6 +242,11 @@ public class SQLCipherOpenHelper extends SQLiteOpenHelper {
     db.execSQL(MmsDatabase.getCreateMessageRequestResponseCommand);
     //New
     db.execSQL(BchatRecipientAddressDatabase.getCreateBchatRecipientAddressTableCommand());
+
+    db.execSQL(BeldexAPIDatabase.CREATE_FORK_INFO_TABLE_COMMAND);
+    db.execSQL(BeldexAPIDatabase.CREATE_DEFAULT_FORK_INFO_COMMAND);
+    db.execSQL(BeldexAPIDatabase.UPDATE_HASHES_INCLUDE_NAMESPACE_COMMAND);
+    db.execSQL(BeldexAPIDatabase.UPDATE_RECEIVED_INCLUDE_NAMESPACE_COMMAND);
 
 
     executeStatements(db, SmsDatabase.CREATE_INDEXS);
@@ -430,6 +437,13 @@ public class SQLCipherOpenHelper extends SQLiteOpenHelper {
 
       if(oldVersion < beldexV32) {
         db.execSQL(BchatRecipientAddressDatabase.getCreateBchatRecipientAddressTableCommand());
+      }
+
+      if (oldVersion < beldexV33) {
+        db.execSQL(BeldexAPIDatabase.CREATE_FORK_INFO_TABLE_COMMAND);
+        db.execSQL(BeldexAPIDatabase.CREATE_DEFAULT_FORK_INFO_COMMAND);
+        db.execSQL(BeldexAPIDatabase.UPDATE_HASHES_INCLUDE_NAMESPACE_COMMAND);
+        db.execSQL(BeldexAPIDatabase.UPDATE_RECEIVED_INCLUDE_NAMESPACE_COMMAND);
       }
 
       db.setTransactionSuccessful();

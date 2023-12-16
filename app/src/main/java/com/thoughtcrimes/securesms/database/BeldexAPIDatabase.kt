@@ -108,7 +108,7 @@ class BeldexAPIDatabase(context: Context, helper: SQLCipherOpenHelper) : Databas
         const val HF_VALUE = "hf_value"
         const val SF_VALUE = "sf_value"
         const val CREATE_FORK_INFO_TABLE_COMMAND = "CREATE TABLE $FORK_INFO_TABLE ($DUMMY_KEY INTEGER PRIMARY KEY, $HF_VALUE INTEGER, $SF_VALUE INTEGER);"
-        const val CREATE_DEFAULT_FORK_INFO_COMMAND = "INSERT INTO $FORK_INFO_TABLE ($DUMMY_KEY, $HF_VALUE, $SF_VALUE) VALUES ($DUMMY_VALUE, 18, 0);"
+        const val CREATE_DEFAULT_FORK_INFO_COMMAND = "INSERT INTO $FORK_INFO_TABLE ($DUMMY_KEY, $HF_VALUE, $SF_VALUE) VALUES ($DUMMY_VALUE, 17, 0);"
 
         const val UPDATE_HASHES_INCLUDE_NAMESPACE_COMMAND = "CREATE TABLE IF NOT EXISTS $lastMessageHashValueTable2($mnode TEXT, $publicKey TEXT, $lastMessageHashValue TEXT, $lastMessageHashNamespace INTEGER DEFAULT 0, PRIMARY KEY ($mnode, $publicKey, $lastMessageHashNamespace));"
         const val INSERT_LAST_HASH_DATA = "INSERT OR IGNORE INTO $lastMessageHashValueTable2($mnode, $publicKey, $lastMessageHashValue) SELECT $mnode, $publicKey, $lastMessageHashValue FROM $legacyLastMessageHashValueTable2;"
@@ -483,7 +483,7 @@ class BeldexAPIDatabase(context: Context, helper: SQLCipherOpenHelper) : Databas
         val queryCursor = database.query(FORK_INFO_TABLE, arrayOf(HF_VALUE, SF_VALUE), "$DUMMY_KEY = $DUMMY_VALUE", null, null, null, null)
         val forkInfo = queryCursor.use { cursor ->
             if (!cursor.moveToNext()) {
-                ForkInfo(18, 0) // no HF info, none set will at least be the version
+                ForkInfo(17, 0) // no HF info, none set will at least be the version
             } else {
                 ForkInfo(cursor.getInt(0), cursor.getInt(1))
             }

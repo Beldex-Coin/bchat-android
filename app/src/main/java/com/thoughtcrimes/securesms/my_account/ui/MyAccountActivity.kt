@@ -132,9 +132,10 @@ fun MyAccountNavHost(
                                 navController.navigate(MyAccountScreens.HopsScreen.route)
                             }
                             SettingItem.AppLock -> {
-                                Intent(context, AppLockDetailsActivity::class.java).also { intent ->
-                                    startActivity(intent)
-                                }
+//                                Intent(context, AppLockDetailsActivity::class.java).also { intent ->
+//                                    startActivity(intent)
+//                                }
+                                navController.navigate(MyAccountScreens.AppLockScreen.route)
                             }
                             SettingItem.ChatSettings -> {
                                 Intent(context, ChatSettingsActivity::class.java).also { intent ->
@@ -204,6 +205,17 @@ fun MyAccountNavHost(
                 ChangeLogScreen(
                     changeLogs = changeLogs
                 )
+            }
+        }
+
+        composable(
+            route = MyAccountScreens.AppLockScreen.route
+        ) {
+            MyAccountScreenContainer(
+                title = stringResource(id = R.string.changelog),
+                onBackClick = {}
+            ) {
+                AppLockScreen()
             }
         }
     }

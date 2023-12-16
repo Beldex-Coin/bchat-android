@@ -5,4 +5,5 @@ sealed class MyAccountScreens(val route: String) {
     data object SettingsScreen: MyAccountScreens("/settings")
     data object HopsScreen: MyAccountScreens("/hops")
     data object ChangeLogScreen: MyAccountScreens("/change-logs")
+    data object AppLockScreen: MyAccountScreens("/app-lock")
 }

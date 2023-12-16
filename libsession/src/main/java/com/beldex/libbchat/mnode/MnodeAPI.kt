@@ -314,7 +314,7 @@ object MnodeAPI {
             "pubKey" to publicKey,
             "last_hash" to lastHashValue,
         )
-        Log.d("Poller-Response -> ","$publicKey,  $requiresAuth ,  $namespace")
+        Log.d("Poller-Response -> ","$publicKey,  $requiresAuth ,  $namespace, $lastHashValue")
         // Construct signature
         if (requiresAuth) {
             val userED25519KeyPair = try {
@@ -323,7 +323,7 @@ object MnodeAPI {
                 Log.e("Beldex", "Error getting KeyPair", e)
                 return Promise.ofFail(Error.NoKeyPair)
             }
-            val timestamp = Date().time + MnodeAPI.clockOffset
+            val timestamp = nowWithOffset
             val ed25519PublicKey = userED25519KeyPair.publicKey.asHexString
             val signature = ByteArray(Sign.BYTES)
             val verificationData =
@@ -376,7 +376,7 @@ object MnodeAPI {
                 val parameters = message.toJSON().toMutableMap<String,Any>()
                 // Construct signature
                 if (requiresAuth) {
-                    val sigTimestamp = System.currentTimeMillis() + MnodeAPI.clockOffset
+                    val sigTimestamp = nowWithOffset
                     val ed25519PublicKey = userED25519KeyPair.publicKey.asHexString
                     val signature = ByteArray(Sign.BYTES)
                     // assume namespace here is non-zero, as zero namespace doesn't require auth

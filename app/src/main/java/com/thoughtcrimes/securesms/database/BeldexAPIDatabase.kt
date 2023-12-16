@@ -110,22 +110,13 @@ class BeldexAPIDatabase(context: Context, helper: SQLCipherOpenHelper) : Databas
         const val CREATE_FORK_INFO_TABLE_COMMAND = "CREATE TABLE $FORK_INFO_TABLE ($DUMMY_KEY INTEGER PRIMARY KEY, $HF_VALUE INTEGER, $SF_VALUE INTEGER);"
         const val CREATE_DEFAULT_FORK_INFO_COMMAND = "INSERT INTO $FORK_INFO_TABLE ($DUMMY_KEY, $HF_VALUE, $SF_VALUE) VALUES ($DUMMY_VALUE, 18, 0);"
 
-        const val UPDATE_HASHES_INCLUDE_NAMESPACE_COMMAND = """
-            CREATE TABLE IF NOT EXISTS $lastMessageHashValueTable2(
-                $mnode TEXT, $publicKey TEXT, $lastMessageHashValue TEXT, $lastMessageHashNamespace INTEGER DEFAULT 0, PRIMARY KEY ($mnode, $publicKey, $lastMessageHashNamespace)
-            );
-            INSERT INTO $lastMessageHashValueTable2($mnode, $publicKey, $lastMessageHashValue) SELECT $mnode, $publicKey, $lastMessageHashValue FROM $legacyLastMessageHashValueTable2);
-            DROP TABLE $legacyLastMessageHashValueTable2;
-        """
-        const val UPDATE_RECEIVED_INCLUDE_NAMESPACE_COMMAND = """
-            CREATE TABLE IF NOT EXISTS $receivedMessageHashValuesTable(
-                $publicKey STRING, $receivedMessageHashValues TEXT, $receivedMessageHashNamespace INTEGER DEFAULT 0, PRIMARY KEY ($publicKey, $receivedMessageHashNamespace)
-            );
-            
-            INSERT INTO $receivedMessageHashValuesTable($publicKey, $receivedMessageHashValues) SELECT $publicKey, $receivedMessageHashValues FROM $legacyReceivedMessageHashValuesTable3;
-            
-            DROP TABLE $legacyReceivedMessageHashValuesTable3;
-        """
+        const val UPDATE_HASHES_INCLUDE_NAMESPACE_COMMAND = "CREATE TABLE IF NOT EXISTS $lastMessageHashValueTable2($mnode TEXT, $publicKey TEXT, $lastMessageHashValue TEXT, $lastMessageHashNamespace INTEGER DEFAULT 0, PRIMARY KEY ($mnode, $publicKey, $lastMessageHashNamespace));"
+        const val INSERT_LAST_HASH_DATA = "INSERT OR IGNORE INTO $lastMessageHashValueTable2($mnode, $publicKey, $lastMessageHashValue) SELECT $mnode, $publicKey, $lastMessageHashValue FROM $legacyLastMessageHashValueTable2;"
+        const val DROP_LEGACY_LAST_HASH = "DROP TABLE $legacyLastMessageHashValueTable2;"
+
+        const val UPDATE_RECEIVED_INCLUDE_NAMESPACE_COMMAND = "CREATE TABLE IF NOT EXISTS $receivedMessageHashValuesTable($publicKey STRING, $receivedMessageHashValues TEXT, $receivedMessageHashNamespace INTEGER DEFAULT 0, PRIMARY KEY ($publicKey, $receivedMessageHashNamespace));"
+        const val INSERT_RECEIVED_HASHES_DATA = "INSERT OR IGNORE INTO $receivedMessageHashValuesTable($publicKey, $receivedMessageHashValues) SELECT $publicKey, $receivedMessageHashValues FROM $legacyReceivedMessageHashValuesTable3;"
+        const val DROP_LEGACY_RECEIVED_HASHES = "DROP TABLE $legacyReceivedMessageHashValuesTable3;"
 
         // region Deprecated
         private val deviceLinkCache = "beldex_pairing_authorisation_cache"

@@ -40,7 +40,7 @@ class ClearAllDataDialog : BaseDialog() {
         }
 
     //Important
-   /* override fun setContentView(builder: AlertDialog.Builder) {
+    override fun setContentView(builder: AlertDialog.Builder) {
         binding = DialogClearAllDataBinding.inflate(LayoutInflater.from(requireContext()))
         binding.cancelButton.setOnClickListener {
             if (step == Steps.NETWORK_PROMPT) {
@@ -55,14 +55,14 @@ class ClearAllDataDialog : BaseDialog() {
                 Steps.NETWORK_PROMPT -> {
                     clearAllData(true)
                 }
-                Steps.DELETING -> { *//* do nothing intentionally *//* }
+                Steps.DELETING -> { /* do nothing intentionally */ }
             }
         }
         builder.setView(binding.root)
         builder.setCancelable(false)
-    }*/
+    }
 
-    override fun setContentView(builder: AlertDialog.Builder) {
+    /*override fun setContentView(builder: AlertDialog.Builder) {
         binding = DialogClearAllDataBinding.inflate(LayoutInflater.from(requireContext()))
         binding.cancelButton.setOnClickListener {
             if (step == Steps.NETWORK_PROMPT) {
@@ -79,12 +79,12 @@ class ClearAllDataDialog : BaseDialog() {
                     clearAllData(false)
                     //clearAllData(true)
                 }
-                Steps.DELETING -> { /* do nothing intentionally */ }
+                Steps.DELETING -> { *//* do nothing intentionally *//* }
             }
         }
         builder.setView(binding.root)
         builder.setCancelable(false)
-    }
+    }*/
 
     private fun updateUI() {
         dialog?.let {
@@ -98,8 +98,8 @@ class ClearAllDataDialog : BaseDialog() {
                 }
                 else -> {
                     binding.dialogDescriptionText.setText(R.string.dialog_clear_all_data_network_explanation)
-                   /* binding.cancelButton.setText(R.string.dialog_clear_all_data_local_only)
-                    binding.clearAllDataButton.setText(R.string.dialog_clear_all_data_clear_network)*/
+                    binding.cancelButton.setText(R.string.dialog_clear_all_data_local_only)
+                    binding.clearAllDataButton.setText(R.string.dialog_clear_all_data_clear_network)
                     binding.cancelButton.setText(R.string.cancel)
                     binding.clearAllDataButton.setText(R.string.ok)
                 }

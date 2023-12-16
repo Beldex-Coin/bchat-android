@@ -246,7 +246,11 @@ public class SQLCipherOpenHelper extends SQLiteOpenHelper {
     db.execSQL(BeldexAPIDatabase.CREATE_FORK_INFO_TABLE_COMMAND);
     db.execSQL(BeldexAPIDatabase.CREATE_DEFAULT_FORK_INFO_COMMAND);
     db.execSQL(BeldexAPIDatabase.UPDATE_HASHES_INCLUDE_NAMESPACE_COMMAND);
+    db.execSQL(BeldexAPIDatabase.INSERT_LAST_HASH_DATA);
+    db.execSQL(BeldexAPIDatabase.DROP_LEGACY_LAST_HASH);
     db.execSQL(BeldexAPIDatabase.UPDATE_RECEIVED_INCLUDE_NAMESPACE_COMMAND);
+    db.execSQL(BeldexAPIDatabase.INSERT_RECEIVED_HASHES_DATA);
+    db.execSQL(BeldexAPIDatabase.DROP_LEGACY_RECEIVED_HASHES);
 
 
     executeStatements(db, SmsDatabase.CREATE_INDEXS);
@@ -443,7 +447,11 @@ public class SQLCipherOpenHelper extends SQLiteOpenHelper {
         db.execSQL(BeldexAPIDatabase.CREATE_FORK_INFO_TABLE_COMMAND);
         db.execSQL(BeldexAPIDatabase.CREATE_DEFAULT_FORK_INFO_COMMAND);
         db.execSQL(BeldexAPIDatabase.UPDATE_HASHES_INCLUDE_NAMESPACE_COMMAND);
+        db.execSQL(BeldexAPIDatabase.INSERT_LAST_HASH_DATA);
+        db.execSQL(BeldexAPIDatabase.DROP_LEGACY_LAST_HASH);
         db.execSQL(BeldexAPIDatabase.UPDATE_RECEIVED_INCLUDE_NAMESPACE_COMMAND);
+        db.execSQL(BeldexAPIDatabase.INSERT_RECEIVED_HASHES_DATA);
+        db.execSQL(BeldexAPIDatabase.DROP_LEGACY_RECEIVED_HASHES);
       }
 
       db.setTransactionSuccessful();

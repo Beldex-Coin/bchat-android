@@ -141,6 +141,7 @@ fun MyAccountNavHost(
                                 Intent(context, ChatSettingsActivity::class.java).also { intent ->
                                     startActivity(intent)
                                 }
+                                navController.navigate(MyAccountScreens.ChatSettingsScreen.route)
                             }
                             SettingItem.BlockedContacts -> {
                                 Intent(context, BlockedContactsActivity::class.java).also { intent ->
@@ -216,6 +217,21 @@ fun MyAccountNavHost(
                 onBackClick = {}
             ) {
                 AppLockScreen()
+            }
+        }
+
+        composable(
+            route = MyAccountScreens.ChatSettingsScreen.route
+        ) {
+            MyAccountScreenContainer(
+                title = stringResource(id = R.string.preferences_chats__chats),
+                onBackClick = {}
+            ) {
+                ChatSettingsScreen(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                )
             }
         }
     }

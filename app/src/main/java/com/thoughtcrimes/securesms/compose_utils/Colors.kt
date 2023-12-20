@@ -43,7 +43,10 @@ class Colors(
     val iconTint: Color,
     val changeLogColor: Color,
     val changeLogBackground: Color,
-    val lockTimerColor: Color
+    val lockTimerColor: Color,
+    val unCheckedSwitchThumb: Color,
+    val switchTrackColor: Color,
+    val settingsCardBackground: Color
 )
 
 val lightColors = Colors(
@@ -71,7 +74,10 @@ val lightColors = Colors(
     iconTint = Color(0xFF333333),
     changeLogColor = Color(0xFF333333),
     changeLogBackground = Color(0xFFF4F4F4),
-    lockTimerColor = Color(0xFF8A8A9D)
+    lockTimerColor = Color(0xFF8A8A9D),
+    unCheckedSwitchThumb = Color(0xFFA7A7BA),
+    switchTrackColor = Color.White,
+    settingsCardBackground = Color(0xFFF4F4F4)
 )
 
 val darkColors = Colors(
@@ -99,7 +105,10 @@ val darkColors = Colors(
     iconTint = Color(0xFFFFFFFF),
     changeLogColor = Color(0xFFEBEBEB),
     changeLogBackground = Color.Transparent,
-    lockTimerColor = Color(0xFFACACAC)
+    lockTimerColor = Color(0xFFACACAC),
+    unCheckedSwitchThumb = Color(0xFF9595B5),
+    switchTrackColor = Color(0xFF363645),
+    settingsCardBackground = Color(0xFF1C1C26)
 )
 
 

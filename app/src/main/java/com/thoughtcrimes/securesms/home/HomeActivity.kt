@@ -328,6 +328,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                         applicationContext,
                         "Update canceled by user! Result Code: $resultCode", Toast.LENGTH_LONG
                     ).show()
+                    finish()
                 }
                 RESULT_OK -> {
                     Toast.makeText(

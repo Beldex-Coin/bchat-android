@@ -23,6 +23,9 @@ import com.beldex.libsignal.crypto.PushTransportDetails
 import com.beldex.libsignal.protos.SignalServiceProtos
 import com.beldex.libsignal.utilities.Base64
 import com.beldex.libsignal.utilities.Log
+import com.beldex.libsignal.utilities.Namespace
+import com.beldex.libsignal.utilities.defaultRequiresAuth
+import com.beldex.libsignal.utilities.hasNamespaces
 import com.beldex.libsignal.utilities.hexEncodedPublicKey
 import java.util.concurrent.atomic.AtomicInteger
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment as SignalAttachment
@@ -130,6 +133,15 @@ object MessageSender {
             // Wrap the result
             val kind: SignalServiceProtos.Envelope.Type
             val senderPublicKey: String
+            // TODO: this might change in future for config messages
+            val forkInfo = MnodeAPI.forkInfo
+            val namespaces: List<Int> = when {
+                destination is Destination.ClosedGroup
+                        && forkInfo.defaultRequiresAuth() -> listOf(Namespace.UNAUTHENTICATED_CLOSED_GROUP)
+                destination is Destination.ClosedGroup
+                        && forkInfo.hasNamespaces() -> listOf(Namespace.UNAUTHENTICATED_CLOSED_GROUP, Namespace.DEFAULT)
+                else -> listOf(Namespace.DEFAULT)
+            }
             when (destination) {
                 is Destination.Contact -> {
                     kind = SignalServiceProtos.Envelope.Type.BCHAT_MESSAGE
@@ -154,11 +166,11 @@ object MessageSender {
             if (destination is Destination.Contact && message is VisibleMessage && !isSelfSend) {
                 MnodeModule.shared.broadcaster.broadcast("sendingMessage", message.sentTimestamp!!)
             }
-            MnodeAPI.sendMessage(mnodeMessage).success { promises: Set<RawResponsePromise> ->
+            namespaces.map { namespace -> MnodeAPI.sendMessage(mnodeMessage, requiresAuth = false, namespace = namespace) }.let { promises ->
                 var isSuccess = false
                 val promiseCount = promises.size
                 var errorCount =  AtomicInteger(0)
-                promises.iterator().forEach { promise: RawResponsePromise ->
+                promises.forEach { promise: RawResponsePromise ->
                     promise.success {
                         if (isSuccess) { return@success } // Succeed as soon as the first promise succeeds
                         isSuccess = true
@@ -168,7 +180,7 @@ object MessageSender {
                         val hash = it["hash"] as? String
                         message.serverHash = hash
                         handleSuccessfulMessageSend(message, destination, isSyncMessage)
-                        var shouldNotify = ((message is VisibleMessage || message is UnsendRequest || message is CallMessage) && !isSyncMessage)
+                        val shouldNotify = ((message is VisibleMessage || message is UnsendRequest || message is CallMessage) && !isSyncMessage)
                         /*
                         if (message is ClosedGroupControlMessage && message.kind is ClosedGroupControlMessage.Kind.New) {
                             shouldNotify = true
@@ -186,9 +198,6 @@ object MessageSender {
                         handleFailure(it)
                     }
                 }
-            }.fail {
-                Log.d("Beldex", "Couldn't send message due to error: $it.")
-                handleFailure(it)
             }
         } catch (exception: Exception) {
             handleFailure(exception)

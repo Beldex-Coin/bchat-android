@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/backgroundContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingHorizontal="@dimen/medium_spacing"
+    android:paddingVertical="@dimen/small_spacing">
+
+    <View
+        android:id="@+id/selectButton"
+        android:layout_width="17dp"
+        android:layout_height="17dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/clear_data_option_select"
+        android:foreground="@drawable/radial_select_clear_option" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/medium_spacing"
+            android:layout_marginBottom="5dp"
+            android:fontFamily="@font/open_sans_regular"
+            android:lines="1"
+            android:textColor="@color/text"
+            android:textSize="@dimen/text_size"
+            tools:text="Clear Data" />
+
+        <TextView
+            android:id="@+id/subtitleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/medium_spacing"
+            android:alpha="0.6"
+            android:fontFamily="@font/open_sans_regular"
+            android:lines="1"
+            android:textColor="@color/text"
+            android:textSize="14sp"
+            tools:text="Clear only in device" />
+
+    </LinearLayout>
+
+</LinearLayout>

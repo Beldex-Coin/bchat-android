@@ -50,7 +50,7 @@ fun ChatSettingsScreen(
                 SettingsItem(
                     settingTitle = "Enter Key sends",
                     settingIcon = painterResource(id = R.drawable.ic_enter_key),
-                    isEnabled = false,
+                    isEnabled = true,
                     onSwitchChanged = {},
                     modifier = Modifier
                         .fillMaxWidth(),

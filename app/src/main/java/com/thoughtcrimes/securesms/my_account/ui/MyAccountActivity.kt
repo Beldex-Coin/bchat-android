@@ -26,11 +26,18 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -40,15 +47,18 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.beldex.libbchat.utilities.recipients.Recipient
 import com.thoughtcrimes.securesms.applock.AppLockDetailsActivity
 import com.thoughtcrimes.securesms.compose_utils.BChatTheme
 import com.thoughtcrimes.securesms.compose_utils.appColors
 import com.thoughtcrimes.securesms.contacts.blocked.BlockedContactsActivity
+import com.thoughtcrimes.securesms.contacts.blocked.BlockedContactsViewModel
 import com.thoughtcrimes.securesms.preferences.ChatSettingsActivity
 import com.thoughtcrimes.securesms.util.UiMode
 import com.thoughtcrimes.securesms.util.UiModeUtilities
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MyAccountActivity: ComponentActivity() {
@@ -119,8 +129,18 @@ fun MyAccountNavHost(
         ) {
             MyAccountScreenContainer(
                 title = stringResource(id = R.string.activity_settings_title),
-                onBackClick = {}
+                onBackClick = {
+                    (context as ComponentActivity).finish()
+                }
             ) {
+                var showClearDataDialog by remember {
+                    mutableStateOf(false)
+                }
+                if (showClearDataDialog) {
+                    ClearDataDialog {
+                        showClearDataDialog = false
+                    }
+                }
                 SettingsScreen(
                     navigate = {
                         when (it) {
@@ -138,18 +158,19 @@ fun MyAccountNavHost(
                                 navController.navigate(MyAccountScreens.AppLockScreen.route)
                             }
                             SettingItem.ChatSettings -> {
-                                Intent(context, ChatSettingsActivity::class.java).also { intent ->
-                                    startActivity(intent)
-                                }
+//                                Intent(context, ChatSettingsActivity::class.java).also { intent ->
+//                                    startActivity(intent)
+//                                }
                                 navController.navigate(MyAccountScreens.ChatSettingsScreen.route)
                             }
                             SettingItem.BlockedContacts -> {
-                                Intent(context, BlockedContactsActivity::class.java).also { intent ->
-                                    startActivity(intent)
-                                }
+//                                Intent(context, BlockedContactsActivity::class.java).also { intent ->
+//                                    startActivity(intent)
+//                                }
+                                navController.navigate(MyAccountScreens.BlockedContactScreen.route)
                             }
                             SettingItem.ClearData -> {
-
+                                showClearDataDialog = true
                             }
                             SettingItem.Feedback -> {
                                 val intent = Intent(Intent.ACTION_SENDTO)
@@ -185,7 +206,9 @@ fun MyAccountNavHost(
             val nodes by viewModel.pathState.collectAsState()
             MyAccountScreenContainer(
                 title = stringResource(id = R.string.activity_path_title),
-                onBackClick = {}
+                onBackClick = {
+                    navController.navigateUp()
+                }
             ) {
                 HopsScreen(
                     nodes = nodes
@@ -201,7 +224,9 @@ fun MyAccountNavHost(
 
             MyAccountScreenContainer(
                 title = stringResource(id = R.string.changelog),
-                onBackClick = {}
+                onBackClick = {
+                    navController.navigateUp()
+                }
             ) {
                 ChangeLogScreen(
                     changeLogs = changeLogs
@@ -214,7 +239,9 @@ fun MyAccountNavHost(
         ) {
             MyAccountScreenContainer(
                 title = stringResource(id = R.string.changelog),
-                onBackClick = {}
+                onBackClick = {
+                    navController.navigateUp()
+                }
             ) {
                 AppLockScreen()
             }
@@ -225,9 +252,45 @@ fun MyAccountNavHost(
         ) {
             MyAccountScreenContainer(
                 title = stringResource(id = R.string.preferences_chats__chats),
-                onBackClick = {}
+                onBackClick = {
+                    navController.navigateUp()
+                }
             ) {
                 ChatSettingsScreen(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                )
+            }
+        }
+
+        composable(
+            route = MyAccountScreens.BlockedContactScreen.route
+        ) {
+            val contactViewModel: BlockedContactsViewModel = hiltViewModel()
+            var contacts by remember {
+                mutableStateOf(emptyList<Recipient>())
+            }
+            val owner = LocalLifecycleOwner.current
+            LaunchedEffect(key1 = Unit) {
+                contactViewModel.subscribe(context).observe(owner) { newState ->
+                    contacts = newState.blockedContacts
+                }
+            }
+            MyAccountScreenContainer(
+                title = stringResource(id = R.string.blocked_contacts),
+                onBackClick = {
+                    navController.navigateUp()
+                }
+            ) {
+                BlockedContactScreen(
+                    blockedList = contacts,
+                    unBlockSingleContact = {
+                        contactViewModel.unblockSingleUser(it)
+                    },
+                    unBlockMultipleContacts = {
+                        contactViewModel.unblock(it)
+                    },
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(16.dp)

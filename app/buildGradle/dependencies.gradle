@@ -171,7 +171,7 @@ dependencies {
     implementation 'androidx.compose.material:material-icons-extended'
     implementation("androidx.navigation:navigation-compose:$composeNavVersion")
     implementation("androidx.hilt:hilt-navigation-compose:$hiltNavigationCompose")
-
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:$composeLifecyleRuntime")
     //memory leak dependency
 //    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
 

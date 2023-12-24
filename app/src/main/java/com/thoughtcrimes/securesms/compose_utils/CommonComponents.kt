@@ -12,9 +12,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonElevation
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -165,5 +169,20 @@ fun BChatOutlinedTextField(
         shape = shape,
         modifier = Modifier
             .then(modifier)
+    )
+}
+
+@Composable
+fun BChatRadioButton(
+    selected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    RadioButton(
+        selected = selected,
+        onClick = onClick,
+        colors = RadioButtonDefaults.colors(
+            selectedColor = MaterialTheme.appColors.primaryButtonColor,
+        )
     )
 }

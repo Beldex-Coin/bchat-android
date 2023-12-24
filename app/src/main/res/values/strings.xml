@@ -1426,4 +1426,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="enter_name" translatable="false">Enter name</string>
     <string name="copied" translatable="false">Copied!</string>
     <string name="my_account">My Account</string>
+    <string name="clear_only_in_device">Clear only in device</string>
+    <string name="delete_entire_account">Delete Entire Account</string>
+    <string name="delete_account_from_network">Delete account from network</string>
 </resources>

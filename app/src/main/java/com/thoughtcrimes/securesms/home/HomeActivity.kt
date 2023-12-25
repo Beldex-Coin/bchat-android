@@ -74,6 +74,7 @@ import com.thoughtcrimes.securesms.model.WalletManager
 import com.thoughtcrimes.securesms.onboarding.SeedActivity
 import com.thoughtcrimes.securesms.onboarding.SeedReminderViewDelegate
 import com.thoughtcrimes.securesms.util.ActivityDispatcher
+import com.thoughtcrimes.securesms.util.FirebaseRemoteConfigUtil
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.IP2Country
 import com.thoughtcrimes.securesms.util.NodePinger
@@ -166,6 +167,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     @Inject
     lateinit var sharedPreferenceUtil: SharedPreferenceUtil
+    @Inject
+    lateinit var remoteconfig: FirebaseRemoteConfigUtil
     private var favouriteNodes: Set<NodeInfo> = setOf()
 
     // region Lifecycle
@@ -178,6 +181,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         //-Wallet
         LegacyStorageHelper.migrateWallets(this)
 
+        val message = remoteconfig.getInfoMessage()
 
         if(intent.getBooleanExtra(SHORTCUT_LAUNCHER,false)){
            //Shortcut launcher

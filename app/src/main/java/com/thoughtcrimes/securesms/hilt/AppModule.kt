@@ -2,6 +2,7 @@ package com.thoughtcrimes.securesms.hilt
 
 import android.app.Application
 import com.thoughtcrimes.securesms.model.WalletManager
+import com.thoughtcrimes.securesms.util.FirebaseRemoteConfigUtil
 import com.thoughtcrimes.securesms.util.SharedPreferenceUtil
 import dagger.Module
 import dagger.Provides
@@ -23,6 +24,14 @@ object AppModule {
     @Provides
     fun providesWalletManager(): WalletManager {
         return WalletManager.getInstance()
+    }
+
+    @Singleton
+    @Provides
+    fun providesFirebaseRemoteConfig(): FirebaseRemoteConfigUtil {
+        val remoteConfigUtil = FirebaseRemoteConfigUtil()
+        remoteConfigUtil.init()
+        return remoteConfigUtil
     }
 
 }

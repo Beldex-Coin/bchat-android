@@ -8,8 +8,13 @@ import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.GroupUtil
 import com.beldex.libsignal.crypto.getRandomElementOrNull
 import com.beldex.libsignal.utilities.Log
+import com.beldex.libsignal.utilities.Namespace
+import com.beldex.libsignal.utilities.defaultRequiresAuth
+import com.beldex.libsignal.utilities.hasNamespaces
 import nl.komponents.kovenant.functional.bind
 import nl.komponents.kovenant.functional.map
+import nl.komponents.kovenant.task
+import java.text.DateFormat
 import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
@@ -102,7 +107,28 @@ class ClosedGroupPollerV2 {
             val mnode = swarm.getRandomElementOrNull() ?: throw InsufficientMnodesException() // Should be cryptographically secure
             if (!isPolling(groupPublicKey)) { throw PollingCanceledException() }
             Log.d("Beldex", "invoke MnodeAPI 3")
-            MnodeAPI.getRawMessages(mnode, groupPublicKey).map { MnodeAPI.parseRawMessagesResponse(it, mnode, groupPublicKey) }
+            val currentForkInfo = MnodeAPI.forkInfo
+            Log.d("Poller-Response -> ","hf=${currentForkInfo.hf}, sf=${currentForkInfo.sf}")
+            when {
+                currentForkInfo.defaultRequiresAuth() ->
+                    MnodeAPI.getRawMessages(mnode, groupPublicKey, requiresAuth = false, namespace = Namespace.UNAUTHENTICATED_CLOSED_GROUP)
+                    .map { MnodeAPI.parseRawMessagesResponse(it, mnode, groupPublicKey, Namespace.UNAUTHENTICATED_CLOSED_GROUP) }
+                currentForkInfo.hasNamespaces() -> task {
+                    val unAuthed = MnodeAPI.getRawMessages(mnode, groupPublicKey, requiresAuth = false, namespace = Namespace.UNAUTHENTICATED_CLOSED_GROUP)
+                        .map { MnodeAPI.parseRawMessagesResponse(it, mnode, groupPublicKey, Namespace.UNAUTHENTICATED_CLOSED_GROUP) }
+                    val default = MnodeAPI.getRawMessages(mnode, groupPublicKey, requiresAuth = false, namespace = Namespace.DEFAULT)
+                        .map { MnodeAPI.parseRawMessagesResponse(it, mnode, groupPublicKey, Namespace.DEFAULT) }
+                    val unAuthedResult = unAuthed.get()
+                    val defaultResult = default.get()
+                    val format = DateFormat.getTimeInstance()
+                    if (unAuthedResult.isNotEmpty() || defaultResult.isNotEmpty()) {
+                        Log.d("Poller", "@${format.format(Date())}Polled ${unAuthedResult.size} from -10, ${defaultResult.size} from 0")
+                    }
+                    unAuthedResult + defaultResult
+                }
+                else -> MnodeAPI.getRawMessages(mnode, groupPublicKey, requiresAuth = false, namespace = Namespace.DEFAULT)
+                    .map { MnodeAPI.parseRawMessagesResponse(it, mnode, groupPublicKey) }
+            }
         }
         promise.success { envelopes ->
             if (!isPolling(groupPublicKey)) { return@success }
@@ -112,6 +138,7 @@ class ClosedGroupPollerV2 {
             }
         }
         promise.fail {
+            Log.d("Poller-Response -> ","Poller fail $groupPublicKey")
             Log.d("Beldex", "Polling failed for secret group due to error: $it.")
         }
         return promise.map { }

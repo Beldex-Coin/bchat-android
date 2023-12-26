@@ -1,7 +1,5 @@
 package com.beldex.libbchat.mnode
 
-import com.beldex.libsignal.utilities.removingbdPrefixIfNeeded
-
 data class MnodeMessage(
     /**
      * The hex encoded public key of the recipient.
@@ -28,11 +26,10 @@ data class MnodeMessage(
 
     internal fun toJSON(): Map<String, String> {
         return mapOf(
-            "pubKey" to if (MnodeAPI.useTestnet) recipient.removingbdPrefixIfNeeded() else recipient,
+            "pubKey" to recipient,
             "data" to data,
             "ttl" to ttl.toString(),
-            "timestamp" to timestamp.toString(),
-            "nonce" to ""
+            "timestamp" to timestamp.toString()
         )
     }
 }

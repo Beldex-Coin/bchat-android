@@ -11,8 +11,8 @@ apply from: 'buildGradle/dependencies.gradle'
 configurations.all {
     exclude module: "commons-logging"
 }
-def canonicalVersionCode = 35
-def canonicalVersionName = "2.2.0"
+def canonicalVersionCode = 36
+def canonicalVersionName = "2.2.1"
 
 //First Release Date 17-06-2022
 //Version Code 15 Version Name 1.0.0
@@ -74,8 +74,11 @@ def canonicalVersionName = "2.2.0"
 //Twentieth Release Date 29-08-2023
 //Version Code 34 Version Name 2.1.1
 
-//Twenty oneth Release Date 15-11-2023
+//Twenty-first Release Date 15-11-2023
 //Version Code 35 Version Name 2.2.0
+
+//Twenty-second Release Data 21-12-2023
+//Version code 36 Version Name 2.2.1
 
 
 def postFixSize = 10
@@ -236,7 +239,7 @@ android {
             version '3.10.2'
         }
     }
-    ndkVersion '25.2.9519653'
+    ndkVersion '21.4.7075529'
     lint {
         abortOnError true
         baseline file('lint-baseline.xml')

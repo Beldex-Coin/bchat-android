@@ -288,6 +288,17 @@
           "description":"- Fixed issue in message request count"
         }
       ]
+    },
+    {
+      "title": "2.2.1",
+      "descriptions": [
+        {
+          "description":"- Updated storage server authentication"
+        },
+        {
+          "description":"- Revamped User experience for delete account flow"
+        }
+      ]
     }
   ]
 }

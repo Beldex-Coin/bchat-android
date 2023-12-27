@@ -12,8 +12,7 @@ object NetworkNodes  {
         "mainnet.beldex.io:29095"
     )
     private val testNetModes = listOf(
-        "38.242.196.72:19095",
-        "154.26.139.105:19095"
+        "149.102.156.174:19095"
     )
 
     fun getNodes(): List<String> {

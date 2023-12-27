@@ -25,6 +25,7 @@ import com.beldex.libsignal.utilities.Base64
 import java.security.SecureRandom
 import java.util.*
 import kotlin.Pair
+import kotlin.properties.Delegates.observable
 
 object MnodeAPI {
     private val sodium by lazy { LazySodiumAndroid(SodiumAndroid()) }
@@ -38,10 +39,16 @@ object MnodeAPI {
         get() = database.getMnodePool()
         set(newValue) { database.setMnodePool(newValue) }
     /**
-     * The offset between the user's clock and the Service Node's clock. Used in cases where the
+     * The offset between the user's clock and the Master Node's clock. Used in cases where the
      * user's clock is incorrect.
      */
     internal var clockOffset = 0L
+    internal var forkInfo by observable(database.getForkInfo()) { _, oldValue, newValue ->
+        if (newValue > oldValue) {
+            Log.d("Beldex", "Setting new fork info new: $newValue, old: $oldValue")
+            database.setForkInfo(newValue)
+        }
+    }
 
     @JvmStatic
     public val nowWithOffset
@@ -58,17 +65,17 @@ object MnodeAPI {
     private val seedNodePool by lazy {
         if (useTestnet) {
             Log.d("beldex","here testnet $useTestnet")
-              setOf("http://38.242.196.72:19095","http://154.26.139.105:19095")
+              //setOf("http://38.242.196.72:19095","http://154.26.139.105:19095")
+            setOf("http://149.102.156.174:19095")
         } else {
             Log.d("beldex","here mainnet $useTestnet")
             setOf("https://publicnode1.rpcnode.stream:$nodePort","https://publicnode2.rpcnode.stream:$nodePort","https://publicnode3.rpcnode.stream:$nodePort","https://publicnode4.rpcnode.stream:$nodePort")//"https://mainnet.beldex.io:29095","https://explorer.beldex.io:19091","http://publicnode1.rpcnode.stream:29095","http://publicnode2.rpcnode.stream:29095","http://publicnode3.rpcnode.stream:29095","http://publicnode4.rpcnode.stream:29095"
         }
     }
-    private val mnodeFailureThreshold = 3
-    private val targetSwarmMnodeCount = 2
-    private val useOnionRequests = true
+    private const val mnodeFailureThreshold = 3
+    private const val useOnionRequests = true
 
-    internal val useTestnet = BuildConfig.USE_TESTNET
+    const val useTestnet = BuildConfig.USE_TESTNET
 
     // Error
     internal sealed class Error(val description: String) : Exception(description) {
@@ -281,10 +288,6 @@ object MnodeAPI {
         return promise
     }
 
-    fun getTargetMnodes(publicKey: String): Promise<List<Mnode>, Exception> {
-        // SecureRandom() should be cryptographically secure
-        return getSwarm(publicKey).map { it.shuffled(SecureRandom()).take(targetSwarmMnodeCount) }
-    }
     fun getSwarm(publicKey: String): Promise<Set<Mnode>, Exception> {
         val cachedSwarm = database.getSwarm(publicKey)
         if (cachedSwarm != null && cachedSwarm.size >= minimumSwarmMnodeCount) {
@@ -292,7 +295,7 @@ object MnodeAPI {
             cachedSwarmCopy.addAll(cachedSwarm)
             return task { cachedSwarmCopy }
         } else {
-            val parameters = mapOf( "pubKey" to if (useTestnet) publicKey.removingbdPrefixIfNeeded() else publicKey )
+            val parameters = mapOf( "pubKey" to publicKey )
             return getRandomMnode().bind {
                 Log.d("Beldex", "invoke MnodeAPI.kt 2")
                 invoke(Mnode.Method.GetSwarm, it, publicKey, parameters)
@@ -304,28 +307,45 @@ object MnodeAPI {
         }
     }
 
-    fun getRawMessages(mnode: Mnode, publicKey: String): RawResponsePromise {
-//        val userED25519KeyPair = MessagingModuleConfiguration.shared.getUserED25519KeyPair() ?: return Promise.ofFail(Error.NoKeyPair)
+    fun getRawMessages(mnode: Mnode, publicKey: String, requiresAuth: Boolean = true, namespace: Int = 0): RawResponsePromise {
         // Get last message hash
-        val lastHashValue = database.getLastMessageHashValue(mnode, publicKey) ?: ""
-        // Construct signature
-//        val timestamp = Date().time + MnodeAPI.clockOffset
-//        val ed25519PublicKey = userED25519KeyPair.publicKey.asHexString
-//        val verificationData = "retrieve$timestamp".toByteArray()
-//        val signature = ByteArray(Sign.BYTES)
-//        try {
-//            sodium.cryptoSignDetached(signature, verificationData, verificationData.size.toLong(), userED25519KeyPair.secretKey.asBytes)
-//        } catch (exception: Exception) {
-//            return Promise.ofFail(Error.SigningFailed)
-//        }
-        // Make the request
-        val parameters = mapOf(
-            "pubKey" to if (useTestnet) publicKey.removingbdPrefixIfNeeded() else publicKey,
-            "lastHash" to lastHashValue,
-//            "timestamp" to timestamp,
-//            "pubkey_ed25519" to ed25519PublicKey,
-//            "signature" to Base64.encodeBytes(signature)
+        val lastHashValue = database.getLastMessageHashValue(mnode, publicKey, namespace) ?: ""
+        val parameters = mutableMapOf<String,Any>(
+            "pubKey" to publicKey,
+            "last_hash" to lastHashValue,
         )
+        Log.d("Poller-Response -> ","$publicKey,  $requiresAuth ,  $namespace, $lastHashValue")
+        // Construct signature
+        if (requiresAuth) {
+            val userED25519KeyPair = try {
+                MessagingModuleConfiguration.shared.getUserED25519KeyPair() ?: return Promise.ofFail(Error.NoKeyPair)
+            } catch (e: Exception) {
+                Log.e("Beldex", "Error getting KeyPair", e)
+                return Promise.ofFail(Error.NoKeyPair)
+            }
+            val timestamp = nowWithOffset
+            val ed25519PublicKey = userED25519KeyPair.publicKey.asHexString
+            val signature = ByteArray(Sign.BYTES)
+            val verificationData =
+                if (namespace != 0) "retrieve$namespace$timestamp".toByteArray()
+                else "retrieve$timestamp".toByteArray()
+            try {
+                sodium.cryptoSignDetached(signature, verificationData, verificationData.size.toLong(), userED25519KeyPair.secretKey.asBytes)
+            } catch (exception: Exception) {
+                return Promise.ofFail(Error.SigningFailed)
+            }
+            parameters["timestamp"] = timestamp
+            parameters["pubkey_ed25519"] = ed25519PublicKey
+            parameters["signature"] = Base64.encodeBytes(signature)
+        }
+
+        // If the namespace is default (0) here it will be implicitly read as 0 on the storage server
+        // we only need to specify it explicitly if we want to (in future) or if it is non-zero
+        if (namespace != 0) {
+            Log.d("Poller-Response -> ","namespace !=0")
+            parameters["namespace"] = namespace
+        }
+        // Make the request
         Log.d("Beldex", "invoke MnodeAPI.kt 3")
         return invoke(Mnode.Method.GetMessages, mnode, publicKey, parameters)
     }
@@ -347,17 +367,37 @@ object MnodeAPI {
         }
     }
 
-    fun sendMessage(message: MnodeMessage): Promise<Set<RawResponsePromise>, Exception> {
-        val destination = if (useTestnet) message.recipient.removingbdPrefixIfNeeded() else message.recipient
+    fun sendMessage(message: MnodeMessage, requiresAuth: Boolean = false, namespace: Int = 0): RawResponsePromise {
+        val destination = message.recipient
         Log.d("Beldex","bchat id validation -- check the test net  or mainnet for remove prefix")
         return retryIfNeeded(maxRetryCount) {
-            getTargetMnodes(destination).map { swarm ->
-                swarm.map { mnode ->
-                    val parameters = message.toJSON()
-                    //-Log.d("beldex","ttl value ${message.ttl.toString()}")
+                val module = MessagingModuleConfiguration.shared
+                val userED25519KeyPair = module.getUserED25519KeyPair() ?: return@retryIfNeeded Promise.ofFail(Error.NoKeyPair)
+                val parameters = message.toJSON().toMutableMap<String,Any>()
+                // Construct signature
+                if (requiresAuth) {
+                    val sigTimestamp = nowWithOffset
+                    val ed25519PublicKey = userED25519KeyPair.publicKey.asHexString
+                    val signature = ByteArray(Sign.BYTES)
+                    // assume namespace here is non-zero, as zero namespace doesn't require auth
+                    val verificationData = "store$namespace$sigTimestamp".toByteArray()
+                    try {
+                        sodium.cryptoSignDetached(signature, verificationData, verificationData.size.toLong(), userED25519KeyPair.secretKey.asBytes)
+                    } catch (exception: Exception) {
+                        return@retryIfNeeded Promise.ofFail(Error.SigningFailed)
+                    }
+                    parameters["sig_timestamp"] = sigTimestamp
+                    parameters["pubkey_ed25519"] = ed25519PublicKey
+                    parameters["signature"] = Base64.encodeBytes(signature)
+                }
+                // If the namespace is default (0) here it will be implicitly read as 0 on the storage server
+                // we only need to specify it explicitly if we want to (in future) or if it is non-zero
+                if (namespace != 0) {
+                    parameters["namespace"] = namespace
+                }
+                getSingleTargetMnode(destination).bind { mnode ->
                     Log.d("Beldex", "invoke MnodeAPI.kt 5")
                     invoke(Mnode.Method.SendMessage, mnode, destination, parameters)
-                }.toSet()
             }
         }
     }
@@ -461,30 +501,29 @@ object MnodeAPI {
         }
     }
 
-    fun parseRawMessagesResponse(rawResponse: RawResponse, mnode: Mnode, publicKey: String): List<Pair<SignalServiceProtos.Envelope, String?>> {
+    fun parseRawMessagesResponse(rawResponse: RawResponse, mnode: Mnode, publicKey: String, namespace: Int = 0): List<Pair<SignalServiceProtos.Envelope, String?>> {
         val messages = rawResponse["messages"] as? List<*>
         return if (messages != null) {
-            updateLastMessageHashValueIfPossible(mnode, publicKey, messages)
-            val newRawMessages = removeDuplicates(publicKey, messages)
+            updateLastMessageHashValueIfPossible(mnode, publicKey, messages, namespace)
+            val newRawMessages = removeDuplicates(publicKey, messages, namespace)
             return parseEnvelopes(newRawMessages)
         } else {
             listOf()
         }
     }
 
-    private fun updateLastMessageHashValueIfPossible(mnode: Mnode, publicKey: String, rawMessages: List<*>) {
+    private fun updateLastMessageHashValueIfPossible(mnode: Mnode, publicKey: String, rawMessages: List<*>, namespace: Int) {
         val lastMessageAsJSON = rawMessages.lastOrNull() as? Map<*, *>
         val hashValue = lastMessageAsJSON?.get("hash") as? String
         if (hashValue != null) {
-            database.setLastMessageHashValue(mnode, publicKey, hashValue)
+            database.setLastMessageHashValue(mnode, publicKey, hashValue, namespace)
         } else if (rawMessages.isNotEmpty()) {
             Log.d("Beldex", "Failed to update last message hash value from: ${rawMessages.prettifiedDescription()}.")
         }
     }
 
-    private fun removeDuplicates(publicKey: String, rawMessages: List<*>): List<*> {
-        /*val receivedMessageHashValues = database.getReceivedMessageHashValues(publicKey)?.toMutableSet() ?: mutableSetOf()*/
-        val originalMessageHashValues = database.getReceivedMessageHashValues(publicKey)?.toMutableSet() ?: mutableSetOf()
+    private fun removeDuplicates(publicKey: String, rawMessages: List<*>, namespace: Int): List<*> {
+        val originalMessageHashValues = database.getReceivedMessageHashValues(publicKey, namespace)?.toMutableSet() ?: mutableSetOf()
         val receivedMessageHashValues = originalMessageHashValues.toMutableSet()
         val result = rawMessages.filter { rawMessage ->
             val rawMessageAsJSON = rawMessage as? Map<*, *>
@@ -499,7 +538,7 @@ object MnodeAPI {
             }
         }
         if (originalMessageHashValues != receivedMessageHashValues) {
-            database.setReceivedMessageHashValues(publicKey, receivedMessageHashValues)
+            database.setReceivedMessageHashValues(publicKey, receivedMessageHashValues, namespace)
         }
         return result
     }

@@ -705,7 +705,6 @@
     <string name="activity_display_name_edit_text_hint" translatable="false">Enter a display name</string>
     <string name="activity_display_name_display_name_missing_error" translatable="false">Please pick a display name</string>
     <string name="activity_display_name_display_name_too_long_error" translatable="false">Please pick a shorter display name</string>
-    <string name="activity_display_name_hint" translatable="false">You can change it anytime :)</string>
 
     <string name="activity_pn_mode_recommended_option_tag" translatable="false">Recommended</string>
     <string name="activity_pn_mode_no_option_picked_dialog_title" translatable="false">Please Pick an Option</string>
@@ -800,8 +799,8 @@
     <string name="dialog_seed_explanation" translatable="false">This is your recovery phrase. With it, you can restore or migrate your BChat ID to a new device.</string>
 
     <string name="dialog_clear_all_data_title" translatable="false">Clear All Data</string>
-    <string name="dialog_clear_all_data_explanation" translatable="false">This will permanently delete your messages, BChats, and contacts.</string>
-    <string name="dialog_clear_all_data_network_explanation" translatable="false">Would you like to clear only this device ?</string>
+    <string name="dialog_clear_all_data_explanation" translatable="false">Are you sure want to delete your data from the device?</string>
+    <string name="dialog_clear_all_data_network_explanation" translatable="false">Are you sure want to delete your data from the network? If you continue you will not be able to restore your messages or contacts</string>
     <string name="dialog_clear_all_data_local_only" translatable="false">Delete Only</string>
     <string name="dialog_clear_all_data_clear_network" translatable="false">Entire Account</string>
 
@@ -992,13 +991,13 @@
     <string name="register_screen_chat_id_description_content" translatable="false">Your BChat ID is like your username. You can share it with your friends to begin a conversation.</string>
     <string name="register_screen_beldex_address_description_content" translatable="false">Your Beldex address is connected to your BChat ID. You can use this address to receive BDX.</string>
     <string name="create_password_screen_description_content" translatable="false">Enter a four digit pin to add an additional layer of security to your BChat account. Your pin is required to unlock your account or view your recovery keys and recovery seed once you\'re logged in.</string>
-    <string name="recovery_phrase_screen_description_content" translatable="false">Copy your Recovery Seed and keep it safe.</string>
+    <string name="recovery_phrase_screen_description_content" translatable="false"><font color='#FF0000'>Note: </font> Save your recovery seed! Only your recovery seed can be used to recover your account on another device. Copy the recovery seed to continue.</string>
     <string name="new_chat_screen_description_content" translatable="false">Share your BChat ID with your friends. You can find your BChat ID below.</string>
     <string name="never_share_your_seed_with_anyone" translatable="false">Never share your seed with anyone!</string>
     <string name="seed_permission_important_description" translatable="false">Your seed can be used to restore your account. Never share it with anyone or store a digital copy of it. Never enter your seed in any other website or application other than BChat or the Beldex official wallet.</string>
     <string name="seed_permission_important_confirmTitle" translatable="false">Check your surroundings to ensure no one is overlooking. Do you want to proceed?</string>
     <string name="seed_permission_important_confirmButton" translatable="false">Yes, I\'m Safe.</string>
-    <string name="mnemonic_edit_text_hint" translatable="false">Enter your Seed</string>
+    <string name="mnemonic_edit_text_hint" translatable="false">Enter your recovery seed to restore your account.</string>
     <string name="password_screen_description_content" translatable="false">Enter your four digit pin to unlock your account</string>
     <string name="check_password_description_content_seed" translatable="false">Enter your password to view your seed. Write it down on paper.</string>
     <string name="check_password_description_content_keys" translatable="false">Enter your password to view your restore key. Write it down on paper.</string>
@@ -1077,8 +1076,8 @@
     <string name="activity_rescan_page_title" translatable="false">Rescan</string>
     <string name="enter_amount" translatable="false">Enter amount</string>
     <string name="current_blockheight" translatable="false">Current Blockheight : </string>
-    <string name="restore_from_height" translatable="false">Restore from Height</string>
-    <string name="restore_from_date" translatable="false"> Restore from Date</string>
+    <string name="restore_from_height" translatable="false">Restore from height</string>
+    <string name="restore_from_date" translatable="false"> Restore from date</string>
     <string name="activity_new_node_page_title" translatable="false">New Node</string>
     <string name="node_address" translatable="false">Node address</string>
     <string name="node_port" translatable="false">Node port</string>
@@ -1417,6 +1416,10 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="yes_i_understand" translatable="false">Yes, I Understand</string>
     <string name="enable_wallet" translatable="false">Enable Wallet</string>
     <string name="validation_for_empty_node_host" translatable="false">Please enter a node address</string>
+    <string name="dialog_clear_all_data_clear_device_only_title" translatable="false">Clear Data </string>
+    <string name="dialog_clear_all_data_clear_device_and_network_title" translatable="false">Delete Entire Account</string>
+    <string name="dialog_clear_all_data_clear_device_only_subtitle" translatable="false">Clear only in device</string>
+    <string name="dialog_clear_all_data_clear_device_and_network_subtitle" translatable="false">Delete account from Network</string>
     <string name="back">Back</string>
     <string name="restore_from_block_height_hint" translatable="false">Enter Block height to Restore</string>
     <string name="restore_from_date_hint" translatable="false">Enter Date</string>

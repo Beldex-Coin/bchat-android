@@ -55,7 +55,7 @@ object ConversationMenuHelper {
         inflater.inflate(R.menu.menu_conversation, menu)
         // Expiring messages
         //New Line v32
-        if (!isOpenGroup && thread.hasApprovedMe()) {
+        if (!isOpenGroup && (thread.hasApprovedMe() || thread.isClosedGroupRecipient)){
             if (thread.expireMessages > 0) {
                 inflater.inflate(R.menu.menu_conversation_expiration_on, menu)
                 val item = menu.findItem(R.id.menu_expiring_messages)

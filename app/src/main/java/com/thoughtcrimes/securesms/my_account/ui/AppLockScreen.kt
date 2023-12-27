@@ -1,6 +1,8 @@
 package com.thoughtcrimes.securesms.my_account.ui
 
+import android.content.Intent
 import android.content.res.Configuration
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,17 +18,25 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import com.thoughtcrimes.securesms.compose_utils.BChatTheme
 import com.thoughtcrimes.securesms.compose_utils.appColors
+import com.thoughtcrimes.securesms.onboarding.ui.OnBoardingActivity
 import io.beldex.bchat.R
 
 @Composable
 fun AppLockScreen() {
+    val context = LocalContext.current
+    val changePin: () -> Unit  = {
+        val intent = Intent(Intent.ACTION_VIEW, "onboarding://change_pin?finish=true".toUri(), context, OnBoardingActivity::class.java)
+        context.startActivity(intent)
+    }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -41,6 +51,9 @@ fun AppLockScreen() {
             ),
             modifier = Modifier
                 .fillMaxWidth()
+                .clickable {
+                    changePin()
+                }
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,

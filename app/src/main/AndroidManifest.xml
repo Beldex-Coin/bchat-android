@@ -526,6 +526,10 @@
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="true">
 
+            <intent-filter>
+                <data android:scheme="onboarding" android:host="change_pin"/>
+            </intent-filter>
+
         </activity>
 
         <activity

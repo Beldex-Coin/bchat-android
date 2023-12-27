@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
@@ -46,10 +47,38 @@ import com.thoughtcrimes.securesms.compose_utils.PrimaryButton
 import com.thoughtcrimes.securesms.compose_utils.appColors
 import io.beldex.bchat.R
 
+data class PinCodeState(
+    val step:PinCodeSteps = PinCodeSteps.OldPin,
+    val stepTitle: String = "",
+    val pin: String = "",
+    val newPin: String = "",
+    val reEnteredPin: String = ""
+)
+
+sealed interface PinCodeEvents {
+    data object Submit: PinCodeEvents
+    data class PinCodeChanged(val pinCode: String): PinCodeEvents
+}
+
 @Composable
-fun PinCodeScreen() {
-    var pin by remember {
-        mutableStateOf("")
+fun PinCodeScreen(
+    state: PinCodeState,
+    onEvent: (PinCodeEvents) -> Unit
+) {
+    val pin by remember(state) {
+        mutableStateOf(
+            value = when (state.step) {
+                PinCodeSteps.EnterPin -> {
+                    state.newPin
+                }
+                PinCodeSteps.OldPin -> {
+                    state.pin
+                }
+                PinCodeSteps.ReEnterPin -> {
+                    state.reEnteredPin
+                }
+            }
+        )
     }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -81,7 +110,7 @@ fun PinCodeScreen() {
             )
 
             Text(
-                text = "Enter your PIN",
+                text = state.stepTitle,
                 style = MaterialTheme.typography.titleMedium
             )
         }
@@ -149,7 +178,8 @@ fun PinCodeScreen() {
                                         modifier = Modifier
                                             .height(cellHeight)
                                             .clickable {
-                                                pin += "0"
+                                                if (pin.length < 4)
+                                                    onEvent(PinCodeEvents.PinCodeChanged(pin + "0"))
                                             }
                                     ) {
                                         Box(
@@ -175,7 +205,7 @@ fun PinCodeScreen() {
                                             .height(cellHeight)
                                             .clickable {
                                                 if (pin.isNotEmpty()) {
-                                                    pin = pin.substring(0, pin.length - 1)
+                                                    onEvent(PinCodeEvents.PinCodeChanged(pin.substring(0, pin.length - 1)))
                                                 }
                                             }
                                     ) {
@@ -202,7 +232,8 @@ fun PinCodeScreen() {
                                         modifier = Modifier
                                             .height(cellHeight)
                                             .clickable {
-                                                pin += "$index"
+                                                if (pin.length < 4)
+                                                    onEvent(PinCodeEvents.PinCodeChanged(pin + "$index"))
                                             }
                                     ) {
                                         Box(
@@ -225,8 +256,10 @@ fun PinCodeScreen() {
                 Spacer(modifier = Modifier.weight(1f))
 
                 PrimaryButton(
-                    onClick = {},
-                    enabled = true,
+                    onClick = {
+                        onEvent(PinCodeEvents.Submit)
+                    },
+                    enabled = pin.length == 4,
                     modifier = Modifier
                         .fillMaxWidth(0.8f)
                         .align(Alignment.CenterHorizontally)
@@ -235,7 +268,7 @@ fun PinCodeScreen() {
                         }
                 ) {
                     Text(
-                        text = "Continue",
+                        text = stringResource(id = R.string.continue_2),
                         style = MaterialTheme.typography.titleMedium.copy(
                             color = Color.White
                         ),
@@ -256,7 +289,10 @@ fun PinCodeScreen() {
 fun PinCodeScreenPreview() {
     BChatTheme {
         Scaffold {
-            PinCodeScreen()
+            PinCodeScreen(
+                state = PinCodeState(),
+                onEvent = {}
+            )
         }
     }
 }
@@ -270,7 +306,10 @@ fun PinCodeScreenPreview() {
 fun PinCodeScreenPreview2() {
     BChatTheme {
         Scaffold {
-            PinCodeScreen()
+            PinCodeScreen(
+                state = PinCodeState(),
+                onEvent = {}
+            )
         }
     }
 }

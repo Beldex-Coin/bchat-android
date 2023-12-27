@@ -1429,4 +1429,11 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="clear_only_in_device">Clear only in device</string>
     <string name="delete_entire_account">Delete Entire Account</string>
     <string name="delete_account_from_network">Delete account from network</string>
+    <string name="enter_your_pin">Enter your PIN</string>
+    <string name="enter_old_pin">Enter Old PIN</string>
+    <string name="enter_new_pin">Enter New PIN</string>
+    <string name="re_enter_your_pin">Re-Enter your PIN</string>
+    <string name="incorrect_password_entered">Incorrect password entered</string>
+    <string name="old_new_password_same">New password should be same as old password.</string>
+    <string name="password_does_not_match">Password does not match.</string>
 </resources>

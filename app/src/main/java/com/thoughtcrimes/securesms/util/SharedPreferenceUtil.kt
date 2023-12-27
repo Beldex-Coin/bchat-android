@@ -70,4 +70,8 @@ class SharedPreferenceUtil(
         return TextSecurePreferences.getLocalNumber(context)!!
     }
 
+    fun getSavedPassword(): String? {
+        return TextSecurePreferences.getMyPassword(context)
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.beldex.libsignal.database
 
 import com.beldex.libsignal.crypto.ecc.ECKeyPair
+import com.beldex.libsignal.utilities.ForkInfo
 import com.beldex.libsignal.utilities.Mnode
 import java.util.*
 
@@ -13,10 +14,10 @@ interface BeldexAPIDatabaseProtocol {
     fun setOnionRequestPaths(newValue: List<List<Mnode>>)
     fun getSwarm(publicKey: String): Set<Mnode>?
     fun setSwarm(publicKey: String, newValue: Set<Mnode>)
-    fun getLastMessageHashValue(mnode: Mnode, publicKey: String): String?
-    fun setLastMessageHashValue(mnode: Mnode, publicKey: String, newValue: String)
-    fun getReceivedMessageHashValues(publicKey: String): Set<String>?
-    fun setReceivedMessageHashValues(publicKey: String, newValue: Set<String>)
+    fun getLastMessageHashValue(mnode: Mnode, publicKey: String, namespace: Int): String?
+    fun setLastMessageHashValue(mnode: Mnode, publicKey: String, newValue: String, namespace: Int)
+    fun getReceivedMessageHashValues(publicKey: String, namespace: Int): Set<String>?
+    fun setReceivedMessageHashValues(publicKey: String, newValue: Set<String>, namespace: Int)
     fun getAuthToken(server: String): String?
     fun setAuthToken(server: String, newValue: String?)
     fun setUserCount(group: Long, server: String, newValue: Int)
@@ -33,4 +34,6 @@ interface BeldexAPIDatabaseProtocol {
     fun getClosedGroupEncryptionKeyPairs(groupPublicKey: String): List<ECKeyPair>
     fun getLatestClosedGroupEncryptionKeyPair(groupPublicKey: String): ECKeyPair?
     fun isClosedGroup(groupPublicKey: String): Boolean
+    fun getForkInfo(): ForkInfo
+    fun setForkInfo(forkInfo: ForkInfo)
 }

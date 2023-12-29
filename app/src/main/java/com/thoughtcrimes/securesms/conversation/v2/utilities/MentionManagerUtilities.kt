@@ -9,8 +9,6 @@ import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 object MentionManagerUtilities {
 
     fun populateUserPublicKeyCacheIfNeeded(threadID: Long, context: Context) {
-        // exit early if we need to
-        if (MentionsManager.userPublicKeyCache[threadID] != null) return
 
         val result = mutableSetOf<String>()
         val recipient = DatabaseComponent.get(context).threadDatabase().getRecipientForThreadId(threadID) ?: return

@@ -19,19 +19,27 @@ class FirebaseRemoteConfigUtil {
         instance.setDefaultsAsync(DEFAULT_DATA)
         instance.fetchAndActivate().addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                println(">>>>firebase fetch successfull:${task.result}")
+
             } else {
-                println(">>>>firebase fetch failed")
+
             }
         }
     }
 
     fun getInfoMessage() = instance.getString(INFO_MESSAGE)
 
+    fun showPromotionalOffer() = instance.getBoolean(SHOW_PROMOTION)
+
+    fun getPromotionData() = instance.getString(PROMOTION_DATA)
+
     companion object {
         private const val INFO_MESSAGE = "info_message"
+        private const val SHOW_PROMOTION = "show_promotion"
+        private const val PROMOTION_DATA = "promotion_data"
         private val DEFAULT_DATA = mapOf(
-            "info_message" to ""
+            INFO_MESSAGE to "",
+            SHOW_PROMOTION to false,
+            PROMOTION_DATA to ""
         )
     }
 }

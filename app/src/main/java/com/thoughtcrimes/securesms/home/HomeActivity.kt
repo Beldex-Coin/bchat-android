@@ -102,6 +102,7 @@ import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityHomeBinding
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filter
@@ -168,7 +169,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     @Inject
     lateinit var sharedPreferenceUtil: SharedPreferenceUtil
     @Inject
-    lateinit var remoteconfig: FirebaseRemoteConfigUtil
+    lateinit var remoteConfig: FirebaseRemoteConfigUtil
     private var favouriteNodes: Set<NodeInfo> = setOf()
 
     // region Lifecycle
@@ -180,8 +181,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
         //-Wallet
         LegacyStorageHelper.migrateWallets(this)
-
-        val message = remoteconfig.getInfoMessage()
 
         if(intent.getBooleanExtra(SHORTCUT_LAUNCHER,false)){
            //Shortcut launcher
@@ -239,6 +238,18 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                         loadLegacyList()
                     }
                 }
+            }
+        }
+
+        lifecycleScope.launch {
+            delay(2000)
+            val showPromotion = remoteConfig.showPromotionalOffer()
+            val dialogClicked = textSecurePreferences.getPromotionDialogClicked()
+            val ignoredCount = textSecurePreferences.getPromotionDialogIgnoreCount()
+            if (showPromotion && !dialogClicked && ignoredCount < 3) {
+                val dialog = PromotionOfferDialog.newInstance()
+                dialog.isCancelable = false
+                dialog.show(supportFragmentManager, PromotionOfferDialog.TAG)
             }
         }
 

@@ -11,8 +11,8 @@ apply from: 'buildGradle/dependencies.gradle'
 configurations.all {
     exclude module: "commons-logging"
 }
-def canonicalVersionCode = 36
-def canonicalVersionName = "2.2.1"
+def canonicalVersionCode = 37
+def canonicalVersionName = "2.2.2"
 
 //First Release Date 17-06-2022
 //Version Code 15 Version Name 1.0.0

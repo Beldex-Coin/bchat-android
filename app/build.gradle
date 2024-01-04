@@ -80,6 +80,9 @@ def canonicalVersionName = "2.2.2"
 //Twenty-second Release Data 21-12-2023
 //Version code 36 Version Name 2.2.1
 
+//Twenty-third Release Data 03-01-2024
+//Version code 37 Version Name 2.2.2
+
 
 def postFixSize = 10
 def abiPostFix = ['armeabi-v7a' : 1,

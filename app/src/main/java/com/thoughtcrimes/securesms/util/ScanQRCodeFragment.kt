@@ -5,6 +5,8 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,12 +21,10 @@ import com.google.zxing.MultiFormatReader
 import com.google.zxing.NotFoundException
 import com.google.zxing.RGBLuminanceSource
 import com.google.zxing.common.HybridBinarizer
-import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
-import com.thoughtcrimes.securesms.home.HomeActivity
-import io.beldex.bchat.databinding.FragmentScanQrCodeBinding
 import com.thoughtcrimes.securesms.qr.ScanListener
 import com.thoughtcrimes.securesms.qr.ScanningThread
 import io.beldex.bchat.R
+import io.beldex.bchat.databinding.FragmentScanQrCodeBinding
 import java.io.FileNotFoundException
 import java.io.InputStream
 
@@ -34,6 +34,7 @@ class ScanQRCodeFragment : Fragment() {
     var scanListener: ScanListener? = null
         set(value) { field = value; scanningThread.setScanListener(scanListener) }
     var message: CharSequence = ""
+    var time = (1 * 1000).toLong()
 
     companion object{
        const val FROM_NEW_CHAT_SCREEN = "from_new_chat_screen"
@@ -59,9 +60,13 @@ class ScanQRCodeFragment : Fragment() {
             binding.messageTextView.text = getString(R.string.join_social_group_content)
         }
         binding.uploadFromGalleryLayout.setOnClickListener {
+            binding.uploadFromGalleryLayout.isEnabled = false
             val pickIntent = Intent(Intent.ACTION_PICK)
             pickIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
             resultLauncher.launch(pickIntent)
+            Handler(Looper.getMainLooper()).postDelayed({
+                binding.uploadFromGalleryLayout.isEnabled = true
+            }, time)
         }
     }
 

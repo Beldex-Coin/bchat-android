@@ -15,6 +15,8 @@ import com.beldex.libbchat.R
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.CALL_NOTIFICATIONS_ENABLED
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_MUTE_VIDEO
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.LAST_VACUUM_TIME
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.PREF_DIALOG_CLICKED
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.PREF_DIALOG_IGNORED_COUNT
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.SHOWN_CALL_NOTIFICATION
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.SHOWN_CALL_WARNING
 import com.beldex.libsignal.utilities.Log
@@ -251,6 +253,10 @@ interface TextSecurePreferences {
     fun isWalletActive(): Boolean
     fun setMuteVideo(status: Boolean)
     fun getMuteVideo(): Boolean
+    fun getPromotionDialogIgnoreCount(): Int
+    fun getPromotionDialogClicked(): Boolean
+    fun setPromotionDialogIgnoreCount(count: Int)
+    fun setPromotionDialogClicked()
 
 
     companion object {
@@ -365,6 +371,8 @@ interface TextSecurePreferences {
         const val LAST_VACUUM_TIME = "pref_last_vacuum_time"
         const val IS_WALLET_ACTIVE = "pref_is_wallet_active"
         const val IS_MUTE_VIDEO = "is_mute_video"
+        const val PREF_DIALOG_CLICKED = "promotion_dialog_clicked"
+        const val PREF_DIALOG_IGNORED_COUNT = "promotion_dialog_ignored_count"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -2244,5 +2252,19 @@ class AppTextSecurePreferences @Inject constructor(
         return getBooleanPreference(IS_MUTE_VIDEO,false)
     }
 
+    override fun getPromotionDialogIgnoreCount(): Int {
+        return getIntegerPreference(PREF_DIALOG_IGNORED_COUNT, 0)
+    }
 
+    override fun getPromotionDialogClicked(): Boolean {
+        return getBooleanPreference(PREF_DIALOG_CLICKED, false)
+    }
+
+    override fun setPromotionDialogIgnoreCount(count: Int) {
+        setIntegerPreference(PREF_DIALOG_IGNORED_COUNT, count)
+    }
+
+    override fun setPromotionDialogClicked() {
+        setBooleanPreference(PREF_DIALOG_CLICKED, true)
+    }
 }

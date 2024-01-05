@@ -31,7 +31,6 @@ import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
-import org.conscrypt.Conscrypt;
 import com.beldex.libbchat.avatars.AvatarHelper;
 import com.beldex.libbchat.database.MessageDataProvider;
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration;
@@ -50,11 +49,10 @@ import com.beldex.libbchat.utilities.dynamiclanguage.LocaleParser;
 import com.beldex.libsignal.utilities.HTTP;
 import com.beldex.libsignal.utilities.Log;
 import com.beldex.libsignal.utilities.ThreadUtils;
-import org.signal.aesgcmprovider.AesGcmProvider;
 import com.thoughtcrimes.securesms.components.TypingStatusSender;
 import com.thoughtcrimes.securesms.crypto.KeyPairUtilities;
-import com.thoughtcrimes.securesms.database.JobDatabase;
 import com.thoughtcrimes.securesms.database.BeldexAPIDatabase;
+import com.thoughtcrimes.securesms.database.JobDatabase;
 import com.thoughtcrimes.securesms.database.Storage;
 import com.thoughtcrimes.securesms.database.helpers.SQLCipherOpenHelper;
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent;
@@ -71,9 +69,9 @@ import com.thoughtcrimes.securesms.logging.PersistentLogger;
 import com.thoughtcrimes.securesms.logging.UncaughtExceptionLogger;
 import com.thoughtcrimes.securesms.model.NetworkType;
 import com.thoughtcrimes.securesms.notifications.BackgroundPollWorker;
+import com.thoughtcrimes.securesms.notifications.BeldexPushNotificationManager;
 import com.thoughtcrimes.securesms.notifications.DefaultMessageNotifier;
 import com.thoughtcrimes.securesms.notifications.FcmUtils;
-import com.thoughtcrimes.securesms.notifications.BeldexPushNotificationManager;
 import com.thoughtcrimes.securesms.notifications.NotificationChannels;
 import com.thoughtcrimes.securesms.notifications.OptimizedMessageNotifier;
 import com.thoughtcrimes.securesms.providers.BlobProvider;
@@ -84,10 +82,13 @@ import com.thoughtcrimes.securesms.sskenvironment.ProfileManager;
 import com.thoughtcrimes.securesms.sskenvironment.ReadReceiptManager;
 import com.thoughtcrimes.securesms.sskenvironment.TypingStatusRepository;
 import com.thoughtcrimes.securesms.util.Broadcaster;
+import com.thoughtcrimes.securesms.util.FirebaseRemoteConfigUtil;
 import com.thoughtcrimes.securesms.util.UiModeUtilities;
 import com.thoughtcrimes.securesms.util.dynamiclanguage.LocaleParseHelper;
 import com.thoughtcrimes.securesms.webrtc.CallMessageProcessor;
 
+import org.conscrypt.Conscrypt;
+import org.signal.aesgcmprovider.AesGcmProvider;
 import org.webrtc.PeerConnectionFactory;
 import org.webrtc.PeerConnectionFactory.InitializationOptions;
 import org.webrtc.voiceengine.WebRtcAudioManager;
@@ -105,9 +106,9 @@ import javax.inject.Inject;
 
 import dagger.hilt.EntryPoints;
 import dagger.hilt.android.HiltAndroidApp;
+import io.beldex.bchat.BuildConfig;
 import kotlin.Unit;
 import kotlinx.coroutines.Job;
-import io.beldex.bchat.BuildConfig;
 
 /**
  * Will be called once when the TextSecure process is created.
@@ -147,6 +148,9 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
     @Inject TextSecurePreferences textSecurePreferences;
     CallMessageProcessor callMessageProcessor;
     MessagingModuleConfiguration messagingModuleConfiguration;
+
+    @Inject
+    FirebaseRemoteConfigUtil remoteConfigUtil;
 
     private volatile boolean isAppVisible;
 

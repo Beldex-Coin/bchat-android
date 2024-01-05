@@ -705,6 +705,7 @@
     <string name="activity_display_name_edit_text_hint" translatable="false">Enter a display name</string>
     <string name="activity_display_name_display_name_missing_error" translatable="false">Please pick a display name</string>
     <string name="activity_display_name_display_name_too_long_error" translatable="false">Please pick a shorter display name</string>
+    <string name="activity_display_name_hint" translatable="false">You can change it anytime :)</string>
 
     <string name="activity_pn_mode_recommended_option_tag" translatable="false">Recommended</string>
     <string name="activity_pn_mode_no_option_picked_dialog_title" translatable="false">Please Pick an Option</string>
@@ -1439,4 +1440,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="incorrect_password_entered">Incorrect password entered</string>
     <string name="old_new_password_same">New password should be same as old password.</string>
     <string name="password_does_not_match">Password does not match.</string>
+    <string name="title_activity_join_public_new_chat_screen">JoinPublicNewChatScreen</string>
+    <string name="title_activity_create_secret_group_screen">CreateSecretGroupScreen</string>
+    <string name="title_activity_create_new_private_chat_screen">CreateNewPrivateChatScreen</string>
+    <string name="title_activity_start_wallet_info_screen">StartWalletInfoScreen</string>
 </resources>

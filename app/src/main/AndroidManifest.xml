@@ -28,7 +28,7 @@
         android:name="android.hardware.touchscreen"
         android:required="false" />
 
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -59,8 +59,8 @@
         tools:node="remove" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
-    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
 
     <queries>
         <intent>
@@ -79,10 +79,25 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
         <activity
+            android:name="com.thoughtcrimes.securesms.dms.CreateNewPrivateChatScreen"
+            android:exported="false"
+            android:label="@string/title_activity_create_new_private_chat_screen"
+            android:theme="@style/Theme.Bchat.DayNight" />
+        <activity
+            android:name="com.thoughtcrimes.securesms.groups.CreateSecretGroupScreen"
+            android:exported="false"
+            android:label="@string/title_activity_create_secret_group_screen"
+            android:theme="@style/Theme.Bchat.DayNight" />
+        <activity
+            android:name="com.thoughtcrimes.securesms.groups.JoinSocialGroupScreen"
+            android:exported="false"
+            android:label="@string/title_activity_join_public_new_chat_screen"
+            android:theme="@style/Theme.Bchat.DayNight" />
+        <activity
             android:name="com.thoughtcrimes.securesms.contacts.blocked.BlockedContactsActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.TransactionDetails"
             android:exported="false"
@@ -244,8 +259,9 @@
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" /> <!-- Disable all analytics -->
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.startwallet.StartWalletInfo"
-            android:screenOrientation="portrait"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <meta-data
             android:name="firebase_analytics_collection_deactivated"
             android:value="true" />
@@ -307,11 +323,11 @@
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.home.HomeActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
-            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"/>
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
 
         <activity-alias
             android:name=".RoutingActivity"
@@ -506,38 +522,31 @@
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="true"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
-
         <activity
             android:name="com.thoughtcrimes.securesms.onboarding.LandingScreenActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="true">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
             </intent-filter>
-
         </activity>
-
         <activity
             android:name="com.thoughtcrimes.securesms.onboarding.ui.OnBoardingActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="true">
-
             <intent-filter>
-                <data android:scheme="onboarding" android:host="change_pin"/>
+                <data
+                    android:host="change_pin"
+                    android:scheme="onboarding" />
             </intent-filter>
-
         </activity>
-
         <activity
             android:name="com.thoughtcrimes.securesms.my_account.ui.MyAccountActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
-            android:exported="true">
-
-        </activity>
+            android:exported="true"></activity>
 
         <service
             android:name="com.thoughtcrimes.securesms.notifications.PushNotificationService"
@@ -698,7 +707,6 @@
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE"
             tools:targetApi="26" />
-
         <service
             android:name="com.thoughtcrimes.securesms.jobmanager.KeepAliveService"
             android:enabled="@bool/enable_alarm_manager"
@@ -708,7 +716,6 @@
             android:name="com.thoughtcrimes.securesms.jobmanager.AlarmManagerScheduler$RetryReceiver"
             android:enabled="@bool/enable_alarm_manager"
             android:exported="false" /> <!-- Probably don't need this one -->
-
         <uses-library
             android:name="com.sec.android.app.multiwindow"
             android:required="false" />

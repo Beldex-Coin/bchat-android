@@ -41,7 +41,7 @@
     <color name="app_icon_background">#333132</color>
     <color name="progress_bar_background">#0A000000</color>
     <color name="quote_not_found_background">#8000E97B</color>
-    <color name="card_color">#F4F4F4</color>
+    <color name="card_color">#ECECEC</color>
     <color name="page_background">#EDEDED</color>
     <color name="welcome_bg">#EDEDED</color>
     <color name="play_button">#ffffff</color>
@@ -134,4 +134,8 @@
     <color name="in_chat_amount_divider">#C9C9C9</color>
     <color name="edit_text_title">#EBEBEB</color>
     <color name="recovery_seed_content">#ECAB0F</color>
+    <color name="your_bchat_id_bg">#F8F8F8</color>
+    <color name="divider_color">#A7A7BA</color>
+    <color name="screen_background">#F0F0F0</color>
+
 </resources>

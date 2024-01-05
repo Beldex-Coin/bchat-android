@@ -173,6 +173,7 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:$hiltNavigationCompose")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:$composeLifecyleRuntime")
     //memory leak dependency
-//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
+//  debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
+    implementation ("com.airbnb.android:lottie-compose:4.0.0")
 
 }

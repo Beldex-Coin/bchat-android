@@ -299,6 +299,17 @@
           "description":"- Revamped User experience for delete account flow"
         }
       ]
+    },
+    {
+      "title": "2.2.2",
+      "descriptions": [
+        {
+          "description":"- Fixed alignment issues"
+        },
+        {
+          "description":"- Fixed minor bugs"
+        }
+      ]
     }
   ]
 }

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
 import android.view.*
@@ -37,6 +38,7 @@ class ScannerFragment: Fragment(), ZXingScannerView.ResultHandler,OnBackPressedL
     }
 
     lateinit var binding:FragmentScannerBinding
+    var time = (1 * 1000).toLong()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,9 +51,13 @@ class ScannerFragment: Fragment(), ZXingScannerView.ResultHandler,OnBackPressedL
             onScannedListener?.walletOnBackPressed()
         }
         binding.uploadFromGalleryLayout.setOnClickListener{
+            binding.uploadFromGalleryLayout.isEnabled = false
             val pickIntent = Intent(Intent.ACTION_PICK)
             pickIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
             resultLauncher.launch(pickIntent)
+            Handler(Looper.getMainLooper()).postDelayed({
+                binding.uploadFromGalleryLayout.isEnabled = true
+            }, time)
         }
         return binding.root
     }

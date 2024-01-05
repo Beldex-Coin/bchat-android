@@ -46,12 +46,15 @@ import com.thoughtcrimes.securesms.database.*
 import com.thoughtcrimes.securesms.database.model.ThreadRecord
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.dms.CreateNewPrivateChatActivity
+import com.thoughtcrimes.securesms.dms.CreateNewPrivateChatScreen
 import com.thoughtcrimes.securesms.drawer.ClickListener
 import com.thoughtcrimes.securesms.drawer.NavigationItemModel
 import com.thoughtcrimes.securesms.drawer.NavigationRVAdapter
 import com.thoughtcrimes.securesms.drawer.RecyclerTouchListener
 import com.thoughtcrimes.securesms.groups.CreateClosedGroupActivity
+import com.thoughtcrimes.securesms.groups.CreateSecretGroupScreen
 import com.thoughtcrimes.securesms.groups.JoinPublicChatNewActivity
+import com.thoughtcrimes.securesms.groups.JoinSocialGroupScreen
 import com.thoughtcrimes.securesms.groups.OpenGroupManager
 import com.thoughtcrimes.securesms.home.search.GlobalSearchAdapter
 import com.thoughtcrimes.securesms.home.search.GlobalSearchInputLayout
@@ -1131,7 +1134,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     }
 
     override fun createNewPrivateChat() {
-        val intent = Intent(requireContext(), CreateNewPrivateChatActivity::class.java)
+        val intent = Intent(requireContext(), CreateNewPrivateChatScreen::class.java)
         createNewPrivateChatResultLauncher.launch(intent)
     }
 
@@ -1147,7 +1150,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     }
 
     override fun createNewSecretGroup() {
-        val intent = Intent(requireContext(), CreateClosedGroupActivity::class.java)
+        val intent = Intent(requireContext(), CreateSecretGroupScreen::class.java)
         createClosedGroupActivityResultLauncher.launch(intent)
     }
 
@@ -1164,7 +1167,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     }
 
     override fun joinSocialGroup() {
-        Intent(requireContext(), JoinPublicChatNewActivity::class.java).also {
+        Intent(requireContext(), JoinSocialGroupScreen::class.java).also {
             joinPublicChatNewActivityResultLauncher.launch(it)
         }
     }

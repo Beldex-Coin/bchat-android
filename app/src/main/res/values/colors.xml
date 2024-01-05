@@ -212,4 +212,7 @@
     <color name="scan_qr_content_background">#22222266</color>
     <color name="edit_text_title">#EBEBEB</color>
     <color name="recovery_seed_content">#F0AF13</color>
+    <color name="your_bchat_id_bg">#282836</color>
+    <color name="divider_color">#4B4B64</color>
+    <color name="screen_background">#1C1C26</color>
 </resources>

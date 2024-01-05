@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
@@ -41,6 +42,7 @@ class WalletScannerFragment(
 {
     private var onScannedListener: OnScannedListener? = null
     var activityCallback: Listener? = null
+    var time = (1 * 1000).toLong()
 
     fun newInstance(listener: Listener): WalletScannerFragment {
         val instance: WalletScannerFragment = WalletScannerFragment()
@@ -82,9 +84,13 @@ class WalletScannerFragment(
             activityCallback?.walletOnBackPressed()
         }
         binding.uploadFromGalleryLayout.setOnClickListener {
+            binding.uploadFromGalleryLayout.isEnabled = false
             val pickIntent = Intent(Intent.ACTION_PICK)
             pickIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
             resultLauncher.launch(pickIntent)
+            Handler(Looper.getMainLooper()).postDelayed({
+                binding.uploadFromGalleryLayout.isEnabled = true
+            }, time)
         }
 
         return binding.root

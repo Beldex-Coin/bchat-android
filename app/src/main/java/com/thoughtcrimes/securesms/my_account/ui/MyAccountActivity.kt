@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,15 +30,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -48,17 +48,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.beldex.libbchat.utilities.recipients.Recipient
-import com.thoughtcrimes.securesms.applock.AppLockDetailsActivity
 import com.thoughtcrimes.securesms.compose_utils.BChatTheme
 import com.thoughtcrimes.securesms.compose_utils.appColors
-import com.thoughtcrimes.securesms.contacts.blocked.BlockedContactsActivity
 import com.thoughtcrimes.securesms.contacts.blocked.BlockedContactsViewModel
-import com.thoughtcrimes.securesms.preferences.ChatSettingsActivity
 import com.thoughtcrimes.securesms.util.UiMode
 import com.thoughtcrimes.securesms.util.UiModeUtilities
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MyAccountActivity: ComponentActivity() {
@@ -74,7 +70,7 @@ class MyAccountActivity: ComponentActivity() {
             ) {
                 Surface {
                     Scaffold(
-                        containerColor = MaterialTheme.colorScheme.primary
+                        containerColor = MaterialTheme.colorScheme.primary,
                     ) {
                         val navController = rememberNavController()
                         MyAccountNavHost(
@@ -271,6 +267,7 @@ fun MyAccountNavHost(
             var contacts by remember {
                 mutableStateOf(emptyList<Recipient>())
             }
+            val uiState by contactViewModel.uiState.collectAsState()
             val owner = LocalLifecycleOwner.current
             LaunchedEffect(key1 = Unit) {
                 contactViewModel.subscribe(context).observe(owner) { newState ->
@@ -281,20 +278,53 @@ fun MyAccountNavHost(
                 title = stringResource(id = R.string.blocked_contacts),
                 onBackClick = {
                     navController.navigateUp()
+                },
+                actionItems = {
+                    if (contacts.isNotEmpty()) {
+                        Icon(
+                            painter = if (uiState.multiSelectedActivated)
+                                painterResource(id = R.drawable.ic_selected_all)
+                            else
+                                painterResource(id = R.drawable.ic_unselected_all),
+                            contentDescription = "",
+                            tint = MaterialTheme.appColors.iconTint,
+                            modifier = Modifier
+                                .clickable {
+                                    contactViewModel.onEvent(BlockedContactEvents.MultiSelectClicked)
+                                }
+                        )
+                    }
                 }
             ) {
-                BlockedContactScreen(
-                    blockedList = contacts,
-                    unBlockSingleContact = {
-                        contactViewModel.unblockSingleUser(it)
-                    },
-                    unBlockMultipleContacts = {
-                        contactViewModel.unblock(it)
-                    },
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp)
-                )
+                if (contacts.isEmpty()) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.no_blocked_contact),
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                    }
+                } else {
+                    BlockedContactScreen(
+                        blockedList = contacts,
+                        selectedList = uiState.selectedList,
+                        multiSelectActivated = uiState.multiSelectedActivated,
+                        unBlockSingleContact = {
+                            contactViewModel.onEvent(BlockedContactEvents.UnblockSingleContact(it))
+                        },
+                        unBlockMultipleContacts = {
+                            contactViewModel.onEvent(BlockedContactEvents.UnblockMultipleContact)
+                        },
+                        addRemoveContactToList = { contact, add ->
+                            contactViewModel.onEvent(BlockedContactEvents.AddContactToUnBlockList(contact, add))
+                        },
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp)
+                    )
+                }
             }
         }
     }
@@ -305,7 +335,8 @@ private fun MyAccountScreenContainer(
     title: String,
     wrapInCard: Boolean = true,
     onBackClick: () -> Unit,
-    content: @Composable () -> Unit
+    actionItems: @Composable () -> Unit = {},
+    content: @Composable () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -335,8 +366,12 @@ private fun MyAccountScreenContainer(
                     color = MaterialTheme.appColors.editTextColor,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
-                )
+                ),
+                modifier = Modifier
+                    .weight(1f)
             )
+
+            actionItems()
         }
 
         Spacer(modifier = Modifier.height(24.dp))

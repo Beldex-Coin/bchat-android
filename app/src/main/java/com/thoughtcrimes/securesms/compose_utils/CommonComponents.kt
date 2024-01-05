@@ -183,6 +183,23 @@ fun BChatRadioButton(
         onClick = onClick,
         colors = RadioButtonDefaults.colors(
             selectedColor = MaterialTheme.appColors.primaryButtonColor,
-        )
+        ),
+        modifier = modifier
+    )
+}
+
+@Composable
+fun BChatCheckBox(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Checkbox(
+        checked = checked,
+        onCheckedChange = onCheckedChange,
+        colors = CheckboxDefaults.colors(
+            checkedColor = MaterialTheme.appColors.primaryButtonColor,
+        ),
+        modifier = modifier
     )
 }

@@ -9,14 +9,18 @@ import app.cash.copper.flow.observeQuery
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.thoughtcrimes.securesms.database.DatabaseContentProviders
 import com.thoughtcrimes.securesms.database.Storage
+import com.thoughtcrimes.securesms.my_account.ui.BlockedContactEvents
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.withContext
@@ -24,6 +28,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BlockedContactsViewModel @Inject constructor(private val storage: Storage): ViewModel() {
+
+    data class UiState(
+        val multiSelectedActivated: Boolean = false,
+        val selectedList: List<Recipient> = emptyList()
+    )
+
+    private val _uiState = MutableStateFlow(UiState())
+    val uiState = _uiState.asStateFlow()
 
     private val executor = viewModelScope + SupervisorJob()
 
@@ -52,6 +64,34 @@ class BlockedContactsViewModel @Inject constructor(private val storage: Storage)
             }
         }
         return _contacts
+    }
+
+    fun onEvent(event: BlockedContactEvents) {
+        when (event) {
+            is BlockedContactEvents.AddContactToUnBlockList -> {
+                _uiState.update {
+                    it.copy(
+                        selectedList = if (event.add)
+                            uiState.value.selectedList + event.contact
+                        else
+                        uiState.value.selectedList.filter { contact -> contact != event.contact }
+                    )
+                }
+            }
+            BlockedContactEvents.MultiSelectClicked -> {
+                _uiState.update {
+                    it.copy(
+                        multiSelectedActivated = !uiState.value.multiSelectedActivated
+                    )
+                }
+            }
+            BlockedContactEvents.UnblockMultipleContact -> {
+                unblock(uiState.value.selectedList)
+            }
+            is BlockedContactEvents.UnblockSingleContact -> {
+                unblockSingleUser(event.contact)
+            }
+        }
     }
 
     fun unblock(toUnblock: List<Recipient>) {

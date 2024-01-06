@@ -112,7 +112,9 @@ fun MyAccountNavHost(
             val uiState by viewModel.uiState.collectAsState()
             MyAccountScreenContainer(
                 title = stringResource(R.string.my_account),
-                onBackClick = {}
+                onBackClick = {
+                    (context as ComponentActivity).finish()
+                }
             ) {
                 MyAccountScreen(
                     uiState = uiState

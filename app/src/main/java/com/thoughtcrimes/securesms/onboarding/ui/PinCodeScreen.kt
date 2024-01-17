@@ -55,6 +55,11 @@ data class PinCodeState(
     val reEnteredPin: String = ""
 )
 
+enum class PinCodeAction(val action: Int) {
+    ChangePinCode(1),
+    VerifyPinCode(2)
+}
+
 sealed interface PinCodeEvents {
     data object Submit: PinCodeEvents
     data class PinCodeChanged(val pinCode: String): PinCodeEvents
@@ -71,7 +76,8 @@ fun PinCodeScreen(
                 PinCodeSteps.EnterPin -> {
                     state.newPin
                 }
-                PinCodeSteps.OldPin -> {
+                PinCodeSteps.OldPin,
+                PinCodeSteps.VerifyPin -> {
                     state.pin
                 }
                 PinCodeSteps.ReEnterPin -> {
@@ -255,26 +261,28 @@ fun PinCodeScreen(
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                PrimaryButton(
-                    onClick = {
-                        onEvent(PinCodeEvents.Submit)
-                    },
-                    enabled = pin.length == 4,
-                    modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .align(Alignment.CenterHorizontally)
-                        .onSizeChanged {
-                            buttonSize = it
-                        }
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.continue_2),
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            color = Color.White
-                        ),
+                if (state.step != PinCodeSteps.VerifyPin) {
+                    PrimaryButton(
+                        onClick = {
+                            onEvent(PinCodeEvents.Submit)
+                        },
+                        enabled = pin.length == 4,
                         modifier = Modifier
-                            .padding(4.dp)
-                    )
+                            .fillMaxWidth(0.8f)
+                            .align(Alignment.CenterHorizontally)
+                            .onSizeChanged {
+                                buttonSize = it
+                            }
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.continue_2),
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                color = Color.White
+                            ),
+                            modifier = Modifier
+                                .padding(4.dp)
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.weight(1f))

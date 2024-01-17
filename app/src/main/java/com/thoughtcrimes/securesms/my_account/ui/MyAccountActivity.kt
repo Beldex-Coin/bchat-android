@@ -1,11 +1,14 @@
 package com.thoughtcrimes.securesms.my_account.ui
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,15 +45,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.beldex.libbchat.utilities.recipients.Recipient
+import com.beldex.libsignal.crypto.MnemonicCodec
+import com.beldex.libsignal.utilities.hexEncodedPrivateKey
 import com.thoughtcrimes.securesms.compose_utils.BChatTheme
 import com.thoughtcrimes.securesms.compose_utils.appColors
 import com.thoughtcrimes.securesms.contacts.blocked.BlockedContactsViewModel
+import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
+import com.thoughtcrimes.securesms.crypto.MnemonicUtilities
+import com.thoughtcrimes.securesms.onboarding.ui.PinCodeAction
 import com.thoughtcrimes.securesms.util.UiMode
 import com.thoughtcrimes.securesms.util.UiModeUtilities
 import dagger.hilt.android.AndroidEntryPoint
@@ -59,11 +68,11 @@ import io.beldex.bchat.R
 @AndroidEntryPoint
 class MyAccountActivity: ComponentActivity() {
 
-    private var destination = MyAccountScreens.MyAccountScreen.route
+    private var destination = MyAccountScreens.SettingsScreen.route
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        destination = intent?.getStringExtra(extraStartDestination) ?: MyAccountScreens.MyAccountScreen.route
+        destination = intent?.getStringExtra(extraStartDestination) ?: MyAccountScreens.SettingsScreen.route
         setContent {
             BChatTheme(
                 darkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
@@ -106,21 +115,21 @@ fun MyAccountNavHost(
         startDestination = startDestination,
         modifier = modifier
     ) {
-        composable(
-            route = MyAccountScreens.MyAccountScreen.route
-        ) {
-            val uiState by viewModel.uiState.collectAsState()
-            MyAccountScreenContainer(
-                title = stringResource(R.string.my_account),
-                onBackClick = {
-                    (context as ComponentActivity).finish()
-                }
-            ) {
-                MyAccountScreen(
-                    uiState = uiState
-                )
-            }
-        }
+//        composable(
+//            route = MyAccountScreens.MyAccountScreen.route
+//        ) {
+//            val uiState by viewModel.uiState.collectAsState()
+//            MyAccountScreenContainer(
+//                title = stringResource(R.string.my_account),
+//                onBackClick = {
+//                    (context as ComponentActivity).finish()
+//                }
+//            ) {
+//                MyAccountScreen(
+//                    uiState = uiState
+//                )
+//            }
+//        }
 
         composable(
             route = MyAccountScreens.SettingsScreen.route
@@ -327,6 +336,79 @@ fun MyAccountNavHost(
                             .padding(16.dp)
                     )
                 }
+            }
+        }
+
+        composable(
+            route = MyAccountScreens.AboutScreen.route
+        ) {
+            val aboutViewModel: ContentViewModel = hiltViewModel()
+            val content by aboutViewModel.content.collectAsState()
+            MyAccountScreenContainer(
+                title = stringResource(R.string.about),
+                onBackClick = {
+                    (context as ComponentActivity).finish()
+                }
+            ) {
+                ContentScreen(
+                    content = content,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                )
+            }
+        }
+
+        composable(
+            route = MyAccountScreens.RecoverySeedScreen.route
+        ) {
+            var markedAsSafe by  remember {
+                mutableStateOf(false)
+            }
+            val resultLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
+                if (it.resultCode == Activity.RESULT_OK) {
+                    markedAsSafe = true
+                } else {
+                    markedAsSafe = false
+                    Toast.makeText(context, "Failed to authenticate", Toast.LENGTH_SHORT).show()
+                }
+            }
+            val verifyPin: () -> Unit  = {
+                val intent = Intent(Intent.ACTION_VIEW, "onboarding://manage_pin?finish=true&action=${PinCodeAction.VerifyPinCode.action}".toUri())
+                resultLauncher.launch(intent)
+            }
+            val seed by lazy {
+                try {
+                    var hexEncodedSeed = IdentityKeyUtil.retrieve(context, IdentityKeyUtil.BELDEX_SEED)
+                    if (hexEncodedSeed == null) {
+                        hexEncodedSeed = IdentityKeyUtil.getIdentityKeyPair(context).hexEncodedPrivateKey // Legacy account
+                    }
+                    val loadFileContents: (String) -> String = { fileName ->
+                        MnemonicUtilities.loadFileContents(context, fileName)
+                    }
+                    MnemonicCodec(loadFileContents).encode(
+                        hexEncodedSeed,
+                        MnemonicCodec.Language.Configuration.english
+                    )
+                } catch (e: Exception) {
+                    ""
+                }
+            }
+            MyAccountScreenContainer(
+                title = stringResource(R.string.recovery_seed),
+                wrapInCard = markedAsSafe,
+                onBackClick = {
+                    (context as ComponentActivity).finish()
+                }
+            ) {
+                RecoverySeedScreen(
+                    seed = seed,
+                    markedAsSafe = markedAsSafe,
+                    verifyPin = verifyPin,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                )
             }
         }
     }

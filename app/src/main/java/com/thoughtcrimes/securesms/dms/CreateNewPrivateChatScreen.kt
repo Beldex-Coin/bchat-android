@@ -55,6 +55,7 @@ import com.thoughtcrimes.securesms.compose_utils.appColors
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.my_account.ui.MyAccountActivity
+import com.thoughtcrimes.securesms.my_account.ui.MyProfileActivity
 import com.thoughtcrimes.securesms.onboarding.ui.RestoreSeedScreen
 import com.thoughtcrimes.securesms.util.UiMode
 import com.thoughtcrimes.securesms.util.UiModeUtilities
@@ -212,7 +213,7 @@ fun CreateNewPrivateChat() {
                         .fillMaxWidth()
                         .height(50.dp)
                         .clickable {
-                            val intent = Intent(context, MyAccountActivity::class.java)
+                            val intent = Intent(context, MyProfileActivity::class.java)
                             context.startActivity(intent)
                         }
                 ) {

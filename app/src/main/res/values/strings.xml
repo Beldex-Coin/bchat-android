@@ -1445,4 +1445,9 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="title_activity_create_secret_group_screen">CreateSecretGroupScreen</string>
     <string name="title_activity_create_new_private_chat_screen">CreateNewPrivateChatScreen</string>
     <string name="title_activity_start_wallet_info_screen">StartWalletInfoScreen</string>
+    <string name="about">About</string>
+    <string name="recovery_seed">Recovery Seed</string>
+    <string name="create_password">Create Password</string>
+    <string name="verify_pin">Verify PIN</string>
+    <string name="enter_your_4_digit_bchat_pin">Enter your 4 digit BChat PIN</string>
 </resources>

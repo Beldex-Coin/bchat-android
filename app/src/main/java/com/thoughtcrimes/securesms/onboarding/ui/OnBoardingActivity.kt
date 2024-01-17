@@ -1,6 +1,7 @@
 package com.thoughtcrimes.securesms.onboarding.ui
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -32,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.os.bundleOf
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -119,6 +121,10 @@ fun OnBoardingNavHost(
         composable(
             route = OnBoardingScreens.EnterPinCode.route,
             arguments = listOf(
+                navArgument("action") {
+                    type = NavType.IntType
+                    defaultValue = PinCodeAction.VerifyPinCode.action
+                },
                 navArgument("finish") {
                     type = NavType.BoolType
                     defaultValue = false
@@ -126,11 +132,12 @@ fun OnBoardingNavHost(
             ),
             deepLinks = listOf(
                 navDeepLink {
-                    uriPattern = "onboarding://change_pin?finish={finish}"
+                    uriPattern = "onboarding://manage_pin?finish={finish}&action={action}"
                 }
             )
         ) {
             val finish = it.arguments?.getBoolean("finish") ?: false
+            val pinCodeAction = it.arguments?.getInt("action")
             val viewModel: PinCodeViewModel = hiltViewModel()
             val state by viewModel.state.collectAsStateWithLifecycle()
             LaunchedEffect(key1 = true) {
@@ -141,13 +148,23 @@ fun OnBoardingNavHost(
                 }
                 launch {
                     viewModel.successEvent.collectLatest { success ->
-                        if (finish && success)
-                            (context as Activity).finish()
+                        if (finish && success) {
+                            (context as Activity).apply {
+                                val data = Intent().apply {
+                                    putExtra("success", true)
+                                }
+                                setResult(Activity.RESULT_OK, data)
+                                finish()
+                            }
+                        }
                     }
                 }
             }
             ScreenContainer(
-                title = "Create Password",
+                title = if (pinCodeAction == PinCodeAction.VerifyPinCode.action)
+                    stringResource(R.string.verify_pin)
+                else
+                    stringResource(R.string.create_password),
                 wrapInCard = false,
                 onBackClick = {
                     navController.navigateUp()

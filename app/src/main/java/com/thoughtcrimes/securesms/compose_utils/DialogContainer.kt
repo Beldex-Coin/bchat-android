@@ -24,7 +24,7 @@ fun DialogContainer(
         )
     ) {
         Card(
-            shape = RoundedCornerShape(15),
+            shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.appColors.dialogBackground
             ),

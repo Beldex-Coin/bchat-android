@@ -22,7 +22,9 @@ class MyAccountViewModel @Inject constructor(
 
     data class UIState(
         val profileName: String? = null,
-        val publicKey: String = ""
+        val publicKey: String = "",
+        val additionalDisplayName: String? = null,
+        val additionalPublicKey: String? = ""
     )
 
     private val _uiState = MutableStateFlow(UIState())

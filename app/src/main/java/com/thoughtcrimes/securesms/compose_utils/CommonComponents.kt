@@ -1,10 +1,12 @@
 package com.thoughtcrimes.securesms.compose_utils
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -24,8 +26,10 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -36,7 +40,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 
 @Composable
 fun PrimaryButton(
@@ -200,6 +207,22 @@ fun BChatCheckBox(
         colors = CheckboxDefaults.colors(
             checkedColor = MaterialTheme.appColors.primaryButtonColor,
         ),
+        modifier = modifier
+    )
+}
+
+@Composable
+fun ImageView(
+    data: Any?,
+    modifier: Modifier = Modifier,
+    contentDescription: String = "",
+) {
+    AsyncImage(
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(data)
+            .crossfade(true)
+            .build(),
+        contentDescription = contentDescription,
         modifier = modifier
     )
 }

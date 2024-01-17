@@ -1,6 +1,7 @@
 package com.thoughtcrimes.securesms.util
 
 import android.app.Application
+import android.content.Context
 import java.io.IOException
 import java.io.InputStream
 import java.nio.charset.Charset
@@ -18,6 +19,21 @@ class AssetFileHelper @Inject constructor(
             `is`.read(buffer)
             `is`.close()
             String(buffer, Charset.forName("UTF-8"))
+        } catch (ex: IOException) {
+            ex.printStackTrace()
+            return null
+        }
+        return json
+    }
+
+    fun loadAboutContent(): String? {
+        val json: String? = try {
+            val inputStream = application.assets.open("about.txt")
+            val size = inputStream.available()
+            val buffer = ByteArray(size)
+            inputStream.read(buffer)
+            inputStream.close()
+            String(buffer)
         } catch (ex: IOException) {
             ex.printStackTrace()
             return null

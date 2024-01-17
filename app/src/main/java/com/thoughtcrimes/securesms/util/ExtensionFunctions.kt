@@ -1,11 +1,14 @@
 package com.thoughtcrimes.securesms.util
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.ContextThemeWrapper
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import dagger.hilt.android.internal.managers.ViewComponentManager
@@ -34,4 +37,11 @@ fun Context?.getFragmentManager(): FragmentManager? {
     is ViewComponentManager.FragmentContextWrapper -> context.baseContext.getFragmentManager()
     else -> null
   }
+}
+
+fun Context.copyToClipBoard(label: String, content: String) {
+  val clipBoard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+  val clip = ClipData.newPlainText(label, content)
+  clipBoard.setPrimaryClip(clip)
+  Toast.makeText(this, "Copied to clip board",  Toast.LENGTH_SHORT).show()
 }

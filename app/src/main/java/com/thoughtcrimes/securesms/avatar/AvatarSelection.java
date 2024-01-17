@@ -82,7 +82,7 @@ public final class AvatarSelection {
     return captureFile;
   }
 
-  private static Intent createAvatarSelectionIntent(Context context, @Nullable File tempCaptureFile, boolean includeClear) {
+  public static Intent createAvatarSelectionIntent(Context context, @Nullable File tempCaptureFile, boolean includeClear) {
     List<Intent> extraIntents  = new LinkedList<>();
     Intent galleryIntent = new Intent(Intent.ACTION_PICK);
     galleryIntent.setDataAndType(android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI, "image/*");

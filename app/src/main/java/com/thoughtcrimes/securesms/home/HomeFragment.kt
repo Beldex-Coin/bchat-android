@@ -65,6 +65,7 @@ import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
 import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.my_account.ui.MyAccountActivity
 import com.thoughtcrimes.securesms.my_account.ui.MyAccountScreens
+import com.thoughtcrimes.securesms.my_account.ui.MyProfileActivity
 import com.thoughtcrimes.securesms.onboarding.AboutActivity
 import com.thoughtcrimes.securesms.preferences.NotificationSettingsActivity
 import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
@@ -974,8 +975,12 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     }
 
     private fun showAbout() {
-        Intent(requireContext(), AboutActivity::class.java).also {
-            show(it)
+//        Intent(requireContext(), AboutActivity::class.java).also {
+//            show(it)
+//        }
+        Intent(activity, MyAccountActivity::class.java).also {
+            it.putExtra(MyAccountActivity.extraStartDestination, MyAccountScreens.AboutScreen.route)
+            callSettingsActivityResultLauncher.launch(it)
         }
     }
 
@@ -998,8 +1003,12 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     }
 
     private fun showSeed() {
-        Intent(requireContext(), SeedPermissionActivity::class.java).also {
-            show(it)
+//        Intent(requireContext(), SeedPermissionActivity::class.java).also {
+//            show(it)
+//        }
+        Intent(activity, MyAccountActivity::class.java).also {
+            it.putExtra(MyAccountActivity.extraStartDestination, MyAccountScreens.RecoverySeedScreen.route)
+            startActivity(it)
         }
     }
 
@@ -1096,8 +1105,8 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
 //        Intent(requireContext(), ShowQRCodeWithScanQRCodeActivity::class.java).also {
 //            showQRCodeWithScanQRCodeActivityResultLauncher.launch(it)
 //        }
-        Intent(activity, MyAccountActivity::class.java).also {
-            it.putExtra(MyAccountActivity.extraStartDestination, MyAccountScreens.MyAccountScreen.route)
+        Intent(activity, MyProfileActivity::class.java).also {
+//            it.putExtra(MyAccountActivity.extraStartDestination, MyAccountScreens.MyAccountScreen.route)
             startActivity(it)
         }
     }

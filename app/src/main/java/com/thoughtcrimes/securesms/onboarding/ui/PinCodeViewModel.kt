@@ -1,5 +1,6 @@
 package com.thoughtcrimes.securesms.onboarding.ui
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thoughtcrimes.securesms.util.ResourceProvider
@@ -7,6 +8,7 @@ import com.thoughtcrimes.securesms.util.SharedPreferenceUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.beldex.bchat.R
 import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -18,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class PinCodeViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
-    sharedPreferenceUtil: SharedPreferenceUtil
+    sharedPreferenceUtil: SharedPreferenceUtil,
+    savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
     private val _state = MutableStateFlow(PinCodeState())
@@ -40,11 +43,19 @@ class PinCodeViewModel @Inject constructor(
 
     init {
         savedPassword = sharedPreferenceUtil.getSavedPassword()
+        val action = savedStateHandle.get<Int>("action") ?: PinCodeAction.VerifyPinCode.action
         _state.update {
-            it.copy(
-                step = PinCodeSteps.OldPin,
-                stepTitle = resourceProvider.getString(R.string.enter_old_pin)
-            )
+            if (action == PinCodeAction.VerifyPinCode.action) {
+                it.copy(
+                    step = PinCodeSteps.VerifyPin,
+                    stepTitle = resourceProvider.getString(R.string.enter_your_4_digit_bchat_pin)
+                )
+            } else {
+                it.copy(
+                    step = PinCodeSteps.OldPin,
+                    stepTitle = resourceProvider.getString(R.string.enter_old_pin)
+                )
+            }
         }
     }
 
@@ -72,6 +83,22 @@ class PinCodeViewModel @Inject constructor(
                                 it.copy(
                                     reEnteredPin = event.pinCode
                                 )
+                            }
+                        }
+                        PinCodeSteps.VerifyPin -> {
+                            _state.update {
+                                it.copy(
+                                    pin  = event.pinCode
+                                )
+                            }
+                            if (event.pinCode.length == 4) {
+                                viewModelScope.launch {
+                                    if (event.pinCode == savedPassword) {
+                                        _successEvent.emit(true)
+                                    } else {
+                                        _errorMessage.emit(resourceProvider.getString(R.string.invalid_password))
+                                    }
+                                }
                             }
                         }
                     }
@@ -120,6 +147,7 @@ class PinCodeViewModel @Inject constructor(
                                 }
                             }
                         }
+                        PinCodeSteps.VerifyPin -> Unit
                     }
                 }
             }

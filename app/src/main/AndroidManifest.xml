@@ -538,15 +538,24 @@
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="true">
             <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:host="change_pin"
+                    android:host="manage_pin"
                     android:scheme="onboarding" />
             </intent-filter>
         </activity>
         <activity
             android:name="com.thoughtcrimes.securesms.my_account.ui.MyAccountActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
-            android:exported="true"></activity>
+            android:exported="true"/>
+
+        <activity
+            android:name="com.thoughtcrimes.securesms.my_account.ui.MyProfileActivity"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
+            android:exported="true"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
 
         <service
             android:name="com.thoughtcrimes.securesms.notifications.PushNotificationService"

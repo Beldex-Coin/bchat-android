@@ -32,13 +32,14 @@ import androidx.core.net.toUri
 import com.thoughtcrimes.securesms.compose_utils.BChatTheme
 import com.thoughtcrimes.securesms.compose_utils.appColors
 import com.thoughtcrimes.securesms.onboarding.ui.OnBoardingActivity
+import com.thoughtcrimes.securesms.onboarding.ui.PinCodeAction
 import io.beldex.bchat.R
 
 @Composable
 fun AppLockScreen() {
     val context = LocalContext.current
     val changePin: () -> Unit  = {
-        val intent = Intent(Intent.ACTION_VIEW, "onboarding://change_pin?finish=true".toUri(), context, OnBoardingActivity::class.java)
+        val intent = Intent(Intent.ACTION_VIEW, "onboarding://manage_pin?finish=true&action=${PinCodeAction.ChangePinCode.action}".toUri())
         context.startActivity(intent)
     }
     var showLockOptionsDialog by remember {

@@ -47,7 +47,9 @@ class Colors(
     val unCheckedSwitchThumb: Color,
     val switchTrackColor: Color,
     val settingsCardBackground: Color,
-    val dialogBackground: Color
+    val dialogBackground: Color,
+    val restoreDescColor: Color,
+    val seedInfoTextColor: Color
 )
 
 val lightColors = Colors(
@@ -79,7 +81,9 @@ val lightColors = Colors(
     unCheckedSwitchThumb = Color(0xFFA7A7BA),
     switchTrackColor = Color.White,
     settingsCardBackground = Color(0xFFF4F4F4),
-    dialogBackground = Color(0xFFF8F8F8)
+    dialogBackground = Color(0xFFF8F8F8),
+    restoreDescColor = Color(0xFFACACAC),
+    seedInfoTextColor = Color(0xFFECAB0F)
 )
 
 val darkColors = Colors(
@@ -111,7 +115,9 @@ val darkColors = Colors(
     unCheckedSwitchThumb = Color(0xFF9595B5),
     switchTrackColor = Color(0xFF363645),
     settingsCardBackground = Color(0xFF1C1C26),
-    dialogBackground = Color(0xFF111119)
+    dialogBackground = Color(0xFF111119),
+    restoreDescColor = Color(0xFFACACAC),
+    seedInfoTextColor = Color(0xFFF0AF13)
 )
 
 

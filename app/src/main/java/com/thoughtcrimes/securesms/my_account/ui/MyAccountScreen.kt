@@ -1,10 +1,15 @@
 package com.thoughtcrimes.securesms.my_account.ui
 
+import android.Manifest
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.res.Configuration
+import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -33,6 +38,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,20 +50,109 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.beldex.libsignal.utilities.ExternalStorageUtil.getImageDir
+import com.thoughtcrimes.securesms.avatar.AvatarSelection
 import com.thoughtcrimes.securesms.compose_utils.BChatTheme
 import com.thoughtcrimes.securesms.compose_utils.PrimaryButton
+import com.thoughtcrimes.securesms.compose_utils.ProfilePictureComponent
+import com.thoughtcrimes.securesms.compose_utils.ProfilePictureMode
 import com.thoughtcrimes.securesms.compose_utils.appColors
+import com.thoughtcrimes.securesms.compose_utils.checkAndRequestPermissions
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
 import com.thoughtcrimes.securesms.util.QRCodeUtilities
+import com.thoughtcrimes.securesms.util.copyToClipBoard
 import com.thoughtcrimes.securesms.util.isValidString
 import com.thoughtcrimes.securesms.util.toPx
+import com.thoughtcrimes.securesms.wallet.CheckOnline
 import io.beldex.bchat.R
+import java.io.File
 
 @Composable
 fun MyAccountScreen(
-    uiState: MyAccountViewModel.UIState = MyAccountViewModel.UIState()
+    uiState: MyAccountViewModel.UIState = MyAccountViewModel.UIState(),
+    startAvatarSelection: () -> Unit
 ) {
-    val profileSize = 96.dp
+    val context = LocalContext.current
+    val profileSize = ProfilePictureMode.LargePicture.size
+    val requiredPermission = arrayOf(Manifest.permission.CAMERA)
+    var capturedFile: File? = null
+    var showPictureDialog by remember {
+        mutableStateOf(false)
+    }
+    var showPermissionDialog by remember {
+        mutableStateOf(false)
+    }
+    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestMultiplePermissions()) { result ->
+        if (result.all { it.value }) {
+
+        } else {
+            showPermissionDialog = true
+        }
+    }
+    val avatarLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
+        println(">>>>>data:${it.data}---${it.resultCode}")
+//        if (it.resultCode == Activity.RESULT_OK) {
+//            val outputFile = Uri.fromFile(File(cacheDir, "cropped"))
+//            var inputFile: Uri? = it.data?.data
+//            if (inputFile == null && capturedFile != null) {
+//                inputFile = Uri.fromFile(capturedFile)
+//            }
+//            AvatarSelection.circularCropImage(
+//                context as Activity,
+//                inputFile,
+//                outputFile,
+//                R.string.CropImageActivity_profile_avatar
+//            )
+//        }
+    }
+//    fun startAvatarSelection() {
+//        capturedFile = File.createTempFile("avatar-capture", ".jpg", getImageDir(context))
+//        val intent = AvatarSelection.createAvatarSelectionIntent(context, capturedFile, false)
+//        avatarLauncher.launch(intent)
+//    }
+    fun checkForPermission() {
+        // Ask for an optional camera permission.
+        if (CheckOnline.isOnline(context)) {
+            checkAndRequestPermissions(
+                context = context,
+                permissions = requiredPermission,
+                launcher = launcher,
+                onGranted = {
+                    startAvatarSelection()
+                }
+            )
+        } else {
+            Toast.makeText(
+                context,
+                context.resources.getString(R.string.please_check_your_internet_connection),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    if (showPictureDialog) {
+        ProfilePicturePopup(
+            publicKey = uiState.publicKey,
+            displayName = uiState.profileName ?: "",
+            onDismissRequest = {
+                showPictureDialog = false
+            },
+            removePicture = {
+                showPictureDialog = false
+            },
+            uploadPicture = {
+                showPictureDialog = false
+                checkForPermission()
+            }
+        )
+    }
+    if (showPermissionDialog) {
+        PermissionSettingDialog(
+            message = "BChat needs library access to continue. You can enable access in the Settings page",
+            onDismissRequest = {},
+            gotoSettings = {}
+        )
+    }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -98,13 +193,19 @@ fun MyAccountScreen(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                Box {
-                    Image(
-                        painter = painterResource(id = R.drawable.dummy_user),
-                        contentDescription = "",
-                        modifier = Modifier
-                            .size(profileSize)
-                            .clip(CircleShape)
+                Box(
+                    modifier = Modifier
+                        .clickable {
+                            showPictureDialog = true
+                        }
+                ) {
+                    ProfilePictureComponent(
+                        publicKey = uiState.publicKey,
+                        displayName = uiState.profileName ?: "",
+                        additionalPublicKey = uiState.additionalPublicKey,
+                        additionalDisplayName = uiState.additionalDisplayName,
+                        containerSize = profileSize,
+                        pictureMode = ProfilePictureMode.LargePicture
                     )
 
                     Box(
@@ -167,10 +268,7 @@ fun AccountHeader(
         ))
     }
     val copyToClipBoard: (String, String) -> Unit = { label, content ->
-        val clipBoard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText(label, content)
-        clipBoard.setPrimaryClip(clip)
-        Toast.makeText(context, "Copied to clip board",  Toast.LENGTH_SHORT).show()
+        context.copyToClipBoard(label, content)
     }
 
     Column(
@@ -339,7 +437,8 @@ fun AccountHeaderPreview() {
         MyAccountScreen(
             uiState = MyAccountViewModel.UIState(
                 profileName = "Testing UI"
-            )
+            ),
+            startAvatarSelection = {}
         )
     }
 }
@@ -351,7 +450,8 @@ fun AccountHeaderPreviewLight() {
         MyAccountScreen(
             uiState = MyAccountViewModel.UIState(
                 profileName = "Testing UI"
-            )
+            ),
+            startAvatarSelection = {}
         )
     }
 }

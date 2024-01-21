@@ -51,19 +51,29 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import app.cash.copper.flow.observeQuery
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.crypto.MnemonicCodec
 import com.beldex.libsignal.utilities.hexEncodedPrivateKey
+import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
 import com.thoughtcrimes.securesms.compose_utils.BChatTheme
 import com.thoughtcrimes.securesms.compose_utils.appColors
 import com.thoughtcrimes.securesms.contacts.blocked.BlockedContactsViewModel
+import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
 import com.thoughtcrimes.securesms.crypto.MnemonicUtilities
+import com.thoughtcrimes.securesms.database.DatabaseContentProviders
+import com.thoughtcrimes.securesms.messagerequests.MessageRequestsViewModel
+import com.thoughtcrimes.securesms.my_account.ui.dialogs.ClearDataDialog
 import com.thoughtcrimes.securesms.onboarding.ui.PinCodeAction
 import com.thoughtcrimes.securesms.util.UiMode
 import com.thoughtcrimes.securesms.util.UiModeUtilities
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MyAccountActivity: ComponentActivity() {
@@ -405,6 +415,44 @@ fun MyAccountNavHost(
                     seed = seed,
                     markedAsSafe = markedAsSafe,
                     verifyPin = verifyPin,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                )
+            }
+        }
+
+        composable(
+            route = MyAccountScreens.MessageRequestsScreen.route
+        ) {
+            val requestViewModel: MessageRequestsViewModel = hiltViewModel()
+            val uiState by requestViewModel.uiState.collectAsState()
+
+            LaunchedEffect(key1 = Unit) {
+                launch(Dispatchers.IO) {
+                    context.contentResolver
+                        .observeQuery(DatabaseContentProviders.ConversationList.CONTENT_URI)
+                        .onEach { requestViewModel.refreshRequests() }
+                        .collect()
+                }
+            }
+            MyAccountScreenContainer(
+                title = stringResource(R.string.activity_message_requests_title),
+                onBackClick = {
+                    (context as ComponentActivity).finish()
+                }
+            ) {
+                MessageRequestsScreen(
+                    requestsList = uiState.messageRequests,
+                    onEvent = requestViewModel::onEvent,
+                    onRequestClick = {
+                        val returnIntent = Intent()
+                        returnIntent.putExtra(ConversationFragmentV2.THREAD_ID,it.threadId)
+                        (context as Activity).run {
+                            setResult(PassphraseRequiredActionBarActivity.RESULT_OK, returnIntent)
+                            finish()
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(16.dp)

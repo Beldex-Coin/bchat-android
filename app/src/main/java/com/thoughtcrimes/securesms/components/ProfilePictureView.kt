@@ -132,7 +132,6 @@ class ProfilePictureView @JvmOverloads constructor(
 
             } else {
                 val placeholder = PlaceholderAvatarPhoto(publicKey, displayName ?: "${publicKey.take(4)}...${publicKey.takeLast(4)}")
-
                 glide.clear(imageView)
                 //New Line
                 /*glide.load(AvatarPlaceholderGenerator.generate(context, sizeInPX, publicKey, displayName)).diskCacheStrategy(DiskCacheStrategy.ALL).transform(

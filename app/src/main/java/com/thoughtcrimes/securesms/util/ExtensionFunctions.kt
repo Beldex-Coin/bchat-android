@@ -11,7 +11,9 @@ import android.view.ContextThemeWrapper
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
+import com.beldex.libbchat.utilities.recipients.Recipient
 import dagger.hilt.android.internal.managers.ViewComponentManager
+import io.beldex.bchat.R
 
 inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {
   SDK_INT >= 33 -> getParcelableExtra(key, T::class.java)

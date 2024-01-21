@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.thoughtcrimes.securesms.compose_utils.BChatTheme
 import com.thoughtcrimes.securesms.compose_utils.appColors
-import com.thoughtcrimes.securesms.onboarding.ui.OnBoardingActivity
+import com.thoughtcrimes.securesms.my_account.ui.dialogs.LockOptionsDialog
 import com.thoughtcrimes.securesms.onboarding.ui.PinCodeAction
 import io.beldex.bchat.R
 

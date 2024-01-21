@@ -1,12 +1,7 @@
 package com.thoughtcrimes.securesms.my_account.ui
 
 import android.Manifest
-import android.app.Activity
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.content.res.Configuration
-import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -50,8 +45,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.beldex.libsignal.utilities.ExternalStorageUtil.getImageDir
-import com.thoughtcrimes.securesms.avatar.AvatarSelection
 import com.thoughtcrimes.securesms.compose_utils.BChatTheme
 import com.thoughtcrimes.securesms.compose_utils.PrimaryButton
 import com.thoughtcrimes.securesms.compose_utils.ProfilePictureComponent
@@ -59,6 +52,8 @@ import com.thoughtcrimes.securesms.compose_utils.ProfilePictureMode
 import com.thoughtcrimes.securesms.compose_utils.appColors
 import com.thoughtcrimes.securesms.compose_utils.checkAndRequestPermissions
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
+import com.thoughtcrimes.securesms.my_account.ui.dialogs.PermissionSettingDialog
+import com.thoughtcrimes.securesms.my_account.ui.dialogs.ProfilePicturePopup
 import com.thoughtcrimes.securesms.util.QRCodeUtilities
 import com.thoughtcrimes.securesms.util.copyToClipBoard
 import com.thoughtcrimes.securesms.util.isValidString

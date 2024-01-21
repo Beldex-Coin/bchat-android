@@ -49,7 +49,8 @@ class Colors(
     val settingsCardBackground: Color,
     val dialogBackground: Color,
     val restoreDescColor: Color,
-    val seedInfoTextColor: Color
+    val seedInfoTextColor: Color,
+    val actionIconBackground: Color
 )
 
 val lightColors = Colors(
@@ -83,7 +84,8 @@ val lightColors = Colors(
     settingsCardBackground = Color(0xFFF4F4F4),
     dialogBackground = Color(0xFFF8F8F8),
     restoreDescColor = Color(0xFFACACAC),
-    seedInfoTextColor = Color(0xFFECAB0F)
+    seedInfoTextColor = Color(0xFFECAB0F),
+    actionIconBackground = Color(0xFFFFFFFF)
 )
 
 val darkColors = Colors(
@@ -117,7 +119,8 @@ val darkColors = Colors(
     settingsCardBackground = Color(0xFF1C1C26),
     dialogBackground = Color(0xFF111119),
     restoreDescColor = Color(0xFFACACAC),
-    seedInfoTextColor = Color(0xFFF0AF13)
+    seedInfoTextColor = Color(0xFFF0AF13),
+    actionIconBackground = Color(0xFF2C2C3B)
 )
 
 

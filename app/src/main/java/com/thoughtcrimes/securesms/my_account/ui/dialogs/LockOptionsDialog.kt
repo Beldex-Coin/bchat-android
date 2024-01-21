@@ -1,4 +1,4 @@
-package com.thoughtcrimes.securesms.my_account.ui
+package com.thoughtcrimes.securesms.my_account.ui.dialogs
 
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -16,11 +16,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
 import cn.carbswang.android.numberpickerview.library.NumberPickerView
 import com.thoughtcrimes.securesms.compose_utils.DialogContainer
+import com.thoughtcrimes.securesms.my_account.ui.ScreenTimeoutOptions
 import io.beldex.bchat.R
 
 @Composable

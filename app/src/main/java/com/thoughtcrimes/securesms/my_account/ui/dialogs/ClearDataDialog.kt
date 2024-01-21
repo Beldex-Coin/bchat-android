@@ -1,4 +1,4 @@
-package com.thoughtcrimes.securesms.my_account.ui
+package com.thoughtcrimes.securesms.my_account.ui.dialogs
 
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
@@ -132,7 +132,7 @@ fun ClearDataDialog(
         mutableStateOf(
             value = when (step) {
                 Steps.INFO_PROMPT_DEFAULT,
-                Steps.NETWORK_PROMPT-> {
+                Steps.NETWORK_PROMPT -> {
                      resource.getString(R.string.delete)
                 }
                 Steps.INFO_PROMPT -> {

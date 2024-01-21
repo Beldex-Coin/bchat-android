@@ -980,7 +980,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
 //        }
         Intent(activity, MyAccountActivity::class.java).also {
             it.putExtra(MyAccountActivity.extraStartDestination, MyAccountScreens.AboutScreen.route)
-            callSettingsActivityResultLauncher.launch(it)
+            startActivity(it)
         }
     }
 
@@ -1043,7 +1043,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         if(isAdded && activity !=null) {
             Intent(activity, MyAccountActivity::class.java).also {
                 it.putExtra(MyAccountActivity.extraStartDestination, MyAccountScreens.SettingsScreen.route)
-                callSettingsActivityResultLauncher.launch(it)
+                startActivity(it)
             }
         }
     }
@@ -1129,7 +1129,8 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     }
 
     override fun showMessageRequests() {
-        Intent(requireContext(), MessageRequestsActivity::class.java).also {
+        Intent(requireContext(), MyAccountActivity::class.java).also {
+            it.putExtra(MyAccountActivity.extraStartDestination, MyAccountScreens.MessageRequestsScreen.route)
             resultLauncher.launch(it)
         }
     }

@@ -1,7 +1,5 @@
-package com.thoughtcrimes.securesms.my_account.ui
+package com.thoughtcrimes.securesms.my_account.ui.dialogs
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -18,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -29,10 +25,11 @@ import com.thoughtcrimes.securesms.compose_utils.appColors
 import io.beldex.bchat.R
 
 @Composable
-fun PermissionSettingDialog(
+fun RequestBlockConfirmationDialog(
     message: String,
-    onDismissRequest: () -> Unit,
-    gotoSettings: () -> Unit
+    actionTitle: String,
+    onConfirmation: () -> Unit,
+    onDismissRequest: () -> Unit
 ) {
     DialogContainer(
         onDismissRequest = onDismissRequest
@@ -43,33 +40,20 @@ fun PermissionSettingDialog(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_permission_setting),
-                contentDescription = "",
-                modifier = Modifier
-                    .background(
-                        color = MaterialTheme.appColors.primaryButtonColor,
-                        shape = CircleShape
-                    )
-                    .padding(8.dp)
+            Text(
+                text = stringResource(id = R.string.activity_message_requests_title),
+                style = MaterialTheme.typography.titleMedium.copy(
+                    color = MaterialTheme.appColors.primaryButtonColor,
+                    fontWeight = FontWeight(800)
+                )
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = stringResource(id = R.string.Permissions_permission_required),
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight(800),
-                    color = MaterialTheme.appColors.primaryButtonColor
-                )
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
                 text = message,
-                style = MaterialTheme.typography.bodySmall,
-                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -81,21 +65,23 @@ fun PermissionSettingDialog(
                 Button(
                     onClick = onDismissRequest,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.secondaryButtonColor
+                        containerColor = MaterialTheme.appColors.editTextBackground
                     ),
                     modifier = Modifier
                         .weight(1f)
                 ) {
                     Text(
                         text = stringResource(id = R.string.cancel),
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = MaterialTheme.appColors.restoreDescColor
+                        )
                     )
                 }
 
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Button(
-                    onClick = gotoSettings,
+                    onClick = onConfirmation,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.appColors.primaryButtonColor
                     ),
@@ -103,7 +89,7 @@ fun PermissionSettingDialog(
                         .weight(1f)
                 ) {
                     Text(
-                        text = stringResource(id = R.string.activity_settings_title),
+                        text = actionTitle,
                         style = MaterialTheme.typography.bodyMedium.copy(
                             color = Color.White
                         )
@@ -116,10 +102,11 @@ fun PermissionSettingDialog(
 
 @Preview
 @Composable
-fun PermissionSettingDialogPreview() {
-    PermissionSettingDialog(
-        message = "BChat needs library access to continue. You can enable access in the Settings page",
-        onDismissRequest = {},
-        gotoSettings = {}
+private fun RequestConfirmationDialogPreview() {
+    RequestBlockConfirmationDialog(
+        message = "Are you sure you want to Block this user?",
+        actionTitle = "Yes",
+        onConfirmation = {},
+        onDismissRequest = {}
     )
 }

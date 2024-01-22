@@ -215,4 +215,6 @@
     <color name="your_bchat_id_bg">#282836</color>
     <color name="divider_color">#4B4B64</color>
     <color name="screen_background">#1C1C26</color>
+    <color name="new_card_background">#11111A</color>
+    <color name="setting_icon_tint">#EBEBEB</color>
 </resources>

@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,6 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.lifecycleScope
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.thoughtcrimes.securesms.compose_utils.ProfilePictureComponent
@@ -46,7 +48,10 @@ import com.thoughtcrimes.securesms.compose_utils.appColors
 import com.thoughtcrimes.securesms.database.model.ThreadRecord
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.my_account.ui.dialogs.RequestBlockConfirmationDialog
+import com.thoughtcrimes.securesms.util.ConfigurationMessageUtilities
 import io.beldex.bchat.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun MessageRequestsScreen(
@@ -82,6 +87,7 @@ fun MessageRequestsScreen(
         var showDeleteConfirmationDialog by remember {
             mutableStateOf(false)
         }
+        val coroutineScope = rememberCoroutineScope()
         if (showBlockConfirmationDialog) {
             RequestBlockConfirmationDialog(
                 message = stringResource(id = R.string.message_requests_block_message),
@@ -104,6 +110,9 @@ fun MessageRequestsScreen(
                 onConfirmation = {
                     requestToTakeAction?.let {
                         onEvent(MessageRequestEvents.DeleteRequest(it))
+                        coroutineScope.launch(Dispatchers.IO) {
+                            ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(context)
+                        }
                     }
                     requestToTakeAction = null
                 },

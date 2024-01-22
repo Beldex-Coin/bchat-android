@@ -66,6 +66,7 @@ import com.thoughtcrimes.securesms.database.DatabaseContentProviders
 import com.thoughtcrimes.securesms.messagerequests.MessageRequestsViewModel
 import com.thoughtcrimes.securesms.my_account.ui.dialogs.ClearDataDialog
 import com.thoughtcrimes.securesms.onboarding.ui.PinCodeAction
+import com.thoughtcrimes.securesms.preferences.ChatSettingsActivity
 import com.thoughtcrimes.securesms.util.UiMode
 import com.thoughtcrimes.securesms.util.UiModeUtilities
 import dagger.hilt.android.AndroidEntryPoint
@@ -175,10 +176,10 @@ fun MyAccountNavHost(
                                 navController.navigate(MyAccountScreens.AppLockScreen.route)
                             }
                             SettingItem.ChatSettings -> {
-//                                Intent(context, ChatSettingsActivity::class.java).also { intent ->
-//                                    startActivity(intent)
-//                                }
-                                navController.navigate(MyAccountScreens.ChatSettingsScreen.route)
+                                Intent(context, ChatSettingsActivity::class.java).also { intent ->
+                                    startActivity(intent)
+                                }
+//                                navController.navigate(MyAccountScreens.ChatSettingsScreen.route)
                             }
                             SettingItem.BlockedContacts -> {
 //                                Intent(context, BlockedContactsActivity::class.java).also { intent ->

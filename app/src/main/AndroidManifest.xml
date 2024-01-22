@@ -399,15 +399,18 @@
         <activity
             android:name="com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
         <activity
             android:name="com.thoughtcrimes.securesms.preferences.NotificationSettingsActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
         <activity
             android:name="com.thoughtcrimes.securesms.preferences.ChatSettingsActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
         <activity
             android:name="com.thoughtcrimes.securesms.ShareActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"

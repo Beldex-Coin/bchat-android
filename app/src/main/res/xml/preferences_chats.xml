@@ -63,7 +63,8 @@
             android:key="pref_enter_sends"
             app:iconSpaceReserved="false"
             android:title="@string/preferences__pref_enter_sends_title"
-            app:layout="@layout/preference_layout"/>
+            app:layout="@layout/preference_layout"
+            app:icon="@drawable/ic_enter_key"/>
 
         <com.thoughtcrimes.securesms.preferences.widgets.SignalListPreference
             android:key="chat_font_size"
@@ -73,7 +74,8 @@
             android:defaultValue="16"
             android:entries="@array/pref_chat_font_size_entries"
             android:entryValues="@array/pref_chat_font_size_values"
-            app:layout="@layout/preference_layout"/>
+            app:layout="@layout/preference_layout"
+            app:icon="@drawable/ic_fonts"/>
 
     </PreferenceCategory>
 
@@ -87,7 +89,8 @@
             app:iconSpaceReserved="false"
             android:key="pref_trim_threads"
             android:title="@string/preferences__delete_old_messages"
-            app:layout="@layout/preference_layout"/>
+            app:layout="@layout/preference_layout"
+            app:icon="@drawable/ic_delete_old"/>
 
         <EditTextPreference
             android:defaultValue="500"
@@ -96,14 +99,16 @@
             android:inputType="number"
             app:iconSpaceReserved="false"
             android:dependency="pref_trim_threads"
-            app:layout="@layout/preference_layout"/>
+            app:layout="@layout/preference_layout"
+            app:icon="@drawable/ic_conversation_length"/>
 
         <Preference
             android:key="pref_trim_now"
             app:iconSpaceReserved="false"
             android:title="@string/preferences__trim_all_conversations_now"
             android:dependency="pref_trim_threads"
-            app:layout="@layout/preference_layout"/>
+            app:layout="@layout/preference_layout"
+            app:icon="@drawable/ic_trim_conversation"/>
 
     </PreferenceCategory>
 

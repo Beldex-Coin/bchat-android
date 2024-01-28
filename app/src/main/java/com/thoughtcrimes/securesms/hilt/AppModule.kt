@@ -1,6 +1,8 @@
 package com.thoughtcrimes.securesms.hilt
 
 import android.app.Application
+import com.thoughtcrimes.securesms.ApplicationContext
+import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.model.WalletManager
 import com.thoughtcrimes.securesms.util.FirebaseRemoteConfigUtil
 import com.thoughtcrimes.securesms.util.SharedPreferenceUtil
@@ -32,6 +34,12 @@ object AppModule {
         val remoteConfigUtil = FirebaseRemoteConfigUtil()
         remoteConfigUtil.init()
         return remoteConfigUtil
+    }
+
+    @Singleton
+    @Provides
+    fun providesDatabaseComponent(application: Application): DatabaseComponent {
+        return ApplicationContext.getInstance(application.applicationContext).databaseComponent
     }
 
 }

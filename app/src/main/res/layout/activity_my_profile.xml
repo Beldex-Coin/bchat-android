@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/screen_background">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_baseline_arrow_back_24"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/my_account"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/open_sans_medium"
+                android:textSize="18sp"/>
+
+        </LinearLayout>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            style="@style/CustomCardViewStyle"
+            app:cardBackgroundColor="@color/new_card_background"
+            android:layout_marginTop="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingTop="32dp">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="48dp">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/main_container"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:cardCornerRadius="8dp"
+                            app:cardBackgroundColor="@color/profile_background"
+                            android:layout_marginHorizontal="16dp">
+
+                            <androidx.compose.ui.platform.ComposeView
+                                android:id="@+id/composeView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    </LinearLayout>
+
+                    <FrameLayout
+                        android:id="@+id/profile_container"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal">
+
+                        <include layout="@layout/view_profile_picture"
+                            android:id="@+id/profilePictureView"
+                            android:layout_width="@dimen/large_profile_picture_size"
+                            android:layout_height="@dimen/large_profile_picture_size"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="0dp"
+                            android:gravity="center" />
+
+                        <androidx.compose.ui.platform.ComposeView
+                            android:id="@+id/camera_view"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom|end"/>
+
+                    </FrameLayout>
+
+                </FrameLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/share"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/share"
+                    android:layout_margin="16dp"
+                    android:backgroundTint="#00BD40"
+                    android:textColor="@color/white"
+                    android:padding="12dp"
+                    android:gravity="center"
+                    app:icon="@drawable/ic_baseline_share_24"
+                    app:iconGravity="textStart"
+                    android:textSize="16sp"
+                    app:iconTint="@color/white"
+                    app:cornerRadius="16dp"/>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true">
+
+        <RelativeLayout
+            android:id="@+id/loader"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#A4000000"
+            android:visibility="gone">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/defaultRoomsLoader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="8dp"
+                android:adjustViewBounds="true"
+                app:layout_constraintDimensionRatio="1:1"
+                app:lottie_autoPlay="true"
+                app:lottie_enableMergePathsForKitKatAndAbove="true"
+                app:lottie_fileName="load_animation.json"
+                app:lottie_loop="true"
+                app:lottie_speed="1"
+                tools:ignore="ContentDescription" />
+
+        </RelativeLayout>
+
+    </FrameLayout>
+
+</RelativeLayout>

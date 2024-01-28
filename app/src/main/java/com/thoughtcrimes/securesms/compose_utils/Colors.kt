@@ -50,7 +50,10 @@ class Colors(
     val dialogBackground: Color,
     val restoreDescColor: Color,
     val seedInfoTextColor: Color,
-    val actionIconBackground: Color
+    val actionIconBackground: Color,
+    val createButtonBackground: Color,
+    val contactCardBackground: Color,
+    val contactCardBorder: Color
 )
 
 val lightColors = Colors(
@@ -85,7 +88,10 @@ val lightColors = Colors(
     dialogBackground = Color(0xFFF8F8F8),
     restoreDescColor = Color(0xFFACACAC),
     seedInfoTextColor = Color(0xFFECAB0F),
-    actionIconBackground = Color(0xFFFFFFFF)
+    actionIconBackground = Color(0xFFFFFFFF),
+    createButtonBackground = Color(0xFFF8F8F8),
+    contactCardBackground = Color(0xFFECECEC),
+    contactCardBorder = Color(0xFFA7A7BA)
 )
 
 val darkColors = Colors(
@@ -120,7 +126,10 @@ val darkColors = Colors(
     dialogBackground = Color(0xFF111119),
     restoreDescColor = Color(0xFFACACAC),
     seedInfoTextColor = Color(0xFFF0AF13),
-    actionIconBackground = Color(0xFF2C2C3B)
+    actionIconBackground = Color(0xFF2C2C3B),
+    createButtonBackground = Color(0xFF11111A),
+    contactCardBackground = Color(0xFF1C1C26),
+    contactCardBorder = Color(0xFF353544)
 )
 
 

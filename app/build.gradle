@@ -11,8 +11,8 @@ apply from: 'buildGradle/dependencies.gradle'
 configurations.all {
     exclude module: "commons-logging"
 }
-def canonicalVersionCode = 37
-def canonicalVersionName = "2.2.2"
+def canonicalVersionCode = 39
+def canonicalVersionName = "2.3.0"
 
 //First Release Date 17-06-2022
 //Version Code 15 Version Name 1.0.0
@@ -83,6 +83,11 @@ def canonicalVersionName = "2.2.2"
 //Twenty-third Release Data 03-01-2024
 //Version code 37 Version Name 2.2.2
 
+//Twenty-fourth Internal Test Release Data 29-01-2024
+//Version code 38 Version Name 2.2.3
+
+//Twenty-fifth Release Data 30-01-2024
+//Version code 39 Version Name 2.3.0
 
 def postFixSize = 10
 def abiPostFix = ['armeabi-v7a' : 1,

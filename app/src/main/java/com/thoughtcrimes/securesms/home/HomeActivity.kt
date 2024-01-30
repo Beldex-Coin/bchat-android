@@ -171,6 +171,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     @Inject
     lateinit var remoteConfig: FirebaseRemoteConfigUtil
     private var favouriteNodes: Set<NodeInfo> = setOf()
+    val list: MutableList<TransactionInfo> = ArrayList()
 
     // region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?, isReady: Boolean) {
@@ -748,7 +749,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     override fun forceUpdate(requireActivity: Context) {
         try {
             if(getWallet()!=null) {
-                onRefreshed(getWallet(), getWallet()!!.isSynchronized)
+                onRefreshed(getWallet(), false)
             }else{
                 val currentFragment = getCurrentFragment()
                 if (currentFragment is WalletFragment) {
@@ -895,6 +896,16 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             val currentFragment = getCurrentFragment()
             if (wallet != null) {
                 if (wallet.isSynchronized) {
+                    if(full) {
+                        list.clear()
+                        wallet.refreshHistory()
+                        val streetHeight: Long = streetModeHeight
+                        for (info in wallet.history.all) {
+                            if ((info.isPending || info.blockheight >= streetHeight)
+                                /*&& !dismissedTransactions.contains(info.hash)*/
+                            ) list.add(info)
+                        }
+                    }
                     if (!synced) { // first sync
                         onProgress(-2)//onProgress(-1)
                         saveWallet() // save on first sync
@@ -914,7 +925,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                             currentFragment.onRefreshed(wallet, full)
                         }
                         is WalletFragment -> {
-                            currentFragment.onRefreshed(wallet, full)
+                            currentFragment.onRefreshed(wallet, full,list)
                         }
                     }
                 }

@@ -9,7 +9,8 @@ object NetworkNodes  {
         "publicnode2.rpcnode.stream:29095",
         "publicnode3.rpcnode.stream:29095",
         "publicnode4.rpcnode.stream:29095",
-        "mainnet.beldex.io:29095"
+        "mainnet.beldex.io:29095",
+        "publicnode5.rpcnode.stream:29095"
     )
     private val testNetModes = listOf(
         "149.102.156.174:19095"

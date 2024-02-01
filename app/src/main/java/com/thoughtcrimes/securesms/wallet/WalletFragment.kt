@@ -232,7 +232,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         )
     }
 
-    inner class AsyncRefreshHistory(val wallet: Wallet) :
+    /*inner class AsyncRefreshHistory(val wallet: Wallet) :
         AsyncTaskCoroutine<Executor?, Boolean?>() {
 
         override fun doInBackground(vararg params: Executor?): Boolean {
@@ -247,7 +247,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         override fun onPostExecute(result: Boolean?) {
             callRefreshHistory(wallet)
         }
-    }
+    }*/
 
     inner class AsyncGetUnlockedBalance(val wallet: Wallet) :
         AsyncTaskCoroutine<Executor?, Boolean?>() {
@@ -948,25 +948,19 @@ class WalletFragment : Fragment(),OnBackPressedListener {
 
     private var accountIndex = 0
 
-    fun onRefreshed(wallet: Wallet, full: Boolean) {
+    fun onRefreshed(wallet: Wallet, full: Boolean, list: MutableList<TransactionInfo>) {
         var full = full
         if (adapter!!.needsTransactionUpdateOnNewBlock()) {
             full = true
         }
-        if (full && activityCallback!!.isSynced) {
+        /*if (full && activityCallback!!.isSynced) {
             AsyncRefreshHistory(wallet).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
-        }
+        }*/
         updateStatus(wallet)
+        callRefreshHistory(wallet,list)
     }
 
-    fun callRefreshHistory(wallet:Wallet){
-        val list: MutableList<TransactionInfo> = ArrayList()
-        val streetHeight: Long = activityCallback!!.streetModeHeight
-        for (info in wallet.history.all) {
-            if ((info.isPending || info.blockheight >= streetHeight)
-                && !dismissedTransactions.contains(info.hash)
-            ) list.add(info)
-        }
+    private fun callRefreshHistory(wallet:Wallet, list: MutableList<TransactionInfo>){
         adapter!!.setInfos(list)
         adapterItems.clear()
         adapterItems.addAll(adapter!!.infoItems!!)

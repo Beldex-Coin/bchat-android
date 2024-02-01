@@ -310,6 +310,17 @@
           "description":"- Fixed minor bugs"
         }
       ]
+    },
+    {
+      "title": "2.3.0",
+      "descriptions": [
+        {
+          "description":"- Update for Hardfork 18"
+        },
+        {
+          "description":"- Minor Bug fixes"
+        }
+      ]
     }
   ]
 }

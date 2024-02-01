@@ -12,7 +12,8 @@ public enum DefaultNodes {
     BELDEX2("publicnode1.rpcnode.stream:29095"),
     BELDEX3 ("publicnode2.rpcnode.stream:29095"),
     BELDEX4 ("publicnode3.rpcnode.stream:29095"),
-    BELDEX5("publicnode4.rpcnode.stream:29095");
+    BELDEX5("publicnode4.rpcnode.stream:29095"),
+    BELDEX6("publicnode5.rpcnode.stream:29095");
 
     //Testnet
     /*BELDEX("38.242.196.72:19095"),

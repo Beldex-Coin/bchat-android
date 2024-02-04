@@ -69,7 +69,7 @@ class MessageRequestsViewModel @Inject constructor(
 
     fun refreshRequests() {
         viewModelScope.launch(Dispatchers.IO) {
-            threadDb.approvedConversationList.use { openCursor ->
+            threadDb.unapprovedConversationList.use { openCursor ->
                 val reader = threadDb.readerFor(openCursor)
                 val threads = mutableListOf<ThreadRecord>()
                 while (true) {

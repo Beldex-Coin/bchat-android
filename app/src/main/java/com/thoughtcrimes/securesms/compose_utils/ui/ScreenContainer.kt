@@ -2,6 +2,7 @@ package com.thoughtcrimes.securesms.compose_utils.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,7 +29,7 @@ fun ScreenContainer(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
     actionItems: @Composable () -> Unit = {},
-    content: @Composable () -> Unit,
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     Column(
         modifier = modifier

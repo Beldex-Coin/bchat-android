@@ -263,9 +263,15 @@
                         android:text="@string/search_people_and_groups"
                         android:textColor="@color/home_search_icon_and_hint" />
                 </RelativeLayout>
+
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
+
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/requests"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -286,7 +292,7 @@
                 android:id="@+id/gradientView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/home_activity_gradient" />
+                android:background="@drawable/home_activity_gradient"/>
 
 
             <androidx.recyclerview.widget.RecyclerView
@@ -400,7 +406,8 @@
         android:visibility="visible"
         android:clickable="true"
         android:background="@color/drawer_background"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:visibility="gone">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

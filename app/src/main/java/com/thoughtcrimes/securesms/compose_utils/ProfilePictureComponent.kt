@@ -43,12 +43,13 @@ fun ProfilePictureComponent(
     publicKey: String,
     displayName: String,
     containerSize: Dp,
+    modifier: Modifier = Modifier,
     additionalPublicKey: String? = null,
     additionalDisplayName: String? = null,
-    pictureMode: ProfilePictureMode = ProfilePictureMode.SmallPicture
+    pictureMode: ProfilePictureMode = ProfilePictureMode.SmallPicture,
 ) {
     Box(
-        modifier = Modifier,
+        modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
         when (pictureMode) {

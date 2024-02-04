@@ -552,10 +552,17 @@
         <activity
             android:name="com.thoughtcrimes.securesms.my_account.ui.MyAccountActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
-            android:exported="true"/>
+            android:exported="true"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
 
         <activity
             android:name="com.thoughtcrimes.securesms.my_account.ui.MyProfileActivity"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
+            android:exported="true"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
+
+        <activity
+            android:name="com.thoughtcrimes.securesms.home.SearchActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="true"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>

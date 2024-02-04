@@ -53,7 +53,11 @@ class Colors(
     val actionIconBackground: Color,
     val createButtonBackground: Color,
     val contactCardBackground: Color,
-    val contactCardBorder: Color
+    val contactCardBorder: Color,
+    val requestCountBackground: Color,
+    val requestCountColor: Color,
+    val searchBackground: Color,
+    val inputHintColor: Color
 )
 
 val lightColors = Colors(
@@ -91,7 +95,11 @@ val lightColors = Colors(
     actionIconBackground = Color(0xFFFFFFFF),
     createButtonBackground = Color(0xFFF8F8F8),
     contactCardBackground = Color(0xFFECECEC),
-    contactCardBorder = Color(0xFFA7A7BA)
+    contactCardBorder = Color(0xFFA7A7BA),
+    requestCountBackground = Color(0xFFFFFFFF),
+    requestCountColor = Color(0xFF1C1C26),
+    searchBackground = Color(0xFFF8F8F8),
+    inputHintColor = Color(0xFF8D8D8D)
 )
 
 val darkColors = Colors(
@@ -129,7 +137,11 @@ val darkColors = Colors(
     actionIconBackground = Color(0xFF2C2C3B),
     createButtonBackground = Color(0xFF11111A),
     contactCardBackground = Color(0xFF1C1C26),
-    contactCardBorder = Color(0xFF353544)
+    contactCardBorder = Color(0xFF353544),
+    requestCountBackground = Color(0xFFEBEBEB),
+    requestCountColor = Color(0xFF1C1C26),
+    searchBackground = Color(0xFF282836),
+    inputHintColor = Color(0xFFB9B9B9)
 )
 
 

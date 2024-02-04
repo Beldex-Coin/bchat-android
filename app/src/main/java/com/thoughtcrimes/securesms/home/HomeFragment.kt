@@ -18,6 +18,10 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
@@ -38,6 +42,7 @@ import com.thoughtcrimes.securesms.ApplicationContext
 import com.thoughtcrimes.securesms.MuteDialog
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.components.ProfilePictureView
+import com.thoughtcrimes.securesms.compose_utils.BChatTheme
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.conversation.v2.utilities.NotificationUtils
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
@@ -45,7 +50,6 @@ import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.database.*
 import com.thoughtcrimes.securesms.database.model.ThreadRecord
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
-import com.thoughtcrimes.securesms.dms.CreateNewPrivateChatActivity
 import com.thoughtcrimes.securesms.dms.CreateNewPrivateChatScreen
 import com.thoughtcrimes.securesms.drawer.ClickListener
 import com.thoughtcrimes.securesms.drawer.NavigationItemModel
@@ -53,12 +57,10 @@ import com.thoughtcrimes.securesms.drawer.NavigationRVAdapter
 import com.thoughtcrimes.securesms.drawer.RecyclerTouchListener
 import com.thoughtcrimes.securesms.groups.CreateClosedGroupActivity
 import com.thoughtcrimes.securesms.groups.CreateSecretGroupScreen
-import com.thoughtcrimes.securesms.groups.JoinPublicChatNewActivity
 import com.thoughtcrimes.securesms.groups.JoinSocialGroupScreen
 import com.thoughtcrimes.securesms.groups.OpenGroupManager
 import com.thoughtcrimes.securesms.home.search.GlobalSearchAdapter
 import com.thoughtcrimes.securesms.home.search.GlobalSearchInputLayout
-import com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity
 import com.thoughtcrimes.securesms.mms.GlideApp
 import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
@@ -66,12 +68,9 @@ import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.my_account.ui.MyAccountActivity
 import com.thoughtcrimes.securesms.my_account.ui.MyAccountScreens
 import com.thoughtcrimes.securesms.my_account.ui.MyProfileActivity
-import com.thoughtcrimes.securesms.onboarding.AboutActivity
 import com.thoughtcrimes.securesms.preferences.NotificationSettingsActivity
 import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
-import com.thoughtcrimes.securesms.preferences.SettingsActivity
-import com.thoughtcrimes.securesms.preferences.ShowQRCodeWithScanQRCodeActivity
-import com.thoughtcrimes.securesms.seed.SeedPermissionActivity
+import com.thoughtcrimes.securesms.search.SearchActivityResults
 import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.util.*
 import com.thoughtcrimes.securesms.wallet.CheckOnline
@@ -85,7 +84,6 @@ import com.thoughtcrimes.securesms.webrtc.CallViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.FragmentHomeBinding
-import io.beldex.bchat.databinding.ViewMessageRequestBannerBinding
 import kotlinx.coroutines.*
 import org.apache.commons.lang3.time.DurationFormatUtils
 import timber.log.Timber
@@ -210,6 +208,34 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         get() {
             return TextSecurePreferences.getLocalNumber(requireActivity().applicationContext)!!
         }
+
+    private val searchResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            it.data?.extras?.parcelable<SearchActivityResults>(SearchActivity.EXTRA_SEARCH_DATA)?.let { result ->
+                when (result) {
+                    is SearchActivityResults.Contact -> {
+                        passGlobalSearchAdapterModelContactValue(result.address)
+                    }
+                    is SearchActivityResults.GroupConversation -> {
+                        val groupAddress = Address.fromSerialized(result.groupEncodedId)
+                        val threadId = threadDb.getThreadIdIfExistsFor(Recipient.from(requireActivity().applicationContext, groupAddress, false))
+                        if (threadId >= 0) {
+                            if (binding.globalSearchRecycler.isVisible) {
+                                binding.globalSearchInputLayout.clearSearch(true)
+                            }
+                            passGlobalSearchAdapterModelGroupConversationValue(threadId)
+                        }
+                    }
+                    is SearchActivityResults.Message -> {
+                        passGlobalSearchAdapterModelMessageValue(result.threadId,result.timeStamp,result.author)
+                    }
+                    is SearchActivityResults.SavedMessage -> {
+                        passGlobalSearchAdapterModelSavedMessagesValue(result.address)
+                    }
+                }
+            }
+        }
+    }
 
     private var mContext : Context? = null
     var activityCallback: HomeFragmentListener? = null
@@ -350,7 +376,10 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         binding.drawerProfileId.text = String.format(requireContext().resources.getString(R.string.id_format), hexEncodedPublicKey)
 
         binding.searchViewContainer.setOnClickListener {
-            binding.globalSearchInputLayout.requestFocus()
+//            binding.globalSearchInputLayout.requestFocus()
+            Intent(requireContext(), SearchActivity::class.java).also {
+                searchResultLauncher.launch(it)
+            }
         }
         binding.bchatToolbar.disableClipping()
 
@@ -373,18 +402,28 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                 } ?: 0
             } else 0
             val messageRequestCount = threadDb.unapprovedConversationCount
-            var requestData = emptyList<ThreadRecord>()
             if (messageRequestCount > 0 && !TextSecurePreferences.hasHiddenMessageRequests(requireContext())) {
-                requestData = if (newData.isEmpty()) {
-                    listOf(ThreadRecord("", null, null, 0, 0, 0, 0, 0, 0, 0,0, false, 0, 0, 0, false, messageRequestCount))
-                } else {
-                    listOf(newData[0])
+                var request = emptyList<ThreadRecord>()
+                threadDb.unapprovedConversationList.use { openCursor ->
+                    val reader = threadDb.readerFor(openCursor)
+                    val threads = mutableListOf<ThreadRecord>()
+                    while (true) {
+                        threads += reader.next ?: break
+                    }
+                    request = threads
                 }
-                homeAdapter.setHasMessageRequestCount(true)
-            } else {
-                homeAdapter.setHasMessageRequestCount(false)
+                binding.requests.setContent {
+                    BChatTheme {
+                        MessageRequestsView(
+                            requests = request,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
+                        )
+                    }
+                }
             }
-            homeAdapter.data = requestData + newData
+            homeAdapter.data = newData
             if(firstPos >= 0) { manager.scrollToPositionWithOffset(firstPos, offsetTop) }
 //            setupMessageRequestsBanner()
             updateEmptyState()

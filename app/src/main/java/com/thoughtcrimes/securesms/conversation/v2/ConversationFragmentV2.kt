@@ -2287,11 +2287,47 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     Manifest.permission.READ_PHONE_STATE
                 ) == PackageManager.PERMISSION_GRANTED
             ) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    tm.registerTelephonyCallback(
-                        requireActivity().applicationContext.mainExecutor,
-                        object : TelephonyCallback(), TelephonyCallback.CallStateListener {
-                            override fun onCallStateChanged(state: Int) {
+                val simState: Int = tm.simState
+                if (simState == TelephonyManager.SIM_STATE_READY) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        tm.registerTelephonyCallback(
+                            requireActivity().applicationContext.mainExecutor,
+                            object : TelephonyCallback(), TelephonyCallback.CallStateListener {
+                                override fun onCallStateChanged(state: Int) {
+                                    when (state) {
+                                        TelephonyManager.CALL_STATE_RINGING -> {
+                                            Toast.makeText(
+                                                requireActivity().applicationContext,
+                                                getString(R.string.call_alert),
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+
+                                        TelephonyManager.CALL_STATE_OFFHOOK -> {
+                                            Toast.makeText(
+                                                requireActivity().applicationContext,
+                                                getString(R.string.call_alert),
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+
+                                        }
+
+                                        TelephonyManager.CALL_STATE_IDLE -> {
+                                            viewModel.recipient.value?.let { recipient ->
+                                                call(
+                                                    requireActivity().applicationContext,
+                                                    recipient
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            })
+
+                    } else {
+                        tm.listen(object : PhoneStateListener() {
+                            override fun onCallStateChanged(state: Int, phoneNumber: String?) {
+                                super. onCallStateChanged(state, phoneNumber)
                                 when (state) {
                                     TelephonyManager.CALL_STATE_RINGING -> {
                                         Toast.makeText(
@@ -2300,6 +2336,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                                             Toast.LENGTH_SHORT
                                         ).show()
                                     }
+
                                     TelephonyManager.CALL_STATE_OFFHOOK -> {
                                         Toast.makeText(
                                             requireActivity().applicationContext,
@@ -2308,43 +2345,20 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                                         ).show()
 
                                     }
+
                                     TelephonyManager.CALL_STATE_IDLE -> {
                                         viewModel.recipient.value?.let { recipient ->
-                                            call(requireActivity().applicationContext, recipient)
+                                            call(requireActivity(), recipient)
                                         }
                                     }
                                 }
                             }
-                        })
-
+                        }, PhoneStateListener.LISTEN_CALL_STATE)
+                    }
                 } else {
-                    tm.listen(object : PhoneStateListener() {
-                        override fun onCallStateChanged(state: Int, phoneNumber: String?) {
-                            super.onCallStateChanged(state, phoneNumber)
-                            when (state) {
-                                TelephonyManager.CALL_STATE_RINGING -> {
-                                    Toast.makeText(
-                                        requireActivity().applicationContext,
-                                        getString(R.string.call_alert),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                                TelephonyManager.CALL_STATE_OFFHOOK -> {
-                                    Toast.makeText(
-                                        requireActivity().applicationContext,
-                                        getString(R.string.call_alert),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-
-                                }
-                                TelephonyManager.CALL_STATE_IDLE -> {
-                                    viewModel.recipient.value?.let { recipient ->
-                                        call(requireActivity(), recipient)
-                                    }
-                                }
-                            }
-                        }
-                    }, PhoneStateListener.LISTEN_CALL_STATE)
+                    viewModel.recipient.value?.let { recipient ->
+                        call(requireActivity(), recipient)
+                    }
                 }
             } else {
                 Timber.tag("Beldex").d("Call state issue called else")

@@ -216,7 +216,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         binding.beldexAddressEditTxtLayout.editText?.setOnEditorActionListener(OnEditorActionListener { v, actionId, event -> // ignore ENTER
                 event != null && event.keyCode == KeyEvent.KEYCODE_ENTER
             })
-        binding.beldexAddressEditTxtLayout.editText?.onFocusChangeListener =
+       /*binding.beldexAddressEditTxtLayout.editText?.onFocusChangeListener =
             OnFocusChangeListener { v: View?, hasFocus: Boolean ->
                 if (!hasFocus) {
                     val enteredAddress: String = binding.beldexAddressEditTxtLayout.editText?.text.toString().trim()
@@ -226,7 +226,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                         processOpenAlias(dnsOA)
                     }
                 }
-            }
+            }*/
         binding.beldexAddressEditTxtLayout.editText?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable) {
                 binding.beldexAddressLayout.setBackgroundResource(R.drawable.bchat_id_text_view_background)
@@ -382,16 +382,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
             if (TextSecurePreferences.getDisplayBalanceAs(requireActivity()) == 2) {
                 getDisplayBalance = Helper.getDisplayAmount(totalFunds, Helper.DISPLAY_DIGITS_INFO).toString()
             }
-            if (!checkAddressNoError()) {
-                shakeAddress()
-                val enteredAddress: String =
-                    binding.beldexAddressEditTxtLayout.editText?.text.toString().trim()
-                val dnsOA = dnsFromOpenAlias(enteredAddress)
-                if (dnsOA != null) {
-                    Log.d("OpenAlias is %s", dnsOA)
-                }
-                dnsOA?.let { processOpenAlias(it) }
-            } else if(getDisplayBalance >  getEnteredAmount) {
+            if(getDisplayBalance >  getEnteredAmount) {
                 if (binding.beldexAddressEditTxtLayout.editText?.text!!.isNotEmpty() && binding.beldexAmountEditTxtLayout.editText?.text!!.isNotEmpty() && validateBELDEXAmount(binding.beldexAmountEditTxtLayout.editText!!.text.toString()) && binding.beldexAmountEditTxtLayout.editText!!.text.toString()
                         .toDouble() > 0.00
                 ) {

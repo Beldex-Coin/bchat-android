@@ -772,7 +772,8 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
             }
         }
         sendButtonEnabled()
-        showAlert(getString(R.string.send_create_tx_error_title), errorText!!)
+        SendFailedDialog(errorText!!).show(requireActivity().supportFragmentManager,"")
+        //showAlert(getString(R.string.send_create_tx_error_title), errorText!!)
     }
 
     private fun showAlert(title: String, message: String) {
@@ -785,7 +786,8 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     override fun createTransactionFailed(errorText: String?) {
         hideProgress()
         sendButtonEnabled()
-        showAlert(getString(R.string.send_create_tx_error_title), errorText!!)
+        SendFailedDialog(errorText!!).show(requireActivity().supportFragmentManager,"")
+        //showAlert(getString(R.string.send_create_tx_err                                                                                                                   or_title), errorText)
     }
 
     override fun transactionCreated(txTag: String?, pendingTransaction: PendingTransaction?) {

@@ -166,6 +166,7 @@ import com.thoughtcrimes.securesms.util.slidetoact.SlideToActView.OnSlideComplet
 import com.thoughtcrimes.securesms.util.toPx
 import com.thoughtcrimes.securesms.wallet.CheckOnline
 import com.thoughtcrimes.securesms.wallet.OnBackPressedListener
+import com.thoughtcrimes.securesms.wallet.send.SendFailedDialog
 import com.thoughtcrimes.securesms.wallet.send.interfaces.SendConfirm
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
@@ -3093,15 +3094,21 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
         }
         //sendButtonEnabled()
-        showAlert(getString(R.string.send_create_tx_error_title), errorText!!)
+        //showAlert(getString(R.string.send_create_tx_error_title), errorText!!)
+        SendFailedDialog(errorText!!).show(requireActivity().supportFragmentManager, "")
+        transactionInProgress = false
     }
 
     override fun createTransactionFailed(errorText: String?) {
         hideProgress()
         if(getString(R.string.invalid_destination_address) == errorText!!){
-            showAlert(getString(R.string.send_create_tx_error_title), getString(R.string.receiver_address_is_not_available))
+           //showAlert(getString(R.string.send_create_tx_error_title), getString(R.string.receiver_address_is_not_available))
+            SendFailedDialog(getString(R.string.receiver_address_is_not_available)).show(requireActivity().supportFragmentManager,"")
+            transactionInProgress = false
         }else{
-            showAlert(getString(R.string.send_create_tx_error_title), errorText)
+            //showAlert(getString(R.string.send_create_tx_error_title), errorText)
+            SendFailedDialog(errorText).show(requireActivity().supportFragmentManager,"")
+            transactionInProgress = false
         }
     }
 

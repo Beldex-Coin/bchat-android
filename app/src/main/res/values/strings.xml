@@ -1420,4 +1420,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="dialog_clear_all_data_clear_device_and_network_title" translatable="false">Delete Entire Account</string>
     <string name="dialog_clear_all_data_clear_device_only_subtitle" translatable="false">Clear only in device</string>
     <string name="dialog_clear_all_data_clear_device_and_network_subtitle" translatable="false">Delete account from Network</string>
+    <string name="dialog_title_send_failed">Create Transaction Error</string>
 </resources>

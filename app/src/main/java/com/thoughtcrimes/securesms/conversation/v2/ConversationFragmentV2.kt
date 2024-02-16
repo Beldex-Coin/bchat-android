@@ -1323,10 +1323,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 when {
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> {
                         when {
-                            valueOfWallet == "--" -> {
-                                binding.tooltip.text = getString(R.string.failed_to_connect)
-                                failedToConnectToolTipStyle()
-                            }
                             valueOfWallet != "100%" -> {
                                 binding.tooltip.text = Html.fromHtml("<p>Wallet Synchronizing <b> $valueOfWallet </b> </p>", Html.FROM_HTML_MODE_COMPACT)
                                 tooltipStyle()
@@ -1339,10 +1335,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     }
                     else -> {
                         when {
-                            valueOfWallet == "--" -> {
-                                binding.tooltip.text = getString(R.string.failed_to_connect)
-                                failedToConnectToolTipStyle()
-                            }
                             valueOfWallet != "100%" -> {
                                 binding.tooltip.text = Html.fromHtml("<p> Wallet Synchronizing <b> $valueOfWallet</b> </p>")
                                 tooltipStyle()

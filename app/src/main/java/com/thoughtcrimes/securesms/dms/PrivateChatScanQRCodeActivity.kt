@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libsignal.utilities.PublicKeyValidation
 import com.tbruyelle.rxpermissions2.RxPermissions
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
@@ -20,6 +21,8 @@ import com.thoughtcrimes.securesms.util.ScanQRCodePlaceholderFragment
 import com.thoughtcrimes.securesms.util.ScanQRCodePlaceholderFragmentDelegate
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityPrivateChatScanQrcodeBinding
+import nl.komponents.kovenant.ui.failUi
+import nl.komponents.kovenant.ui.successUi
 
 class PrivateChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
     ScanQRCodePlaceholderFragmentDelegate, ScanListener {
@@ -126,9 +129,9 @@ class PrivateChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
         if (PublicKeyValidation.isValid(bnsNameOrPublicKey)) {
             createPrivateChat(bnsNameOrPublicKey)
         } else {
-            Toast.makeText(this, R.string.invalid_bchat_id, Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this, R.string.invalid_bchat_id, Toast.LENGTH_SHORT).show()
             // This could be an BNS name
-            /*showLoader()
+            showLoader()
             MnodeAPI.getBchatID(bnsNameOrPublicKey).successUi { hexEncodedPublicKey ->
                 hideLoader()
                 this.createPrivateChat(hexEncodedPublicKey)
@@ -139,7 +142,7 @@ class PrivateChatScanQRCodeActivity : PassphraseRequiredActionBarActivity(),
                     message = it
                 }
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-            }*/
+            }
         }
     }
 

@@ -1220,7 +1220,7 @@ jobject newTransferList(JNIEnv *env, Wallet::TransactionInfo *info) {
 
 jobject newTransactionInfo(JNIEnv *env, Wallet::TransactionInfo *info) {
     jmethodID c = env->GetMethodID(class_TransactionInfo, "<init>",
-                                   "(IZZJJJLjava/lang/String;JLjava/lang/String;IIJLjava/lang/String;Ljava/util/List;)V");
+                                   "(IZZJJJLjava/lang/String;JLjava/lang/String;IIJLjava/lang/String;Ljava/util/List;Z)V");
     jobject transfers = newTransferList(env, info);
     jstring _hash = env->NewStringUTF(info->hash().c_str());
     const char *paymentId = "-";
@@ -1244,7 +1244,8 @@ jobject newTransactionInfo(JNIEnv *env, Wallet::TransactionInfo *info) {
                                     static_cast<jint> (subaddrIndex),
                                     static_cast<jlong> (info->confirmations()),
                                     _label,
-                                    transfers);
+                                    transfers,
+                                    info->isBns());
     env->DeleteLocalRef(transfers);
     env->DeleteLocalRef(_hash);
     env->DeleteLocalRef(_paymentId);

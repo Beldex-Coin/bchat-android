@@ -77,6 +77,7 @@ import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.FragmentHomeBinding
 import io.beldex.bchat.databinding.ViewMessageRequestBannerBinding
@@ -242,6 +243,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         // Set up toolbar buttons
         binding.profileButton.root.glide = glide
 
+        binding.bchatVersion.text = "BChat V${BuildConfig.VERSION_NAME}"
         //New Line
         // Setup Recyclerview's Layout
         binding.navigationRv.layoutManager = LinearLayoutManager(requireActivity().applicationContext)

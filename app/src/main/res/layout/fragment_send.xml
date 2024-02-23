@@ -96,7 +96,7 @@
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginEnd="20dp"
-                    android:text="@string/beldex_address"
+                    android:text="@string/title_for_beldex_address_or_name"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -128,7 +128,7 @@
                             android:background="@color/transparent"
                             android:fontFamily="@font/open_sans_medium"
                             android:gravity="start"
-                            android:hint="@string/enter_address"
+                            android:hint="@string/hint_for_enter_beldex_address_or_name"
                             android:imeOptions="actionNext"
                             android:inputType="textMultiLine"
                             android:lines="4"

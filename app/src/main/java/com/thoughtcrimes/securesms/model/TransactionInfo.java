@@ -57,6 +57,7 @@ public class TransactionInfo implements Parcelable, Comparable<TransactionInfo> 
     public String txKey = null;
     public String notes = null;
     public String address = null;
+    public boolean isBns;
 
     public TransactionInfo(
             int direction,
@@ -72,7 +73,8 @@ public class TransactionInfo implements Parcelable, Comparable<TransactionInfo> 
             int addressIndex,
             long confirmations,
             String subaddressLabel,
-            List<Transfer> transfers) {
+            List<Transfer> transfers,
+            boolean isBns) {
         this.direction = Direction.values()[direction];
         this.isPending = isPending;
         this.isFailed = isFailed;
@@ -87,6 +89,7 @@ public class TransactionInfo implements Parcelable, Comparable<TransactionInfo> 
         this.confirmations = confirmations;
         this.subaddressLabel = subaddressLabel;
         this.transfers = transfers;
+        this.isBns = isBns;
     }
 
     public boolean isConfirmed() {
@@ -123,6 +126,7 @@ public class TransactionInfo implements Parcelable, Comparable<TransactionInfo> 
         out.writeString(txKey);
         out.writeString(notes);
         out.writeString(address);
+        out.writeByte((byte) (isBns ? 1 : 0));
     }
 
     public static final Parcelable.Creator<TransactionInfo> CREATOR = new Parcelable.Creator<TransactionInfo>() {
@@ -153,6 +157,7 @@ public class TransactionInfo implements Parcelable, Comparable<TransactionInfo> 
         txKey = in.readString();
         notes = in.readString();
         address = in.readString();
+        isBns = in.readByte() != 0;
     }
 
     @Override

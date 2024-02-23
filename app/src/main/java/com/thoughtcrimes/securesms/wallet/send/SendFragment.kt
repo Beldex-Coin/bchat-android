@@ -216,7 +216,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         binding.beldexAddressEditTxtLayout.editText?.setOnEditorActionListener(OnEditorActionListener { v, actionId, event -> // ignore ENTER
                 event != null && event.keyCode == KeyEvent.KEYCODE_ENTER
             })
-        binding.beldexAddressEditTxtLayout.editText?.onFocusChangeListener =
+       /*binding.beldexAddressEditTxtLayout.editText?.onFocusChangeListener =
             OnFocusChangeListener { v: View?, hasFocus: Boolean ->
                 if (!hasFocus) {
                     val enteredAddress: String = binding.beldexAddressEditTxtLayout.editText?.text.toString().trim()
@@ -226,7 +226,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                         processOpenAlias(dnsOA)
                     }
                 }
-            }
+            }*/
         binding.beldexAddressEditTxtLayout.editText?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable) {
                 binding.beldexAddressLayout.setBackgroundResource(R.drawable.bchat_id_text_view_background)
@@ -377,21 +377,13 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
     private fun createTransactionIfPossible(){
         if(CheckOnline.isOnline(requireContext())) {
-            var getDisplayBalance = WalletFragment.getUserBalance
-            val getEnteredAmount = binding.beldexAmountEditTxtLayout.editText?.text.toString()
-            if (TextSecurePreferences.getDisplayBalanceAs(requireActivity()) == 2) {
-                getDisplayBalance = Helper.getDisplayAmount(totalFunds, Helper.DISPLAY_DIGITS_INFO).toString()
+            val getEnterAddressOrName = binding.beldexAddressEditTxtLayout.editText?.text.toString()
+            if((getEnterAddressOrName.length > 106 || getEnterAddressOrName.length < 95) && !(getEnterAddressOrName.takeLast(4).equals(".bdx", ignoreCase = true))) {
+                binding.beldexAddressLayout.setBackgroundResource(R.drawable.error_view_background)
+                binding.beldexAddressErrorMessage.visibility = View.VISIBLE
+                binding.beldexAddressErrorMessage.text=getString(R.string.invalid_destination_address)
+                return
             }
-            if (!checkAddressNoError()) {
-                shakeAddress()
-                val enteredAddress: String =
-                    binding.beldexAddressEditTxtLayout.editText?.text.toString().trim()
-                val dnsOA = dnsFromOpenAlias(enteredAddress)
-                if (dnsOA != null) {
-                    Log.d("OpenAlias is %s", dnsOA)
-                }
-                dnsOA?.let { processOpenAlias(it) }
-            } else if(getDisplayBalance >  getEnteredAmount) {
                 if (binding.beldexAddressEditTxtLayout.editText?.text!!.isNotEmpty() && binding.beldexAmountEditTxtLayout.editText?.text!!.isNotEmpty() && validateBELDEXAmount(binding.beldexAmountEditTxtLayout.editText!!.text.toString()) && binding.beldexAmountEditTxtLayout.editText!!.text.toString()
                         .toDouble() > 0.00
                 ) {
@@ -469,9 +461,6 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                     binding.beldexAddressErrorMessage.visibility = View.VISIBLE
                     binding.beldexAddressErrorMessage.text=getString(R.string.beldex_address_error_message)
                 }
-            } else{
-                Toast.makeText(requireContext(), getString(R.string.validation_for_balance), Toast.LENGTH_SHORT).show()
-            }
         } else {
             Toast.makeText(requireContext(), getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
         }
@@ -781,7 +770,8 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
             }
         }
         sendButtonEnabled()
-        showAlert(getString(R.string.send_create_tx_error_title), errorText!!)
+        SendFailedDialog(errorText!!).show(requireActivity().supportFragmentManager,"")
+        //showAlert(getString(R.string.send_create_tx_error_title), errorText!!)
     }
 
     private fun showAlert(title: String, message: String) {
@@ -794,7 +784,8 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     override fun createTransactionFailed(errorText: String?) {
         hideProgress()
         sendButtonEnabled()
-        showAlert(getString(R.string.send_create_tx_error_title), errorText!!)
+        SendFailedDialog(errorText!!).show(requireActivity().supportFragmentManager,"")
+        //showAlert(getString(R.string.send_create_tx_err                                                                                                                   or_title), errorText)
     }
 
     override fun transactionCreated(txTag: String?, pendingTransaction: PendingTransaction?) {

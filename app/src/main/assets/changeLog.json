@@ -321,6 +321,17 @@
           "description":"- Minor Bug fixes"
         }
       ]
+    },
+    {
+      "title": "2.4.0",
+      "descriptions": [
+        {
+          "description":"- Integrated BNS in BChat"
+        },
+        {
+          "description":"- Minor Bug fixes"
+        }
+      ]
     }
   ]
 }

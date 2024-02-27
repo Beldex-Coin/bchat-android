@@ -1423,4 +1423,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="dialog_title_send_failed">Create Transaction Error</string>
     <string name="title_for_beldex_address_or_name">Beldex address or BNS name</string>
     <string name="hint_for_enter_beldex_address_or_name">Enter Address or BNS name</string>
+    <string name="description_for_paste_icon">This allows user to paste their seed from clipboard</string>
 </resources>

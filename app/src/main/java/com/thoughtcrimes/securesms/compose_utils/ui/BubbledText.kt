@@ -24,6 +24,7 @@ fun BubbledText(
     modifier: Modifier = Modifier,
     boxBackground: Color = Color.White,
     defaultMinSize: Dp = 16.dp,
+    padding: Dp = 2.dp,
     textStyle: TextStyle = MaterialTheme.typography.titleMedium,
 ){
 
@@ -47,7 +48,7 @@ fun BubbledText(
             text = text,
             textAlign = TextAlign.Center,
             style = textStyle,
-            modifier = Modifier.padding(4.dp).defaultMinSize(defaultMinSize)
+            modifier = Modifier.padding(padding).defaultMinSize(defaultMinSize)
         )
     }
 

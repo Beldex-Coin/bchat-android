@@ -63,7 +63,6 @@ import com.thoughtcrimes.securesms.database.MmsSmsDatabase
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.groups.OpenGroupManager
 import com.thoughtcrimes.securesms.home.search.GlobalSearchAdapter
-import com.thoughtcrimes.securesms.home.search.GlobalSearchInputLayout
 import com.thoughtcrimes.securesms.home.search.GlobalSearchViewModel
 import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
 import com.thoughtcrimes.securesms.model.NetworkType
@@ -103,10 +102,8 @@ import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityHomeBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
@@ -371,7 +368,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     override fun callLifeCycleScope(
         recyclerView: RecyclerView,
-        globalSearchInputLayout: GlobalSearchInputLayout,
         mmsSmsDatabase: MmsSmsDatabase,
         globalSearchAdapter: GlobalSearchAdapter,
         publicKey: String,
@@ -401,11 +397,11 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 }
             }
             // monitor the global search VM query
-            launch {
-                globalSearchInputLayout.query
-                    .onEach(globalSearchViewModel::postQuery)
-                    .collect()
-            }
+//            launch {
+//                globalSearchInputLayout.query
+//                    .onEach(globalSearchViewModel::postQuery)
+//                    .collect()
+//            }
             // Get group results and display them
             launch {
                 globalSearchViewModel.result.collect { result ->

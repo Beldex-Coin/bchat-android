@@ -41,7 +41,7 @@ fun RequestBlockConfirmationDialog(
                 .padding(16.dp)
         ) {
             Text(
-                text = stringResource(id = R.string.activity_message_requests_title),
+                text = stringResource(id = R.string.message_request),
                 style = MaterialTheme.typography.titleMedium.copy(
                     color = MaterialTheme.appColors.primaryButtonColor,
                     fontWeight = FontWeight(800)
@@ -93,6 +93,79 @@ fun RequestBlockConfirmationDialog(
                         style = MaterialTheme.typography.bodyMedium.copy(
                             color = Color.White
                         )
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun IgnoreRequestDialog(
+    onBlock: () -> Unit,
+    onDelete: () -> Unit,
+    onDismissRequest: () -> Unit
+) {
+    DialogContainer(
+        onDismissRequest = onDismissRequest
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Text(
+                text = stringResource(id = R.string.message_request),
+                style = MaterialTheme.typography.titleMedium.copy(
+                    color = MaterialTheme.appColors.primaryButtonColor,
+                    fontWeight = FontWeight(800)
+                )
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = stringResource(id = R.string.block_or_delete_request),
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Button(
+                    onClick = onBlock,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.appColors.editTextBackground
+                    ),
+                    modifier = Modifier
+                        .weight(1f)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.recipient_preferences__block),
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = Color.Red
+                        )
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Button(
+                    onClick = onDelete,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.appColors.editTextBackground
+                    ),
+                    modifier = Modifier
+                        .weight(1f)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.delete),
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 }
             }

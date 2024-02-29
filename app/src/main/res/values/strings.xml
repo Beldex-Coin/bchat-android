@@ -1454,4 +1454,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="create_secret_group">Create Secret Group</string>
     <string name="enter_group_name">Enter Group Name</string>
     <string name="search_contact">Search Contact</string>
+    <string name="message_request">Message Request</string>
+    <string name="block_or_delete_request">Do you want to block or just delete this user?</string>
 </resources>

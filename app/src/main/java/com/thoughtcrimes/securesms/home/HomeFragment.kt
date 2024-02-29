@@ -4,6 +4,9 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.*
+import android.content.res.Resources
+import android.graphics.Canvas
+import android.graphics.Rect
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
@@ -23,6 +26,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.getColor
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
@@ -30,6 +34,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
@@ -43,6 +48,8 @@ import com.thoughtcrimes.securesms.MuteDialog
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.components.ProfilePictureView
 import com.thoughtcrimes.securesms.compose_utils.BChatTheme
+import com.thoughtcrimes.securesms.compose_utils.ComposeDialogContainer
+import com.thoughtcrimes.securesms.compose_utils.DialogType
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.conversation.v2.utilities.NotificationUtils
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
@@ -90,6 +97,9 @@ import timber.log.Timber
 import java.io.IOException
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.abs
+import kotlin.math.roundToInt
+
 
 @AndroidEntryPoint
 class HomeFragment : BaseFragment(),ConversationClickListener,
@@ -147,43 +157,43 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     }
 
     private val globalSearchAdapter = GlobalSearchAdapter { model ->
-        when (model) {
-            is GlobalSearchAdapter.Model.Message -> {
-                val threadId = model.messageResult.threadId
-                val timestamp = model.messageResult.sentTimestampMs
-                val author = model.messageResult.messageRecipient.address
-                if (binding.globalSearchRecycler.isVisible) {
-                    binding.globalSearchInputLayout.clearSearch(true)
-                }
-                passGlobalSearchAdapterModelMessageValue(threadId,timestamp,author)
-            }
-            is GlobalSearchAdapter.Model.SavedMessages -> {
-                if (binding.globalSearchRecycler.isVisible) {
-                    binding.globalSearchInputLayout.clearSearch(true)
-                }
-                passGlobalSearchAdapterModelSavedMessagesValue(Address.fromSerialized(model.currentUserPublicKey))
-            }
-            is GlobalSearchAdapter.Model.Contact -> {
-                val address = model.contact.bchatID
-                if (binding.globalSearchRecycler.isVisible) {
-                    binding.globalSearchInputLayout.clearSearch(true)
-                }
-                passGlobalSearchAdapterModelContactValue(Address.fromSerialized(address))
-            }
-            is GlobalSearchAdapter.Model.GroupConversation -> {
-                val groupAddress = Address.fromSerialized(model.groupRecord.encodedId)
-                val threadId = threadDb.getThreadIdIfExistsFor(Recipient.from(requireActivity().applicationContext, groupAddress, false))
-                if (threadId >= 0) {
-                    if (binding.globalSearchRecycler.isVisible) {
-                        binding.globalSearchInputLayout.clearSearch(true)
-                    }
-                    passGlobalSearchAdapterModelGroupConversationValue(threadId)
-                }
-            }
-            else -> {
-                Log.d("Beldex", "callback with model: $model")
-            }
-        }
+//        when (model) {
+//            is GlobalSearchAdapter.Model.Message -> {
+//                val threadId = model.messageResult.threadId
+//                val timestamp = model.messageResult.sentTimestampMs
+//                val author = model.messageResult.messageRecipient.address
+//                if (binding.globalSearchRecycler.isVisible) {
+//                    binding.globalSearchInputLayout.clearSearch(true)
+//                }
+//                passGlobalSearchAdapterModelMessageValue(threadId,timestamp,author)
+//            }
+//            is GlobalSearchAdapter.Model.SavedMessages -> {
+//                if (binding.globalSearchRecycler.isVisible) {
+//                    binding.globalSearchInputLayout.clearSearch(true)
+//                }
+//                passGlobalSearchAdapterModelSavedMessagesValue(Address.fromSerialized(model.currentUserPublicKey))
+//            }
+//            is GlobalSearchAdapter.Model.Contact -> {
+//                val address = model.contact.bchatID
+//                if (binding.globalSearchRecycler.isVisible) {
+//                    binding.globalSearchInputLayout.clearSearch(true)
+//                }
+//                passGlobalSearchAdapterModelContactValue(Address.fromSerialized(address))
+//            }
+//            is GlobalSearchAdapter.Model.GroupConversation -> {
+//                val groupAddress = Address.fromSerialized(model.groupRecord.encodedId)
+//                val threadId = threadDb.getThreadIdIfExistsFor(Recipient.from(requireActivity().applicationContext, groupAddress, false))
+//                if (threadId >= 0) {
+//                    if (binding.globalSearchRecycler.isVisible) {
+//                        binding.globalSearchInputLayout.clearSearch(true)
+//                    }
+//                    passGlobalSearchAdapterModelGroupConversationValue(threadId)
+//                }
+//            }
+//            else -> {
+//                Log.d("Beldex", "callback with model: $model")
+//            }
+//        }
     }
 
     //New Line
@@ -220,9 +230,6 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                         val groupAddress = Address.fromSerialized(result.groupEncodedId)
                         val threadId = threadDb.getThreadIdIfExistsFor(Recipient.from(requireActivity().applicationContext, groupAddress, false))
                         if (threadId >= 0) {
-                            if (binding.globalSearchRecycler.isVisible) {
-                                binding.globalSearchInputLayout.clearSearch(true)
-                            }
                             passGlobalSearchAdapterModelGroupConversationValue(threadId)
                         }
                     }
@@ -239,6 +246,54 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
 
     private var mContext : Context? = null
     var activityCallback: HomeFragmentListener? = null
+
+    private val swipeHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+        override fun onMove(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
+        ) = true
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+
+        }
+
+        override fun onChildDraw(
+            c: Canvas,
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            dX: Float,
+            dY: Float,
+            actionState: Int,
+            isCurrentlyActive: Boolean
+        ) {
+            val width = Resources.getSystem().displayMetrics.widthPixels
+            val deleteIcon = ResourcesCompat.getDrawable(resources, R.drawable.ic_delete_24, null)
+            when {
+                abs(dX) < width / 3 -> {
+                    println(">>>>>swipe1")
+                }
+                dX > width / 3 -> {
+                    println(">>>>>swipe2")
+                }
+                else -> {
+                    println(">>>>>swipe3")
+                }
+            }
+
+            val textMargin = resources.getDimension(R.dimen.fab_margin).roundToInt()
+            deleteIcon ?: return
+            val top = viewHolder.itemView.top + (viewHolder.itemView.bottom - viewHolder.itemView.top) / 2 - deleteIcon.intrinsicHeight / 2
+            deleteIcon.bounds = Rect(
+                width - textMargin - deleteIcon.intrinsicWidth,
+                top,
+                width - textMargin,
+                top + deleteIcon.intrinsicHeight
+            )
+            if (dX < 0) deleteIcon.draw(c)
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+        }
+    })
     override fun onAttach(context: Context) {
         super.onAttach(context)
         this.mContext = context
@@ -375,35 +430,36 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         binding.drawerProfileIcon.root.glide = glide
         binding.drawerProfileId.text = String.format(requireContext().resources.getString(R.string.id_format), hexEncodedPublicKey)
 
-        binding.searchViewContainer.setOnClickListener {
+//        binding.searchViewContainer.setOnClickListener {
 //            binding.globalSearchInputLayout.requestFocus()
-            Intent(requireContext(), SearchActivity::class.java).also {
-                searchResultLauncher.launch(it)
-            }
-        }
+//            Intent(requireContext(), SearchActivity::class.java).also {
+//                searchResultLauncher.launch(it)
+//            }
+//        }
         binding.bchatToolbar.disableClipping()
 
 //        setupMessageRequestsBanner()
         setupHeaderImage()
         // Set up recycler view
-        binding.globalSearchInputLayout.listener = this
+//        binding.globalSearchInputLayout.listener = this
         /*homeAdapter.setHasStableIds(true)*/
         homeAdapter.glide = glide
         binding.recyclerView.adapter = homeAdapter
-        binding.globalSearchRecycler.adapter = globalSearchAdapter
+        swipeHelper.attachToRecyclerView(binding.recyclerView)
+//        binding.globalSearchRecycler.adapter = globalSearchAdapter
         // Set up empty state view
         binding.createNewPrivateChatButton.setOnClickListener { createNewPrivateChat() }
         homeViewModel.getObservable(requireActivity().applicationContext).observe(requireActivity()) { newData ->
-            val manager = binding.recyclerView.layoutManager as LinearLayoutManager
-            val firstPos = manager.findFirstCompletelyVisibleItemPosition()
-            val offsetTop = if(firstPos >= 0) {
-                manager.findViewByPosition(firstPos)?.let { view ->
-                    manager.getDecoratedTop(view) - manager.getTopDecorationHeight(view)
-                } ?: 0
-            } else 0
+//            val manager = binding.recyclerView.layoutManager as LinearLayoutManager
+//            val firstPos = manager.findFirstCompletelyVisibleItemPosition()
+//            val offsetTop = if(firstPos >= 0) {
+//                manager.findViewByPosition(firstPos)?.let { view ->
+//                    manager.getDecoratedTop(view) - manager.getTopDecorationHeight(view)
+//                } ?: 0
+//            } else 0
             val messageRequestCount = threadDb.unapprovedConversationCount
+            var request = emptyList<ThreadRecord>()
             if (messageRequestCount > 0 && !TextSecurePreferences.hasHiddenMessageRequests(requireContext())) {
-                var request = emptyList<ThreadRecord>()
                 threadDb.unapprovedConversationList.use { openCursor ->
                     val reader = threadDb.readerFor(openCursor)
                     val threads = mutableListOf<ThreadRecord>()
@@ -412,19 +468,39 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                     }
                     request = threads
                 }
-                binding.requests.setContent {
-                    BChatTheme {
-                        MessageRequestsView(
-                            requests = request,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp)
-                        )
-                    }
+            }
+            binding.requests.setContent {
+                BChatTheme {
+                    MessageRequestsView(
+                        requests = request,
+                        openSearch = {
+                            Intent(requireContext(), SearchActivity::class.java).also {
+                                searchResultLauncher.launch(it)
+                            }
+                        },
+                        ignoreRequest = {
+                            val dialog = ComposeDialogContainer(
+                                dialogType = DialogType.IgnoreRequest,
+                                onConfirm = {
+                                    showRequestDeleteDialog(it)
+                                },
+                                onCancel = {
+                                    showRequestBlockDialog(it)
+                                }
+                            )
+                            dialog.show(childFragmentManager, ComposeDialogContainer.TAG)
+                        },
+                        openChat = {},
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                horizontal = 16.dp
+                            )
+                    )
                 }
             }
             homeAdapter.data = newData
-            if(firstPos >= 0) { manager.scrollToPositionWithOffset(firstPos, offsetTop) }
+//            if(firstPos >= 0) { manager.scrollToPositionWithOffset(firstPos, offsetTop) }
 //            setupMessageRequestsBanner()
             updateEmptyState()
         }
@@ -443,8 +519,26 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         this.broadcastReceiver = broadcastReceiver
         LocalBroadcastManager.getInstance(requireActivity().applicationContext)
             .registerReceiver(broadcastReceiver, IntentFilter("blockedContactsChanged"))
-        activityCallback?.callLifeCycleScope(binding.recyclerView,binding.globalSearchInputLayout, mmsSmsDatabase,globalSearchAdapter,publicKey,binding.profileButton.root,binding.drawerProfileName,binding.drawerProfileIcon.root)
+        activityCallback?.callLifeCycleScope(binding.recyclerView, mmsSmsDatabase,globalSearchAdapter,publicKey,binding.profileButton.root,binding.drawerProfileName,binding.drawerProfileIcon.root)
 
+    }
+
+    private fun showRequestDeleteDialog(record: ThreadRecord) {
+        val dialog = ComposeDialogContainer(
+            dialogType = DialogType.DeleteRequest,
+            onConfirm = {},
+            onCancel = {}
+        )
+        dialog.show(childFragmentManager, ComposeDialogContainer.TAG)
+    }
+
+    private fun showRequestBlockDialog(record: ThreadRecord) {
+        val dialog = ComposeDialogContainer(
+            dialogType = DialogType.BlockRequest,
+            onConfirm = {},
+            onCancel = {}
+        )
+        dialog.show(childFragmentManager, ComposeDialogContainer.TAG)
     }
 
 
@@ -558,39 +652,39 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     }
 
     override fun onInputFocusChanged(hasFocus: Boolean) {
-        if (hasFocus) {
-            setSearchShown(true)
-        } else {
-            setSearchShown(!binding.globalSearchInputLayout.query.value.isNullOrEmpty())
-        }
+//        if (hasFocus) {
+//            setSearchShown(true)
+//        } else {
+//            setSearchShown(!binding.globalSearchInputLayout.query.value.isNullOrEmpty())
+//        }
     }
 
     private fun setSearchShown(isShown: Boolean) {
         //New Line
-        binding.searchBarLayout.isVisible = isShown
-        binding.searchBarBackButton.setOnClickListener {
-            binding.globalSearchInputLayout.onFocus()
-            binding.globalSearchInputLayout.clearSearch(true)
-            onBackPressed()
-        }
-
-        binding.searchToolbar.isVisible = isShown
-        binding.searchViewCard.isVisible = !isShown
-        binding.bchatToolbar.isVisible = !isShown
-        binding.recyclerView.isVisible = !isShown
-        binding.emptyStateContainer.isVisible =
-            (binding.recyclerView.adapter as HomeAdapter).itemCount == 0 && binding.recyclerView.isVisible
-        binding.emptyStateContainerText.isVisible =
-            (binding.recyclerView.adapter as HomeAdapter).itemCount == 0 && binding.recyclerView.isVisible
-        val isDayUiMode = UiModeUtilities.isDayUiMode(requireActivity())
-        (if (isDayUiMode) R.drawable.ic_doodle_3_2 else R.drawable.ic_doodle_3_1).also {
-            binding.emptyStateImageView.setImageResource(
-                it
-            )
-        }
-        binding.gradientView.isVisible = !isShown
-        binding.globalSearchRecycler.isVisible = isShown
-        binding.newConversationButtonSet.isVisible = !isShown
+//        binding.searchBarLayout.isVisible = isShown
+//        binding.searchBarBackButton.setOnClickListener {
+//            binding.globalSearchInputLayout.onFocus()
+//            binding.globalSearchInputLayout.clearSearch(true)
+//            onBackPressed()
+//        }
+//
+//        binding.searchToolbar.isVisible = isShown
+//        binding.searchViewCard.isVisible = !isShown
+//        binding.bchatToolbar.isVisible = !isShown
+//        binding.recyclerView.isVisible = !isShown
+//        binding.emptyStateContainer.isVisible =
+//            (binding.recyclerView.adapter as HomeAdapter).itemCount == 0 && binding.recyclerView.isVisible
+//        binding.emptyStateContainerText.isVisible =
+//            (binding.recyclerView.adapter as HomeAdapter).itemCount == 0 && binding.recyclerView.isVisible
+//        val isDayUiMode = UiModeUtilities.isDayUiMode(requireActivity())
+//        (if (isDayUiMode) R.drawable.ic_doodle_3_2 else R.drawable.ic_doodle_3_1).also {
+//            binding.emptyStateImageView.setImageResource(
+//                it
+//            )
+//        }
+//        binding.gradientView.isVisible = !isShown
+//        binding.globalSearchRecycler.isVisible = isShown
+//        binding.newConversationButtonSet.isVisible = !isShown
     }
 
     override fun onResume() {
@@ -655,8 +749,8 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     override fun onPause() {
         super.onPause()
         val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-        imm?.hideSoftInputFromWindow(binding.globalSearchInputLayout.windowToken, 0)
-        binding.globalSearchInputLayout.clearFocus()
+//        imm?.hideSoftInputFromWindow(binding.globalSearchInputLayout.windowToken, 0)
+//        binding.globalSearchInputLayout.clearFocus()
     }
 
     override fun onDestroy() {
@@ -699,9 +793,9 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     }
 
     fun onBackPressed() {
-        if (binding.globalSearchRecycler.isVisible) {
-            binding.globalSearchInputLayout.clearSearch(true)
-        }
+//        if (binding.globalSearchRecycler.isVisible) {
+//            binding.globalSearchInputLayout.clearSearch(true)
+//        }
     }
 
 
@@ -930,7 +1024,6 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     interface HomeFragmentListener{
         fun callLifeCycleScope(
             recyclerView: RecyclerView,
-            globalSearchInputLayout: GlobalSearchInputLayout,
             mmsSmsDatabase: MmsSmsDatabase,
             globalSearchAdapter: GlobalSearchAdapter,
             publicKey: String,

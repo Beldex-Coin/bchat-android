@@ -5,13 +5,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.DialogFragment
+import com.thoughtcrimes.securesms.my_account.ui.dialogs.IgnoreRequestDialog
 import com.thoughtcrimes.securesms.my_account.ui.dialogs.PermissionSettingDialog
 import com.thoughtcrimes.securesms.my_account.ui.dialogs.ProfilePicturePopup
+import com.thoughtcrimes.securesms.my_account.ui.dialogs.RequestBlockConfirmationDialog
+import com.thoughtcrimes.securesms.util.UiMode
+import com.thoughtcrimes.securesms.util.UiModeUtilities
+import io.beldex.bchat.R
 
 enum class DialogType {
     PermissionDialog,
-    UploadProfile
+    UploadProfile,
+    IgnoreRequest,
+    DeleteRequest,
+    BlockRequest
 }
 
 class ComposeDialogContainer(
@@ -44,7 +53,9 @@ class ComposeDialogContainer(
             setContent {
                 when (dialogType) {
                     DialogType.PermissionDialog -> {
-                        BChatTheme {
+                        BChatTheme(
+                            darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
+                        ) {
                             PermissionSettingDialog(
                                 message = "",
                                 onDismissRequest = {
@@ -59,7 +70,9 @@ class ComposeDialogContainer(
                     DialogType.UploadProfile -> {
                         argument1 ?: return@setContent
                         argument2 ?: return@setContent
-                        BChatTheme {
+                        BChatTheme(
+                            darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
+                        ) {
                             ProfilePicturePopup(
                                 publicKey = argument1!!,
                                 displayName = argument2!!,
@@ -74,6 +87,61 @@ class ComposeDialogContainer(
                                 uploadPicture = {
                                     onConfirm()
                                     dismiss()
+                                }
+                            )
+                        }
+                    }
+                    DialogType.IgnoreRequest -> {
+                        BChatTheme(
+                            darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
+                        ) {
+                            IgnoreRequestDialog(
+                                onBlock = {
+                                    dismiss()
+                                    onConfirm()
+                                },
+                                onDelete = {
+                                    dismiss()
+                                    onCancel()
+                                },
+                                onDismissRequest = {
+                                    dismiss()
+                                }
+                            )
+                        }
+                    }
+                    DialogType.DeleteRequest -> {
+                        BChatTheme(
+                            darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
+                        ) {
+                            RequestBlockConfirmationDialog(
+                                message = stringResource(id = R.string.message_requests_block_message),
+                                actionTitle = stringResource(id = R.string.yes),
+                                onConfirmation = {
+                                    dismiss()
+                                    onConfirm()
+                                },
+                                onDismissRequest = {
+                                    dismiss()
+                                    onCancel()
+                                }
+                            )
+                        }
+                    }
+                    DialogType.BlockRequest -> {
+                        BChatTheme(
+                            darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
+                        ) {
+                            RequestBlockConfirmationDialog(
+                                message = stringResource(id = R.string.message_requests_decline_messages),
+                                actionTitle = stringResource(id = R.string.yes),
+                                onConfirmation = {
+                                    dismiss()
+                                    onConfirm()
+                                },
+                                onDismissRequest = {
+                                    dismiss()
+                                    onCancel()
                                 }
                             )
                         }

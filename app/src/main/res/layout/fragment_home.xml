@@ -12,8 +12,8 @@
         android:id="@+id/contentView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/page_background"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@color/screen_background">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_Call"
@@ -90,7 +90,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingVertical="16dp">
 
                 <RelativeLayout
                     android:id="@+id/bchat_toolbar"
@@ -103,34 +104,36 @@
                         android:id="@+id/profileButton"
                         android:layout_width="@dimen/small_profile_picture_size"
                         android:layout_height="@dimen/small_profile_picture_size"
-                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentStart="true"
                         android:layout_centerVertical="true" />
+
                     <ImageView
                         android:layout_width="14dp"
                         android:layout_height="14dp"
-                        android:layout_alignStart="@+id/profileButton"
-                        android:layout_alignBottom="@+id/profileButton"
-                        android:layout_marginStart="-1dp"
-                        android:layout_marginBottom="-1dp"
+                        android:layout_alignEnd="@+id/profileButton"
+                        android:layout_alignTop="@+id/profileButton"
+                        android:layout_marginEnd="-1dp"
+                        android:layout_marginTop="-1dp"
                         android:background="@drawable/circle_white" />
 
                     <com.thoughtcrimes.securesms.home.PathStatusView
                         android:id="@+id/pathStatusView"
                         android:layout_width="@dimen/path_status_view_size_new"
                         android:layout_height="@dimen/path_status_view_size_new"
-                        android:layout_alignStart="@+id/profileButton"
-                        android:layout_alignBottom="@+id/profileButton" />
+                        android:layout_alignEnd="@+id/profileButton"
+                        android:layout_alignTop="@+id/profileButton" />
 
                     <TextView
                         android:id="@+id/bchatHeaderImage"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
-                        android:layout_toStartOf="@+id/profileButton"
+                        android:layout_toEndOf="@+id/profileButton"
                         android:fontFamily="@font/open_sans_bold"
                         android:text="@string/bchat"
-                        android:textSize="30sp"
-                        android:textStyle="bold" />
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:layout_marginStart="16dp"/>
 
                     <!-- <RelativeLayout
                          android:id="@+id/searchViewContainer"
@@ -191,11 +194,11 @@
                         android:textStyle="bold" />
                 </RelativeLayout>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="?android:dividerHorizontal"
-                    android:elevation="1dp" />
+<!--                <View-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="1px"-->
+<!--                    android:background="?android:dividerHorizontal"-->
+<!--                    android:elevation="1dp" />-->
 
                 <com.thoughtcrimes.securesms.onboarding.SeedReminderView
                     android:id="@+id/seedReminderView"
@@ -220,180 +223,111 @@
             app:lottie_enableMergePathsForKitKatAndAbove="true"
             tools:ignore="ContentDescription"/>-->
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/searchViewCard"
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/requests"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="15dp"
-            app:cardBackgroundColor="@color/card_color"
-            app:cardCornerRadius="10dp">
+            android:background="?colorPrimary"/>
 
-            <LinearLayout
-                android:id="@+id/searchViewContainer"
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            style="@style/CustomCardViewStyle"
+            app:cardBackgroundColor="@color/page_background"
+            app:cardElevation="4dp">
+
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="5dp">
+                android:layout_height="match_parent"
+                android:clipChildren="false">
 
-                <RelativeLayout
-                    android:id="@+id/searchViewImage"
-                    android:layout_width="@dimen/small_profile_picture_size"
-                    android:layout_height="@dimen/small_profile_picture_size">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:itemCount="6"
+                    tools:listitem="@layout/view_conversation"
+                    android:padding="8dp"/>
+
+                <View
+                    android:id="@+id/gradientView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/home_activity_gradient"/>
+
+                <LinearLayout
+                    android:id="@+id/emptyStateContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="visible">
 
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:src="@drawable/ic_baseline_search_24"
-                        app:tint="@color/home_search_icon_and_hint" />
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/searchViewText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/small_profile_picture_size">
+                        android:id="@+id/emptyStateImageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="0dp"
+                        android:scaleType="fitXY"
+                        android:visibility="visible" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
+                        android:layout_marginTop="15dp"
+                        android:alpha="0.2"
                         android:fontFamily="@font/open_sans_medium"
-                        android:text="@string/search_people_and_groups"
-                        android:textColor="@color/home_search_icon_and_hint" />
-                </RelativeLayout>
+                        android:gravity="center"
+                        android:text="Much empty. Such wow.\nGo get some friends to BChat!"
+                        android:textColor="@color/text"
+                        android:textSize="@dimen/medium_font_size"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+                    <!-- android:text="@string/activity_home_empty_state_message"-->
 
-            </LinearLayout>
+                    <Button
+                        android:id="@+id/createNewPrivateChatButton"
+                        style="@style/Widget.Bchat.Button.Common.ProminentOutline"
+                        android:layout_width="196dp"
+                        android:layout_height="@dimen/medium_button_height"
+                        android:layout_marginTop="@dimen/medium_spacing"
+                        android:text="@string/activity_home_empty_state_button_title"
+                        android:visibility="gone" />
 
-        </androidx.cardview.widget.CardView>
-
-        <androidx.compose.ui.platform.ComposeView
-            android:id="@+id/requests"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipChildren="false">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipToPadding="false"
-                android:paddingBottom="172dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:itemCount="6"
-                tools:listitem="@layout/view_conversation" />
-
-            <View
-                android:id="@+id/gradientView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/home_activity_gradient"/>
-
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/globalSearchRecycler"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginTop="65dp"
-                android:scrollbars="vertical"
-                android:visibility="gone"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:itemCount="6"
-                tools:listitem="@layout/view_global_search_result" />
-
-            <RelativeLayout
-                android:id="@+id/search_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?actionBarSize"
-                android:layout_alignParentTop="true"
-                android:layout_marginHorizontal="@dimen/medium_spacing"
-                android:layout_marginTop="10dp"
-                android:background="@color/cell_background"
-                android:visibility="gone">
-
-                <com.thoughtcrimes.securesms.home.search.GlobalSearchInputLayout
-                    android:id="@+id/globalSearchInputLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true" />
-            </RelativeLayout>
-
-            <LinearLayout
-                android:id="@+id/emptyStateContainer"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_centerInParent="true"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:visibility="visible">
-
-                <ImageView
-                    android:id="@+id/emptyStateImageView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="0dp"
-                    android:scaleType="fitXY"
-                    android:visibility="visible" />
+                </LinearLayout>
 
                 <TextView
+                    android:id="@+id/emptyStateContainerText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:alpha="0.2"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="170dp"
                     android:fontFamily="@font/open_sans_medium"
                     android:gravity="center"
                     android:text="Much empty. Such wow.\nGo get some friends to BChat!"
-                    android:textColor="@color/text"
+                    android:textColor="@color/empty_state_container_text"
                     android:textSize="@dimen/medium_font_size"
                     android:textStyle="bold"
                     android:visibility="gone" />
-                <!-- android:text="@string/activity_home_empty_state_message"-->
 
-                <Button
-                    android:id="@+id/createNewPrivateChatButton"
-                    style="@style/Widget.Bchat.Button.Common.ProminentOutline"
-                    android:layout_width="196dp"
-                    android:layout_height="@dimen/medium_button_height"
-                    android:layout_marginTop="@dimen/medium_spacing"
-                    android:text="@string/activity_home_empty_state_button_title"
-                    android:visibility="gone" />
+                <com.thoughtcrimes.securesms.home.NewConversationButtonSetView
+                    android:id="@+id/newConversationButtonSet"
+                    android:layout_width="190dp"
+                    android:layout_height="236dp"
+                    android:layout_alignParentStart="false"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginEnd="30dp"
+                    android:layout_marginBottom="-30dp" />
 
-            </LinearLayout>
+            </RelativeLayout>
 
-            <TextView
-                android:id="@+id/emptyStateContainerText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="170dp"
-                android:fontFamily="@font/open_sans_medium"
-                android:gravity="center"
-                android:text="Much empty. Such wow.\nGo get some friends to BChat!"
-                android:textColor="@color/empty_state_container_text"
-                android:textSize="@dimen/medium_font_size"
-                android:textStyle="bold"
-                android:visibility="gone" />
-
-            <com.thoughtcrimes.securesms.home.NewConversationButtonSetView
-                android:id="@+id/newConversationButtonSet"
-                android:layout_width="190dp"
-                android:layout_height="236dp"
-                android:layout_alignParentStart="false"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginEnd="30dp"
-                android:layout_marginBottom="-30dp" />
-
-        </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
 

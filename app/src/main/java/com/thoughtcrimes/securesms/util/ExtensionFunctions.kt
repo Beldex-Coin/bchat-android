@@ -7,13 +7,12 @@ import android.content.Intent
 import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.TypedValue
 import android.view.ContextThemeWrapper
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
-import com.beldex.libbchat.utilities.recipients.Recipient
 import dagger.hilt.android.internal.managers.ViewComponentManager
-import io.beldex.bchat.R
 
 inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {
   SDK_INT >= 33 -> getParcelableExtra(key, T::class.java)
@@ -47,3 +46,9 @@ fun Context.copyToClipBoard(label: String, content: String) {
   clipBoard.setPrimaryClip(clip)
   Toast.makeText(this, "Copied to clip board",  Toast.LENGTH_SHORT).show()
 }
+
+fun Context.toPx(dp: Int): Float = TypedValue.applyDimension(
+  TypedValue.COMPLEX_UNIT_DIP,
+  dp.toFloat(),
+  resources.displayMetrics
+)

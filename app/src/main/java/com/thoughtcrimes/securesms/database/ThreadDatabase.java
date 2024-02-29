@@ -684,7 +684,6 @@ public class ThreadDatabase extends Database {
       notifyConversationListListeners();
       return true;
     }
-
     MmsSmsDatabase.Reader reader = null;
 
     try {

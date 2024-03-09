@@ -332,6 +332,14 @@
           "description":"- Minor Bug fixes"
         }
       ]
+    },
+    {
+      "title": "2.4.1",
+      "descriptions": [
+        {
+          "description":"- Minor Bug fixes"
+        }
+      ]
     }
   ]
 }

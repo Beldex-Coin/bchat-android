@@ -19,9 +19,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Card
@@ -42,9 +45,11 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.thoughtcrimes.securesms.compose_utils.BChatTheme
 import com.thoughtcrimes.securesms.compose_utils.PrimaryButton
 import com.thoughtcrimes.securesms.compose_utils.ProfilePictureComponent
@@ -265,6 +270,9 @@ fun AccountHeader(
     val copyToClipBoard: (String, String) -> Unit = { label, content ->
         context.copyToClipBoard(label, content)
     }
+    var editingName by remember {
+        mutableStateOf(false)
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -272,26 +280,89 @@ fun AccountHeader(
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-        ) {
-            Text(
-                text = uiState.profileName ?: "",
-                style = MaterialTheme.typography.titleMedium.copy(
-                    color = MaterialTheme.appColors.titleTextColor
-                ),
+        if (!editingName) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-            )
+            ) {
+                Text(
+                    text = uiState.profileName ?: "",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        color = MaterialTheme.appColors.titleTextColor
+                    ),
+                    modifier = Modifier
+                )
 
-            Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(8.dp))
 
-            Icon(
-                painter = painterResource(id = R.drawable.ic_edit_name),
-                contentDescription = "",
-                tint = MaterialTheme.appColors.iconColor,
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_edit_name),
+                    contentDescription = "",
+                    tint = MaterialTheme.appColors.iconColor,
+                    modifier = Modifier
+                        .clickable {
+                            editingName = true
+                        }
+                )
+            }
+        } else {
+            var profileName by remember {
+                mutableStateOf(uiState.profileName ?: "")
+            }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-            )
+            ) {
+                BasicTextField(
+                    value = profileName,
+                    onValueChange = { text: String  ->
+                        profileName = text
+                    },
+                    textStyle = MaterialTheme.typography.bodyMedium.copy(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight(700)
+                    ),
+                    decorationBox = { innerTextField ->
+                        Column(
+                            modifier = Modifier.wrapContentWidth()
+                        ) {
+                            if (profileName.isEmpty()) {
+                                Text(
+                                    text = "Display Name",
+                                    style = MaterialTheme.typography.bodyMedium.copy(
+
+                                    )
+                                )
+                            } else {
+                                innerTextField()
+                            }
+                        }
+                    }
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clip(CircleShape)
+                        .background(
+                            color = MaterialTheme.appColors.primaryButtonColor
+                        )
+                        .clickable {
+                            editingName = false
+                        }
+                ) {
+                    Icon(
+                        Icons.Default.Check,
+                        contentDescription = "",
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(16.dp)
+                    )
+                }
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))

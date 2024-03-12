@@ -1,17 +1,13 @@
 package com.thoughtcrimes.securesms.compose_utils
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonElevation
 import androidx.compose.material3.Checkbox
@@ -22,15 +18,12 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -40,7 +33,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -94,6 +86,8 @@ fun BChatOutlinedTextField(
     focusedLabelColor: Color = MaterialTheme.appColors.textFieldFocusedColor,
     unFocusedBorderColor: Color = MaterialTheme.appColors.textFieldUnfocusedColor,
     unFocusedLabelColor: Color = MaterialTheme.appColors.textFieldUnfocusedColor,
+    focusedContainerColor: Color = MaterialTheme.appColors.disabledButtonContainerColor,
+    unFocusedContainerColor: Color = MaterialTheme.appColors.disabledButtonContainerColor,
     cursorColor: Color = MaterialTheme.appColors.textFieldCursorColor,
     imeAction: ImeAction = ImeAction.Done,
     keyboardType: KeyboardType = KeyboardType.Text,
@@ -160,7 +154,9 @@ fun BChatOutlinedTextField(
             unfocusedBorderColor = unFocusedBorderColor,
             focusedLabelColor = focusedLabelColor,
             unfocusedLabelColor = unFocusedLabelColor,
-            cursorColor = cursorColor
+            cursorColor = cursorColor,
+            unfocusedContainerColor = unFocusedContainerColor,
+            focusedContainerColor = focusedContainerColor,
         ),
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = keyboardType,

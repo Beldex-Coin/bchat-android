@@ -6,3 +6,7 @@ sealed interface SecretGroupEvents {
     data class RecipientSelectionChanged(val recipient: Recipient, val isSelected: Boolean): SecretGroupEvents
     data class SearchQueryChanged(val query: String): SecretGroupEvents
 }
+
+sealed interface OpenGroupEvents {
+    data class GroupUrlChanged(val url: String): OpenGroupEvents
+}

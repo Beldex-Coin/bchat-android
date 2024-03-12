@@ -23,6 +23,8 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.getColor
@@ -57,14 +59,13 @@ import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.database.*
 import com.thoughtcrimes.securesms.database.model.ThreadRecord
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
-import com.thoughtcrimes.securesms.dms.CreateNewPrivateChatScreen
 import com.thoughtcrimes.securesms.drawer.ClickListener
 import com.thoughtcrimes.securesms.drawer.NavigationItemModel
 import com.thoughtcrimes.securesms.drawer.NavigationRVAdapter
 import com.thoughtcrimes.securesms.drawer.RecyclerTouchListener
 import com.thoughtcrimes.securesms.groups.CreateClosedGroupActivity
-import com.thoughtcrimes.securesms.groups.CreateSecretGroupScreen
-import com.thoughtcrimes.securesms.groups.JoinSocialGroupScreen
+import com.thoughtcrimes.securesms.groups.NewConversationActivity
+import com.thoughtcrimes.securesms.groups.NewConversationType
 import com.thoughtcrimes.securesms.groups.OpenGroupManager
 import com.thoughtcrimes.securesms.home.search.GlobalSearchAdapter
 import com.thoughtcrimes.securesms.home.search.GlobalSearchInputLayout
@@ -509,7 +510,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         }
         homeViewModel.tryUpdateChannel()
         // Set up new conversation button set
-        binding.newConversationButtonSet.delegate = this
+//        binding.newConversationButtonSet.delegate = this
         // Observe blocked contacts changed events
         val broadcastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
@@ -520,7 +521,22 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         LocalBroadcastManager.getInstance(requireActivity().applicationContext)
             .registerReceiver(broadcastReceiver, IntentFilter("blockedContactsChanged"))
         activityCallback?.callLifeCycleScope(binding.recyclerView, mmsSmsDatabase,globalSearchAdapter,publicKey,binding.profileButton.root,binding.drawerProfileName,binding.drawerProfileIcon.root)
-
+        binding.chatButtons.setContent {
+            val isExpanded by homeViewModel.isButtonExpanded.collectAsState()
+            NewChatButtons(
+                isExpanded = isExpanded,
+                changeExpandedStatus = homeViewModel::setButtonExpandedStatus,
+                createPrivateChat = {
+                    createNewPrivateChat()
+                },
+                createSecretGroup = {
+                    createNewSecretGroup()
+                },
+                joinPublicGroup = {
+                    joinSocialGroup()
+                }
+            )
+        }
     }
 
     private fun showRequestDeleteDialog(record: ThreadRecord) {
@@ -1044,9 +1060,8 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     }
 
     fun dispatchTouchEvent() {
-        if (binding.newConversationButtonSet.isExpanded) {
-            binding.newConversationButtonSet.collapse()
-        }
+        if (homeViewModel.isButtonExpanded.value)
+            homeViewModel.setButtonExpandedStatus(false)
     }
 
     private fun pingSelectedNode() {
@@ -1276,7 +1291,9 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     }
 
     override fun createNewPrivateChat() {
-        val intent = Intent(requireContext(), CreateNewPrivateChatScreen::class.java)
+        val intent = Intent(requireContext(), NewConversationActivity::class.java).apply {
+            putExtra(NewConversationActivity.EXTRA_DESTINATION, NewConversationType.PrivateChat.destination)
+        }
         createNewPrivateChatResultLauncher.launch(intent)
     }
 
@@ -1292,7 +1309,9 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     }
 
     override fun createNewSecretGroup() {
-        val intent = Intent(requireContext(), CreateSecretGroupScreen::class.java)
+        val intent = Intent(requireContext(), NewConversationActivity::class.java).apply {
+            putExtra(NewConversationActivity.EXTRA_DESTINATION, NewConversationType.SecretGroup.destination)
+        }
         createClosedGroupActivityResultLauncher.launch(intent)
     }
 
@@ -1309,9 +1328,10 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     }
 
     override fun joinSocialGroup() {
-        Intent(requireContext(), JoinSocialGroupScreen::class.java).also {
-            joinPublicChatNewActivityResultLauncher.launch(it)
+        val intent = Intent(requireContext(), NewConversationActivity::class.java).apply {
+            putExtra(NewConversationActivity.EXTRA_DESTINATION, NewConversationType.PublicGroup.destination)
         }
+        joinPublicChatNewActivityResultLauncher.launch(intent)
     }
 
     private var joinPublicChatNewActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

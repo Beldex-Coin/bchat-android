@@ -1,7 +1,6 @@
 package com.thoughtcrimes.securesms.home
 
 import android.content.Context
-import android.database.Cursor
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -16,9 +15,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.withContext
@@ -34,6 +34,9 @@ class HomeFragmentViewModel @Inject constructor(
 
     private val _conversations = MutableLiveData<List<ThreadRecord>>()
     val conversations: LiveData<List<ThreadRecord>> = _conversations
+
+    private val _isButtonsExpanded = MutableStateFlow(false)
+    val isButtonExpanded = _isButtonsExpanded.asStateFlow()
 
     private val listUpdateChannel = Channel<Unit>(capacity = Channel.CONFLATED)
 
@@ -61,6 +64,10 @@ class HomeFragmentViewModel @Inject constructor(
             }
         }
         return conversations
+    }
+
+    fun setButtonExpandedStatus(isExpanded: Boolean) {
+        _isButtonsExpanded.update { isExpanded }
     }
 
 }

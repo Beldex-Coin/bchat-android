@@ -84,16 +84,6 @@
             android:label="@string/title_activity_create_new_private_chat_screen"
             android:theme="@style/Theme.Bchat.DayNight" />
         <activity
-            android:name="com.thoughtcrimes.securesms.groups.CreateSecretGroupScreen"
-            android:exported="false"
-            android:label="@string/title_activity_create_secret_group_screen"
-            android:theme="@style/Theme.Bchat.DayNight" />
-        <activity
-            android:name="com.thoughtcrimes.securesms.groups.JoinSocialGroupScreen"
-            android:exported="false"
-            android:label="@string/title_activity_join_public_new_chat_screen"
-            android:theme="@style/Theme.Bchat.DayNight" />
-        <activity
             android:name="com.thoughtcrimes.securesms.contacts.blocked.BlockedContactsActivity"
             android:exported="false"
             android:screenOrientation="portrait"
@@ -566,6 +556,11 @@
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="true"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
+        <activity
+            android:name="com.thoughtcrimes.securesms.groups.NewConversationActivity"
+            android:exported="false"
+            android:label="@string/title_activity_create_secret_group_screen"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
 
         <service
             android:name="com.thoughtcrimes.securesms.notifications.PushNotificationService"

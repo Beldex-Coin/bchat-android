@@ -2,12 +2,8 @@ package com.thoughtcrimes.securesms.groups
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.content.res.Configuration
-import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,19 +20,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,7 +35,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -55,72 +43,35 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.messaging.sending_receiving.groupSizeLimit
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
-import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
 import com.thoughtcrimes.securesms.compose_utils.BChatCheckBox
 import com.thoughtcrimes.securesms.compose_utils.BChatOutlinedTextField
-import com.thoughtcrimes.securesms.compose_utils.BChatTheme
 import com.thoughtcrimes.securesms.compose_utils.BChatTypography
 import com.thoughtcrimes.securesms.compose_utils.PrimaryButton
 import com.thoughtcrimes.securesms.compose_utils.appColors
-import com.thoughtcrimes.securesms.compose_utils.ui.ScreenContainer
-import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
+import com.thoughtcrimes.securesms.compose_utils.ui.BChatPreviewContainer
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
-import com.thoughtcrimes.securesms.util.UiMode
-import com.thoughtcrimes.securesms.util.UiModeUtilities
-import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
 
-@AndroidEntryPoint
-class CreateSecretGroupScreen : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            BChatTheme(
-                darkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
-            ) {
-                // A surface container using the 'background' color from the theme
-                Surface {
-                    Scaffold {
-                        ScreenContainer(
-                            title = stringResource(id = R.string.home_screen_secret_groups_title),
-                            onBackClick = { finish() },
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                                .padding(it)
-                        ) {
-                            CreateSecretGroup()
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
 @Composable
-fun CreateSecretGroup() {
+fun CreateSecretGroup(
+    searchQuery: String,
+    contacts: List<Recipient>,
+    selectedContact: List<String>,
+    onEvent: (SecretGroupEvents) -> Unit
+) {
     var groupName by remember {
         mutableStateOf("")
     }
     val context = LocalContext.current
     val activity = (context as? Activity)
-    val owner = LocalLifecycleOwner.current
-    val contactViewModel: CreateSecretGroupViewModel = hiltViewModel()
-    val contacts by contactViewModel.recipients.collectAsState(initial = listOf())
-    val searchQuery by contactViewModel.searchQuery.collectAsState()
-    val selectedContact by contactViewModel.selectedRecipients.collectAsState()
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -163,7 +114,7 @@ fun CreateSecretGroup() {
 
         BChatOutlinedTextField(
             value = searchQuery,
-            onValueChange = { contactViewModel.onEvent(SecretGroupEvents.SearchQueryChanged(it)) },
+            onValueChange = { onEvent(SecretGroupEvents.SearchQueryChanged(it)) },
             label = stringResource(R.string.search_contact),
             shape = RoundedCornerShape(36.dp),
             trailingIcon = {
@@ -192,7 +143,7 @@ fun CreateSecretGroup() {
                     recipient = it,
                     isSelected = selectedContact.contains(it.address.toString()),
                     onSelectionChanged = { contact, isSelected ->
-                        contactViewModel.onEvent(SecretGroupEvents.RecipientSelectionChanged(contact, isSelected))
+                        onEvent(SecretGroupEvents.RecipientSelectionChanged(contact, isSelected))
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -234,7 +185,7 @@ fun CreateSecretGroup() {
 }
 
 @Composable
-fun GroupContact(
+private fun GroupContact(
     recipient: Recipient,
     isSelected: Boolean,
     onSelectionChanged: (Recipient, Boolean) -> Unit,
@@ -315,27 +266,30 @@ private fun createClosedGroup(name: String, context: Context, activity: Activity
     }
 }
 
-private fun openConversationActivity(threadId: Long, recipient: Recipient, activity: Activity) {
-    val returnIntent = Intent()
-    returnIntent.putExtra(ConversationFragmentV2.THREAD_ID,threadId)
-    returnIntent.putExtra(ConversationFragmentV2.ADDRESS,recipient.address)
-    activity.setResult(PassphraseRequiredActionBarActivity.RESULT_OK, returnIntent)
-}
-
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun CreateSecretGroupScreenPreview() {
-    BChatTheme() {
-        CreateSecretGroup()
+    BChatPreviewContainer {
+        CreateSecretGroup(
+            searchQuery = "",
+            contacts = emptyList(),
+            selectedContact = emptyList(),
+            onEvent = {}
+        )
     }
 }
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun CreateSecretGroupScreenPreviewLight() {
-    BChatTheme {
-        CreateSecretGroup()
+    BChatPreviewContainer {
+        CreateSecretGroup(
+            searchQuery = "",
+            contacts = emptyList(),
+            selectedContact = emptyList(),
+            onEvent = {}
+        )
     }
 }
 

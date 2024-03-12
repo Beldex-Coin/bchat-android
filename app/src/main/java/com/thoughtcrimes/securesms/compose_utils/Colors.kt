@@ -57,7 +57,9 @@ class Colors(
     val requestCountBackground: Color,
     val requestCountColor: Color,
     val searchBackground: Color,
-    val inputHintColor: Color
+    val inputHintColor: Color,
+    val disabledButtonContainerColor: Color,
+    val disabledButtonContent: Color
 )
 
 val lightColors = Colors(
@@ -99,7 +101,9 @@ val lightColors = Colors(
     requestCountBackground = Color(0xFFFFFFFF),
     requestCountColor = Color(0xFF1C1C26),
     searchBackground = Color(0xFFF8F8F8),
-    inputHintColor = Color(0xFF8D8D8D)
+    inputHintColor = Color(0xFF8D8D8D),
+    disabledButtonContainerColor = Color(0xFFF8F8F8),
+    disabledButtonContent = Color(0xFF6E6E7C)
 )
 
 val darkColors = Colors(
@@ -141,7 +145,9 @@ val darkColors = Colors(
     requestCountBackground = Color(0xFFEBEBEB),
     requestCountColor = Color(0xFF1C1C26),
     searchBackground = Color(0xFF282836),
-    inputHintColor = Color(0xFFB9B9B9)
+    inputHintColor = Color(0xFFB9B9B9),
+    disabledButtonContainerColor = Color(0xFF282836),
+    disabledButtonContent = Color(0xFF6E6E7C)
 )
 
 

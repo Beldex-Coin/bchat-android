@@ -1,4 +1,4 @@
-package com.thoughtcrimes.securesms.groups
+package com.thoughtcrimes.securesms.conversation_v2
 
 import android.app.Activity
 import android.content.Intent
@@ -69,7 +69,7 @@ class NewConversationActivity: ComponentActivity() {
                                 val searchQuery by contactViewModel.searchQuery.collectAsState()
                                 val selectedContact by contactViewModel.selectedRecipients.collectAsState()
                                 ScreenContainer(
-                                    title = stringResource(id = R.string.home_screen_secret_groups_title),
+                                    title = stringResource(id = R.string.activity_create_private_chat_title),
                                     onBackClick = { finish() },
                                     modifier = Modifier
                                         .fillMaxSize()
@@ -77,12 +77,7 @@ class NewConversationActivity: ComponentActivity() {
                                             color = MaterialTheme.colorScheme.primary
                                         )
                                 ) {
-                                    CreateSecretGroup(
-                                        searchQuery = searchQuery,
-                                        contacts = contacts,
-                                        selectedContact = selectedContact,
-                                        onEvent = contactViewModel::onEvent
-                                    )
+                                    CreatePrivateChatScreen()
                                 }
                             }
 

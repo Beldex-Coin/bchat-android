@@ -62,7 +62,7 @@ import com.thoughtcrimes.securesms.compose_utils.ProfilePictureComponent
 import com.thoughtcrimes.securesms.compose_utils.ProfilePictureMode
 import com.thoughtcrimes.securesms.compose_utils.appColors
 import com.thoughtcrimes.securesms.compose_utils.ui.ScreenContainer
-import com.thoughtcrimes.securesms.groups.getUserDisplayName
+import com.thoughtcrimes.securesms.conversation_v2.getUserDisplayName
 import com.thoughtcrimes.securesms.home.search.GlobalSearchViewModel
 import com.thoughtcrimes.securesms.home.search.getSearchName
 import com.thoughtcrimes.securesms.search.SearchActivityResults

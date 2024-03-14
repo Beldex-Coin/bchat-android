@@ -79,11 +79,6 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
         <activity
-            android:name="com.thoughtcrimes.securesms.dms.CreateNewPrivateChatScreen"
-            android:exported="false"
-            android:label="@string/title_activity_create_new_private_chat_screen"
-            android:theme="@style/Theme.Bchat.DayNight" />
-        <activity
             android:name="com.thoughtcrimes.securesms.contacts.blocked.BlockedContactsActivity"
             android:exported="false"
             android:screenOrientation="portrait"
@@ -557,7 +552,7 @@
             android:exported="true"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
         <activity
-            android:name="com.thoughtcrimes.securesms.groups.NewConversationActivity"
+            android:name="com.thoughtcrimes.securesms.conversation_v2.NewConversationActivity"
             android:exported="false"
             android:label="@string/title_activity_create_secret_group_screen"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />

@@ -1,9 +1,9 @@
 package com.thoughtcrimes.securesms.compose_utils.ui
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -34,8 +34,7 @@ fun ScreenContainer(
     Column(
         modifier = modifier
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
@@ -60,7 +59,7 @@ fun ScreenContainer(
                     fontSize = 18.sp
                 ),
                 modifier = Modifier
-                    .weight(1f)
+                    .align(Alignment.Center)
             )
 
             actionItems()

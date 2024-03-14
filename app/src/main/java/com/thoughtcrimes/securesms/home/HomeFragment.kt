@@ -54,6 +54,8 @@ import com.thoughtcrimes.securesms.compose_utils.ComposeDialogContainer
 import com.thoughtcrimes.securesms.compose_utils.DialogType
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.conversation.v2.utilities.NotificationUtils
+import com.thoughtcrimes.securesms.conversation_v2.NewConversationActivity
+import com.thoughtcrimes.securesms.conversation_v2.NewConversationType
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
 import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.database.*
@@ -64,8 +66,6 @@ import com.thoughtcrimes.securesms.drawer.NavigationItemModel
 import com.thoughtcrimes.securesms.drawer.NavigationRVAdapter
 import com.thoughtcrimes.securesms.drawer.RecyclerTouchListener
 import com.thoughtcrimes.securesms.groups.CreateClosedGroupActivity
-import com.thoughtcrimes.securesms.groups.NewConversationActivity
-import com.thoughtcrimes.securesms.groups.NewConversationType
 import com.thoughtcrimes.securesms.groups.OpenGroupManager
 import com.thoughtcrimes.securesms.home.search.GlobalSearchAdapter
 import com.thoughtcrimes.securesms.home.search.GlobalSearchInputLayout

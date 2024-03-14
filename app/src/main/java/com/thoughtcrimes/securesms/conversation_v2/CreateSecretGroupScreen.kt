@@ -1,4 +1,4 @@
-package com.thoughtcrimes.securesms.groups
+package com.thoughtcrimes.securesms.conversation_v2
 
 import android.app.Activity
 import android.content.Context
@@ -85,7 +85,6 @@ fun CreateSecretGroup(
         ) {
             Text(
                 text = stringResource(R.string.create_secret_group),
-                modifier = Modifier.padding(10.dp),
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontSize = 20.sp,
                     fontWeight = FontWeight(800)

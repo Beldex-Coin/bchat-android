@@ -1,9 +1,10 @@
-package com.thoughtcrimes.securesms.groups
+package com.thoughtcrimes.securesms.conversation_v2
 
 import com.beldex.libbchat.utilities.recipients.Recipient
 
 sealed interface SecretGroupEvents {
-    data class RecipientSelectionChanged(val recipient: Recipient, val isSelected: Boolean): SecretGroupEvents
+    data class RecipientSelectionChanged(val recipient: Recipient, val isSelected: Boolean):
+        SecretGroupEvents
     data class SearchQueryChanged(val query: String): SecretGroupEvents
 }
 

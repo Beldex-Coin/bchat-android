@@ -1,4 +1,4 @@
-package com.thoughtcrimes.securesms.groups
+package com.thoughtcrimes.securesms.conversation_v2
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

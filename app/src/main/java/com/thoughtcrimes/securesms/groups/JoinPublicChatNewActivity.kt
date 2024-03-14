@@ -42,6 +42,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.activity.result.contract.ActivityResultContracts
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
+import com.thoughtcrimes.securesms.conversation_v2.DefaultGroupsViewModel
 import com.thoughtcrimes.securesms.util.Helper
 
 class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {

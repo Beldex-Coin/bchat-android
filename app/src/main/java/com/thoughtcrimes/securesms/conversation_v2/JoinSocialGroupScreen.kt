@@ -1,4 +1,4 @@
-package com.thoughtcrimes.securesms.groups
+package com.thoughtcrimes.securesms.conversation_v2
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -72,6 +72,9 @@ import com.thoughtcrimes.securesms.compose_utils.PrimaryButton
 import com.thoughtcrimes.securesms.compose_utils.appColors
 import com.thoughtcrimes.securesms.compose_utils.ui.BChatPreviewContainer
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
+import com.thoughtcrimes.securesms.groups.GroupManager
+import com.thoughtcrimes.securesms.groups.JoinPublicChatScanQRCodeActivity
+import com.thoughtcrimes.securesms.groups.OpenGroupManager
 import com.thoughtcrimes.securesms.util.ConfigurationMessageUtilities
 import com.thoughtcrimes.securesms.util.parcelable
 import io.beldex.bchat.R

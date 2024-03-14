@@ -1457,4 +1457,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="message_request">Message Request</string>
     <string name="block_or_delete_request">Do you want to block or just delete this user?</string>
     <string name="or_join">Or Join</string>
+    <string name="let_s_bchat">Let\'s BChat</string>
+    <string name="your_chat_id">Your Chat ID</string>
+    <string name="enter_chat_id">Enter Chat ID</string>
 </resources>

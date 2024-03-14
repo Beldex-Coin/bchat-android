@@ -3,7 +3,6 @@ package com.thoughtcrimes.securesms.groups
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.content.Context
-import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -34,6 +33,7 @@ import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.PublicKeyValidation
 import com.thoughtcrimes.securesms.BaseActionBarActivity
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
+import com.thoughtcrimes.securesms.conversation_v2.DefaultGroupsViewModel
 import com.thoughtcrimes.securesms.util.ConfigurationMessageUtilities
 import com.thoughtcrimes.securesms.util.ScanQRCodeWrapperFragment
 import com.thoughtcrimes.securesms.util.ScanQRCodeWrapperFragmentDelegate

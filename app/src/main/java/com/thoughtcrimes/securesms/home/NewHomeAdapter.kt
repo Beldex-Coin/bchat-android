@@ -77,7 +77,7 @@ class NewHomeAdapter(private val context: Context, private val listener: Convers
                 val view = ConversationView(context)
                 view.setOnClickListener { view.thread?.let { listener.onConversationClick(it) } }
                 view.setOnLongClickListener {
-                    view.thread?.let { listener.onLongConversationClick(it) }
+                    view.thread?.let { listener.onLongConversationClick(it, view) }
                     true
                 }
                 ViewHolder(view)

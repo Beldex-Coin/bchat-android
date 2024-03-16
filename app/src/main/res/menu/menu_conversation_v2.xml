@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:title="@string/conversation_pin"
+        android:id="@+id/menu_pin"
+        android:icon="@drawable/ic_pin"/>
+
+    <item
+        android:title="@string/MuteDialog_mute_notifications"
+        android:id="@+id/menu_mute_notifications"
+        android:icon="@drawable/ic_outline_notifications_off_24"/>
+
+    <item
+        android:title="@string/RecipientPreferenceActivity_notification_settings"
+        android:id="@+id/menu_notification_settings"
+        android:icon="@drawable/ic_outline_notification_important_24"/>
+
+    <item
+        android:title="@string/MessageNotifier_mark_all_as_read"
+        android:id="@+id/menu_mark_read"
+        android:icon="?attr/menu_mark_all_as_read"/>
+
+    <item
+        android:title="@string/delete"
+        android:id="@+id/menu_delete"
+        android:icon="?attr/menu_trash_icon"/>
+
+</menu>

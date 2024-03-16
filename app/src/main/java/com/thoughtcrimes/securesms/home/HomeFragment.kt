@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -21,6 +22,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.widget.PopupMenu
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.collectAsState
@@ -29,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -53,7 +54,6 @@ import com.thoughtcrimes.securesms.compose_utils.BChatTheme
 import com.thoughtcrimes.securesms.compose_utils.ComposeDialogContainer
 import com.thoughtcrimes.securesms.compose_utils.DialogType
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
-import com.thoughtcrimes.securesms.conversation.v2.utilities.NotificationUtils
 import com.thoughtcrimes.securesms.conversation_v2.NewConversationActivity
 import com.thoughtcrimes.securesms.conversation_v2.NewConversationType
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
@@ -819,58 +819,76 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         onConversationClick(thread.threadId)
     }
 
-    override fun onLongConversationClick(thread: ThreadRecord) {
-        val bottomSheet = ConversationOptionsBottomSheet()
-        bottomSheet.thread = thread
-        bottomSheet.onViewDetailsTapped = {
-            bottomSheet.dismiss()
-            val userDetailsBottomSheet = UserDetailsBottomSheet()
-            val bundle = bundleOf(
-                UserDetailsBottomSheet.ARGUMENT_PUBLIC_KEY to thread.recipient.address.toString(),
-                UserDetailsBottomSheet.ARGUMENT_THREAD_ID to thread.threadId
-            )
-            userDetailsBottomSheet.arguments = bundle
-            userDetailsBottomSheet.show(childFragmentManager, userDetailsBottomSheet.tag)
+    override fun onLongConversationClick(thread: ThreadRecord, view: View) {
+        /*val inflator = requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val menuView = inflator.inflate(R.layout.fragment_conversation_bottom_sheet, null)
+        val popupWindow = PopupWindow(requireContext())
+        menuView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        popupWindow.width = menuView.measuredWidth
+        popupWindow.contentView = menuView
+        popupWindow.showAsDropDown(view)*/
+        val popupMenu = PopupMenu(requireContext(), view)
+        popupMenu.menuInflater.inflate(R.menu.menu_conversation_v2, popupMenu.menu)
+        popupMenu.gravity = Gravity.END
+        popupMenu.setOnMenuItemClickListener {
+            return@setOnMenuItemClickListener true
         }
-        bottomSheet.onBlockTapped = {
-            bottomSheet.dismiss()
-            if (!thread.recipient.isBlocked) {
-                blockConversation(thread)
-            }
-        }
-        bottomSheet.onUnblockTapped = {
-            bottomSheet.dismiss()
-            if (thread.recipient.isBlocked) {
-                unblockConversation(thread)
-            }
-        }
-        bottomSheet.onDeleteTapped = {
-            bottomSheet.dismiss()
-            deleteConversation(thread)
-        }
-        bottomSheet.onSetMuteTapped = { muted ->
-            bottomSheet.dismiss()
-            setConversationMuted(thread, muted)
-        }
-        bottomSheet.onNotificationTapped = {
-            bottomSheet.dismiss()
-            NotificationUtils.showNotifyDialog(requireActivity(), thread.recipient) { notifyType ->
-                setNotifyType(thread, notifyType)
-            }
-        }
-        bottomSheet.onPinTapped = {
-            bottomSheet.dismiss()
-            setConversationPinned(thread.threadId, true)
-        }
-        bottomSheet.onUnpinTapped = {
-            bottomSheet.dismiss()
-            setConversationPinned(thread.threadId, false)
-        }
-        bottomSheet.onMarkAllAsReadTapped = {
-            bottomSheet.dismiss()
-            markAllAsRead(thread)
-        }
-        bottomSheet.show(requireActivity().supportFragmentManager, bottomSheet.tag)
+        popupMenu.show()
+//        val bottomSheet = ConversationOptionsBottomSheet()
+//        bottomSheet.thread = thread
+//        bottomSheet.onViewDetailsTapped = {
+//            bottomSheet.dismiss()
+//            val userDetailsBottomSheet = UserDetailsBottomSheet()
+//            val bundle = bundleOf(
+//                UserDetailsBottomSheet.ARGUMENT_PUBLIC_KEY to thread.recipient.address.toString(),
+//                UserDetailsBottomSheet.ARGUMENT_THREAD_ID to thread.threadId
+//            )
+//            userDetailsBottomSheet.arguments = bundle
+//            userDetailsBottomSheet.show(childFragmentManager, userDetailsBottomSheet.tag)
+//        }
+//        bottomSheet.onBlockTapped = {
+//            bottomSheet.dismiss()
+//            if (!thread.recipient.isBlocked) {
+//                blockConversation(thread)
+//            }
+//        }
+//        bottomSheet.onUnblockTapped = {
+//            bottomSheet.dismiss()
+//            if (thread.recipient.isBlocked) {
+//                unblockConversation(thread)
+//            }
+//        }
+//        bottomSheet.onDeleteTapped = {
+//            bottomSheet.dismiss()
+//            deleteConversation(thread)
+//        }
+//        bottomSheet.onSetMuteTapped = { muted ->
+//            bottomSheet.dismiss()
+//            setConversationMuted(thread, muted)
+//        }
+//        bottomSheet.onNotificationTapped = {
+//            bottomSheet.dismiss()
+//            NotificationUtils.showNotifyDialog(requireActivity(), thread.recipient) { notifyType ->
+//                setNotifyType(thread, notifyType)
+//            }
+//        }
+//        bottomSheet.onPinTapped = {
+//            bottomSheet.dismiss()
+//            setConversationPinned(thread.threadId, true)
+//        }
+//        bottomSheet.onUnpinTapped = {
+//            bottomSheet.dismiss()
+//            setConversationPinned(thread.threadId, false)
+//        }
+//        bottomSheet.onMarkAllAsReadTapped = {
+//            bottomSheet.dismiss()
+//            markAllAsRead(thread)
+//        }
+//        bottomSheet.show(requireActivity().supportFragmentManager, bottomSheet.tag)
+    }
+
+    private fun showPopupMenu() {
+
     }
 
     private fun blockConversation(thread: ThreadRecord) {

@@ -218,4 +218,5 @@
     <color name="new_card_background">#11111A</color>
     <color name="setting_icon_tint">#EBEBEB</color>
     <color name="profile_background">#1C1C26</color>
+    <color name="menu_background">#1C1C26</color>
 </resources>

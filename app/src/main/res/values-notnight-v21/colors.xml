@@ -140,5 +140,6 @@
     <color name="new_card_background">#EBEBEB</color>
     <color name="setting_icon_tint">#333333</color>
     <color name="profile_background">#F0F0F0</color>
+    <color name="menu_background">#A7A7BA</color>
 
 </resources>

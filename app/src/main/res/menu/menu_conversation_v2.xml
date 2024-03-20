@@ -4,13 +4,38 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:title="@string/details"
+        android:id="@+id/menu_details"
+        android:icon="@drawable/ic_pin" />
+
+    <item
         android:title="@string/conversation_pin"
         android:id="@+id/menu_pin"
         android:icon="@drawable/ic_pin"/>
 
     <item
+        android:title="@string/conversation_unpin"
+        android:id="@+id/menu_unpin"
+        android:icon="@drawable/ic_pin"/>
+
+    <item
+        android:title="@string/RecipientPreferenceActivity_block"
+        android:id="@+id/menu_block"
+        android:icon="@drawable/ic_pin"/>
+
+    <item
+        android:title="@string/RecipientPreferenceActivity_unblock"
+        android:id="@+id/menu_unblock"
+        android:icon="@drawable/ic_pin"/>
+
+    <item
         android:title="@string/MuteDialog_mute_notifications"
         android:id="@+id/menu_mute_notifications"
+        android:icon="@drawable/ic_outline_notifications_off_24"/>
+
+    <item
+        android:title="@string/conversation_muted__unmute"
+        android:id="@+id/menu_unmute_notifications"
         android:icon="@drawable/ic_outline_notifications_off_24"/>
 
     <item

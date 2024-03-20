@@ -2,6 +2,9 @@ package com.thoughtcrimes.securesms.home
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideOut
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,8 +33,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.thoughtcrimes.securesms.compose_utils.BChatTheme
 import com.thoughtcrimes.securesms.compose_utils.appColors
@@ -49,34 +54,41 @@ fun NewChatButtons(
     Column(
         horizontalAlignment = Alignment.End
     ) {
-        AnimatedVisibility(visible = isExpanded) {
+        AnimatedVisibility(
+            visible = isExpanded,
+            enter = slideIn(initialOffset = {IntOffset.Zero}),
+            exit = slideOut(targetOffset = {IntOffset.Zero})
+        ) {
             Card(
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.appColors.contactCardBackground
+                    containerColor = MaterialTheme.appColors.contactCardBackground,
+                ),
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = 4.dp
                 ),
                 shape = RoundedCornerShape(24.dp),
                 modifier = Modifier
                     .width(IntrinsicSize.Max)
             ) {
                 ChatOptionButton(
-                    title = "New Chat",
-                    icon = painterResource(id = R.drawable.ic_bchat_plus),
+                    title = stringResource(id = R.string.activity_create_private_chat_title),
+                    icon = painterResource(id = R.drawable.ic_new_chat),
                     modifier = Modifier
                         .noRippleCallback {
                             createPrivateChat()
                         }
                 )
                 ChatOptionButton(
-                    title = "Secret Group",
-                    icon = painterResource(id = R.drawable.ic_bchat_plus),
+                    title = stringResource(id = R.string.home_screen_secret_groups_title),
+                    icon = painterResource(id = R.drawable.ic_secret_group),
                     modifier = Modifier
                         .noRippleCallback {
                             createSecretGroup()
                         }
                 )
                 ChatOptionButton(
-                    title = "Social Group",
-                    icon = painterResource(id = R.drawable.ic_bchat_plus),
+                    title = stringResource(id = R.string.home_screen_social_groups_title),
+                    icon = painterResource(id = R.drawable.ic_social_group),
                     modifier = Modifier
                         .noRippleCallback {
                             joinPublicGroup()
@@ -147,21 +159,10 @@ private fun ChatOptionButton(
 
         Spacer(modifier = Modifier.width(16.dp))
 
-        Box(
-            modifier = Modifier
-                .background(
-                    color = Color.White,
-                    shape = CircleShape
-                )
-                .padding(
-                    8.dp
-                )
-        ) {
-            Icon(
-                painter = icon,
-                contentDescription = ""
-            )
-        }
+        Image(
+            painter = icon,
+            contentDescription = ""
+        )
     }
 }
 
@@ -186,7 +187,7 @@ fun NewChatButtonsPreview() {
 fun NewChatButtonsPreviewDark() {
     BChatTheme {
         NewChatButtons(
-            isExpanded = false,
+            isExpanded = true,
             changeExpandedStatus = {},
             createPrivateChat = {},
             createSecretGroup = {},

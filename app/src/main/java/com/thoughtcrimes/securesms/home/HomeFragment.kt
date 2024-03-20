@@ -15,6 +15,7 @@ import android.os.Looper
 import android.provider.Settings
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -31,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -54,6 +56,7 @@ import com.thoughtcrimes.securesms.compose_utils.BChatTheme
 import com.thoughtcrimes.securesms.compose_utils.ComposeDialogContainer
 import com.thoughtcrimes.securesms.compose_utils.DialogType
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
+import com.thoughtcrimes.securesms.conversation.v2.utilities.NotificationUtils
 import com.thoughtcrimes.securesms.conversation_v2.NewConversationActivity
 import com.thoughtcrimes.securesms.conversation_v2.NewConversationType
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
@@ -491,7 +494,9 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                             )
                             dialog.show(childFragmentManager, ComposeDialogContainer.TAG)
                         },
-                        openChat = {},
+                        openChat = {
+                            onConversationClick(it.threadId)
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(
@@ -523,19 +528,21 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         activityCallback?.callLifeCycleScope(binding.recyclerView, mmsSmsDatabase,globalSearchAdapter,publicKey,binding.profileButton.root,binding.drawerProfileName,binding.drawerProfileIcon.root)
         binding.chatButtons.setContent {
             val isExpanded by homeViewModel.isButtonExpanded.collectAsState()
-            NewChatButtons(
-                isExpanded = isExpanded,
-                changeExpandedStatus = homeViewModel::setButtonExpandedStatus,
-                createPrivateChat = {
-                    createNewPrivateChat()
-                },
-                createSecretGroup = {
-                    createNewSecretGroup()
-                },
-                joinPublicGroup = {
-                    joinSocialGroup()
-                }
-            )
+            BChatTheme {
+                NewChatButtons(
+                    isExpanded = isExpanded,
+                    changeExpandedStatus = homeViewModel::setButtonExpandedStatus,
+                    createPrivateChat = {
+                        createNewPrivateChat()
+                    },
+                    createSecretGroup = {
+                        createNewSecretGroup()
+                    },
+                    joinPublicGroup = {
+                        joinSocialGroup()
+                    }
+                )
+            }
         }
     }
 
@@ -820,17 +827,28 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     }
 
     override fun onLongConversationClick(thread: ThreadRecord, view: View) {
-        /*val inflator = requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val menuView = inflator.inflate(R.layout.fragment_conversation_bottom_sheet, null)
-        val popupWindow = PopupWindow(requireContext())
-        menuView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        popupWindow.width = menuView.measuredWidth
-        popupWindow.contentView = menuView
-        popupWindow.showAsDropDown(view)*/
+        val recipient = thread.recipient
         val popupMenu = PopupMenu(requireContext(), view)
         popupMenu.menuInflater.inflate(R.menu.menu_conversation_v2, popupMenu.menu)
         popupMenu.gravity = Gravity.END
+        popupMenu.setForceShowIcon(true)
+        with(popupMenu.menu) {
+            if (recipient.isGroupRecipient && !recipient.isLocalNumber) {
+                findItem(R.id.menu_details).setVisible(true)
+                findItem(R.id.menu_unblock).setVisible(recipient.isBlocked)
+                findItem(R.id.menu_block).setVisible(!recipient.isBlocked)
+            } else {
+                findItem(R.id.menu_details).setVisible(false)
+            }
+            findItem(R.id.menu_unmute_notifications).setVisible(recipient.isMuted && !recipient.isLocalNumber)
+            findItem(R.id.menu_mute_notifications).setVisible(!recipient.isMuted && !recipient.isLocalNumber)
+            findItem(R.id.menu_notification_settings).setVisible(recipient.isGroupRecipient && !recipient.isMuted)
+            findItem(R.id.menu_mark_read).setVisible(thread.unreadCount > 0)
+            findItem(R.id.menu_pin).setVisible(!thread.isPinned)
+            findItem(R.id.menu_unpin).setVisible(thread.isPinned)
+        }
         popupMenu.setOnMenuItemClickListener {
+            handlePopUpMenuClickListener(it, thread)
             return@setOnMenuItemClickListener true
         }
         popupMenu.show()
@@ -887,8 +905,52 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
 //        bottomSheet.show(requireActivity().supportFragmentManager, bottomSheet.tag)
     }
 
-    private fun showPopupMenu() {
-
+    private fun handlePopUpMenuClickListener(item: MenuItem, thread: ThreadRecord) {
+        when (item.itemId) {
+            R.id.menu_details -> {
+                val userDetailsBottomSheet = UserDetailsBottomSheet()
+                val bundle = bundleOf(
+                    UserDetailsBottomSheet.ARGUMENT_PUBLIC_KEY to thread.recipient.address.toString(),
+                    UserDetailsBottomSheet.ARGUMENT_THREAD_ID to thread.threadId
+                )
+                userDetailsBottomSheet.arguments = bundle
+                userDetailsBottomSheet.show(childFragmentManager, userDetailsBottomSheet.tag)
+            }
+            R.id.menu_pin -> {
+                setConversationPinned(thread.threadId, true)
+            }
+            R.id.menu_unpin -> {
+                setConversationPinned(thread.threadId, false)
+            }
+            R.id.menu_block -> {
+                if (!thread.recipient.isBlocked) {
+                    blockConversation(thread)
+                }
+            }
+            R.id.menu_unblock -> {
+                if (thread.recipient.isBlocked) {
+                    unblockConversation(thread)
+                }
+            }
+            R.id.menu_mute_notifications -> {
+                setConversationMuted(thread, true)
+            }
+            R.id.menu_unmute_notifications -> {
+                setConversationMuted(thread, false)
+            }
+            R.id.menu_notification_settings -> {
+                NotificationUtils.showNotifyDialog(requireActivity(), thread.recipient) { notifyType ->
+                    setNotifyType(thread, notifyType)
+                }
+            }
+            R.id.menu_mark_read -> {
+                markAllAsRead(thread)
+            }
+            R.id.menu_delete -> {
+                deleteConversation(thread)
+            }
+            else -> Unit
+        }
     }
 
     private fun blockConversation(thread: ThreadRecord) {

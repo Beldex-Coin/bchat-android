@@ -220,7 +220,7 @@ class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
     private fun createPrivateChatIfPossible(bnsNameOrPublicKey: String) {
         if (PublicKeyValidation.isValid(bnsNameOrPublicKey)) {
             Log.d("PublicKeyValidation", "OK")
-            createPrivateChat(bnsNameOrPublicKey)
+            createPrivateChat(bnsNameOrPublicKey,bnsNameOrPublicKey)
         } else {
             Log.d("PublicKeyValidation", "Cancel")
 
@@ -233,7 +233,7 @@ class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
                 Log.d("PublicKeyValidation", "successUi")
                 hideLoader()
                 Log.d("Beldex", "value of Bchat id for BNS name $hexEncodedPublicKey")
-                this.createPrivateChat(hexEncodedPublicKey)
+                this.createPrivateChat(hexEncodedPublicKey,bnsNameOrPublicKey)
             }.failUi { exception ->
                 hideLoader()
                 var message = resources.getString(R.string.fragment_enter_public_key_error_message)
@@ -246,11 +246,12 @@ class CreateNewPrivateChatActivity : PassphraseRequiredActionBarActivity() {
         }
     }
 
-    private fun createPrivateChat(hexEncodedPublicKey: String) {
+    private fun createPrivateChat(hexEncodedPublicKey: String, bnsName: String) {
         val recipient = Recipient.from(this, Address.fromSerialized(hexEncodedPublicKey), false)
         val bundle = Bundle()
         bundle.putParcelable(ConversationFragmentV2.URI,intent.data)
         bundle.putString(ConversationFragmentV2.TYPE,intent.type)
+        bundle.putString(ConversationFragmentV2.BNS_NAME,bnsName)
         val returnIntent = Intent()
         returnIntent.putExtra(ConversationFragmentV2.ADDRESS, recipient.address)
         //returnIntent.setDataAndType(intent.data, intent.type)

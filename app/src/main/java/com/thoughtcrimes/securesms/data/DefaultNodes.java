@@ -7,8 +7,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum DefaultNodes {
     // Mainnet
-    BELDEX("explorer.beldex.io:19091"),
-    BELDEX1("mainnet.beldex.io:29095"),
     BELDEX2("publicnode1.rpcnode.stream:29095"),
     BELDEX3 ("publicnode2.rpcnode.stream:29095"),
     BELDEX4 ("publicnode3.rpcnode.stream:29095"),

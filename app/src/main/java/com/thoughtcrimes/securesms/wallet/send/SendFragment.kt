@@ -26,6 +26,7 @@ import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.conversation.v2.TransactionLoadingBar
@@ -238,8 +239,8 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                 if (isIntegratedAddress(address)) {
                     possibleCryptos.add(Crypto.BDX)
                     selectedCrypto = Crypto.BDX
-                    binding.beldexAddressLayout.setBackgroundResource(R.drawable.error_view_background)
                     binding.beldexAddressErrorMessage.visibility = View.VISIBLE
+                    binding.beldexAddressErrorMessage.setTextColor(ContextCompat.getColor(requireContext(), R.color.button_green))
                     binding.beldexAddressErrorMessage.text=getString(R.string.info_paymentid_integrated)
                     setMode(Mode.BDX)
                 } else if (isStandardAddress(address)) {
@@ -713,6 +714,11 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                     if (barcodeData.security === BarcodeData.Security.OA_NO_DNSSEC) binding.beldexAddressEditTxtLayout.error =
                         getString(R.string.send_address_no_dnssec) else if (barcodeData.security === BarcodeData.Security.OA_DNSSEC) binding.beldexAddressEditTxtLayout.error =
                         getString(R.string.send_address_openalias)
+                }
+                if (isIntegratedAddress(barcodeData.address)) {
+                    binding.beldexAddressErrorMessage.visibility = View.VISIBLE
+                    binding.beldexAddressErrorMessage.setTextColor(ContextCompat.getColor(requireContext(), R.color.button_green))
+                    binding.beldexAddressErrorMessage.text=getString(R.string.info_paymentid_integrated)
                 }
             } else {
                 binding.beldexAddressEditTxtLayout.editText?.text?.clear()

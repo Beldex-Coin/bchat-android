@@ -156,7 +156,7 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
                 }
             }
             var bitmap = Bitmap.createBitmap(pixels, 0, width, width, height, Bitmap.Config.RGB_565)
-            bitmap = addLogo(bitmap)
+            bitmap = addLogo(bitmap)!!
             return bitmap
         } catch (ex: WriterException) {
             Timber.e(ex)

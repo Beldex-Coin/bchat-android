@@ -640,6 +640,7 @@
 
     <style name="BChatLabel" parent="@android:style/TextAppearance.DeviceDefault.Medium">
     </style>
+    <style name="TextAppearance.AppCompat.Title" parent="Base.TextAppearance.AppCompat.Title"/>
 
     <style name="BChatLabel.Subtitle">
         <item name="android:textSize">12sp</item>

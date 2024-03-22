@@ -395,4 +395,9 @@
             <enum name="anchored_view" value="3" />
         </attr>
     </declare-styleable>
+    <attr name="actionModeCloseDrawable" format="reference" />
+    <attr name="dividerHorizontal" format="reference" />
+    <attr format="reference|color" name="colorError"/>
+    <attr name="editTextStyle" format="reference" />
+    <attr name="toolbarStyle" format="reference" />
 </resources>

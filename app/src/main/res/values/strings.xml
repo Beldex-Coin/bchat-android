@@ -1272,6 +1272,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="no_record_found" translatable="false">No record found</string>
     <string name="no_address_found" translatable="false">No address found</string>
     <string name="transaction_id" translatable="false">Transaction ID :</string>
+    <string name="payment_id" translatable="false">Payment ID :</string>
     <string name="date_amp_time" translatable="false"><![CDATA[Date & Time :]]></string>
     <string name="height" translatable="false">Height :</string>
     <string name="transaction_fee" translatable="false">Transaction Fee :</string>

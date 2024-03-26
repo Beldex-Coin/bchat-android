@@ -332,6 +332,37 @@
           "description":"- Minor Bug fixes"
         }
       ]
+    },
+    {
+      "title": "2.4.1",
+      "descriptions": [
+        {
+          "description":"- Minor Bug fixes"
+        }
+      ]
+    },
+    {
+      "title": "2.5.0",
+      "descriptions": [
+        {
+          "description":"- Fixed message delay issue"
+        },
+        {
+          "description":"- Introduced BNS feature for starting new chat and sending funds"
+        },
+        {
+          "description":"- Fixed missing payment ID details for integrated address transaction"
+        },
+        {
+          "description":"- Added support for android version 14"
+        },
+        {
+          "description":"- Updated Node list"
+        },
+        {
+          "description":"- Minor Bug fixes"
+        }
+      ]
     }
   ]
 }

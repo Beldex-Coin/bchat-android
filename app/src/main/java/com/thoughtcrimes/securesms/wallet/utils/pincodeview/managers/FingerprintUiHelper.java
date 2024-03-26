@@ -267,7 +267,7 @@ public class FingerprintUiHelper extends FingerprintManager.AuthenticationCallba
      * Show an error on the UI using {@link #mIcon} and {@link #mErrorTextView}
      */
     private void showError(CharSequence error) {
-        mIcon.setImageResource(R.drawable.ic_alert);
+        mIcon.setImageResource(R.drawable.ic_action_warning_red);
         mErrorTextView.setText(error);
         mErrorTextView.setTextColor(
                 mErrorTextView.getResources().getColor(R.color.red, null));

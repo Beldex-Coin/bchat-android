@@ -83,6 +83,7 @@ import com.beldex.libbchat.messaging.sending_receiving.quotes.QuoteModel
 import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.MediaTypes
+import com.beldex.libbchat.utilities.SSKEnvironment
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.concurrent.SimpleTask
 import com.beldex.libbchat.utilities.isScrolledToBottom
@@ -148,7 +149,6 @@ import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
 import com.thoughtcrimes.securesms.model.PendingTransaction
 import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.permissions.Permissions
-import com.thoughtcrimes.securesms.preferences.ChatSettingsActivity
 import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
 import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.util.ActivityDispatcher
@@ -399,6 +399,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         const val SCROLL_MESSAGE_ID = "scroll_message_id"
         const val SCROLL_MESSAGE_AUTHOR = "scroll_message_author"
         const val HEX_ENCODED_PUBLIC_KEY="hex_encode_public_key"
+        const val BNS_NAME ="bns_name"
         //Shortcut launcher
         const val SHORTCUT_LAUNCHER ="shortcut_launcher"
         //SetDataAndType
@@ -454,6 +455,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private var networkChangedReceiver: NetworkChangeReceiver? = null
     private var isNetworkAvailable = true
     private var callViewModel : CallViewModel? =null
+    private var bns_Name : String? = null
 
 
     interface Listener {
@@ -1961,7 +1963,12 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun setUpToolBar() {
+        val profileManager = SSKEnvironment.shared.profileManager
         val recipient = viewModel.recipient.value ?: return
+        val bnsName = requireArguments().getString(BNS_NAME)
+        if (bnsName != null && adapter.cursor?.count == 0) {
+            profileManager.setName(requireContext(), recipient, bnsName)
+        }
         binding.conversationTitleView.text = when {
             recipient.isLocalNumber -> getString(R.string.note_to_self)
             else -> recipient.toShortString()

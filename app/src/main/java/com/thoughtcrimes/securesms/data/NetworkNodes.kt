@@ -4,12 +4,10 @@ import io.beldex.bchat.BuildConfig
 
 object NetworkNodes  {
     private val mainNetNodes = listOf(
-        "explorer.beldex.io:19091",
         "publicnode1.rpcnode.stream:29095",
         "publicnode2.rpcnode.stream:29095",
         "publicnode3.rpcnode.stream:29095",
         "publicnode4.rpcnode.stream:29095",
-        "mainnet.beldex.io:29095",
         "publicnode5.rpcnode.stream:29095"
     )
     private val testNetModes = listOf(

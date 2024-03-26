@@ -548,9 +548,8 @@ class SlideToActView @JvmOverloads constructor(
     var viewWidth = 0
     var viewHeight = 0
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        if (canvas == null) return
 
         // Outer area
         mOuterRect.set(

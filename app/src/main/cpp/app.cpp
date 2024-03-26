@@ -1223,8 +1223,7 @@ jobject newTransactionInfo(JNIEnv *env, Wallet::TransactionInfo *info) {
                                    "(IZZJJJLjava/lang/String;JLjava/lang/String;IIJLjava/lang/String;Ljava/util/List;Z)V");
     jobject transfers = newTransferList(env, info);
     jstring _hash = env->NewStringUTF(info->hash().c_str());
-    const char *paymentId = "-";
-    jstring _paymentId = env->NewStringUTF(paymentId);
+    jstring _paymentId = env->NewStringUTF(info->paymentId().c_str());
     const char *label = "-";
     jstring _label = env->NewStringUTF(label);
     uint32_t subaddrIndex = 0;

@@ -167,6 +167,8 @@ class TransactionInfoAdapter(context: Context?)  :
         private var tvTxStatusIcon: ImageView = itemView.findViewById(R.id.transaction_status_icon)
         private var tvDateTimeHead: TextView = itemView.findViewById(R.id.transaction_date_and_time_head)
         var expandableArrow:ImageView = itemView.findViewById(R.id.transaction_expandable_arrow)
+        private var tvPaymentIdTitle: TextView = itemView.findViewById(R.id.payment_id_title)
+        private var tvPaymentId: TextView = itemView.findViewById(R.id.payment_id)
 
         //var tvPaymentId: TextView
         private var tvDateTime: TextView = itemView.findViewById(R.id.transaction_date_and_time)
@@ -259,6 +261,15 @@ class TransactionInfoAdapter(context: Context?)  :
                         Toast.makeText(context, "Can't open URL", Toast.LENGTH_LONG).show()
                     }
                 }
+            }
+
+            if (infoItem!!.paymentId != "0000000000000000") {
+                tvPaymentId.visibility = View.VISIBLE
+                tvPaymentIdTitle.visibility = View.VISIBLE
+                tvPaymentId.text = infoItem!!.paymentId
+            } else {
+                tvPaymentId.visibility = View.GONE
+                tvPaymentIdTitle.visibility = View.GONE
             }
             when {
                 infoItem!!.isFailed -> {

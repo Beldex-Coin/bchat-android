@@ -11,8 +11,8 @@ apply from: 'buildGradle/dependencies.gradle'
 configurations.all {
     exclude module: "commons-logging"
 }
-def canonicalVersionCode = 41
-def canonicalVersionName = "2.4.0"
+def canonicalVersionCode = 44
+def canonicalVersionName = "2.5.0"
 
 //First Release Date 17-06-2022
 //Version Code 15 Version Name 1.0.0
@@ -95,6 +95,15 @@ def canonicalVersionName = "2.4.0"
 //Twenty-seventh Release Data 22-02-2024
 //Version code 41 Version Name 2.4.0
 
+//Twenty-eight Internal Test Release Data 05-03-2024
+//Version code 42 Version Name 2.4.1
+
+//Twenty-ninth Test Release Data 22-03-2024
+//Version code 43 Version Name 2.5.0
+
+//30th  Release Data 22-03-2024
+//Version code 44 Version Name 2.5.0
+
 def postFixSize = 10
 def abiPostFix = ['armeabi-v7a' : 1,
                   'arm64-v8a'   : 2,
@@ -105,12 +114,12 @@ android {
     useLibrary 'org.apache.http.legacy'
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
         freeCompilerArgs += [
                 "-Xjvm-default=all",
         ]
@@ -138,7 +147,7 @@ android {
         minSdkVersion androidMinimumSdkVersion
         compileSdk androidCompileSdkVersion
         targetSdkVersion androidTargetSdkVersion
-        buildToolsVersion '30.0.3'
+        buildToolsVersion '34.0.0'
 
         multiDexEnabled = true
 
@@ -243,6 +252,7 @@ android {
         dataBinding true
         viewBinding true
         compose true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.1"
@@ -259,6 +269,8 @@ android {
         baseline file('lint-baseline.xml')
     }
     namespace 'io.beldex.bchat'
+    buildToolsVersion '34.0.0'
+    compileSdk 34
 }
 
 static def getLastCommitTimestamp() {

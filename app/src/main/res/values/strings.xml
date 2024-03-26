@@ -1272,6 +1272,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="no_record_found" translatable="false">No record found</string>
     <string name="no_address_found" translatable="false">No address found</string>
     <string name="transaction_id" translatable="false">Transaction ID :</string>
+    <string name="payment_id" translatable="false">Payment ID :</string>
     <string name="date_amp_time" translatable="false"><![CDATA[Date & Time :]]></string>
     <string name="height" translatable="false">Height :</string>
     <string name="transaction_fee" translatable="false">Transaction Fee :</string>
@@ -1423,4 +1424,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="dialog_title_send_failed">Create Transaction Error</string>
     <string name="title_for_beldex_address_or_name">Beldex address or BNS name</string>
     <string name="hint_for_enter_beldex_address_or_name">Enter Address or BNS name</string>
+    <string name="description_for_paste_icon">This allows user to paste their seed from clipboard</string>
 </resources>

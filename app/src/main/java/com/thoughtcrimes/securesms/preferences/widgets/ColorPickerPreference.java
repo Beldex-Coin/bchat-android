@@ -38,7 +38,7 @@ public class ColorPickerPreference extends DialogPreference {
 
     TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ColorPickerPreference, defStyleAttr, 0);
 
-    int colorsId = a.getResourceId(R.styleable.ColorPickerPreference_colors, R.array.color_picker_default_colors);
+    int colorsId = a.getResourceId(R.styleable.ColorPickerPreference_colors, com.takisoft.colorpicker.R.array.color_picker_default_colors);
 
     if (colorsId != 0) {
       colors = context.getResources().getIntArray(colorsId);
@@ -61,7 +61,7 @@ public class ColorPickerPreference extends DialogPreference {
 
   @SuppressLint("RestrictedApi")
   public ColorPickerPreference(Context context, AttributeSet attrs) {
-    this(context, attrs, TypedArrayUtils.getAttr(context, R.attr.dialogPreferenceStyle,
+    this(context, attrs, TypedArrayUtils.getAttr(context, android.R.attr.dialogPreferenceStyle,
                                                  android.R.attr.dialogPreferenceStyle));
   }
 

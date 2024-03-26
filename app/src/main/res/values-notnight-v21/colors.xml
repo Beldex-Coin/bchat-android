@@ -78,8 +78,8 @@
     <color name="button_text">#737389</color>
     <color name="send_message_background">#2979FB</color>
     <color name="chat_id_card_background">#F5F5F5</color>
-    <color name="chat_id_description_text">#272727</color>
-    <color name="beldex_address">#1782FF</color>
+    <color name="chat_id_description_text">#6A6A77</color>
+    <color name="beldex_address">#2979FB</color>
     <color name="start_color">#f5f5f5</color>
     <color name="end_color">#ededed</color>
     <color name="stroke_color">#afafaf</color>
@@ -132,4 +132,5 @@
     <color name="in_chat_payment_field">#EDEDED</color>
     <color name="in_chat_payment_dialog_background">#FFFFFF</color>
     <color name="in_chat_amount_divider">#C9C9C9</color>
+    <color name="bchat_id_text_color">#00DB09</color>
 </resources>

@@ -12,11 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material.icons.filled.ContentPaste
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -28,17 +24,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.thoughtcrimes.securesms.compose_utils.BChatOutlinedTextField
 import com.thoughtcrimes.securesms.compose_utils.BChatTheme
-import com.thoughtcrimes.securesms.compose_utils.MultilineTextField
 import com.thoughtcrimes.securesms.compose_utils.PrimaryButton
 import com.thoughtcrimes.securesms.compose_utils.appColors
 import io.beldex.bchat.R
@@ -63,7 +56,7 @@ fun RestoreFromSeedScreen(
                 .weight(1f)
         ) {
             Text(
-                text = "Display Name",
+                text = stringResource(id = R.string.display_name),
                 style = MaterialTheme.typography.titleMedium.copy(
                     color = MaterialTheme.appColors.editTextColor
                 )
@@ -74,14 +67,16 @@ fun RestoreFromSeedScreen(
             BChatOutlinedTextField(
                 value = "",
                 onValueChange = {},
-                label = "Enter name"
+                placeHolder = stringResource(id = R.string.enter_name),
+                modifier = Modifier
+                    .fillMaxWidth()
             )
 
             if (restoreFromHeight) {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "Pick a restore height",
+                    text = stringResource(id = R.string.restore_from_height_title),
                     style = MaterialTheme.typography.titleMedium
                 )
 
@@ -90,14 +85,16 @@ fun RestoreFromSeedScreen(
                 BChatOutlinedTextField(
                     value = "",
                     onValueChange = {},
-                    label = "Enter Block height to Restore",
-                    keyboardType = KeyboardType.Number
+                    placeHolder = stringResource(id = R.string.restore_from_block_height_hint),
+                    keyboardType = KeyboardType.Number,
+                    modifier = Modifier
+                        .fillMaxWidth()
                 )
             } else {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "Pick a Date",
+                    text = stringResource(id = R.string.restore_from_date_title),
                     style = MaterialTheme.typography.titleMedium
                 )
 
@@ -106,13 +103,16 @@ fun RestoreFromSeedScreen(
                 BChatOutlinedTextField(
                     value = "",
                     onValueChange = {},
-                    label = "Enter Date",
+                    placeHolder = stringResource(id = R.string.restore_from_date_hint),
+                    readOnly = true,
                     trailingIcon = {
                         Icon(
                             Icons.Filled.CalendarToday,
                             contentDescription = ""
                         )
-                    }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
                 )
             }
 
@@ -122,21 +122,26 @@ fun RestoreFromSeedScreen(
                 onClick = {
                     restoreFromHeight = !restoreFromHeight
                 },
+                shape = RoundedCornerShape(50),
+                containerColor = MaterialTheme.appColors.tertiaryButtonColor,
                 modifier = Modifier
                     .align(Alignment.End)
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_calendar),
+                    painter = if (!restoreFromHeight)
+                        painterResource(id = R.drawable.ic_blockheight)
+                    else
+                        painterResource(id = R.drawable.ic_calendar),
                     contentDescription = ""
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Text(
-                    text = if (!restoreFromHeight)
-                        "Restore from Height"
+                    text = if (restoreFromHeight)
+                        stringResource(id = R.string.restore_from_date)
                     else
-                        "Restore from Date",
+                        stringResource(id = R.string.restore_from_height),
                     style = MaterialTheme.typography.titleSmall.copy(
                         color = Color.White
                     ),
@@ -161,7 +166,7 @@ fun RestoreFromSeedScreen(
                 .fillMaxWidth()
         ) {
             Text(
-                text = "Continue",
+                text = stringResource(R.string.restore),
                 style = MaterialTheme.typography.titleMedium.copy(
                     color = Color.White
                 ),

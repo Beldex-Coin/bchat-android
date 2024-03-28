@@ -6,12 +6,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import io.beldex.bchat.R
 import com.thoughtcrimes.securesms.BaseActionBarActivity
 import com.thoughtcrimes.securesms.conversation.v2.utilities.BaseDialog
+import io.beldex.bchat.R
 
 val defaultBchatRequestCode: Int
     get() = 42
@@ -44,7 +45,7 @@ fun BaseActionBarActivity.setUpActionBarBchatLogo(title: String, hideBackButton:
     }
 }
 
-fun AppCompatActivity.push(intent: Intent, isForResult: Boolean = false) {
+fun ComponentActivity.push(intent: Intent, isForResult: Boolean = false) {
     if (isForResult) {
         startActivityForResult(intent, defaultBchatRequestCode)
     } else {

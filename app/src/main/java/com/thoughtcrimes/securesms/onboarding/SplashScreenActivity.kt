@@ -1,11 +1,11 @@
 package com.thoughtcrimes.securesms.onboarding
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import io.beldex.bchat.databinding.ActivitySplashScreenBinding
 
 class SplashScreenActivity : AppCompatActivity() {
@@ -22,7 +22,7 @@ class SplashScreenActivity : AppCompatActivity() {
                 startActivity(Intent(this, PasswordActivity::class.java))
                 finish()
             } else {
-                startActivity(Intent(this, LandingActivity::class.java))
+                startActivity(Intent(this, LandingScreenActivity::class.java))
                 finish()
             }
         }, 1000)

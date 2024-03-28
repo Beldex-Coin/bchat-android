@@ -59,7 +59,8 @@ class Colors(
     val searchBackground: Color,
     val inputHintColor: Color,
     val disabledButtonContainerColor: Color,
-    val disabledButtonContent: Color
+    val disabledButtonContent: Color,
+    val textFieldDescriptionColor: Color
 )
 
 val lightColors = Colors(
@@ -103,7 +104,8 @@ val lightColors = Colors(
     searchBackground = Color(0xFFF8F8F8),
     inputHintColor = Color(0xFF8D8D8D),
     disabledButtonContainerColor = Color(0xFFF8F8F8),
-    disabledButtonContent = Color(0xFF6E6E7C)
+    disabledButtonContent = Color(0xFF6E6E7C),
+    textFieldDescriptionColor = Color(0xFF333333)
 )
 
 val darkColors = Colors(
@@ -147,7 +149,8 @@ val darkColors = Colors(
     searchBackground = Color(0xFF282836),
     inputHintColor = Color(0xFFB9B9B9),
     disabledButtonContainerColor = Color(0xFF282836),
-    disabledButtonContent = Color(0xFF6E6E7C)
+    disabledButtonContent = Color(0xFF6E6E7C),
+    textFieldDescriptionColor = Color(0xFFA7A7BA)
 )
 
 

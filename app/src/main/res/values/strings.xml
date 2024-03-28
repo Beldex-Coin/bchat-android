@@ -986,7 +986,7 @@
     <string name="scan_qrcode_text" translatable="false">Scan</string>
     <string name="beldex_address" translatable="false">Beldex Address</string>
     <string name="dummy_beldex_address" translatable="false">bx00f9b10ec366631ba25a9c6a0279e12d93c260134fce646d4c425356da5c9b480987654321a7b8c9e7a4d1b6f9e9e8</string>
-    <string name="landing_screen_content" translatable="false">The private Web3 messaging app that protects your conversational freedom. Create an account instantly.</string>
+    <string name="landing_screen_content" translatable="false">Welcome to BChat, your private haven for seamless communication and connection.</string>
     <string name="display_name_screen_title_content" translatable="false">Set your display name</string>
     <string name="display_name_screen_description_content" translatable="false">Your display name is not your username and you can change it anytime.</string>
     <string name="register_screen_chat_id_description_content" translatable="false">Your BChat ID is like your username. You can share it with your friends to begin a conversation.</string>
@@ -1460,4 +1460,10 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="let_s_bchat">Let\'s BChat</string>
     <string name="your_chat_id">Your Chat ID</string>
     <string name="enter_chat_id">Enter Chat ID</string>
+    <string name="restore_account">Restore Account</string>
+    <string name="hello">Hello,</string>
+    <string name="we_are_thrilled">We\'re thrilled to have you on board!</string>
+    <string name="restore_seed">Restore Seed</string>
+    <string name="restore_from_seed">Restore From Seed</string>
+    <string name="restore">Restore</string>
 </resources>

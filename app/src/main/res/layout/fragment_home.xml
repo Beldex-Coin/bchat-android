@@ -8,339 +8,341 @@
     tools:context="com.thoughtcrimes.securesms.home.HomeFragment"
     tools:openDrawer="right">
 
-    <LinearLayout
-        android:id="@+id/contentView"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@color/screen_background">
+        android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar_Call"
+        <LinearLayout
+            android:id="@+id/contentView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:background="@color/call_toolbar_background"
-            app:contentInsetStart="0dp">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@color/screen_background">
 
-            <LinearLayout
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar_Call"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <RelativeLayout
-                    android:id="@+id/bchat_toolbar_Call"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    >
-
-                    <TextView
-                        android:id="@+id/callInProgress_Call"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginEnd="10dp"
-                        android:textColor="@color/white"
-                        android:fontFamily="@font/open_sans_bold"
-                        android:text="@string/call_in_progress"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        />
-
-
-                    <TextView
-                        android:id="@+id/callDuration_Call"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="20dp"
-                        android:textColor="@color/white"
-                        android:layout_toEndOf="@id/callInProgress_Call"
-                        android:fontFamily="@font/open_sans_bold"
-                        tools:text="@tools:sample/date/hhmmss"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
-
-
-                    <ImageView
-                        android:id="@+id/hanUp_Call"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerInParent="true"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:src="@drawable/ic_hangup"
-                        />
-
-                </RelativeLayout>
-            </LinearLayout>
-        </androidx.appcompat.widget.Toolbar>
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?colorPrimary"
-            app:contentInsetStart="0dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingVertical="16dp">
-
-                <RelativeLayout
-                    android:id="@+id/bchat_toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp">
-
-                    <include layout="@layout/view_profile_picture"
-                        android:id="@+id/profileButton"
-                        android:layout_width="@dimen/small_profile_picture_size"
-                        android:layout_height="@dimen/small_profile_picture_size"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true" />
-
-                    <ImageView
-                        android:layout_width="14dp"
-                        android:layout_height="14dp"
-                        android:layout_alignEnd="@+id/profileButton"
-                        android:layout_alignTop="@+id/profileButton"
-                        android:layout_marginEnd="-1dp"
-                        android:layout_marginTop="-1dp"
-                        android:background="@drawable/circle_white" />
-
-                    <com.thoughtcrimes.securesms.home.PathStatusView
-                        android:id="@+id/pathStatusView"
-                        android:layout_width="@dimen/path_status_view_size_new"
-                        android:layout_height="@dimen/path_status_view_size_new"
-                        android:layout_alignEnd="@+id/profileButton"
-                        android:layout_alignTop="@+id/profileButton" />
-
-                    <TextView
-                        android:id="@+id/bchatHeaderImage"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:layout_toEndOf="@+id/profileButton"
-                        android:fontFamily="@font/open_sans_bold"
-                        android:text="@string/bchat"
-                        android:textSize="24sp"
-                        android:textStyle="bold"
-                        android:layout_marginStart="16dp"/>
-
-                    <!-- <RelativeLayout
-                         android:id="@+id/searchViewContainer"
-                         android:layout_width="@dimen/small_profile_picture_size"
-                         android:layout_height="@dimen/small_profile_picture_size"
-                         android:layout_alignParentStart="true"
-                         android:layout_centerVertical="true">
-
-                         <ImageView
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:layout_centerInParent="true"
-                             android:src="@drawable/ic_baseline_search_24"
-                             app:tint="@color/text" />
-
-                     </RelativeLayout>-->
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/search_toolbar1"
-                    android:layout_width="match_parent"
-                    android:layout_height="?actionBarSize"
-                    android:layout_marginHorizontal="@dimen/medium_spacing"
-                    android:visibility="gone">
-
-                    <com.thoughtcrimes.securesms.home.search.GlobalSearchInputLayout
-                        android:id="@+id/globalSearchInputLayout1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true" />
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/searchBarLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="?actionBarSize"
-                    android:layout_marginHorizontal="@dimen/medium_spacing"
-                    android:visibility="gone">
-
-                    <ImageView
-                        android:id="@+id/searchBarBackButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/ic_back" />
-
-                    <TextView
-                        android:id="@+id/searchBarTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="@id/searchBarBackButton"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="55dp"
-                        android:fontFamily="@font/open_sans_bold"
-                        android:text="Search"
-                        android:textSize="25sp"
-                        android:textStyle="bold" />
-                </RelativeLayout>
-
-<!--                <View-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="1px"-->
-<!--                    android:background="?android:dividerHorizontal"-->
-<!--                    android:elevation="1dp" />-->
-
-                <com.thoughtcrimes.securesms.onboarding.SeedReminderView
-                    android:id="@+id/seedReminderView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone" />
-
-            </LinearLayout>
-
-        </androidx.appcompat.widget.Toolbar>
-        <!--<com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/airdropIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:layout_marginTop="0dp"
-            app:layout_constraintDimensionRatio="1:1"
-            app:lottie_fileName="load_animation.json"
-            app:lottie_loop="true"
-            app:lottie_speed="1"
-            app:lottie_autoPlay="true"
-            app:lottie_enableMergePathsForKitKatAndAbove="true"
-            tools:ignore="ContentDescription"/>-->
-
-        <androidx.compose.ui.platform.ComposeView
-            android:id="@+id/requests"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?colorPrimary"/>
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            style="@style/CustomCardViewStyle"
-            app:cardBackgroundColor="@color/page_background"
-            app:cardElevation="4dp">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipChildren="false">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:itemCount="6"
-                    tools:listitem="@layout/view_conversation"
-                    android:padding="8dp"/>
-
-                <View
-                    android:id="@+id/gradientView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/home_activity_gradient"/>
+                android:visibility="gone"
+                android:background="@color/call_toolbar_background"
+                app:contentInsetStart="0dp">
 
                 <LinearLayout
-                    android:id="@+id/emptyStateContainer"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_centerInParent="true"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:visibility="visible">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-                    <ImageView
-                        android:id="@+id/emptyStateImageView"
+                    <RelativeLayout
+                        android:id="@+id/bchat_toolbar_Call"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="0dp"
-                        android:scaleType="fitXY"
-                        android:visibility="visible" />
+                        android:layout_height="?attr/actionBarSize"
+                        >
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                        <TextView
+                            android:id="@+id/callInProgress_Call"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginEnd="10dp"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/open_sans_bold"
+                            android:text="@string/call_in_progress"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            />
+
+
+                        <TextView
+                            android:id="@+id/callDuration_Call"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="20dp"
+                            android:textColor="@color/white"
+                            android:layout_toEndOf="@id/callInProgress_Call"
+                            android:fontFamily="@font/open_sans_bold"
+                            tools:text="@tools:sample/date/hhmmss"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+
+                        <ImageView
+                            android:id="@+id/hanUp_Call"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerInParent="true"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:src="@drawable/ic_hangup"
+                            />
+
+                    </RelativeLayout>
+                </LinearLayout>
+            </androidx.appcompat.widget.Toolbar>
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?colorPrimary"
+                app:contentInsetStart="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingVertical="16dp">
+
+                    <RelativeLayout
+                        android:id="@+id/bchat_toolbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp">
+
+                        <include layout="@layout/view_profile_picture"
+                            android:id="@+id/profileButton"
+                            android:layout_width="@dimen/small_profile_picture_size"
+                            android:layout_height="@dimen/small_profile_picture_size"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true" />
+
+                        <ImageView
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:layout_alignEnd="@+id/profileButton"
+                            android:layout_alignTop="@+id/profileButton"
+                            android:layout_marginEnd="-1dp"
+                            android:layout_marginTop="-1dp"
+                            android:background="@drawable/circle_white" />
+
+                        <com.thoughtcrimes.securesms.home.PathStatusView
+                            android:id="@+id/pathStatusView"
+                            android:layout_width="@dimen/path_status_view_size_new"
+                            android:layout_height="@dimen/path_status_view_size_new"
+                            android:layout_alignEnd="@+id/profileButton"
+                            android:layout_alignTop="@+id/profileButton" />
+
+                        <TextView
+                            android:id="@+id/bchatHeaderImage"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_toEndOf="@+id/profileButton"
+                            android:fontFamily="@font/open_sans_bold"
+                            android:text="@string/bchat"
+                            android:textSize="24sp"
+                            android:textStyle="bold"
+                            android:layout_marginStart="16dp"/>
+
+                        <!-- <RelativeLayout
+                             android:id="@+id/searchViewContainer"
+                             android:layout_width="@dimen/small_profile_picture_size"
+                             android:layout_height="@dimen/small_profile_picture_size"
+                             android:layout_alignParentStart="true"
+                             android:layout_centerVertical="true">
+
+                             <ImageView
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:layout_centerInParent="true"
+                                 android:src="@drawable/ic_baseline_search_24"
+                                 app:tint="@color/text" />
+
+                         </RelativeLayout>-->
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/search_toolbar1"
+                        android:layout_width="match_parent"
+                        android:layout_height="?actionBarSize"
+                        android:layout_marginHorizontal="@dimen/medium_spacing"
+                        android:visibility="gone">
+
+                        <com.thoughtcrimes.securesms.home.search.GlobalSearchInputLayout
+                            android:id="@+id/globalSearchInputLayout1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/searchBarLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="?actionBarSize"
+                        android:layout_marginHorizontal="@dimen/medium_spacing"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:id="@+id/searchBarBackButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/ic_back" />
+
+                        <TextView
+                            android:id="@+id/searchBarTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="@id/searchBarBackButton"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="55dp"
+                            android:fontFamily="@font/open_sans_bold"
+                            android:text="Search"
+                            android:textSize="25sp"
+                            android:textStyle="bold" />
+                    </RelativeLayout>
+
+    <!--                <View-->
+    <!--                    android:layout_width="match_parent"-->
+    <!--                    android:layout_height="1px"-->
+    <!--                    android:background="?android:dividerHorizontal"-->
+    <!--                    android:elevation="1dp" />-->
+
+                    <com.thoughtcrimes.securesms.onboarding.SeedReminderView
+                        android:id="@+id/seedReminderView"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:alpha="0.2"
-                        android:fontFamily="@font/open_sans_medium"
-                        android:gravity="center"
-                        android:text="Much empty. Such wow.\nGo get some friends to BChat!"
-                        android:textColor="@color/text"
-                        android:textSize="@dimen/medium_font_size"
-                        android:textStyle="bold"
-                        android:visibility="gone" />
-                    <!-- android:text="@string/activity_home_empty_state_message"-->
-
-                    <Button
-                        android:id="@+id/createNewPrivateChatButton"
-                        style="@style/Widget.Bchat.Button.Common.ProminentOutline"
-                        android:layout_width="196dp"
-                        android:layout_height="@dimen/medium_button_height"
-                        android:layout_marginTop="@dimen/medium_spacing"
-                        android:text="@string/activity_home_empty_state_button_title"
                         android:visibility="gone" />
 
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/emptyStateContainerText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="170dp"
-                    android:fontFamily="@font/open_sans_medium"
-                    android:gravity="center"
-                    android:text="Much empty. Such wow.\nGo get some friends to BChat!"
-                    android:textColor="@color/empty_state_container_text"
-                    android:textSize="@dimen/medium_font_size"
-                    android:textStyle="bold"
-                    android:visibility="gone" />
+            </androidx.appcompat.widget.Toolbar>
+            <!--<com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/airdropIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:layout_marginTop="0dp"
+                app:layout_constraintDimensionRatio="1:1"
+                app:lottie_fileName="load_animation.json"
+                app:lottie_loop="true"
+                app:lottie_speed="1"
+                app:lottie_autoPlay="true"
+                app:lottie_enableMergePathsForKitKatAndAbove="true"
+                tools:ignore="ContentDescription"/>-->
 
-<!--                <com.thoughtcrimes.securesms.home.NewConversationButtonSetView-->
-<!--                    android:id="@+id/newConversationButtonSet"-->
-<!--                    android:layout_width="190dp"-->
-<!--                    android:layout_height="236dp"-->
-<!--                    android:layout_alignParentStart="false"-->
-<!--                    android:layout_alignParentEnd="true"-->
-<!--                    android:layout_alignParentBottom="true"-->
-<!--                    android:layout_centerHorizontal="true"-->
-<!--                    android:layout_marginEnd="30dp"-->
-<!--                    android:layout_marginBottom="-30dp" />-->
+            <androidx.compose.ui.platform.ComposeView
+                android:id="@+id/requests"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?colorPrimary"/>
 
-                <androidx.compose.ui.platform.ComposeView
-                    android:id="@+id/chat_buttons"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="false"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="16dp"/>
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                style="@style/CustomCardViewStyle"
+                app:cardBackgroundColor="@color/page_background"
+                app:cardElevation="4dp">
 
-            </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipChildren="false">
 
-        </com.google.android.material.card.MaterialCardView>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:itemCount="6"
+                        tools:listitem="@layout/view_conversation"
+                        android:padding="8dp"/>
 
-    </LinearLayout>
+                    <View
+                        android:id="@+id/gradientView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/home_activity_gradient"/>
+
+                    <LinearLayout
+                        android:id="@+id/emptyStateContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerInParent="true"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:id="@+id/emptyStateImageView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="0dp"
+                            android:scaleType="fitXY"
+                            android:visibility="visible" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="15dp"
+                            android:alpha="0.2"
+                            android:fontFamily="@font/open_sans_medium"
+                            android:gravity="center"
+                            android:text="Much empty. Such wow.\nGo get some friends to BChat!"
+                            android:textColor="@color/text"
+                            android:textSize="@dimen/medium_font_size"
+                            android:textStyle="bold"
+                            android:visibility="gone" />
+                        <!-- android:text="@string/activity_home_empty_state_message"-->
+
+                        <Button
+                            android:id="@+id/createNewPrivateChatButton"
+                            style="@style/Widget.Bchat.Button.Common.ProminentOutline"
+                            android:layout_width="196dp"
+                            android:layout_height="@dimen/medium_button_height"
+                            android:layout_marginTop="@dimen/medium_spacing"
+                            android:text="@string/activity_home_empty_state_button_title"
+                            android:visibility="gone" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/emptyStateContainerText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="170dp"
+                        android:fontFamily="@font/open_sans_medium"
+                        android:gravity="center"
+                        android:text="Much empty. Such wow.\nGo get some friends to BChat!"
+                        android:textColor="@color/empty_state_container_text"
+                        android:textSize="@dimen/medium_font_size"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+
+    <!--                <com.thoughtcrimes.securesms.home.NewConversationButtonSetView-->
+    <!--                    android:id="@+id/newConversationButtonSet"-->
+    <!--                    android:layout_width="190dp"-->
+    <!--                    android:layout_height="236dp"-->
+    <!--                    android:layout_alignParentStart="false"-->
+    <!--                    android:layout_alignParentEnd="true"-->
+    <!--                    android:layout_alignParentBottom="true"-->
+    <!--                    android:layout_centerHorizontal="true"-->
+    <!--                    android:layout_marginEnd="30dp"-->
+    <!--                    android:layout_marginBottom="-30dp" />-->
+
+                </RelativeLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/chat_buttons"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"/>
+
+    </FrameLayout>
 
     <!-- Custom Navigation Drawer Start -->
     <LinearLayout

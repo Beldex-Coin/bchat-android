@@ -33,7 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.os.bundleOf
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -53,8 +53,11 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class OnBoardingActivity: ComponentActivity() {
 
+    private var destination = OnBoardingScreens.RestoreSeedScreen.route
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        destination = intent?.getStringExtra(extraStartDestination) ?: OnBoardingScreens.RestoreSeedScreen.route
         setContent { 
             BChatTheme {
                 Surface {
@@ -64,6 +67,7 @@ class OnBoardingActivity: ComponentActivity() {
                         val navController = rememberNavController()
                         OnBoardingNavHost(
                             navController = navController,
+                            startDestination = destination,
                             modifier = Modifier
                                 .padding(it)
                         )
@@ -72,23 +76,29 @@ class OnBoardingActivity: ComponentActivity() {
             }
         }
     }
+
+    companion object {
+        const val extraStartDestination = "io.beldex.EXTRA_START_DESTINATION"
+    }
 }
 
 @Composable
 fun OnBoardingNavHost(
     navController: NavHostController,
+    startDestination: String,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     NavHost(
         navController = navController,
-        startDestination = OnBoardingScreens.EnterPinCode.route
+        startDestination = startDestination,
+        modifier = modifier
     ) {
         composable(
             route = OnBoardingScreens.RestoreSeedScreen.route
         ) {
             ScreenContainer(
-                title = "Restore Seed",
+                title = stringResource(R.string.restore_seed),
                 onBackClick = {
                     (context as Activity).finish()
                 }
@@ -105,7 +115,7 @@ fun OnBoardingNavHost(
             route = OnBoardingScreens.RestoreFromSeedScreen.route
         ) {
             ScreenContainer(
-                title = "Restore From Seed",
+                title = stringResource(R.string.restore_from_seed),
                 onBackClick = {
                     navController.navigateUp()
                 }
@@ -173,6 +183,43 @@ fun OnBoardingNavHost(
                 PinCodeScreen(
                     state = state,
                     onEvent = viewModel::onEvent
+                )
+            }
+        }
+
+        composable(
+            route = OnBoardingScreens.DisplayNameScreen.route
+        ) {
+            ScreenContainer(
+                title = stringResource(id = R.string.display_name),
+                onBackClick = {
+                    navController.navigateUp()
+                }
+            ) {
+                DisplayNameScreen(
+                    proceed = {
+                        navController.navigate(OnBoardingScreens.GenerateKeyScreen.route)
+                    }
+                )
+            }
+        }
+
+        composable(
+            route = OnBoardingScreens.GenerateKeyScreen.route
+        ) {
+            ScreenContainer(
+                title = stringResource(id = R.string.display_name),
+                onBackClick = {
+                    navController.navigateUp()
+                }
+            ) {
+                KeyGenerationScreen(
+                    proceed = {
+//                        val bundle = bundleOf("action" to PinCodeAction.ChangePinCode.action)
+//                        navController.navigate("${OnBoardingScreens.EnterPinCode.route}?action=${PinCodeAction.ChangePinCode.action}")
+                        val intent = Intent(Intent.ACTION_VIEW, "onboarding://manage_pin?finish=true&action=${PinCodeAction.ChangePinCode.action}".toUri())
+                        context.startActivity(intent)
+                    }
                 )
             }
         }

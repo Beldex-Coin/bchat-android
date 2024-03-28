@@ -6,11 +6,13 @@ import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -51,8 +53,20 @@ fun NewChatButtons(
     createSecretGroup: () -> Unit,
     joinPublicGroup: () -> Unit
 ) {
+    val modifier = if (isExpanded) {
+        Modifier
+            .fillMaxSize()
+            .noRippleCallback {
+                changeExpandedStatus(false)
+            }
+    } else {
+        Modifier
+            .fillMaxSize()
+    }
     Column(
-        horizontalAlignment = Alignment.End
+        horizontalAlignment = Alignment.End,
+        verticalArrangement = Arrangement.Bottom,
+        modifier = modifier
     ) {
         AnimatedVisibility(
             visible = isExpanded,
@@ -75,6 +89,7 @@ fun NewChatButtons(
                     icon = painterResource(id = R.drawable.ic_new_chat),
                     modifier = Modifier
                         .noRippleCallback {
+                            changeExpandedStatus(false)
                             createPrivateChat()
                         }
                 )
@@ -83,6 +98,7 @@ fun NewChatButtons(
                     icon = painterResource(id = R.drawable.ic_secret_group),
                     modifier = Modifier
                         .noRippleCallback {
+                            changeExpandedStatus(false)
                             createSecretGroup()
                         }
                 )
@@ -91,6 +107,7 @@ fun NewChatButtons(
                     icon = painterResource(id = R.drawable.ic_social_group),
                     modifier = Modifier
                         .noRippleCallback {
+                            changeExpandedStatus(false)
                             joinPublicGroup()
                         }
                 )
@@ -104,8 +121,7 @@ fun NewChatButtons(
         ) {
             FloatingActionButton(
                 onClick = {
-                    if (!isExpanded)
-                        changeExpandedStatus(true)
+                    changeExpandedStatus(!isExpanded)
                 },
                 containerColor = MaterialTheme.appColors.primaryButtonColor,
                 modifier = Modifier

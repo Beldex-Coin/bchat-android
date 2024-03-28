@@ -1140,8 +1140,6 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     }
 
     fun dispatchTouchEvent() {
-        if (homeViewModel.isButtonExpanded.value)
-            homeViewModel.setButtonExpandedStatus(false)
     }
 
     private fun pingSelectedNode() {

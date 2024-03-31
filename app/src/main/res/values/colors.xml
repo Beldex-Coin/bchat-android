@@ -222,4 +222,5 @@
     <color name="outlined_button_stroke">#4B4B64</color>
     <color name="outlined_button_tint">#282836</color>
     <color name="outlined_button_text_color">#FFFFFF</color>
+    <color name="icon_tint">#FFFFFF</color>
 </resources>

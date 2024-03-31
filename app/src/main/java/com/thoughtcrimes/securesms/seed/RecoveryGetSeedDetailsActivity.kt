@@ -40,7 +40,6 @@ import timber.log.Timber
 import java.io.File
 import java.math.BigInteger
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.util.Calendar
 import java.util.Collections
 import java.util.Date
@@ -83,7 +82,7 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityRecoveryGetSeedDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setUpActionBarBchatLogo("Restore from Seed", true)
+        setUpActionBarBchatLogo("Restore from Seed", false)
 
         dates["2019-03"] = 21164
         dates["2019-04"] = 42675

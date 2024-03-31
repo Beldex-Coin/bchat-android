@@ -47,27 +47,38 @@
                         android:inputType="textMultiLine"
                         android:maxLines="3"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/paste_icon"
                         app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/paste_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toEndOf="@id/mnemonicEditText"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_paste_seed"
+                        app:tint="@color/button_green"
+                        android:padding="8dp"/>
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
             </androidx.cardview.widget.CardView>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/recoveryPhrasePasteIcon"
-                style="@style/Widget.Bchat.Button.Common.ProminentFilled"
+                style="@style/ContainedIconButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:layout_marginEnd="20dp"
-                android:drawableEnd="@drawable/ic_paste_seed"
-                android:minWidth="0dp"
-                android:minHeight="0dp"
-                android:paddingStart="25dp"
-                android:paddingTop="13dp"
-                android:paddingEnd="25dp"
-                android:paddingBottom="13dp"
-                android:text="Paste Seed " />
+                app:icon="@drawable/ic_paste_seed"
+                app:iconTint="@color/white"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:text="Clear" />
+
         </LinearLayout>
 
         <TextView
@@ -121,7 +132,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="20dp"
-                android:text="Next"
+                android:text="@string/continue_2"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />

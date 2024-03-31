@@ -32,7 +32,7 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
     // region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setUpActionBarBchatLogo("Restore from Seed",true)
+        setUpActionBarBchatLogo("Restore Seed",false)
         TextSecurePreferences.apply {
             setHasViewedSeed(this@RecoveryPhraseRestoreActivity, true)
             setConfigurationMessageSynced(this@RecoveryPhraseRestoreActivity, false)
@@ -77,7 +77,7 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
             binding.recoveryPhraseCountWord.text = "0/25"
         }
 
-        binding.recoveryPhrasePasteIcon.setOnClickListener {
+        binding.pasteIcon.setOnClickListener {
             val clipboard = this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             //since the clipboard contains plain text.
             if (clipboard.hasPrimaryClip()) {
@@ -89,6 +89,9 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
                     .show()
             }
 
+        }
+        binding.recoveryPhrasePasteIcon.setOnClickListener {
+            binding.mnemonicEditText.setText("")
         }
     }
 

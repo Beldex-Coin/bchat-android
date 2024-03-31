@@ -36,7 +36,6 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.coerceAtMost
@@ -57,7 +56,8 @@ data class PinCodeState(
 
 enum class PinCodeAction(val action: Int) {
     ChangePinCode(1),
-    VerifyPinCode(2)
+    VerifyPinCode(2),
+    CreatePinCode(3)
 }
 
 sealed interface PinCodeEvents {

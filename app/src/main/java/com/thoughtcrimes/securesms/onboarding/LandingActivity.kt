@@ -30,7 +30,6 @@ class LandingActivity : AppCompatActivity() {
         setContentView(binding.root)
         TextSecurePreferences.setCopiedSeed(this, false)
         with(binding) {
-            fakeChatView.startAnimating()
             registerButton.setOnClickListener() { register() }
             restoreButton.setOnClickListener { restore() }
             TermsandCondtionsTxt.setOnClickListener { link() }

@@ -8,7 +8,6 @@ import com.thoughtcrimes.securesms.util.SharedPreferenceUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.beldex.bchat.R
 import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -40,21 +39,32 @@ class PinCodeViewModel @Inject constructor(
     val successEvent = _successEvent.asSharedFlow()
 
     private var savedPassword: String? = null
+    private var action: Int = -1
 
     init {
         savedPassword = sharedPreferenceUtil.getSavedPassword()
-        val action = savedStateHandle.get<Int>("action") ?: PinCodeAction.VerifyPinCode.action
+        action = savedStateHandle.get<Int>("action") ?: PinCodeAction.VerifyPinCode.action
         _state.update {
-            if (action == PinCodeAction.VerifyPinCode.action) {
-                it.copy(
-                    step = PinCodeSteps.VerifyPin,
-                    stepTitle = resourceProvider.getString(R.string.enter_your_4_digit_bchat_pin)
-                )
-            } else {
-                it.copy(
-                    step = PinCodeSteps.OldPin,
-                    stepTitle = resourceProvider.getString(R.string.enter_old_pin)
-                )
+            when (action) {
+                PinCodeAction.CreatePinCode.action -> {
+                    it.copy(
+                        step = PinCodeSteps.EnterPin,
+                        stepTitle = resourceProvider.getString(R.string.enter_your_pin)
+                    )
+                }
+                PinCodeAction.VerifyPinCode.action -> {
+                    it.copy(
+                        step = PinCodeSteps.VerifyPin,
+                        stepTitle = resourceProvider.getString(R.string.enter_your_4_digit_bchat_pin)
+                    )
+                }
+                PinCodeAction.ChangePinCode.action -> {
+                    it.copy(
+                        step = PinCodeSteps.OldPin,
+                        stepTitle = resourceProvider.getString(R.string.enter_old_pin)
+                    )
+                }
+                else -> it
             }
         }
     }
@@ -122,7 +132,7 @@ class PinCodeViewModel @Inject constructor(
                             }
                         }
                         PinCodeSteps.EnterPin -> {
-                            if (newPin == savedPassword) {
+                            if (action == PinCodeAction.ChangePinCode.action && newPin == savedPassword) {
                                 viewModelScope.launch {
                                     _errorMessage.emit(resourceProvider.getString(R.string.old_new_password_same))
                                 }
@@ -142,7 +152,12 @@ class PinCodeViewModel @Inject constructor(
                                 }
                             } else {
                                 viewModelScope.launch {
-                                    _errorMessage.emit("Password changed successfully.")
+                                    val message = if (action == PinCodeAction.CreatePinCode.action) {
+                                        resourceProvider.getString(R.string.pincode_created)
+                                    } else {
+                                        resourceProvider.getString(R.string.pincode_changed)
+                                    }
+                                    _errorMessage.emit(message)
                                     _successEvent.emit(true)
                                 }
                             }

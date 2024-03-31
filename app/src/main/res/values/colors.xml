@@ -219,4 +219,7 @@
     <color name="setting_icon_tint">#EBEBEB</color>
     <color name="profile_background">#1C1C26</color>
     <color name="menu_background">#1C1C26</color>
+    <color name="outlined_button_stroke">#4B4B64</color>
+    <color name="outlined_button_tint">#282836</color>
+    <color name="outlined_button_text_color">#FFFFFF</color>
 </resources>

@@ -1466,4 +1466,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="restore_seed">Restore Seed</string>
     <string name="restore_from_seed">Restore From Seed</string>
     <string name="restore">Restore</string>
+    <string name="pincode_created">Password created successfully.</string>
+    <string name="pincode_changed">Password changed successfully.</string>
+    <string name="copy_and_save_the_seed_to_continue">Copy and save the seed to continue</string>
 </resources>

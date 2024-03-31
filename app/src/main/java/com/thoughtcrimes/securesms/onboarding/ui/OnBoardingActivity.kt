@@ -25,6 +25,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -89,6 +90,7 @@ fun OnBoardingNavHost(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    val viewModel: OnBoardingViewModel = hiltViewModel()
     NavHost(
         navController = navController,
         startDestination = startDestination,
@@ -158,13 +160,17 @@ fun OnBoardingNavHost(
                 }
                 launch {
                     viewModel.successEvent.collectLatest { success ->
-                        if (finish && success) {
-                            (context as Activity).apply {
-                                val data = Intent().apply {
-                                    putExtra("success", true)
+                        if (success) {
+                            if (finish) {
+                                (context as Activity).apply {
+                                    val data = Intent().apply {
+                                        putExtra("success", true)
+                                    }
+                                    setResult(Activity.RESULT_OK, data)
+                                    finish()
                                 }
-                                setResult(Activity.RESULT_OK, data)
-                                finish()
+                            } else {
+                                navController.navigate(OnBoardingScreens.CopyRestoreSeedScreen.route)
                             }
                         }
                     }
@@ -196,10 +202,13 @@ fun OnBoardingNavHost(
                     navController.navigateUp()
                 }
             ) {
+                val uiState by viewModel.uiState.collectAsState()
                 DisplayNameScreen(
+                    displayName = uiState.displayName ?: "",
                     proceed = {
                         navController.navigate(OnBoardingScreens.GenerateKeyScreen.route)
-                    }
+                    },
+                    onEvent = viewModel::onEvent
                 )
             }
         }
@@ -215,11 +224,25 @@ fun OnBoardingNavHost(
             ) {
                 KeyGenerationScreen(
                     proceed = {
-//                        val bundle = bundleOf("action" to PinCodeAction.ChangePinCode.action)
-//                        navController.navigate("${OnBoardingScreens.EnterPinCode.route}?action=${PinCodeAction.ChangePinCode.action}")
-                        val intent = Intent(Intent.ACTION_VIEW, "onboarding://manage_pin?finish=true&action=${PinCodeAction.ChangePinCode.action}".toUri())
+                        val intent = Intent(Intent.ACTION_VIEW, "onboarding://manage_pin?finish=false&action=${PinCodeAction.CreatePinCode.action}".toUri())
                         context.startActivity(intent)
                     }
+                )
+            }
+        }
+        
+        composable(
+            route = OnBoardingScreens.CopyRestoreSeedScreen.route
+        ) {
+            ScreenContainer(
+                title = stringResource(id = R.string.restore_seed),
+                onBackClick = {}
+            ) {
+                CopySeedScreen(
+                    seed = "Ut34co m56m 77odo8 6ve66ne natis023 3diam0id 5accum s3an3 6383ut7 purus eges tas34f acilisis is0233 diam0 id5acc ums3an36383ut7p",
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
                 )
             }
         }

@@ -1,178 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/action_bar_background">
+    android:background="@color/action_bar_background"
+    android:orientation="vertical">
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:layout_weight="1">
 
-
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/landing_page_background"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="33dp"
-                android:layout_marginTop="@dimen/massive_spacing"
-                android:layout_marginEnd="33dp"
-                android:orientation="horizontal"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp">
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center_vertical"
-                    android:src="@drawable/ic_bchat_logo" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:src="@drawable/bchat" />
-
-
-            </LinearLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:src="@drawable/ic_landing_bubble" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="50dp"
-                    android:orientation="vertical">
-
-
-                    <TextView
-                        android:id="@+id/title_first"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/very_large_spacing"
-                        android:layout_marginTop="30dp"
-                        android:layout_marginEnd="@dimen/very_large_spacing"
-                        android:fontFamily="@font/open_sans_bold"
-                        android:text="@string/hey_you"
-                        android:textAlignment="viewStart"
-                        android:textSize="@dimen/large_font_size"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/sub_title_first"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/very_large_spacing"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginEnd="@dimen/very_large_spacing"
-                        android:fontFamily="@font/open_sans_bold"
-                        android:text="@string/chat_anonymously_now"
-                        android:textSize="@dimen/large_font_size"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/sub_title_second"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/very_large_spacing"
-                        android:layout_marginTop="@dimen/medium_spacing"
-                        android:layout_marginEnd="@dimen/very_large_spacing"
-                        android:fontFamily="@font/open_sans_regular"
-                        android:text="@string/landing_screen_content"
-                        android:textAlignment="textStart"
-                        android:textSize="@dimen/small_font_size"
-                        android:textColor="@color/text_hint"
-                        android:textStyle="normal" />
-
-                </LinearLayout>
-            </RelativeLayout>
-
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/very_large_spacing"
-                android:layout_marginRight="@dimen/very_large_spacing"
-                android:text="@string/activity_landing_title_2"
-                android:textSize="@dimen/large_font_size"
-                android:textStyle="bold"
-                android:visibility="gone" />
-
-            <com.thoughtcrimes.securesms.onboarding.FakeChatView
-                android:id="@+id/fakeChatView"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/fake_chat_view_height"
-                android:layout_marginTop="@dimen/small_spacing"
-                android:visibility="gone" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:layout_weight="0" />
-
-            <Button
-                android:id="@+id/registerButton"
-                style="@style/Widget.Bchat.Button.Common.ProminentFilled"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginLeft="@dimen/massive_spacing"
-                android:layout_marginTop="40dp"
-                android:layout_marginRight="@dimen/massive_spacing"
-                android:text="@string/create_account" />
-
-            <Button
-                android:id="@+id/restoreButton"
-                style="@style/Widget.Bchat.Button.Common.ProminentOutline"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginLeft="@dimen/massive_spacing"
-                android:layout_marginTop="@dimen/medium_spacing"
-                android:layout_marginRight="@dimen/massive_spacing"
-                android:layout_marginBottom="@dimen/massive_spacing"
-                android:text="@string/sign_in" />
-
-            <TextView
-                android:id="@+id/TermsandCondtionsTxt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/massive_spacing"
-                android:layout_marginRight="@dimen/massive_spacing"
-                android:fontFamily="@font/open_sans_regular"
-                android:gravity="center"
-                android:text="@string/terms_and_conditions"
-                android:textAllCaps="false"
-                android:textColor="@color/text_hint"
-                android:textSize="@dimen/small_font_size" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
+            android:layout_height="0dp"
+            android:paddingVertical="24dp"
+            android:layout_weight="1"
+            tools:ignore="NestedWeights">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/very_large_spacing"
-                android:layout_marginEnd="@dimen/very_large_spacing"
-                android:src="@drawable/ic_bchat_2"
-                android:textAlignment="viewStart" />
-        </LinearLayout>
-    </ScrollView>
+                android:src="@drawable/ic_landing_bubble"
+                android:layout_gravity="center|end"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:text="Welcome to"
+                    android:textSize="@dimen/large_font_size"
+                    android:textStyle="bold"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_bchat_logo" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:src="@drawable/bchat" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/title_first"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:text="@string/hello"
+                    android:textAlignment="viewStart"
+                    android:textSize="@dimen/large_font_size"
+                    android:textStyle="bold"
+                    android:layout_marginTop="24dp"/>
+
+                <TextView
+                    android:id="@+id/sub_title_first"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:text="@string/we_are_thrilled"
+                    android:textSize="@dimen/large_font_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/sub_title_second"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/open_sans_regular"
+                    android:text="@string/landing_screen_content"
+                    android:textAlignment="textStart"
+                    android:textSize="@dimen/very_small_font_size"
+                    android:textColor="@color/text_hint"
+                    android:textStyle="normal"
+                    android:layout_marginTop="16dp"/>
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/registerButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/create_account"
+            style="@style/PrimaryContainedButton"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/restoreButton"
+            style="@style/OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sign_in"/>
+
+        <TextView
+            android:id="@+id/TermsandCondtionsTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/open_sans_regular"
+            android:gravity="center"
+            android:textColor="@color/text_hint"
+            android:text="@string/terms_and_conditions"
+            android:textAllCaps="false"
+            android:textSize="@dimen/small_font_size" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_bchat_2"
+        android:layout_marginStart="16dp"/>
+
+</LinearLayout>

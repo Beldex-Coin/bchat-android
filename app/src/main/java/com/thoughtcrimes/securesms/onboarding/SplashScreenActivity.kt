@@ -22,7 +22,7 @@ class SplashScreenActivity : AppCompatActivity() {
                 startActivity(Intent(this, PasswordActivity::class.java))
                 finish()
             } else {
-                startActivity(Intent(this, LandingScreenActivity::class.java))
+                startActivity(Intent(this, LandingActivity::class.java))
                 finish()
             }
         }, 1000)

@@ -13,6 +13,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,9 +32,14 @@ import io.beldex.bchat.R
 
 @Composable
 fun DisplayNameScreen(
+    displayName: String,
     proceed: () -> Unit,
+    onEvent: (OnBoardingEvents) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val buttonEnabled by remember(displayName) {
+        mutableStateOf(displayName.isNotEmpty())
+    }
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -56,8 +64,10 @@ fun DisplayNameScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             BChatOutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = displayName,
+                onValueChange = {
+                    onEvent(OnBoardingEvents.CreateAccountEvents.DisplayNameChanged(it))
+                },
                 placeHolder = stringResource(id = R.string.enter_name),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -75,13 +85,17 @@ fun DisplayNameScreen(
 
         PrimaryButton(
             onClick = proceed,
+            enabled = buttonEnabled,
             modifier = Modifier
                 .fillMaxWidth()
         ) {
             Text(
                 text = stringResource(R.string.continue_2),
                 style = MaterialTheme.typography.titleMedium.copy(
-                    color = Color.White
+                    color = if (buttonEnabled)
+                        Color.White
+                    else
+                        MaterialTheme.appColors.disabledPrimaryButtonContentColor
                 ),
                 modifier = Modifier
                     .padding(4.dp)
@@ -97,7 +111,9 @@ fun DisplayNameScreenPreview() {
     BChatPreviewContainer() {
         Scaffold {
             DisplayNameScreen(
-                proceed = {}
+                displayName = "Beldex",
+                proceed = {},
+                onEvent = {}
             )
         }
     }
@@ -110,7 +126,9 @@ fun DisplayNameScreenPreviewDark() {
     BChatPreviewContainer() {
         Scaffold {
             DisplayNameScreen(
-                proceed = {}
+                displayName = "Beldex",
+                proceed = {},
+                onEvent = {}
             )
         }
     }

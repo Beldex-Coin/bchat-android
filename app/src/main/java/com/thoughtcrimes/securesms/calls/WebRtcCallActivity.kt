@@ -34,6 +34,7 @@ import com.thoughtcrimes.securesms.webrtc.CallViewModel
 import com.thoughtcrimes.securesms.webrtc.CallViewModel.State.*
 import com.thoughtcrimes.securesms.webrtc.audio.SignalAudioManager.AudioDevice.EARPIECE
 import com.thoughtcrimes.securesms.webrtc.audio.SignalAudioManager.AudioDevice.SPEAKER_PHONE
+import com.thoughtcrimes.securesms.webrtc.audio.SignalAudioManager.AudioDevice.BLUETOOTH
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityWebRtcCallBinding
@@ -160,6 +161,12 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                 WebRtcCallService.sendAudioManagerCommand(this, command)
             }
 
+            binding.bluetoothButton.setOnClickListener{
+                val command =
+                        AudioManagerCommand.SetUserDevice(if (viewModel.isBluetooth) EARPIECE else BLUETOOTH)
+                WebRtcCallService.sendAudioManagerCommand(this, command)
+            }
+
             binding.acceptCallButton.setOnClickListener {
                 if (viewModel.currentCallState == CALL_PRE_INIT) {
                     wantsToAnswer = true
@@ -269,6 +276,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                 val rotation = newRotation.toFloat()
                 remoteRecipient.rotation = rotation
                 speakerPhoneButton.rotation = rotation
+                bluetoothButton.rotation = rotation
                 microphoneButton.rotation = rotation
                 enableCameraButton.rotation = rotation
                 switchCameraButton.rotation = rotation
@@ -380,6 +388,19 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                         }
                     }
                 }
+                launch {
+                    viewModel.audioBluetoothDeviceState.collect{ state ->
+                        val bluetoothEnabled = state.selectedDevice == BLUETOOTH
+                        binding.bluetoothButton.isSelected = bluetoothEnabled
+                        //SteveJosephh21
+                        if(binding.bluetoothButton.isSelected){
+                            binding.bluetoothButton.setColorFilter(ContextCompat.getColor(this@WebRtcCallActivity,R.color.green))
+                        }
+                        else{
+                            binding.bluetoothButton.setColorFilter(ContextCompat.getColor(this@WebRtcCallActivity,R.color.text))
+                        }
+                    }
+                }
 
                 launch {
                     viewModel.callState.collect { state ->
@@ -452,6 +473,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                 launch {
                     while (isActive) {
                         val startTime = viewModel.callStartTime
+                        binding.bluetoothButton.isVisible = viewModel.bluetoothConnectionStatus
                         if (startTime == -1L) {
                             binding.callTime.isVisible = false
                             //SteveJosephh21

@@ -84,6 +84,9 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
         signalAudioManager.shutdown()
     }
 
+    fun getBluetoothConnectionStatus(): Boolean {
+        return signalAudioManager.isBluetoothConnected()
+    }
     private val _audioEvents = MutableStateFlow(StateEvent.AudioEnabled(false))
     val audioEvents = _audioEvents.asSharedFlow()
     private val _videoEvents = MutableStateFlow(StateEvent.VideoEnabled(false))

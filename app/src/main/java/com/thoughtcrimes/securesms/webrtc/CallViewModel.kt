@@ -46,14 +46,24 @@ public class CallViewModel @Inject constructor(private val callManager: CallMana
         get() = _microphoneEnabled
 
     private var _isSpeaker: Boolean = false
+    private var _isBluetooth: Boolean = false
     val isSpeaker: Boolean
         get() = _isSpeaker
+    val isBluetooth: Boolean
+        get() = _isBluetooth
 
     val audioDeviceState
         get() = callManager.audioDeviceEvents
             .onEach {
                 _isSpeaker = it.selectedDevice == SignalAudioManager.AudioDevice.SPEAKER_PHONE
             }
+    val audioBluetoothDeviceState
+        get() = callManager.audioDeviceEvents
+                .onEach {
+                    _isBluetooth = it.selectedDevice == SignalAudioManager.AudioDevice.BLUETOOTH
+                }
+    val bluetoothConnectionStatus
+        get() = callManager.getBluetoothConnectionStatus()
 
     val localAudioEnabledState
         get() = callManager.audioEvents.map { it.isEnabled }

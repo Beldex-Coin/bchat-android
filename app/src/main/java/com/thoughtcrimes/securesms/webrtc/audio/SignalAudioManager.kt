@@ -62,6 +62,7 @@ class SignalAudioManager(private val context: Context,
     private val outgoingRinger = OutgoingRinger(context)
 
     private var wiredHeadsetReceiver: WiredHeadsetReceiver? = null
+    private var bluetoothConnectionStatus: Boolean = false
 
     fun handleCommand(command: AudioManagerCommand) {
         handler.post {
@@ -230,6 +231,11 @@ class SignalAudioManager(private val context: Context,
             Log.i(TAG, "Need bluetooth audio: state: ${signalBluetoothManager.state} start: $needBluetoothAudioStart stop: $needBluetoothAudioStop")
         }
 
+        bluetoothConnectionStatus = when (btState) {
+            SignalBluetoothManager.State.CONNECTED -> true
+            SignalBluetoothManager.State.AVAILABLE -> true
+            else -> false
+        }
         if (needBluetoothAudioStop) {
             signalBluetoothManager.stopScoAudio()
             signalBluetoothManager.updateDevice()
@@ -354,6 +360,8 @@ class SignalAudioManager(private val context: Context,
     fun isSpeakerphoneOn(): Boolean = androidAudioManager.isSpeakerphoneOn
 
     fun isBluetoothScoOn(): Boolean = androidAudioManager.isBluetoothScoOn
+
+    fun isBluetoothConnected(): Boolean = bluetoothConnectionStatus
 
     fun isWiredHeadsetOn(): Boolean = androidAudioManager.isWiredHeadsetOn
 

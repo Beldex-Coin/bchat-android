@@ -246,25 +246,40 @@
     <ImageView
         android:id="@+id/switchCameraButton"
         android:src="@drawable/ic_baseline_flip_camera_android_24"
-        android:padding="@dimen/medium_spacing"
+        android:padding="@dimen/small_spacing"
         app:tint="@color/call_action_foreground"
-        android:layout_width="@dimen/large_button_height"
-        android:layout_height="@dimen/large_button_height"
+        android:layout_width="@dimen/small_button_height"
+        android:layout_height="@dimen/medium_button_height"
         android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/enableCameraButton"
+        app:layout_constraintEnd_toStartOf="@id/bluetoothButton"
         android:layout_marginBottom="10dp"
         app:layout_constraintHorizontal_bias="0.1"
+        />
+    <ImageView
+        android:id="@+id/bluetoothButton"
+        android:src="@drawable/baseline_bluetooth_24"
+        android:padding="@dimen/small_spacing"
+        android:layout_width="@dimen/small_button_height"
+        android:layout_height="@dimen/medium_button_height"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/switchCameraButton"
+        app:layout_constraintEnd_toStartOf="@id/enableCameraButton"
+        android:visibility="gone"
+        android:layout_marginBottom="10dp"
         />
 
     <ImageView
         android:id="@+id/enableCameraButton"
         android:src="@drawable/ic_baseline_videocam_24"
-        android:padding="@dimen/medium_spacing"
-        android:layout_width="@dimen/large_button_height"
-        android:layout_height="@dimen/large_button_height"
-        android:layout_marginEnd="50dp"
+        android:padding="@dimen/small_spacing"
+        android:layout_width="@dimen/small_button_height"
+        android:layout_height="@dimen/medium_button_height"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/switchCameraButton"
         app:layout_constraintEnd_toStartOf="@id/microphoneButton"
@@ -273,10 +288,10 @@
 
     <ImageView
         android:id="@+id/microphoneButton"
-        android:layout_width="@dimen/large_button_height"
-        android:layout_height="@dimen/large_button_height"
+        android:layout_width="@dimen/small_button_height"
+        android:layout_height="@dimen/medium_button_height"
         android:layout_marginStart="50dp"
-        android:padding="@dimen/medium_spacing"
+        android:padding="@dimen/small_spacing"
         android:src="@drawable/ic_baseline_mic_off_24"
         android:layout_marginBottom="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -286,9 +301,9 @@
     <ImageView
         android:id="@+id/speakerPhoneButton"
         android:src="@drawable/ic_baseline_volume_up_24"
-        android:padding="@dimen/medium_spacing"
-        android:layout_width="@dimen/large_button_height"
-        android:layout_height="@dimen/large_button_height"
+        android:padding="@dimen/small_spacing"
+        android:layout_width="@dimen/small_button_height"
+        android:layout_height="@dimen/medium_button_height"
         android:layout_marginStart="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/microphoneButton"
@@ -332,7 +347,7 @@
         android:id="@+id/controlGroup"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:constraint_referenced_ids="enableCameraButton,endCallButton,switchCameraButton,speakerPhoneButton,microphoneButton,callActionIconBackgroundImageView"
+        app:constraint_referenced_ids="enableCameraButton,endCallButton,switchCameraButton,speakerPhoneButton,microphoneButton,callActionIconBackgroundImageView,bluetoothButton"
         />
 
     <androidx.constraintlayout.widget.Group
@@ -348,7 +363,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:constraint_referenced_ids="switchCameraButton,enableCameraButton,microphoneButton,speakerPhoneButton,acceptCallButton,declineCallButton,callActionIconBackgroundImageView"
+        app:constraint_referenced_ids="switchCameraButton,enableCameraButton,microphoneButton,speakerPhoneButton,acceptCallButton,declineCallButton,callActionIconBackgroundImageView,bluetoothButton"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -70,6 +70,7 @@
                 style="@style/ContainedIconButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:minHeight="56dp"
                 android:layout_gravity="end"
                 android:layout_marginEnd="20dp"
                 app:icon="@drawable/ic_paste_seed"

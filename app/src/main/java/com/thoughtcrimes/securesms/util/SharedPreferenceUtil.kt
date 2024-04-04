@@ -3,8 +3,6 @@ package com.thoughtcrimes.securesms.util
 import android.content.Context
 import android.content.SharedPreferences
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import com.beldex.libbchat.utilities.truncateIdForDisplay
-import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
 import com.thoughtcrimes.securesms.data.NodeInfo
 
 class SharedPreferenceUtil(
@@ -72,6 +70,10 @@ class SharedPreferenceUtil(
 
     fun getSavedPassword(): String? {
         return TextSecurePreferences.getMyPassword(context)
+    }
+
+    fun setPassword(pinCode: String) {
+        TextSecurePreferences.setMyPassword(context, pinCode)
     }
 
 }

@@ -19,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PinCodeViewModel @Inject constructor(
     private val resourceProvider: ResourceProvider,
-    sharedPreferenceUtil: SharedPreferenceUtil,
+    private val sharedPreferenceUtil: SharedPreferenceUtil,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
@@ -151,6 +151,7 @@ class PinCodeViewModel @Inject constructor(
                                     _errorMessage.emit(resourceProvider.getString(R.string.password_does_not_match))
                                 }
                             } else {
+                                sharedPreferenceUtil.setPassword(newPin)
                                 viewModelScope.launch {
                                     val message = if (action == PinCodeAction.CreatePinCode.action) {
                                         resourceProvider.getString(R.string.pincode_created)

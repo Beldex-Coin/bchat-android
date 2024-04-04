@@ -1,4 +1,5 @@
 package com.thoughtcrimes.securesms.seed
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
@@ -12,6 +13,8 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import com.beldex.libbchat.utilities.SSKEnvironment
 import com.beldex.libbchat.utilities.TextSecurePreferences
@@ -21,12 +24,14 @@ import com.thoughtcrimes.securesms.BaseActionBarActivity
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
 import com.thoughtcrimes.securesms.data.NetworkNodes
 import com.thoughtcrimes.securesms.data.NodeInfo
+import com.thoughtcrimes.securesms.home.HomeActivity
 import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
 import com.thoughtcrimes.securesms.model.NetworkType
 import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.model.WalletManager
 import com.thoughtcrimes.securesms.onboarding.AppLockActivity
-import com.thoughtcrimes.securesms.onboarding.CreatePasswordActivity
+import com.thoughtcrimes.securesms.onboarding.ui.PinCodeAction
+import com.thoughtcrimes.securesms.service.KeyCachingService
 import com.thoughtcrimes.securesms.util.BChatThreadPoolExecutor
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.NodePinger
@@ -82,7 +87,7 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityRecoveryGetSeedDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setUpActionBarBchatLogo("Restore from Seed", false)
+        setUpActionBarBchatLogo(getString(R.string.restore_from_seed), false)
 
         dates["2019-03"] = 21164
         dates["2019-04"] = 42675
@@ -250,6 +255,27 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         }
     }
 
+    private val pinCodeLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            TextSecurePreferences.setCopiedSeed(this,true)
+            //New Line AirDrop
+            TextSecurePreferences.setAirdropAnimationStatus(this,true)
+
+            TextSecurePreferences.setScreenLockEnabled(this, true)
+            /*Hales63*/
+
+            TextSecurePreferences.setScreenLockTimeout(this, 950400)
+            TextSecurePreferences.setHasSeenWelcomeScreen(this, true)
+            val intent1 = Intent(this, KeyCachingService::class.java)
+            intent1.action = KeyCachingService.LOCK_TOGGLED_EVENT
+            this.startService(intent1)
+            val intent = Intent(this, HomeActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            push(intent)
+            finish()
+        }
+    }
+
     private fun register() {
         val displayName = binding.restoreSeedWalletName.text.toString().trim()
         val restoreHeight = binding.restoreSeedWalletRestoreHeight.text.toString()
@@ -306,10 +332,10 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
        /* TextSecurePreferences.setRestorationTime(this, 0)
         TextSecurePreferences.setHasViewedSeed(this, false)
 */
-        val intent = Intent(this, CreatePasswordActivity::class.java)
-        intent.putExtra("callPage",2)
-        push(intent)
-        finish()
+        val intent = Intent(Intent.ACTION_VIEW, "onboarding://manage_pin?finish=true&action=${PinCodeAction.CreatePinCode.action}".toUri())
+        pinCodeLauncher.launch(intent)
+//        val intent = Intent(this, CreatePasswordActivity::class.java)
+//        intent.putExtra("callPage",2)
 
         //Old Code
        /* val keyPairGenerationResult = KeyPairUtilities.generate()

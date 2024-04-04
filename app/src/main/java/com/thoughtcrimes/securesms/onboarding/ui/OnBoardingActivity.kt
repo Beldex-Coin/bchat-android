@@ -183,7 +183,12 @@ fun OnBoardingNavHost(
                     stringResource(R.string.create_password),
                 wrapInCard = false,
                 onBackClick = {
-                    navController.navigateUp()
+                    if (finish) {
+                        (context as Activity).apply {
+                            finish()
+                        }
+                    } else
+                        navController.navigateUp()
                 }
             ) {
                 PinCodeScreen(

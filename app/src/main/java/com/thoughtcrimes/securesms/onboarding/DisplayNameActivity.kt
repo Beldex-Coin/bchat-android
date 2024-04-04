@@ -5,29 +5,32 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityDisplayNameBinding
 import com.beldex.libbchat.utilities.SSKEnvironment.ProfileManagerProtocol
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.BaseActionBarActivity
-import com.thoughtcrimes.securesms.data.DefaultNodes
 import com.thoughtcrimes.securesms.data.NetworkNodes
 import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
 import com.thoughtcrimes.securesms.model.NetworkType
 import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.model.WalletManager
-import com.thoughtcrimes.securesms.util.*
+import com.thoughtcrimes.securesms.util.BChatThreadPoolExecutor
+import com.thoughtcrimes.securesms.util.Helper
+import com.thoughtcrimes.securesms.util.NodePinger
+import com.thoughtcrimes.securesms.util.push
+import com.thoughtcrimes.securesms.util.setUpActionBarBchatLogo
 import com.thoughtcrimes.securesms.wallet.CheckOnline
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ActivityDisplayNameBinding
 import timber.log.Timber
 import java.io.File
-import java.util.*
+import java.util.Collections
+import java.util.UUID
 import java.util.concurrent.Executor
 import java.util.regex.Pattern
 
@@ -53,7 +56,7 @@ class DisplayNameActivity : BaseActionBarActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setUpActionBarBchatLogo("Display Name",true)
+        setUpActionBarBchatLogo(getString(R.string.display_name),false)
         binding = ActivityDisplayNameBinding.inflate(layoutInflater)
         setContentView(binding.root)
         with(binding) {

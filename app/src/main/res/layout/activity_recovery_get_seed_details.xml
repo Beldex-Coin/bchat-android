@@ -97,7 +97,7 @@
             android:id="@+id/restoreSeedWalletRestoreDateCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible"
+            android:visibility="gone"
             app:cardBackgroundColor="@color/card_color"
             app:cardCornerRadius="10dp"
             app:layout_constraintLeft_toLeftOf="parent"

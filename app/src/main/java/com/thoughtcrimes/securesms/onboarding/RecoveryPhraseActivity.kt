@@ -8,8 +8,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityRecoveryPhraseBinding
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.crypto.MnemonicCodec
 import com.beldex.libsignal.utilities.hexEncodedPrivateKey
@@ -19,6 +17,8 @@ import com.thoughtcrimes.securesms.crypto.MnemonicUtilities
 import com.thoughtcrimes.securesms.home.HomeActivity
 import com.thoughtcrimes.securesms.util.push
 import com.thoughtcrimes.securesms.util.setUpActionBarBchatLogo
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ActivityRecoveryPhraseBinding
 
 
 class RecoveryPhraseActivity : BaseActionBarActivity() {
@@ -27,7 +27,7 @@ class RecoveryPhraseActivity : BaseActionBarActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setUpActionBarBchatLogo("Recovery Phrase", true)
+        setUpActionBarBchatLogo(getString(R.string.activity_settings_recovery_phrase_button_title), false)
         binding = ActivityRecoveryPhraseBinding.inflate(layoutInflater)
         setContentView(binding.root)
         with(binding)

@@ -1,5 +1,6 @@
 package com.thoughtcrimes.securesms.onboarding
 
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -16,14 +17,17 @@ import android.text.style.StyleSpan
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import com.goterl.lazysodium.utils.KeyPair
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityRegisterBinding
+import androidx.core.net.toUri
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.crypto.MnemonicCodec
 import com.beldex.libsignal.crypto.ecc.ECKeyPair
-import com.beldex.libsignal.utilities.*
+import com.beldex.libsignal.utilities.Hex
+import com.beldex.libsignal.utilities.KeyHelper
+import com.beldex.libsignal.utilities.hexEncodedPrivateKey
+import com.beldex.libsignal.utilities.hexEncodedPublicKey
+import com.goterl.lazysodium.utils.KeyPair
 import com.thoughtcrimes.securesms.BaseActionBarActivity
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
 import com.thoughtcrimes.securesms.crypto.KeyPairUtilities
@@ -31,9 +35,13 @@ import com.thoughtcrimes.securesms.crypto.MnemonicUtilities
 import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
 import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.model.WalletManager
+import com.thoughtcrimes.securesms.onboarding.ui.PinCodeAction
+import com.thoughtcrimes.securesms.service.KeyCachingService
 import com.thoughtcrimes.securesms.util.BChatThreadPoolExecutor
 import com.thoughtcrimes.securesms.util.push
 import com.thoughtcrimes.securesms.util.setUpActionBarBchatLogo
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ActivityRegisterBinding
 import java.util.concurrent.Executor
 
 class RegisterActivity : BaseActionBarActivity() {
@@ -64,7 +72,7 @@ class RegisterActivity : BaseActionBarActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setUpActionBarBchatLogo("Register", true)
+        setUpActionBarBchatLogo(getString(R.string.register), false)
 
         TextSecurePreferences.apply {
             setHasViewedSeed(this@RegisterActivity, false)
@@ -383,6 +391,24 @@ class RegisterActivity : BaseActionBarActivity() {
     }
 // endregion
 
+    private val pinCodeLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            //New Line AirDrop
+            TextSecurePreferences.setAirdropAnimationStatus(this,true)
+
+            TextSecurePreferences.setScreenLockEnabled(this, true)
+            TextSecurePreferences.setScreenLockTimeout(this, 950400)
+            //New Line
+            TextSecurePreferences.setHasSeenWelcomeScreen(this, true)
+            val intent1 = Intent(this, KeyCachingService::class.java)
+            intent1.action = KeyCachingService.LOCK_TOGGLED_EVENT
+            this.startService(intent1)
+            val intent = Intent(this, RecoveryPhraseActivity::class.java)
+            push(intent)
+            finish()
+        }
+    }
+
     // region Interaction
     private fun register() {
         //Important
@@ -394,9 +420,11 @@ class RegisterActivity : BaseActionBarActivity() {
         TextSecurePreferences.setLocalNumber(this, userHexEncodedPublicKey)
         TextSecurePreferences.setRestorationTime(this, 0)
         TextSecurePreferences.setHasViewedSeed(this, false)
-        val intent = Intent(this, CreatePasswordActivity::class.java)
-        intent.putExtra("callPage", 1)
-        push(intent)
+//        val intent = Intent(this, CreatePasswordActivity::class.java)
+//        intent.putExtra("callPage", 1)
+//        push(intent)
+        val intent = Intent(Intent.ACTION_VIEW, "onboarding://manage_pin?finish=true&action=${PinCodeAction.CreatePinCode.action}".toUri())
+        pinCodeLauncher.launch(intent)
         //       finish()
     }
 

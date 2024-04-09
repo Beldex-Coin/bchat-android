@@ -922,7 +922,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         }
     }
 
-    fun pingSelectedNode() {
+    private fun pingSelectedNode() {
         val pingSelected = 0
         val findBest = 1
         AsyncFindBestNode(pingSelected, findBest).execute<Int>(pingSelected)
@@ -1028,7 +1028,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
 
         override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
-            pingSelectedNodes()
+            pingSelectedNode()
         }
     }
 

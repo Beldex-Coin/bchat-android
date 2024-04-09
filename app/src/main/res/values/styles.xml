@@ -805,4 +805,10 @@
         <item name="android:gravity">center</item>
     </style>
 
+    <style name="SpinnerStyle" parent="Widget.AppCompat.Spinner">
+            <item name="android:background">@drawable/alert_dialog_shape</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:popupBackground">@color/card_color</item>
+    </style>
+
 </resources>

@@ -1,5 +1,7 @@
 package com.thoughtcrimes.securesms.webrtc
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.thoughtcrimes.securesms.webrtc.audio.SignalAudioManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -47,6 +49,12 @@ public class CallViewModel @Inject constructor(private val callManager: CallMana
 
     private var _isSpeaker: Boolean = false
     private var _isBluetooth: Boolean = false
+    private var _bluetoothConnectionState = MutableLiveData<Boolean>()
+    val bluetoothConnectionState: LiveData<Boolean> = _bluetoothConnectionState
+
+    fun setBooleanValue(value: Boolean){
+        _bluetoothConnectionState.value = value
+    }
     val isSpeaker: Boolean
         get() = _isSpeaker
     val isBluetooth: Boolean
@@ -62,7 +70,7 @@ public class CallViewModel @Inject constructor(private val callManager: CallMana
                 .onEach {
                     _isBluetooth = it.selectedDevice == SignalAudioManager.AudioDevice.BLUETOOTH
                 }
-    val bluetoothConnectionStatus
+    var bluetoothConnectionStatus = false
         get() = callManager.getBluetoothConnectionStatus()
 
     val localAudioEnabledState

@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Color.green
 import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
@@ -13,9 +12,11 @@ import android.os.Handler
 import android.os.Looper
 import android.view.*
 import android.view.animation.AnimationUtils
+import android.widget.AdapterView
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.beldex.libbchat.avatars.ProfileContactPhoto
@@ -32,9 +33,9 @@ import com.thoughtcrimes.securesms.util.AvatarPlaceholderGenerator
 import com.thoughtcrimes.securesms.webrtc.AudioManagerCommand
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
 import com.thoughtcrimes.securesms.webrtc.CallViewModel.State.*
+import com.thoughtcrimes.securesms.webrtc.audio.SignalAudioManager.AudioDevice.BLUETOOTH
 import com.thoughtcrimes.securesms.webrtc.audio.SignalAudioManager.AudioDevice.EARPIECE
 import com.thoughtcrimes.securesms.webrtc.audio.SignalAudioManager.AudioDevice.SPEAKER_PHONE
-import com.thoughtcrimes.securesms.webrtc.audio.SignalAudioManager.AudioDevice.BLUETOOTH
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityWebRtcCallBinding
@@ -57,6 +58,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
             const val BUSY_SIGNAL_DELAY_FINISH = 5500L
 
             private const val CALL_DURATION_FORMAT = "HH:mm:ss"
+            var isBlueToothConnect: Boolean = false
         }
 
         private val viewModel by viewModels<CallViewModel>()
@@ -74,6 +76,8 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
         //SteveJosephh21
         private var flipCamera:Boolean =true
         private var microPhoneEnable = false
+    private var spinnerAdapter: SpinnerIconAdapter? = null
+    private var defaultIcons: List<Int> = emptyList()
 
         /*private val rotationListener by lazy {
             object : OrientationEventListener(this) {
@@ -112,6 +116,35 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                 setShowWhenLocked(true)
                 setTurnScreenOn(true)
             }
+
+            defaultIcons = listOf(R.drawable.speaker_without_dropdown)
+            spinnerAdapter = SpinnerIconAdapter(this@WebRtcCallActivity, defaultIcons.toMutableList())
+            binding.spinnerIcons.adapter = spinnerAdapter
+            binding.spinnerIcons.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    when (position) {
+                        0 -> {
+                            if (viewModel.isSpeaker) {
+                                spinnerAdapter?.earPieceIconUpdate(true)
+                            } else {
+                                spinnerAdapter?.earPieceIconUpdate(false)
+                            }
+                            val command = AudioManagerCommand.SetUserDevice(if (viewModel.isSpeaker) EARPIECE else SPEAKER_PHONE)
+                            WebRtcCallService.sendAudioManagerCommand(this@WebRtcCallActivity, command)
+                        }
+
+                        1 -> {
+                            val command = AudioManagerCommand.SetUserDevice(if (viewModel.isBluetooth) EARPIECE else BLUETOOTH)
+                            WebRtcCallService.sendAudioManagerCommand(this@WebRtcCallActivity, command)
+                        }
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    // Do nothing
+                }
+            }
+
             window.addFlags(
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
                         or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
@@ -153,18 +186,6 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                 val audioEnabledIntent =
                     WebRtcCallService.microphoneIntent(this, !viewModel.microphoneEnabled)
                 startService(audioEnabledIntent)
-            }
-
-            binding.speakerPhoneButton.setOnClickListener {
-                val command =
-                    AudioManagerCommand.SetUserDevice(if (viewModel.isSpeaker) EARPIECE else SPEAKER_PHONE)
-                WebRtcCallService.sendAudioManagerCommand(this, command)
-            }
-
-            binding.bluetoothButton.setOnClickListener{
-                val command =
-                        AudioManagerCommand.SetUserDevice(if (viewModel.isBluetooth) EARPIECE else BLUETOOTH)
-                WebRtcCallService.sendAudioManagerCommand(this, command)
             }
 
             binding.acceptCallButton.setOnClickListener {
@@ -242,6 +263,13 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
 
         }
 
+    private fun updatedSpinnerAdapter(newDefaultIcons:List<Int>){
+        isBlueToothConnect = true
+        spinnerAdapter?.clear()
+        spinnerAdapter?.addAll(newDefaultIcons)
+        spinnerAdapter?.notifyDataSetChanged()
+        binding.spinnerIcons.invalidate()
+    }
         //SteveJosephh21
         private fun callFinishActivity(){
             binding.callDeclinedStatus.visibility = View.GONE
@@ -260,6 +288,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
             super.onDestroy()
             TextSecurePreferences.setCallisActive(this,false)
             TextSecurePreferences.setMuteVide(this, false)
+            viewModel.setBooleanValue(false)
             hangupReceiver?.let { receiver ->
                 LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
             }
@@ -275,8 +304,6 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
             with (binding) {
                 val rotation = newRotation.toFloat()
                 remoteRecipient.rotation = rotation
-                speakerPhoneButton.rotation = rotation
-                bluetoothButton.rotation = rotation
                 microphoneButton.rotation = rotation
                 enableCameraButton.rotation = rotation
                 switchCameraButton.rotation = rotation
@@ -378,27 +405,11 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                     viewModel.audioDeviceState.collect { state ->
                         val speakerEnabled = state.selectedDevice == SPEAKER_PHONE
                         // change drawable background to enabled or not
-                        binding.speakerPhoneButton.isSelected = speakerEnabled
-                        //SteveJosephh21
-                        if(binding.speakerPhoneButton.isSelected){
-                            binding.speakerPhoneButton.setColorFilter(ContextCompat.getColor(this@WebRtcCallActivity,R.color.green))
-                        }
-                        else{
-                            binding.speakerPhoneButton.setColorFilter(ContextCompat.getColor(this@WebRtcCallActivity,R.color.text))
-                        }
                     }
                 }
                 launch {
                     viewModel.audioBluetoothDeviceState.collect{ state ->
                         val bluetoothEnabled = state.selectedDevice == BLUETOOTH
-                        binding.bluetoothButton.isSelected = bluetoothEnabled
-                        //SteveJosephh21
-                        if(binding.bluetoothButton.isSelected){
-                            binding.bluetoothButton.setColorFilter(ContextCompat.getColor(this@WebRtcCallActivity,R.color.green))
-                        }
-                        else{
-                            binding.bluetoothButton.setColorFilter(ContextCompat.getColor(this@WebRtcCallActivity,R.color.text))
-                        }
                     }
                 }
 
@@ -469,11 +480,25 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                         }
                     }
                 }
-
+                launch {
+                    viewModel.bluetoothConnectionState.observe(this@WebRtcCallActivity, Observer { newValue ->
+                        if (newValue) {
+                            defaultIcons = listOf(R.drawable.speaker_without_dropdown, R.drawable.bluetooth_without_dropdown)
+                            updatedSpinnerAdapter(defaultIcons)
+                        } else {
+                            defaultIcons = listOf(R.drawable.speaker_without_dropdown)
+                            updatedSpinnerAdapter(defaultIcons)
+                        }
+                    })
+                }
                 launch {
                     while (isActive) {
                         val startTime = viewModel.callStartTime
-                        binding.bluetoothButton.isVisible = viewModel.bluetoothConnectionStatus
+                        if(viewModel.bluetoothConnectionStatus){
+                        viewModel.setBooleanValue(viewModel.bluetoothConnectionStatus)
+                        }else{
+                            viewModel.setBooleanValue(viewModel.bluetoothConnectionStatus)
+                        }
                         if (startTime == -1L) {
                             binding.callTime.isVisible = false
                             //SteveJosephh21

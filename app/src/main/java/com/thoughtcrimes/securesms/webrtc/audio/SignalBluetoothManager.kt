@@ -275,6 +275,7 @@ class SignalBluetoothManager(
             if (profile == BluetoothProfile.HEADSET) {
                 handler.post {
                     if (state != State.UNINITIALIZED) {
+                        audioManager.bluetoothConnectionStatus = true
                         onServiceConnected(proxy as? BluetoothHeadset)
                     }
                 }
@@ -285,6 +286,7 @@ class SignalBluetoothManager(
             if (profile == BluetoothProfile.HEADSET) {
                 handler.post {
                     if (state != State.UNINITIALIZED) {
+                        audioManager.bluetoothConnectionStatus = false
                         onServiceDisconnected()
                     }
                 }

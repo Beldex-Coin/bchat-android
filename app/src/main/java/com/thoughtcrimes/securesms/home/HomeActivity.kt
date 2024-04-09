@@ -184,7 +184,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         LegacyStorageHelper.migrateWallets(this)
 
         if(intent.getBooleanExtra(SHORTCUT_LAUNCHER,false)){
-           //Shortcut launcher
+            //Shortcut launcher
             intent.removeExtra(SHORTCUT_LAUNCHER)
             val extras = Bundle()
             val address = intent.parcelable<Address>(ConversationFragmentV2.ADDRESS)
@@ -334,7 +334,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }
     }
 
-        override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         //New Line App Update
         if (requestCode == immediateAppUpdateRequestCode) {
@@ -483,9 +483,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             newFragment.arguments = extras
         }
         supportFragmentManager.beginTransaction()
-                .add(R.id.activity_home_frame_layout_container, newFragment)
-                .addToBackStack(stackName)
-                .commit()
+            .add(R.id.activity_home_frame_layout_container, newFragment)
+            .addToBackStack(stackName)
+            .commit()
     }
 
     private fun updateProfileButton(
@@ -840,8 +840,12 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         return favouriteNodes.toHashSet()
     }
 
-    override fun getOrPopulateFavourites(): MutableSet<NodeInfo> {
-        return viewModel.getOrPopulateFavourites()
+    override fun getOrPopulateFavourites(context: Context): MutableSet<NodeInfo> {
+        return viewModel.getOrPopulateFavourites(context)
+    }
+
+    override fun getOrPopulateFavouritesRemoteNodeList(context: Context): MutableSet<NodeInfo> {
+        return viewModel.getOrPopulateFavouritesRemoteNodeList(context)
     }
 
     override fun setFavouriteNodes(nodes: MutableCollection<NodeInfo>?) {
@@ -911,7 +915,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                         val streetHeight: Long = streetModeHeight
                         for (info in wallet.history.all) {
                             if ((info.isPending || info.blockheight >= streetHeight)
-                                /*&& !dismissedTransactions.contains(info.hash)*/
+                            /*&& !dismissedTransactions.contains(info.hash)*/
                             ) list.add(info)
                         }
                     }
@@ -1013,7 +1017,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                         currentFragment.onCreateTransactionFailed(errorText)
                     }
                 } else {
-                     if(currentFragment is ConversationFragmentV2){
+                    if(currentFragment is ConversationFragmentV2){
                         currentFragment.onTransactionCreated("txTag", pendingTransaction)
                     }else if(currentFragment is SendFragment){
                         currentFragment.onTransactionCreated("txTag", pendingTransaction)
@@ -1335,7 +1339,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }
     }
 
-     fun saveWallet() {
+    fun saveWallet() {
         if (mIsBound) { // no point in talking to unbound service
             var intent: Intent? = null
             if(intent==null) {
@@ -1543,7 +1547,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }
 
         override fun doInBackground(vararg params: Int?): NodeInfo? {
-            val favourites: Set<NodeInfo?> = orPopulateFavourites
+            val favourites: Set<NodeInfo?> = getOrPopulateFavourites(this@HomeActivity)
             var selectedNode: NodeInfo?
             if (params[0] == FIND_BEST) {
                 selectedNode = autoselect(favourites)

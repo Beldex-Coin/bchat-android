@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 
 import com.beldex.libbchat.utilities.TextSecurePreferences;
-import com.thoughtcrimes.securesms.data.DefaultNodes;
 import com.thoughtcrimes.securesms.data.NetworkNodes;
 import com.thoughtcrimes.securesms.data.Node;
 import com.thoughtcrimes.securesms.data.NodeInfo;
@@ -88,8 +87,8 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
         else if(id == android.R.id.home){
             onBackPressed();
         }
-            return super.onOptionsItemSelected(item);
-        }
+        return super.onOptionsItemSelected(item);
+    }
 
 
 
@@ -160,12 +159,18 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
     }
 
     public void pingSelectedNode() {
-        new AsyncFindBestNode().execute(AsyncFindBestNode.PING_SELECTED);
+        new AsyncFindBestNode(this).execute(AsyncFindBestNode.PING_SELECTED);
     }
 
     private class AsyncFindBestNode extends AsyncTask<Integer, Void, NodeInfo> {
         final static int PING_SELECTED = 0;
         final static int FIND_BEST = 1;
+
+        NodeActivity context;
+
+        public AsyncFindBestNode(NodeActivity nodeActivity) {
+            context = nodeActivity;
+        }
 
         @Override
         protected void onPreExecute() {
@@ -174,7 +179,7 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
 
         @Override
         protected NodeInfo doInBackground(Integer... params) {
-            Set<NodeInfo> favourites = getOrPopulateFavourites();
+            Set<NodeInfo> favourites = getOrPopulateFavourites(context);
             NodeInfo selectedNode;
             if (params[0] == FIND_BEST) {
                 selectedNode = autoselect(favourites);
@@ -208,7 +213,7 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
         }
 
         @Override
-        protected void onCancelled(NodeInfo result) { //TODO: cancel this on exit from fragment
+        protected void onCancelled(NodeInfo result) {
             Timber.d("cancelled with %s", result);
         }
     }
@@ -243,9 +248,9 @@ public class NodeActivity extends AppCompatActivity implements NodeFragment.List
     }
 
     @Override
-    public Set<NodeInfo> getOrPopulateFavourites() {
+    public Set<NodeInfo> getOrPopulateFavourites(Context context) {
         if (favouriteNodes.isEmpty()) {
-            for (String node : NetworkNodes.INSTANCE.getNodes()) {
+            for (String node : NetworkNodes.INSTANCE.getNodes(context)) {
                 NodeInfo nodeInfo = NodeInfo.fromString(node);
                 if (nodeInfo != null) {
                     nodeInfo.setFavourite(true);

@@ -1,9 +1,9 @@
 package com.thoughtcrimes.securesms.onboarding
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
@@ -13,7 +13,6 @@ import io.beldex.bchat.databinding.ActivityDisplayNameBinding
 import com.beldex.libbchat.utilities.SSKEnvironment.ProfileManagerProtocol
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.BaseActionBarActivity
-import com.thoughtcrimes.securesms.data.DefaultNodes
 import com.thoughtcrimes.securesms.data.NetworkNodes
 import com.thoughtcrimes.securesms.data.NodeInfo
 import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
@@ -83,9 +82,9 @@ class DisplayNameActivity : BaseActionBarActivity() {
         }
     }
 
-    fun getOrPopulateFavourites(): Set<NodeInfo?> {
+    fun getOrPopulateFavourites(context: Context): Set<NodeInfo?> {
         if (favouriteNodes.isEmpty()) {
-            for (node in NetworkNodes.getNodes()) {
+            for (node in NetworkNodes.getNodes(context)) {
                 val nodeInfo = NodeInfo.fromString(node)
                 if (nodeInfo != null) {
                     nodeInfo.isFavourite = true
@@ -163,7 +162,7 @@ class DisplayNameActivity : BaseActionBarActivity() {
         }
 
         override fun doInBackground(vararg params: Int?): NodeInfo? {
-            val favourites: Set<NodeInfo?> = displayNameActivity.getOrPopulateFavourites()
+            val favourites: Set<NodeInfo?> = displayNameActivity.getOrPopulateFavourites(displayNameActivity)
 
             var selectedNode: NodeInfo?
             if (params[0] == FIND_BEST) {
@@ -210,10 +209,10 @@ class DisplayNameActivity : BaseActionBarActivity() {
         if (node !== this.node) {
             if(!(node!=null && node.networkType !== WalletManager.getInstance()
                     .networkType)){
-            require(
-                !(node != null && node.networkType !== WalletManager.getInstance()
-                    .networkType)
-            ) { "network type does not match" }
+                require(
+                    !(node != null && node.networkType !== WalletManager.getInstance()
+                        .networkType)
+                ) { "network type does not match" }
             }
             this.node = node
             for (nodeInfo in favouriteNodes) {
@@ -274,9 +273,9 @@ class DisplayNameActivity : BaseActionBarActivity() {
         }
         if (!displayName.matches(namePattern.toRegex())) {
             return Toast.makeText(
-                    this,
-                    R.string.display_name_validation,
-                    Toast.LENGTH_SHORT
+                this,
+                R.string.display_name_validation,
+                Toast.LENGTH_SHORT
             ).show()
         }
         binding.registerButton.isEnabled = false
@@ -381,9 +380,9 @@ class DisplayNameActivity : BaseActionBarActivity() {
         getWalletFunction: GetWalletFunction
     ) {
         Timber.d("create Wallet","OK")
-/*
-            AsyncGetWallet(getWalletFunction,this)
-                .execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)*/
+        /*
+                    AsyncGetWallet(getWalletFunction,this)
+                        .execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)*/
     }
 
     interface WalletCreator {

@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -33,7 +34,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.google.android.material.textfield.TextInputLayout;
-import com.thoughtcrimes.securesms.data.DefaultNodes;
 import com.thoughtcrimes.securesms.data.NetworkNodes;
 import com.thoughtcrimes.securesms.data.Node;
 import com.thoughtcrimes.securesms.data.NodeInfo;
@@ -84,7 +84,7 @@ public class NodeFragment extends Fragment
 
         Set<NodeInfo> getFavouriteNodes();
 
-        Set<NodeInfo> getOrPopulateFavourites();
+        Set<NodeInfo> getOrPopulateFavourites(Context context);
 
         void setFavouriteNodes(Collection<NodeInfo> favouriteNodes);
 
@@ -153,8 +153,19 @@ public class NodeFragment extends Fragment
         Helper.hideKeyboard(getActivity());
 
         nodeList = new HashSet<>(activityCallback.getFavouriteNodes());
-        nodesAdapter.setNodes(nodeList);
-        refresh(AsyncFindNodes.PING); // start connection tests
+        if(nodeList.isEmpty()){
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    nodeList = new HashSet<>(activityCallback.getFavouriteNodes());
+                    nodesAdapter.setNodes(nodeList);
+                    refresh(AsyncFindNodes.PING);
+                }
+            }, 500);
+        }else {
+            nodesAdapter.setNodes(nodeList);
+            refresh(AsyncFindNodes.PING); // start connection tests
+        }
         return view;
     }
 
@@ -268,7 +279,7 @@ public class NodeFragment extends Fragment
         @Override
         protected Boolean doInBackground(Integer... params) {
             if (params[0] == RESTORE_DEFAULTS) { // true = restore defaults
-                for (String node : NetworkNodes.INSTANCE.getNodes()) {
+                for (String node : NetworkNodes.INSTANCE.getNodes(requireActivity().getApplicationContext())) {
                     NodeInfo nodeInfo = NodeInfo.fromString(node);
                     if (nodeInfo != null) {
                         nodeInfo.setFavourite(true);

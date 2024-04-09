@@ -66,7 +66,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
 
     fun setProgress(text: String?) {
         if(text==getString(R.string.reconnecting) || text == getString(R.string.status_wallet_loading) || text==getString(R.string.status_wallet_connecting)){
-           binding.syncStatusIcon.visibility=View.GONE
+            binding.syncStatusIcon.visibility=View.GONE
             binding.syncFailIcon.visibility = View.GONE
         }
         if(text==getString(R.string.reconnecting) || text == getString(R.string.status_wallet_loading) || text == getString(R.string.status_wallet_connecting)){
@@ -272,11 +272,11 @@ class WalletFragment : Fragment(),OnBackPressedListener {
             }catch (e: Exception){
                 Log.d("WalletFragment",e.toString())
             }
-           return true
+            return true
         }
 
         override fun onPostExecute(result: Boolean?) {
-             refreshBalance(wallet.isSynchronized)
+            refreshBalance(wallet.isSynchronized)
         }
     }
 
@@ -343,14 +343,14 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         binding = FragmentWalletBinding.inflate(inflater, container, false)
         (activity as HomeActivity).setSupportActionBar(binding.toolbar)
         //Get Selected Fiat Currency Price
-            if(TextSecurePreferences.getFiatCurrencyApiStatus(requireActivity())) {
-                TextSecurePreferences.callFiatCurrencyApi(requireActivity(),false)
-                callCurrencyConversionApi()
-            }else{
-                price = if(TextSecurePreferences.getCurrencyAmount(requireActivity())!=null){
-                    TextSecurePreferences.getCurrencyAmount(requireActivity())!!.toDouble()
-                }else{ 0.00}
-            }
+        if(TextSecurePreferences.getFiatCurrencyApiStatus(requireActivity())) {
+            TextSecurePreferences.callFiatCurrencyApi(requireActivity(),false)
+            callCurrencyConversionApi()
+        }else{
+            price = if(TextSecurePreferences.getCurrencyAmount(requireActivity())!=null){
+                TextSecurePreferences.getCurrencyAmount(requireActivity())!!.toDouble()
+            }else{ 0.00}
+        }
         binding.sendCardViewButton.isEnabled = false
         binding.sendCardViewButtonText.setTextColor(ContextCompat.getColor(requireActivity(),R.color.send_button_disable_color))
         binding.scanQrCodeImg.isEnabled = false
@@ -480,15 +480,15 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                                 getString(R.string.filter_applied),
                                 Toast.LENGTH_LONG
                             ).show()
-                             if(popupMenu.menu[1].isChecked && popupMenu.menu[2].isChecked){
-                                 filterTransactionsByDate(getDaysBetweenDates(Date(selectedStartDate),Date(selectedEndDate)),adapterItems)
-                             }else if(popupMenu.menu[1].isChecked){
-                                 filterTransactionsByDate(getDaysBetweenDates(Date(selectedStartDate),Date(selectedEndDate)),filterTempList(TransactionInfo.Direction.Direction_In, adapterItems))
-                             }else if(popupMenu.menu[2].isChecked){
-                                 filterTransactionsByDate(getDaysBetweenDates(Date(selectedStartDate),Date(selectedEndDate)),filterTempList(TransactionInfo.Direction.Direction_Out, adapterItems))
-                             }else{
-                                 filterTransactionsByDate(getDaysBetweenDates(Date(selectedStartDate),Date(selectedEndDate)),emptyList)
-                             }
+                            if(popupMenu.menu[1].isChecked && popupMenu.menu[2].isChecked){
+                                filterTransactionsByDate(getDaysBetweenDates(Date(selectedStartDate),Date(selectedEndDate)),adapterItems)
+                            }else if(popupMenu.menu[1].isChecked){
+                                filterTransactionsByDate(getDaysBetweenDates(Date(selectedStartDate),Date(selectedEndDate)),filterTempList(TransactionInfo.Direction.Direction_In, adapterItems))
+                            }else if(popupMenu.menu[2].isChecked){
+                                filterTransactionsByDate(getDaysBetweenDates(Date(selectedStartDate),Date(selectedEndDate)),filterTempList(TransactionInfo.Direction.Direction_Out, adapterItems))
+                            }else{
+                                filterTransactionsByDate(getDaysBetweenDates(Date(selectedStartDate),Date(selectedEndDate)),emptyList)
+                            }
                         })
                     dateRangePicker.show()
                     dateRangePicker.setBtnPositiveText("OK")
@@ -499,7 +499,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
             popupMenu.show()
         }
         binding.scanQrCodeImg.setOnClickListener {
-                onScanListener?.onWalletScan(view)
+            onScanListener?.onWalletScan(view)
         }
 
         binding.toolBarRescan.setOnClickListener {
@@ -637,7 +637,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                         )
                     )
                     binding.progressBar.indeterminateDrawable.setColorFilter(
-                            ContextCompat.getColor(requireActivity().applicationContext,R.color.green_color), PorterDuff.Mode.SRC_IN)
+                        ContextCompat.getColor(requireActivity().applicationContext,R.color.green_color), PorterDuff.Mode.SRC_IN)
                 } else {
                     syncingBlocks = 0
                     ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(false)
@@ -649,7 +649,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                         )
                     )
                     binding.progressBar.indeterminateDrawable.setColorFilter(
-                            ContextCompat.getColor(requireActivity().applicationContext,R.color.green_color), PorterDuff.Mode.SRC_IN)
+                        ContextCompat.getColor(requireActivity().applicationContext,R.color.green_color), PorterDuff.Mode.SRC_IN)
                     setProgress(-2)
                     binding.filterTransactionsIcon.isClickable =
                         true //default = adapter!!.itemCount > 0
@@ -669,22 +669,22 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                 sync = getString(R.string.status_wallet_connecting)
                 setProgress(101)
                 binding.syncStatus.setTextColor(
-                        ContextCompat.getColor(
-                                requireActivity().applicationContext,
-                                R.color.green_color
-                        )
+                    ContextCompat.getColor(
+                        requireActivity().applicationContext,
+                        R.color.green_color
+                    )
                 )
                 binding.progressBar.indeterminateDrawable.setColorFilter(
-                        ContextCompat.getColor(requireActivity().applicationContext, R.color.green_color), PorterDuff.Mode.SRC_IN)
+                    ContextCompat.getColor(requireActivity().applicationContext, R.color.green_color), PorterDuff.Mode.SRC_IN)
 
             } else {
                 binding.syncStatusIcon.visibility=View.GONE
                 binding.syncFailIcon.visibility=View.VISIBLE
                 binding.syncFailIcon.setOnClickListener {
                     if(CheckOnline.isOnline(requireActivity())){
-                            checkSyncFailInfo(requireActivity())
-                        }
+                        checkSyncFailInfo(requireActivity())
                     }
+                }
                 sync = getString(R.string.failed_connected_to_the_node)
                 setProgress(101)
                 binding.syncStatus.setTextColor(
@@ -694,7 +694,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                     )
                 )
                 binding.progressBar.indeterminateDrawable.setColorFilter(
-                        ContextCompat.getColor(requireActivity().applicationContext,R.color.red),
+                    ContextCompat.getColor(requireActivity().applicationContext,R.color.red),
                     android.graphics.PorterDuff.Mode.SRC_IN)
             }
             setProgress(sync)
@@ -710,8 +710,8 @@ class WalletFragment : Fragment(),OnBackPressedListener {
             )
             setProgress(101)
             binding.progressBar.indeterminateDrawable.setColorFilter(
-                    ContextCompat.getColor(requireActivity().applicationContext,R.color.red),
-                    android.graphics.PorterDuff.Mode.SRC_IN)
+                ContextCompat.getColor(requireActivity().applicationContext,R.color.red),
+                android.graphics.PorterDuff.Mode.SRC_IN)
             binding.syncStatusIcon.visibility=View.GONE
             binding.syncFailIcon.visibility=View.GONE
         }
@@ -755,13 +755,13 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         setProgress(getString(R.string.status_wallet_connecting))
         setProgress(101)
         binding.syncStatus.setTextColor(
-                ContextCompat.getColor(
-                        requireActivity().applicationContext,
-                        R.color.green_color
-                )
+            ContextCompat.getColor(
+                requireActivity().applicationContext,
+                R.color.green_color
+            )
         )
         binding.progressBar.indeterminateDrawable.setColorFilter(
-                ContextCompat.getColor(requireActivity().applicationContext,R.color.green_color), PorterDuff.Mode.SRC_IN)
+            ContextCompat.getColor(requireActivity().applicationContext,R.color.green_color), PorterDuff.Mode.SRC_IN)
     }
 
     private fun refreshBalance(synchronized: Boolean) {
@@ -928,7 +928,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
 
         //Node Connection
         fun getFavouriteNodes(): MutableSet<NodeInfo>
-        fun getOrPopulateFavourites(): MutableSet<NodeInfo>
+        fun getOrPopulateFavourites(context: Context): MutableSet<NodeInfo>
         fun getNode(): NodeInfo?
         fun setNode(node: NodeInfo?)
 

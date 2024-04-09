@@ -68,6 +68,7 @@ import com.thoughtcrimes.securesms.preferences.ShowQRCodeWithScanQRCodeActivity
 import com.thoughtcrimes.securesms.seed.SeedPermissionActivity
 import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.util.*
+import com.thoughtcrimes.securesms.util.nodelistasync.NodeListConstants
 import com.thoughtcrimes.securesms.wallet.CheckOnline
 import com.thoughtcrimes.securesms.wallet.WalletFragment
 import com.thoughtcrimes.securesms.wallet.info.WalletInfoActivity
@@ -80,13 +81,21 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.FragmentHomeBinding
-import io.beldex.bchat.databinding.ViewMessageRequestBannerBinding
 import kotlinx.coroutines.*
 import org.apache.commons.lang3.time.DurationFormatUtils
+import org.apache.http.util.ByteArrayBuffer
 import timber.log.Timber
+import java.io.BufferedInputStream
+import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
+import java.net.HttpURLConnection
+import java.net.URL
 import java.util.*
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class HomeFragment : BaseFragment(),ConversationClickListener,
@@ -401,7 +410,6 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         LocalBroadcastManager.getInstance(requireActivity().applicationContext)
             .registerReceiver(broadcastReceiver, IntentFilter("blockedContactsChanged"))
         activityCallback?.callLifeCycleScope(binding.recyclerView,binding.globalSearchInputLayout, mmsSmsDatabase,globalSearchAdapter,publicKey,binding.profileButton.root,binding.drawerProfileName,binding.drawerProfileIcon.root)
-
     }
 
 
@@ -554,7 +562,8 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         super.onResume()
         setupCallActionBar()
         if(TextSecurePreferences.isWalletActive(requireContext())) {
-            pingSelectedNode()
+            val async = DownloadNodeListFileInHomeScreenAsyncTask(requireActivity().applicationContext)
+            async.execute<String>(NodeListConstants.downloadNodeListUrl)
         }
         ApplicationContext.getInstance(requireActivity().applicationContext).messageNotifier.setHomeScreenVisible(false)
         if (TextSecurePreferences.getLocalNumber(requireActivity().applicationContext) == null) {
@@ -898,7 +907,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         fun sendMessageToSupport()
         //Node Connection
         fun getFavouriteNodes(): MutableSet<NodeInfo>
-        fun getOrPopulateFavourites(): MutableSet<NodeInfo>
+        fun getOrPopulateFavouritesRemoteNodeList(context: Context): MutableSet<NodeInfo>
         fun getNode(): NodeInfo?
         fun setNode(node: NodeInfo?)
 
@@ -913,7 +922,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         }
     }
 
-    private fun pingSelectedNode() {
+    fun pingSelectedNode() {
         val pingSelected = 0
         val findBest = 1
         AsyncFindBestNode(pingSelected, findBest).execute<Int>(pingSelected)
@@ -923,7 +932,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         AsyncTaskCoroutine<Int?, NodeInfo?>() {
 
         override fun doInBackground(vararg params: Int?): NodeInfo? {
-            val favourites: Set<NodeInfo?> = activityCallback!!.getOrPopulateFavourites()
+            val favourites: Set<NodeInfo?> = activityCallback!!.getOrPopulateFavouritesRemoteNodeList(requireActivity().applicationContext)
             var selectedNode: NodeInfo?
             if (params[0] == findBest) {
                 selectedNode = autoselect(favourites)
@@ -958,7 +967,69 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         override fun onPostExecute(result: NodeInfo?) {
             Log.d("Beldex", "daemon connected to  ${result?.host}")
         }
-        
+
+    }
+
+    inner class DownloadNodeListFileInHomeScreenAsyncTask(private val mContext: Context) :
+        AsyncTaskCoroutine<String?, String?>() {
+        override fun onPreExecute() {
+            super.onPreExecute()
+        }
+
+        override fun doInBackground(vararg downloadUrl: String?): String? {
+            var input: InputStream? = null
+            var output: OutputStream? = null
+            var connection: HttpURLConnection? = null
+            try {
+                val url = URL(downloadUrl[0])
+                connection = url.openConnection() as HttpURLConnection
+                connection.connect()
+
+                // expect HTTP 200 OK, so we don't mistakenly save error report
+                // instead of the file
+                if (connection.responseCode != HttpURLConnection.HTTP_OK) {
+                    android.util.Log.d("Error","Server returned HTTP  + ${connection.responseCode} \n +${connection.responseMessage}")
+                    return ("Server returned HTTP " + connection.responseCode
+                            + " " + connection.responseMessage)
+                }
+
+                // download the file
+                input = connection.inputStream
+
+                val file = File(mContext.filesDir,"/${NodeListConstants.downloadNodeListFileName}")
+                if(file.exists()){
+                    file.delete()
+                }
+                output = FileOutputStream(mContext.filesDir.toString() + "/${NodeListConstants.downloadNodeListFileName}")
+                val data = ByteArray(4096)
+                var total: Long = 0
+                var count: Int
+                while (input.read(data).also { count = it } != -1) {
+                    // allow canceling with back button
+                    if (NonCancellable.isCancelled) {
+                        input.close()
+                        return null
+                    }
+                    total += count.toLong()
+                    output.write(data, 0, count)
+                }
+            } catch (e: Exception) {
+                return e.toString()
+            } finally {
+                try {
+                    output?.close()
+                    input?.close()
+                } catch (ignored: IOException) {
+                }
+                connection?.disconnect()
+            }
+            return null
+        }
+
+        override fun onPostExecute(result: String?) {
+            super.onPostExecute(result)
+            pingSelectedNodes()
+        }
     }
 
     fun autoselect(nodes: Set<NodeInfo?>): NodeInfo? {

@@ -71,10 +71,27 @@ class HomeViewModel @Inject constructor(
         _favouritesNodes.value = nodes.toHashSet()
     }
 
-    fun getOrPopulateFavourites(): MutableSet<NodeInfo> {
+    fun getOrPopulateFavourites(context: Context): MutableSet<NodeInfo> {
         val newSet = favouritesNodes.value ?: hashSetOf()
         if (newSet.isEmpty()) {
-            for (node in NetworkNodes.getNodes()) {
+            for (node in NetworkNodes.getNodes(context)) {
+                val nodeInfo = NodeInfo.fromString(node)
+                if (nodeInfo != null) {
+                    nodeInfo.isFavourite = true
+                    newSet.add(nodeInfo)
+                }
+            }
+            sharedPreferenceUtil.saveFavourites(newSet)
+            _favouritesNodes.value = newSet
+        }
+        return newSet
+    }
+
+    fun getOrPopulateFavouritesRemoteNodeList(context: Context): MutableSet<NodeInfo> {
+        val newSet = favouritesNodes.value ?: hashSetOf()
+        newSet.clear()
+        if (newSet.isEmpty()) {
+            for (node in NetworkNodes.getNodes(context)) {
                 val nodeInfo = NodeInfo.fromString(node)
                 if (nodeInfo != null) {
                     nodeInfo.isFavourite = true

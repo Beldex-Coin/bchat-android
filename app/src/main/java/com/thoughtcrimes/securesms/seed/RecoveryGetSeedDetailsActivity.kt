@@ -1,5 +1,6 @@
 package com.thoughtcrimes.securesms.seed
 import android.app.DatePickerDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -269,9 +270,9 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
 
         if (!displayName.matches(namePattern.toRegex())) {
             return Toast.makeText(
-                    this,
-                    R.string.display_name_validation,
-                    Toast.LENGTH_SHORT
+                this,
+                R.string.display_name_validation,
+                Toast.LENGTH_SHORT
             ).show()
         }
 
@@ -309,20 +310,20 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
     // region Updating
     private fun updateKeyPair() {
         /*Hales63*/
-       /* TextSecurePreferences.setRestorationTime(this, 0)
-        TextSecurePreferences.setHasViewedSeed(this, false)
-*/
+        /* TextSecurePreferences.setRestorationTime(this, 0)
+         TextSecurePreferences.setHasViewedSeed(this, false)
+ */
         val intent = Intent(this, CreatePasswordActivity::class.java)
         intent.putExtra("callPage",2)
         push(intent)
         finish()
 
         //Old Code
-       /* val keyPairGenerationResult = KeyPairUtilities.generate()
-        seed = keyPairGenerationResult.seed
-        ed25519KeyPair = keyPairGenerationResult.ed25519KeyPair
-        x25519KeyPair = keyPairGenerationResult.x25519KeyPair
-        callAppLockActivity(seed!!,ed25519KeyPair!!,x25519KeyPair!!)*/
+        /* val keyPairGenerationResult = KeyPairUtilities.generate()
+         seed = keyPairGenerationResult.seed
+         ed25519KeyPair = keyPairGenerationResult.ed25519KeyPair
+         x25519KeyPair = keyPairGenerationResult.x25519KeyPair
+         callAppLockActivity(seed!!,ed25519KeyPair!!,x25519KeyPair!!)*/
     }
 
     // region Interaction
@@ -351,9 +352,9 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         pingSelectedNode()
     }
 
-    fun getOrPopulateFavourites(): Set<NodeInfo?> {
+    fun getOrPopulateFavourites(context:Context): Set<NodeInfo?> {
         if (favouriteNodes.isEmpty()) {
-            for (node in NetworkNodes.getNodes()) {
+            for (node in NetworkNodes.getNodes(context)) {
                 val nodeInfo = NodeInfo.fromString(node)
                 if (nodeInfo != null) {
                     nodeInfo.isFavourite = true
@@ -431,7 +432,7 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         }
 
         override fun doInBackground(vararg params: Int?): NodeInfo? {
-            val favourites: Set<NodeInfo?> = recoveryGetSeedDetailsActivity.getOrPopulateFavourites()
+            val favourites: Set<NodeInfo?> = recoveryGetSeedDetailsActivity.getOrPopulateFavourites(recoveryGetSeedDetailsActivity)
 
             var selectedNode: NodeInfo?
             if (params[0] == FIND_BEST) {

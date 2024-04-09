@@ -93,6 +93,7 @@ import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.FragmentHomeBinding
 import kotlinx.coroutines.*
@@ -333,6 +334,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         // Set up toolbar buttons
         binding.profileButton.root.glide = glide
 
+        binding.bchatVersion.text = "BChat V${BuildConfig.VERSION_NAME}"
         //New Line
         // Setup Recyclerview's Layout
         binding.navigationRv.layoutManager = LinearLayoutManager(requireActivity().applicationContext)
@@ -1382,6 +1384,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
             extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
             extras.putParcelable(ConversationFragmentV2.URI,result.data!!.parcelable(ConversationFragmentV2.URI))
             extras.putString(ConversationFragmentV2.TYPE,result.data!!.getStringExtra(ConversationFragmentV2.TYPE))
+            extras.putString(ConversationFragmentV2.BNS_NAME,result.data!!.getStringExtra(ConversationFragmentV2.BNS_NAME))
             replaceFragment(ConversationFragmentV2(), null, extras)
         }
     }

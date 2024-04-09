@@ -83,6 +83,7 @@ import com.beldex.libbchat.messaging.sending_receiving.quotes.QuoteModel
 import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.MediaTypes
+import com.beldex.libbchat.utilities.SSKEnvironment
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.concurrent.SimpleTask
 import com.beldex.libbchat.utilities.isScrolledToBottom
@@ -148,7 +149,6 @@ import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
 import com.thoughtcrimes.securesms.model.PendingTransaction
 import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.permissions.Permissions
-import com.thoughtcrimes.securesms.preferences.ChatSettingsActivity
 import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
 import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.util.ActivityDispatcher
@@ -166,6 +166,7 @@ import com.thoughtcrimes.securesms.util.slidetoact.SlideToActView.OnSlideComplet
 import com.thoughtcrimes.securesms.util.toPx
 import com.thoughtcrimes.securesms.wallet.CheckOnline
 import com.thoughtcrimes.securesms.wallet.OnBackPressedListener
+import com.thoughtcrimes.securesms.wallet.send.SendFailedDialog
 import com.thoughtcrimes.securesms.wallet.send.interfaces.SendConfirm
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
@@ -398,6 +399,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         const val SCROLL_MESSAGE_ID = "scroll_message_id"
         const val SCROLL_MESSAGE_AUTHOR = "scroll_message_author"
         const val HEX_ENCODED_PUBLIC_KEY="hex_encode_public_key"
+        const val BNS_NAME ="bns_name"
         //Shortcut launcher
         const val SHORTCUT_LAUNCHER ="shortcut_launcher"
         //SetDataAndType
@@ -453,6 +455,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private var networkChangedReceiver: NetworkChangeReceiver? = null
     private var isNetworkAvailable = true
     private var callViewModel : CallViewModel? =null
+    private var bns_Name : String? = null
 
 
     interface Listener {
@@ -1323,10 +1326,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 when {
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> {
                         when {
-                            valueOfWallet == "--" -> {
-                                binding.tooltip.text = getString(R.string.failed_to_connect)
-                                failedToConnectToolTipStyle()
-                            }
                             valueOfWallet != "100%" -> {
                                 binding.tooltip.text = Html.fromHtml("<p>Wallet Synchronizing <b> $valueOfWallet </b> </p>", Html.FROM_HTML_MODE_COMPACT)
                                 tooltipStyle()
@@ -1339,10 +1338,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     }
                     else -> {
                         when {
-                            valueOfWallet == "--" -> {
-                                binding.tooltip.text = getString(R.string.failed_to_connect)
-                                failedToConnectToolTipStyle()
-                            }
                             valueOfWallet != "100%" -> {
                                 binding.tooltip.text = Html.fromHtml("<p> Wallet Synchronizing <b> $valueOfWallet</b> </p>")
                                 tooltipStyle()
@@ -1968,7 +1963,12 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun setUpToolBar() {
+        val profileManager = SSKEnvironment.shared.profileManager
         val recipient = viewModel.recipient.value ?: return
+        val bnsName = requireArguments().getString(BNS_NAME)
+        if (bnsName != null && adapter.cursor?.count == 0) {
+            profileManager.setName(requireContext(), recipient, bnsName)
+        }
         binding.conversationTitleView.text = when {
             recipient.isLocalNumber -> getString(R.string.note_to_self)
             else -> recipient.toShortString()
@@ -2295,11 +2295,47 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     Manifest.permission.READ_PHONE_STATE
                 ) == PackageManager.PERMISSION_GRANTED
             ) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    tm.registerTelephonyCallback(
-                        requireActivity().applicationContext.mainExecutor,
-                        object : TelephonyCallback(), TelephonyCallback.CallStateListener {
-                            override fun onCallStateChanged(state: Int) {
+                val simState: Int = tm.simState
+                if (simState == TelephonyManager.SIM_STATE_READY) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        tm.registerTelephonyCallback(
+                            requireActivity().applicationContext.mainExecutor,
+                            object : TelephonyCallback(), TelephonyCallback.CallStateListener {
+                                override fun onCallStateChanged(state: Int) {
+                                    when (state) {
+                                        TelephonyManager.CALL_STATE_RINGING -> {
+                                            Toast.makeText(
+                                                requireActivity().applicationContext,
+                                                getString(R.string.call_alert),
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+
+                                        TelephonyManager.CALL_STATE_OFFHOOK -> {
+                                            Toast.makeText(
+                                                requireActivity().applicationContext,
+                                                getString(R.string.call_alert),
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+
+                                        }
+
+                                        TelephonyManager.CALL_STATE_IDLE -> {
+                                            viewModel.recipient.value?.let { recipient ->
+                                                call(
+                                                    requireActivity().applicationContext,
+                                                    recipient
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            })
+
+                    } else {
+                        tm.listen(object : PhoneStateListener() {
+                            override fun onCallStateChanged(state: Int, phoneNumber: String?) {
+                                super. onCallStateChanged(state, phoneNumber)
                                 when (state) {
                                     TelephonyManager.CALL_STATE_RINGING -> {
                                         Toast.makeText(
@@ -2308,6 +2344,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                                             Toast.LENGTH_SHORT
                                         ).show()
                                     }
+
                                     TelephonyManager.CALL_STATE_OFFHOOK -> {
                                         Toast.makeText(
                                             requireActivity().applicationContext,
@@ -2316,43 +2353,20 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                                         ).show()
 
                                     }
+
                                     TelephonyManager.CALL_STATE_IDLE -> {
                                         viewModel.recipient.value?.let { recipient ->
-                                            call(requireActivity().applicationContext, recipient)
+                                            call(requireActivity(), recipient)
                                         }
                                     }
                                 }
                             }
-                        })
-
+                        }, PhoneStateListener.LISTEN_CALL_STATE)
+                    }
                 } else {
-                    tm.listen(object : PhoneStateListener() {
-                        override fun onCallStateChanged(state: Int, phoneNumber: String?) {
-                            super.onCallStateChanged(state, phoneNumber)
-                            when (state) {
-                                TelephonyManager.CALL_STATE_RINGING -> {
-                                    Toast.makeText(
-                                        requireActivity().applicationContext,
-                                        getString(R.string.call_alert),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                                TelephonyManager.CALL_STATE_OFFHOOK -> {
-                                    Toast.makeText(
-                                        requireActivity().applicationContext,
-                                        getString(R.string.call_alert),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-
-                                }
-                                TelephonyManager.CALL_STATE_IDLE -> {
-                                    viewModel.recipient.value?.let { recipient ->
-                                        call(requireActivity(), recipient)
-                                    }
-                                }
-                            }
-                        }
-                    }, PhoneStateListener.LISTEN_CALL_STATE)
+                    viewModel.recipient.value?.let { recipient ->
+                        call(requireActivity(), recipient)
+                    }
                 }
             } else {
                 Timber.tag("Beldex").d("Call state issue called else")
@@ -3087,15 +3101,21 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
         }
         //sendButtonEnabled()
-        showAlert(getString(R.string.send_create_tx_error_title), errorText!!)
+        //showAlert(getString(R.string.send_create_tx_error_title), errorText!!)
+        SendFailedDialog(errorText!!).show(requireActivity().supportFragmentManager, "")
+        transactionInProgress = false
     }
 
     override fun createTransactionFailed(errorText: String?) {
         hideProgress()
         if(getString(R.string.invalid_destination_address) == errorText!!){
-            showAlert(getString(R.string.send_create_tx_error_title), getString(R.string.receiver_address_is_not_available))
+           //showAlert(getString(R.string.send_create_tx_error_title), getString(R.string.receiver_address_is_not_available))
+            SendFailedDialog(getString(R.string.receiver_address_is_not_available)).show(requireActivity().supportFragmentManager,"")
+            transactionInProgress = false
         }else{
-            showAlert(getString(R.string.send_create_tx_error_title), errorText)
+            //showAlert(getString(R.string.send_create_tx_error_title), errorText)
+            SendFailedDialog(errorText).show(requireActivity().supportFragmentManager,"")
+            transactionInProgress = false
         }
     }
 

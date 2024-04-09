@@ -2270,7 +2270,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 )
             } else {
                 if (Helper.getPhoneStatePermission(requireActivity())) {
-                    isMenuCall()
+                    if(Helper.getBlueToothStatePermission(requireActivity())) {
+                        isMenuCall()
+                    }
                 } else {
                     Timber.tag("Beldex").d("Permission not granted")
                 }

@@ -1,5 +1,6 @@
 package com.thoughtcrimes.securesms.my_account.ui.dialogs
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.thoughtcrimes.securesms.compose_utils.DialogContainer
 import com.thoughtcrimes.securesms.compose_utils.appColors
+import com.thoughtcrimes.securesms.compose_utils.ui.BChatPreviewContainer
 import io.beldex.bchat.R
 
 @Composable
@@ -65,7 +67,7 @@ fun RequestBlockConfirmationDialog(
                 Button(
                     onClick = onDismissRequest,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.editTextBackground
+                        containerColor = MaterialTheme.appColors.contactCardBackground
                     ),
                     modifier = Modifier
                         .weight(1f)
@@ -73,7 +75,8 @@ fun RequestBlockConfirmationDialog(
                     Text(
                         text = stringResource(id = R.string.cancel),
                         style = MaterialTheme.typography.bodyMedium.copy(
-                            color = MaterialTheme.appColors.restoreDescColor
+                            color = MaterialTheme.appColors.cancelButtonTextColor,
+                            fontWeight = FontWeight.Bold
                         )
                     )
                 }
@@ -91,7 +94,8 @@ fun RequestBlockConfirmationDialog(
                     Text(
                         text = actionTitle,
                         style = MaterialTheme.typography.bodyMedium.copy(
-                            color = Color.White
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold
                         )
                     )
                 }
@@ -140,7 +144,7 @@ fun IgnoreRequestDialog(
                 Button(
                     onClick = onBlock,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.editTextBackground
+                        containerColor = MaterialTheme.appColors.contactCardBackground
                     ),
                     modifier = Modifier
                         .weight(1f)
@@ -148,7 +152,8 @@ fun IgnoreRequestDialog(
                     Text(
                         text = stringResource(id = R.string.recipient_preferences__block),
                         style = MaterialTheme.typography.bodyMedium.copy(
-                            color = Color.Red
+                            color = Color.Red,
+                            fontWeight = FontWeight.Bold
                         )
                     )
                 }
@@ -158,14 +163,15 @@ fun IgnoreRequestDialog(
                 Button(
                     onClick = onDelete,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.editTextBackground
+                        containerColor = MaterialTheme.appColors.contactCardBackground
                     ),
                     modifier = Modifier
                         .weight(1f)
                 ) {
                     Text(
                         text = stringResource(id = R.string.delete),
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }
@@ -182,4 +188,16 @@ private fun RequestConfirmationDialogPreview() {
         onConfirmation = {},
         onDismissRequest = {}
     )
+}
+
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Composable
+private fun IgnoreRequestDialogPreview() {
+    BChatPreviewContainer {
+        IgnoreRequestDialog(
+            onDismissRequest = {},
+            onBlock = {},
+            onDelete = {}
+        )
+    }
 }

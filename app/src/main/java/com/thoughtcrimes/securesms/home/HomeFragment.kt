@@ -35,6 +35,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -93,6 +94,7 @@ import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.FragmentHomeBinding
 import kotlinx.coroutines.*
@@ -204,17 +206,16 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     private lateinit var adapter: NavigationRVAdapter
 
     private var items = arrayListOf(
-        NavigationItemModel(R.drawable.ic_my_account, "My Account",0),
-        NavigationItemModel(R.drawable.ic_drawer_settings, "Settings",0),
-        NavigationItemModel(R.drawable.ic_notifications, "Notification",0),
-        NavigationItemModel(R.drawable.ic_message_requests, "Message Requests",0),
-        NavigationItemModel(R.drawable.ic_app_permissions, "App Permissions",0),
-        NavigationItemModel(R.drawable.ic_recovery_seed, "Recovery Seed",0),
-        NavigationItemModel(R.drawable.ic_wallet, "Wallet",R.drawable.ic_beta),
-        NavigationItemModel(R.drawable.ic_report_issue,"Report Issue",0),
-        NavigationItemModel(R.drawable.ic_help, "Help",0),
-        NavigationItemModel(R.drawable.ic_invite, "Invite",0),
-        NavigationItemModel(R.drawable.ic_about, "About",0)
+        NavigationItemModel(R.drawable.ic_menu_outline, "My Account",0),
+        NavigationItemModel(R.drawable.ic_settings_outline, "Settings",0),
+        NavigationItemModel(R.drawable.ic_notification_outline, "Notification",0),
+        NavigationItemModel(R.drawable.ic_msg_rqst_outline, "Message Requests",0),
+        NavigationItemModel(R.drawable.ic_recovery_seed_outline, "Recovery Seed",0),
+        NavigationItemModel(R.drawable.ic_wallet_outline, "Wallet",R.drawable.ic_beta),
+        NavigationItemModel(R.drawable.ic_report_issue_outline,"Report Issue",0),
+        NavigationItemModel(R.drawable.ic_help_outline, "Help",0),
+        NavigationItemModel(R.drawable.ic_invite_outline, "Invite",0),
+        NavigationItemModel(R.drawable.ic_about_outline, "About",0)
     )
 
     // NavigationItemModel(R.drawable.ic_recovery_key, "Recovery Key"),
@@ -251,6 +252,19 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     private var mContext : Context? = null
     var activityCallback: HomeFragmentListener? = null
 
+    private val swipeController = SwipeController(
+    object : SwipeControllerActions {
+        override fun onRightClicked(position: Int) {
+//            mAdapter.players.remove(position)
+//            mAdapter.notifyItemRemoved(position)
+//            mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount())
+        }
+
+        override fun onLeftClicked(position: Int) {
+
+        }
+    })
+
     private val swipeHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
         override fun onMove(
             recyclerView: RecyclerView,
@@ -259,7 +273,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         ) = true
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-
+            Toast.makeText(requireContext(), "Message Deleted", Toast.LENGTH_SHORT).show()
         }
 
         override fun onChildDraw(
@@ -284,7 +298,6 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                     println(">>>>>swipe3")
                 }
             }
-
             val textMargin = resources.getDimension(R.dimen.fab_margin).roundToInt()
             deleteIcon ?: return
             val top = viewHolder.itemView.top + (viewHolder.itemView.bottom - viewHolder.itemView.top) / 2 - deleteIcon.intrinsicHeight / 2
@@ -335,11 +348,11 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
 
         //New Line
         // Setup Recyclerview's Layout
-        binding.navigationRv.layoutManager = LinearLayoutManager(requireActivity().applicationContext)
-        binding.navigationRv.setHasFixedSize(true)
+        binding.navigationMenu.navigationRv.layoutManager = LinearLayoutManager(requireActivity().applicationContext)
+        binding.navigationMenu.navigationRv.setHasFixedSize(true)
         updateAdapter(0)
         // Add Item Touch Listener
-        binding.navigationRv.addOnItemTouchListener(RecyclerTouchListener(requireActivity().applicationContext, object :
+        binding.navigationMenu.navigationRv.addOnItemTouchListener(RecyclerTouchListener(requireActivity().applicationContext, object :
             ClickListener {
             override fun onClick(view: View, position: Int) {
                 when (position) {
@@ -359,15 +372,15 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                         // # Message Requests Activity
                         showMessageRequests()
                     }
+//                    4 -> {
+//                        // # App Permissions Activity
+//                        callAppPermission()
+//                    }
                     4 -> {
-                        // # App Permissions Activity
-                        callAppPermission()
-                    }
-                    5 -> {
                         // # Recovery Seed Activity
                         showSeed()
                     }
-                    6 -> {
+                    5 -> {
                         // # My Wallet Activity
                         if (CheckOnline.isOnline(requireActivity().applicationContext)) {
                             if (TextSecurePreferences.isWalletActive(requireContext())) {
@@ -379,19 +392,19 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                             Toast.makeText(requireActivity().applicationContext, getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
                         }
                     }
-                    7 -> {
+                    6 -> {
                         // # Support
                         activityCallback?.sendMessageToSupport()
                     }
-                    8 -> {
+                    7 -> {
                         // # Help Activity
                         help()
                     }
-                    9 -> {
+                    8 -> {
                         // # Invite Activity
                         sendInvitation(hexEncodedPublicKey)
                     }
-                    10 -> {
+                    9 -> {
                         // # About Activity
                         showAbout()
                     }
@@ -408,12 +421,12 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         binding.profileButton.root.setOnClickListener {
             binding.drawerLayout.openDrawer(GravityCompat.END)
         }
-        binding.drawerCloseIcon.setOnClickListener { binding.drawerLayout.closeDrawer(GravityCompat.END) }
+        binding.navigationMenu.drawerCloseIcon.setOnClickListener { binding.drawerLayout.closeDrawer(GravityCompat.END) }
         val activeUiMode = UiModeUtilities.getUserSelectedUiMode(requireActivity())
-        binding.drawerAppearanceToggleButton.isChecked = activeUiMode == UiMode.NIGHT
+        binding.navigationMenu.drawerAppearanceToggleButton.isChecked = activeUiMode == UiMode.NIGHT
 
-        binding.drawerAppearanceToggleButton.setOnClickListener{
-            if(binding.drawerAppearanceToggleButton.isChecked){
+        binding.navigationMenu.drawerAppearanceToggleButton.setOnClickListener{
+            if(binding.navigationMenu.drawerAppearanceToggleButton.isChecked){
                 val uiMode = UiMode.values()[1]
                 UiModeUtilities.setUserSelectedUiMode(requireActivity(), uiMode)
             }
@@ -422,17 +435,17 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                 UiModeUtilities.setUserSelectedUiMode(requireActivity(), uiMode)
             }
         }
-        binding.drawerAppearanceToggleButton.setOnTouchListener { _, event ->
+        binding.navigationMenu.drawerAppearanceToggleButton.setOnTouchListener { _, event ->
             event.actionMasked == MotionEvent.ACTION_MOVE
         }
-        binding.drawerQrcodeImg.setOnClickListener {
+        binding.navigationMenu.drawerQrcodeImg.setOnClickListener {
             showQRCode()
             Handler(Looper.getMainLooper()).postDelayed({
                 binding.drawerLayout.closeDrawer(GravityCompat.END)
             }, 200)
         }
-        binding.drawerProfileIcon.root.glide = glide
-        binding.drawerProfileId.text = String.format(requireContext().resources.getString(R.string.id_format), hexEncodedPublicKey)
+        binding.navigationMenu.drawerProfileIcon.root.glide = glide
+        binding.navigationMenu.drawerProfileId.text = String.format(requireContext().resources.getString(R.string.id_format), hexEncodedPublicKey)
 
 //        binding.searchViewContainer.setOnClickListener {
 //            binding.globalSearchInputLayout.requestFocus()
@@ -450,6 +463,13 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         homeAdapter.glide = glide
         binding.recyclerView.adapter = homeAdapter
         swipeHelper.attachToRecyclerView(binding.recyclerView)
+//        val itemTouchHelper = ItemTouchHelper(swipeController)
+//        itemTouchHelper.attachToRecyclerView(binding.recyclerView)
+//        binding.recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
+//            override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+//                swipeController.onDraw(c)
+//            }
+//        })
 //        binding.globalSearchRecycler.adapter = globalSearchAdapter
         // Set up empty state view
         binding.createNewPrivateChatButton.setOnClickListener { createNewPrivateChat() }
@@ -525,7 +545,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         this.broadcastReceiver = broadcastReceiver
         LocalBroadcastManager.getInstance(requireActivity().applicationContext)
             .registerReceiver(broadcastReceiver, IntentFilter("blockedContactsChanged"))
-        activityCallback?.callLifeCycleScope(binding.recyclerView, mmsSmsDatabase,globalSearchAdapter,publicKey,binding.profileButton.root,binding.drawerProfileName,binding.drawerProfileIcon.root)
+        activityCallback?.callLifeCycleScope(binding.recyclerView, mmsSmsDatabase,globalSearchAdapter,publicKey,binding.profileButton.root,binding.navigationMenu.drawerProfileName,binding.navigationMenu.drawerProfileIcon.root)
         binding.chatButtons.setContent {
             val isExpanded by homeViewModel.isButtonExpanded.collectAsState()
             BChatTheme {
@@ -544,12 +564,24 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                 )
             }
         }
+
+        binding.navigationMenu.menuContainer.run {
+            post {
+                val params = layoutParams as DrawerLayout.LayoutParams
+                params.width = (getScreenWidth() * 0.7).toInt()
+                layoutParams = params
+                translationX = -(requireContext().toPx(16))
+            }
+        }
+        binding.navigationMenu.version.text = resources.getString(R.string.version_name).format(BuildConfig.VERSION_NAME)
     }
 
     private fun showRequestDeleteDialog(record: ThreadRecord) {
         val dialog = ComposeDialogContainer(
             dialogType = DialogType.DeleteRequest,
-            onConfirm = {},
+            onConfirm = {
+                homeViewModel.deleteMessageRequest(record)
+            },
             onCancel = {}
         )
         dialog.show(childFragmentManager, ComposeDialogContainer.TAG)
@@ -558,7 +590,12 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     private fun showRequestBlockDialog(record: ThreadRecord) {
         val dialog = ComposeDialogContainer(
             dialogType = DialogType.BlockRequest,
-            onConfirm = {},
+            onConfirm = {
+                homeViewModel.blockMessageRequest(record)
+                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                    ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(requireContext())
+                }
+            },
             onCancel = {}
         )
         dialog.show(childFragmentManager, ComposeDialogContainer.TAG)
@@ -663,7 +700,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     //New Line
     private fun updateAdapter(highlightItemPos: Int) {
         adapter = NavigationRVAdapter(items, highlightItemPos)
-        binding.navigationRv.adapter = adapter
+        binding.navigationMenu.navigationRv.adapter = adapter
         adapter.notifyDataSetChanged()
     }
 
@@ -724,8 +761,8 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         binding.profileButton.root.update()
 
         //New Line
-        binding.drawerProfileIcon.root.recycle()
-        binding.drawerProfileIcon.root.update()
+        binding.navigationMenu.drawerProfileIcon.root.recycle()
+        binding.navigationMenu.drawerProfileIcon.root.update()
 
         if (TextSecurePreferences.getConfigurationMessageSynced(requireActivity().applicationContext)) {
             lifecycleScope.launch(Dispatchers.IO) {
@@ -808,11 +845,11 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         binding.profileButton.root.update()
 
         //New Line
-        binding.drawerProfileName.text = TextSecurePreferences.getProfileName(requireActivity().applicationContext)
-        binding.drawerProfileIcon.root.publicKey = publicKey
-        binding.drawerProfileIcon.root.displayName = TextSecurePreferences.getProfileName(requireActivity().applicationContext)
-        binding.drawerProfileIcon.root.recycle()
-        binding.drawerProfileIcon.root.update()
+        binding.navigationMenu.drawerProfileName.text = TextSecurePreferences.getProfileName(requireActivity().applicationContext)
+        binding.navigationMenu.drawerProfileIcon.root.publicKey = publicKey
+        binding.navigationMenu.drawerProfileIcon.root.displayName = TextSecurePreferences.getProfileName(requireActivity().applicationContext)
+        binding.navigationMenu.drawerProfileIcon.root.recycle()
+        binding.navigationMenu.drawerProfileIcon.root.update()
     }
 
     fun onBackPressed() {

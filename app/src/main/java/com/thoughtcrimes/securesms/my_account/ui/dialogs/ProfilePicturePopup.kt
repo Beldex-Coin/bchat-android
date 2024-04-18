@@ -40,6 +40,7 @@ fun ProfilePicturePopup(
     publicKey: String,
     displayName: String,
     onDismissRequest: () -> Unit,
+    closePopUP: () -> Unit,
     removePicture: () -> Unit,
     uploadPicture: () -> Unit
 ) {
@@ -71,7 +72,7 @@ fun ProfilePicturePopup(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .clickable {
-                            onDismissRequest()
+                            closePopUP()
                         }
                 )
             }
@@ -161,6 +162,7 @@ fun ProfilePicturePopupPreview() {
         publicKey = "",
         displayName = "Demo Account",
         onDismissRequest = {},
+        closePopUP = {},
         removePicture = {},
         uploadPicture = {}
     )

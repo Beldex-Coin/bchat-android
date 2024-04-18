@@ -38,6 +38,7 @@ import com.beldex.libbchat.avatars.AvatarHelper
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.ProfileKeyUtil
 import com.beldex.libbchat.utilities.ProfilePictureUtilities
+import com.beldex.libbchat.utilities.SSKEnvironment
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.truncateIdForDisplay
 import com.thoughtcrimes.securesms.avatar.AvatarSelection
@@ -70,6 +71,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.security.SecureRandom
 import java.util.Date
+import java.util.regex.Pattern
 
 @AndroidEntryPoint
 class MyProfileActivity: AppCompatActivity() {
@@ -77,6 +79,7 @@ class MyProfileActivity: AppCompatActivity() {
     private lateinit var glide: GlideRequests
     private var tempFile: File? = null
     private lateinit var binding: ActivityMyProfileBinding
+    private val namePattern = Pattern.compile("[A-Za-z0-9]+")
     private val hexEncodedPublicKey: String
         get() {
             return TextSecurePreferences.getLocalNumber(this)!!
@@ -133,6 +136,9 @@ class MyProfileActivity: AppCompatActivity() {
                 val state by viewModel.uiState.collectAsState()
                 AccountHeader(
                     uiState =  state,
+                    saveDisplayName = {
+                        saveDisplayName(it)
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(
@@ -268,41 +274,71 @@ class MyProfileActivity: AppCompatActivity() {
             delay(3000)
             binding.loader.isVisible = false
         }
-//        val promises = mutableListOf<Promise<*, Exception>>()
-//        if (displayName != null) {
-//            TextSecurePreferences.setProfileName(this, displayName)
-//        }
-//        val encodedProfileKey = ProfileKeyUtil.generateEncodedProfileKey(this)
-//        if (isUpdatingProfilePicture) {
-//            if (profilePicture != null) {
-//                promises.add(ProfilePictureUtilities.upload(profilePicture, encodedProfileKey, this))
-//            } else {
-//                TextSecurePreferences.setLastProfilePictureUpload(this, System.currentTimeMillis())
-//                TextSecurePreferences.setProfilePictureURL(this, null)
-//            }
-//        }
-//        val compoundPromise = all(promises)
-//        compoundPromise.successUi { // Do this on the UI thread so that it happens before the alwaysUi clause below
-//            if (isUpdatingProfilePicture) {
-//                AvatarHelper.setAvatar(
-//                    this,
-//                    Address.fromSerialized(TextSecurePreferences.getLocalNumber(this)!!),
-//                    profilePicture
-//                )
-//                TextSecurePreferences.setProfileAvatarId(this,profilePicture?.let { SecureRandom().nextInt() } ?: 0)
-//                TextSecurePreferences.setLastProfilePictureUpload(this, Date().time)
-//                ProfileKeyUtil.setEncodedProfileKey(this, encodedProfileKey)
-//            }
-//            if (profilePicture != null || displayName != null) {
-//                ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(this)
-//            }
-//        }
-//        compoundPromise.alwaysUi {
-//            if (isUpdatingProfilePicture) {
-//                binding.profilePictureView.root.recycle() // Clear the cached image before updating
-//                binding.profilePictureView.root.update()
-//            }
-//            binding.loader.isVisible = false
-//        }
+        val promises = mutableListOf<Promise<*, Exception>>()
+        if (displayName != null) {
+            TextSecurePreferences.setProfileName(this, displayName)
+            viewModel.refreshProfileName()
+        }
+        val encodedProfileKey = ProfileKeyUtil.generateEncodedProfileKey(this)
+        if (isUpdatingProfilePicture) {
+            if (profilePicture != null) {
+                promises.add(ProfilePictureUtilities.upload(profilePicture, encodedProfileKey, this))
+            } else {
+                TextSecurePreferences.setLastProfilePictureUpload(this, System.currentTimeMillis())
+                TextSecurePreferences.setProfilePictureURL(this, null)
+            }
+        }
+        val compoundPromise = all(promises)
+        compoundPromise.successUi { // Do this on the UI thread so that it happens before the alwaysUi clause below
+            if (isUpdatingProfilePicture) {
+                AvatarHelper.setAvatar(
+                    this,
+                    Address.fromSerialized(TextSecurePreferences.getLocalNumber(this)!!),
+                    profilePicture
+                )
+                TextSecurePreferences.setProfileAvatarId(this,profilePicture?.let { SecureRandom().nextInt() } ?: 0)
+                TextSecurePreferences.setLastProfilePictureUpload(this, Date().time)
+                ProfileKeyUtil.setEncodedProfileKey(this, encodedProfileKey)
+            }
+            if (profilePicture != null || displayName != null) {
+                ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(this)
+            }
+        }
+        compoundPromise.alwaysUi {
+            if (isUpdatingProfilePicture) {
+                binding.profilePictureView.root.recycle() // Clear the cached image before updating
+                binding.profilePictureView.root.update()
+            }
+            binding.loader.isVisible = false
+        }
+    }
+
+    private fun saveDisplayName(displayName: String): Boolean {
+        if (displayName.isEmpty()) {
+            Toast.makeText(
+                this,
+                R.string.activity_settings_display_name_missing_error,
+                Toast.LENGTH_SHORT
+            ).show()
+            return false
+        }
+        if (displayName.toByteArray().size > SSKEnvironment.ProfileManagerProtocol.Companion.NAME_PADDED_LENGTH) {
+            Toast.makeText(
+                this,
+                R.string.activity_settings_display_name_too_long_error,
+                Toast.LENGTH_SHORT
+            ).show()
+            return false
+        }
+        if (!displayName.matches(namePattern.toRegex())) {
+            Toast.makeText(
+                this,
+                R.string.display_name_validation,
+                Toast.LENGTH_SHORT
+            ).show()
+            return false
+        }
+        updateProfile(false, displayName = displayName)
+        return true
     }
 }

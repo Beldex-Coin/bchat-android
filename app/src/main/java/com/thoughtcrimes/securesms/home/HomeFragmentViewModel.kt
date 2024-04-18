@@ -10,6 +10,7 @@ import app.cash.copper.flow.observeQuery
 import com.thoughtcrimes.securesms.database.DatabaseContentProviders
 import com.thoughtcrimes.securesms.database.ThreadDatabase
 import com.thoughtcrimes.securesms.database.model.ThreadRecord
+import com.thoughtcrimes.securesms.repository.ConversationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -27,6 +28,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeFragmentViewModel @Inject constructor(
     private val threadDb: ThreadDatabase,
+    private val repository: ConversationRepository,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
@@ -68,6 +70,18 @@ class HomeFragmentViewModel @Inject constructor(
 
     fun setButtonExpandedStatus(isExpanded: Boolean) {
         _isButtonsExpanded.update { isExpanded }
+    }
+
+    fun blockMessageRequest(thread: ThreadRecord) = viewModelScope.launch {
+        val recipient = thread.recipient
+        if (recipient.isContactRecipient) {
+            repository.setBlocked(recipient, true)
+            deleteMessageRequest(thread)
+        }
+    }
+
+    fun deleteMessageRequest(thread: ThreadRecord) = viewModelScope.launch {
+        repository.deleteMessageRequest(thread)
     }
 
 }

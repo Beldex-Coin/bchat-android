@@ -128,7 +128,7 @@
     <color name="alert_ok">#29fd2e</color>
     <color name="default_group_bg">#F5F5F5</color>
     <color name="text_hint">#A7A7BA</color>
-
+    <color name="version_color">#A7A7BA</color>
     <color name="keyboard_background">#131319</color>
     <color name="button_background">#2F2F3C</color>
     <color name="button_text">#FFFFFF</color>

@@ -1,49 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="44dp"
-        android:orientation="horizontal"
+    android:orientation="horizontal"
+    android:padding="4dp">
+    <ImageView
+        android:id="@+id/navigation_icon"
+        android:layout_width="35sp"
+        android:layout_height="35sp"
+        android:layout_gravity="center_vertical"
+        android:scaleType="centerInside"
+        android:src="@android:drawable/btn_star_big_on"
+        tools:ignore="ContentDescription"
+        app:tint="@color/icon_tint" />
+
+    <TextView
+        android:fontFamily="@font/open_sans_medium"
+        android:id="@+id/navigation_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginEnd="20dp">
-        <ImageView
-            android:id="@+id/navigation_icon"
-            android:layout_width="35sp"
-            android:layout_height="35sp"
-            android:layout_gravity="center_vertical"
-            android:scaleType="centerInside"
-            android:src="@android:drawable/btn_star_big_on"
-            tools:ignore="ContentDescription" />
-        <TextView
-            android:fontFamily="@font/open_sans_medium"
-            android:id="@+id/navigation_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="20dp"
-            android:gravity="center_vertical"
-            android:textColor="@color/text"
-            android:text="Custom Navigation Row"
-            android:textSize="16sp" />
-        <ImageView
-            android:id="@+id/navigation_SubIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:scaleType="centerInside"
-            android:layout_marginStart="10dp"
-            android:src="@drawable/ic_beta"
-            tools:ignore="ContentDescription" />
-    </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/drawer_divider_color"/>
+        android:gravity="center_vertical"
+        android:textColor="@color/text"
+        tools:text="Custom Navigation Row"
+        android:textSize="16sp" />
+
+    <ImageView
+        android:id="@+id/navigation_SubIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:scaleType="centerInside"
+        android:layout_marginStart="10dp"
+        android:src="@drawable/ic_beta"
+        tools:ignore="ContentDescription" />
+
 </LinearLayout>

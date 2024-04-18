@@ -33,6 +33,8 @@
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE"/>
     <uses-permission android:name="io.beldex.bchat.ACCESS_BCHAT_SECRETS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -567,12 +569,14 @@
         </service>
         <service
             android:name="com.thoughtcrimes.securesms.service.WebRtcCallService"
+            android:foregroundServiceType="microphone"
             android:enabled="true"
             android:exported="false" />
         <service
             android:name="com.thoughtcrimes.securesms.service.KeyCachingService"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="false" android:foregroundServiceType="specialUse">
+        </service>
         <service
             android:name="com.thoughtcrimes.securesms.service.DirectShareService"
             android:exported="true"
@@ -749,6 +753,7 @@
             android:name="com.thoughtcrimes.securesms.wallet.service.WalletService"
             android:description="@string/service_description"
             android:exported="false"
+            android:foregroundServiceType="specialUse"
             android:label="BChat Wallet Service" />
     </application>
 

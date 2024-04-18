@@ -352,21 +352,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="end"
         android:layout_margin="16dp"/>
-
-<!--    <LinearLayout-->
-<!--        android:id="@+id/navigation_layout"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:layout_gravity="end"-->
-<!--        android:visibility="visible"-->
-<!--        android:clickable="true"-->
-<!--        android:background="@color/drawer_background"-->
-<!--        android:orientation="vertical"-->
-<!--        tools:visibility="visible"-->
-<!--        android:layout_margin="16dp">-->
-
-<!--        -->
-
-<!--    </LinearLayout>-->
     <!-- Custom Navigation Drawer End -->
+
 </androidx.drawerlayout.widget.DrawerLayout>

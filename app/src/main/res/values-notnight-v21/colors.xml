@@ -145,5 +145,6 @@
     <color name="outlined_button_tint">#EFEFEF</color>
     <color name="outlined_button_text_color">#333333</color>
     <color name="icon_tint">#333333</color>
+    <color name="bchat_id_text_color">#00DB09</color>
 
 </resources>

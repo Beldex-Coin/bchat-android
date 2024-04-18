@@ -167,6 +167,8 @@ class TransactionInfoAdapter(context: Context?)  :
         private var tvTxStatusIcon: ImageView = itemView.findViewById(R.id.transaction_status_icon)
         private var tvDateTimeHead: TextView = itemView.findViewById(R.id.transaction_date_and_time_head)
         var expandableArrow:ImageView = itemView.findViewById(R.id.transaction_expandable_arrow)
+        private var tvPaymentIdTitle: TextView = itemView.findViewById(R.id.payment_id_title)
+        private var tvPaymentId: TextView = itemView.findViewById(R.id.payment_id)
 
         //var tvPaymentId: TextView
         private var tvDateTime: TextView = itemView.findViewById(R.id.transaction_date_and_time)
@@ -187,6 +189,7 @@ class TransactionInfoAdapter(context: Context?)  :
         fun bind(position: Int) {
             infoItem = infoItems!![position]
             itemView.transitionName = context!!.getString(R.string.tx_item_transition_name, infoItem!!.hash)
+            val isBNS = infoItem!!.isBns
           /*  val userNotes = UserNotes(infoItem!!.notes)*/
          /*   if (userNotes.bdxtoKey != null) {
                 val crypto: Crypto? = Crypto.withSymbol(userNotes.bdxtoCurrency)
@@ -201,10 +204,10 @@ class TransactionInfoAdapter(context: Context?)  :
             }*/
             val displayAmount: String = Helper.getDisplayAmount(infoItem!!.amount, Helper.DISPLAY_DIGITS_INFO)
             Log.d("infoItem!!.direction","${infoItem!!.direction}")
-            if (infoItem!!.direction === TransactionInfo.Direction.Direction_Out) {
+            if(isBNS){
+                tvTxStatusIcon.setImageResource(R.drawable.bns_transaction)
                 tvTxStatus.text = context!!.getString(R.string.tx_status_sent)
-                tvTxStatusIcon.setImageResource(R.drawable.ic_wallet_send_button)
-                if(displayAmount> 0.toString()) {
+                if (displayAmount > 0.toString()) {
                     tvAmount.text =
                         context!!.getString(R.string.tx_list_amount_negative, displayAmount)
                     Log.d("Beldex", "Transaction list issue  value of amount - $displayAmount")
@@ -216,18 +219,34 @@ class TransactionInfoAdapter(context: Context?)  :
                     )
                 }
             } else {
-                tvTxStatus.text = context!!.getString(R.string.tx_status_received)
-                tvTxStatusIcon.setImageResource(R.drawable.ic_wallet_receive_button)
-                if(displayAmount> 0.toString()) {
-                    tvAmount.text =
-                        context!!.getString(R.string.tx_list_amount_positive, displayAmount)
-                    Log.d("Beldex", "Transaction list issue  value of amount + $displayAmount")
-                    tvAmount.setTextColor(
-                        ContextCompat.getColor(
-                            context!!,
-                            R.color.wallet_receive_button
+                if (infoItem!!.direction === TransactionInfo.Direction.Direction_Out) {
+                    tvTxStatus.text = context!!.getString(R.string.tx_status_sent)
+                    tvTxStatusIcon.setImageResource(R.drawable.ic_wallet_send_button)
+                    if (displayAmount > 0.toString()) {
+                        tvAmount.text =
+                            context!!.getString(R.string.tx_list_amount_negative, displayAmount)
+                        Log.d("Beldex", "Transaction list issue  value of amount - $displayAmount")
+                        tvAmount.setTextColor(
+                            ContextCompat.getColor(
+                                context!!,
+                                R.color.wallet_send_button
+                            )
                         )
-                    )
+                    }
+                } else {
+                    tvTxStatus.text = context!!.getString(R.string.tx_status_received)
+                    tvTxStatusIcon.setImageResource(R.drawable.ic_wallet_receive_button)
+                    if (displayAmount > 0.toString()) {
+                        tvAmount.text =
+                            context!!.getString(R.string.tx_list_amount_positive, displayAmount)
+                        Log.d("Beldex", "Transaction list issue  value of amount + $displayAmount")
+                        tvAmount.setTextColor(
+                            ContextCompat.getColor(
+                                context!!,
+                                R.color.wallet_receive_button
+                            )
+                        )
+                    }
                 }
             }
             txId.text = infoItem!!.hash
@@ -242,6 +261,15 @@ class TransactionInfoAdapter(context: Context?)  :
                         Toast.makeText(context, "Can't open URL", Toast.LENGTH_LONG).show()
                     }
                 }
+            }
+
+            if (infoItem!!.paymentId != "0000000000000000") {
+                tvPaymentId.visibility = View.VISIBLE
+                tvPaymentIdTitle.visibility = View.VISIBLE
+                tvPaymentId.text = infoItem!!.paymentId
+            } else {
+                tvPaymentId.visibility = View.GONE
+                tvPaymentIdTitle.visibility = View.GONE
             }
             when {
                 infoItem!!.isFailed -> {

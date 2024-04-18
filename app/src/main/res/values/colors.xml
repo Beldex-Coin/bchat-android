@@ -223,4 +223,5 @@
     <color name="outlined_button_tint">#282836</color>
     <color name="outlined_button_text_color">#FFFFFF</color>
     <color name="icon_tint">#FFFFFF</color>
+    <color name="bchat_id_text_color">#00DB09</color>
 </resources>

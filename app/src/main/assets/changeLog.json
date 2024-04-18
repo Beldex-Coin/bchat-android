@@ -310,6 +310,59 @@
           "description":"- Fixed minor bugs"
         }
       ]
+    },
+    {
+      "title": "2.3.0",
+      "descriptions": [
+        {
+          "description":"- Update for Hardfork 18"
+        },
+        {
+          "description":"- Minor Bug fixes"
+        }
+      ]
+    },
+    {
+      "title": "2.4.0",
+      "descriptions": [
+        {
+          "description":"- Integrated BNS in BChat"
+        },
+        {
+          "description":"- Minor Bug fixes"
+        }
+      ]
+    },
+    {
+      "title": "2.4.1",
+      "descriptions": [
+        {
+          "description":"- Minor Bug fixes"
+        }
+      ]
+    },
+    {
+      "title": "2.5.0",
+      "descriptions": [
+        {
+          "description":"- Fixed message delay issue"
+        },
+        {
+          "description":"- Introduced BNS feature for starting new chat and sending funds"
+        },
+        {
+          "description":"- Fixed missing payment ID details for integrated address transaction"
+        },
+        {
+          "description":"- Added support for android version 14"
+        },
+        {
+          "description":"- Updated Node list"
+        },
+        {
+          "description":"- Minor Bug fixes"
+        }
+      ]
     }
   ]
 }

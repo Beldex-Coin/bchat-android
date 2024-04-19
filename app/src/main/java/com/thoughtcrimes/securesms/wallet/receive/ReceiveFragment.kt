@@ -17,6 +17,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
@@ -33,6 +35,7 @@ import com.thoughtcrimes.securesms.util.FileProviderUtil
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.toPx
 import com.thoughtcrimes.securesms.wallet.OnBackPressedListener
+import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.ReceiveScreen
 import com.thoughtcrimes.securesms.wallet.utils.ThemeHelper
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityReceiveBinding
@@ -76,7 +79,7 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = ActivityReceiveBinding.inflate(layoutInflater,container,false)
+     /*   binding = ActivityReceiveBinding.inflate(layoutInflater,container,false)
         (activity as HomeActivity).setSupportActionBar(binding.toolbar)
         binding.walletAddressReceive.text = IdentityKeyUtil.retrieve(requireActivity(),IdentityKeyUtil.IDENTITY_W_ADDRESS_PREF)
         generateQr()
@@ -121,7 +124,12 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
             listenerCallback?.walletOnBackPressed()
         }
 
-        return binding.root
+        return binding.root*/
+        return ComposeView(requireContext()).apply { 
+            setContent { 
+                ReceiveScreen(modifier = Modifier)
+            }
+        }
     }
 
     private fun hideErrorMessage(){

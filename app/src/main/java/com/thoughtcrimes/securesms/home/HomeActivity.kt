@@ -780,7 +780,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
     override fun onSendRequest(view: View?) {
         if(CheckOnline.isOnline(this)) {
-            replaceFragmentWithTransition(view,SendFragment(),null,null)
+            replaceFragment(SendFragment(),null, extras = null)
+            //replaceFragmentWithTransition(view,SendFragment(),null,null)
             uri = null // only use uri once
         }else{
             Toast.makeText(this, getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()

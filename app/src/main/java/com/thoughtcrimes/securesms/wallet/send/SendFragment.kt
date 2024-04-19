@@ -19,13 +19,10 @@ import android.text.TextWatcher
 import android.util.Log
 import android.util.Patterns
 import android.view.*
-import android.view.View.OnFocusChangeListener
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
-import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.ui.platform.ComposeView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.beldex.libbchat.utilities.TextSecurePreferences
@@ -38,6 +35,7 @@ import com.thoughtcrimes.securesms.model.WalletManager
 import com.thoughtcrimes.securesms.util.BChatThreadPoolExecutor
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.wallet.*
+import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.SendScreen
 import com.thoughtcrimes.securesms.wallet.utils.OpenAliasHelper
 import com.thoughtcrimes.securesms.wallet.utils.helper.ServiceHelper
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
@@ -193,7 +191,24 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentSendBinding.inflate(inflater, container, false)
+
+      /*  val view = inflater.inflate(R.layout.fragment_home, container, false)
+        val composeContainer = view.findViewById<FrameLayout>(R.id.activity_home_frame_layout_container)
+        // Inflate Compose view inside composeContainer
+        val composeView = ComposeView(requireContext()).apply {
+            setContent {
+                SendScreen()
+            }
+        }
+        composeContainer.addView(composeView)
+        return view*/
+        return ComposeView(requireContext()).apply {
+            setContent {
+                SendScreen(listener = activityCallback!! )
+            }
+        }
+    }
+       /* binding = FragmentSendBinding.inflate(inflater, container, false)
         (activity as HomeActivity).setSupportActionBar(binding.toolbar)
         calledUnlockedBalance = true
         binding.currencyTextView.text = TextSecurePreferences.getCurrency(requireActivity()).toString()
@@ -217,7 +232,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         binding.beldexAddressEditTxtLayout.editText?.setOnEditorActionListener(OnEditorActionListener { v, actionId, event -> // ignore ENTER
                 event != null && event.keyCode == KeyEvent.KEYCODE_ENTER
             })
-       /*binding.beldexAddressEditTxtLayout.editText?.onFocusChangeListener =
+       *//*binding.beldexAddressEditTxtLayout.editText?.onFocusChangeListener =
             OnFocusChangeListener { v: View?, hasFocus: Boolean ->
                 if (!hasFocus) {
                     val enteredAddress: String = binding.beldexAddressEditTxtLayout.editText?.text.toString().trim()
@@ -227,7 +242,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                         processOpenAlias(dnsOA)
                     }
                 }
-            }*/
+            }*//*
         binding.beldexAddressEditTxtLayout.editText?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable) {
                 binding.beldexAddressLayout.setBackgroundResource(R.drawable.bchat_id_text_view_background)
@@ -337,11 +352,8 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
         binding.exitButton.setOnClickListener {
             activityCallback?.walletOnBackPressed()
-        }
+        }*/
 
-        return binding.root
-
-    }
 
     inner class AsyncCalculateEstimatedFee(val priority: Int) :
         AsyncTaskCoroutine<Executor?, Double>() {

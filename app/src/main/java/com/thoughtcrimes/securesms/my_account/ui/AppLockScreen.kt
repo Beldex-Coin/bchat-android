@@ -29,11 +29,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.compose_utils.BChatTheme
 import com.thoughtcrimes.securesms.compose_utils.appColors
+import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
 import com.thoughtcrimes.securesms.my_account.ui.dialogs.LockOptionsDialog
 import com.thoughtcrimes.securesms.onboarding.ui.PinCodeAction
+import com.thoughtcrimes.securesms.service.KeyCachingService
 import io.beldex.bchat.R
+import java.util.concurrent.TimeUnit
 
 @Composable
 fun AppLockScreen() {
@@ -45,10 +49,64 @@ fun AppLockScreen() {
     var showLockOptionsDialog by remember {
         mutableStateOf(false)
     }
+    var selectedLockOptions by remember {
+        mutableStateOf(IdentityKeyUtil.retrieve(
+            context,
+            IdentityKeyUtil.SCREEN_TIMEOUT_VALUES_KEY
+        ) ?: "None")
+    }
+    val onLockTimerChanged: (String, Int) -> Unit = { value, index ->
+        showLockOptionsDialog = false
+        IdentityKeyUtil.save(context, IdentityKeyUtil.SCREEN_TIMEOUT_KEY, index.toString())
+        IdentityKeyUtil.save(context, IdentityKeyUtil.SCREEN_TIMEOUT_VALUES_KEY, value)
+        selectedLockOptions = value
+
+        TextSecurePreferences.setScreenLockEnabled(context, true)
+
+        val intent = Intent(context, KeyCachingService::class.java)
+        intent.action = KeyCachingService.LOCK_TOGGLED_EVENT
+        context.startService(intent)
+
+        when (value) {
+            "None" -> {
+                TextSecurePreferences.setScreenLockTimeout(context, 950400)
+            }
+            "30 Seconds" -> {
+                val timeoutSeconds = TimeUnit.MILLISECONDS.toSeconds(30000)
+                TextSecurePreferences.setScreenLockTimeout(context, timeoutSeconds)
+            }
+            "1 Minute" -> {
+                val timeoutSeconds = TimeUnit.MILLISECONDS.toSeconds(60000)
+                TextSecurePreferences.setScreenLockTimeout(context, timeoutSeconds)
+            }
+            "2 Minutes" -> {
+                val timeoutSeconds = TimeUnit.MILLISECONDS.toSeconds(120000)
+                TextSecurePreferences.setScreenLockTimeout(context, timeoutSeconds)
+            }
+            "5 Minutes" -> {
+                val timeoutSeconds = TimeUnit.MILLISECONDS.toSeconds(300000)
+                TextSecurePreferences.setScreenLockTimeout(context, timeoutSeconds)
+            }
+            "15 Minutes" -> {
+                val timeoutSeconds = TimeUnit.MILLISECONDS.toSeconds(900000)
+                TextSecurePreferences.setScreenLockTimeout(context, timeoutSeconds)
+            }
+            "30 Minutes" -> {
+                val timeoutSeconds = TimeUnit.MILLISECONDS.toSeconds(1800000)
+                TextSecurePreferences.setScreenLockTimeout(context, timeoutSeconds)
+            }
+            else -> Unit
+        }
+
+    }
     if (showLockOptionsDialog) {
         LockOptionsDialog(
+            currentValue = selectedLockOptions,
             onDismiss = {
                 showLockOptionsDialog = false
+            },
+            onValueChanged = { value, index ->
+                onLockTimerChanged(value, index)
             }
         )
     }
@@ -131,7 +189,7 @@ fun AppLockScreen() {
                     )
 
                     Text(
-                        text = "None",
+                        text = selectedLockOptions,
                         style = MaterialTheme.typography.bodySmall.copy(
                             color = MaterialTheme.appColors.lockTimerColor
                         )

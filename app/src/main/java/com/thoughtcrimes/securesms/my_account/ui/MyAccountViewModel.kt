@@ -64,4 +64,12 @@ class MyAccountViewModel @Inject constructor(
         }
     }
 
+    fun refreshProfileName() {
+        _uiState.update {
+            it.copy(
+                profileName = preferenceUtil.getProfileName() ?: truncateIdForDisplay(uiState.value.publicKey),
+            )
+        }
+    }
+
 }

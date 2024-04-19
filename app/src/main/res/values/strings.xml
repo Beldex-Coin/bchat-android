@@ -1473,6 +1473,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="register">Register</string>
     <string name="copy_your_recovery_seed">Copy your Recovery Seed and keep it safe.</string>
     <string name="copy_seed">Copy Seed</string>
+    <string name="menu">Menu</string>
+    <string name="version_name">BChat v%s</string>
     <string name="dialog_title_send_failed">Create Transaction Error</string>
     <string name="title_for_beldex_address_or_name">Beldex address or BNS name</string>
     <string name="hint_for_enter_beldex_address_or_name">Enter Address or BNS name</string>

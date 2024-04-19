@@ -80,6 +80,9 @@ class ComposeDialogContainer(
                                     if (dismissAllowed)
                                         dismiss()
                                 },
+                                closePopUP = {
+                                    dismiss()
+                                },
                                 removePicture = {
                                     onCancel()
                                     dismiss()

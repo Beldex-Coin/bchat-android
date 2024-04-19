@@ -1,42 +1,56 @@
 package com.thoughtcrimes.securesms.my_account.ui.dialogs
 
-import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.content.ContextCompat
-import cn.carbswang.android.numberpickerview.library.NumberPickerView
 import com.thoughtcrimes.securesms.compose_utils.DialogContainer
+import com.thoughtcrimes.securesms.compose_utils.PrimaryButton
+import com.thoughtcrimes.securesms.compose_utils.appColors
+import com.thoughtcrimes.securesms.compose_utils.ui.NumberPicker
+import com.thoughtcrimes.securesms.compose_utils.ui.rememberPickerState
 import com.thoughtcrimes.securesms.my_account.ui.ScreenTimeoutOptions
 import io.beldex.bchat.R
 
 @Composable
 fun LockOptionsDialog(
-    onDismiss: () -> Unit
+    currentValue: String,
+    onDismiss: () -> Unit,
+    onValueChanged: (String, Int) -> Unit
 ) {
     DialogContainer(
         onDismissRequest = onDismiss,
     ) {
+        val valuesPickerState = rememberPickerState()
+        val lockOptions = remember {
+            ScreenTimeoutOptions.entries.map { it.displayValue }.toList()
+        }
         Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
             Text(
                 text = stringResource(R.string.screen_inactivity_timeout),
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleMedium.copy(
+                    color = MaterialTheme.appColors.primaryButtonColor,
+                    fontWeight = FontWeight.Bold
+                ),
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -44,21 +58,33 @@ fun LockOptionsDialog(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            AndroidView(
-                factory = { context ->
-                    val options = ScreenTimeoutOptions.values().map { it.displayValue }.toTypedArray()
-                    NumberPickerView(context).apply {
-                        layoutParams = ViewGroup.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 300)
-                        displayedValues = options
-                        minValue = 0
-                        maxValue = options.size - 1
-                        wrapSelectorWheel = true
-                        setDividerColor(ContextCompat.getColor(context, R.color.text))
-                        setSelectedTextColor(ContextCompat.getColor(context, R.color.text))
-                        setNormalTextColor(ContextCompat.getColor(context, R.color.scan_qr_code_text_color))
-                    }
-                }
+            NumberPicker(
+                state = valuesPickerState,
+                items = lockOptions,
+                visibleItemsCount = 3,
+                startIndex = lockOptions.indexOf(currentValue),
+                textModifier = Modifier.padding(12.dp),
+                textStyle = MaterialTheme.typography.titleMedium,
+                modifier = Modifier
+                    .fillMaxWidth(0.5f)
             )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            PrimaryButton(
+                onClick = {
+                    onValueChanged(valuesPickerState.selectedItem, lockOptions.indexOf(valuesPickerState.selectedItem))
+                },
+                shape = RoundedCornerShape(50)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.ok),
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                )
+            }
         }
     }
 }
@@ -67,6 +93,8 @@ fun LockOptionsDialog(
 @Composable
 fun LockOptionsDialogPreview() {
     LockOptionsDialog(
-        onDismiss = {}
+        currentValue = "",
+        onDismiss = {},
+        onValueChanged = {_, _ -> }
     )
 }

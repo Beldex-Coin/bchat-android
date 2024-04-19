@@ -4,6 +4,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.os.Parcelable
@@ -52,3 +53,7 @@ fun Context.toPx(dp: Int): Float = TypedValue.applyDimension(
   dp.toFloat(),
   resources.displayMetrics
 )
+
+fun getScreenWidth(): Int {
+  return Resources.getSystem().displayMetrics.widthPixels
+}

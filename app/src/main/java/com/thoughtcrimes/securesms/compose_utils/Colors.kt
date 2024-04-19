@@ -60,7 +60,8 @@ class Colors(
     val inputHintColor: Color,
     val disabledButtonContainerColor: Color,
     val disabledButtonContent: Color,
-    val textFieldDescriptionColor: Color
+    val textFieldDescriptionColor: Color,
+    val cancelButtonTextColor: Color
 )
 
 val lightColors = Colors(
@@ -105,7 +106,8 @@ val lightColors = Colors(
     inputHintColor = Color(0xFF8D8D8D),
     disabledButtonContainerColor = Color(0xFFF8F8F8),
     disabledButtonContent = Color(0xFF6E6E7C),
-    textFieldDescriptionColor = Color(0xFF333333)
+    textFieldDescriptionColor = Color(0xFF333333),
+    cancelButtonTextColor = Color(0xFF8A8A9D)
 )
 
 val darkColors = Colors(
@@ -150,7 +152,8 @@ val darkColors = Colors(
     inputHintColor = Color(0xFFB9B9B9),
     disabledButtonContainerColor = Color(0xFF282836),
     disabledButtonContent = Color(0xFF6E6E7C),
-    textFieldDescriptionColor = Color(0xFFA7A7BA)
+    textFieldDescriptionColor = Color(0xFFA7A7BA),
+    cancelButtonTextColor = Color(0xFFACACAC)
 )
 
 

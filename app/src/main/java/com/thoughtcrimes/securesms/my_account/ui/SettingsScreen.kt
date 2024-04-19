@@ -55,7 +55,7 @@ fun SettingsScreen(
     ) {
         Spacer(modifier = Modifier.height(24.dp))
 
-        SettingItem.values().forEach { item ->
+        SettingItem.entries.forEach { item ->
             MyAccountItem(
                 title = stringResource(id = item.title),
                 icon = when (item) {

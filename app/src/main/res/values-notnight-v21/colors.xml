@@ -72,7 +72,7 @@
     <color name="alert_ok">#138B20</color>
     <color name="default_group_bg">#F5F5F5</color>
     <color name="text_hint">#333333</color>
-
+    <color name="version_color">#A7A7BA</color>
     <color name="keyboard_background">#D1D5DB</color>
     <color name="button_background">#F2F2F2</color>
     <color name="button_text">#737389</color>

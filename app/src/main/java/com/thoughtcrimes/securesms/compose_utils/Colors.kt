@@ -61,7 +61,21 @@ class Colors(
     val disabledButtonContainerColor: Color,
     val disabledButtonContent: Color,
     val textFieldDescriptionColor: Color,
-    val cancelButtonTextColor: Color
+    val cancelButtonTextColor: Color,
+    val textColor: Color,
+    val walletInfoHighlightColor: Color,
+    val walletInfoBackground: Color,
+    val walletInfoBackgroundBorder: Color,
+    val beldexAddressBackground: Color,
+    val receiveCardBackground: Color,
+    val qrCodeBackground: Color,
+    val errorMessageColor: Color,
+    val textFiledBorderColor: Color,
+    val totalBalanceColor: Color,
+    val maxAmountBackground: Color,
+    val textHint: Color,
+    val dividerColor: Color,
+    val popUpAddressBackground: Color
 )
 
 val lightColors = Colors(
@@ -107,7 +121,21 @@ val lightColors = Colors(
     disabledButtonContainerColor = Color(0xFFF8F8F8),
     disabledButtonContent = Color(0xFF6E6E7C),
     textFieldDescriptionColor = Color(0xFF333333),
-    cancelButtonTextColor = Color(0xFF8A8A9D)
+    cancelButtonTextColor = Color(0xFF8A8A9D),
+    textColor = Color(0xFF111111),
+    walletInfoHighlightColor = Color(0xFF00C304),
+    walletInfoBackground = Color(0xFFFFFFFF),
+    walletInfoBackgroundBorder = Color(0xFF111119),
+    beldexAddressBackground = Color(0xFFF8F8F8),
+    receiveCardBackground = Color(0xFFEBEBEB),
+    qrCodeBackground = Color(0xFFF8F8F8),
+    errorMessageColor = Color(0xFFF6402C),
+    textFiledBorderColor = Color(0xFFA7A7BA),
+    totalBalanceColor = Color(0xFFACACAC),
+    maxAmountBackground = Color(0xFF2979FB),
+    textHint = Color(0xFFA7A7BA),
+    dividerColor = Color(0XFFA7A7BA),
+    popUpAddressBackground = Color(0xFFF8F8F8)
 )
 
 val darkColors = Colors(
@@ -153,7 +181,22 @@ val darkColors = Colors(
     disabledButtonContainerColor = Color(0xFF282836),
     disabledButtonContent = Color(0xFF6E6E7C),
     textFieldDescriptionColor = Color(0xFFA7A7BA),
-    cancelButtonTextColor = Color(0xFFACACAC)
+    cancelButtonTextColor = Color(0xFFACACAC),
+    textColor = Color(0xFFFFFFFF),
+    walletInfoHighlightColor = Color(0xFF00C304),
+    walletInfoBackground = Color(0xFF111119),
+    walletInfoBackgroundBorder = Color(0xFF24242F),
+    beldexAddressBackground = Color(0xFF1C1C26),
+    receiveCardBackground = Color(0xFF111119),
+    qrCodeBackground = Color(0xFF2C2C3B),
+    errorMessageColor = Color(0xFFF6402C),
+    textFiledBorderColor = Color(0xFF4B4B64),
+    totalBalanceColor = Color(0xFFACACAC),
+    maxAmountBackground = Color(0xFF2979FB),
+    textHint = Color(0xFFA7A7BA),
+    dividerColor = Color(0XFF4B4B64),
+    popUpAddressBackground = Color(0xFF282836)
+
 )
 
 

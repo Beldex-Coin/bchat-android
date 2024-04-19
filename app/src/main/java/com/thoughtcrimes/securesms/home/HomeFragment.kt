@@ -1317,8 +1317,12 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     }
 
     private fun openStartWalletInfo(){
-        Intent(requireContext(), StartWalletInfo::class.java).also {
+        /*Intent(requireContext(), StartWalletInfo::class.java).also {
             push(it)
+        }*/
+        Intent(activity, MyAccountActivity::class.java).also {
+            it.putExtra(MyAccountActivity.extraStartDestination, MyAccountScreens.StartWalletInfoScreen.route)
+            startActivity(it)
         }
     }
 

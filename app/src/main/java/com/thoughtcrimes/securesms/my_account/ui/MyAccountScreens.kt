@@ -11,4 +11,5 @@ sealed class MyAccountScreens(val route: String) {
     data object MessageRequestsScreen: MyAccountScreens("/message-requests")
     data object RecoverySeedScreen: MyAccountScreens("/recovery-seed")
     data object AboutScreen: MyAccountScreens("/about")
+    data object StartWalletInfoScreen: MyAccountScreens("/start-wallet-info")
 }

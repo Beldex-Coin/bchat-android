@@ -69,6 +69,7 @@ import com.thoughtcrimes.securesms.onboarding.ui.PinCodeAction
 import com.thoughtcrimes.securesms.preferences.ChatSettingsActivity
 import com.thoughtcrimes.securesms.util.UiMode
 import com.thoughtcrimes.securesms.util.UiModeUtilities
+import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.StatWalletInfo
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
 import kotlinx.coroutines.Dispatchers
@@ -421,6 +422,18 @@ fun MyAccountNavHost(
                         .padding(16.dp)
                 )
             }
+        }
+
+        composable(route = MyAccountScreens.StartWalletInfoScreen.route) {
+            MyAccountScreenContainer(title = stringResource(id = R.string.wallets), onBackClick = {
+                navController.navigateUp()
+            }) {
+                StatWalletInfo(modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp))
+
+            }
+
         }
 
         composable(

@@ -755,6 +755,12 @@
             android:exported="false"
             android:foregroundServiceType="specialUse"
             android:label="BChat Wallet Service" />
+        <receiver android:name="com.thoughtcrimes.securesms.wallet.ui.WalletReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="io.beldex.WALLET_ACTION"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

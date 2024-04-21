@@ -36,10 +36,10 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -59,6 +59,7 @@ import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.compose_utils.BChatOutlinedTextField
 import com.thoughtcrimes.securesms.compose_utils.BChatTheme
 import com.thoughtcrimes.securesms.compose_utils.BChatTypography
+import com.thoughtcrimes.securesms.compose_utils.ComposeBroadcastReceiver
 import com.thoughtcrimes.securesms.compose_utils.PrimaryButton
 import com.thoughtcrimes.securesms.compose_utils.appColors
 import com.thoughtcrimes.securesms.data.Crypto
@@ -70,22 +71,21 @@ import com.thoughtcrimes.securesms.model.PendingTransaction
 import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.model.WalletManager
 import com.thoughtcrimes.securesms.util.Helper
+import com.thoughtcrimes.securesms.util.serializable
 import com.thoughtcrimes.securesms.wallet.CheckOnline
 import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity
 import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.send.TransactionConfirmPopUp
 import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.send.TransactionLoadingPopUp
 import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.send.TransactionSuccessPopup
 import com.thoughtcrimes.securesms.wallet.send.SendFragment
+import com.thoughtcrimes.securesms.wallet.utils.WalletCallbackType
 import com.thoughtcrimes.securesms.wallet.utils.helper.ServiceHelper
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
 import io.beldex.bchat.R
 import timber.log.Timber
-import java.lang.Exception
-import java.lang.NumberFormatException
 import java.math.BigDecimal
-import java.util.HashSet
 import java.util.Locale
 import java.util.concurrent.Executor
 
@@ -93,6 +93,21 @@ import java.util.concurrent.Executor
 @SuppressLint("SuspiciousIndentation")
 @Composable
 fun SendScreen(listener: SendFragment.Listener) {
+
+    ComposeBroadcastReceiver(systemAction = "io.beldex.WALLET_ACTION") {
+        if (it?.action == "io.beldex.WALLET_ACTION") {
+            when (it.serializable<WalletCallbackType>("type")) {
+                WalletCallbackType.TransactionCreated -> {
+                    val pendingTransaction = it.serializable<PendingTransaction>("data")
+                    val tag = it.getStringExtra("tag")
+                }
+                WalletCallbackType.TransactionSent -> {
+                    val transactionId = it.getStringExtra("data")
+                }
+                else -> Unit
+            }
+        }
+    }
 
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -361,12 +376,12 @@ fun SendScreen(listener: SendFragment.Listener) {
 
 
     Column(modifier = Modifier
-            .fillMaxSize()
-            .background(color = MaterialTheme.appColors.cardBackground)) {
+        .fillMaxSize()
+        .background(color = MaterialTheme.appColors.cardBackground)) {
 
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)) {
+            .fillMaxWidth()
+            .padding(16.dp)) {
             Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back), tint = MaterialTheme.appColors.editTextColor, modifier = Modifier.clickable {
                 //onBackClick()
             })
@@ -401,26 +416,33 @@ fun SendScreen(listener: SendFragment.Listener) {
 
 
         Box(modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp, 10.dp)
-                .border(width = 0.8.dp, color = MaterialTheme.appColors.primaryButtonColor.copy(alpha = 0.5f), shape = RoundedCornerShape(16.dp))) {
+            .fillMaxWidth()
+            .padding(10.dp, 10.dp)
+            .border(
+                width = 0.8.dp,
+                color = MaterialTheme.appColors.primaryButtonColor.copy(alpha = 0.5f),
+                shape = RoundedCornerShape(16.dp)
+            )) {
             Column(verticalArrangement = Arrangement.Center, modifier = Modifier.padding(10.dp)) {
                 Text(text = "Total Balance", style = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.appColors.totalBalanceColor, fontSize = 14.sp, fontWeight = FontWeight(700)), modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 10.dp, top = 10.dp, end = 10.dp))
+                    .fillMaxWidth()
+                    .padding(start = 10.dp, top = 10.dp, end = 10.dp))
                 Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(start = 10.dp, end = 10.dp)
 
                 ) {
                     Image(painter = painterResource(id = R.drawable.total_balance), contentDescription = "", modifier = Modifier)
                     Text(text = "99.34628923", style = MaterialTheme.typography.titleLarge.copy(color = MaterialTheme.appColors.textColor, fontSize = 24.sp, fontWeight = FontWeight(700)), modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp), fontSize = 24.sp)
+                        .fillMaxWidth()
+                        .padding(10.dp), fontSize = 24.sp)
                 }
             }
         }
         Column(modifier = Modifier
-                .padding(10.dp)
-                .background(color = MaterialTheme.appColors.receiveCardBackground, shape = RoundedCornerShape(18.dp))
+            .padding(10.dp)
+            .background(
+                color = MaterialTheme.appColors.receiveCardBackground,
+                shape = RoundedCornerShape(18.dp)
+            )
 
         ) {
             Column(modifier = Modifier.padding(10.dp)
@@ -428,8 +450,8 @@ fun SendScreen(listener: SendFragment.Listener) {
             ) {
 
                 Text(text = "Enter BDX Amount", modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp, bottom = 5.dp, start = 10.dp), style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp, fontWeight = FontWeight(600), color = MaterialTheme.appColors.textColor))
+                    .fillMaxWidth()
+                    .padding(top = 10.dp, bottom = 5.dp, start = 10.dp), style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp, fontWeight = FontWeight(600), color = MaterialTheme.appColors.textColor))
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
 
                     BChatOutlinedTextField(
@@ -484,9 +506,9 @@ fun SendScreen(listener: SendFragment.Listener) {
                             textColor = MaterialTheme.appColors.textColor,
                             maxLen = 16,
                             modifier = Modifier
-                                    .padding(10.dp)
-                                    .fillMaxWidth()
-                                    .weight(1f),
+                                .padding(10.dp)
+                                .fillMaxWidth()
+                                .weight(1f),
                             shape = RoundedCornerShape(8.dp),
                     )
 
@@ -511,14 +533,20 @@ fun SendScreen(listener: SendFragment.Listener) {
 
                 ) {
                     Text(text = "Beldex Address", style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.textColor, fontSize = 16.sp, fontWeight = FontWeight(700)), modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
-                            .padding(10.dp))
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .padding(10.dp))
 
-                    Box(modifier = Modifier
+                    Box(
+                        modifier = Modifier
                             .width(32.dp)
                             .height(32.dp)
-                            .background(colorResource(id = R.color.your_bchat_id_bg), shape = RoundedCornerShape(10.dp)), contentAlignment = Alignment.Center) {
+                            .background(
+                                colorResource(id = R.color.your_bchat_id_bg),
+                                shape = RoundedCornerShape(10.dp)
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
 
                         Image(painter = painterResource(id = R.drawable.qr_code_send), contentDescription = "", modifier = Modifier.clickable {
                             if (!CheckOnline.isOnline(context)) {
@@ -567,9 +595,9 @@ fun SendScreen(listener: SendFragment.Listener) {
                         setMode(Mode.BDX)
                     }
                 }, modifier = Modifier
-                        .fillMaxWidth()
-                        .height(120.dp)
-                        .padding(10.dp), shape = RoundedCornerShape(12.dp), colors = TextFieldDefaults.colors(unfocusedContainerColor = MaterialTheme.appColors.beldexAddressBackground, focusedContainerColor = MaterialTheme.appColors.beldexAddressBackground, focusedIndicatorColor = Color.Transparent, unfocusedIndicatorColor = Color.Transparent, disabledIndicatorColor = Color.Transparent, cursorColor = colorResource(id = R.color.button_green)), textStyle = TextStyle(color = MaterialTheme.appColors.primaryButtonColor, fontSize = 13.sp, fontWeight = FontWeight(400)), maxLines = 106
+                    .fillMaxWidth()
+                    .height(120.dp)
+                    .padding(10.dp), shape = RoundedCornerShape(12.dp), colors = TextFieldDefaults.colors(unfocusedContainerColor = MaterialTheme.appColors.beldexAddressBackground, focusedContainerColor = MaterialTheme.appColors.beldexAddressBackground, focusedIndicatorColor = Color.Transparent, unfocusedIndicatorColor = Color.Transparent, disabledIndicatorColor = Color.Transparent, cursorColor = colorResource(id = R.color.button_green)), textStyle = TextStyle(color = MaterialTheme.appColors.primaryButtonColor, fontSize = 13.sp, fontWeight = FontWeight(400)), maxLines = 106
 
                 )
 
@@ -586,9 +614,13 @@ fun SendScreen(listener: SendFragment.Listener) {
 
 
                 Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically, modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp, 20.dp, 20.dp, 20.dp)
-                        .border(width = 0.8.dp, color = colorResource(id = R.color.divider_color).copy(alpha = 0.5f), shape = RoundedCornerShape(8.dp))) {
+                    .fillMaxWidth()
+                    .padding(20.dp, 20.dp, 20.dp, 20.dp)
+                    .border(
+                        width = 0.8.dp,
+                        color = colorResource(id = R.color.divider_color).copy(alpha = 0.5f),
+                        shape = RoundedCornerShape(8.dp)
+                    )) {
                     Text(text = estimatedFee, style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.textHint, fontSize = 14.sp, fontWeight = FontWeight(700)), modifier = Modifier.padding(20.dp))
                 }
 
@@ -601,8 +633,8 @@ fun SendScreen(listener: SendFragment.Listener) {
                     // context.startActivity(Intent(context, OnBoardingActivity::class.java))
                 },
                 modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp),
+                    .fillMaxWidth()
+                    .padding(10.dp),
                 shape = RoundedCornerShape(16.dp),
         ) {
             Text(text = stringResource(id = R.string.send), style = BChatTypography.bodyLarge.copy(color = Color.White), modifier = Modifier.padding(8.dp))

@@ -22,6 +22,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.thoughtcrimes.securesms.data.TxData;
 import com.thoughtcrimes.securesms.home.HomeActivity;
@@ -33,6 +34,7 @@ import com.thoughtcrimes.securesms.util.Helper;
 import com.thoughtcrimes.securesms.util.LocalHelper;
 import com.thoughtcrimes.securesms.wallet.CheckOnline;
 import com.thoughtcrimes.securesms.wallet.WalletFragment;
+import com.thoughtcrimes.securesms.wallet.utils.WalletCallbackType;
 
 import io.beldex.bchat.R;
 import timber.log.Timber;
@@ -121,6 +123,10 @@ public class WalletService extends Service {
                         if (observer != null)
                             observer.onRefreshed(wallet, false);
                     }
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("type", WalletCallbackType.WalletRefreshed);
+                    bundle.putBoolean("full_refresh", false);
+                    sendBroadCast(bundle);
                 }
             }
         }
@@ -149,6 +155,10 @@ public class WalletService extends Service {
                     if (observer != null) {
                         updated = !observer.onRefreshed(wallet, true);
                     }
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("type", WalletCallbackType.WalletRefreshed);
+                    bundle.putBoolean("full_refresh", true);
+                    sendBroadCast(bundle);
                 }
 
             }
@@ -230,6 +240,10 @@ public class WalletService extends Service {
         if (observer != null) {
             observer.onProgress(text);
         }
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("type", WalletCallbackType.ProgressString);
+        bundle.putString("data", text);
+        sendBroadCast(bundle);
     }
 
     private void showProgress(int n) {
@@ -237,6 +251,10 @@ public class WalletService extends Service {
         if (observer != null) {
             observer.onProgress(n);
         }
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("type", WalletCallbackType.ProgressInt);
+        bundle.putInt("data", n);
+        sendBroadCast(bundle);
     }
 
     public String getProgressText() {
@@ -289,6 +307,9 @@ public class WalletService extends Service {
                                         Log.d("Exception", ex.toString());
                                     }
                                 }
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("type", WalletCallbackType.WalletStarted);
+                                sendBroadCast(bundle);
                                 if ((walletStatus == null) || !walletStatus.isOk()) {
                                     errorState = true;
                                     stop();
@@ -302,6 +323,10 @@ public class WalletService extends Service {
                                 boolean rc = myWallet.store();
                                 if (observer != null)
                                     observer.onWalletStored(rc);
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("type", WalletCallbackType.WalletRestored);
+                                bundle.putBoolean("data", rc);
+                                sendBroadCast(bundle);
                             }catch(Exception e){
                                 Log.d("WalletService ",e.toString());
                             }
@@ -318,6 +343,11 @@ public class WalletService extends Service {
                             } else {
                                 myWallet.disposePendingTransaction();
                             }
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("type", WalletCallbackType.TransactionCreated);
+                            bundle.putSerializable("data", pendingTransaction);
+                            bundle.putString("tag", "txTag");
+                            sendBroadCast(bundle);
                             break;
                         }
                         case REQUEST_CMD_SWEEP: {
@@ -332,6 +362,11 @@ public class WalletService extends Service {
                             } else {
                                 myWallet.disposePendingTransaction();
                             }
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("type", WalletCallbackType.TransactionCreated);
+                            bundle.putSerializable("data", pendingTransaction);
+                            bundle.putString("tag", "txTag");
+                            sendBroadCast(bundle);
                             break;
                         }
                         case REQUEST_CMD_SEND: {
@@ -345,6 +380,10 @@ public class WalletService extends Service {
                                 final String error = pendingTransaction.getErrorString();
                                 myWallet.disposePendingTransaction(); // it's broken anyway
                                 if (observer != null) observer.onSendTransactionFailed(error);
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("type", WalletCallbackType.SendTransactionFailed);
+                                bundle.putString("data", error);
+                                sendBroadCast(bundle);
                                 return;
                             }
                             final String txid = pendingTransaction.getFirstTxId(); // tx ids vanish after commit()!
@@ -352,6 +391,10 @@ public class WalletService extends Service {
                             if (success) {
                                 myWallet.disposePendingTransaction();
                                 if (observer != null) observer.onTransactionSent(txid);
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("type", WalletCallbackType.TransactionSent);
+                                bundle.putString("data", txid);
+                                sendBroadCast(bundle);
                                 String notes = extras.getString(REQUEST_CMD_SEND_NOTES);
                                 if ((notes != null) && (!notes.isEmpty())) {
                                     myWallet.setUserNote(txid, notes);
@@ -359,6 +402,10 @@ public class WalletService extends Service {
                                 try {
                                     boolean rc = myWallet.store();
                                     if (observer != null) observer.onWalletStored(rc);
+                                    Bundle bundle1 = new Bundle();
+                                    bundle.putSerializable("type", WalletCallbackType.WalletRestored);
+                                    bundle.putBoolean("data", rc);
+                                    sendBroadCast(bundle1);
                                     listener.updated = true;
                                 }catch(Exception e){
                                     Log.d("WalletService",e.toString());
@@ -367,6 +414,10 @@ public class WalletService extends Service {
                                 final String error = pendingTransaction.getErrorString();
                                 myWallet.disposePendingTransaction();
                                 if (observer != null) observer.onSendTransactionFailed(error);
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("type", WalletCallbackType.SendTransactionFailed);
+                                bundle.putString("data", error);
+                                sendBroadCast(bundle);
                                 return;
                             }
                             break;
@@ -569,6 +620,13 @@ public class WalletService extends Service {
         channel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
         notificationManager.createNotificationChannel(channel);
         return CHANNEL_ID;
+    }
+
+    private void sendBroadCast(Bundle data) {
+        Intent intent = new Intent();
+        intent.setAction("io.beldex.WALLET_ACTION");
+        intent.putExtra("io.beldex.WALLET_DATA", data);
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
     }
 }
 //endregion

@@ -96,15 +96,17 @@ fun SendScreen(listener: SendFragment.Listener) {
 
     ComposeBroadcastReceiver(systemAction = "io.beldex.WALLET_ACTION") {
         if (it?.action == "io.beldex.WALLET_ACTION") {
-            when (it.serializable<WalletCallbackType>("type")) {
-                WalletCallbackType.TransactionCreated -> {
-                    val pendingTransaction = it.serializable<PendingTransaction>("data")
-                    val tag = it.getStringExtra("tag")
+            it.extras?.getBundle("io.beldex.WALLET_DATA")?.let { data ->
+                when (data.serializable<WalletCallbackType>("type")) {
+                    WalletCallbackType.TransactionCreated -> {
+                        val pendingTransaction = data.serializable<PendingTransaction>("data")
+                        val tag = data.getString("tag")
+                    }
+                    WalletCallbackType.TransactionSent -> {
+                        val transactionId = data.getString("data")
+                    }
+                    else -> Unit
                 }
-                WalletCallbackType.TransactionSent -> {
-                    val transactionId = it.getStringExtra("data")
-                }
-                else -> Unit
             }
         }
     }

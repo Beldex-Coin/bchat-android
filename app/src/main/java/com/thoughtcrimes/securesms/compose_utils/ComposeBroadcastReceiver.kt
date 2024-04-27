@@ -30,7 +30,7 @@ fun ComposeBroadcastReceiver(
             }
         }
 
-//        context.registerReceiver( receiver, intentFilter)
+       context.registerReceiver( receiver, intentFilter)
         LocalBroadcastManager.getInstance(context).registerReceiver(
             receiver, intentFilter
         )

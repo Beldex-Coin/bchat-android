@@ -23,6 +23,11 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.get
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.ApplicationContext
@@ -35,9 +40,12 @@ import com.thoughtcrimes.securesms.util.BChatThreadPoolExecutor
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.NodePinger
 import com.thoughtcrimes.securesms.util.daterangepicker.DateRangePicker
+import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.WalletViewModels
 import com.thoughtcrimes.securesms.wallet.utils.common.fetchPriceFor
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.FragmentWalletBinding
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
@@ -84,6 +92,8 @@ class WalletFragment : Fragment(),OnBackPressedListener {
     }
 
     private var syncProgress = -1
+    private val viewModel: WalletViewModels by activityViewModels()
+
 
     fun setProgress(n: Int) {
         syncProgress = n
@@ -788,6 +798,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
     }
 
     private fun showSelectedDecimalBalance(balance: String, synchronized: Boolean){
+        viewModel.updateBalance(balance)
         if(!synchronized){
             binding.fetchBalanceStatus.visibility =View.VISIBLE
             when {
@@ -994,5 +1005,52 @@ class WalletFragment : Fragment(),OnBackPressedListener {
     override fun onBackPressed(): Boolean {
         return false
     }
+
+   class WalletViewModel: ViewModel(){
+
+       private var _balance = MutableLiveData<String?>()
+       val balance: MutableLiveData<String?> get () = _balance
+
+       private val _myBalance = MutableStateFlow<String>("")
+       val myBalance = _myBalance.asStateFlow()
+
+       val _textValue = MutableLiveData<String> ()
+       val textValue: LiveData<String> get () = _textValue
+
+       var myFullBalance: String = "0900."
+
+       var _isButtonsExpanded = MutableStateFlow("")
+       var isButtonExpanded = _isButtonsExpanded.asStateFlow()
+
+       fun updateMyFullBalance(newValue: String){
+           myFullBalance = newValue
+       }
+
+
+
+
+       fun updateText(newValue: String){
+           _isButtonsExpanded.value = newValue
+       }
+
+       fun updateBalance(balance: String?){
+           _balance.value = balance
+       }
+
+       fun updateMyBalance(myBalance: String){
+           _myBalance.value = myBalance
+       }
+
+       var someLiveData: LiveData<Any> = MutableLiveData()
+
+       fun changeItsValue(someValue: Any) {
+           (someLiveData as? MutableLiveData)?.value = someValue
+       }
+
+       private val _uiState = MutableStateFlow("")
+       val uiState = _uiState.asStateFlow()
+
+
+   }
 }
 //endregion

@@ -3,9 +3,7 @@ package com.thoughtcrimes.securesms.wallet.jetpackcomposeUI
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,7 +35,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -65,32 +62,13 @@ import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.model.TransactionInfo
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.wallet.WalletFragment
-import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.CategoryHeader
 import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.walletdashboard.FilterTransactionByDatePopUp
 import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 
-/*class WalletDashBoardScreen : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            BChatTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.primary
-                ) {
-                    WalletDashBoard(viewModels, activityCallback, onScanListener)
-                }
-            }
-        }
-    }
-}*/
-
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WalletDashBoard(
     viewModels: WalletViewModels,
@@ -332,7 +310,7 @@ fun WalletDashBoard(
                             Text(
                                 text = syncStatus,
                                 style = MaterialTheme.typography.bodyMedium.copy(
-                                    colorResource(id = syncStatusTextColor),//MaterialTheme.appColors.titleTextColor,
+                                    colorResource(id = syncStatusTextColor),
                                     fontSize = 14.sp
                                 ),
                                 modifier = Modifier
@@ -358,7 +336,7 @@ fun WalletDashBoard(
                                     .height(1.dp),
                                 progress = progress,
                                 trackColor = MaterialTheme.appColors.textFieldUnfocusedColor,
-                                color = colorResource(id = progressBarColor)//MaterialTheme.appColors.primaryButtonColor,
+                                color = colorResource(id = progressBarColor)
                             )
                         }
 
@@ -803,75 +781,75 @@ fun WalletDashBoard(
                                             var transactionFeeIsVisible: Boolean = false
                                             if (isBNS) {
                                                 transactionStatusIcon =
-                                                    R.drawable.bns_transaction//tvTxStatusIcon.setImageResource(R.drawable.bns_transaction)
+                                                    R.drawable.bns_transaction
                                                 transactionStatus =
-                                                    context.getString(R.string.tx_status_sent)//tvTxStatus.text = context.getString(R.string.tx_status_sent)
+                                                    context.getString(R.string.tx_status_sent)
                                                 if (displayAmount > 0.toString()) {
                                                     transactionAmount = context.getString(
                                                         R.string.tx_list_amount_negative,
                                                         displayAmount
-                                                    )//tvAmount.text = context.getString(R.string.tx_list_amount_negative, displayAmount)
+                                                    )
                                                     transactionAmountTextColor =
-                                                        R.color.wallet_send_button//tvAmount.setTextColor(ContextCompat.getColor(context, R.color.wallet_send_button))
+                                                        R.color.wallet_send_button
                                                 }
                                             } else {
                                                 if (infoItems.direction === TransactionInfo.Direction.Direction_Out) {
                                                     transactionStatus =
-                                                        context.getString(R.string.tx_status_sent)//tvTxStatus.text = context.getString(R.string.tx_status_sent)
+                                                        context.getString(R.string.tx_status_sent)
                                                     transactionStatusIcon =
-                                                        R.drawable.ic_wallet_send_button//tvTxStatusIcon.setImageResource(R.drawable.ic_wallet_send_button)
+                                                        R.drawable.ic_wallet_send_button
                                                     if (displayAmount > 0.toString()) {
                                                         transactionAmount = context.getString(
                                                             R.string.tx_list_amount_negative,
                                                             displayAmount
-                                                        )//tvAmount.text = context.getString(R.string.tx_list_amount_negative, displayAmount)
+                                                        )
                                                         transactionAmountTextColor =
-                                                            R.color.wallet_send_button//tvAmount.setTextColor(context.getColor(context, R.color.wallet_send_button))
+                                                            R.color.wallet_send_button
                                                     }
                                                 } else {
                                                     transactionStatus =
-                                                        context.getString(R.string.tx_status_received)//tvTxStatus.text = context.getString(R.string.tx_status_received)
+                                                        context.getString(R.string.tx_status_received)
                                                     transactionStatusIcon =
-                                                        R.drawable.ic_wallet_receive_button//tvTxStatusIcon.setImageResource(R.drawable.ic_wallet_receive_button)
+                                                        R.drawable.ic_wallet_receive_button
                                                     if (displayAmount > 0.toString()) {
                                                         transactionAmount = context.getString(
                                                             R.string.tx_list_amount_positive,
                                                             displayAmount
-                                                        )//tvAmount.text = ContextCompat.getString(R.string.tx_list_amount_positive, displayAmount)
+                                                        )
                                                         transactionAmountTextColor =
-                                                            R.color.wallet_receive_button//tvAmount.setTextColor(ContextCompat.getColor(context, R.color.wallet_receive_button))
+                                                            R.color.wallet_receive_button
                                                     }
                                                 }
                                             }
-                                            transactionId = infoItems.hash//txId.text = infoItem.hash
+                                            transactionId = infoItems.hash
 
                                             if (infoItems.paymentId != "0000000000000000") {
                                                 transactionPaymentIdIsVisible =
-                                                    true//tvPaymentId.visibility = View.VISIBLE //tvPaymentIdTitle.visibility = View.VISIBLE
+                                                    true
                                                 transactionPaymentId =
-                                                    infoItems.paymentId//tvPaymentId.text = infoItem.paymentId
+                                                    infoItems.paymentId
                                             } else {
                                                 transactionPaymentIdIsVisible =
-                                                    false//tvPaymentId.visibility = View.GONE //tvPaymentIdTitle.visibility = View.GONE
+                                                    false
                                             }
                                             when {
                                                 infoItems.isFailed -> {
                                                     transactionBlockHeight =
-                                                        context.getString(R.string.tx_failed)//tvTxBlockHeight.text = context.getString(R.string.tx_failed)
+                                                        context.getString(R.string.tx_failed)
                                                 }
 
                                                 infoItems.isPending -> {
                                                     transactionBlockHeight =
-                                                        context.getString(R.string.tx_pending)//tvTxBlockHeight.text = context.getString(R.string.tx_pending)
+                                                        context.getString(R.string.tx_pending)
                                                 }
 
                                                 else -> {
                                                     transactionBlockHeight =
-                                                        infoItems.blockheight.toString()//tvTxBlockHeight.text = infoItem.blockheight.toString()
+                                                        infoItems.blockheight.toString()
                                                 }
                                             }
                                             transactionDateTime =
-                                                getDateTime(infoItems.timestamp)//tvDateTimeHead.text = getDateTime(infoItem.timestamp)
+                                                getDateTime(infoItems.timestamp)
 
                                             if (infoItems.fee > 0) {
                                                 val fee: String = Helper.getDisplayAmount(
@@ -881,38 +859,38 @@ fun WalletDashBoard(
                                                 transactionFee = context.getString(
                                                     R.string.tx_list_fee,
                                                     fee
-                                                )//tvFee.text = context.getString(R.string.tx_list_fee, fee)
+                                                )
                                                 transactionFeeIsVisible =
-                                                    true//tvFee.visibility = View.VISIBLE //tvFeeTitle.visibility = View.VISIBLE
+                                                    true
                                             } else {
-                                                transactionFee = ""//tvFee.text = ""
+                                                transactionFee = ""
                                                 transactionFeeIsVisible =
-                                                    false//tvFee.visibility = View.GONE //tvFeeTitle.visibility = View.GONE
+                                                    false
                                             }
                                             if (infoItems.isFailed) {
                                                 transactionAmount = context.getString(
                                                     R.string.tx_list_amount_failed,
                                                     displayAmount
-                                                )//tvAmount.text = context.getString(R.string.tx_list_amount_failed, displayAmount)
+                                                )
                                                 transactionFee =
-                                                    context.getString(R.string.tx_list_failed_text)//tvFee.text = context.getString(R.string.tx_list_failed_text)
+                                                    context.getString(R.string.tx_list_failed_text)
                                                 transactionFeeIsVisible =
-                                                    true//tvFee.visibility = View.VISIBLE//tvFeeTitle.visibility = View.VISIBLE
+                                                    true
                                                 transactionAmountTextColor =
-                                                    R.color.tx_failed//setTxColour(failedColour)
+                                                    R.color.tx_failed
                                             } else if (infoItems.isPending) {
                                                 transactionAmountTextColor =
-                                                    R.color.tx_pending//setTxColour(pendingColour)
+                                                    R.color.tx_pending
                                             } else if (infoItems.direction === TransactionInfo.Direction.Direction_In) {
                                                 transactionAmountTextColor =
-                                                    R.color.tx_plus//setTxColour(inboundColour)
+                                                    R.color.tx_plus
                                                 if (!infoItems.isConfirmed) {
                                                     val confirmations =
                                                         infoItems.confirmations.toInt()
                                                 }
                                             } else {
                                                 transactionAmountTextColor =
-                                                    R.color.wallet_send_button//setTxColour(outboundColour)
+                                                    R.color.wallet_send_button
                                             }
 
                                             Column {
@@ -934,7 +912,7 @@ fun WalletDashBoard(
                                                         Text(
                                                             text = "$transactionAmount BDX",
                                                             style = MaterialTheme.typography.titleMedium.copy(
-                                                                color = colorResource(id = transactionAmountTextColor),//color = MaterialTheme.appColors.transactionDateTitle,
+                                                                color = colorResource(id = transactionAmountTextColor),
                                                                 fontSize = 15.sp,
                                                                 fontWeight = FontWeight.Bold
                                                             )
@@ -997,74 +975,74 @@ fun WalletDashBoard(
                                 var transactionRecipientAddress: String? = ""
                                 if (isBNS) {
                                     transactionStatusIcon =
-                                        R.drawable.bns_transaction//tvTxStatusIcon.setImageResource(R.drawable.bns_transaction)
+                                        R.drawable.bns_transaction
                                     transactionStatus =
-                                        context.getString(R.string.tx_status_sent)//tvTxStatus.text = context.getString(R.string.tx_status_sent)
+                                        context.getString(R.string.tx_status_sent)
                                     if (displayAmount > 0.toString()) {
                                         transactionAmount = context.getString(
                                             R.string.tx_list_amount_negative,
                                             displayAmount
-                                        )//tvAmount.text = context.getString(R.string.tx_list_amount_negative, displayAmount)
+                                        )
                                         transactionAmountTextColor =
-                                            R.color.wallet_send_button//tvAmount.setTextColor(ContextCompat.getColor(context, R.color.wallet_send_button))
+                                            R.color.wallet_send_button
                                     }
                                 } else {
                                     if (transactionInfoItem!!.direction === TransactionInfo.Direction.Direction_Out) {
                                         transactionStatus =
-                                            context.getString(R.string.tx_status_sent)//tvTxStatus.text = context.getString(R.string.tx_status_sent)
+                                            context.getString(R.string.tx_status_sent)
                                         transactionStatusIcon =
-                                            R.drawable.ic_wallet_send_button//tvTxStatusIcon.setImageResource(R.drawable.ic_wallet_send_button)
+                                            R.drawable.ic_wallet_send_button
                                         if (displayAmount > 0.toString()) {
                                             transactionAmount = context.getString(
                                                 R.string.tx_list_amount_negative,
                                                 displayAmount
-                                            )//tvAmount.text = context.getString(R.string.tx_list_amount_negative, displayAmount)
+                                            )
                                             transactionAmountTextColor =
-                                                R.color.wallet_send_button//tvAmount.setTextColor(context.getColor(context, R.color.wallet_send_button))
+                                                R.color.wallet_send_button
                                         }
                                     } else {
                                         transactionStatus =
-                                            context.getString(R.string.tx_status_received)//tvTxStatus.text = context.getString(R.string.tx_status_received)
+                                            context.getString(R.string.tx_status_received)
                                         transactionStatusIcon =
-                                            R.drawable.ic_wallet_receive_button//tvTxStatusIcon.setImageResource(R.drawable.ic_wallet_receive_button)
+                                            R.drawable.ic_wallet_receive_button
                                         if (displayAmount > 0.toString()) {
                                             transactionAmount = context.getString(
                                                 R.string.tx_list_amount_positive,
                                                 displayAmount
-                                            )//tvAmount.text = ContextCompat.getString(R.string.tx_list_amount_positive, displayAmount)
+                                            )
                                             transactionAmountTextColor =
-                                                R.color.wallet_receive_button//tvAmount.setTextColor(ContextCompat.getColor(context, R.color.wallet_receive_button))
+                                                R.color.wallet_receive_button
                                         }
                                     }
                                 }
                                 transactionId =
-                                    transactionInfoItem!!.hash//txId.text = infoItem.hash
+                                    transactionInfoItem!!.hash
 
                                 if (transactionInfoItem!!.paymentId != "0000000000000000") {
                                     transactionPaymentIdIsVisible =
-                                        true//tvPaymentId.visibility = View.VISIBLE //tvPaymentIdTitle.visibility = View.VISIBLE
+                                        true
                                     transactionPaymentId =
-                                        transactionInfoItem!!.paymentId//tvPaymentId.text = infoItem.paymentId
+                                        transactionInfoItem!!.paymentId
                                 } else {
                                     transactionPaymentIdIsVisible =
-                                        false//tvPaymentId.visibility = View.GONE //tvPaymentIdTitle.visibility = View.GONE
+                                        false
                                     transactionPaymentId = ""
                                 }
                                 transactionBlockHeight = when {
                                     transactionInfoItem!!.isFailed -> {
-                                        context.getString(R.string.tx_failed)//tvTxBlockHeight.text = context.getString(R.string.tx_failed)
+                                        context.getString(R.string.tx_failed)
                                     }
 
                                     transactionInfoItem!!.isPending -> {
-                                        context.getString(R.string.tx_pending)//tvTxBlockHeight.text = context.getString(R.string.tx_pending)
+                                        context.getString(R.string.tx_pending)
                                     }
 
                                     else -> {
-                                        transactionInfoItem!!.blockheight.toString()//tvTxBlockHeight.text = infoItem.blockheight.toString()
+                                        transactionInfoItem!!.blockheight.toString()
                                     }
                                 }
                                 transactionDateTime =
-                                    getDateTime(transactionInfoItem!!.timestamp)//tvDateTimeHead.text = getDateTime(infoItem.timestamp)
+                                    getDateTime(transactionInfoItem!!.timestamp)
 
                                 if (transactionInfoItem!!.fee > 0) {
                                     val fee: String = Helper.getDisplayAmount(
@@ -1074,38 +1052,38 @@ fun WalletDashBoard(
                                     transactionFee = context.getString(
                                         R.string.tx_list_fee,
                                         fee
-                                    )//tvFee.text = context.getString(R.string.tx_list_fee, fee)
+                                    )
                                     transactionFeeIsVisible =
-                                        true//tvFee.visibility = View.VISIBLE //tvFeeTitle.visibility = View.VISIBLE
+                                        true
                                 } else {
                                     transactionFee = ""//tvFee.text = ""
                                     transactionFeeIsVisible =
-                                        false//tvFee.visibility = View.GONE //tvFeeTitle.visibility = View.GONE
+                                        false
                                 }
                                 if (transactionInfoItem!!.isFailed) {
                                     transactionAmount = context.getString(
                                         R.string.tx_list_amount_failed,
                                         displayAmount
-                                    )//tvAmount.text = context.getString(R.string.tx_list_amount_failed, displayAmount)
+                                    )
                                     transactionFee =
-                                        context.getString(R.string.tx_list_failed_text)//tvFee.text = context.getString(R.string.tx_list_failed_text)
+                                        context.getString(R.string.tx_list_failed_text)
                                     transactionFeeIsVisible =
-                                        true//tvFee.visibility = View.VISIBLE//tvFeeTitle.visibility = View.VISIBLE
+                                        true
                                     transactionAmountTextColor =
-                                        R.color.tx_failed//setTxColour(failedColour)
+                                        R.color.tx_failed
                                 } else if (transactionInfoItem!!.isPending) {
                                     transactionAmountTextColor =
-                                        R.color.tx_pending//setTxColour(pendingColour)
+                                        R.color.tx_pending
                                 } else if (transactionInfoItem!!.direction === TransactionInfo.Direction.Direction_In) {
                                     transactionAmountTextColor =
-                                        R.color.tx_plus//setTxColour(inboundColour)
+                                        R.color.tx_plus
                                     if (!transactionInfoItem!!.isConfirmed) {
                                         val confirmations =
                                             transactionInfoItem!!.confirmations.toInt()
                                     }
                                 } else {
                                     transactionAmountTextColor =
-                                        R.color.wallet_send_button//setTxColour(outboundColour)
+                                        R.color.wallet_send_button
                                 }
 
                                 transactionRecipientAddress =
@@ -1115,9 +1093,9 @@ fun WalletDashBoard(
                                     ) {
                                         DatabaseComponent.get(context)
                                             .bchatRecipientAddressDatabase()
-                                            .getRecipientAddress(transactionInfoItem!!.hash)//holder.tvAddress.text = DatabaseComponent.get(context).bchatRecipientAddressDatabase().getRecipientAddress(transactionInfoItem!!.hash)
+                                            .getRecipientAddress(transactionInfoItem!!.hash)
                                     } else {
-                                        ""//holder.tvAddressTitle.visibility = View.GONE //holder.tvAddress.text = ""
+                                        ""
                                     }
 
                                 Column(
@@ -1141,7 +1119,7 @@ fun WalletDashBoard(
                                             Text(
                                                 text = "$transactionAmount BDX",
                                                 style = MaterialTheme.typography.titleMedium.copy(
-                                                    color = colorResource(id = transactionAmountTextColor),//MaterialTheme.appColors.transactionDateTitle,
+                                                    color = colorResource(id = transactionAmountTextColor),
                                                     fontSize = 15.sp,
                                                     fontWeight = FontWeight.Bold
                                                 )
@@ -1158,7 +1136,7 @@ fun WalletDashBoard(
                                         Text(
                                             text = transactionStatus!!,
                                             style = MaterialTheme.typography.bodyMedium.copy(
-                                                color = colorResource(id = transactionAmountTextColor),//MaterialTheme.appColors.transactionSubTitle,
+                                                color = colorResource(id = transactionAmountTextColor),
                                                 fontSize = 14.sp,
                                                 fontWeight = FontWeight.Bold
                                             ),
@@ -1535,7 +1513,7 @@ private fun CategoryHeader(
     val date= convertStringToDate(dateTimeStamp)
     val diffDays: Long = date.time - System.currentTimeMillis()
 
-    val dayCount:Int = (diffDays.toFloat() / (24 * 60 * 60 * 1000)).toInt()//date.difference(nowDate).inDays;
+    val dayCount:Int = (diffDays.toFloat() / (24 * 60 * 60 * 1000)).toInt()
     val isToday:Boolean = nowDate == date
     var title = ""
 
@@ -1573,7 +1551,7 @@ fun filter(
     }
     callIfTransactionListEmpty(temp.size, viewModels)
     //update recyclerview
-    viewModels.updateTransactionInfoItems(temp)//adapter!!.updateList(temp)
+    viewModels.updateTransactionInfoItems(temp)
 }
 
 private fun filterAll(arrayList: MutableList<TransactionInfo>, viewModels: WalletViewModels) {
@@ -1583,15 +1561,15 @@ private fun filterAll(arrayList: MutableList<TransactionInfo>, viewModels: Walle
     }
     callIfTransactionListEmpty(temp.size, viewModels)
     //update recyclerview
-    viewModels.updateTransactionInfoItems(temp)//adapter!!.updateList(temp)
+    viewModels.updateTransactionInfoItems(temp)
 }
 
 private fun callIfTransactionListEmpty(size: Int, viewModels: WalletViewModels) {
     if (size > 0) {
-        viewModels.setTransactionListContainerIsVisible(true)//binding.transactionList.visibility = View.VISIBLE //binding.emptyContainerLayout.visibility = View.GONE
+        viewModels.setTransactionListContainerIsVisible(true)
     } else {
-        viewModels.setFilterTransactionIconIsClickable(true)//binding.filterTransactionsIcon.isClickable = true
-        viewModels.setTransactionListContainerIsVisible(false)//binding.transactionList.visibility = View.GONE //binding.emptyContainerLayout.visibility = View.VISIBLE
+        viewModels.setFilterTransactionIconIsClickable(true)
+        viewModels.setTransactionListContainerIsVisible(false)
     }
 }
 
@@ -1609,24 +1587,3 @@ private fun convertStringToDate(date: String): Date {
     val DATETIME_FORMATTER = SimpleDateFormat("dd-MM-yyyy")
     return DATETIME_FORMATTER.parse(date) as Date
 }
-
-/*
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun WalletDashBoardPreview() {
-    BChatTheme(
-        darkTheme = true
-    ) {
-        WalletDashBoard(viewModels, activityCallback, onScanListener)
-    }
-}
-
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Composable
-fun WalletDashBoardPreviewLight() {
-    BChatTheme (
-        darkTheme = false
-    ){
-        WalletDashBoard(viewModels, activityCallback, onScanListener)
-    }
-}*/

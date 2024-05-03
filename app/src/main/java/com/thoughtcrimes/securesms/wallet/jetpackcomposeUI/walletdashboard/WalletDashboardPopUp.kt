@@ -187,7 +187,7 @@ fun FilterTransactionByDatePopUp(
                             }else if(incomingTransactionIsChecked){
                                 viewModels.adapterTransactionInfoItems.value?.let {list->
                                     filterTempList(TransactionInfo.Direction.Direction_In,
-                                        list,viewModels
+                                        list
                                     )
                                 }?.let {
                                     filterTransactionsByDate(
@@ -200,7 +200,7 @@ fun FilterTransactionByDatePopUp(
                             }else if(outgoingTransactionIsChecked){
                                 viewModels.adapterTransactionInfoItems.value?.let {list->
                                     filterTempList(TransactionInfo.Direction.Direction_Out,
-                                        list,viewModels
+                                        list
                                     )
                                 }?.let {
                                     filterTransactionsByDate(
@@ -250,7 +250,7 @@ fun FilterTransactionByDatePopUp(
     }
 }
 
-private fun filterTempList(text: TransactionInfo.Direction, arrayList: MutableList<TransactionInfo>, viewModels: WalletViewModels):MutableList<TransactionInfo> {
+private fun filterTempList(text: TransactionInfo.Direction, arrayList: MutableList<TransactionInfo>):MutableList<TransactionInfo> {
     val temp: MutableList<TransactionInfo> = ArrayList()
     for (d in arrayList) {
         if (d.direction == text) {
@@ -277,16 +277,16 @@ private fun filterTransactionsByDate(
     }
     callIfTransactionListEmpty(temp.size, viewModels)
     //update recyclerview
-    viewModels.updateTransactionInfoItems(temp)//adapter!!.updateList(temp)
+    viewModels.updateTransactionInfoItems(temp)
     onDismiss()
 }
 
 private fun callIfTransactionListEmpty(size: Int, viewModels: WalletViewModels) {
     if (size > 0) {
-        viewModels.setTransactionListContainerIsVisible(true)//binding.transactionList.visibility = View.VISIBLE //binding.emptyContainerLayout.visibility = View.GONE
+        viewModels.setTransactionListContainerIsVisible(true)
     } else {
-        viewModels.setFilterTransactionIconIsClickable(true)//binding.filterTransactionsIcon.isClickable = true
-        viewModels.setTransactionListContainerIsVisible(false)//binding.transactionList.visibility = View.GONE //binding.emptyContainerLayout.visibility = View.VISIBLE
+        viewModels.setFilterTransactionIconIsClickable(true)
+        viewModels.setTransactionListContainerIsVisible(false)
     }
 }
 
@@ -427,34 +427,3 @@ private fun convertMillisToDate(millis: Long): String {
     val formatter = SimpleDateFormat("dd/MM/yyyy")
     return formatter.format(Date(millis))
 }
-
-/*
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun FilterTransactionByDatePopUpPreview() {
-    BChatTheme(
-        darkTheme = true
-    ) {
-        FilterTransactionByDatePopUp(
-            onDismiss = {},
-            context = context,
-            incomingTransactionIsChecked = incomingTransactionIsChecked,
-            outgoingTransactionIsChecked = outgoingTransactionIsChecked
-        )
-    }
-}
-
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
-@Composable
-fun FilterTransactionByDatePopUpLightPreview() {
-    BChatTheme(
-        darkTheme = false
-    ) {
-        FilterTransactionByDatePopUp(
-            onDismiss = {},
-            context = context,
-            incomingTransactionIsChecked = incomingTransactionIsChecked,
-            outgoingTransactionIsChecked = outgoingTransactionIsChecked
-        )
-    }
-}*/

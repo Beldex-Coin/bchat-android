@@ -1604,6 +1604,14 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }
     }
 
+    override fun onScan() {
+        if (Helper.getCameraPermission(this)) {
+            replaceFragmentWithTransition(null,ScannerFragment(),null,null)
+        } else {
+            Timber.i("Waiting for permissions")
+        }
+    }
+
 
     //SetDataAndType
     override fun passSharedMessageToConversationScreen(thread:Recipient) {

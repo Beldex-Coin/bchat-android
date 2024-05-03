@@ -50,13 +50,14 @@ import com.thoughtcrimes.securesms.compose_utils.appColors
 import com.thoughtcrimes.securesms.data.TxData
 import com.thoughtcrimes.securesms.model.PendingTransaction
 import com.thoughtcrimes.securesms.model.Wallet
+import com.thoughtcrimes.securesms.wallet.send.SendFragment
 import io.beldex.bchat.R
 
 
 @Composable
 fun TransactionConfirmPopUp(
         onDismiss: () -> Unit, pendingTransaction: PendingTransaction,
-        txData: TxData?,
+        txData: TxData?, onClick: () -> Unit
 ) {
 
     val beldexAddress by remember {
@@ -66,7 +67,7 @@ fun TransactionConfirmPopUp(
         mutableStateOf(Wallet.getDisplayAmount(pendingTransaction.fee))
     }
     val transferAmount by remember {
-        mutableStateOf(Wallet.getDisplayAmount(pendingTransaction.fee))
+        mutableStateOf(Wallet.getDisplayAmount(pendingTransaction.amount))
     }
     DialogContainer(
             onDismissRequest = onDismiss,
@@ -76,15 +77,15 @@ fun TransactionConfirmPopUp(
             OutlinedCard(colors = CardDefaults.cardColors(containerColor = MaterialTheme.appColors.dialogBackground), elevation = CardDefaults.cardElevation(defaultElevation = 4.dp), modifier = Modifier.fillMaxWidth()) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 24.dp)) {
-                    Text(text = stringResource(id = R.string.confirm_sending), style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight(800), color = MaterialTheme.appColors.primaryButtonColor), textAlign = TextAlign.Center, modifier = Modifier.padding(10.dp))
+                        .padding(horizontal = 16.dp, vertical = 16.dp)) {
+                    Text(text = stringResource(id = R.string.confirm_sending), style = MaterialTheme.typography.titleSmall.copy(fontSize = 16.sp, fontWeight = FontWeight(800), color = MaterialTheme.appColors.primaryButtonColor), textAlign = TextAlign.Center, modifier = Modifier.padding(10.dp))
 
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center, modifier = Modifier
-                            .padding(10.dp)
+                            .padding(horizontal = 10.dp)
                             .background(color = MaterialTheme.appColors.settingsCardBackground, shape = RoundedCornerShape(12.dp))
 
                     ) {
-                        Text(text = stringResource(id = R.string.amount), style = MaterialTheme.typography.titleSmall.copy(fontSize = 14.sp, fontWeight = FontWeight(800), color = MaterialTheme.appColors.textColor), modifier = Modifier.padding(10.dp))
+                        Text(text = stringResource(id = R.string.send_amount_title), style = MaterialTheme.typography.titleSmall.copy(fontSize = 14.sp, fontWeight = FontWeight(800), color = MaterialTheme.appColors.textColor), modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp))
 
                         Divider(modifier = Modifier
                                 .height(70.dp)
@@ -104,10 +105,10 @@ fun TransactionConfirmPopUp(
                             .fillMaxWidth()
                             .padding(10.dp)
                             .background(color = MaterialTheme.appColors.settingsCardBackground, shape = RoundedCornerShape(12.dp))) {
-                        Text(text = stringResource(id = R.string.address), style = MaterialTheme.typography.titleSmall.copy(fontSize = 12.sp, fontWeight = FontWeight(400), color = MaterialTheme.appColors.textColor), modifier = Modifier.padding(10.dp))
+                        Text(text = stringResource(id = R.string.address), style = MaterialTheme.typography.titleSmall.copy(fontSize = 12.sp, fontWeight = FontWeight(400), color = MaterialTheme.appColors.textColor), modifier = Modifier.padding(vertical = 5.dp,horizontal = 20.dp))
                         Card(modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(start = 20.dp, top = 10.dp, end = 20.dp, bottom = 10.dp), colors = CardDefaults.cardColors(
+                                .padding(start = 20.dp, top = 10.dp, end = 20.dp), colors = CardDefaults.cardColors(
                                 containerColor = MaterialTheme.appColors.popUpAddressBackground,
                         )) {
                             Text(text = beldexAddress, modifier = Modifier.padding(10.dp), style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.textColor, fontSize = 13.sp, fontWeight = FontWeight(400)))
@@ -120,7 +121,7 @@ fun TransactionConfirmPopUp(
                             withStyle(style = SpanStyle(color = MaterialTheme.appColors.textColor, fontSize = 12.sp)) {
                                 append(transactionFee)
                             }
-                        }, modifier = Modifier.padding(10.dp)
+                        }, modifier = Modifier.padding(vertical = 10.dp,horizontal = 20.dp)
 
                         )
 
@@ -129,13 +130,13 @@ fun TransactionConfirmPopUp(
                     Row(modifier = Modifier
                             .fillMaxWidth()
                             .padding(10.dp)) {
-                        Button(onClick = { }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.appColors.secondaryButtonColor), modifier = Modifier.weight(1f)) {
+                        Button(onClick = {onDismiss() }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.appColors.secondaryButtonColor), modifier = Modifier.weight(1f)) {
                             Text(text = stringResource(id = R.string.cancel), style = MaterialTheme.typography.bodyMedium)
                         }
 
                         Spacer(modifier = Modifier.width(16.dp))
 
-                        Button(onClick = { }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.appColors.primaryButtonColor), modifier = Modifier.weight(1f)) {
+                        Button(onClick = { onClick() }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.appColors.primaryButtonColor), modifier = Modifier.weight(1f)) {
                             Text(text = stringResource(id = R.string.ok), style = MaterialTheme.typography.bodyMedium.copy(color = Color.White))
                         }
                     }
@@ -170,9 +171,9 @@ fun TransactionSuccessPopup(onDismiss: () -> Unit) {
                         .padding(20.dp)
                         .align(Alignment.CenterHorizontally))
 
-                Text(text = stringResource(id = R.string.transaction_completed), style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp, fontWeight = FontWeight(800), color = MaterialTheme.appColors.primaryButtonColor), modifier = Modifier.padding(10.dp))
+                Text(text = stringResource(id = R.string.transaction_completed), textAlign = TextAlign.Center, style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp, fontWeight = FontWeight(800), color = MaterialTheme.appColors.primaryButtonColor), modifier = Modifier.padding(10.dp))
 
-                Button(onClick = {}, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.appColors.primaryButtonColor), modifier = Modifier
+                Button(onClick = { onDismiss() }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.appColors.primaryButtonColor), modifier = Modifier
                         .height(50.dp)
                         .width(150.dp)) {
                     Text(text = stringResource(id = R.string.ok), style = MaterialTheme.typography.bodyMedium.copy(color = Color.White))
@@ -198,7 +199,7 @@ fun TransactionLoadingPopUp(onDismiss: () -> Unit) {
 
                 Text(text = stringResource(id = R.string.initiating_transaction), style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp, fontWeight = FontWeight(800), color = MaterialTheme.appColors.primaryButtonColor), modifier = Modifier.padding(10.dp))
 
-                Text(text = stringResource(id = R.string.transaction_progress_attention), style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp, fontWeight = FontWeight(400), color = MaterialTheme.appColors.textColor), modifier = Modifier.padding(10.dp))
+                Text(text = stringResource(id = R.string.transaction_progress_attention), textAlign = TextAlign.Center, style = MaterialTheme.typography.titleMedium.copy(fontSize = 12.sp, fontWeight = FontWeight(400), color = MaterialTheme.appColors.textColor), modifier = Modifier.padding(10.dp))
 
             }
         }
@@ -208,10 +209,8 @@ fun TransactionLoadingPopUp(onDismiss: () -> Unit) {
 
 
 @Composable
-fun TransactionFailedPopUp(onDismiss: () -> Unit) {
-    val errorString by remember {
-        mutableStateOf("")
-    }
+fun TransactionFailedPopUp(onDismiss: () -> Unit, errorString: String) {
+
     DialogContainer(
             onDismissRequest = onDismiss,
     ) {
@@ -222,9 +221,9 @@ fun TransactionFailedPopUp(onDismiss: () -> Unit) {
                     .padding(10.dp)) {
                 Text(text = stringResource(id = R.string.dialog_title_send_failed), style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp, fontWeight = FontWeight(800), color = MaterialTheme.appColors.primaryButtonColor), modifier = Modifier.padding(10.dp))
 
-                Text(text = errorString, style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp, fontWeight = FontWeight(400), color = MaterialTheme.appColors.textColor), modifier = Modifier.padding(10.dp))
+                Text(text = errorString, textAlign = TextAlign.Center, style = MaterialTheme.typography.titleMedium.copy(fontSize = 12.sp, fontWeight = FontWeight(400), color = MaterialTheme.appColors.textColor), modifier = Modifier.padding(10.dp))
 
-                Button(onClick = {}, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.appColors.primaryButtonColor), modifier = Modifier
+                Button(onClick = { onDismiss() }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.appColors.primaryButtonColor), modifier = Modifier
                         .height(50.dp)
                         .width(150.dp)) {
                     Text(text = stringResource(id = R.string.ok), style = MaterialTheme.typography.bodyMedium.copy(color = Color.White))
@@ -240,7 +239,7 @@ fun TransactionFailedPopUp(onDismiss: () -> Unit) {
 @Composable
 fun TransactionFailedPopUpPreview() {
     BChatTheme {
-        TransactionFailedPopUp(onDismiss = {})
+        TransactionFailedPopUp(onDismiss = {}, "")
     }
 }
 
@@ -248,7 +247,7 @@ fun TransactionFailedPopUpPreview() {
 @Composable
 fun TransactionFailedPopUpLightPreview() {
     BChatTheme() {
-        TransactionFailedPopUp(onDismiss = {})
+        TransactionFailedPopUp(onDismiss = {},"")
     }
 }
 

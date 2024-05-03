@@ -13,9 +13,6 @@ import io.beldex.bchat.R
 import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity
 
 import android.content.Intent
-import android.text.Editable
-import android.text.InputType
-import android.text.TextWatcher
 import android.util.Log
 import android.util.Patterns
 import android.view.*
@@ -25,6 +22,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.conversation.v2.TransactionLoadingBar
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
@@ -36,6 +34,7 @@ import com.thoughtcrimes.securesms.util.BChatThreadPoolExecutor
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.wallet.*
 import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.SendScreen
+import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.WalletViewModels
 import com.thoughtcrimes.securesms.wallet.utils.OpenAliasHelper
 import com.thoughtcrimes.securesms.wallet.utils.helper.ServiceHelper
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
@@ -47,7 +46,6 @@ import java.lang.NumberFormatException
 import java.util.*
 import timber.log.Timber
 import java.lang.Exception
-import java.math.BigDecimal
 import java.util.concurrent.Executor
 
 
@@ -104,6 +102,8 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         fun onBackPressedFun()
 
         fun walletOnBackPressed() //-
+
+        fun onScan()
     }
     var onScanListener: OnScanListener? = null
     interface OnScanListener {
@@ -187,6 +187,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
     var price =0.00
 
+    private val viewModels: WalletViewModels by activityViewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -202,9 +203,16 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         }
         composeContainer.addView(composeView)
         return view*/
+        calledUnlockedBalance = true
+        if(TextSecurePreferences.getFeePriority(requireActivity())==0){
+            AsyncCalculateEstimatedFee(1).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+        }else{
+            AsyncCalculateEstimatedFee(5).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+        }
+
         return ComposeView(requireContext()).apply {
             setContent {
-                SendScreen(listener = activityCallback!! )
+                SendScreen(listener = activityCallback!!, viewModels )
             }
         }
     }
@@ -359,7 +367,8 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         AsyncTaskCoroutine<Executor?, Double>() {
         override fun onPreExecute() {
             super.onPreExecute()
-            binding.estimatedFeeTextView.text = getString(R.string.estimated_fee,"0.00")
+            viewModels.updateEstimatedFee(getString(R.string.estimated_fee,"0.00"))
+
         }
         override fun doInBackground(vararg params: Executor?): Double {
             return try {
@@ -375,10 +384,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
             }
         }
         override fun onPostExecute(result: Double?) {
-            val activity = activity
-            if (isAdded && activity != null) {
-                binding.estimatedFeeTextView.text = getString(R.string.estimated_fee,result.toString())
-            }
+            viewModels.updateEstimatedFee(getString(R.string.estimated_fee,result.toString()))
         }
     }
 
@@ -488,6 +494,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
         override fun doInBackground(vararg params: Executor?): Boolean {
             totalFunds = listener!!.getUnLockedBalance
+            viewModels.updateUnlockedBalance(totalFunds)
             return true
         }
 

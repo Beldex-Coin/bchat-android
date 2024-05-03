@@ -289,11 +289,11 @@ public class WalletService extends Service {
                 return;
             }
             switch (msg.arg2) {
-                case START_SERVICE: {
+                case START_SERVICE -> {
                     Bundle extras = msg.getData();
                     String cmd = extras.getString(REQUEST, null);
                     switch (cmd) {
-                        case REQUEST_CMD_LOAD:
+                        case REQUEST_CMD_LOAD -> {
                             String walletId = extras.getString(REQUEST_WALLET, null);
                             String walletPw = extras.getString(REQUEST_CMD_LOAD_PW, null);
                             if (walletId != null) {
@@ -315,8 +315,8 @@ public class WalletService extends Service {
                                     stop();
                                 }
                             }
-                            break;
-                        case REQUEST_CMD_STORE: {
+                        }
+                        case REQUEST_CMD_STORE -> {
                             Wallet myWallet = getWallet();
                             if (myWallet == null) break;
                             try {
@@ -330,16 +330,15 @@ public class WalletService extends Service {
                             }catch(Exception e){
                                 Log.d("WalletService ",e.toString());
                             }
-                            break;
                         }
-                        case REQUEST_CMD_TX: {
+                        case REQUEST_CMD_TX -> {
                             Wallet myWallet = getWallet();
                             if (myWallet == null) break;
                             myWallet.disposePendingTransaction(); // remove any old pending tx
                             TxData txData = extras.getParcelable(REQUEST_CMD_TX_DATA);
                             PendingTransaction pendingTransaction = myWallet.createTransaction(txData);
                             if (observer != null) {
-                                observer.onTransactionCreated("txTag", pendingTransaction);
+                                //observer.onTransactionCreated("txTag", pendingTransaction);
                             } else {
                                 myWallet.disposePendingTransaction();
                             }
@@ -348,9 +347,8 @@ public class WalletService extends Service {
                             bundle.putSerializable("data", pendingTransaction);
                             bundle.putString("tag", "txTag");
                             sendBroadCast(bundle);
-                            break;
                         }
-                        case REQUEST_CMD_SWEEP: {
+                        case REQUEST_CMD_SWEEP -> {
                             Wallet myWallet = getWallet();
                             if (myWallet == null) break;
                             myWallet.disposePendingTransaction(); // remove any old pending tx
@@ -358,7 +356,7 @@ public class WalletService extends Service {
                             String txTag = extras.getString(REQUEST_CMD_TX_TAG);
                             PendingTransaction pendingTransaction = myWallet.createSweepUnmixableTransaction();
                             if (observer != null) {
-                                observer.onTransactionCreated(txTag, pendingTransaction);
+                                //observer.onTransactionCreated(txTag, pendingTransaction);
                             } else {
                                 myWallet.disposePendingTransaction();
                             }
@@ -367,9 +365,8 @@ public class WalletService extends Service {
                             bundle.putSerializable("data", pendingTransaction);
                             bundle.putString("tag", "txTag");
                             sendBroadCast(bundle);
-                            break;
                         }
-                        case REQUEST_CMD_SEND: {
+                        case REQUEST_CMD_SEND -> {
                             Wallet myWallet = getWallet();
                             if (myWallet == null) break;
                             PendingTransaction pendingTransaction = myWallet.getPendingTransaction();
@@ -379,7 +376,7 @@ public class WalletService extends Service {
                             if (pendingTransaction.getStatus() != PendingTransaction.Status.Status_Ok) {
                                 final String error = pendingTransaction.getErrorString();
                                 myWallet.disposePendingTransaction(); // it's broken anyway
-                                if (observer != null) observer.onSendTransactionFailed(error);
+                                // if (observer != null) observer.onSendTransactionFailed(error);
                                 Bundle bundle = new Bundle();
                                 bundle.putSerializable("type", WalletCallbackType.SendTransactionFailed);
                                 bundle.putString("data", error);
@@ -390,7 +387,7 @@ public class WalletService extends Service {
                             boolean success = pendingTransaction.commit("", true);
                             if (success) {
                                 myWallet.disposePendingTransaction();
-                                if (observer != null) observer.onTransactionSent(txid);
+                                // if (observer != null) observer.onTransactionSent(txid);
                                 Bundle bundle = new Bundle();
                                 bundle.putSerializable("type", WalletCallbackType.TransactionSent);
                                 bundle.putString("data", txid);
@@ -413,23 +410,18 @@ public class WalletService extends Service {
                             } else {
                                 final String error = pendingTransaction.getErrorString();
                                 myWallet.disposePendingTransaction();
-                                if (observer != null) observer.onSendTransactionFailed(error);
+                                // if (observer != null) observer.onSendTransactionFailed(error);
                                 Bundle bundle = new Bundle();
                                 bundle.putSerializable("type", WalletCallbackType.SendTransactionFailed);
                                 bundle.putString("data", error);
                                 sendBroadCast(bundle);
                                 return;
                             }
-                            break;
                         }
                     }
                 }
-                break;
-                case STOP_SERVICE:
-                    stop();
-                    break;
-                default:
-                    Timber.e("UNKNOWN %s", msg.arg2);
+                case STOP_SERVICE -> stop();
+                default -> Timber.e("UNKNOWN %s", msg.arg2);
             }
         }
     }

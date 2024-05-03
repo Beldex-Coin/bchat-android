@@ -22,7 +22,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.DropdownMenuItem
@@ -38,7 +40,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,7 +55,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.fragment.app.FragmentActivity
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.compose_utils.BChatOutlinedTextField
 import com.thoughtcrimes.securesms.compose_utils.BChatTheme
@@ -62,22 +62,25 @@ import com.thoughtcrimes.securesms.compose_utils.BChatTypography
 import com.thoughtcrimes.securesms.compose_utils.ComposeBroadcastReceiver
 import com.thoughtcrimes.securesms.compose_utils.PrimaryButton
 import com.thoughtcrimes.securesms.compose_utils.appColors
+import com.thoughtcrimes.securesms.data.BarcodeData
 import com.thoughtcrimes.securesms.data.Crypto
+import com.thoughtcrimes.securesms.data.PendingTx
 import com.thoughtcrimes.securesms.data.TxData
 import com.thoughtcrimes.securesms.data.TxDataBtc
 import com.thoughtcrimes.securesms.data.UserNotes
-import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
+import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.model.PendingTransaction
 import com.thoughtcrimes.securesms.model.Wallet
-import com.thoughtcrimes.securesms.model.WalletManager
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.serializable
 import com.thoughtcrimes.securesms.wallet.CheckOnline
 import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity
 import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.send.TransactionConfirmPopUp
+import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.send.TransactionFailedPopUp
 import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.send.TransactionLoadingPopUp
 import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.send.TransactionSuccessPopup
 import com.thoughtcrimes.securesms.wallet.send.SendFragment
+import com.thoughtcrimes.securesms.wallet.utils.OpenAliasHelper
 import com.thoughtcrimes.securesms.wallet.utils.WalletCallbackType
 import com.thoughtcrimes.securesms.wallet.utils.helper.ServiceHelper
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
@@ -87,23 +90,129 @@ import io.beldex.bchat.R
 import timber.log.Timber
 import java.math.BigDecimal
 import java.util.Locale
-import java.util.concurrent.Executor
 
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
-fun SendScreen(listener: SendFragment.Listener) {
+fun SendScreen(listener: SendFragment.Listener, viewModels: WalletViewModels) {
+
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val scrollState = rememberScrollState()
+
+    var showTransactionLoading by remember {
+        mutableStateOf(false)
+    }
+    var showTransactionConfirmPopup by remember {
+        mutableStateOf(false)
+    }
+    var showTransactionSentPopup by remember {
+        mutableStateOf(false)
+    }
+    var showTransactionSentFailedPopup by remember {
+        mutableStateOf(false)
+    }
+    var transactionSentFailedError by remember {
+        mutableStateOf("")
+    }
+    var totalBalance by remember {
+        mutableStateOf("")
+    }
+    var estimatedFee by remember {
+        mutableStateOf("")
+    }
+    var totalFunds by remember {
+        mutableStateOf("")
+    }
+
+    val pendingTransactionObj: PendingTransaction? = null
+    var pendingTransactions by remember {
+        mutableStateOf(pendingTransactionObj)
+    }
+    val txDataObj = TxData()
+    var txData by remember {
+        mutableStateOf(txDataObj)
+    }
+    val pendingTxObj: PendingTx? = null
+    var pendingTx by remember {
+        mutableStateOf(pendingTxObj)
+    }
+
+    val committedTxObj: PendingTx? =  null
+    var committedTx by remember {
+        mutableStateOf(committedTxObj)
+    }
+    // Create a list of priority
+    val options = listOf("Flash", "Slow")
+    var selectedOptionText by remember { mutableStateOf(options[0]) }
+
+    viewModels.balance.observe(lifecycleOwner) { balance ->
+        totalBalance = balance
+    }
+
+    viewModels.estimatedFee.observe(lifecycleOwner) { fee ->
+        estimatedFee = fee
+    }
+
+    viewModels.unLockedBalance.observe(lifecycleOwner){unlockedBalance ->
+        totalFunds = unlockedBalance.toString()
+    }
+
+    viewModels.selectedOption.observe(lifecycleOwner) { selectedOption ->
+        selectedOptionText = selectedOption.toString()
+
+    }
+
+    println("selected option text value $selectedOptionText")
+
 
     ComposeBroadcastReceiver(systemAction = "io.beldex.WALLET_ACTION") {
         if (it?.action == "io.beldex.WALLET_ACTION") {
             it.extras?.getBundle("io.beldex.WALLET_DATA")?.let { data ->
                 when (data.serializable<WalletCallbackType>("type")) {
                     WalletCallbackType.TransactionCreated -> {
-                        val pendingTransaction = data.serializable<PendingTransaction>("data")
-                        val tag = data.getString("tag")
+                        pendingTransactions = data.serializable<PendingTransaction>("data")
+                        val status = pendingTransactions?.status
+                        if (status !== PendingTransaction.Status.Status_Ok) {
+                            //Important
+                            //getWallet()!!.disposePendingTransaction()
+                            showTransactionLoading = false
+                            showTransactionSentFailedPopup = true
+                            transactionSentFailedError = pendingTransactions?.errorString.toString()
+                        } else {
+                            showTransactionLoading = false
+                            try {
+                                if (pendingTransactions?.firstTxId != null) {
+                                    showTransactionConfirmPopup = true
+                                    pendingTx = PendingTx(pendingTransactions)
+                                }
+                            } catch (e: java.lang.IllegalStateException) {
+                                //Minimized app
+                                //onTransactionProgress = true
+                                return@ComposeBroadcastReceiver
+                            } catch (e: IndexOutOfBoundsException) {
+                                //Minimized app
+                                showTransactionLoading = false
+                                Toast.makeText(context, context.getString(R.string.please_try_again_later), Toast.LENGTH_SHORT).show()
+                            }
+                        }
                     }
                     WalletCallbackType.TransactionSent -> {
-                        val transactionId = data.getString("data")
+                        showTransactionConfirmPopup = false
+                        showTransactionLoading = false
+                        showTransactionSentPopup = true
+                    }
+                    WalletCallbackType.SendTransactionFailed -> {
+                        val pendingTransaction = it.serializable<PendingTransaction>("data")
+                        val tag = it.getStringExtra("tag")
+                        transactionSentFailedError = pendingTransaction?.errorString.toString()
+                        //Important
+                        //getWallet()!!.disposePendingTransaction()
+                        showTransactionSentFailedPopup = true
+                        pendingTx = null
+                        if (tag != null) {
+                            transactionSentFailedError = tag
+                        }
                     }
                     else -> Unit
                 }
@@ -111,20 +220,15 @@ fun SendScreen(listener: SendFragment.Listener) {
         }
     }
 
-    val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val fragment = (lifecycleOwner as? FragmentActivity)?.supportFragmentManager?.findFragmentById(R.id.activity_home_frame_layout_container) as? SendFragment
-    val fragmentManager = rememberUpdatedState(newValue = (context as? FragmentActivity)?.supportFragmentManager)
+
+
+
 
     var beldexAddress by remember {
         mutableStateOf("")
     }
     var beldexAmount by remember {
         mutableStateOf("")
-    }
-
-    val estimatedFee by remember {
-        mutableStateOf(context.getString(R.string.estimated_fee))
     }
 
     var addressErrorAction by remember {
@@ -139,6 +243,9 @@ fun SendScreen(listener: SendFragment.Listener) {
     var amountErrorText by remember {
         mutableStateOf("")
     }
+    var addressErrorTextColorChanged by remember {
+        mutableStateOf(false)
+    }
 
     var scanFromGallery by remember {
         mutableStateOf(false)
@@ -151,18 +258,8 @@ fun SendScreen(listener: SendFragment.Listener) {
     var onTransactionProgress by remember {
         mutableStateOf(false)
     }
-    var showTransactionLoading by remember {
-        mutableStateOf(false)
-    }
-    var showTransactionConfirmPopup by remember {
-        mutableStateOf(false)
-    }
-    var showTransactionSentPopup by remember {
-        mutableStateOf(false)
-    }
 
-    var expanded by remember { mutableStateOf(false) }
-    var selectedItem by remember { mutableStateOf("Item 1") }
+
 
 
     val CLEAN_FORMAT = "%." + Helper.BDX_DECIMALS.toString() + "f"
@@ -171,7 +268,6 @@ fun SendScreen(listener: SendFragment.Listener) {
     var selectedCrypto: Crypto? = null
     val INTEGRATED_ADDRESS_LENGTH = 106
     var resolvingOA = false
-    var totalFunds: Long = 0
     var calledUnlockedBalance: Boolean = false
     val MIXIN = 0
     val pendingTransaction: PendingTransaction? = null
@@ -179,14 +275,9 @@ fun SendScreen(listener: SendFragment.Listener) {
 
 
     var mode: Mode = Mode.BDX
-    var txData = TxData()
 
-    // Create a list of priority
-    val options = listOf("Flash", "Slow")/*var expanded by remember { mutableStateOf(false) }*/
-    var selectedOptionText by remember { mutableStateOf(options[0]) }
-    fun getTxData(): TxData {
-        return txData
-    }
+
+
 
     val resultLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) { result ->
         val data: Intent? = result.data
@@ -196,6 +287,106 @@ fun SendScreen(listener: SendFragment.Listener) {
             beldexAddress = add
         }
     }
+
+    fun isStandardAddress(address: String): Boolean {
+        return Wallet.isAddressValid(address)
+    }
+
+    fun isIntegratedAddress(address: String): Boolean {
+        return (address.length == INTEGRATED_ADDRESS_LENGTH && Wallet.isAddressValid(address))
+    }
+
+     fun checkAddressNoError(): Boolean {
+        return selectedCrypto != null
+    }
+
+     fun checkAddress(): Boolean {
+        val ok = checkAddressNoError()
+        if (possibleCryptos.isEmpty()) {
+            addressErrorAction = true
+            addressErrorText = context.getString(R.string.send_address_invalid)
+            addressErrorTextColorChanged = false
+        } else {
+            addressErrorAction = false
+        }
+        return ok
+    }
+
+     fun processScannedData() {
+        var barcodeData: BarcodeData? = listener.getBarcodeData()
+        if (barcodeData != null) {
+            if (!Helper.ALLOW_SHIFT && barcodeData.asset !== Crypto.BDX) {
+                barcodeData = null
+                listener.setBarcodeData(barcodeData)
+            }
+            if (barcodeData!!.address != null) {
+                listener.setBarcodeData(null)
+                beldexAddress = barcodeData.address
+                beldexAmount = barcodeData.amount
+                possibleCryptos.clear()
+                selectedCrypto = null
+                if (barcodeData.isAmbiguous) {
+                    possibleCryptos.addAll(barcodeData.ambiguousAssets)
+                } else {
+                    possibleCryptos.add(barcodeData.asset)
+                    selectedCrypto = barcodeData.asset
+                }
+                if (checkAddress()) {
+                    if (barcodeData.security === BarcodeData.Security.OA_NO_DNSSEC) addressErrorText =
+                            context.getString(R.string.send_address_no_dnssec) else if (barcodeData.security === BarcodeData.Security.OA_DNSSEC) addressErrorText =
+                            context.getString(R.string.send_address_openalias)
+                }
+                if (isIntegratedAddress(barcodeData.address)) {
+                    addressErrorAction = true
+                    addressErrorText = context.getString(R.string.info_paymentid_integrated)
+                    addressErrorTextColorChanged = true
+                }
+            } else {
+                beldexAmount = ""
+                beldexAmount = ""
+            }
+        } else Timber.d("barcodeData=null")
+    }
+
+
+    fun processOfScannedData(barcodeData: BarcodeData?) {
+        scanFromGallery = true
+        listener.setBarcodeData(barcodeData)
+        processScannedData()
+    }
+
+    fun processOpenAlias(dnsOA: String?) {
+        if (resolvingOA) return  // already resolving - just wait
+        listener.popBarcodeData()
+        if (dnsOA != null) {
+            resolvingOA = true
+            addressErrorAction = true
+            addressErrorTextColorChanged = false
+            addressErrorText = context.getString(R.string.send_address_resolve_openalias)
+            OpenAliasHelper.resolve(dnsOA, object : OpenAliasHelper.OnResolvedListener {
+                override fun onResolved(dataMap: Map<Crypto?, BarcodeData?>) {
+                    resolvingOA = false
+                    var barcodeData = dataMap[Crypto.BDX]
+                    if (barcodeData == null) barcodeData = dataMap[Crypto.BTC]
+                    if (barcodeData != null) {
+                        processOfScannedData(barcodeData)
+                    } else {
+                        addressErrorAction = true
+                        addressErrorTextColorChanged = false
+                        addressErrorText = context.getString(R.string.send_address_not_openalias)
+                    }
+                }
+
+                override fun onFailure() {
+                    resolvingOA = false
+                    addressErrorAction = true
+                    addressErrorTextColorChanged = false
+                    addressErrorText = context.getString(R.string.send_address_not_openalias)
+                }
+            })
+        }
+    }
+
 
 
     fun openAddressBookActivity() {
@@ -241,13 +432,7 @@ fun SendScreen(listener: SendFragment.Listener) {
         }
     }
 
-    fun isStandardAddress(address: String): Boolean {
-        return Wallet.isAddressValid(address)
-    }
 
-    fun isIntegratedAddress(address: String): Boolean {
-        return (address.length == INTEGRATED_ADDRESS_LENGTH && Wallet.isAddressValid(address))
-    }
 
     fun setMode(aMode: Mode) {
         if (mode != aMode) {
@@ -263,12 +448,34 @@ fun SendScreen(listener: SendFragment.Listener) {
     fun prepareSend(txData: TxData?) {
         listener.onPrepareSend(null, txData)
     }
+    fun commitTransaction() {
+        listener.onSend(txData.userNotes)
+        committedTx = pendingTx
+    }
+
+    fun send() {
+        commitTransaction()
+        //Insert Recipient Address
+        if(TextSecurePreferences.getSaveRecipientAddress(context)) {
+            val insertRecipientAddress = DatabaseComponent.get(context).bchatRecipientAddressDatabase()
+            try {
+                if(pendingTransactions!!.firstTxId != null)
+                    insertRecipientAddress.insertRecipientAddress(
+                            pendingTransactions!!.firstTxId,
+                            txData.destinationAddress
+                    )
+            }catch(e: IndexOutOfBoundsException){
+                e.message?.let { Log.d("SendFragment->", it) }
+            }
+        }
+       showTransactionLoading = true
+    }
 
     fun refreshTransactionDetails() {
-        if (pendingTransaction != null) {
-            val txData: TxData = getTxData()
+        if (pendingTransactions != null) {
+            //val txData: TxData = txData()
             try {
-                if (pendingTransaction.firstTxId != null) {
+                if (pendingTransactions!!.firstTxId != null) {
                     showTransactionConfirmPopup = true
                 }
             } catch (e: java.lang.IllegalStateException) {
@@ -292,9 +499,10 @@ fun SendScreen(listener: SendFragment.Listener) {
                     this.activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 }*/
         refreshTransactionDetails()
-        if (pendingTransaction == null && !inProgress) {/* binding.sendButton.isEnabled=false
+        if (pendingTransactions == null && !inProgress) {/* binding.sendButton.isEnabled=false
              binding.sendButton.isClickable=false*/
             showTransactionLoading = true
+            //val txData = txData
             prepareSend(txData)
         }
     }
@@ -309,15 +517,16 @@ fun SendScreen(listener: SendFragment.Listener) {
         if (CheckOnline.isOnline(context)) {
             if ((beldexAddress.length > 106 || beldexAddress.length < 95) && !(beldexAddress.takeLast(4).equals(".bdx", ignoreCase = true))) {
                 addressErrorAction = true
+                addressErrorTextColorChanged = false
                 addressErrorText = context.getString(R.string.invalid_destination_address)
                 return
             }
             if (beldexAddress.isNotEmpty() && beldexAmount.isNotEmpty() && validateBELDEXAmount(beldexAmount) && beldexAmount.toDouble() > 0.00) {
-                val txData: TxData = getTxData()
+                //val txDatas: TxData = txData()
                 txData.destinationAddress = beldexAddress.trim()
                 ServiceHelper.ASSET = null
-                if (getCleanAmountString(beldexAmount).equals(Wallet.getDisplayAmount(totalFunds))) {
-                    val amount = (totalFunds - 10485760)// 10485760 == 050000000
+                if (getCleanAmountString(beldexAmount).equals(Wallet.getDisplayAmount(totalFunds.toLong()))) {
+                    val amount = (totalFunds.toLong() - 10485760)// 10485760 == 050000000
                     val bdx = getCleanAmountString(beldexAmount)
                     if (bdx != null) {
                         txData.amount = amount
@@ -367,6 +576,7 @@ fun SendScreen(listener: SendFragment.Listener) {
                 }
             } else {
                 addressErrorAction = true
+                addressErrorTextColorChanged = false
                 addressErrorText = context.getString(R.string.beldex_address_error_message)
             }
         } else {
@@ -377,13 +587,14 @@ fun SendScreen(listener: SendFragment.Listener) {
 
 
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(color = MaterialTheme.appColors.cardBackground)) {
+    Column(modifier =Modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState)
+            .background(color=MaterialTheme.appColors.cardBackground)) {
 
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier =Modifier
+                .fillMaxWidth()
+                .padding(16.dp)) {
             Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back), tint = MaterialTheme.appColors.editTextColor, modifier = Modifier.clickable {
                 //onBackClick()
             })
@@ -404,56 +615,61 @@ fun SendScreen(listener: SendFragment.Listener) {
             })
         }
         if (showTransactionConfirmPopup) {
+            showTransactionLoading = false
             TransactionConfirmPopUp(onDismiss = {
-                showTransactionLoading = false
-            }, pendingTransaction!!, txData)
+                showTransactionConfirmPopup = false
+            }, pendingTransactions!!, txData, onClick = { send()})
         }
         if (showTransactionSentPopup) {
             TransactionSuccessPopup(onDismiss = {
-                showTransactionLoading = false
+                showTransactionSentPopup = false
 
             })
         }
 
+        if(showTransactionSentFailedPopup){
+            TransactionFailedPopUp(onDismiss = {
+                 showTransactionSentFailedPopup = false },
+                    errorString = transactionSentFailedError)
+        }
 
-
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp, 10.dp)
-            .border(
-                width = 0.8.dp,
-                color = MaterialTheme.appColors.primaryButtonColor.copy(alpha = 0.5f),
-                shape = RoundedCornerShape(16.dp)
-            )) {
+        Box(modifier =Modifier
+                .fillMaxWidth()
+                .padding(10.dp, 10.dp)
+                .border(
+                        width=0.8.dp,
+                        color=MaterialTheme.appColors.primaryButtonColor.copy(alpha=0.5f),
+                        shape=RoundedCornerShape(16.dp)
+                )) {
             Column(verticalArrangement = Arrangement.Center, modifier = Modifier.padding(10.dp)) {
-                Text(text = "Total Balance", style = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.appColors.totalBalanceColor, fontSize = 14.sp, fontWeight = FontWeight(700)), modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 10.dp, top = 10.dp, end = 10.dp))
+                Text(text = "Total Balance", style = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.appColors.totalBalanceColor, fontSize = 14.sp, fontWeight = FontWeight(700)), modifier =Modifier
+                        .fillMaxWidth()
+                        .padding(start=10.dp, top=10.dp, end=10.dp))
                 Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(start = 10.dp, end = 10.dp)
 
                 ) {
                     Image(painter = painterResource(id = R.drawable.total_balance), contentDescription = "", modifier = Modifier)
-                    Text(text = "99.34628923", style = MaterialTheme.typography.titleLarge.copy(color = MaterialTheme.appColors.textColor, fontSize = 24.sp, fontWeight = FontWeight(700)), modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp), fontSize = 24.sp)
+                    Text(text = totalBalance, style = MaterialTheme.typography.titleLarge.copy(color = MaterialTheme.appColors.textColor, fontSize = 24.sp, fontWeight = FontWeight(700)), modifier =Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp), fontSize = 24.sp)
                 }
             }
         }
-        Column(modifier = Modifier
-            .padding(10.dp)
-            .background(
-                color = MaterialTheme.appColors.receiveCardBackground,
-                shape = RoundedCornerShape(18.dp)
-            )
+        Column(modifier =Modifier
+                .padding(10.dp)
+                .background(
+                        color=MaterialTheme.appColors.receiveCardBackground,
+                        shape=RoundedCornerShape(18.dp)
+                )
 
         ) {
             Column(modifier = Modifier.padding(10.dp)
 
             ) {
 
-                Text(text = "Enter BDX Amount", modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp, bottom = 5.dp, start = 10.dp), style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp, fontWeight = FontWeight(600), color = MaterialTheme.appColors.textColor))
+                Text(text = "Enter BDX Amount", modifier =Modifier
+                        .fillMaxWidth()
+                        .padding(top=10.dp, bottom=5.dp, start=10.dp), style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp, fontWeight = FontWeight(600), color = MaterialTheme.appColors.textColor))
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
 
                     BChatOutlinedTextField(
@@ -534,10 +750,10 @@ fun SendScreen(listener: SendFragment.Listener) {
                 Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically
 
                 ) {
-                    Text(text = "Beldex Address", style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.textColor, fontSize = 16.sp, fontWeight = FontWeight(700)), modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .padding(10.dp))
+                    Text(text = "Beldex Address", style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.textColor, fontSize = 16.sp, fontWeight = FontWeight(700)), modifier =Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .padding(10.dp))
 
                     Box(
                         modifier = Modifier
@@ -554,16 +770,16 @@ fun SendScreen(listener: SendFragment.Listener) {
                             if (!CheckOnline.isOnline(context)) {
                                 Toast.makeText(context, R.string.please_check_your_internet_connection, Toast.LENGTH_SHORT).show()
                             } else {
-                                //listener.onScan()
+                                listener.onScan()
                             }
                         })
                     }
                     Spacer(modifier = Modifier.width(10.dp))
 
-                    Box(modifier = Modifier
+                    Box(modifier =Modifier
                             .width(32.dp)
                             .height(32.dp)
-                            .background(MaterialTheme.appColors.copyIcon, shape = RoundedCornerShape(10.dp))
+                            .background(colorResource(id=R.color.wallet_receive_background), shape=RoundedCornerShape(10.dp))
                             .clickable {
                                 openAddressBookActivity()
                             }, contentAlignment = Alignment.Center) {
@@ -585,6 +801,7 @@ fun SendScreen(listener: SendFragment.Listener) {
                         selectedCrypto = Crypto.BDX
                         addressErrorAction = true
                         addressErrorText = context.getString(R.string.info_paymentid_integrated)
+                        addressErrorTextColorChanged = true
                         // binding.beldexAddressErrorMessage.setTextColor(ContextCompat.getColor(requireContext(), R.color.button_green))
                         setMode(Mode.BDX)
                     } else if (isStandardAddress(beldexAddress)) {
@@ -596,21 +813,27 @@ fun SendScreen(listener: SendFragment.Listener) {
                         Timber.d("other")
                         setMode(Mode.BDX)
                     }
-                }, modifier = Modifier
-                    .fillMaxWidth()
-                    .height(120.dp)
-                    .padding(10.dp), shape = RoundedCornerShape(12.dp), colors = TextFieldDefaults.colors(unfocusedContainerColor = MaterialTheme.appColors.beldexAddressBackground, focusedContainerColor = MaterialTheme.appColors.beldexAddressBackground, focusedIndicatorColor = Color.Transparent, unfocusedIndicatorColor = Color.Transparent, disabledIndicatorColor = Color.Transparent, cursorColor = colorResource(id = R.color.button_green)), textStyle = TextStyle(color = MaterialTheme.appColors.primaryButtonColor, fontSize = 13.sp, fontWeight = FontWeight(400)), maxLines = 106
+                }, modifier =Modifier
+                        .fillMaxWidth()
+                        .height(120.dp)
+                        .padding(10.dp), shape = RoundedCornerShape(12.dp), colors = TextFieldDefaults.colors(unfocusedContainerColor = MaterialTheme.appColors.beldexAddressBackground, focusedContainerColor = MaterialTheme.appColors.beldexAddressBackground, focusedIndicatorColor = Color.Transparent, unfocusedIndicatorColor = Color.Transparent, disabledIndicatorColor = Color.Transparent, cursorColor = colorResource(id = R.color.button_green)), textStyle = TextStyle(color = MaterialTheme.appColors.primaryButtonColor, fontSize = 13.sp, fontWeight = FontWeight(400)), maxLines = 106
 
                 )
 
                 if (addressErrorAction) {
-                    Text(text = addressErrorText, modifier = Modifier.padding(start = 20.dp, bottom = 10.dp), style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.errorMessageColor, fontSize = 13.sp, fontWeight = FontWeight(400)))
+                    Text(text = addressErrorText,
+                            modifier =Modifier.
+                            padding(start = 20.dp, bottom = 10.dp),
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                    color =  if(addressErrorTextColorChanged) {MaterialTheme.appColors.primaryButtonColor} else MaterialTheme.appColors.errorMessageColor,
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight(400)))
                 }
 
 
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
-
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center, modifier = Modifier) {
                     Text(text = "Transaction Priority", style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.textColor, fontSize = 16.sp, fontWeight = FontWeight(700)), modifier = Modifier.padding(10.dp))
+                    PriorityDropDown()
 
                 }
 
@@ -634,9 +857,9 @@ fun SendScreen(listener: SendFragment.Listener) {
                     createTransactionIfPossible()
                     // context.startActivity(Intent(context, OnBoardingActivity::class.java))
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
+                modifier =Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
                 shape = RoundedCornerShape(16.dp),
         ) {
             Text(text = stringResource(id = R.string.send), style = BChatTypography.bodyLarge.copy(color = Color.White), modifier = Modifier.padding(8.dp))
@@ -647,7 +870,7 @@ fun SendScreen(listener: SendFragment.Listener) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DropDownExample() {
+fun PriorityDropDown() {
     val options = listOf("Flash", "Slow")
     var expanded by remember { mutableStateOf(false) }
     var selectedOptionText by remember { mutableStateOf(options[0]) }
@@ -662,8 +885,8 @@ fun DropDownExample() {
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                 colors = ExposedDropdownMenuDefaults.textFieldColors(
                         focusedTextColor = colorResource(id = R.color.button_green),
-                        unfocusedContainerColor = MaterialTheme.appColors.beldexAddressBackground,
-                        focusedContainerColor = MaterialTheme.appColors.beldexAddressBackground,
+                        unfocusedContainerColor = MaterialTheme.appColors.cardBackground,
+                        focusedContainerColor = MaterialTheme.appColors.cardBackground,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
                         disabledIndicatorColor = Color.Transparent,
@@ -674,11 +897,13 @@ fun DropDownExample() {
         ExposedDropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
+                modifier = Modifier.background(color = MaterialTheme.appColors.cardBackground)
         ) {
             options.forEach { selectionOption ->
                 DropdownMenuItem(
-                        text = { Text(selectionOption) },
-                        modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp),
+                        text = { Text(selectionOption, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.appColors.textColor ) },
+                        modifier =
+                        Modifier.padding(vertical = 10.dp, horizontal = 10.dp),
                         onClick = {
                             selectedOptionText = selectionOption
                             expanded = false
@@ -694,35 +919,6 @@ enum class Mode {
     BDX, BTC
 }
 
-class AsyncCalculateEstimatedFee(val priority: Int) : AsyncTaskCoroutine<Executor?, Double>() {
-    override fun onPreExecute() {
-        super.onPreExecute()
-        //estimatedFee = context.getString(R.string.estimated_fee,"0.00")
-    }
-
-    override fun doInBackground(vararg params: Executor?): Double {
-        return try {
-            if (WalletManager.getInstance().wallet != null) {
-                val wallet: Wallet = WalletManager.getInstance().wallet
-                wallet.estimateTransactionFee(priority)
-            } else {
-                0.00
-            }
-        } catch (e: Exception) {
-            Log.d("Estimated Fee exception ", e.toString())
-            0.00
-        }
-    }
-
-    override fun onPostExecute(result: Double?) {/*val activity = activity
-                    if (isAdded && activity != null) {
-                        estimatedFee = context.getString(R.string.estimated_fee,result.toString())
-                    }*/
-
-        //estimatedFee = context.getString(R.string.estimated_fee,result.toString())
-
-    }
-}
 
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)

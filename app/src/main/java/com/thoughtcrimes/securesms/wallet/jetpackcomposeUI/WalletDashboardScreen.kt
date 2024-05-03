@@ -330,14 +330,22 @@ fun WalletDashBoard(
                         }
 
                         if (progressBarIsVisible) {
-                            LinearProgressIndicator(
-                                modifier = Modifier
+                            if(progress==101f){
+                                LinearProgressIndicator(modifier = Modifier
                                     .fillMaxWidth()
                                     .height(1.dp),
-                                progress = progress,
-                                trackColor = MaterialTheme.appColors.textFieldUnfocusedColor,
-                                color = colorResource(id = progressBarColor)
-                            )
+                                    trackColor = MaterialTheme.appColors.textFieldUnfocusedColor,
+                                    color = colorResource(id = progressBarColor))
+                            }else {
+                                LinearProgressIndicator(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(1.dp),
+                                    progress = progress,
+                                    trackColor = MaterialTheme.appColors.textFieldUnfocusedColor,
+                                    color = colorResource(id = progressBarColor)
+                                )
+                            }
                         }
 
                         Row(

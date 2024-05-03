@@ -29,12 +29,9 @@ import io.beldex.bchat.BuildConfig;
 
 public class Util {
 
-  @TargetApi(VERSION_CODES.KITKAT)
   public static boolean isLowMemory(Context context) {
     ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-
-    return (VERSION.SDK_INT >= VERSION_CODES.KITKAT && activityManager.isLowRamDevice()) ||
-            activityManager.getLargeMemoryClass() <= 64;
+    return (activityManager.isLowRamDevice()) || activityManager.getLargeMemoryClass() <= 64;
   }
 
   public static boolean isEmpty(ComposeText value) {

@@ -554,7 +554,7 @@ fun SendScreen(listener: SendFragment.Listener) {
                             if (!CheckOnline.isOnline(context)) {
                                 Toast.makeText(context, R.string.please_check_your_internet_connection, Toast.LENGTH_SHORT).show()
                             } else {
-                                //listener.onScan(context.requireView())
+                                //listener.onScan()
                             }
                         })
                     }
@@ -563,7 +563,7 @@ fun SendScreen(listener: SendFragment.Listener) {
                     Box(modifier = Modifier
                             .width(32.dp)
                             .height(32.dp)
-                            .background(colorResource(id = R.color.wallet_receive_background), shape = RoundedCornerShape(10.dp))
+                            .background(MaterialTheme.appColors.copyIcon, shape = RoundedCornerShape(10.dp))
                             .clickable {
                                 openAddressBookActivity()
                             }, contentAlignment = Alignment.Center) {

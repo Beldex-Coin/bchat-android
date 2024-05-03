@@ -1,40 +1,48 @@
 package com.thoughtcrimes.securesms.wallet.rescan
 
-import android.app.DatePickerDialog
-import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.DialogInterface
 import android.os.Bundle
-import android.text.Editable
-import android.text.InputType
-import android.text.TextWatcher
 import android.util.ArrayMap
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.fragment.app.DialogFragment
+import com.thoughtcrimes.securesms.compose_utils.BChatTheme
+import com.thoughtcrimes.securesms.compose_utils.appColors
 import com.thoughtcrimes.securesms.home.HomeActivity
-import com.thoughtcrimes.securesms.wallet.CheckOnline
+import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.rescan.RescanScreen
 import io.beldex.bchat.R
-import io.beldex.bchat.databinding.RescanDialogBinding
-import timber.log.Timber
-import java.math.BigInteger
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
 
-
-class RescanDialog(val context: HomeActivity, private val daemonBlockChainHeight: Long): DialogFragment() {
-
-    private lateinit var binding: RescanDialogBinding
-
-    var cal = Calendar.getInstance()
-    private var restoreFromDateHeight = 0
-    private val dateFormat = SimpleDateFormat("yyyy-MM", Locale.US)
+class RescanDialog(val contextHomeActivity: HomeActivity, private val daemonBlockChainHeight: Long): DialogFragment() {
     private var dates = ArrayMap<String,Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,9 +55,6 @@ class RescanDialog(val context: HomeActivity, private val daemonBlockChainHeight
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = RescanDialogBinding.inflate(layoutInflater,container,false)
-        binding.toolbar.setButton(1)
-        binding.toolbar.setTitle(resources.getString(R.string.activity_rescan_page_title))
 
         dates["2019-03"] = 21164
         dates["2019-04"] = 42675
@@ -115,163 +120,35 @@ class RescanDialog(val context: HomeActivity, private val daemonBlockChainHeight
         dates["2024-02"] = 2986700
         dates["2024-03"] = 3049909
 
-        // create an OnDateSetListener
-        val dateSetListener =
-            DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-                cal.set(Calendar.YEAR, year)
-                cal.set(Calendar.MONTH, monthOfYear)
-                cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                updateDateInView()
-            }
-
-
-        with(binding){
-            toolbar.setOnButtonListener { type ->
-                when (type) {
-                    1 -> {
-                        binding.restoreSeedWalletRestoreDate.text = ""
-                        binding.restoreSeedWalletRestoreHeight.setText("")
-                        keyboardDismiss(requireView())
-                        binding.restoreSeedWalletRestoreHeight.isFocusable = false
-                        dismiss()
-                    }
-                    else -> Timber.e("Button " + type + "pressed - how can this be?")
-                }
-            }
-            dialogCurrentBlockHeight.text=daemonBlockChainHeight.toString()
-
-            binding.dialogCurrentBlockHeight.inputType = InputType.TYPE_CLASS_NUMBER
-
-            binding.restoreSeedWalletRestoreHeight.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable) {
-                    if (binding.restoreSeedWalletRestoreHeight.text.trim().toString().length == 9) {
-                        Toast.makeText(
-                            context,
-                            R.string.enter_a_valid_height,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-
-                override fun beforeTextChanged(
-                    s: CharSequence, start: Int,
-                    count: Int, after: Int
-                ) {
-                }
-
-                override fun onTextChanged(
-                    s: CharSequence, start: Int,
-                    before: Int, count: Int
-                ) {
-                }
-            })
-            //SteveJosephh21
-            restoreSeedWalletRestoreDate.setOnClickListener {
-                keyboardDismiss(requireView())
-                restoreSeedWalletRestoreDate.inputType = InputType.TYPE_NULL;
-                val datePickerDialog = DatePickerDialog(context,
-                    dateSetListener,
-                    // set DatePickerDialog to point to today's date when it loads up
-                    cal.get(Calendar.YEAR),
-                    cal.get(Calendar.MONTH),
-                    cal.get(Calendar.DAY_OF_MONTH))
-                datePickerDialog.datePicker.maxDate = System.currentTimeMillis()
-                datePickerDialog.show()
-            }
-
-            rescanButton.setOnClickListener {
-                if(CheckOnline.isOnline(context)) {
-                    val restoreHeight = binding.restoreSeedWalletRestoreHeight.text.trim().toString()
-                    val restoreFromDate = binding.restoreSeedWalletRestoreDate.text.toString()
-                    //SteveJosephh21
-                    when {
-                        restoreHeight.isNotEmpty() -> {
-                            val restoreHeightBig = BigInteger(restoreHeight)
-                            if(restoreHeightBig.toLong() in 0 until daemonBlockChainHeight) {
-                                binding.restoreFromHeightErrorMessage.text=""
-                                binding.restoreFromHeightErrorMessage.visibility=View.GONE
-                                binding.restoreSeedWalletRestoreDate.text = ""
-                                context.onWalletRescan(restoreHeight.toLong())
-                                //_recoveryWallet(displayName,password,getSeed, restoreHeight.toLong())
-                                dismiss()
-                            }else{
-                                binding.restoreFromHeightErrorMessage.text=getString(R.string.restore_height_error_message)
-                                binding.restoreFromHeightErrorMessage.visibility=View.VISIBLE
-                            }
-                        }
-                        restoreFromDate.isNotEmpty() -> {
-                            binding.restoreSeedWalletRestoreHeight.setText("")
-                            Log.d("Beldex", "Restore Height 1 ${restoreFromDateHeight.toLong()}")
-                            context.onWalletRescan(restoreFromDateHeight.toLong())
-                            //_recoveryWallet(displayName, password, getSeed, restoreFromDateHeight.toLong())
+        return ComposeView(requireContext()).apply {
+            setContent {
+                BChatTheme (
+                    //darkTheme = false
+                ){
+                    RescanScreenContainer(title = stringResource(R.string.menu_rescan),
+                        onBackClick = {
+                            keyboardDismiss(requireView())
                             dismiss()
-                        }
-                        else -> {
-                            Toast.makeText(
-                                context,
-                                getString(R.string.activity_restore_from_height_missing_error),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                        }){
+                        RescanScreen(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(16.dp),
+                            daemonBlockChainHeight,
+                            dates,
+                            onDismissDialog = {restoreFromHeight->
+                                contextHomeActivity.onWalletRescan(restoreFromHeight)
+                                dismiss()
+                            }
+                        )
                     }
-                }else{
-                    Toast.makeText(context,getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
                 }
             }
-
-            restoreHeightInfoIcon.setOnClickListener {
-                RestoreHeightInfoDialog().show(context.supportFragmentManager, "Restore Height Info Dialog")
-            }
         }
-        return binding.root
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        binding.restoreSeedWalletRestoreHeight.isFocusable = false
-    }
-
-    private fun updateDateInView() {
-        val myFormat = "yyyy-MM-dd" // mention the format you need
-        val sdf = SimpleDateFormat(myFormat, Locale.US)
-        binding.restoreSeedWalletRestoreDate.text = sdf.format(cal.time)
-
-        if (cal.time != null) {
-            restoreFromDateHeight = getHeightByDate(cal.time,sdf)
-        }
-    }
-
-    private fun getHeightByDate(date: Date, sdf: SimpleDateFormat): Int {
-        val sdfDate = sdf.parse(sdf.format(date))
-
-        val monthFormat = "MM"
-        val monthSdfFormat = SimpleDateFormat(monthFormat, Locale.US)
-        val monthVal = monthSdfFormat.format(date).toInt()
-        val month = if (monthVal < 10) "0${monthVal}" else "$monthVal"
-
-        val yearFormat = "yyyy"
-        val yearSdfFormat = SimpleDateFormat(yearFormat, Locale.US)
-        val yearVal = yearSdfFormat.format(date).toInt()
-
-        val raw = "${yearVal}-$month"
-        val firstDate = dateFormat.parse(dates.keys.first())
-
-        Log.d("Beldex","Restore Height -->$raw")
-
-        var height = dates[raw]?:0
-
-        if (height != null) {
-            if (height <= 0 && sdfDate.after(firstDate)) {
-                height = dates.values.last()
-            }
-        }
-        Log.d("Beldex","Restore Height --> $height")
-
-        return height
     }
 
     private fun keyboardDismiss(v: View) {
-        val inputMethodManager : InputMethodManager? = context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager?
+        val inputMethodManager : InputMethodManager? = contextHomeActivity.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager?
         inputMethodManager!!.hideSoftInputFromWindow(v.applicationWindowToken, 0)
     }
 
@@ -280,4 +157,85 @@ class RescanDialog(val context: HomeActivity, private val daemonBlockChainHeight
         super.onDismiss(dialog)
     }
 
+}
+
+@Composable
+private fun RescanScreenContainer(
+    title: String,
+    wrapInCard: Boolean = true,
+    onBackClick: () -> Unit,
+    actionItems: @Composable () -> Unit = {},
+    content: @Composable () -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.primary)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = MaterialTheme.colorScheme.primary)
+                .padding(16.dp)
+        ) {
+            Icon(
+                Icons.Default.ArrowBack,
+                contentDescription = stringResource(R.string.back),
+                tint = MaterialTheme.appColors.editTextColor,
+                modifier = Modifier
+                    .clickable {
+                        onBackClick()
+                    }
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleLarge.copy(
+                    color = MaterialTheme.appColors.editTextColor,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                ),
+                modifier = Modifier
+                    .weight(1f)
+            )
+
+            actionItems()
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        if (wrapInCard) {
+            CardContainer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
+                content()
+            }
+        } else {
+            content()
+        }
+    }
+}
+
+@Composable
+private fun CardContainer(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    Card(
+        shape = RoundedCornerShape(
+            topStart = 16.dp,
+            topEnd = 16.dp
+        ),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.appColors.backgroundColor
+        ),
+        modifier = modifier
+    ) {
+        content()
+    }
 }

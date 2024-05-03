@@ -132,6 +132,13 @@
         <item name="android:drawableTint" tools:ignore="NewApi">?android:textColorPrimary</item>
     </style>
 
+    <style name="Widget.Bchat.Button.Common.Sync">
+        <item name="android:fontFamily">@font/open_sans_semi_bold</item>
+        <item name="android:background">@drawable/sync_option_button_background</item>
+        <item name="android:textColor">@color/text_white</item>
+        <item name="android:drawableTint" tools:ignore="NewApi">?android:textColorPrimary</item>
+    </style>
+
     <style name="clearButton">
         <item name="android:fontFamily">@font/open_sans_semi_bold</item>
         <item name="android:background">@drawable/clear_button_medium_background</item>

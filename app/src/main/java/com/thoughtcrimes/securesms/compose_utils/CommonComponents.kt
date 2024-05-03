@@ -101,7 +101,7 @@ fun BChatOutlinedTextField(
     shape: Shape = MaterialTheme.shapes.small,
     placeHolder: String = "",
     maxLen: Int = -1,
-    textAlign: TextAlign? = null,
+    textAlign: TextAlign = TextAlign.Start,
     onValueChange: (String) -> Unit
 ) {
     OutlinedTextField(

@@ -54,7 +54,7 @@ class WalletScannerFragment(
     }
 
     interface Listener {
-        fun onSendRequest(view: View?)
+        fun onSendRequest()
         fun setBarcodeData(data: BarcodeData?)
         fun walletOnBackPressed() //-
     }
@@ -254,7 +254,7 @@ class WalletScannerFragment(
     }
 
     private fun processScannedData(barcodeData: BarcodeData?, sendFragment: SendFragment) {
-        activityCallback!!.onSendRequest(view)
+        activityCallback!!.onSendRequest()
         activityCallback!!.setBarcodeData(barcodeData)
         sendFragment.processScannedData(barcodeData)
     }

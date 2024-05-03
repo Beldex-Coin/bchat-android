@@ -107,7 +107,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     }
     var onScanListener: OnScanListener? = null
     interface OnScanListener {
-        fun onScan(view: View?)
+        fun onScan()
     }
 
     fun onCreateTransactionFailed(errorText: String?) {
@@ -220,7 +220,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                 Toast.makeText(requireActivity(), R.string.please_check_your_internet_connection, Toast.LENGTH_SHORT).show()
             }else{
                 Helper.hideKeyboard(activity)
-                onScanListener?.onScan(requireView())
+                onScanListener?.onScan()
             }
         }
         binding.addressBook.setOnClickListener {

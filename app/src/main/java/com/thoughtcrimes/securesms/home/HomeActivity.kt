@@ -111,7 +111,9 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import java.io.File
+import java.text.SimpleDateFormat
 import java.util.Collections
+import java.util.Date
 import java.util.Random
 import javax.inject.Inject
 
@@ -474,7 +476,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             .commit()
     }
 
-    private fun replaceFragmentWithTransition(view: View?, newFragment: Fragment, stackName: String?, extras: Bundle?) {
+    private fun replaceFragmentWithTransition(newFragment: Fragment, stackName: String?, extras: Bundle?) {
         if (extras != null) {
             newFragment.arguments = extras
         }
@@ -778,10 +780,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     override val daemonHeight: Long
         get() = mBoundService!!.daemonHeight
 
-    override fun onSendRequest(view: View?) {
+    override fun onSendRequest() {
         if(CheckOnline.isOnline(this)) {
             replaceFragment(SendFragment(),null, extras = null)
-            //replaceFragmentWithTransition(view,SendFragment(),null,null)
+            //replaceFragmentWithTransition(SendFragment(),null,null)
             uri = null // only use uri once
         }else{
             Toast.makeText(this, getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
@@ -806,9 +808,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         return getWallet()!!.getTxKey(txId)
     }
 
-    override fun onWalletReceive(view: View?) {
+    override fun onWalletReceive() {
         if(CheckOnline.isOnline(this)) {
-            //replaceFragmentWithTransition(view, ReceiveFragment(), null, null)
+            //replaceFragmentWithTransition(ReceiveFragment(), null, null)
             replaceFragment(ReceiveFragment(),null,null)
         } else {
             Toast.makeText(this, getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
@@ -1128,9 +1130,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     /// QR scanner callbacks
-    override fun onScan(view: View?) {
+    override fun onScan() {
         if (Helper.getCameraPermission(this)) {
-            replaceFragmentWithTransition(view,ScannerFragment(),null,null)
+            replaceFragmentWithTransition(ScannerFragment(),null,null)
         } else {
             Timber.i("Waiting for permissions")
         }
@@ -1258,11 +1260,11 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         onBackPressed()
     }
 
-    override fun onWalletScan(view: View?) {
+    override fun onWalletScan() {
         if(CheckOnline.isOnline(this)) {
             if (Helper.getCameraPermission(this)) {
                 val extras = Bundle()
-                replaceFragmentWithTransition(view,WalletScannerFragment(), null, extras)
+                replaceFragmentWithTransition(WalletScannerFragment(), null, extras)
             } else {
                 Timber.i("Waiting for permissions")
             }

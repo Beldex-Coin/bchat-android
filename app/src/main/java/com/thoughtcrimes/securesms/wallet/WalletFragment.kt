@@ -74,27 +74,30 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         fun onWalletScan()
     }
 
-    private var syncProgress = -1
+    private var syncProgress = 4f
 
-    fun setProgress(n: Int) {
+    fun setProgress(n: Float) {
         syncProgress = n
         when {
-            n > 100 -> {
-                //binding.progressBar.isIndeterminate = true
-                viewModels.progressBarIsVisible(true)//binding.progressBar.visibility = View.VISIBLE
+            n==4f -> {
+                viewModels.setProgress(1f)
+                viewModels.progressBarIsVisible(false)
             }
-            n >= 0 -> {
-                //binding.progressBar.isIndeterminate = false
-                viewModels.setProgress(n.toFloat())//binding.progressBar.progress = n
-                viewModels.progressBarIsVisible(true)//binding.progressBar.visibility = View.VISIBLE
+            n==2f -> {
+                viewModels.setProgress(1f)
+                viewModels.progressBarIsVisible(true)
             }
-            n==-2 -> {
-                viewModels.progressBarIsVisible(true)//binding.progressBar.visibility = View.VISIBLE
-                //binding.progressBar.isIndeterminate = false
-                viewModels.setProgress(100f)//binding.progressBar.progress=100
+            n==3f -> {
+                viewModels.progressBarIsVisible(true)
+                viewModels.setProgress(1f)
+            }
+            n<1f && n >= 0f -> {
+                viewModels.setProgress(n)
+                viewModels.progressBarIsVisible(true)
             }
             else -> { // <0
-                viewModels.progressBarIsVisible(false)//binding.progressBar.visibility = View.GONE
+                viewModels.setProgress(n)
+                viewModels.progressBarIsVisible(false)
             }
         }
     }
@@ -322,7 +325,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
 
         if(activityCallback!!.getNode() == null){
             setProgress("Failed to connect to node")
-            setProgress(101)
+            setProgress(2f)
             viewModels.setSyncStatusTextColor(R.color.red)
             viewModels.setProgressBarColor(R.color.red)
         }
@@ -379,7 +382,11 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                     }
                     var x = (100 - Math.round(100f * n / (1f * daemonHeight  - firstBlock))).toInt()
                     if (x == 0) x = 1 // indeterminate
-                    setProgress(x)
+                    if(x>=0){
+                        setProgress((x/100.0).toFloat())
+                    }else{
+                        setProgress(x.toFloat())
+                    }
                     viewModels.setFilterTransactionIconIsClickable(false)
                     ///binding.syncStatusIcon.visibility=View.GONE
                     ///binding.syncFailIcon.visibility = View.GONE
@@ -391,7 +398,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                     sync = getString(R.string.status_synchronized)
                     viewModels.setSyncStatusTextColor(R.color.green_color)
                     viewModels.setProgressBarColor(R.color.green_color)
-                    setProgress(-2)
+                    setProgress(3f)
                     viewModels.setFilterTransactionIconIsClickable(true)
                     ///binding.syncStatusIcon.visibility=View.VISIBLE
                     ///binding.syncFailIcon.visibility = View.GONE
@@ -408,7 +415,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                 ///binding.syncStatusIcon.visibility = View.GONE
                 ///binding.syncFailIcon.visibility = View.GONE
                 sync = getString(R.string.status_wallet_connecting)
-                setProgress(101)
+                setProgress(2f)
                 viewModels.setSyncStatusTextColor(R.color.green_color)
                 viewModels.setProgressBarColor(R.color.green_color)
 
@@ -422,7 +429,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                         }
                     }*/
                 sync = getString(R.string.failed_connected_to_the_node)
-                setProgress(101)
+                setProgress(2f)
                 viewModels.setSyncStatusTextColor(R.color.red)
                 viewModels.setProgressBarColor(R.color.red)
             }
@@ -432,7 +439,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         {
             setProgress(getString(R.string.no_node_connection))
             viewModels.setSyncStatusTextColor(R.color.red)
-            setProgress(101)
+            setProgress(2f)
             viewModels.setProgressBarColor(R.color.red)
             ///binding.syncStatusIcon.visibility=View.GONE
             ///binding.syncFailIcon.visibility=View.GONE
@@ -475,7 +482,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         ///binding.syncStatusIcon.visibility = View.GONE
         ///binding.syncFailIcon.visibility = View.GONE
         setProgress(getString(R.string.status_wallet_connecting))
-        setProgress(101)
+        setProgress(2f)
         viewModels.setSyncStatusTextColor(R.color.green_color)
         viewModels.setProgressBarColor(R.color.green_color)
     }

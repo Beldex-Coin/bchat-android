@@ -916,7 +916,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                         }
                     }
                     if (!synced) { // first sync
-                        onProgress(-2)//onProgress(-1)
+                        onProgress(3f)
                         saveWallet() // save on first sync
                         synced = true
                         //WalletFragment Functionality --
@@ -962,7 +962,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }
     }
 
-    override fun onProgress(n: Int) {
+    override fun onProgress(n: Float) {
         runOnUiThread {
             try {
                 //WalletFragment Functionality --
@@ -1497,12 +1497,12 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                     setNode(node)
                     if(currentWallet is WalletFragment) {
                         currentWallet.setProgress(getString(R.string.reconnecting))
-                        currentWallet.setProgress(101)
+                        currentWallet.setProgress(2f)
                         invalidateOptionsMenu()
                     }
                 } else {
                     if(currentWallet is WalletFragment) {
-                        currentWallet.setProgress(R.string.failed_connected_to_the_node)
+                        currentWallet.setProgress(getString(R.string.failed_connected_to_the_node))
                     }
                 }
             } else {

@@ -288,8 +288,8 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         binding.failedBlockProgressBar.progress = 0
     }
 
-    fun setProgress(progress:Int){
-        binding.blockProgressBar.progress = progress
+    fun setProgress(progress:Float){
+        binding.blockProgressBar.progress = progress.toInt()
     }
 
     fun setDrawableProgressBar(context: Context, type: Boolean,syncStatus: String) {

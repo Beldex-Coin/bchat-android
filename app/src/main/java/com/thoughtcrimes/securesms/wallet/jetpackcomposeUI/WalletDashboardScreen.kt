@@ -3,6 +3,7 @@ package com.thoughtcrimes.securesms.wallet.jetpackcomposeUI
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -38,6 +39,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -122,7 +125,7 @@ fun WalletDashBoard(
     }
 
     var progressBarColor by remember {
-        mutableStateOf(R.color.green_color)
+        mutableIntStateOf(R.color.green_color)
     }
 
     viewModels.progressBarColor.observe(lifecycleOwner) {
@@ -130,7 +133,7 @@ fun WalletDashBoard(
     }
 
     var progress by remember {
-        mutableStateOf(0f)
+        mutableFloatStateOf(0f)
     }
 
     viewModels.progress.observe(lifecycleOwner) {
@@ -330,7 +333,7 @@ fun WalletDashBoard(
                         }
 
                         if (progressBarIsVisible) {
-                            if(progress==101f){
+                            if(progress==2f){
                                 LinearProgressIndicator(modifier = Modifier
                                     .fillMaxWidth()
                                     .height(1.dp),

@@ -438,7 +438,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private var committedTx: PendingTx? = null
 
     private var syncText: String? = null
-    private var syncProgress = -1
+    private var syncProgress = 4f//-1
     private var firstBlock: Long = 0
     private var balance: Long = 0
     private val formatter = NumberFormat.getInstance()
@@ -606,7 +606,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
         if (listenerCallback!!.getNode() == null) {
             setProgress(getString(R.string.failed_to_connect_to_node))
-            setProgress(101)
+            setProgress(2f)
             binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext,true,valueOfWallet)
         }
 
@@ -3307,24 +3307,29 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
     }
 
-    fun setProgress(n: Int) {
+    fun setProgress(n: Float) {
         syncProgress = n
         when {
-            n > 100 -> {
-                //binding.blockProgressBar.isIndeterminate = true
+            n==4f -> {
+                //viewModels.setProgress(1f)
+                binding.inputBar.showProgressBar(false)
+            }
+            n==2f -> {
+                //viewModels.setProgress(1f)
                 binding.inputBar.showProgressBar(blockProgressBarVisible)
             }
-            n >= 0 -> {
-                //binding.blockProgressBar.isIndeterminate = false
-                binding.inputBar.setProgress(n)//binding.blockProgressBar.progress = n
+            n==3f -> {
                 binding.inputBar.showProgressBar(blockProgressBarVisible)
+                binding.inputBar.setProgress(1f)
+                //viewModels.setProgress(1f)
             }
-            n == -2 -> {
+            n<1f && n >= 0f -> {
+                //viewModels.setProgress(n)
+                binding.inputBar.setProgress(n)
                 binding.inputBar.showProgressBar(blockProgressBarVisible)
-                //binding.blockProgressBar.isIndeterminate = false
-                binding.inputBar.setProgress(100)
             }
             else -> { // <0
+                //viewModels.setProgress(n)
                 binding.inputBar.showProgressBar(false)
             }
         }
@@ -3369,7 +3374,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     }
                     var x = (100 - Math.round(100f * n / (1f * daemonHeight - firstBlock))).toInt()
                     if (x == 0) x = 1 // indeterminate
-                    setProgress(x)
+                    if(x>=0){
+                        setProgress((x/100.0).toFloat())
+                    }else{
+                        setProgress(x.toFloat())
+                    }
                     valueOfWallet = "${df.format(walletSyncPercentage)}%"
                     binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false,valueOfWallet)
                 } else {
@@ -3381,16 +3390,16 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     valueOfWallet = "${df.format(walletSyncPercentage)}%"
                     binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false,valueOfWallet)
                     //SteveJosephh21
-                    setProgress(-2)
+                    setProgress(3f)
                 }
             } else if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connecting) {
                 sync = getString(R.string.status_wallet_connecting)
-                setProgress(-1)
+                setProgress(4f)
                 valueOfWallet = "--"
                 binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, true, valueOfWallet)
             } else {
                 sync = getString(R.string.failed_connected_to_the_node)
-                setProgress(-1)
+                setProgress(4f)
                 valueOfWallet = "--"
                 binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, true, valueOfWallet)
             }

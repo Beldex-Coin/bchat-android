@@ -537,7 +537,7 @@ private fun MyAccountScreenContainer(
 }
 
 @Composable
-private fun CardContainer(
+fun CardContainer(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {

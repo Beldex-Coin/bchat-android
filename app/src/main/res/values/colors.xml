@@ -227,4 +227,16 @@
     <color name="conversation_menu_background">#EBEBEB</color>
     <color name="received_message_background">#2C2C3B</color>
     <color name="received_message_text_color">#EBEBEB</color>
+    <color name="syncing_option_card_background">#111119</color>
+    <color name="syncing_option_card_button_background">#282836</color>
+    <color name="wallet_info_background">#111119</color>
+    <color name="wallet_info_highlights">#00C304</color>
+    <color name="checkbox_checked">#000000</color>
+    <color name="wallet_dashboard_card_view">#2B2B3A</color>
+    <color name="wallet_scan_background">#EBEBEB</color>
+    <color name="wallet_send_background">#2979FB</color>
+    <color name="wallet_receive_background">#00BD40</color>
+    <color name="wallet_rescan_background">#333343</color>
+    <color name="transaction_history_background">#11111A</color>
+    <color name="total_balance">#ACACAC</color>
 </resources>

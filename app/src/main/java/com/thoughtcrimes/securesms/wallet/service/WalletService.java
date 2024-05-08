@@ -215,7 +215,7 @@ public class WalletService extends Service {
 
         void onProgress(String text);
 
-        void onProgress(int n);
+        void onProgress(float n);
 
         void onWalletStored(boolean success);
 
@@ -233,7 +233,7 @@ public class WalletService extends Service {
     }
 
     String progressText = null;
-    int progressValue = -1;
+    float progressValue = 4f;
 
     private void showProgress(String text) {
         progressText = text;
@@ -246,14 +246,14 @@ public class WalletService extends Service {
         sendBroadCast(bundle);
     }
 
-    private void showProgress(int n) {
+    private void showProgress(float n) {
         progressValue = n;
         if (observer != null) {
             observer.onProgress(n);
         }
         Bundle bundle = new Bundle();
         bundle.putSerializable("type", WalletCallbackType.ProgressInt);
-        bundle.putInt("data", n);
+        bundle.putFloat("data", n);
         sendBroadCast(bundle);
     }
 
@@ -261,7 +261,7 @@ public class WalletService extends Service {
         return progressText;
     }
 
-    public int getProgressValue() {
+    public float getProgressValue() {
         return progressValue;
     }
 
@@ -298,7 +298,7 @@ public class WalletService extends Service {
                             String walletPw = extras.getString(REQUEST_CMD_LOAD_PW, null);
                             if (walletId != null) {
                                 showProgress(getString(R.string.status_wallet_loading));
-                                showProgress(10);
+                                showProgress(0.1f);
                                 Wallet.Status walletStatus = start(walletId, walletPw);
                                 if (observer != null) {
                                     try {
@@ -497,7 +497,7 @@ public class WalletService extends Service {
     private Wallet.Status start(String walletName, String walletPassword) {
         startNotification();
         showProgress(getString(R.string.status_wallet_loading));
-        showProgress(10);
+        showProgress(0.1f);
         if (listener == null) {
             Wallet aWallet = loadWallet(walletName, walletPassword);
             if (aWallet == null) return null;
@@ -514,10 +514,10 @@ public class WalletService extends Service {
             }
             listener = new MyWalletListener();
             listener.start();
-            showProgress(100);
+            showProgress(1f);
         }
         showProgress(getString(R.string.status_wallet_connecting));
-        showProgress(101);
+        showProgress(2f);
         // if we try to refresh the history here we get occasional segfaults!
         // doesnt matter since we update as soon as we get a new block anyway
         return getWallet().getFullStatus();
@@ -544,7 +544,7 @@ public class WalletService extends Service {
         Wallet wallet = openWallet(walletName, walletPassword);
         if (wallet != null) {
             long walletRestoreHeight = wallet.getRestoreHeight();
-            showProgress(55);
+            showProgress(0.55f);
             if (!CheckOnline.Companion.isOnline(getApplicationContext())) {
                 return null;
             } else {
@@ -554,7 +554,7 @@ public class WalletService extends Service {
                     Log.d("WalletService",e.toString());
                 }
                 wallet.setRestoreHeight(walletRestoreHeight);
-                showProgress(90);
+                showProgress(0.9f);
             }
 
         }
@@ -563,13 +563,13 @@ public class WalletService extends Service {
 
     private Wallet openWallet(String walletName, String walletPassword) {
         String path = Helper.getWalletFile(getApplicationContext(), walletName).getAbsolutePath();
-        showProgress(20);
+        showProgress(0.2f);
         Wallet wallet = null;
         WalletManager walletMgr = WalletManager.getInstance();
-        showProgress(30);
+        showProgress(0.3f);
         if (walletMgr.walletExists(path)) {
             wallet = walletMgr.openWallet(path, walletPassword);
-            showProgress(60);
+            showProgress(0.6f);
             Wallet.Status walletStatus = wallet.getStatus();
             if (!walletStatus.isOk()) {
                 WalletManager.getInstance().close(wallet);

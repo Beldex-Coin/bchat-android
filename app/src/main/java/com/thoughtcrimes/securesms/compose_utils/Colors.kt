@@ -75,7 +75,33 @@ class Colors(
     val maxAmountBackground: Color,
     val textHint: Color,
     val dividerColor: Color,
-    val popUpAddressBackground: Color
+    val popUpAddressBackground: Color,
+    val walletDashboardShowBalanceCardBackground: Color,
+    val walletDashboardMainMenuCardBackground: Color,
+    val walletDashboardQRButtonBackground: Color,
+    val walletDashboardSendButtonBackground: Color,
+    val walletDashboardReceiveButtonBackground: Color,
+    val walletDashboardRescanButtonBackground: Color,
+    val transactionFilterBackground: Color,
+    val transactionFilterIcon: Color,
+    val transactionHistoryCardBackground: Color,
+    val walletSyncingIcon: Color,
+    val walletSyncingSubTitle: Color,
+    val transactionTypeTitle: Color,
+    val transactionHistoryCardDivider: Color,
+    val transactionDateTitle: Color,
+    val transactionSubTitle: Color,
+    val transactionHistoryArrowForwardIconColor: Color,
+    val transactionHistoryArrowBackIconColor: Color,
+    val copyIcon: Color,
+    val selectDateRangeText: Color,
+    val cancelButtonColor: Color,
+    val secondaryColor: Color,
+    val currentBlockHeightContainerBackground: Color,
+    val scrollBackground: Color,
+    val addNodeHintColor : Color
+
+
 )
 
 val lightColors = Colors(
@@ -135,8 +161,31 @@ val lightColors = Colors(
     maxAmountBackground = Color(0xFF2979FB),
     textHint = Color(0xFFA7A7BA),
     dividerColor = Color(0XFFA7A7BA),
-    popUpAddressBackground = Color(0xFFF8F8F8)
-)
+    popUpAddressBackground = Color(0xFFF8F8F8),
+    walletDashboardShowBalanceCardBackground = Color(0xffFFFFFF),
+    walletDashboardMainMenuCardBackground = Color(0xffF0F0F0),
+    walletDashboardQRButtonBackground = Color(0xffFFFFFF),
+    walletDashboardSendButtonBackground = Color(0xff2979FB),
+    walletDashboardReceiveButtonBackground = Color(0xff00BD40),
+    walletDashboardRescanButtonBackground = Color(0xffE0E0E0),
+    transactionFilterBackground = Color(0xff333333),
+    transactionFilterIcon = Color(0xffFFFFFF),
+    transactionHistoryCardBackground = Color(0xffEBEBEB),
+    walletSyncingIcon = Color(0xffA7A7BA),
+    walletSyncingSubTitle = Color(0xff82828D),
+    transactionTypeTitle = Color(0xff82828D),
+    transactionHistoryCardDivider = Color(0xffA7A7BA),
+    transactionDateTitle = Color(0xff333333),
+    transactionSubTitle = Color(0xff82828D),
+    transactionHistoryArrowForwardIconColor = Color(0xff717194),
+    transactionHistoryArrowBackIconColor = Color(0xff333333),
+    copyIcon = Color(0xff00BD40),
+    selectDateRangeText = Color(0xff222222),
+    cancelButtonColor = Color(0xffECECEC),
+    secondaryColor = Color(0xff2929FB),
+    currentBlockHeightContainerBackground = Color(0xffF8F8F8),
+    scrollBackground = Color(0xFFFFFFFF),
+    addNodeHintColor = Color(0xFFA7A7BA))
 
 val darkColors = Colors(
     primaryButtonColor = Color(0xFF00BD40),
@@ -195,7 +244,31 @@ val darkColors = Colors(
     maxAmountBackground = Color(0xFF2979FB),
     textHint = Color(0xFFA7A7BA),
     dividerColor = Color(0XFF4B4B64),
-    popUpAddressBackground = Color(0xFF282836)
+    popUpAddressBackground = Color(0xFF282836),
+    walletDashboardShowBalanceCardBackground = Color(0xff2B2B3A),
+    walletDashboardMainMenuCardBackground = Color(0xff1C1C26),
+    walletDashboardQRButtonBackground = Color(0xffEBEBEB),
+    walletDashboardSendButtonBackground = Color(0xff2979FB),
+    walletDashboardReceiveButtonBackground = Color(0xff00BD40),
+    walletDashboardRescanButtonBackground = Color(0xff333343),
+    transactionFilterBackground = Color(0xffEBEBEB),
+    transactionFilterIcon = Color(0xff1C1C26),
+    transactionHistoryCardBackground = Color(0xff11111A),
+    walletSyncingIcon = Color(0xff65656E),
+    walletSyncingSubTitle = Color(0xff82828D),
+    transactionTypeTitle = Color(0xffACACAC),
+    transactionHistoryCardDivider = Color(0xff4B4B64),
+    transactionDateTitle = Color(0xffFFFFFF),
+    transactionSubTitle = Color(0xffA7A7BA),
+    transactionHistoryArrowForwardIconColor = Color(0xff717194),
+    transactionHistoryArrowBackIconColor = Color(0xffFFFFFF),
+    copyIcon = Color(0xff00BD40),
+    selectDateRangeText = Color(0xffFFFFFF),
+    cancelButtonColor = Color(0xff1C1C26),
+    secondaryColor = Color(0xff2929FB),
+    currentBlockHeightContainerBackground = Color(0xff1C1C26),
+    scrollBackground = Color(0xFF333343),
+    addNodeHintColor = Color(0xFF77778B)
 
 )
 

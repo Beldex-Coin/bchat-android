@@ -140,7 +140,7 @@ fun StatWalletInfo(modifier: Modifier) {
 
                 Text(text = "Yes, I Understand", modifier = Modifier.padding(top = 15.dp, end = 5.dp), style = MaterialTheme.typography.labelMedium, fontSize = 15.sp)
 
-                Checkbox(checked = isChecked, onCheckedChange = { isChecked = it }, colors = CheckboxDefaults.colors(checkedColor = colorResource(id = R.color.button_green), uncheckedColor = MaterialTheme.appColors.textColor, checkmarkColor = colorResource(id = R.color.checkbox_checked)))
+                Checkbox(checked = isChecked, onCheckedChange = { isChecked = it }, colors = CheckboxDefaults.colors(checkedColor = colorResource(id = R.color.button_green), uncheckedColor = MaterialTheme.appColors.textColor, checkmarkColor = colorResource(id = R.color.button_green)))
             }
 
             PrimaryButton(onClick = {

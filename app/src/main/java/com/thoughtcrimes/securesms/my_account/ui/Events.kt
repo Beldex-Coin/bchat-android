@@ -17,3 +17,8 @@ sealed interface MessageRequestEvents {
     data object AcceptAllRequest: MessageRequestEvents
     data object ClearAllRequest: MessageRequestEvents
 }
+
+sealed interface AddressBookEvents {
+    data class SearchQueryChanged(val query: String): AddressBookEvents
+
+}

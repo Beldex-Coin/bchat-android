@@ -149,4 +149,16 @@
     <color name="conversation_menu_background">#2C2C3B</color>
     <color name="received_message_background">#E0E0E0</color>
     <color name="received_message_text_color">#333333</color>
+    <color name="syncing_option_card_background">#F8F8F8</color>
+    <color name="syncing_option_card_button_background">#EBEBEB</color>
+    <color name="wallet_info_background">#FFFFFF</color>
+    <color name="wallet_info_highlights">#00C304</color>
+    <color name="checkbox_checked">#FFFFFF</color>
+    <color name="wallet_dashboard_card_view">#FFFFFF</color>
+    <color name="wallet_scan_background">#FFFFFF</color>
+    <color name="wallet_send_background">#2979FB</color>
+    <color name="wallet_receive_background">#00BD40</color>
+    <color name="wallet_rescan_background">#E0E0E0</color>
+    <color name="transaction_history_background">#EBEBEB</color>
+    <color name="total_balance">#ACACAC</color>
 </resources>

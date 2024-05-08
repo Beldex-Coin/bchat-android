@@ -19,8 +19,9 @@ import android.view.*
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import com.beldex.libbchat.utilities.TextSecurePreferences
@@ -61,7 +62,6 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     private val possibleCryptos: MutableSet<Crypto> = HashSet()
     private var selectedCrypto: Crypto? = null
     val INTEGRATED_ADDRESS_LENGTH = 106
-    private var resolvingOA = false
     private var totalFunds: Long = 0
     private var calledUnlockedBalance: Boolean = false
 
@@ -107,7 +107,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     }
     var onScanListener: OnScanListener? = null
     interface OnScanListener {
-        fun onScan(view: View?)
+        fun onScan()
     }
 
     fun onCreateTransactionFailed(errorText: String?) {
@@ -176,7 +176,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
             f.arguments = args
             return f
         }
-        var scanFromGallery: Boolean = false
+        private var scanFromGallery:MutableState<Boolean> = mutableStateOf(false)
     }
 
     private val resultLaunchers = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -212,7 +212,8 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
         return ComposeView(requireContext()).apply {
             setContent {
-                SendScreen(listener = activityCallback!!, viewModels )
+                SendScreen(listener = activityCallback!!, viewModels,beldexAddress,beldexAmount,beldexAddressErrorAction,beldexAddressErrorText,beldexAddressErrorTextColorChanged,resolvingOA,
+                    scanFromGallery )
             }
         }
     }
@@ -228,7 +229,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                 Toast.makeText(requireActivity(), R.string.please_check_your_internet_connection, Toast.LENGTH_SHORT).show()
             }else{
                 Helper.hideKeyboard(activity)
-                onScanListener?.onScan(requireView())
+                onScanListener?.onScan()
             }
         }
         binding.addressBook.setOnClickListener {
@@ -557,13 +558,11 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     private fun checkAddress(): Boolean {
         val ok = checkAddressNoError()
         if (possibleCryptos.isEmpty()) {
-            binding.beldexAddressLayout.setBackgroundResource(R.drawable.error_view_background)
-            binding.beldexAddressErrorMessage.visibility = View.VISIBLE
-            binding.beldexAddressErrorMessage.text=getString(R.string.send_address_invalid)
+            beldexAddressErrorAction.value = true
+            beldexAddressErrorText.value = getString(R.string.send_address_invalid)
+            beldexAddressErrorTextColorChanged.value = false
         } else {
-            binding.beldexAddressLayout.setBackgroundResource(R.drawable.bchat_id_text_view_background)
-            binding.beldexAddressErrorMessage.visibility = View.GONE
-            binding.beldexAddressErrorMessage.text=""
+            beldexAddressErrorAction.value = false
         }
         return ok
     }
@@ -584,16 +583,16 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     }
 
     private fun processOpenAlias(dnsOA: String?) {
-        if (resolvingOA) return  // already resolving - just wait
+        if (resolvingOA.value) return  // already resolving - just wait
         activityCallback!!.popBarcodeData()
         if (dnsOA != null) {
-            resolvingOA = true
-            binding.beldexAddressLayout.setBackgroundResource(R.drawable.error_view_background)
-            binding.beldexAddressErrorMessage.visibility = View.VISIBLE
-            binding.beldexAddressErrorMessage.text=getString(R.string.send_address_resolve_openalias)
+            resolvingOA.value = true
+            beldexAddressErrorAction.value = true
+            beldexAddressErrorTextColorChanged.value = false
+            beldexAddressErrorText.value = getString(R.string.send_address_resolve_openalias)
             OpenAliasHelper.resolve(dnsOA, object : OpenAliasHelper.OnResolvedListener {
                 override fun onResolved(dataMap: Map<Crypto?, BarcodeData?>) {
-                    resolvingOA = false
+                    resolvingOA.value = false
                     var barcodeData = dataMap[Crypto.BDX]
                     if (barcodeData == null) barcodeData = dataMap[Crypto.BTC]
                     if (barcodeData != null) {
@@ -602,14 +601,21 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                         binding.beldexAddressLayout.setBackgroundResource(R.drawable.error_view_background)
                         binding.beldexAddressErrorMessage.visibility = View.VISIBLE
                         binding.beldexAddressErrorMessage.text=getString(R.string.send_address_not_openalias)
+
+                        beldexAddressErrorAction.value = true
+                        beldexAddressErrorTextColorChanged.value = false
+                        beldexAddressErrorText.value = getString(R.string.send_address_not_openalias)
                     }
                 }
 
                 override fun onFailure() {
-                    resolvingOA = false
+                    resolvingOA.value = false
                     binding.beldexAddressLayout.setBackgroundResource(R.drawable.error_view_background)
                     binding.beldexAddressErrorMessage.visibility = View.VISIBLE
                     binding.beldexAddressErrorMessage.text=getString(R.string.send_address_not_openalias)
+                    beldexAddressErrorAction.value = true
+                    beldexAddressErrorTextColorChanged.value= false
+                    beldexAddressErrorText.value = getString(R.string.send_address_not_openalias)
                 }
             })
         }
@@ -705,10 +711,18 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     }
     // QR Scan Stuff
     fun processScannedData(barcodeData: BarcodeData?) {
-        scanFromGallery = true
+        scanFromGallery.value = true
         activityCallback?.setBarcodeData(barcodeData)
         processScannedData()
     }
+
+    private var beldexAddress: MutableState<String> = mutableStateOf("")
+    private var beldexAmount: MutableState<String> = mutableStateOf("")
+    private var beldexAddressErrorText: MutableState<String> = mutableStateOf("")
+    private var beldexAddressErrorAction: MutableState<Boolean> = mutableStateOf(false)
+    private var beldexAddressErrorTextColorChanged: MutableState<Boolean> = mutableStateOf(false)
+    private var resolvingOA: MutableState<Boolean> = mutableStateOf(false)
+
 
     private fun processScannedData() {
         var barcodeData: BarcodeData? = activityCallback?.getBarcodeData()
@@ -719,8 +733,8 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
             }
             if (barcodeData!!.address != null) {
                 activityCallback?.setBarcodeData(null)
-                binding.beldexAddressEditTxtLayout.editText?.setText(barcodeData.address)
-                binding.beldexAmountEditTxtLayout.editText?.setText(barcodeData.amount)
+                barcodeData.address.also { beldexAddress.value = it }
+                barcodeData.amount.also { beldexAmount.value = it }
                 possibleCryptos.clear()
                 selectedCrypto = null
                 if (barcodeData.isAmbiguous) {
@@ -730,18 +744,17 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                     selectedCrypto = barcodeData.asset
                 }
                 if (checkAddress()) {
-                    if (barcodeData.security === BarcodeData.Security.OA_NO_DNSSEC) binding.beldexAddressEditTxtLayout.error =
-                        getString(R.string.send_address_no_dnssec) else if (barcodeData.security === BarcodeData.Security.OA_DNSSEC) binding.beldexAddressEditTxtLayout.error =
-                        getString(R.string.send_address_openalias)
+                    if (barcodeData.security === BarcodeData.Security.OA_NO_DNSSEC) beldexAddressErrorText.value =
+                        getString(R.string.send_address_no_dnssec) else if (barcodeData.security === BarcodeData.Security.OA_DNSSEC) beldexAddressErrorText.value =                        getString(R.string.send_address_openalias)
                 }
                 if (isIntegratedAddress(barcodeData.address)) {
-                    binding.beldexAddressErrorMessage.visibility = View.VISIBLE
-                    binding.beldexAddressErrorMessage.setTextColor(ContextCompat.getColor(requireContext(), R.color.button_green))
-                    binding.beldexAddressErrorMessage.text=getString(R.string.info_paymentid_integrated)
+                    beldexAddressErrorAction.value = true
+                    beldexAddressErrorTextColorChanged.value = true
+                    beldexAddressErrorText.value = getString(R.string.info_paymentid_integrated)
                 }
             } else {
-                binding.beldexAddressEditTxtLayout.editText?.text?.clear()
-                binding.beldexAmountEditTxtLayout.editText?.text?.clear()
+                beldexAddress.value = ""
+                beldexAmount.value = ""
             }
         } else Timber.d("barcodeData=null")
     }

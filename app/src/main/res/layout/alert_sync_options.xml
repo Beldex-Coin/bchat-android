@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="10dp"
-    app:cardBackgroundColor="@color/page_background"
+    app:cardBackgroundColor="@color/syncing_option_card_background"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/transparent">
 
@@ -26,16 +26,17 @@
             android:text="Syncing Option"
             android:textAlignment="center"
             android:textSize="@dimen/medium_font_size"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textColor="#00BD40"/>
 
         <Button
             android:id="@+id/reConnectButton_Alert"
-            style="@style/Widget.Bchat.Button.Common.Copy"
+            style="@style/Widget.Bchat.Button.Common.Sync"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_marginTop="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginStart="20dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginStart="50dp"
             android:layout_weight="1"
             android:gravity="center"
             android:paddingLeft="15dp"
@@ -46,12 +47,12 @@
 
         <Button
             android:id="@+id/rescanButton_Alert"
-            style="@style/Widget.Bchat.Button.Common.Copy"
+            style="@style/Widget.Bchat.Button.Common.Sync"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginStart="20dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginStart="50dp"
             android:layout_marginBottom="20dp"
             android:layout_weight="1"
             android:gravity="center"

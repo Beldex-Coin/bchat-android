@@ -11,12 +11,11 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnKeyListener
 import android.view.inputmethod.EditorInfo
 import android.widget.RelativeLayout
 import androidx.core.view.isVisible
 import com.beldex.libbchat.messaging.sending_receiving.link_preview.LinkPreview
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ViewInputBarBinding
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.thoughtcrimes.securesms.conversation.v2.components.LinkPreviewDraftView
@@ -25,10 +24,12 @@ import com.thoughtcrimes.securesms.conversation.v2.messages.QuoteView
 import com.thoughtcrimes.securesms.conversation.v2.messages.QuoteViewDelegate
 import com.thoughtcrimes.securesms.database.model.MessageRecord
 import com.thoughtcrimes.securesms.database.model.MmsMessageRecord
-import com.thoughtcrimes.securesms.util.toDp
-import com.thoughtcrimes.securesms.util.toPx
 import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.util.getColorWithID
+import com.thoughtcrimes.securesms.util.toDp
+import com.thoughtcrimes.securesms.util.toPx
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ViewInputBarBinding
 
 
 class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, LinkPreviewDraftViewDelegate{
@@ -64,8 +65,8 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
     private var microPhoneButtonLastLongClickTime: Long = 0
 
     private val attachmentsButton by lazy { InputBarButton(context, R.drawable.ic_attach, isMessageBox = true) }
-    private val microphoneButton by lazy { InputBarButton(context, R.drawable.ic_microphone, isMessageBox = true) }
-    private val sendButton by lazy { InputBarButton(context, R.drawable.ic_send, true, isMessageBox = true) }
+    private val microphoneButton by lazy { InputBarButton(context, R.drawable.ic_microphone, true, isMessageBox = true) }
+    private val sendButton by lazy { InputBarButton(context, R.drawable.send, true, isMessageBox = true) }
 
     // region Lifecycle
     constructor(context: Context) : super(context) { initialize() }
@@ -179,6 +180,8 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         linkPreview = null
         linkPreviewDraftView = null
         binding.inputBarAdditionalContentContainer.removeAllViews()
+        // adjust rounded corner of background card
+        binding.containerCardView.radius = toPx(24, resources).toFloat()
         // inflate quoteview with typed array here
         val layout = LayoutInflater.from(context).inflate(R.layout.view_quote_draft, binding.inputBarAdditionalContentContainer, false)
         val quoteView = layout.findViewById<QuoteView>(R.id.mainQuoteViewContainer)
@@ -194,6 +197,8 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
     override fun cancelQuoteDraft(i:Int) {
         quote = null
         binding.inputBarAdditionalContentContainer.removeAllViews()
+        //adjust input bar card radius
+        binding.containerCardView.radius = toPx(48, resources).toFloat()
         requestLayout()
         if(i==1){
             binding.inputBarEditText.text?.clear()

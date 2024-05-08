@@ -126,7 +126,6 @@
 
         </RelativeLayout>
 
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.thoughtcrimes.securesms.conversation.v2.messages.VisibleMessageView>

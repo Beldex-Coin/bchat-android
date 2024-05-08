@@ -12,7 +12,6 @@ import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -20,11 +19,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.view.marginBottom
-import androidx.lifecycle.LifecycleCoroutineScope
 import com.beldex.libbchat.messaging.contacts.Contact
-import dagger.hilt.android.AndroidEntryPoint
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ViewVisibleMessageBinding
 import com.beldex.libbchat.messaging.contacts.Contact.ContactContext
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
 import com.beldex.libbchat.mnode.MnodeAPI
@@ -32,13 +27,25 @@ import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.ViewUtil
 import com.beldex.libsignal.utilities.ThreadUtils
 import com.thoughtcrimes.securesms.ApplicationContext
-import com.thoughtcrimes.securesms.database.*
+import com.thoughtcrimes.securesms.database.BeldexThreadDatabase
+import com.thoughtcrimes.securesms.database.MmsDatabase
+import com.thoughtcrimes.securesms.database.MmsSmsDatabase
+import com.thoughtcrimes.securesms.database.SmsDatabase
+import com.thoughtcrimes.securesms.database.ThreadDatabase
 import com.thoughtcrimes.securesms.database.model.MessageRecord
-import com.thoughtcrimes.securesms.home.HomeActivity
 import com.thoughtcrimes.securesms.home.UserDetailsBottomSheet
 import com.thoughtcrimes.securesms.mms.GlideRequests
-import com.thoughtcrimes.securesms.util.*
-import java.util.*
+import com.thoughtcrimes.securesms.util.ActivityDispatcher
+import com.thoughtcrimes.securesms.util.DateUtils
+import com.thoughtcrimes.securesms.util.disableClipping
+import com.thoughtcrimes.securesms.util.getColorWithID
+import com.thoughtcrimes.securesms.util.toDp
+import com.thoughtcrimes.securesms.util.toPx
+import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ViewVisibleMessageBinding
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.min
@@ -156,10 +163,14 @@ class VisibleMessageView : LinearLayout {
             binding.senderNameTextView.visibility = View.GONE
         }
         // Date break
-        val showDateBreak = isStartOfMessageCluster || snIsSelected
-        binding.dateBreakTextView.text = if (showDateBreak) DateUtils.getDisplayFormattedTimeSpanString(context, Locale.getDefault(), message.timestamp) else null
-        binding.dateBreakTextView.isVisible = showDateBreak
-        binding.dateBreakTextView.textSize = fontSize.toFloat()
+        val showDateBreak =  (isStartOfMessageCluster || snIsSelected) && !isSameDayMessage(message, previous)
+        if (showDateBreak) {
+            binding.dateBreakTextView.text = DateUtils.getCoversationDisplayFormattedTimeSpanString(context, Locale.getDefault(), message.timestamp)
+            binding.dateBreakTextView.isVisible = true
+            binding.dateBreakTextView.textSize = fontSize.toFloat()
+        } else {
+            binding.dateBreakTextView.isVisible = false
+        }
         val (iconID, iconColor) = getMessageStatusImage(message)
         if (iconID != null) {
             val drawable = ContextCompat.getDrawable(context, iconID)?.mutate()
@@ -182,6 +193,11 @@ class VisibleMessageView : LinearLayout {
             onAttachmentNeedsDownload)
         binding.messageContentView.root.delegate = contentViewDelegate
         onDoubleTap = { binding.messageContentView.root.onContentDoubleTap?.invoke() }
+    }
+
+    private fun isSameDayMessage(current: MessageRecord, previous: MessageRecord?): Boolean {
+        previous ?: return false
+        return DateUtils.isSameDay(current.timestamp, previous.timestamp)
     }
 
     private fun isStartOfMessageCluster(current: MessageRecord, previous: MessageRecord?, isGroupThread: Boolean): Boolean {

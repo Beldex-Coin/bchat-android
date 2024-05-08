@@ -98,6 +98,10 @@ class Colors(
     val cancelButtonColor: Color,
     val secondaryColor: Color,
     val currentBlockHeightContainerBackground: Color,
+    val scrollBackground: Color,
+    val addNodeHintColor : Color
+
+
 )
 
 val lightColors = Colors(
@@ -179,8 +183,9 @@ val lightColors = Colors(
     selectDateRangeText = Color(0xff222222),
     cancelButtonColor = Color(0xffECECEC),
     secondaryColor = Color(0xff2929FB),
-    currentBlockHeightContainerBackground = Color(0xffF8F8F8)
-)
+    currentBlockHeightContainerBackground = Color(0xffF8F8F8),
+    scrollBackground = Color(0xFFFFFFFF),
+    addNodeHintColor = Color(0xFFA7A7BA))
 
 val darkColors = Colors(
     primaryButtonColor = Color(0xFF00BD40),
@@ -262,6 +267,9 @@ val darkColors = Colors(
     cancelButtonColor = Color(0xff1C1C26),
     secondaryColor = Color(0xff2929FB),
     currentBlockHeightContainerBackground = Color(0xff1C1C26),
+    scrollBackground = Color(0xFF333343),
+    addNodeHintColor = Color(0xFF77778B)
+
 )
 
 

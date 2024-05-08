@@ -37,6 +37,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -74,7 +75,6 @@ import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.serializable
 import com.thoughtcrimes.securesms.wallet.CheckOnline
-import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity
 import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.send.TransactionConfirmPopUp
 import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.send.TransactionFailedPopUp
 import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.send.TransactionLoadingPopUp
@@ -96,7 +96,17 @@ import java.util.Locale
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
-fun SendScreen(listener: SendFragment.Listener, viewModels: WalletViewModels) {
+fun SendScreen(
+    listener: SendFragment.Listener,
+    viewModels: WalletViewModels,
+    address: MutableState<String>,
+    amount: MutableState<String>,
+    beldexAddressErrorAction: MutableState<Boolean>,
+    beldexAddressErrorText: MutableState<String>,
+    beldexAddressErrorTextColorChanged: MutableState<Boolean>,
+    resolvingOA: MutableState<Boolean>,
+    scanFromGallery: MutableState<Boolean>
+) {
 
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -148,7 +158,7 @@ fun SendScreen(listener: SendFragment.Listener, viewModels: WalletViewModels) {
     val options = listOf("Flash", "Slow")
     var selectedOptionText by remember { mutableStateOf(options[0]) }
 
-    viewModels.balance.observe(lifecycleOwner) { balance ->
+    viewModels.walletBalance.observe(lifecycleOwner) { balance ->
         totalBalance = balance
     }
 
@@ -227,17 +237,17 @@ fun SendScreen(listener: SendFragment.Listener, viewModels: WalletViewModels) {
 
 
     var beldexAddress by remember {
-        mutableStateOf("")
+        mutableStateOf(address)
     }
     var beldexAmount by remember {
-        mutableStateOf("")
+        mutableStateOf(amount)
     }
 
     var addressErrorAction by remember {
-        mutableStateOf(false)
+        mutableStateOf(beldexAddressErrorAction)
     }
     var addressErrorText by remember {
-        mutableStateOf("")
+        mutableStateOf(beldexAddressErrorText)
     }
     var amountErrorAction by remember {
         mutableStateOf(false)
@@ -246,11 +256,11 @@ fun SendScreen(listener: SendFragment.Listener, viewModels: WalletViewModels) {
         mutableStateOf("")
     }
     var addressErrorTextColorChanged by remember {
-        mutableStateOf(false)
+        mutableStateOf(beldexAddressErrorTextColorChanged)
     }
 
     var scanFromGallery by remember {
-        mutableStateOf(false)
+        mutableStateOf(scanFromGallery)
     }
 
     var currencyValue by remember {
@@ -261,6 +271,10 @@ fun SendScreen(listener: SendFragment.Listener, viewModels: WalletViewModels) {
         mutableStateOf(false)
     }
 
+    var resolvingOA by remember {
+        mutableStateOf(resolvingOA)
+    }
+
 
 
 
@@ -269,7 +283,6 @@ fun SendScreen(listener: SendFragment.Listener, viewModels: WalletViewModels) {
     val possibleCryptos: MutableSet<Crypto> = HashSet()
     var selectedCrypto: Crypto? = null
     val INTEGRATED_ADDRESS_LENGTH = 106
-    var resolvingOA = false
     var calledUnlockedBalance: Boolean = false
     val MIXIN = 0
     val pendingTransaction: PendingTransaction? = null
@@ -286,7 +299,7 @@ fun SendScreen(listener: SendFragment.Listener, viewModels: WalletViewModels) {
         val add = data?.getStringExtra("address_value")
         listener.setBarcodeData(null)
         if (add != null) {
-            beldexAddress = add
+            beldexAddress.value = add
         }
     }
 
@@ -305,11 +318,11 @@ fun SendScreen(listener: SendFragment.Listener, viewModels: WalletViewModels) {
      fun checkAddress(): Boolean {
         val ok = checkAddressNoError()
         if (possibleCryptos.isEmpty()) {
-            addressErrorAction = true
-            addressErrorText = context.getString(R.string.send_address_invalid)
-            addressErrorTextColorChanged = false
+            addressErrorAction.value = true
+            addressErrorText.value = context.getString(R.string.send_address_invalid)
+            addressErrorTextColorChanged.value = false
         } else {
-            addressErrorAction = false
+            addressErrorAction.value = false
         }
         return ok
     }
@@ -323,8 +336,8 @@ fun SendScreen(listener: SendFragment.Listener, viewModels: WalletViewModels) {
             }
             if (barcodeData!!.address != null) {
                 listener.setBarcodeData(null)
-                beldexAddress = barcodeData.address
-                beldexAmount = barcodeData.amount
+                beldexAddress.value = barcodeData.address
+                beldexAmount.value = barcodeData.amount
                 possibleCryptos.clear()
                 selectedCrypto = null
                 if (barcodeData.isAmbiguous) {
@@ -334,56 +347,56 @@ fun SendScreen(listener: SendFragment.Listener, viewModels: WalletViewModels) {
                     selectedCrypto = barcodeData.asset
                 }
                 if (checkAddress()) {
-                    if (barcodeData.security === BarcodeData.Security.OA_NO_DNSSEC) addressErrorText =
-                            context.getString(R.string.send_address_no_dnssec) else if (barcodeData.security === BarcodeData.Security.OA_DNSSEC) addressErrorText =
+                    if (barcodeData.security === BarcodeData.Security.OA_NO_DNSSEC) addressErrorText.value =
+                            context.getString(R.string.send_address_no_dnssec) else if (barcodeData.security === BarcodeData.Security.OA_DNSSEC) addressErrorText.value =
                             context.getString(R.string.send_address_openalias)
                 }
                 if (isIntegratedAddress(barcodeData.address)) {
-                    addressErrorAction = true
-                    addressErrorText = context.getString(R.string.info_paymentid_integrated)
-                    addressErrorTextColorChanged = true
+                    addressErrorAction.value = true
+                    addressErrorText.value = context.getString(R.string.info_paymentid_integrated)
+                    addressErrorTextColorChanged.value = true
                 }
             } else {
-                beldexAmount = ""
-                beldexAmount = ""
+                beldexAddress.value = ""
+                beldexAmount.value = ""
             }
         } else Timber.d("barcodeData=null")
     }
 
 
     fun processOfScannedData(barcodeData: BarcodeData?) {
-        scanFromGallery = true
+        scanFromGallery.value = true
         listener.setBarcodeData(barcodeData)
         processScannedData()
     }
 
     fun processOpenAlias(dnsOA: String?) {
-        if (resolvingOA) return  // already resolving - just wait
+        if (resolvingOA.value) return  // already resolving - just wait
         listener.popBarcodeData()
         if (dnsOA != null) {
-            resolvingOA = true
-            addressErrorAction = true
-            addressErrorTextColorChanged = false
-            addressErrorText = context.getString(R.string.send_address_resolve_openalias)
+            resolvingOA.value = true
+            addressErrorAction.value = true
+            addressErrorTextColorChanged.value = false
+            addressErrorText.value = context.getString(R.string.send_address_resolve_openalias)
             OpenAliasHelper.resolve(dnsOA, object : OpenAliasHelper.OnResolvedListener {
                 override fun onResolved(dataMap: Map<Crypto?, BarcodeData?>) {
-                    resolvingOA = false
+                    resolvingOA.value = false
                     var barcodeData = dataMap[Crypto.BDX]
                     if (barcodeData == null) barcodeData = dataMap[Crypto.BTC]
                     if (barcodeData != null) {
                         processOfScannedData(barcodeData)
                     } else {
-                        addressErrorAction = true
-                        addressErrorTextColorChanged = false
-                        addressErrorText = context.getString(R.string.send_address_not_openalias)
+                        addressErrorAction.value = true
+                        addressErrorTextColorChanged.value = false
+                        addressErrorText.value = context.getString(R.string.send_address_not_openalias)
                     }
                 }
 
                 override fun onFailure() {
-                    resolvingOA = false
-                    addressErrorAction = true
-                    addressErrorTextColorChanged = false
-                    addressErrorText = context.getString(R.string.send_address_not_openalias)
+                    resolvingOA.value = false
+                    addressErrorAction.value = true
+                    addressErrorTextColorChanged.value = false
+                    addressErrorText.value = context.getString(R.string.send_address_not_openalias)
                 }
             })
         }
@@ -519,26 +532,26 @@ fun SendScreen(listener: SendFragment.Listener, viewModels: WalletViewModels) {
 
     fun createTransactionIfPossible() {
         if (CheckOnline.isOnline(context)) {
-            if ((beldexAddress.length > 106 || beldexAddress.length < 95) && !(beldexAddress.takeLast(4).equals(".bdx", ignoreCase = true))) {
-                addressErrorAction = true
-                addressErrorTextColorChanged = false
-                addressErrorText = context.getString(R.string.invalid_destination_address)
+            if ((beldexAddress.value.length > 106 || beldexAddress.value.length < 95) && !(beldexAddress.value.takeLast(4).equals(".bdx", ignoreCase = true))) {
+                addressErrorAction.value = true
+                addressErrorTextColorChanged.value = false
+                addressErrorText.value = context.getString(R.string.invalid_destination_address)
                 return
             }
-            if (beldexAddress.isNotEmpty() && beldexAmount.isNotEmpty() && validateBELDEXAmount(beldexAmount) && beldexAmount.toDouble() > 0.00) {
+            if (beldexAddress.value.isNotEmpty() && beldexAmount.value.isNotEmpty() && validateBELDEXAmount(beldexAmount.value) && beldexAmount.value.toDouble() > 0.00) {
                 //val txDatas: TxData = txData()
-                txData.destinationAddress = beldexAddress.trim()
+                txData.destinationAddress = beldexAddress.value.trim()
                 ServiceHelper.ASSET = null
-                if (getCleanAmountString(beldexAmount).equals(Wallet.getDisplayAmount(totalFunds.toLong()))) {
+                if (getCleanAmountString(beldexAmount.value).equals(Wallet.getDisplayAmount(totalFunds.toLong()))) {
                     val amount = (totalFunds.toLong() - 10485760)// 10485760 == 050000000
-                    val bdx = getCleanAmountString(beldexAmount)
+                    val bdx = getCleanAmountString(beldexAmount.value)
                     if (bdx != null) {
                         txData.amount = amount
                     } else {
                         txData.amount = 0L
                     }
                 } else {
-                    val bdx = getCleanAmountString(beldexAmount)
+                    val bdx = getCleanAmountString(beldexAmount.value)
                     if (bdx != null) {
                         txData.amount = Wallet.getAmountFromString(bdx)
                     } else {
@@ -552,8 +565,8 @@ fun SendScreen(listener: SendFragment.Listener, viewModels: WalletViewModels) {
                     txData.priority = PendingTransaction.Priority.Priority_Flash
                 }
                 txData.mixin = MIXIN
-                beldexAmount = ""
-                beldexAddress = ""
+                beldexAmount.value = ""
+                beldexAddress.value = ""
                 currencyValue = "0.00"
 
                 //Important
@@ -564,14 +577,14 @@ fun SendScreen(listener: SendFragment.Listener, viewModels: WalletViewModels) {
                 intent.putExtra("change_pin", false)
                 intent.putExtra("send_authentication", true)
                 resultLaunchers.launch(intent)
-            } else if (beldexAmount.isEmpty()) {
+            } else if (beldexAmount.value.isEmpty()) {
                 amountErrorAction = true
                 amountErrorText = context.getString(R.string.beldex_amount_error_message)
-            } else if (beldexAmount == ".") {
+            } else if (beldexAmount.value == ".") {
                 amountErrorAction = true
                 amountErrorText = context.getString(R.string.beldex_amount_valid_error_message)
-            } else if (!validateBELDEXAmount(beldexAmount)) {
-                if (beldexAmount.toDouble() <= 0.00) {
+            } else if (!validateBELDEXAmount(beldexAmount.value)) {
+                if (beldexAmount.value.toDouble() <= 0.00) {
                     amountErrorAction = true
                     amountErrorText = context.getString(R.string.beldex_amount_valid_error_message)
                 } else {
@@ -579,9 +592,9 @@ fun SendScreen(listener: SendFragment.Listener, viewModels: WalletViewModels) {
                     amountErrorText = context.getString(R.string.beldex_amount_valid_error_message)
                 }
             } else {
-                addressErrorAction = true
-                addressErrorTextColorChanged = false
-                addressErrorText = context.getString(R.string.beldex_address_error_message)
+                addressErrorAction.value = true
+                addressErrorTextColorChanged.value = false
+                addressErrorText.value = context.getString(R.string.beldex_address_error_message)
             }
         } else {
             Toast.makeText(context, context.getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
@@ -600,7 +613,7 @@ fun SendScreen(listener: SendFragment.Listener, viewModels: WalletViewModels) {
                 .fillMaxWidth()
                 .padding(16.dp)) {
             Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back), tint = MaterialTheme.appColors.editTextColor, modifier = Modifier.clickable {
-                //onBackClick()
+                listener.onBackPressedFun()
             })
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -677,13 +690,13 @@ fun SendScreen(listener: SendFragment.Listener, viewModels: WalletViewModels) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
 
                     BChatOutlinedTextField(
-                            value = beldexAmount,
+                            value = beldexAmount.value,
                             placeHolder = stringResource(id = R.string.hint),
                             onValueChange = {
-                                beldexAmount = it
-                                if (scanFromGallery) {
+                                beldexAmount.value = it
+                                if (scanFromGallery.value) {
                                     if (it.isNotEmpty()) {
-                                        scanFromGallery = false
+                                        scanFromGallery.value = false
                                         if (validateBELDEXAmount(it)) {
                                             amountErrorAction = false
                                             val bdx = getCleanAmountString(it.toString())
@@ -692,14 +705,14 @@ fun SendScreen(listener: SendFragment.Listener, viewModels: WalletViewModels) {
                                             } else {
                                                 BigDecimal(0L).multiply(BigDecimal(price))
                                             }
-                                            beldexAmount = String.format("%.4f", amount)
+                                            beldexAmount.value = String.format("%.4f", amount)
                                         } else {
                                             amountErrorAction = true
                                             amountErrorText = context.getString(R.string.beldex_amount_valid_error_message)
                                         }
                                     } else {
                                         amountErrorAction = false
-                                        beldexAmount = "0.00"
+                                        beldexAmount.value = "0.00"
                                     }
                                 } else {
                                     if (it.isNotEmpty()) {
@@ -792,23 +805,23 @@ fun SendScreen(listener: SendFragment.Listener, viewModels: WalletViewModels) {
                     }
 
                 }
-                TextField(value = beldexAddress, placeholder = {
+                TextField(value = beldexAddress.value, placeholder = {
                     Text(text = stringResource(R.string.enter_address), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.appColors.primaryButtonColor)
                 }, onValueChange = {
-                    beldexAddress = it
-                    addressErrorAction = false
+                    beldexAddress.value = it
+                    addressErrorAction.value = false
                     possibleCryptos.clear()
                     selectedCrypto = null
-                    //val address: String = binding.beldexAddressEditTxtLayout.editText?.text.toString().trim()
-                    if (isIntegratedAddress(beldexAddress)) {
+                    //val address: String = binding.beldexAddress.EditTxtLayout.editText?.text.toString().trim()
+                    if (isIntegratedAddress(beldexAddress.value)) {
                         possibleCryptos.add(Crypto.BDX)
                         selectedCrypto = Crypto.BDX
-                        addressErrorAction = true
-                        addressErrorText = context.getString(R.string.info_paymentid_integrated)
-                        addressErrorTextColorChanged = true
+                        addressErrorAction.value = true
+                        addressErrorText.value = context.getString(R.string.info_paymentid_integrated)
+                        addressErrorTextColorChanged.value = true
                         // binding.beldexAddressErrorMessage.setTextColor(ContextCompat.getColor(requireContext(), R.color.button_green))
                         setMode(Mode.BDX)
-                    } else if (isStandardAddress(beldexAddress)) {
+                    } else if (isStandardAddress(beldexAddress.value)) {
                         possibleCryptos.add(Crypto.BDX)
                         selectedCrypto = Crypto.BDX
                         setMode(Mode.BDX)
@@ -824,12 +837,12 @@ fun SendScreen(listener: SendFragment.Listener, viewModels: WalletViewModels) {
 
                 )
 
-                if (addressErrorAction) {
-                    Text(text = addressErrorText,
+                if (addressErrorAction.value) {
+                    Text(text = addressErrorText.value,
                             modifier =Modifier.
                             padding(start = 20.dp, bottom = 10.dp),
                             style = MaterialTheme.typography.bodyLarge.copy(
-                                    color =  if(addressErrorTextColorChanged) {MaterialTheme.appColors.primaryButtonColor} else MaterialTheme.appColors.errorMessageColor,
+                                    color =  if(addressErrorTextColorChanged.value) {MaterialTheme.appColors.primaryButtonColor} else MaterialTheme.appColors.errorMessageColor,
                                     fontSize = 13.sp,
                                     fontWeight = FontWeight(400)))
                 }

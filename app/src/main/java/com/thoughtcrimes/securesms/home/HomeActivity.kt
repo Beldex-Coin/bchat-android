@@ -70,6 +70,8 @@ import com.thoughtcrimes.securesms.model.PendingTransaction
 import com.thoughtcrimes.securesms.model.TransactionInfo
 import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.model.WalletManager
+import com.thoughtcrimes.securesms.my_account.ui.MyAccountActivity
+import com.thoughtcrimes.securesms.my_account.ui.MyAccountScreens
 import com.thoughtcrimes.securesms.onboarding.SeedActivity
 import com.thoughtcrimes.securesms.onboarding.SeedReminderViewDelegate
 import com.thoughtcrimes.securesms.util.ActivityDispatcher
@@ -87,6 +89,8 @@ import com.thoughtcrimes.securesms.wallet.OnUriScannedListener
 import com.thoughtcrimes.securesms.wallet.OnUriWalletScannedListener
 import com.thoughtcrimes.securesms.wallet.WalletFragment
 import com.thoughtcrimes.securesms.wallet.info.WalletInfoActivity
+import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.settings.WalletSettingComposeActivity
+import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.settings.WalletSettingScreens
 import com.thoughtcrimes.securesms.wallet.node.NodeFragment
 import com.thoughtcrimes.securesms.wallet.receive.ReceiveFragment
 import com.thoughtcrimes.securesms.wallet.rescan.RescanDialog
@@ -1520,8 +1524,11 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     private fun openWalletSettings() {
-        val intent = Intent(this, WalletSettings::class.java)
-        walletSettingsResultLauncher.launch(intent)
+        Intent(this, WalletSettingComposeActivity::class.java).also {
+            it.putExtra(WalletSettingComposeActivity.extraStartDestination, WalletSettingScreens.MyWalletSettingsScreen.route)
+            walletSettingsResultLauncher.launch(it)
+        }
+
     }
 
     private var walletSettingsResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

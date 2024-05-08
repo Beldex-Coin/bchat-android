@@ -73,7 +73,7 @@ import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WalletDashBoard(
+fun WalletDashBoardScreen(
     viewModels: WalletViewModels,
     activityCallback: WalletFragment.Listener,
     onScanListener: WalletFragment.OnScanListener?

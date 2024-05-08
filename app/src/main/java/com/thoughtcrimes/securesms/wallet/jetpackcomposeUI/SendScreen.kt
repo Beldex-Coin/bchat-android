@@ -79,6 +79,8 @@ import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.send.TransactionConfi
 import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.send.TransactionFailedPopUp
 import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.send.TransactionLoadingPopUp
 import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.send.TransactionSuccessPopup
+import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.settings.WalletSettingComposeActivity
+import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.settings.WalletSettingScreens
 import com.thoughtcrimes.securesms.wallet.send.SendFragment
 import com.thoughtcrimes.securesms.wallet.utils.OpenAliasHelper
 import com.thoughtcrimes.securesms.wallet.utils.WalletCallbackType
@@ -391,7 +393,9 @@ fun SendScreen(listener: SendFragment.Listener, viewModels: WalletViewModels) {
 
     fun openAddressBookActivity() {
         TextSecurePreferences.setSendAddressDisable(context, false)
-        val intent = Intent(context, AddressBookActivity::class.java)
+        val intent = Intent(context, WalletSettingComposeActivity::class.java).apply {
+            putExtra(WalletSettingComposeActivity.extraStartDestination, WalletSettingScreens.AddressBookScreen.route)
+        }
         resultLauncher.launch(intent)
     }
 

@@ -28,7 +28,7 @@ import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.util.BChatThreadPoolExecutor
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.NodePinger
-import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.WalletDashBoard
+import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.WalletDashBoardScreen
 import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.WalletViewModels
 import com.thoughtcrimes.securesms.wallet.utils.common.fetchPriceFor
 import io.beldex.bchat.R
@@ -346,7 +346,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.primary
                     ) {
-                        WalletDashBoard(viewModels, activityCallback!!,onScanListener)
+                        WalletDashBoardScreen(viewModels, activityCallback!!,onScanListener)
                     }
                 }
             }

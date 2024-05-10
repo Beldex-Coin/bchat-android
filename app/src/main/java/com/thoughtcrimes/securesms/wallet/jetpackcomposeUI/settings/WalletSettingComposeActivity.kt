@@ -1,5 +1,6 @@
 package com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.settings
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -7,7 +8,6 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,18 +16,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,10 +31,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -47,15 +41,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import com.thoughtcrimes.securesms.compose_utils.BChatOutlinedTextField
 import com.thoughtcrimes.securesms.compose_utils.BChatTheme
 import com.thoughtcrimes.securesms.compose_utils.appColors
-import com.thoughtcrimes.securesms.my_account.ui.AddressBookEvents
 import com.thoughtcrimes.securesms.my_account.ui.CardContainer
 import com.thoughtcrimes.securesms.util.UiMode
 import com.thoughtcrimes.securesms.util.UiModeUtilities
 import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookScreen
-import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookViewModel
 import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.node.NodeComposeActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
@@ -100,6 +91,7 @@ class WalletSettingComposeActivity : ComponentActivity() {
 }
 
 
+@SuppressLint("StateFlowValueCalledInComposition", "UnrememberedMutableState", "MutableCollectionMutableState")
 @Composable
 fun WalletSettingNavHost(
         navController: NavHostController,
@@ -228,68 +220,14 @@ fun WalletSettingNavHost(
         composable(
                 route=WalletSettingScreens.AddressBookScreen.route
         ) {
-            val addressBookViewModel: AddressBookViewModel=hiltViewModel()
-            var contactsList by remember {
-                mutableStateOf(emptyList<String>())
-            }
-            val owner=LocalLifecycleOwner.current
-            LaunchedEffect(key1=Unit) {
-                addressBookViewModel.subscribeList(context).observe(owner) { newState ->
-                    contactsList=newState.addressBookContactsList
-                }
-            }
-            val searchQuery by addressBookViewModel.searchQuery.collectAsState()
             WalletSettingScreenContainer(
                     title=stringResource(id=R.string.activity_address_book_page_title),
-                    onBackClick={
-                        navController.navigateUp()
-                    },
-                    actionItems={
-
-                    }
-            ) {
-                BChatOutlinedTextField(
-                        value=searchQuery,
-                        onValueChange={ addressBookViewModel.onEvent(AddressBookEvents.SearchQueryChanged((it))) },
-                        label=stringResource(R.string.search_contact),
-                        shape=RoundedCornerShape(36.dp),
-                        trailingIcon={
-                            Icon(
-                                    Icons.Default.Search,
-                                    contentDescription="",
-                                    tint=MaterialTheme.appColors.iconTint
-                            )
-                        },
-                        modifier=Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                        textAlign=TextAlign.Start
-                )
-
-                if (contactsList.isEmpty()) {
-                    Box(
-                            contentAlignment=Alignment.Center,
-                            modifier=Modifier.fillMaxSize()
-                    ) {
-                        Text(
-                                text=stringResource(id=R.string.activity_home_empty_state_message),
-                                style=MaterialTheme.typography.titleLarge
-                        )
-                    }
-                } else {
-                    AddressBookScreen(
-                            contactsList=contactsList,
-                            searchFilter=searchQuery
-
-                    )
-
-                }
+                    onBackClick={ (context as ComponentActivity).finish() }, ) {
+                AddressBookScreen()
             }
         }
     }
-
 }
-
 
 fun changePin(context: Context) {
     TextSecurePreferences.setChangePin(context, true)

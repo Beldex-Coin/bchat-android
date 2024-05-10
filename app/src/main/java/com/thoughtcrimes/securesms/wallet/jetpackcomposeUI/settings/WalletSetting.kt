@@ -282,6 +282,7 @@ fun WalletSettingsScreen(navigate : (WalletSettingsItem) -> Unit, navItem : (Wal
 }
 
 fun addressBook(context : Context) {
+    TextSecurePreferences.setSendAddressDisable(context,true)
     val intent=Intent(context, WalletSettingComposeActivity::class.java).apply {
         putExtra(WalletSettingComposeActivity.extraStartDestination, WalletSettingScreens.AddressBookScreen.route)
     }

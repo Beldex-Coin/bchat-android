@@ -76,7 +76,6 @@ object MnodeAPI {
     private const val useOnionRequests = true
 
     const val useTestnet = BuildConfig.USE_TESTNET
-    var getfrBctStatus = false
 
     // Error
     internal sealed class Error(val description: String) : Exception(description) {
@@ -124,10 +123,8 @@ object MnodeAPI {
     }
 
     internal fun getRandomMnode(): Promise<Mnode, Exception> {
-        println("path build mnode pool ${this.mnodePool}")
-        println("path build mnode pool size ${this.mnodePool.size}")
         val mnodePool = this.mnodePool
-        if (mnodePool.count() < minimumMnodePoolCount || !getfrBctStatus) {
+        if (mnodePool.count() < minimumMnodePoolCount) {
             val target = seedNodePool.random()
             val url = "$target/json_rpc"
             Log.d("Beldex", "Populating mnode pool using: $target")
@@ -135,8 +132,7 @@ object MnodeAPI {
                 "method" to "get_n_master_nodes",
                 "params" to mapOf(
                     "active_only" to true,
-                    "frBct" to true,
-                    /* "limit" to 256,*/
+                    "limit" to 256,
                     "fields" to mapOf("public_ip" to true, "storage_port" to true, "pubkey_x25519" to true, "pubkey_ed25519" to true)
                 )
             )
@@ -154,8 +150,6 @@ object MnodeAPI {
                     val intermediate = json["result"] as? Map<*, *>
                     val rawMnodes = intermediate?.get("master_node_states") as? List<*>
                     if (rawMnodes != null) {
-                        getfrBctStatus = true
-                        database.clearOnionRequestPaths()
                         val mnodePool = rawMnodes.mapNotNull { rawMnode ->
                             val rawMnodeAsJSON = rawMnode as? Map<*, *>
                             val address = rawMnodeAsJSON?.get("public_ip") as? String
@@ -297,28 +291,11 @@ object MnodeAPI {
     fun getSwarm(publicKey: String): Promise<Set<Mnode>, Exception> {
         val cachedSwarm = database.getSwarm(publicKey)
         if (cachedSwarm != null && cachedSwarm.size >= minimumSwarmMnodeCount) {
-            if (!getfrBctStatus) {
-                val parameters = mapOf("pubKey" to publicKey)
-                println("getSwarm values called 1 $publicKey")
-
-                return getRandomMnode().bind {
-                    println("getSwarm values called 2 $it")
-                    invoke(Mnode.Method.GetSwarm, it, publicKey, parameters)
-                }.map {
-                    parseMnodes(it).toSet()
-                }.success {
-                    database.setSwarm(publicKey, it)
-                }
-            } else {
-                val cachedSwarmCopy = mutableSetOf<Mnode>() // Workaround for a Kotlin compiler issue
-                if (cachedSwarm != null) {
-                    cachedSwarmCopy.addAll(cachedSwarm)
-                }
-                return task { cachedSwarmCopy }
-            }
-
+            val cachedSwarmCopy = mutableSetOf<Mnode>() // Workaround for a Kotlin compiler issue
+            cachedSwarmCopy.addAll(cachedSwarm)
+            return task { cachedSwarmCopy }
         } else {
-            val parameters = mapOf("pubKey" to publicKey)
+            val parameters = mapOf( "pubKey" to publicKey )
             return getRandomMnode().bind {
                 Log.d("Beldex", "invoke MnodeAPI.kt 2")
                 invoke(Mnode.Method.GetSwarm, it, publicKey, parameters)

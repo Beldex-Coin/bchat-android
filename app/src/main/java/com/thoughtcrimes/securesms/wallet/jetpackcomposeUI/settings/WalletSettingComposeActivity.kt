@@ -121,7 +121,7 @@ fun WalletSettingNavHost(
                 route=WalletSettingScreens.MyWalletSettingsScreen.route
         ) {
             WalletSettingScreenContainer(
-                    title=stringResource(id=R.string.activity_settings_title),
+                    title=stringResource(id=R.string.wallet_settings),
                     onBackClick={
                         (context as ComponentActivity).finish()
                     }
@@ -144,7 +144,7 @@ fun WalletSettingNavHost(
                     }) { value ->
                         TextSecurePreferences.setDisplayBalanceAs(context, value!!)
                         viewModel.updateDisplayBalance(value)
-
+                        showDisplayBalanceDialog=false
                     }
                 }
                 if (showDecimalDialog) {
@@ -153,6 +153,7 @@ fun WalletSettingNavHost(
                     }) { value ->
                         TextSecurePreferences.setDecimals(context, value)
                         viewModel.updateDecimal(value!!)
+                        showDecimalDialog=false
                     }
                 }
                 if (showCurrencyDialog) {
@@ -161,7 +162,7 @@ fun WalletSettingNavHost(
                     }) { value ->
                         TextSecurePreferences.setCurrency(context, value)
                         viewModel.updateCurrency(value!!)
-
+                        showCurrencyDialog=false
                     }
                 }
                 if (showFeePriorityDialog) {
@@ -170,7 +171,7 @@ fun WalletSettingNavHost(
                     }) { value ->
                         TextSecurePreferences.setFeePriority(context, value!!)
                         viewModel.updateFeePriority(value)
-
+                        showFeePriorityDialog=false
                     }
                 }
 
@@ -200,7 +201,6 @@ fun WalletSettingNavHost(
                             when (it) {
                                 WalletSettingsNavItem.CurrentNode -> {
                                     // navController.navigate(WalletSettingScreens.NodeScreen.route)
-                                    Toast.makeText(context, "Current node clicked ", Toast.LENGTH_SHORT).show()
                                     Intent(context, NodeComposeActivity::class.java).also { intent ->
                                         startActivity(intent)
                                     }
@@ -249,21 +249,21 @@ fun WalletSettingNavHost(
                     }
             ) {
                 BChatOutlinedTextField(
-                        value=searchQuery,
-                        onValueChange={ addressBookViewModel.onEvent(AddressBookEvents.SearchQueryChanged((it))) },
-                        label=stringResource(R.string.search_contact),
-                        shape=RoundedCornerShape(36.dp),
-                        trailingIcon={
+                        value =searchQuery,
+                        onValueChange ={ addressBookViewModel.onEvent(AddressBookEvents.SearchQueryChanged((it))) },
+                        label =stringResource(R.string.search_contact),
+                        shape =RoundedCornerShape(36.dp),
+                        trailingIcon ={
                             Icon(
                                     Icons.Default.Search,
                                     contentDescription="",
                                     tint=MaterialTheme.appColors.iconTint
                             )
                         },
-                        modifier=Modifier
+                        modifier =Modifier
                                 .fillMaxWidth()
                                 .padding(16.dp),
-                        textAlign=TextAlign.Start
+                        textAlign =TextAlign.Start
                 )
 
                 if (contactsList.isEmpty()) {

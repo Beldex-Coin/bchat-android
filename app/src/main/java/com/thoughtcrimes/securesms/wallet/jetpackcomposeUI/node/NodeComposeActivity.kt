@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.os.AsyncTask
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -122,7 +123,8 @@ class NodeComposeActivity : ComponentActivity() {
                         NodeScreenContainer(title=stringResource(id=R.string.label_nodes), onBackClick={
                             (context as ComponentActivity).finish()
                         }) {
-                            NodeScreen()
+                            val test = true
+                            NodeScreen(test)
                         }
                     }
                 }
@@ -134,11 +136,15 @@ class NodeComposeActivity : ComponentActivity() {
 @OptIn(ExperimentalFoundationApi::class)
 @SuppressLint("UnrememberedMutableState", "MutableCollectionMutableState", "CoroutineCreationDuringComposition")
 @Composable
-fun NodeScreen() {
+fun NodeScreen(test:Boolean = false) {
 
     val nodeViewModel: NodeViewModel=hiltViewModel()
     val context=LocalContext.current
     val lifecycleOwner=LocalLifecycleOwner.current
+
+    var callAsyncNodes by remember {
+        mutableStateOf(test)
+    }
 
     var data by rememberSaveable(Unit) {
         mutableStateOf(favouriteNodeSet)
@@ -187,12 +193,16 @@ fun NodeScreen() {
 
 
     fun getResponseErrorText(ctx: Context, responseCode: Int): String {
-        return if (responseCode == 0) {
-            ctx.resources.getString(R.string.node_general_error)
-        } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-            ctx.resources.getString(R.string.node_auth_error)
-        } else {
-            ctx.resources.getString(R.string.node_test_error, responseCode)
+        return when (responseCode) {
+            0 -> {
+                ctx.resources.getString(R.string.node_general_error)
+            }
+            HttpURLConnection.HTTP_UNAUTHORIZED -> {
+                ctx.resources.getString(R.string.node_auth_error)
+            }
+            else -> {
+                ctx.resources.getString(R.string.node_test_error, responseCode)
+            }
         }
     }
 
@@ -296,6 +306,11 @@ fun NodeScreen() {
         }
     }
 
+    if(callAsyncNodes){
+        val task=AsyncFindNodes()
+        task.execute(ping)
+        callAsyncNodes = false
+    }
 
     fun refresh(type: Int): Boolean {
         val task=AsyncFindNodes()
@@ -337,12 +352,9 @@ fun NodeScreen() {
         }, nodeViewModel, nodeViewModel.favouritesNodes.value?.toMutableList()!![selectedItemIndex])
     }
 
-    val task=AsyncFindNodes()
-    task.execute(ping)
-
-    Column(modifier=Modifier
-            .fillMaxSize()
-            .padding(vertical=10.dp)) {
+    Column(modifier= Modifier
+        .fillMaxSize()
+        .padding(vertical = 10.dp)) {
 
         AnimatedContent(targetState=isVisible, label="NodeList") {
             if (it) {
@@ -350,22 +362,22 @@ fun NodeScreen() {
 
                 ) {
                     itemsIndexed(data.toMutableList()) { index, item ->
-                        Card(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.editTextBackground), border=BorderStroke(width=2.dp, color=if (item.isSelected) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.editTextBackground), shape=RoundedCornerShape(16.dp), elevation=CardDefaults.cardElevation(defaultElevation=4.dp), modifier=Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal=16.dp)
-                                .combinedClickable(
-                                        onClick={
-                                            selectedItemIndex=index
-                                            showChangeNodePopup=true
+                        Card(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.editTextBackground), border=BorderStroke(width=2.dp, color=if (item.isSelected) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.editTextBackground), shape=RoundedCornerShape(16.dp), elevation=CardDefaults.cardElevation(defaultElevation=4.dp), modifier= Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .combinedClickable(
+                                onClick = {
+                                    selectedItemIndex = index
+                                    showChangeNodePopup = true
 
-                                        },
-                                        onLongClick={
-                                            selectedItemIndex=index
-                                            showAddNodeEdit=true
-                                            showAddNode=true
+                                },
+                                onLongClick = {
+                                    selectedItemIndex = index
+                                    showAddNodeEdit = true
+                                    showAddNode = true
 
-                                        },
-                                )) {
+                                },
+                            )) {
                             nodeName=item.name
                             nodeAddress=item.address
 
@@ -424,8 +436,8 @@ fun NodeScreen() {
 
 
                 }, colors=ButtonDefaults.buttonColors(containerColor=MaterialTheme.appColors.secondaryButtonColor), modifier=Modifier.weight(1f)) {
-                    Text(text="Refresh", style=MaterialTheme.typography.bodyMedium, modifier=Modifier.padding(10.dp))
-                    Icon(painter=painterResource(id=R.drawable.ic_refresh), contentDescription="", modifier=Modifier)
+                    Text(text="Refresh", style=MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.appColors.secondaryContentColor), modifier=Modifier.padding(10.dp))
+                    Icon(painter=painterResource(id=R.drawable.ic_refresh), contentDescription="Refresh", modifier=Modifier, tint = MaterialTheme.appColors.secondaryContentColor)
                 }
 
                 Spacer(modifier=Modifier.width(16.dp))
@@ -664,7 +676,9 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
 
 
     DialogContainer(
-            onDismissRequest=onDismiss,
+        dismissOnBackPress = true,
+        dismissOnClickOutside = true,
+        onDismissRequest=onDismiss,
     ) {
 
         OutlinedCard(
@@ -962,7 +976,9 @@ fun SwitchNodePopUp(onDismiss: () -> Unit, nodeViewModel: NodeViewModel, nodeInf
     println("switch node crash issue called 1111 $nodeInfo")
 
     DialogContainer(
-            onDismissRequest=onDismiss,
+        dismissOnBackPress = true,
+        dismissOnClickOutside = true,
+        onDismissRequest=onDismiss,
     ) {
 
         OutlinedCard(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.dialogBackground), elevation=CardDefaults.cardElevation(defaultElevation=4.dp), modifier=Modifier.fillMaxWidth()) {
@@ -1127,6 +1143,7 @@ private fun pingSelectedNode(context: Context, nodeViewModel: NodeViewModel) {
 }
 
 
+/*
 @Preview(uiMode=Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun NodeScreenPreview() {
@@ -1137,4 +1154,4 @@ fun NodeScreenPreview() {
 @Composable
 fun NodeScreenPreviewDark() {
     NodeScreen()
-}
+}*/

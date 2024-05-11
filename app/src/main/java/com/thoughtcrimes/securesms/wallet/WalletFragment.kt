@@ -520,7 +520,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                 TextSecurePreferences.getDecimals(requireActivity()) == "3 - Three (0.000)" -> {
                     viewModels.updateWalletBalance("-.---")
                 }
-                TextSecurePreferences.getDecimals(requireActivity()) == "0 - Zero (000)" -> {
+                TextSecurePreferences.getDecimals(requireActivity()) == "0 - Zero (0)" -> {
                     viewModels.updateWalletBalance("-")
                 }
                 else -> {
@@ -541,7 +541,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                 TextSecurePreferences.getDecimals(requireActivity()) == "3 - Three (0.000)" -> {
                     viewModels.updateWalletBalance(String.format("%.3f", balance.replace(",","").toDouble()))
                 }
-                TextSecurePreferences.getDecimals(requireActivity()) == "0 - Zero (000)" -> {
+                TextSecurePreferences.getDecimals(requireActivity()) == "0 - Zero (0)" -> {
                     viewModels.updateWalletBalance(String.format("%.0f", balance.replace(",","").toDouble()))
                 }
                 else -> {
@@ -594,7 +594,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                             TextSecurePreferences.getDecimals(requireActivity()) == "3 - Three (0.000)" -> {
                                 viewModels.updateWalletBalance("-.---")
                             }
-                            TextSecurePreferences.getDecimals(requireActivity()) == "0 - Zero (000)" -> {
+                            TextSecurePreferences.getDecimals(requireActivity()) == "0 - Zero (0)" -> {
                                 viewModels.updateWalletBalance("-")
                             }
                             else -> {

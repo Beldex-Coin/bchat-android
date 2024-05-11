@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
@@ -61,7 +62,7 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
         decimalsList.add("4 - Four (0.0000)")
         decimalsList.add("3 - Three (0.000)")
         decimalsList.add("2 - Two (0.00)")
-        decimalsList.add("0 - Zero (000)")
+        decimalsList.add("0 - Zero (0)")
 
         currencyList.add("AUD")
         currencyList.add("BRL")

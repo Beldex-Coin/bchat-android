@@ -56,9 +56,11 @@ fun BlockedContactScreen(
     }
     if (showConfirmationDialog) {
         DialogContainer(
+            dismissOnBackPress = true,
+            dismissOnClickOutside = true,
             onDismissRequest = {
                 showConfirmationDialog = false
-            }
+            },
         ) {
             val context = LocalContext.current
             val title = if (selectedList.size == 1) {

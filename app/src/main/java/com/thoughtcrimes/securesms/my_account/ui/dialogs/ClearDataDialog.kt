@@ -145,6 +145,8 @@ fun ClearDataDialog(
         )
     }
     DialogContainer(
+        dismissOnBackPress = true,
+        dismissOnClickOutside = true,
         onDismissRequest = {
             if (step != Steps.DELETING) {
                 onDismissRequest()

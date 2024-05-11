@@ -22,11 +22,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -43,6 +45,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.beldex.libbchat.utilities.TextSecurePreferences
@@ -66,25 +69,28 @@ fun DisplayBalanceDialog(onDismiss : () -> Unit, onClick : (Int?) -> Unit) {
 
 
     DialogContainer(
-            onDismissRequest=onDismiss,
+        dismissOnBackPress = false,
+        dismissOnClickOutside = false,
+        onDismissRequest=onDismiss,
     ) {
         OutlinedCard(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.dialogBackground),
                 elevation=CardDefaults.cardElevation(defaultElevation=4.dp),
                 modifier=Modifier.fillMaxWidth()) {
 
-            Column(Modifier
+            Column(
+                Modifier
                     .fillMaxWidth()
                     .padding(20.dp), Arrangement.Center, Alignment.CenterHorizontally) {
                 Icon(
                         painter=painterResource(id=R.drawable.ic_close),
                         contentDescription="",
                         tint=MaterialTheme.appColors.editTextColor,
-                        modifier=Modifier
-                                .align(Alignment.End)
-                                .padding(horizontal=10.dp)
-                                .clickable {
-                                    onDismiss()
-                                }
+                        modifier= Modifier
+                            .align(Alignment.End)
+                            .padding(horizontal = 10.dp)
+                            .clickable {
+                                onDismiss()
+                            }
                 )
 
                 Text(text=stringResource(id=R.string.display_balance_as),
@@ -115,19 +121,19 @@ fun DisplayBalanceDialog(onDismiss : () -> Unit, onClick : (Int?) -> Unit) {
                                 elevation=CardDefaults.cardElevation(
                                         defaultElevation=if (isDarkTheme) 0.dp else 4.dp
                                 ),
-                                modifier=Modifier
-                                        .fillMaxWidth()
-                                        .clickable {
-                                            selectedItemIndex=index
-                                            onClick(selectedItemIndex)
-                                        },
+                                modifier= Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        selectedItemIndex = index
+                                        onClick(selectedItemIndex)
+                                    },
                                 shape=RoundedCornerShape(16.dp)
                         ) {
 
                             Column(
-                                    modifier=Modifier
-                                            .fillMaxSize()
-                                            .padding(vertical=5.dp),
+                                    modifier= Modifier
+                                        .fillMaxSize()
+                                        .padding(vertical = 5.dp),
                                     verticalArrangement=Arrangement.Center,
                                     horizontalAlignment=Alignment.CenterHorizontally,
                             ) {
@@ -156,25 +162,28 @@ fun DecimalDialog(onDismiss : () -> Unit, onClick : (String?) -> Unit) {
     val isDarkTheme=UiModeUtilities.getUserSelectedUiMode(LocalContext.current) == UiMode.NIGHT
 
     DialogContainer(
-            onDismissRequest=onDismiss,
+        dismissOnBackPress = false,
+        dismissOnClickOutside = false,
+        onDismissRequest=onDismiss,
     ) {
         OutlinedCard(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.dialogBackground),
                 elevation=CardDefaults.cardElevation(defaultElevation=4.dp),
                 modifier=Modifier.fillMaxWidth()) {
 
-            Column(Modifier
+            Column(
+                Modifier
                     .fillMaxWidth()
                     .padding(20.dp), Arrangement.Center, Alignment.CenterHorizontally) {
                 Icon(
                         painter=painterResource(id=R.drawable.ic_close),
                         contentDescription="",
                         tint=MaterialTheme.appColors.editTextColor,
-                        modifier=Modifier
-                                .align(Alignment.End)
-                                .padding(horizontal=10.dp)
-                                .clickable {
-                                    onDismiss()
-                                }
+                        modifier= Modifier
+                            .align(Alignment.End)
+                            .padding(horizontal = 10.dp)
+                            .clickable {
+                                onDismiss()
+                            }
                 )
 
                 Text(text=stringResource(id=R.string.decimals),
@@ -205,19 +214,19 @@ fun DecimalDialog(onDismiss : () -> Unit, onClick : (String?) -> Unit) {
                                 elevation=CardDefaults.cardElevation(
                                         defaultElevation=if (isDarkTheme) 0.dp else 4.dp
                                 ),
-                                modifier=Modifier
-                                        .fillMaxWidth()
-                                        .clickable {
-                                            selectedItemIndex=item
-                                            onClick(selectedItemIndex)
-                                        },
+                                modifier= Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        selectedItemIndex = item
+                                        onClick(selectedItemIndex)
+                                    },
                                 shape=RoundedCornerShape(16.dp)
                         ) {
 
                             Column(
-                                    modifier=Modifier
-                                            .fillMaxSize()
-                                            .padding(vertical=5.dp),
+                                    modifier= Modifier
+                                        .fillMaxSize()
+                                        .padding(vertical = 5.dp),
                                     verticalArrangement=Arrangement.Center,
                                     horizontalAlignment=Alignment.CenterHorizontally,
                             ) {
@@ -238,7 +247,7 @@ fun DecimalDialog(onDismiss : () -> Unit, onClick : (String?) -> Unit) {
 
 @Composable
 fun CurrencyDialog(onDismiss : () -> Unit, onClick : (String?) -> Unit) {
-    val currencyList : ArrayList<String> =ArrayList()
+    val currencyList : MutableList<String> =ArrayList()
 
     currencyList.add("AUD")
     currencyList.add("BRL")
@@ -270,6 +279,10 @@ fun CurrencyDialog(onDismiss : () -> Unit, onClick : (String?) -> Unit) {
     currencyList.add("VEF")
     currencyList.add("ZAR")
 
+    var fiatCurrencyList by remember {
+        mutableStateOf(currencyList)
+    }
+
     var searchQuery by remember {
         mutableStateOf("")
     }
@@ -279,26 +292,42 @@ fun CurrencyDialog(onDismiss : () -> Unit, onClick : (String?) -> Unit) {
     }
     val isDarkTheme=UiModeUtilities.getUserSelectedUiMode(LocalContext.current) == UiMode.NIGHT
 
+    fun filterFiatCurrency(text: String?, arrayList: MutableList<String>) {
+        val temp: MutableList<String> = ArrayList()
+        for (d in arrayList) {
+            //or use .equal(text) with you want equal match
+            //use .toLowerCase() for better matches
+            if (d.lowercase().contains(text!!.lowercase())) {
+                temp.add(d)
+            }
+        }
+        //update recyclerview
+        fiatCurrencyList = temp
+    }
+
     DialogContainer(
-            onDismissRequest=onDismiss,
+        dismissOnBackPress = false,
+        dismissOnClickOutside = false,
+        onDismissRequest=onDismiss,
     ) {
         OutlinedCard(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.dialogBackground),
                 elevation=CardDefaults.cardElevation(defaultElevation=4.dp),
                 modifier=Modifier.fillMaxWidth()) {
 
-            Column(Modifier
+            Column(
+                Modifier
                     .fillMaxWidth()
                     .padding(20.dp), Arrangement.Center, Alignment.CenterHorizontally) {
                 Icon(
                         painter=painterResource(id=R.drawable.ic_close),
                         contentDescription="",
                         tint=MaterialTheme.appColors.editTextColor,
-                        modifier=Modifier
-                                .align(Alignment.End)
-                                .padding(horizontal=10.dp)
-                                .clickable {
-                                    onDismiss()
-                                }
+                        modifier= Modifier
+                            .align(Alignment.End)
+                            .padding(horizontal = 10.dp)
+                            .clickable {
+                                onDismiss()
+                            }
                 )
 
                 Text(text=stringResource(id=R.string.currency),
@@ -309,26 +338,36 @@ fun CurrencyDialog(onDismiss : () -> Unit, onClick : (String?) -> Unit) {
                         modifier=Modifier.padding(vertical=10.dp))
 
                 BChatOutlinedTextField(
-                        value=searchQuery,
-                        onValueChange={ searchQuery=it },
-                        label=stringResource(R.string.search_currency),
-                        shape=RoundedCornerShape(36.dp),
-                        trailingIcon={
-                            Icon(
-                                    Icons.Default.Search,
-                                    contentDescription="",
-                                    tint=MaterialTheme.appColors.iconTint
-                            )
+                        value =searchQuery,
+                        onValueChange ={
+                            searchQuery=it
+                            filterFiatCurrency(searchQuery,currencyList)
                         },
-                        modifier=Modifier
-                                .fillMaxWidth()
-                                .padding(vertical=10.dp),
+                        placeHolder =stringResource(R.string.search_currency),
+                        shape =RoundedCornerShape(36.dp),
+                        trailingIcon ={
+                            IconButton(onClick = {
+                                if(searchQuery.isNotEmpty()){
+                                    searchQuery = ""
+                                    filterFiatCurrency("",currencyList)
+                                }
+                            }) {
+                                Icon(
+                                    imageVector = if (searchQuery.isNotEmpty()) Icons.Default.Clear else Icons.Default.Search,
+                                    contentDescription = "Search and Clear Icon",
+                                    tint = MaterialTheme.appColors.iconTint,
+                                )
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 10.dp),
                 )
                 Row(
-                        modifier=Modifier
-                                .height(300.dp)
-                                .fillMaxWidth()
-                                .padding(horizontal=20.dp)
+                        modifier= Modifier
+                            .height(300.dp)
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp)
 
                 ) {
 
@@ -336,21 +375,21 @@ fun CurrencyDialog(onDismiss : () -> Unit, onClick : (String?) -> Unit) {
                     LazyColumn(
                             verticalArrangement=Arrangement.SpaceBetween,
                             horizontalAlignment=Alignment.CenterHorizontally,
-                            modifier=Modifier
-                                    .fillMaxWidth()
-                                    .fillMaxHeight()
-                                    .weight(1f)
+                            modifier= Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight()
+                                .weight(1f)
 
                     ) {
-                        itemsIndexed(currencyList) { index, item ->
+                        itemsIndexed(fiatCurrencyList) { index, item ->
 
                             Column(
-                                    modifier=Modifier
-                                            .fillMaxSize()
-                                            .clickable {
-                                                selectedItemIndex=item
-                                                onClick(selectedItemIndex)
-                                            },
+                                    modifier= Modifier
+                                        .fillMaxSize()
+                                        .clickable {
+                                            selectedItemIndex = item
+                                            onClick(selectedItemIndex)
+                                        },
                                     verticalArrangement=Arrangement.Center,
                                     horizontalAlignment=Alignment.CenterHorizontally,
                             ) {
@@ -362,14 +401,15 @@ fun CurrencyDialog(onDismiss : () -> Unit, onClick : (String?) -> Unit) {
                                         textAlign=TextAlign.Center
                                 ), modifier=Modifier.padding(vertical=20.dp, horizontal=0.dp))
 
-                                Divider(modifier=Modifier
-                                        .width(150.dp)
-                                        .padding(0.dp), color=MaterialTheme.appColors.dividerColor)
+                                Divider(modifier= Modifier
+                                    .width(150.dp)
+                                    .padding(0.dp), color=MaterialTheme.appColors.dividerColor)
                             }
                         }
 
                     }
-                    Box(
+                    //BoxWithConstraints(fiatCurrencyList,300)
+                   /* Box(
                             modifier=Modifier
                                     .height(300.dp)
                                     .padding(all=10.dp)
@@ -380,7 +420,7 @@ fun CurrencyDialog(onDismiss : () -> Unit, onClick : (String?) -> Unit) {
 
                     ) {
                         // BoxWithConstraints(currencyList)
-                    }
+                    }*/
 
                 }
 
@@ -391,6 +431,37 @@ fun CurrencyDialog(onDismiss : () -> Unit, onClick : (String?) -> Unit) {
 }
 
 @Composable
+fun BoxWithConstraints(fiatCurrencyList: MutableList<String>, dp: Int) {
+    val scrollState = rememberScrollState()
+    val viewMaxHeight = fiatCurrencyList.size
+    val columnMaxScroll = scrollState.maxValue
+    val scrollStateValue = scrollState.value
+    val paddingSize = (scrollStateValue * viewMaxHeight) / columnMaxScroll
+    val animation = animateDpAsState(targetValue = paddingSize.dp)
+
+    Column(
+        Modifier
+            .verticalScroll(state = scrollState)
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        if (scrollStateValue < columnMaxScroll) {
+            Box(
+                modifier = Modifier
+                    .paddingFromBaseline(animation.value)
+                    .padding(all = 4.dp)
+                    .height(300.dp)
+                    .width(4.dp)
+                    .background(
+                        color = MaterialTheme.appColors.primaryButtonColor,
+                        shape = MaterialTheme.shapes.medium
+                    )
+            ) {}
+        }
+    }
+}
+
+/*@Composable
 fun BoxWithConstraints(items : List<String>) {
     val scrollState=rememberScrollState(1)
     val viewMaxHeight=1
@@ -421,7 +492,7 @@ fun BoxWithConstraints(items : List<String>) {
             ) {}
         }
     }
-}
+}*/
 
 @Composable
 fun FeePriorityDialog(onDismiss : () -> Unit, onClick : (Int?) -> Unit) {
@@ -433,25 +504,28 @@ fun FeePriorityDialog(onDismiss : () -> Unit, onClick : (Int?) -> Unit) {
     val isDarkTheme=UiModeUtilities.getUserSelectedUiMode(LocalContext.current) == UiMode.NIGHT
 
     DialogContainer(
-            onDismissRequest=onDismiss,
+        dismissOnBackPress = false,
+        dismissOnClickOutside = false,
+        onDismissRequest=onDismiss,
     ) {
         OutlinedCard(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.dialogBackground),
                 elevation=CardDefaults.cardElevation(defaultElevation=4.dp),
                 modifier=Modifier.fillMaxWidth()) {
 
-            Column(Modifier
+            Column(
+                Modifier
                     .fillMaxWidth()
                     .padding(20.dp), Arrangement.Center, Alignment.CenterHorizontally) {
                 Icon(
                         painter=painterResource(id=R.drawable.ic_close),
                         contentDescription="",
                         tint=MaterialTheme.appColors.editTextColor,
-                        modifier=Modifier
-                                .align(Alignment.End)
-                                .padding(horizontal=10.dp)
-                                .clickable {
-                                    onDismiss()
-                                }
+                        modifier= Modifier
+                            .align(Alignment.End)
+                            .padding(horizontal = 10.dp)
+                            .clickable {
+                                onDismiss()
+                            }
                 )
 
                 Text(text=stringResource(id=R.string.fee_priority),
@@ -482,19 +556,19 @@ fun FeePriorityDialog(onDismiss : () -> Unit, onClick : (Int?) -> Unit) {
                                 elevation=CardDefaults.cardElevation(
                                         defaultElevation=if (isDarkTheme) 0.dp else 4.dp
                                 ),
-                                modifier=Modifier
-                                        .fillMaxWidth()
-                                        .clickable {
-                                            selectedItemIndex=index
-                                            onClick(selectedItemIndex)
-                                        },
+                                modifier= Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        selectedItemIndex = index
+                                        onClick(selectedItemIndex)
+                                    },
                                 shape=RoundedCornerShape(16.dp)
                         ) {
 
                             Column(
-                                    modifier=Modifier
-                                            .fillMaxSize()
-                                            .padding(vertical=5.dp),
+                                    modifier= Modifier
+                                        .fillMaxSize()
+                                        .padding(vertical = 5.dp),
                                     verticalArrangement=Arrangement.Center,
                                     horizontalAlignment=Alignment.CenterHorizontally,
                             ) {

@@ -19,12 +19,16 @@ import android.view.*
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.thoughtcrimes.securesms.compose_utils.BChatTheme
 import com.thoughtcrimes.securesms.conversation.v2.TransactionLoadingBar
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.home.HomeActivity
@@ -48,6 +52,8 @@ import java.util.*
 import timber.log.Timber
 import java.lang.Exception
 import java.util.concurrent.Executor
+import androidx.compose.material3.Surface
+import com.thoughtcrimes.securesms.compose_utils.appColors
 
 
 class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletScannedListener, OnBackPressedListener {
@@ -205,15 +211,34 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         return view*/
         calledUnlockedBalance = true
         if(TextSecurePreferences.getFeePriority(requireActivity())==0){
-            AsyncCalculateEstimatedFee(1).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
-        }else{
             AsyncCalculateEstimatedFee(5).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+        }else{
+            AsyncCalculateEstimatedFee(1).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
         }
 
         return ComposeView(requireContext()).apply {
             setContent {
-                SendScreen(listener = activityCallback!!, viewModels,beldexAddress,beldexAmount,beldexAddressErrorAction,beldexAddressErrorText,beldexAddressErrorTextColorChanged,resolvingOA,
-                    scanFromGallery )
+                BChatTheme() {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.appColors.cardBackground
+                    ){
+                        SendScreen(
+                            listener = activityCallback!!,
+                            viewModels,
+                            beldexAddress,
+                            beldexAmount,
+                            beldexAddressErrorAction,
+                            beldexAddressErrorText,
+                            beldexAddressErrorTextColorChanged,
+                            resolvingOA,
+                            scanFromGallery,
+                            feePriorityOnClick = {selectedFeePriority ->
+                                AsyncCalculateEstimatedFee(selectedFeePriority).execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+                            }
+                        )
+                    }
+                }
             }
         }
     }
@@ -734,7 +759,11 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
             if (barcodeData!!.address != null) {
                 activityCallback?.setBarcodeData(null)
                 barcodeData.address.also { beldexAddress.value = it }
-                barcodeData.amount.also { beldexAmount.value = it }
+                if(barcodeData.amount != null) {
+                    barcodeData.amount.also { beldexAmount.value = it }
+                }else{
+                    beldexAmount.value = ""
+                }
                 possibleCryptos.clear()
                 selectedCrypto = null
                 if (barcodeData.isAmbiguous) {

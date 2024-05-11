@@ -85,6 +85,8 @@ fun FilterTransactionByDatePopUp(
     }
 
     DialogContainer(
+        dismissOnBackPress = true,
+        dismissOnClickOutside = true,
         onDismissRequest = onDismiss,
     ) {
         Box(contentAlignment = Alignment.Center, modifier = Modifier) {
@@ -101,7 +103,8 @@ fun FilterTransactionByDatePopUp(
                             value = fromDateStr,
                             enabled = false,
                             modifier = Modifier
-                                .fillMaxWidth().clickable{
+                                .fillMaxWidth()
+                                .clickable {
                                     showFromDatePicker = !showFromDatePicker
                                 },
                             placeholder = {
@@ -134,7 +137,8 @@ fun FilterTransactionByDatePopUp(
                             value = toDateStr,
                             enabled = false,
                             modifier = Modifier
-                                .fillMaxWidth().clickable{
+                                .fillMaxWidth()
+                                .clickable {
                                     showToDatePicker = !showToDatePicker
                                 },
                             placeholder = {
@@ -331,21 +335,29 @@ fun FromDatePickerView(
 
     DatePickerDialog(onDismissRequest = { }, dismissButton = {
         Button(
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.appColors.cancelButtonColor,
+                contentColor = MaterialTheme.appColors.cancelButtonTextColor,
+            ),
             onClick = {
                 onDismiss()
             }
         ){
-            Text("Cancel")
+            Text(stringResource(id = R.string.cancel))
         }
     }, confirmButton = {
 
         Button(
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.appColors.primaryButtonColor,
+                contentColor = MaterialTheme.appColors.textColor,
+            ),
             onClick = {
                 selectedDateValue(selectedFromDate,selectedDate)
                 onDismiss()
             }
         ){
-            Text("Ok")
+            Text(stringResource(id = R.string.ok))
         }
     }) {
         DatePicker(
@@ -357,11 +369,11 @@ fun FromDatePickerView(
                 it<System.currentTimeMillis()
             },
             colors = DatePickerDefaults.colors(
-                containerColor = Color(0xff1C1C26),
-                weekdayContentColor = Color(0xff9595AC),
-                todayContentColor = Color(0xff00BD40),
-                selectedDayContainerColor = Color(0xff00BD40),
-                disabledDayContentColor = Color(0xff9595A0)
+                containerColor = MaterialTheme.appColors.cardBackground,
+                weekdayContentColor = Color(0xff9595Ac),
+                todayContentColor = MaterialTheme.appColors.primaryButtonColor,
+                selectedDayContainerColor = MaterialTheme.appColors.primaryButtonColor,
+                disabledDayContentColor = MaterialTheme.appColors.disableDateColor
             )
         )
     }
@@ -387,21 +399,29 @@ fun ToDatePickerView(
 
     DatePickerDialog(onDismissRequest = {onDismiss()}, dismissButton = {
         Button(
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.appColors.cancelButtonColor,
+                contentColor = MaterialTheme.appColors.cancelButtonTextColor,
+            ),
             onClick = {
                 onDismiss()
             }
         ){
-            Text("Cancel")
+            Text(stringResource(id = R.string.cancel))
         }
     }, confirmButton = {
 
         Button(
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.appColors.primaryButtonColor,
+                contentColor = MaterialTheme.appColors.textColor,
+            ),
             onClick = {
                 selectedDateValue(selectedToDate, selectedDate)
                 onDismiss()
             }
         ){
-            Text("Ok")
+            Text(stringResource(id = R.string.ok))
         }
     }) {
         DatePicker(
@@ -413,11 +433,11 @@ fun ToDatePickerView(
                 it>=selectedFromDate && it<System.currentTimeMillis()
             },
             colors = DatePickerDefaults.colors(
-                containerColor = Color(0xff1C1C26),
+                containerColor = MaterialTheme.appColors.cardBackground,
                 weekdayContentColor = Color(0xff9595Ac),
-                todayContentColor = Color(0xff00BD40),
-                selectedDayContainerColor = Color(0xff00BD40),
-                disabledDayContentColor = Color(0xff000000)
+                todayContentColor = MaterialTheme.appColors.primaryButtonColor,
+                selectedDayContainerColor = MaterialTheme.appColors.primaryButtonColor,
+                disabledDayContentColor = MaterialTheme.appColors.disableDateColor
             )
         )
     }

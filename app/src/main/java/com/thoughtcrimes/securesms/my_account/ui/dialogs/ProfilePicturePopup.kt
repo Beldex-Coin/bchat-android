@@ -45,6 +45,8 @@ fun ProfilePicturePopup(
     uploadPicture: () -> Unit
 ) {
     DialogContainer(
+        dismissOnBackPress = true,
+        dismissOnClickOutside = true,
         onDismissRequest = onDismissRequest
     ) {
         Column(

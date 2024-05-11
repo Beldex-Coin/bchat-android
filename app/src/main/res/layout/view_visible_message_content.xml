@@ -113,19 +113,52 @@
         app:layout_constraintTop_toBottomOf="@id/linkPreviewView"
         tools:visibility="visible" />
 
-    <com.thoughtcrimes.securesms.components.emoji.EmojiTextView
-        android:id="@+id/bodyTextView"
+    <LinearLayout
+        android:id="@+id/bodyView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/open_sans_regular"
-        android:maxWidth="@dimen/max_text_width"
-        android:paddingHorizontal="12dp"
-        android:paddingVertical="@dimen/small_spacing"
-        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/bodyBarrier"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/albumThumbnailView" />
+        app:layout_constraintTop_toBottomOf="@id/albumThumbnailView"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:paddingVertical="8dp"
+        android:paddingHorizontal="12dp">
+
+        <com.thoughtcrimes.securesms.components.emoji.EmojiTextView
+            android:id="@+id/bodyTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/open_sans_regular"
+            android:maxWidth="@dimen/max_text_width"
+            android:minWidth="@dimen/min_text_width"
+            android:visibility="visible" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/message_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/open_sans_regular"
+            android:textSize="11sp"
+            tools:text="12:00 pm"
+            android:layout_gravity="end"/>
+
+    </LinearLayout>
+
+<!--    <com.thoughtcrimes.securesms.components.emoji.EmojiTextView-->
+<!--        android:id="@+id/bodyTextView"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:fontFamily="@font/open_sans_regular"-->
+<!--        android:maxWidth="@dimen/max_text_width"-->
+<!--        android:paddingHorizontal="12dp"-->
+<!--        android:paddingVertical="@dimen/small_spacing"-->
+<!--        android:visibility="gone"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/bodyBarrier"-->
+<!--        app:layout_constraintHorizontal_bias="0"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/albumThumbnailView" />-->
 
 <!--    <androidx.constraintlayout.widget.Guideline-->
 <!--        android:id="@+id/endGuideline"-->
@@ -133,6 +166,14 @@
 <!--        android:layout_height="wrap_content"-->
 <!--        android:orientation="vertical"-->
 <!--        app:layout_constraintGuide_percent="0.9"/>-->
+
+<!--    <androidx.constraintlayout.widget.Barrier-->
+<!--        android:id="@+id/barrier"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:barrierDirection="bottom"-->
+<!--        app:barrierAllowsGoneWidgets="true"-->
+<!--        app:constraint_referenced_ids="deletedMessageView,untrustedView,voiceMessageView,openGroupInvitationView,paymentCardView,documentView,quoteView,linkPreviewView,albumThumbnailView,bodyTextView"/>-->
 
 <!--    <com.google.android.material.textview.MaterialTextView-->
 <!--        android:id="@+id/message_time"-->
@@ -143,6 +184,8 @@
 <!--        android:fontFamily="@font/open_sans_regular"-->
 <!--        android:textSize="11sp"-->
 <!--        tools:text="12:00 pm"-->
-<!--        android:paddingTop="4dp"/>-->
+<!--        android:paddingTop="4dp"-->
+<!--        android:layout_marginEnd="12dp"-->
+<!--        android:layout_marginTop="8dp"/>-->
 
 </com.thoughtcrimes.securesms.conversation.v2.messages.VisibleMessageContentView>

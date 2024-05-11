@@ -162,5 +162,6 @@
     <integer name="tooltip_default_arrow_location">1</integer>
     <integer name="tooltip_default_arrow_alignment">3</integer>
     <dimen name="max_text_width">200dp</dimen>
+    <dimen name="min_text_width">100dp</dimen>
     <dimen name="extra_large_profile_picture_size">128dp</dimen>
 </resources>

@@ -57,7 +57,10 @@ data class PinCodeState(
 enum class PinCodeAction(val action: Int) {
     ChangePinCode(1),
     VerifyPinCode(2),
-    CreatePinCode(3)
+    CreatePinCode(3),
+    VerifyWalletPin(4),
+    CreateWalletPin(5),
+    ChangeWalletPin(6)
 }
 
 sealed interface PinCodeEvents {

@@ -65,7 +65,7 @@ object MnodeAPI {
     private val seedNodePool by lazy {
         if (useTestnet) {
             Log.d("beldex","here testnet $useTestnet")
-              //setOf("http://38.242.196.72:19095","http://154.26.139.105:19095")
+            //setOf("http://38.242.196.72:19095","http://154.26.139.105:19095")
             setOf("http://149.102.156.174:19095")
         } else {
             Log.d("beldex","here mainnet $useTestnet")
@@ -218,8 +218,8 @@ object MnodeAPI {
         val base64EncodedNameHash = Base64.encodeBytes(nameHash)
         // Ask 3 different mnodes for the BChat ID associated with the given name hash
         val parameters = mapOf(
-                "endpoint" to "bns_resolve",
-                "params" to mapOf( "type" to 0, "name_hash" to base64EncodedNameHash )
+            "endpoint" to "bns_resolve",
+            "params" to mapOf( "type" to 0, "name_hash" to base64EncodedNameHash )
         )
         val promises = (1..validationCount).map {
             getRandomMnode().bind { mnode ->
@@ -352,8 +352,8 @@ object MnodeAPI {
 
     fun getMessages(publicKey: String): MessageListPromise {
         return retryIfNeeded(maxRetryCount) {
-           getSingleTargetMnode(publicKey).bind { mnode ->
-               Log.d("Beldex", "invoke MnodeAPI 1")
+            getSingleTargetMnode(publicKey).bind { mnode ->
+                Log.d("Beldex", "invoke MnodeAPI 1")
                 getRawMessages(mnode, publicKey).map { parseRawMessagesResponse(it, mnode, publicKey) }
             }
         }
@@ -371,33 +371,33 @@ object MnodeAPI {
         val destination = message.recipient
         Log.d("Beldex","bchat id validation -- check the test net  or mainnet for remove prefix")
         return retryIfNeeded(maxRetryCount) {
-                val module = MessagingModuleConfiguration.shared
-                val userED25519KeyPair = module.getUserED25519KeyPair() ?: return@retryIfNeeded Promise.ofFail(Error.NoKeyPair)
-                val parameters = message.toJSON().toMutableMap<String,Any>()
-                // Construct signature
-                if (requiresAuth) {
-                    val sigTimestamp = nowWithOffset
-                    val ed25519PublicKey = userED25519KeyPair.publicKey.asHexString
-                    val signature = ByteArray(Sign.BYTES)
-                    // assume namespace here is non-zero, as zero namespace doesn't require auth
-                    val verificationData = "store$namespace$sigTimestamp".toByteArray()
-                    try {
-                        sodium.cryptoSignDetached(signature, verificationData, verificationData.size.toLong(), userED25519KeyPair.secretKey.asBytes)
-                    } catch (exception: Exception) {
-                        return@retryIfNeeded Promise.ofFail(Error.SigningFailed)
-                    }
-                    parameters["sig_timestamp"] = sigTimestamp
-                    parameters["pubkey_ed25519"] = ed25519PublicKey
-                    parameters["signature"] = Base64.encodeBytes(signature)
+            val module = MessagingModuleConfiguration.shared
+            val userED25519KeyPair = module.getUserED25519KeyPair() ?: return@retryIfNeeded Promise.ofFail(Error.NoKeyPair)
+            val parameters = message.toJSON().toMutableMap<String,Any>()
+            // Construct signature
+            if (requiresAuth) {
+                val sigTimestamp = nowWithOffset
+                val ed25519PublicKey = userED25519KeyPair.publicKey.asHexString
+                val signature = ByteArray(Sign.BYTES)
+                // assume namespace here is non-zero, as zero namespace doesn't require auth
+                val verificationData = "store$namespace$sigTimestamp".toByteArray()
+                try {
+                    sodium.cryptoSignDetached(signature, verificationData, verificationData.size.toLong(), userED25519KeyPair.secretKey.asBytes)
+                } catch (exception: Exception) {
+                    return@retryIfNeeded Promise.ofFail(Error.SigningFailed)
                 }
-                // If the namespace is default (0) here it will be implicitly read as 0 on the storage server
-                // we only need to specify it explicitly if we want to (in future) or if it is non-zero
-                if (namespace != 0) {
-                    parameters["namespace"] = namespace
-                }
-                getSingleTargetMnode(destination).bind { mnode ->
-                    Log.d("Beldex", "invoke MnodeAPI.kt 5")
-                    invoke(Mnode.Method.SendMessage, mnode, destination, parameters)
+                parameters["sig_timestamp"] = sigTimestamp
+                parameters["pubkey_ed25519"] = ed25519PublicKey
+                parameters["signature"] = Base64.encodeBytes(signature)
+            }
+            // If the namespace is default (0) here it will be implicitly read as 0 on the storage server
+            // we only need to specify it explicitly if we want to (in future) or if it is non-zero
+            if (namespace != 0) {
+                parameters["namespace"] = namespace
+            }
+            getSingleTargetMnode(destination).bind { mnode ->
+                Log.d("Beldex", "invoke MnodeAPI.kt 5")
+                invoke(Mnode.Method.SendMessage, mnode, destination, parameters)
             }
         }
     }
@@ -491,7 +491,7 @@ object MnodeAPI {
                         )
                         Log.d("Beldex", "invoke MnodeAPI.kt 7")
                         invoke(Mnode.Method.DeleteAll, mnode, userPublicKey, deleteMessageParams).map {
-                            rawResponse -> parseDeletions(userPublicKey, timestamp, rawResponse)
+                                rawResponse -> parseDeletions(userPublicKey, timestamp, rawResponse)
                         }.fail { e ->
                             Log.e("Beldex", "Failed to clear data", e)
                         }

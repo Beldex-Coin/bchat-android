@@ -70,7 +70,9 @@ fun TransactionConfirmPopUp(
         mutableStateOf(Wallet.getDisplayAmount(pendingTransaction.amount))
     }
     DialogContainer(
-            onDismissRequest = onDismiss,
+        dismissOnBackPress = false,
+        dismissOnClickOutside = false,
+        onDismissRequest = onDismiss,
     ) {
 
         Box(contentAlignment = Alignment.Center, modifier = Modifier) {
@@ -159,7 +161,9 @@ fun TransactionSuccessPopup(onDismiss: () -> Unit) {
     }
     val progress by animateLottieCompositionAsState(composition, iterations = LottieConstants.IterateForever, isPlaying = isPlaying, speed = speed, restartOnPlay = false)
     DialogContainer(
-            onDismissRequest = onDismiss,
+        dismissOnBackPress = false,
+        dismissOnClickOutside = false,
+        onDismissRequest = onDismiss,
     ) {
 
         OutlinedCard(colors = CardDefaults.cardColors(containerColor = MaterialTheme.appColors.dialogBackground), elevation = CardDefaults.cardElevation(defaultElevation = 4.dp), modifier = Modifier.fillMaxWidth()) {
@@ -188,7 +192,9 @@ fun TransactionSuccessPopup(onDismiss: () -> Unit) {
 @Composable
 fun TransactionLoadingPopUp(onDismiss: () -> Unit) {
     DialogContainer(
-            onDismissRequest = onDismiss,
+        dismissOnBackPress = false,
+        dismissOnClickOutside = false,
+        onDismissRequest = onDismiss,
     ) {
 
         OutlinedCard(colors = CardDefaults.cardColors(containerColor = MaterialTheme.appColors.dialogBackground), elevation = CardDefaults.cardElevation(defaultElevation = 4.dp), modifier = Modifier.fillMaxWidth()) {
@@ -212,7 +218,9 @@ fun TransactionLoadingPopUp(onDismiss: () -> Unit) {
 fun TransactionFailedPopUp(onDismiss: () -> Unit, errorString: String) {
 
     DialogContainer(
-            onDismissRequest = onDismiss,
+        dismissOnBackPress = false,
+        dismissOnClickOutside = false,
+        onDismissRequest = onDismiss,
     ) {
 
         OutlinedCard(colors = CardDefaults.cardColors(containerColor = MaterialTheme.appColors.dialogBackground), elevation = CardDefaults.cardElevation(defaultElevation = 4.dp), modifier = Modifier.fillMaxWidth()) {

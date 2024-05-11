@@ -9,34 +9,32 @@ import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.os.Environment
-import android.os.SystemClock
-import android.text.Editable
-import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
-import com.google.android.material.transition.MaterialContainerTransform
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
 import com.google.zxing.WriterException
 import com.google.zxing.qrcode.QRCodeWriter
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import com.jakewharton.rxbinding3.view.visibility
-import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
+import com.thoughtcrimes.securesms.compose_utils.BChatTheme
+import com.thoughtcrimes.securesms.compose_utils.appColors
 import com.thoughtcrimes.securesms.data.BarcodeData
 import com.thoughtcrimes.securesms.data.Crypto
-import com.thoughtcrimes.securesms.home.HomeActivity
 import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.util.FileProviderUtil
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.toPx
 import com.thoughtcrimes.securesms.wallet.OnBackPressedListener
 import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.ReceiveScreen
-import com.thoughtcrimes.securesms.wallet.utils.ThemeHelper
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityReceiveBinding
 import timber.log.Timber
@@ -126,8 +124,15 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
 
         return binding.root*/
         return ComposeView(requireContext()).apply { 
-            setContent { 
-                ReceiveScreen(modifier = Modifier)
+            setContent {
+                BChatTheme {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.appColors.cardBackground
+                    ) {
+                        ReceiveScreen(listenerCallback,modifier = Modifier)
+                    }
+                }
             }
         }
     }

@@ -33,6 +33,8 @@ fun LockOptionsDialog(
     onValueChanged: (String, Int) -> Unit
 ) {
     DialogContainer(
+        dismissOnBackPress = true,
+        dismissOnClickOutside = true,
         onDismissRequest = onDismiss,
     ) {
         val valuesPickerState = rememberPickerState()

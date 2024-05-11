@@ -1189,7 +1189,7 @@ interface TextSecurePreferences {
 
         @JvmStatic
         fun getFeePriority(context: Context): Int {
-            return getIntegerPreference(context, FEE_PRIORITY, 1)
+            return getIntegerPreference(context, FEE_PRIORITY, 0)
         }
 
         @JvmStatic
@@ -2092,7 +2092,7 @@ class AppTextSecurePreferences @Inject constructor(
     }
 
     override fun getFeePriority():Int {
-        return getIntegerPreference(TextSecurePreferences.FEE_PRIORITY,1)
+        return getIntegerPreference(TextSecurePreferences.FEE_PRIORITY,0)
     }
 
     override fun setDecimals(position: String?) {

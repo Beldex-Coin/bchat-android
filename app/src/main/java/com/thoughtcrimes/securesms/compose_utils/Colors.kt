@@ -99,9 +99,12 @@ class Colors(
     val secondaryColor: Color,
     val currentBlockHeightContainerBackground: Color,
     val scrollBackground: Color,
-    val addNodeHintColor : Color
-
-
+    val addNodeHintColor : Color,
+    val disableButtonBackgroundColor : Color,
+    val disableButtonContentColor : Color,
+    val transactionFilterEnableColor : Color,
+    val disableDateColor : Color,
+    val selectedDateColor : Color,
 )
 
 val lightColors = Colors(
@@ -185,7 +188,13 @@ val lightColors = Colors(
     secondaryColor = Color(0xff2929FB),
     currentBlockHeightContainerBackground = Color(0xffF8F8F8),
     scrollBackground = Color(0xFFFFFFFF),
-    addNodeHintColor = Color(0xFFA7A7BA))
+    addNodeHintColor = Color(0xFFA7A7BA),
+    disableButtonBackgroundColor = Color(0xff333343),
+    disableButtonContentColor = Color(0xffA7A7BA),
+    transactionFilterEnableColor = Color(0xffA7A7BA),
+    disableDateColor = Color(0xffA7A7BA),
+    selectedDateColor = Color(0xff222222)
+    )
 
 val darkColors = Colors(
     primaryButtonColor = Color(0xFF00BD40),
@@ -268,7 +277,12 @@ val darkColors = Colors(
     secondaryColor = Color(0xff2929FB),
     currentBlockHeightContainerBackground = Color(0xff1C1C26),
     scrollBackground = Color(0xFF333343),
-    addNodeHintColor = Color(0xFF77778B)
+    addNodeHintColor = Color(0xFF77778B),
+    disableButtonBackgroundColor = Color(0xff333343),
+    disableButtonContentColor = Color(0xffA7A7BA),
+    transactionFilterEnableColor = Color(0xffACACAC),
+    disableDateColor = Color(0xff333343),
+    selectedDateColor = Color(0xffFFFFFF)
 
 )
 

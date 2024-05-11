@@ -35,6 +35,8 @@ fun PermissionSettingDialog(
     gotoSettings: () -> Unit
 ) {
     DialogContainer(
+        dismissOnBackPress = true,
+        dismissOnClickOutside = true,
         onDismissRequest = onDismissRequest
     ) {
         Column(

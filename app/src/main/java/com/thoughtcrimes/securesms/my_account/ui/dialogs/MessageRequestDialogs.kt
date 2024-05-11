@@ -34,6 +34,8 @@ fun RequestBlockConfirmationDialog(
     onDismissRequest: () -> Unit
 ) {
     DialogContainer(
+        dismissOnBackPress = true,
+        dismissOnClickOutside = true,
         onDismissRequest = onDismissRequest
     ) {
         Column(
@@ -111,6 +113,8 @@ fun IgnoreRequestDialog(
     onDismissRequest: () -> Unit
 ) {
     DialogContainer(
+        dismissOnBackPress = true,
+        dismissOnClickOutside = true,
         onDismissRequest = onDismissRequest
     ) {
         Column(

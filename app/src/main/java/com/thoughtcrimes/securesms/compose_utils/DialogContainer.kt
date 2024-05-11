@@ -14,13 +14,17 @@ import androidx.compose.ui.window.DialogProperties
 
 @Composable
 fun DialogContainer(
+    dismissOnBackPress : Boolean = false,
+    dismissOnClickOutside : Boolean = false,
     onDismissRequest: () -> Unit,
     content: @Composable () -> Unit
 ) {
     Dialog(
         onDismissRequest = onDismissRequest,
         properties = DialogProperties(
-            usePlatformDefaultWidth = false
+            usePlatformDefaultWidth = false,
+            dismissOnBackPress = dismissOnBackPress,
+            dismissOnClickOutside = dismissOnClickOutside
         )
     ) {
         Card(

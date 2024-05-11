@@ -191,7 +191,7 @@
                         android:id="@+id/beldexAmountTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/enter_bdx_to_send"
+                        android:text="@string/enter_bdx_amount"
                         android:textAlignment="center"
                         android:textSize="18sp"
                         android:textStyle="bold" />

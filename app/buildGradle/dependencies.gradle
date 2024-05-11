@@ -183,4 +183,10 @@ dependencies {
 //  debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
     implementation ("com.airbnb.android:lottie-compose:4.0.0")
 
+    //Scan Qr
+    implementation "androidx.camera:camera-camera2:1.0.2"
+    implementation "androidx.camera:camera-lifecycle:1.0.2"
+    implementation "androidx.camera:camera-view:1.0.0-alpha31"
+
+    implementation 'com.google.zxing:core:3.3.3'
 }

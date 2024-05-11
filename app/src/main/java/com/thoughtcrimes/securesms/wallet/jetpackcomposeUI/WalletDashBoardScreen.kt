@@ -3,7 +3,7 @@ package com.thoughtcrimes.securesms.wallet.jetpackcomposeUI
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
+import android.widget.Button
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -12,25 +12,34 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -47,7 +56,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.RoundRect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
@@ -70,6 +82,7 @@ import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -82,6 +95,8 @@ fun WalletDashBoardScreen(
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val clipboardManager = LocalClipboardManager.current
+    val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.US)
+    val dateTimeFormat = SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.US)
 
     var incomingTransactionIsChecked by remember {
         mutableStateOf(true)
@@ -210,7 +225,7 @@ fun WalletDashBoardScreen(
 
     viewModels.transactionInfoItems.observe(lifecycleOwner) {list->
         transactionListMap = list.groupBy {
-            convertTimeStampToDate(it.timestamp)
+            convertTimeStampToDateString(it.timestamp,dateFormat)
         }.toMutableMap()
     }
 
@@ -253,7 +268,7 @@ fun WalletDashBoardScreen(
                 ),
                 title = {
                     Text(
-                        text = "My Wallet", style = MaterialTheme.typography.titleLarge.copy(
+                        text = stringResource(id = R.string.my_wallet), style = MaterialTheme.typography.titleLarge.copy(
                             color = MaterialTheme.appColors.editTextColor,
                             fontWeight = FontWeight.ExtraBold,
                             fontSize = 22.sp,
@@ -274,7 +289,7 @@ fun WalletDashBoardScreen(
                     IconButton(onClick = {
                         activityCallback.callToolBarSettings()
                     }) {
-                        Icon(Icons.Filled.Settings, "settings")
+                        Icon(painterResource(id = R.drawable.ic_wallet_dashboard_setting), "wallet settings", tint = MaterialTheme.appColors.editTextColor)
                     }
                 }
             )
@@ -401,99 +416,97 @@ fun WalletDashBoardScreen(
                                     .padding(10.dp)
                                     .fillMaxWidth()
                             ) {
-                                Box(
-                                    modifier = Modifier
-                                        .background(
-                                            MaterialTheme.appColors.walletDashboardQRButtonBackground,
-                                            shape = RoundedCornerShape(10.dp)
-                                        )
-                                        .clickable(
-                                            enabled = scanQRCodeButtonIsEnabled,
-                                            onClick = {
-                                                onScanListener?.onWalletScan()
-                                            }
-                                        )
-                                ) {
-
+                                FilledIconButton(
+                                    modifier = Modifier.size(47.dp),
+                                    shape = RoundedCornerShape(10.dp),
+                                    colors = IconButtonDefaults.filledIconButtonColors(
+                                        containerColor = MaterialTheme.appColors.walletDashboardQRButtonBackground,
+                                        contentColor = Color.Black,
+                                        disabledContainerColor = MaterialTheme.appColors.disableButtonBackgroundColor,
+                                        disabledContentColor = MaterialTheme.appColors.disableButtonContentColor
+                                    ),
+                                    enabled = scanQRCodeButtonIsEnabled,
+                                    onClick = {
+                                        onScanListener?.onWalletScan()
+                                    }) {
                                     Image(
                                         painter = painterResource(id = R.drawable.wallet_scan),
-                                        contentDescription = "",
-                                        modifier = Modifier.padding(10.dp)
+                                        contentDescription = stringResource(id = R.string.scan_qrcode_text),
+                                        modifier = Modifier.padding(10.dp),
+                                        colorFilter = ColorFilter.tint(color = if(scanQRCodeButtonIsEnabled)Color.Black else MaterialTheme.appColors.disableButtonContentColor)
                                     )
                                 }
-                                Box(
-                                    modifier = Modifier
-                                        .background(
-                                            MaterialTheme.appColors.walletDashboardSendButtonBackground,
-                                            shape = RoundedCornerShape(10.dp)
-                                        )
-                                        .clickable(
-                                            enabled = sendCardViewButtonIsEnabled,
-                                            onClick = {
-                                                if (sendCardViewButtonIsClickable) {
-                                                    activityCallback.onSendRequest()
-                                                }
-                                            }
-                                        )
-                                ) {
+                                FilledIconButton(
+                                    modifier = Modifier.size(47.dp),
+                                    shape = RoundedCornerShape(10.dp),
+                                    colors = IconButtonDefaults.filledIconButtonColors(
+                                        containerColor = MaterialTheme.appColors.walletDashboardSendButtonBackground,
+                                        contentColor = Color.White,
+                                        disabledContainerColor = MaterialTheme.appColors.disableButtonBackgroundColor,
+                                        disabledContentColor = MaterialTheme.appColors.disableButtonContentColor
+                                    ),
+                                    enabled = sendCardViewButtonIsEnabled,
+                                    onClick = {
+                                        if (sendCardViewButtonIsClickable) {
+                                            activityCallback.onSendRequest()
+                                        }
+                                    }) {
                                     Image(
                                         painter = painterResource(id = R.drawable.wallet_send),
-                                        contentDescription = "",
-                                        modifier = Modifier.padding(10.dp)
+                                        contentDescription = stringResource(id = R.string.send),
+                                        modifier = Modifier.padding(10.dp),
+                                        colorFilter = ColorFilter.tint(color = if(sendCardViewButtonIsEnabled)Color.White else MaterialTheme.appColors.disableButtonContentColor)
                                     )
                                 }
-                                Box(
-                                    modifier = Modifier
-                                        .background(
-                                            MaterialTheme.appColors.walletDashboardReceiveButtonBackground,
-                                            shape = RoundedCornerShape(10.dp)
-                                        )
-                                        .clickable(
-                                            enabled = receiveCardViewButtonIsEnabled,
-                                            onClick = {
-                                                if (receiveCardViewButtonIsClickable) {
-                                                    activityCallback.onWalletReceive()
-                                                }
-                                            }
-                                        )
-                                ) {
-
+                                FilledIconButton(
+                                    modifier = Modifier.size(47.dp),
+                                    shape = RoundedCornerShape(10.dp),
+                                    colors = IconButtonDefaults.filledIconButtonColors(
+                                        containerColor = MaterialTheme.appColors.walletDashboardReceiveButtonBackground,
+                                        contentColor = Color.White,
+                                    ),
+                                    onClick = {
+                                        if (receiveCardViewButtonIsClickable) {
+                                            activityCallback.onWalletReceive()
+                                        }
+                                    }) {
                                     Image(
                                         painter = painterResource(id = R.drawable.wallet_receive),
-                                        contentDescription = "",
-                                        modifier = Modifier.padding(10.dp)
+                                        contentDescription = stringResource(id = R.string.activity_receive_page_title),
+                                        modifier = Modifier.padding(10.dp),
+
                                     )
                                 }
-                                Box(
-                                    modifier = Modifier
-                                        .background(
-                                            MaterialTheme.appColors.walletDashboardRescanButtonBackground,
-                                            shape = RoundedCornerShape(10.dp)
-                                        )
-                                        .clickable(
-                                            onClick = {
-                                                if (activityCallback.isSynced) {
-                                                    activityCallback.callToolBarRescan()
-                                                } else {
-                                                    Toast
-                                                        .makeText(
-                                                            context,
-                                                            context.getString(R.string.cannot_access_sync_option),
-                                                            Toast.LENGTH_SHORT
-                                                        )
-                                                        .show()
-                                                }
-                                            }
-                                        )
-                                ) {
-
+                                FilledIconButton(
+                                    modifier = Modifier.size(47.dp),
+                                    shape = RoundedCornerShape(10.dp),
+                                    colors = IconButtonDefaults.filledIconButtonColors(
+                                        containerColor = MaterialTheme.appColors.walletDashboardRescanButtonBackground,
+                                        contentColor = MaterialTheme.appColors.titleTextColor,
+                                        disabledContainerColor = MaterialTheme.appColors.disableButtonBackgroundColor,
+                                        disabledContentColor = MaterialTheme.appColors.disableButtonContentColor
+                                    ),
+                                    enabled = activityCallback.isSynced,
+                                    onClick = {
+                                        if (activityCallback.isSynced) {
+                                            activityCallback.callToolBarRescan()
+                                        } else {
+                                            Toast
+                                                .makeText(
+                                                    context,
+                                                    context.getString(R.string.cannot_access_sync_option),
+                                                    Toast.LENGTH_SHORT
+                                                )
+                                                .show()
+                                        }
+                                    }) {
                                     Image(
                                         painter = painterResource(id = R.drawable.wallet_rescan),
-                                        contentDescription = "",
-                                        modifier = Modifier.padding(10.dp)
+                                        contentDescription = stringResource(id = R.string.menu_rescan),
+                                        modifier = Modifier.padding(10.dp),
+                                        colorFilter = ColorFilter.tint(color = if(activityCallback.isSynced)MaterialTheme.appColors.titleTextColor else MaterialTheme.appColors.disableButtonContentColor)
                                     )
                                 }
-
                             }
                         }
 
@@ -510,34 +523,30 @@ fun WalletDashBoardScreen(
                 ) {
 
                     Text(
-                        text = "Transactions",
+                        text = stringResource(id = R.string.transactions),
                         style = MaterialTheme.typography.titleMedium.copy(
                             color = MaterialTheme.appColors.onMainContainerTextColor,
                             fontSize = 18.sp
                         )
                     )
 
-                    Image(
-                        painter = painterResource(id = R.drawable.transaction_filter),
-                        contentDescription = "",
-                        contentScale = ContentScale.Inside,
-                        modifier = Modifier
-                            .padding(10.dp)
-                            .background(
-                                MaterialTheme.appColors.transactionFilterBackground,
-                                CircleShape
-                            )
-                            .clip(CircleShape)
-                            .clickable(
-                                enabled = filterTransactionIconIsClickable,
-                                onClick = {
-                                    if (filterTransactionIconIsClickable) {
-                                        showFilterOptions = !showFilterOptions
-                                    }
-                                }
-                            ),
-                        colorFilter = ColorFilter.tint(MaterialTheme.appColors.transactionFilterIcon),
-                    )
+                    IconButton(
+                        colors = IconButtonDefaults.filledIconButtonColors(
+                            containerColor = if (showFilterOptions) MaterialTheme.appColors.transactionFilterBackground else Color.Transparent,
+                            contentColor = if (showFilterOptions) MaterialTheme.appColors.transactionFilterIcon else MaterialTheme.appColors.disableButtonContentColor,
+                        ),
+                        onClick = {
+                            if (filterTransactionIconIsClickable) {
+                                showFilterOptions = !showFilterOptions
+                            }
+                        }
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.transaction_filter_disable),
+                            contentDescription = stringResource(id = R.string.transaction_filter),
+                            colorFilter = ColorFilter.tint(color = if (showFilterOptions) MaterialTheme.appColors.transactionFilterIcon else MaterialTheme.appColors.transactionFilterEnableColor),
+                        )
+                    }
                 }
 
                 if (transactionListContainerIsVisible) {
@@ -771,7 +780,7 @@ fun WalletDashBoardScreen(
                                 ) {
                                     transactionListMap.forEach {
                                         item {
-                                            CategoryHeader(it.key, modifier = Modifier)
+                                            CategoryHeader(it.key, modifier = Modifier,dateFormat)
                                         }
                                         items(it.value) {infoItems->
                                             val isBNS = infoItems.isBns
@@ -783,13 +792,7 @@ fun WalletDashBoardScreen(
                                             var transactionStatus: String? = ""
                                             var transactionAmount: String? = ""
                                             var transactionAmountTextColor: Int
-                                            var transactionId: String? = ""
-                                            var transactionPaymentId: String? = ""
-                                            var transactionPaymentIdIsVisible: Boolean = false
-                                            var transactionBlockHeight: String? = ""
                                             var transactionDateTime: String? = ""
-                                            var transactionFee: String? = ""
-                                            var transactionFeeIsVisible: Boolean = false
                                             if (isBNS) {
                                                 transactionStatusIcon =
                                                     R.drawable.bns_transaction
@@ -832,76 +835,23 @@ fun WalletDashBoardScreen(
                                                     }
                                                 }
                                             }
-                                            transactionId = infoItems.hash
-
-                                            if (infoItems.paymentId != "0000000000000000") {
-                                                transactionPaymentIdIsVisible =
-                                                    true
-                                                transactionPaymentId =
-                                                    infoItems.paymentId
-                                            } else {
-                                                transactionPaymentIdIsVisible =
-                                                    false
-                                            }
-                                            when {
-                                                infoItems.isFailed -> {
-                                                    transactionBlockHeight =
-                                                        context.getString(R.string.tx_failed)
-                                                }
-
-                                                infoItems.isPending -> {
-                                                    transactionBlockHeight =
-                                                        context.getString(R.string.tx_pending)
-                                                }
-
-                                                else -> {
-                                                    transactionBlockHeight =
-                                                        infoItems.blockheight.toString()
-                                                }
-                                            }
                                             transactionDateTime =
-                                                getDateTime(infoItems.timestamp)
+                                                getDateTime(infoItems.timestamp,dateTimeFormat)
 
-                                            if (infoItems.fee > 0) {
-                                                val fee: String = Helper.getDisplayAmount(
-                                                    infoItems.fee,
-                                                    Helper.DISPLAY_DIGITS_INFO
-                                                )
-                                                transactionFee = context.getString(
-                                                    R.string.tx_list_fee,
-                                                    fee
-                                                )
-                                                transactionFeeIsVisible =
-                                                    true
-                                            } else {
-                                                transactionFee = ""
-                                                transactionFeeIsVisible =
-                                                    false
-                                            }
                                             if (infoItems.isFailed) {
                                                 transactionAmount = context.getString(
                                                     R.string.tx_list_amount_failed,
                                                     displayAmount
                                                 )
-                                                transactionFee =
-                                                    context.getString(R.string.tx_list_failed_text)
-                                                transactionFeeIsVisible =
-                                                    true
                                                 transactionAmountTextColor =
                                                     R.color.tx_failed
                                             } else if (infoItems.isPending) {
                                                 transactionAmountTextColor =
                                                     R.color.tx_pending
                                             } else if (infoItems.direction === TransactionInfo.Direction.Direction_In) {
-                                                transactionAmountTextColor =
-                                                    R.color.tx_plus
-                                                if (!infoItems.isConfirmed) {
-                                                    val confirmations =
-                                                        infoItems.confirmations.toInt()
-                                                }
+                                                transactionAmountTextColor = R.color.tx_plus
                                             } else {
-                                                transactionAmountTextColor =
-                                                    R.color.wallet_send_button
+                                                transactionAmountTextColor = R.color.wallet_send_button
                                             }
 
                                             Column {
@@ -1053,7 +1003,7 @@ fun WalletDashBoardScreen(
                                     }
                                 }
                                 transactionDateTime =
-                                    getDateTime(transactionInfoItem!!.timestamp)
+                                    getDateTime(transactionInfoItem!!.timestamp,dateTimeFormat)
 
                                 if (transactionInfoItem!!.fee > 0) {
                                     val fee: String = Helper.getDisplayAmount(
@@ -1067,7 +1017,7 @@ fun WalletDashBoardScreen(
                                     transactionFeeIsVisible =
                                         true
                                 } else {
-                                    transactionFee = ""//tvFee.text = ""
+                                    transactionFee = ""
                                     transactionFeeIsVisible =
                                         false
                                 }
@@ -1110,7 +1060,11 @@ fun WalletDashBoardScreen(
                                     }
 
                                 Column(
-                                    modifier = Modifier.padding(10.dp)
+                                    modifier = Modifier
+                                        .padding(10.dp)
+                                        .verticalScroll(
+                                            rememberScrollState()
+                                        )
                                 ) {
                                     Row(
                                         horizontalArrangement = Arrangement.Center,
@@ -1155,7 +1109,7 @@ fun WalletDashBoardScreen(
                                         )
                                     }
                                     Text(
-                                        text = "Transaction ID",
+                                        text = stringResource(R.string.transaction_id),
                                         modifier = Modifier.padding(10.dp),
                                         style = MaterialTheme.typography.titleMedium.copy(
                                             color = MaterialTheme.appColors.transactionDateTitle,
@@ -1365,6 +1319,38 @@ fun WalletDashBoardScreen(
                                             .fillMaxWidth()
                                             .padding(start = 10.dp, end = 10.dp)
                                     )
+                                    if(transactionFeeIsVisible) {
+                                        Row(
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(10.dp)
+                                        ) {
+                                            Text(
+                                                text = "Fee",
+                                                style = MaterialTheme.typography.titleMedium.copy(
+                                                    color = MaterialTheme.appColors.transactionDateTitle,
+                                                    fontSize = 12.sp,
+                                                    fontWeight = FontWeight.Bold,
+                                                )
+                                            )
+                                            Text(
+                                                text = transactionFee!!,
+                                                style = MaterialTheme.typography.titleMedium.copy(
+                                                    color = MaterialTheme.appColors.transactionDateTitle,
+                                                    fontSize = 12.sp,
+                                                    fontWeight = FontWeight.Bold,
+                                                )
+                                            )
+
+                                        }
+                                        Divider(
+                                            color = MaterialTheme.appColors.transactionHistoryCardDivider,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(start = 10.dp, end = 10.dp)
+                                        )
+                                    }
                                     if (transactionRecipientAddress!!.isNotEmpty()) {
                                         Text(
                                             text = "Recipient Address",
@@ -1380,7 +1366,7 @@ fun WalletDashBoardScreen(
                                             verticalAlignment = Alignment.CenterVertically
                                         ) {
                                             Text(
-                                                text = "---",
+                                                text = transactionRecipientAddress,
                                                 style = MaterialTheme.typography.bodySmall.copy(
                                                     color = MaterialTheme.appColors.transactionSubTitle,
                                                     fontSize = 12.sp
@@ -1518,26 +1504,27 @@ data class Category(
 @Composable
 private fun CategoryHeader(
     dateTimeStamp: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    dateFormat: SimpleDateFormat
 ) {
-    val nowDate = Date(System.currentTimeMillis())
-    val date= convertStringToDate(dateTimeStamp)
+    val nowDate = convertStringToDate(convertTodayTimeStampToDateString(System.currentTimeMillis(),dateFormat),dateFormat)
+    val date= convertStringToDate(dateTimeStamp, dateFormat)
     val diffDays: Long = date.time - System.currentTimeMillis()
 
     val dayCount:Int = (diffDays.toFloat() / (24 * 60 * 60 * 1000)).toInt()
     val isToday:Boolean = nowDate == date
     var title = ""
 
-    if (isToday) {
-        title = "Today"
+    title = if (isToday) {
+        "Today"
     } else if (dayCount == 0) {
-        title = "Yesterday"
+        "Yesterday"
     } else if (dayCount > -7 && dayCount < 0) {
         val dateFormat = SimpleDateFormat("EEEE")
-        title = dateFormat.format(date)
+        dateFormat.format(date)
     } else {
         val dateFormat = SimpleDateFormat("MMMM d")
-        title = dateFormat.format(date)
+        dateFormat.format(date)
     }
     Text(
         text = title,
@@ -1584,17 +1571,18 @@ private fun callIfTransactionListEmpty(size: Int, viewModels: WalletViewModels) 
     }
 }
 
-private fun getDateTime(time: Long): String {
-    val DATETIME_FORMATTER = SimpleDateFormat("dd-MM-yyyy HH:mm")
-    return DATETIME_FORMATTER.format(Date(time * 1000))
+private fun getDateTime(time: Long, dateTimeFormat: SimpleDateFormat): String {
+    return dateTimeFormat.format(Date(time * 1000))
 }
 
-private fun convertTimeStampToDate(time: Long): String {
-    val DATETIME_FORMATTER = SimpleDateFormat("dd-MM-yyyy")
-    return DATETIME_FORMATTER.format(Date(time * 1000))
+private fun convertTimeStampToDateString(time: Long, dateFormat: SimpleDateFormat): String {
+    return dateFormat.format(Date(time * 1000))
 }
 
-private fun convertStringToDate(date: String): Date {
-    val DATETIME_FORMATTER = SimpleDateFormat("dd-MM-yyyy")
-    return DATETIME_FORMATTER.parse(date) as Date
+private fun convertTodayTimeStampToDateString(time: Long, dateFormat: SimpleDateFormat): String {
+    return dateFormat.format(Date(time))
+}
+
+private fun convertStringToDate(date: String, dateFormat: SimpleDateFormat): Date {
+    return dateFormat.parse(date) as Date
 }

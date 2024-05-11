@@ -69,7 +69,7 @@
         <item name="home_gradient_start">#00000000</item>
         <item name="home_gradient_end">#FF000000</item>
 
-        <item name="message_received_background_color">@color/card_color</item>
+        <item name="message_received_background_color">@color/received_message_background</item>
         <item name="message_sent_background_color">@color/send_message_background</item>
         <item name="message_sent_background_transparent_color">@color/transparent</item>
         <item name="payment_message_received_background_color">

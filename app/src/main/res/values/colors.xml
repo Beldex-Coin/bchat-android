@@ -132,7 +132,7 @@
     <color name="keyboard_background">#131319</color>
     <color name="button_background">#2F2F3C</color>
     <color name="button_text">#FFFFFF</color>
-    <color name="send_message_background">#2979FB</color>
+    <color name="send_message_background">#008D06</color>
     <color name="chat_id_card_background">#282833</color>
     <color name="chat_id_description_text">#82828D</color>
     <color name="beldex_address">#1782FF</color>
@@ -224,6 +224,9 @@
     <color name="outlined_button_text_color">#FFFFFF</color>
     <color name="icon_tint">#FFFFFF</color>
     <color name="bchat_id_text_color">#00DB09</color>
+    <color name="conversation_menu_background">#EBEBEB</color>
+    <color name="received_message_background">#2C2C3B</color>
+    <color name="received_message_text_color">#EBEBEB</color>
     <color name="syncing_option_card_background">#111119</color>
     <color name="syncing_option_card_button_background">#282836</color>
     <color name="wallet_info_background">#111119</color>

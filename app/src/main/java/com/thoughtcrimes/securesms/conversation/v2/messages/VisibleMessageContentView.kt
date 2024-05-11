@@ -6,7 +6,10 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
-import android.text.*
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.BackgroundColorSpan
 import android.text.style.ClickableSpan
@@ -14,7 +17,9 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.URLSpan
 import android.text.util.Linkify
 import android.util.AttributeSet
-import android.view.*
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorInt
@@ -35,21 +40,25 @@ import com.beldex.libbchat.utilities.ThemeUtil
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import com.codewaves.stickyheadergrid.StickyHeaderGridLayoutManager
-import com.thoughtcrimes.securesms.database.model.MessageRecord
-import com.thoughtcrimes.securesms.database.model.SmsMessageRecord
-import com.thoughtcrimes.securesms.mms.GlideRequests
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import com.thoughtcrimes.securesms.conversation.v2.ModalUrlBottomSheet
 import com.thoughtcrimes.securesms.conversation.v2.utilities.MentionUtilities
 import com.thoughtcrimes.securesms.conversation.v2.utilities.ModalURLSpan
 import com.thoughtcrimes.securesms.conversation.v2.utilities.TextUtilities.getIntersectedModalSpans
+import com.thoughtcrimes.securesms.database.model.MessageRecord
 import com.thoughtcrimes.securesms.database.model.MmsMessageRecord
+import com.thoughtcrimes.securesms.database.model.SmsMessageRecord
 import com.thoughtcrimes.securesms.home.HomeActivity
+import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.mms.PartAuthority
-import com.thoughtcrimes.securesms.util.*
+import com.thoughtcrimes.securesms.util.ActivityDispatcher
+import com.thoughtcrimes.securesms.util.SearchUtil
+import com.thoughtcrimes.securesms.util.UiModeUtilities
+import com.thoughtcrimes.securesms.util.getColorWithID
+import com.thoughtcrimes.securesms.util.toPx
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewVisibleMessageContentBinding
-import java.util.*
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import java.util.Locale
 import kotlin.math.roundToInt
 
 class VisibleMessageContentView : ConstraintLayout {
@@ -325,6 +334,7 @@ class VisibleMessageContentView : ConstraintLayout {
         }
 
         binding.bodyTextView.isVisible = message.body.isNotEmpty() && !hideBody
+//        binding.messageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
 
         // set it to use constraints if not only a text message, otherwise wrap content to whatever width it wants
         val params = binding.bodyTextView.layoutParams
@@ -478,7 +488,7 @@ class VisibleMessageContentView : ConstraintLayout {
                 } else R.color.white*/
                 R.color.white
             } else {
-                if (isDayUiMode) R.color.black else R.color.white
+                R.color.received_message_text_color
             }
             return context.resources.getColorWithID(colorID, context.theme)
         }

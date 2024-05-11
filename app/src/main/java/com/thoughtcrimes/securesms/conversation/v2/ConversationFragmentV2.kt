@@ -1426,17 +1426,17 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     override fun handleVoiceMessageUIHidden() {
         val inputBar = binding.inputBar
-        val inputBarCard = binding.inputBarCard
+//        val inputBarCard = binding.inputBarCard
         //New Line
         inputBar.visibility = View.VISIBLE
 
         inputBar.alpha = 1.0f
-        inputBarCard.alpha = 1.0f
+//        inputBarCard.alpha = 1.0f
         val animation = ValueAnimator.ofObject(FloatEvaluator(), 0.0f, 1.0f)
         animation.duration = 250L
         animation.addUpdateListener { animator ->
             inputBar.alpha = animator.animatedValue as Float
-            inputBarCard.alpha = animator.animatedValue as Float
+//            inputBarCard.alpha = animator.animatedValue as Float
         }
         animation.start()
     }
@@ -2608,7 +2608,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         binding.inputBar.visibility = View.INVISIBLE
 
         binding.inputBarRecordingView.show()
-        binding.inputBarCard.alpha = 0.0f
+//        binding.inputBarCard.alpha = 0.0f
         binding.inputBar.alpha = 0.0f
         val animation = ValueAnimator.ofObject(FloatEvaluator(), 1.0f, 0.0f)
         animation.duration = 250L

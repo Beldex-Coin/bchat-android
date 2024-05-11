@@ -8,9 +8,9 @@ import android.widget.LinearLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.thoughtcrimes.securesms.database.model.MessageRecord
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewControlMessageBinding
-import com.thoughtcrimes.securesms.database.model.MessageRecord
 
 
 class ControlMessageView : LinearLayout {
@@ -52,11 +52,15 @@ class ControlMessageView : LinearLayout {
         binding.textView.textSize = fontSize!!.toFloat()
         binding.receiverStatusIconTextView.textSize = fontSize.toFloat()
         binding.senderStatusIconTextView.textSize = fontSize.toFloat()
+        binding.receivedCallText.textSize = fontSize.toFloat()
+        binding.dialledCallText.textSize = fontSize.toFloat()
         binding.dateBreakTextView.textSize = fontSize.toFloat()
 
         //SteveJosephh21
         binding.receiverStatusIconCardView.visibility = View.GONE
         binding.senderStatusIconCardView.visibility = View.GONE
+        binding.receivedCallCardView.visibility = View.GONE
+        binding.dialledCallCardView.visibility = View.GONE
 
         /*Hales63*/
         var messageBody: CharSequence = message.getDisplayBody(context)
@@ -95,26 +99,26 @@ class ControlMessageView : LinearLayout {
 
                 //SteveJosephh21
                 if(message.isOutgoing){
-                    binding.senderStatusIconCardView.visibility = View.VISIBLE
-                    binding.senderStatusIconImageView.setImageDrawable(
+                    binding.dialledCallCardView.visibility = View.VISIBLE
+                    binding.dialledCallIcon.setImageDrawable(
                         ResourcesCompat.getDrawable(
                             resources,
                             drawable,
                             context.theme
                         )
                     )
-                    binding.senderStatusIconTextView.text = messageBody
+//                    binding.senderStatusIconTextView.text = messageBody
                     messageBody = ""
                 }else{
-                    binding.receiverStatusIconCardView.visibility = View.VISIBLE
-                    binding.receiverStatusIconImageView.setImageDrawable(
+                    binding.receivedCallCardView.visibility = View.VISIBLE
+                    binding.receivedCallIcon.setImageDrawable(
                         ResourcesCompat.getDrawable(
                             resources,
                             drawable,
                             context.theme
                         )
                     )
-                    binding.receiverStatusIconTextView.text = messageBody
+//                    binding.receiverStatusIconTextView.text = messageBody
                     messageBody = ""
                 }
             }

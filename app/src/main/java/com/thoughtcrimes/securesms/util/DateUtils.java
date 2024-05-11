@@ -79,6 +79,24 @@ public class DateUtils extends android.text.format.DateUtils {
     }
   }
 
+  public static String getTimeStamp(final Context c, final Locale locale, final long timestamp) {
+    return getFormattedDateTime(timestamp, getHourFormat(c), locale);
+  }
+
+  public static String getCoversationDisplayFormattedTimeSpanString(final Context c, final Locale locale, final long timestamp) {
+    if (isWithin(timestamp, 1, TimeUnit.MINUTES)) {
+      return c.getString(R.string.DateUtils_just_now);
+    } else if (isToday(timestamp)) {
+      return "Today";
+    } else if (isWithin(timestamp, 6, TimeUnit.DAYS)) {
+      return getFormattedDateTime(timestamp, "EEEE", locale);
+    } else if (isWithin(timestamp, 365, TimeUnit.DAYS)) {
+      return getFormattedDateTime(timestamp, "MMM d ", locale);
+    } else {
+      return getFormattedDateTime(timestamp, "MMM d, yyyy", locale);
+    }
+  }
+
   public static SimpleDateFormat getDetailedDateFormatter(Context context, Locale locale) {
     String dateFormatPattern;
 

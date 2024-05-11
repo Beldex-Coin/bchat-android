@@ -7,16 +7,20 @@ import android.graphics.PointF
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import android.util.AttributeSet
 import android.view.Gravity
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.annotation.DrawableRes
+import com.thoughtcrimes.securesms.util.GlowViewUtilities
+import com.thoughtcrimes.securesms.util.InputBarButtonImageViewContainer
+import com.thoughtcrimes.securesms.util.InputBarButtonSendImageViewContainer
+import com.thoughtcrimes.securesms.util.animateSizeChange
+import com.thoughtcrimes.securesms.util.getColorWithID
+import com.thoughtcrimes.securesms.util.toPx
 import io.beldex.bchat.R
-import com.thoughtcrimes.securesms.util.*
-import java.util.*
+import java.util.Date
 
 class InputBarButton : RelativeLayout {
     private val gestureHandler = Handler(Looper.getMainLooper())
@@ -45,7 +49,7 @@ class InputBarButton : RelativeLayout {
         if (hasOpaqueBackground) {
             R.color.input_bar_button_background_opaque
         } else if (isSendButton) {
-            R.color.card_color
+            R.color.accent
         } else if (isMessageBox){
             R.color.card_color
         }

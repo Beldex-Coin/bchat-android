@@ -212,8 +212,46 @@ fun WalletDashBoardScreen(
 
     var transactionListMap = remember { mutableMapOf<String,List<TransactionInfo>>() }
 
+    var byDateIsEnable by remember {
+        mutableStateOf(false)
+    }
+    
+    val emptySelectedDateList : MutableList<Date> = ArrayList()
+    
+    var selectedDates by remember {
+        mutableStateOf<List<Date>>(emptySelectedDateList)
+    }
+
     viewModels.transactionInfoItems.observe(lifecycleOwner) {list->
-        transactionListMap = list.groupBy {
+        val filterByDirectionList = list.filter {
+            if(incomingTransactionIsChecked && outgoingTransactionIsChecked){
+                it.direction == TransactionInfo.Direction.Direction_In || it.direction == TransactionInfo.Direction.Direction_Out
+            }else if(incomingTransactionIsChecked) {
+                it.direction == TransactionInfo.Direction.Direction_In
+            }else if(outgoingTransactionIsChecked){
+                it.direction == TransactionInfo.Direction.Direction_Out
+            }else{
+                it.direction != TransactionInfo.Direction.Direction_In || it.direction != TransactionInfo.Direction.Direction_Out
+            }
+        }
+
+        val filterList = if(byDateIsEnable){
+            val temp: MutableList<TransactionInfo> = ArrayList()
+            for (datesItem in selectedDates) {
+                for (d in filterByDirectionList) {
+                    if (dateFormat.format(Date(d.timestamp * 1000)) == dateFormat.format(datesItem)) {
+                        temp.add(d)
+                    }
+                }
+            }
+            temp
+        }else{
+            filterByDirectionList
+        }
+
+        callIfTransactionListEmpty(filterList.size, viewModels)
+
+        transactionListMap = filterList.groupBy {
             convertTimeStampToDateString(it.timestamp,dateFormat)
         }.toMutableMap()
     }
@@ -226,8 +264,6 @@ fun WalletDashBoardScreen(
         progressBarIsVisible = it
     }
 
-    val emptyList: MutableList<TransactionInfo> = ArrayList()
-
     var showFilterTransactionByDatePopUp by remember {
         mutableStateOf(false)
     }
@@ -239,13 +275,17 @@ fun WalletDashBoardScreen(
     if (showFilterTransactionByDatePopUp) {
         FilterTransactionByDatePopUp(
             onDismiss = {
+                //byDateIsEnable = false
+                showFilterTransactionByDatePopUp = false
+            },
+            selectedDates = {selectedDateList,list->
+                byDateIsEnable = true
+                selectedDates = selectedDateList.toMutableList()
+                viewModels.updateTransactionInfoItems(list)
                 showFilterTransactionByDatePopUp = false
             },
             context,
-            incomingTransactionIsChecked,
-            outgoingTransactionIsChecked,
             viewModels,
-            emptyList
         )
     }
 
@@ -583,28 +623,21 @@ fun WalletDashBoardScreen(
                                                         Toast.LENGTH_SHORT
                                                     ).show()
                                                     if (outgoingTransactionIsChecked && incomingTransactionIsChecked) {
-                                                        viewModels.adapterTransactionInfoItems.value?.let { list ->
-                                                            filterAll(
-                                                                list, viewModels
-                                                            )
+                                                        viewModels.transactionInfoItems.value?.let {list->
+                                                            viewModels.updateTransactionInfoItems(list)
                                                         }
                                                     } else if (incomingTransactionIsChecked && !outgoingTransactionIsChecked) {
-                                                        viewModels.adapterTransactionInfoItems.value?.let { list ->
-                                                            filter(
-                                                                TransactionInfo.Direction.Direction_In,
-                                                                list, viewModels
-                                                            )
+                                                        viewModels.transactionInfoItems.value?.let {list->
+                                                            viewModels.updateTransactionInfoItems(list)
                                                         }
                                                     } else if (!incomingTransactionIsChecked && outgoingTransactionIsChecked) {
-                                                        viewModels.adapterTransactionInfoItems.value?.let { list ->
-                                                            filter(
-                                                                TransactionInfo.Direction.Direction_Out,
-                                                                list, viewModels
-                                                            )
+                                                        viewModels.transactionInfoItems.value?.let {list->
+                                                            viewModels.updateTransactionInfoItems(list)
                                                         }
                                                     } else if (!outgoingTransactionIsChecked && !incomingTransactionIsChecked) {
-                                                        //emptyList
-                                                        filterAll(emptyList, viewModels)
+                                                        viewModels.transactionInfoItems.value?.let {list->
+                                                            viewModels.updateTransactionInfoItems(list)
+                                                        }
                                                     }
                                                 },
                                                 colors = CheckboxDefaults.colors(
@@ -642,26 +675,21 @@ fun WalletDashBoardScreen(
                                                         Toast.LENGTH_SHORT
                                                     ).show()
                                                     if (incomingTransactionIsChecked && outgoingTransactionIsChecked) {
-                                                        viewModels.adapterTransactionInfoItems.value?.let { list ->
-                                                            filterAll(list, viewModels)
+                                                        viewModels.transactionInfoItems.value?.let {list->
+                                                            viewModels.updateTransactionInfoItems(list)
                                                         }
                                                     } else if (outgoingTransactionIsChecked && !incomingTransactionIsChecked) {
-                                                        viewModels.adapterTransactionInfoItems.value?.let { list ->
-                                                            filter(
-                                                                TransactionInfo.Direction.Direction_Out,
-                                                                list, viewModels
-                                                            )
+                                                        viewModels.transactionInfoItems.value?.let {list->
+                                                            viewModels.updateTransactionInfoItems(list)
                                                         }
                                                     } else if (!outgoingTransactionIsChecked && incomingTransactionIsChecked) {
-                                                        viewModels.adapterTransactionInfoItems.value?.let { list ->
-                                                            filter(
-                                                                TransactionInfo.Direction.Direction_In,
-                                                                list, viewModels
-                                                            )
+                                                        viewModels.transactionInfoItems.value?.let {list->
+                                                            viewModels.updateTransactionInfoItems(list)
                                                         }
                                                     } else if (!incomingTransactionIsChecked && !outgoingTransactionIsChecked) {
-                                                        // emptyList
-                                                        filterAll(emptyList, viewModels)
+                                                        viewModels.transactionInfoItems.value?.let {list->
+                                                            viewModels.updateTransactionInfoItems(list)
+                                                        }
                                                     }
                                                 },
                                                 colors = CheckboxDefaults.colors(

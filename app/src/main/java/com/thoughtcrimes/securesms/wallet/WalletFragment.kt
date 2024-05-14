@@ -658,21 +658,11 @@ class WalletFragment : Fragment(),OnBackPressedListener {
 
     private fun callRefreshHistory(wallet:Wallet, list: MutableList<TransactionInfo>){
         viewModels.setTransactionInfoItems(list)
-        viewModels.transactionInfoItems.value?.let { viewModels.setAdapterTransactionInfoItems(it) }
         if (accountIndex != wallet.accountIndex) {
             accountIndex = wallet.accountIndex
             ///binding.transactionList.scrollToPosition(0)
         }
 
-        //SteveJosephh21
-        viewModels.transactionInfoItems.value?.let {
-            if(viewModels.transactionInfoItems.value?.size!! > 0){
-                viewModels.setTransactionListContainerIsVisible(true)
-            } else {
-                viewModels.setFilterTransactionIconIsClickable(true)
-                viewModels.setTransactionListContainerIsVisible(false)
-            }
-        }
         //Steve Josephh21 ANRS
         if(CheckOnline.isOnline(requireContext())) {
             check(activityCallback!!.hasBoundService()) { "WalletService not bound." }

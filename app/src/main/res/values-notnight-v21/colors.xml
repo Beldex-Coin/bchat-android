@@ -98,8 +98,6 @@
     <color name="wallet_card_transaction_card_background">#EAEAEA</color>
     <color name="wallet_scan_qr_button_background">#FFFFFF</color>
     <color name="wallet_transaction_list_item_card_background">#F2F2F2</color>
-
-
     <color name="wallet_primary_variant">#CCC3BD</color>
     <color name="green_color">#2EA021</color>
     <color name="orange_color">#FA5544</color>

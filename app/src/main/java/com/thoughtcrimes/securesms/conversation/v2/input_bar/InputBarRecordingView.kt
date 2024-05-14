@@ -1,7 +1,6 @@
 package com.thoughtcrimes.securesms.conversation.v2.input_bar
 
 import android.animation.FloatEvaluator
-import android.animation.IntEvaluator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.os.Handler
@@ -14,12 +13,10 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
+import com.thoughtcrimes.securesms.util.DateUtils
+import com.thoughtcrimes.securesms.util.disableClipping
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewInputBarRecordingBinding
-import com.thoughtcrimes.securesms.util.DateUtils
-import com.thoughtcrimes.securesms.util.animateSizeChange
-import com.thoughtcrimes.securesms.util.disableClipping
-import com.thoughtcrimes.securesms.util.toPx
 import java.util.Date
 
 class InputBarRecordingView : RelativeLayout {
@@ -105,9 +102,9 @@ class InputBarRecordingView : RelativeLayout {
     }
 
     private fun pulse() {
-        val collapsedSize = toPx(80.0f, resources)
-        val expandedSize = toPx(104.0f, resources)
-        binding.pulseView.animateSizeChange(collapsedSize, expandedSize, 1000)
+//        val collapsedSize = toPx(64.0f, resources)
+//        val expandedSize = toPx(72.0f, resources)
+//        binding.pulseView.animateSizeChange(collapsedSize, expandedSize, 1000)
         val animation = ValueAnimator.ofObject(FloatEvaluator(), 0.5, 0.0f)
         pulseAnimation = animation
         animation.duration = 1000L
@@ -119,18 +116,18 @@ class InputBarRecordingView : RelativeLayout {
     }
 
     private fun animateLockViewUp() {
-        val startMarginBottom = toPx(32, resources)
-        val endMarginBottom = toPx(72, resources)
-        val layoutParams = binding.lockView.layoutParams as LayoutParams
-        layoutParams.bottomMargin = startMarginBottom
-        binding.lockView.layoutParams = layoutParams
-        val animation = ValueAnimator.ofObject(IntEvaluator(), startMarginBottom, endMarginBottom)
-        animation.duration = 250L
-        animation.addUpdateListener { animator ->
-            layoutParams.bottomMargin = animator.animatedValue as Int
-            binding.lockView.layoutParams = layoutParams
-        }
-        animation.start()
+//        val startMarginBottom = toPx(32, resources)
+//        val endMarginBottom = toPx(72, resources)
+//        val layoutParams = binding.lockView.layoutParams as LayoutParams
+//        layoutParams.bottomMargin = startMarginBottom
+//        binding.lockView.layoutParams = layoutParams
+//        val animation = ValueAnimator.ofObject(IntEvaluator(), startMarginBottom, endMarginBottom)
+//        animation.duration = 250L
+//        animation.addUpdateListener { animator ->
+//            layoutParams.bottomMargin = animator.animatedValue as Int
+//            binding.lockView.layoutParams = layoutParams
+//        }
+//        animation.start()
     }
 
     private fun updateTimer() {

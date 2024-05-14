@@ -212,6 +212,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         linkPreviewDraftView.delegate = this
         this.linkPreviewDraftView = linkPreviewDraftView
         binding.inputBarAdditionalContentContainer.addView(linkPreviewDraftView)
+        binding.containerCardView.radius = toPx(24, resources).toFloat()
         requestLayout()
     }
 
@@ -225,6 +226,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         if (quote != null) { return }
         linkPreview = null
         binding.inputBarAdditionalContentContainer.removeAllViews()
+        binding.containerCardView.radius = toPx(48, resources).toFloat()
         requestLayout()
         if(i==1){
             binding.inputBarEditText.text?.clear()

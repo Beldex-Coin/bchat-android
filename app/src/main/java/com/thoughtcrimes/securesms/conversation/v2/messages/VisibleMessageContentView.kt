@@ -51,6 +51,7 @@ import com.thoughtcrimes.securesms.home.HomeActivity
 import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.mms.PartAuthority
 import com.thoughtcrimes.securesms.util.ActivityDispatcher
+import com.thoughtcrimes.securesms.util.DateUtils
 import com.thoughtcrimes.securesms.util.SearchUtil
 import com.thoughtcrimes.securesms.util.UiModeUtilities
 import com.thoughtcrimes.securesms.util.getColorWithID
@@ -123,7 +124,7 @@ class VisibleMessageContentView : ConstraintLayout {
                 message,
                 VisibleMessageContentView.getTextColor(context, message)
             )
-            binding.bodyTextView.isVisible = false
+            binding.bodyView.isVisible = false
             binding.quoteView.root.isVisible = false
             binding.linkPreviewView.root.isVisible = false
             binding.untrustedView.root.isVisible = false
@@ -333,11 +334,12 @@ class VisibleMessageContentView : ConstraintLayout {
             }
         }
 
-        binding.bodyTextView.isVisible = message.body.isNotEmpty() && !hideBody
-//        binding.messageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
+        binding.bodyView.isVisible = message.body.isNotEmpty() && !hideBody
+        val time = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
+        binding.messageTime.text = time
 
         // set it to use constraints if not only a text message, otherwise wrap content to whatever width it wants
-        val params = binding.bodyTextView.layoutParams
+        val params = binding.bodyView.layoutParams
         params.width =
             if (onlyBodyMessage || binding.barrierViewsGone()) ViewGroup.LayoutParams.MATCH_PARENT else 0
         val fontSize = TextSecurePreferences.getChatFontSize(context)
@@ -426,7 +428,7 @@ class VisibleMessageContentView : ConstraintLayout {
             binding.quoteView.root,
             binding.linkPreviewView.root,
             binding.albumThumbnailView.root,
-            binding.bodyTextView
+            binding.bodyView,
         ).forEach { view:View -> view.isVisible = false }
     }
 

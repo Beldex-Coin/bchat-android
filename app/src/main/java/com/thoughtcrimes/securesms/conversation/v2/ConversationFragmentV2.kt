@@ -173,6 +173,7 @@ import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
 import com.thoughtcrimes.securesms.webrtc.NetworkChangeReceiver
+import com.thoughtcrimes.securesms.webrtc.WebRTCComposeActivity
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.FragmentConversationV2Binding
@@ -2407,8 +2408,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
         val service = WebRtcCallService.createCall(context, thread)
         context.startService(service)
-
-        val activity = Intent(context, WebRtcCallActivity::class.java).apply {
+        val activity = Intent(context, WebRTCComposeActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
         context.startActivity(activity)

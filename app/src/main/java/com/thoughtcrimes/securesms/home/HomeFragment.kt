@@ -93,6 +93,7 @@ import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
+import com.thoughtcrimes.securesms.webrtc.WebRTCComposeActivity
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
@@ -1472,7 +1473,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     }
 
     private fun toolBarCall() {
-        Intent(requireContext(), WebRtcCallActivity::class.java).also {
+        Intent(requireContext(), WebRTCComposeActivity::class.java).also {
             push(it)
         }
     }

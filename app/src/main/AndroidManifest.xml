@@ -142,6 +142,18 @@
                 android:value="com.thoughtcrimes.securesms.home.HomeActivity" />
         </activity>
         <activity
+            android:name="com.thoughtcrimes.securesms.webrtc.WebRTCComposeActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:parentActivityName="com.thoughtcrimes.securesms.home.HomeActivity"
+            android:screenOrientation="portrait"
+            android:showForAllUsers="true"
+            android:theme="@style/Theme.Bchat.CallActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.thoughtcrimes.securesms.home.HomeActivity" />
+        </activity>
+        <activity
             android:name="com.thoughtcrimes.securesms.onboarding.AboutActivity"
             android:exported="false"
             android:screenOrientation="portrait"

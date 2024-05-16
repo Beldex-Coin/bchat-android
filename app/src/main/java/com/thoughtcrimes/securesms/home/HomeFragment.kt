@@ -446,6 +446,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
             }, 200)
         }
         binding.navigationMenu.drawerProfileIcon.root.glide = glide
+        binding.navigationMenu.drawerProfileIcon.root.isClickable = true
         binding.navigationMenu.drawerProfileId.text = String.format(requireContext().resources.getString(R.string.id_format), hexEncodedPublicKey)
 
 //        binding.searchViewContainer.setOnClickListener {

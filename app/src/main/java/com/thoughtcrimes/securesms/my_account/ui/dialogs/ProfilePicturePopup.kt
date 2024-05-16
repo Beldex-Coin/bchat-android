@@ -131,11 +131,11 @@ fun ProfilePicturePopup(
                 ) {
                     Text(
                         text = stringResource(id = R.string.activity_settings_remove),
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.bodySmall
                     )
                 }
 
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(5.dp))
 
                 Button(
                     onClick = uploadPicture,
@@ -146,8 +146,8 @@ fun ProfilePicturePopup(
                         .weight(1f)
                 ) {
                     Text(
-                        text = stringResource(id = R.string.activity_settings_upload),
-                        style = MaterialTheme.typography.bodyMedium.copy(
+                        text = stringResource(id = R.string.save),
+                        style = MaterialTheme.typography.bodySmall.copy(
                             color = Color.White
                         )
                     )

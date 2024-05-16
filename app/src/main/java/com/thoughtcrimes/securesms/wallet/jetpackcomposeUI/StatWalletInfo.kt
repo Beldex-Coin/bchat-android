@@ -18,7 +18,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
@@ -67,11 +69,17 @@ fun StatWalletInfo(modifier: Modifier) {
     ) {
 
         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier
-                .wrapContentHeight()
-                .padding(10.dp)
-                .clip(shape = RoundedCornerShape(10.dp))
-                .background(color = MaterialTheme.appColors.walletInfoBackground)
-                .border(border = BorderStroke(width = 1.dp, MaterialTheme.appColors.walletInfoBackgroundBorder), shape = RoundedCornerShape(10.dp))
+            .wrapContentHeight()
+            .padding(10.dp)
+            .clip(shape = RoundedCornerShape(10.dp))
+            .background(color = MaterialTheme.appColors.walletInfoBackground)
+            .border(
+                border = BorderStroke(
+                    width = 1.dp,
+                    MaterialTheme.appColors.walletInfoBackgroundBorder
+                ), shape = RoundedCornerShape(10.dp)
+            )
+            .verticalScroll(rememberScrollState())
 
         ) {
 
@@ -136,11 +144,11 @@ fun StatWalletInfo(modifier: Modifier) {
                 )
             }
 
-            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.padding(start = 20.dp, top = 20.dp, end = 20.dp)) {
+            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.padding(start = 20.dp, end = 20.dp)) {
 
                 Text(text = "Yes, I Understand", modifier = Modifier.padding(top = 15.dp, end = 5.dp), style = MaterialTheme.typography.labelMedium, fontSize = 15.sp)
 
-                Checkbox(checked = isChecked, onCheckedChange = { isChecked = it }, colors = CheckboxDefaults.colors(checkedColor = colorResource(id = R.color.button_green), uncheckedColor = MaterialTheme.appColors.textColor, checkmarkColor = colorResource(id = R.color.button_green)))
+                Checkbox(checked = isChecked, onCheckedChange = { isChecked = it }, colors = CheckboxDefaults.colors(checkedColor = colorResource(id = R.color.button_green), uncheckedColor = MaterialTheme.appColors.textColor, checkmarkColor = colorResource(id = R.color.white)))
             }
 
             PrimaryButton(onClick = {
@@ -153,9 +161,9 @@ fun StatWalletInfo(modifier: Modifier) {
                 }, 2000)
                 Toast.makeText(context, "Enabled Wallet", Toast.LENGTH_SHORT).show()
             }, modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, bottom = 24.dp), shape = RoundedCornerShape(16.dp), enabled = isChecked) {
-                Text(text = "Enable Wallet", style = BChatTypography.bodyLarge.copy(color = Color.White), modifier = Modifier.padding(8.dp))
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp, bottom = 24.dp), shape = RoundedCornerShape(16.dp), enabled = isChecked) {
+                Text(text = context.getString(R.string.enable_wallet), style = BChatTypography.bodyLarge.copy(color = Color.White), modifier = Modifier.padding(8.dp))
             }
 
         }

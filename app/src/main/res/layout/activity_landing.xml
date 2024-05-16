@@ -101,7 +101,7 @@
             android:id="@+id/registerButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/create_account"
+            android:text="@string/activity_landing_register_button_title"
             style="@style/PrimaryContainedButton"/>
 
         <com.google.android.material.button.MaterialButton
@@ -109,7 +109,7 @@
             style="@style/OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/sign_in"/>
+            android:text="@string/activity_landing_restore_button_title"/>
 
         <TextView
             android:id="@+id/TermsandCondtionsTxt"

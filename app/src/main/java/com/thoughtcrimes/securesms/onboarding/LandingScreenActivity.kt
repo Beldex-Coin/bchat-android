@@ -209,7 +209,7 @@ fun LandingScreen(
                 .align(Alignment.CenterHorizontally)
         ) {
             Text(
-                text = stringResource(id = R.string.create_account),
+                text = stringResource(id = R.string.activity_landing_register_button_title),
                 style = BChatTypography.bodyLarge.copy(
                     color = Color.White
                 ),
@@ -229,7 +229,7 @@ fun LandingScreen(
                 .align(Alignment.CenterHorizontally)
         ) {
             Text(
-                text = stringResource(id = R.string.restore_account),
+                text = stringResource(id = R.string.activity_landing_restore_button_title),
                 style = BChatTypography.bodyLarge.copy(
                     color = MaterialTheme.appColors.onMainContainerTextColor
                 ),

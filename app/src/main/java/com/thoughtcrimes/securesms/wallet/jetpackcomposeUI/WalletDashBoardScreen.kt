@@ -402,15 +402,19 @@ fun WalletDashBoardScreen(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Image(
-                                painter = painterResource(id = R.drawable.ic_beldex),
-                                contentDescription = ""
+                                painter = painterResource(id = R.drawable.ic_beldex,),
+                                contentDescription = "",
+                                colorFilter = ColorFilter.tint(
+                                    color = if(sendCardViewButtonIsEnabled) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.textColor
+                                )
                             )
 
                             Text(
                                 text = walletBalance,
                                 style = MaterialTheme.typography.bodyMedium.copy(
                                     color = MaterialTheme.appColors.onMainContainerTextColor,
-                                    fontSize = 15.sp
+                                    fontSize = 25.sp,
+                                    fontWeight = FontWeight.Bold
                                 ),
                                 modifier = Modifier
                                     .padding(10.dp)

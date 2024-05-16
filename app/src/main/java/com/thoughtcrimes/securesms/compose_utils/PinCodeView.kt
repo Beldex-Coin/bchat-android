@@ -38,6 +38,25 @@ fun PinCodeView(
     ) {
         repeat(length) { i ->
             val value = if (pin.length - 1 >= i) pin[i].toString() else ""
+            val pinCode: String
+            if(value.isNotEmpty()){
+                pinCode = when (value.length) {
+                    1 -> {
+                        "*"
+                    }
+                    2 -> {
+                        "**"
+                    }
+                    3 -> {
+                        "***"
+                    }
+                    else -> {
+                        "****"
+                    }
+                }
+            }else{
+                pinCode = ""
+            }
             Card(
                 border = BorderStroke(
                     width = 1.dp,
@@ -62,7 +81,7 @@ fun PinCodeView(
                         .fillMaxSize()
                 ) {
                     Text(
-                        text = value,
+                        text = pinCode,
                         style = MaterialTheme.typography.titleMedium,
                         textAlign = TextAlign.Center
                     )

@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.thoughtcrimes.securesms.compose_utils.BChatTheme
@@ -27,7 +28,7 @@ fun ChatSettingsScreen(
         modifier = modifier
     ) {
         Text(
-            text = "Chat",
+            text = stringResource(id = R.string.chat),
             style = MaterialTheme.typography.titleMedium.copy(
                 color = MaterialTheme.appColors.primaryButtonColor
             ),
@@ -48,7 +49,7 @@ fun ChatSettingsScreen(
                     .padding(16.dp)
             ) {
                 SettingsItem(
-                    settingTitle = "Enter Key sends",
+                    settingTitle = stringResource(id = R.string.preferences__pref_enter_sends_title),
                     settingIcon = painterResource(id = R.drawable.ic_enter_key),
                     isEnabled = true,
                     onSwitchChanged = {},
@@ -59,7 +60,7 @@ fun ChatSettingsScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 SettingsItem(
-                    settingTitle = "Fonts",
+                    settingTitle = stringResource(id = R.string.preferences_chats__font_size),
                     painterResource(id = R.drawable.ic_fonts),
                     containsSwitch = false,
                     modifier = Modifier

@@ -25,6 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.beldex.libbchat.mnode.MnodeAPI
@@ -131,7 +133,9 @@ fun ClearDataDialog(
     val buttonTitle by remember(step) {
         mutableStateOf(
             value = when (step) {
-                Steps.INFO_PROMPT_DEFAULT,
+                Steps.INFO_PROMPT_DEFAULT-> {
+                    resource.getString(R.string.ok)
+                }
                 Steps.NETWORK_PROMPT -> {
                      resource.getString(R.string.delete)
                 }
@@ -204,8 +208,8 @@ fun ClearDataDialog(
                 Steps.INFO_PROMPT_DEFAULT -> {
                     DeleteOption(
                         isSelected = selectedOption == DeleteOption.Device,
-                        title = stringResource(id = R.string.activity_settings_clear_all_data_button_title),
-                        description = stringResource(id = R.string.clear_only_in_device),
+                        title = stringResource(id = R.string.clear_data_from_device),
+                        description = stringResource(id = R.string.delete_data_on_this_device),
                         onClicked = {
                             selectedOption = DeleteOption.Device
                         }
@@ -216,7 +220,7 @@ fun ClearDataDialog(
                     DeleteOption(
                         isSelected = selectedOption == DeleteOption.Network,
                         title = stringResource(id = R.string.delete_entire_account),
-                        description = stringResource(id = R.string.delete_account_from_network),
+                        description = stringResource(id = R.string.delete_data_from_the_network),
                         onClicked = {
                             selectedOption = DeleteOption.Network
                         }
@@ -269,7 +273,12 @@ fun ClearDataDialog(
                     Button(
                         onClick = buttonClick,
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.appColors.primaryButtonColor
+                            containerColor = if(buttonTitle == stringResource(R.string.clear) || buttonTitle == stringResource(
+                                    id = R.string.delete
+                                ))MaterialTheme.appColors.walletDashboardMainMenuCardBackground else MaterialTheme.appColors.primaryButtonColor,
+                            contentColor = if(buttonTitle == stringResource(R.string.clear) || buttonTitle == stringResource(
+                                    id = R.string.delete
+                                )) Color.Red else Color.White
                         ),
                         modifier = Modifier
                             .weight(1f)
@@ -277,7 +286,9 @@ fun ClearDataDialog(
                         Text(
                             text = buttonTitle.toString(),
                             style = MaterialTheme.typography.bodyMedium.copy(
-                                color = Color.White
+                                color = if(buttonTitle == stringResource(R.string.clear) || buttonTitle == stringResource(
+                                        id = R.string.delete
+                                    )) Color.Red else Color.White
                             )
                         )
                     }
@@ -317,14 +328,17 @@ fun DeleteOption(
         ) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight.Bold
+                )
             )
 
             Text(
                 text = description,
                 style = MaterialTheme.typography.labelMedium.copy(
                     color = MaterialTheme.appColors.secondaryTextColor
-                )
+                ),
+                textAlign = TextAlign.Center
             )
         }
     }

@@ -519,7 +519,7 @@
     </plurals>
 
     <!-- preferences.xml -->
-    <string name="preferences__pref_enter_sends_title" translatable="false">Enter key sends</string>
+    <string name="preferences__pref_enter_sends_title" translatable="false">Enter Key sends</string>
     <string name="preferences__pressing_the_enter_key_will_send_text_messages" translatable="false">Pressing the Enter key will send text messages</string>
     <string name="preferences__send_link_previews" translatable="false">Send link previews</string>
     <string name="preferences__previews_are_supported_for" translatable="false">Previews are supported for Imgur, Instagram, Pinterest, Reddit, and YouTube links</string>
@@ -685,7 +685,7 @@
 
     <string name="activity_landing_title_2" translatable="false">Your BChat begins here...</string>
     <string name="activity_landing_register_button_title" translatable="false">Create Account</string>
-    <string name="activity_landing_restore_button_title" translatable="false">Sign In</string>
+    <string name="activity_landing_restore_button_title" translatable="false">Restore Account</string>
 
     <string name="view_fake_chat_bubble_1" translatable="false">What\'s BChat?</string>
     <string name="view_fake_chat_bubble_2" translatable="false">It\'s a decentralized, encrypted messaging app</string>
@@ -775,7 +775,7 @@
     <string name="activity_settings_devices_button_title" translatable="false">Devices</string>
     <string name="activity_settings_invite_button_title" translatable="false">Invite a Friend</string>
     <string name="activity_settings_faq_button_title" translatable="false">FAQ</string>
-    <string name="activity_settings_recovery_phrase_button_title" translatable="false">Recovery Phrase</string>
+    <string name="activity_settings_recovery_phrase_button_title" translatable="false">Recovery Seed</string>
     <string name="activity_settings_clear_all_data_button_title" translatable="false">Clear Data</string>
     <string name="activity_settings_clear_all_data_and_network_button_title" translatable="false">Clear Data Including Network</string>
     <string name="activity_settings_help_translate_bchat" translatable="false">Help us Translate BChat</string>
@@ -800,8 +800,8 @@
     <string name="dialog_seed_explanation" translatable="false">This is your recovery phrase. With it, you can restore or migrate your BChat ID to a new device.</string>
 
     <string name="dialog_clear_all_data_title" translatable="false">Clear All Data</string>
-    <string name="dialog_clear_all_data_explanation" translatable="false">Are you sure want to delete your data from the device?</string>
-    <string name="dialog_clear_all_data_network_explanation" translatable="false">Are you sure want to delete your data from the network? If you continue you will not be able to restore your messages or contacts</string>
+    <string name="dialog_clear_all_data_explanation" translatable="false">Are you sure you want to Permanently clear all data from this device?</string>
+    <string name="dialog_clear_all_data_network_explanation" translatable="false">Are you sure you want to Permanently clear all data from the Beldex Network?</string>
     <string name="dialog_clear_all_data_local_only" translatable="false">Delete Only</string>
     <string name="dialog_clear_all_data_clear_network" translatable="false">Entire Account</string>
 
@@ -870,8 +870,6 @@
     <string name="activity_pn_mode_fast_mode_explanation" translatable="false">You’ll be notified of new messages reliably and immediately using Google’s notification servers.</string>
     <string name="activity_pn_mode_slow_mode_explanation" translatable="false">BChat will occasionally check for new messages in the background.</string>
 
-    <string name="fragment_recovery_phrase_title" translatable="false">Recovery Phrase</string>
-
     <string name="activity_prompt_passphrase_bchat_locked" translatable="false">BChat is Locked</string>
     <string name="activity_prompt_passphrase_tap_to_unlock" translatable="false">Tap to Unlock</string>
 
@@ -927,8 +925,6 @@
 
     <!-- New Strings-->
 
-    <string name="create_account" translatable="false">Create Account</string>
-    <string name="sign_in" translatable="false">Sign In</string>
     <string name="terms_and_conditions" translatable="false">Terms &amp; Conditions</string>
     <string name="hey_you" translatable="false">Hey there!</string>
     <string name="chat_anonymously_now" translatable="false">Chat Anonymously Now.</string>
@@ -998,7 +994,7 @@
     <string name="seed_permission_important_description" translatable="false">Your seed can be used to restore your account. Never share it with anyone or store a digital copy of it. Never enter your seed in any other website or application other than BChat or the Beldex official wallet.</string>
     <string name="seed_permission_important_confirmTitle" translatable="false">Check your surroundings to ensure no one is overlooking. Do you want to proceed?</string>
     <string name="seed_permission_important_confirmButton" translatable="false">Yes, I\'m Safe.</string>
-    <string name="mnemonic_edit_text_hint" translatable="false">Enter your recovery seed to restore your account.</string>
+    <string name="mnemonic_edit_text_hint" translatable="false">Enter your Seed</string>
     <string name="password_screen_description_content" translatable="false">Enter your four digit pin to unlock your account</string>
     <string name="check_password_description_content_seed" translatable="false">Enter your password to view your seed. Write it down on paper.</string>
     <string name="check_password_description_content_keys" translatable="false">Enter your password to view your restore key. Write it down on paper.</string>
@@ -1245,7 +1241,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="please_pick_a_restore_from_date" translatable="false">Please pick a restore from date</string>
 
     <string name="send_create_tx_error_title" translatable="false">Create Transaction Error</string>
-    <string name="transaction_completed" translatable="false">Transaction Completed</string>
+    <string name="transaction_successful" translatable="false">Transaction Successful!</string>
     <string name="info_paymentid_integrated" translatable="false">&#x2714; Payment ID integrated</string>
     <string name="beldex_address_error_message" translatable="false">Enter the recipient wallet address</string>
     <string name="beldex_amount_error_message" translatable="false">Enter the BDX amount to send</string>
@@ -1287,8 +1283,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="spend_key_private" translatable="false">Spend Key (private)</string>
     <string name="activity_scan_page_title" translatable="false">Scan</string>
     <string name="activity_wallet_password_page_title" translatable="false">Wallet Password</string>
-    <string name="show_seed_content_title" translatable="false">Copy your Recovery Phrase and keep it safe.</string>
-    <string name="show_seed_content" translatable="false">Your Recovery Phrase can be used to recover your account. If you lose your Recovery Phrase, you will lose access to your account. Restoring your account will only restore the messages and BChat contacts from the last 14 days.</string>
+    <string name="show_seed_content" translatable="false">Your Recovery Seed can be used to recover your account. If you lose your Recovery Phrase, you will lose access to your account. Restoring your account will only restore the messages and BChat contacts from the last 14 days.</string>
     <string name="add_node_success" translatable="false">Success</string>
     <string name="add_node_connection_error" translatable="false">Connection error</string>
     <string name="exit" translatable="false">Exit</string>
@@ -1484,4 +1479,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name ="wallet_settings" translatable="false">Wallet settings</string>
     <string name="transactions" translatable="false">Transactions</string>
     <string name="transaction_filter" translatable="false">Transaction Filter</string>
+    <string name="chat" translatable="false">Chat</string>
+    <string name="clear_data_from_device" translatable="false">Clear Data From Device</string>
+    <string name="delete_data_on_this_device" translatable="false">Delete data on this device</string>
+    <string name="delete_data_from_the_network" translatable="false">Delete data from the network</string>
 </resources>

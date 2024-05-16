@@ -19,7 +19,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
@@ -257,7 +259,7 @@ fun MyAccountNavHost(
             route = MyAccountScreens.AppLockScreen.route
         ) {
             MyAccountScreenContainer(
-                title = stringResource(id = R.string.changelog),
+                title = stringResource(id = R.string.activity_settings_app_lock_button_title),
                 onBackClick = {
                     navController.navigateUp()
                 }
@@ -426,11 +428,11 @@ fun MyAccountNavHost(
 
         composable(route = MyAccountScreens.StartWalletInfoScreen.route) {
             MyAccountScreenContainer(title = stringResource(id = R.string.wallets), onBackClick = {
-                navController.navigateUp()
+                (context as ComponentActivity).finish()
             }) {
                 StatWalletInfo(modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp))
+                    .fillMaxSize()
+                    .padding(16.dp))
 
             }
 

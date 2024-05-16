@@ -77,7 +77,7 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
             binding.recoveryPhraseCountWord.text = "0/25"
         }
 
-        binding.pasteIcon.setOnClickListener {
+        binding.recoveryPhrasePasteIcon.setOnClickListener {
             val clipboard = this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             //since the clipboard contains plain text.
             if (clipboard.hasPrimaryClip()) {
@@ -89,9 +89,6 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
                     .show()
             }
 
-        }
-        binding.recoveryPhrasePasteIcon.setOnClickListener {
-            binding.mnemonicEditText.setText("")
         }
     }
 

@@ -80,26 +80,26 @@ fun DisplayBalanceDialog(onDismiss : () -> Unit, onClick : (Int?) -> Unit) {
                 Modifier
                     .fillMaxWidth()
                     .padding(20.dp), Arrangement.Center, Alignment.CenterHorizontally) {
-                Icon(
+
+                Row(modifier = Modifier.padding(bottom = 20.dp)){
+                    Text(text=stringResource(id=R.string.display_balance_as),
+                        style=MaterialTheme.typography.titleMedium.copy(
+                            fontSize=20.sp,
+                            fontWeight=FontWeight(700),
+                            color=MaterialTheme.appColors.primaryButtonColor),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.weight(1f).align(Alignment.CenterVertically))
+
+                    Icon(
                         painter=painterResource(id=R.drawable.ic_close),
                         contentDescription="",
                         tint=MaterialTheme.appColors.editTextColor,
                         modifier= Modifier
-                            .align(Alignment.End)
-                            .padding(horizontal = 10.dp)
                             .clickable {
                                 onDismiss()
                             }
-                )
-
-                Text(text=stringResource(id=R.string.display_balance_as),
-                        style=MaterialTheme.typography.titleMedium.copy(
-                                fontSize=16.sp,
-                                fontWeight=FontWeight(800),
-                                color=MaterialTheme.appColors.primaryButtonColor),
-                        modifier=Modifier.padding(vertical=20.dp))
-
-
+                    )
+                }
 
                 LazyColumn(
                         verticalArrangement=Arrangement.spacedBy(16.dp),
@@ -173,26 +173,26 @@ fun DecimalDialog(onDismiss : () -> Unit, onClick : (String?) -> Unit) {
                 Modifier
                     .fillMaxWidth()
                     .padding(20.dp), Arrangement.Center, Alignment.CenterHorizontally) {
-                Icon(
+
+                Row(modifier = Modifier.padding(bottom = 20.dp)){
+                    Text(text=stringResource(id=R.string.decimals),
+                        style=MaterialTheme.typography.titleMedium.copy(
+                            fontSize=20.sp,
+                            fontWeight=FontWeight(700),
+                            color=MaterialTheme.appColors.primaryButtonColor),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.weight(1f).align(Alignment.CenterVertically))
+
+                    Icon(
                         painter=painterResource(id=R.drawable.ic_close),
                         contentDescription="",
                         tint=MaterialTheme.appColors.editTextColor,
                         modifier= Modifier
-                            .align(Alignment.End)
-                            .padding(horizontal = 10.dp)
                             .clickable {
                                 onDismiss()
                             }
-                )
-
-                Text(text=stringResource(id=R.string.decimals),
-                        style=MaterialTheme.typography.titleMedium.copy(
-                                fontSize=16.sp,
-                                fontWeight=FontWeight(800),
-                                color=MaterialTheme.appColors.primaryButtonColor),
-                        modifier=Modifier.padding(vertical=20.dp))
-
-
+                    )
+                }
 
                 LazyColumn(
                         verticalArrangement=Arrangement.spacedBy(16.dp),
@@ -315,24 +315,26 @@ fun CurrencyDialog(onDismiss : () -> Unit, onClick : (String?) -> Unit) {
                 Modifier
                     .fillMaxWidth()
                     .padding(20.dp), Arrangement.Center, Alignment.CenterHorizontally) {
-                Icon(
+
+                Row(modifier = Modifier.padding(bottom = 20.dp)){
+                    Text(text=stringResource(id=R.string.currency),
+                        style=MaterialTheme.typography.titleMedium.copy(
+                            fontSize=20.sp,
+                            fontWeight=FontWeight(700),
+                            color=MaterialTheme.appColors.primaryButtonColor),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.weight(1f).align(Alignment.CenterVertically))
+
+                    Icon(
                         painter=painterResource(id=R.drawable.ic_close),
                         contentDescription="",
                         tint=MaterialTheme.appColors.editTextColor,
                         modifier= Modifier
-                            .align(Alignment.End)
-                            .padding(horizontal = 10.dp)
                             .clickable {
                                 onDismiss()
                             }
-                )
-
-                Text(text=stringResource(id=R.string.currency),
-                        style=MaterialTheme.typography.titleMedium.copy(
-                                fontSize=16.sp,
-                                fontWeight=FontWeight(800),
-                                color=MaterialTheme.appColors.primaryButtonColor),
-                        modifier=Modifier.padding(vertical=10.dp))
+                    )
+                }
 
                 BChatOutlinedTextField(
                         value =searchQuery,
@@ -358,7 +360,7 @@ fun CurrencyDialog(onDismiss : () -> Unit, onClick : (String?) -> Unit) {
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 10.dp),
+                            .padding(bottom = 10.dp),
                 )
                 Row(
                         modifier= Modifier
@@ -513,26 +515,26 @@ fun FeePriorityDialog(onDismiss : () -> Unit, onClick : (Int?) -> Unit) {
                 Modifier
                     .fillMaxWidth()
                     .padding(20.dp), Arrangement.Center, Alignment.CenterHorizontally) {
-                Icon(
+
+                Row(modifier = Modifier.padding(bottom = 20.dp)){
+                    Text(text=stringResource(id=R.string.fee_priority),
+                        style=MaterialTheme.typography.titleMedium.copy(
+                            fontSize=20.sp,
+                            fontWeight=FontWeight(700),
+                            color=MaterialTheme.appColors.primaryButtonColor),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.weight(1f).align(Alignment.CenterVertically))
+
+                    Icon(
                         painter=painterResource(id=R.drawable.ic_close),
                         contentDescription="",
                         tint=MaterialTheme.appColors.editTextColor,
                         modifier= Modifier
-                            .align(Alignment.End)
-                            .padding(horizontal = 10.dp)
                             .clickable {
                                 onDismiss()
                             }
-                )
-
-                Text(text=stringResource(id=R.string.fee_priority),
-                        style=MaterialTheme.typography.titleMedium.copy(
-                                fontSize=16.sp,
-                                fontWeight=FontWeight(800),
-                                color=MaterialTheme.appColors.primaryButtonColor),
-                        modifier=Modifier.padding(vertical=20.dp))
-
-
+                    )
+                }
 
                 LazyColumn(
                         verticalArrangement=Arrangement.spacedBy(16.dp),

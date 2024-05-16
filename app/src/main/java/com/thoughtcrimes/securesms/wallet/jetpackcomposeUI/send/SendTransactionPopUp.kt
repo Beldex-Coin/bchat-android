@@ -175,7 +175,7 @@ fun TransactionSuccessPopup(onDismiss: () -> Unit) {
                         .padding(20.dp)
                         .align(Alignment.CenterHorizontally))
 
-                Text(text = stringResource(id = R.string.transaction_completed), textAlign = TextAlign.Center, style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp, fontWeight = FontWeight(800), color = MaterialTheme.appColors.primaryButtonColor), modifier = Modifier.padding(10.dp))
+                Text(text = stringResource(id = R.string.transaction_successful), textAlign = TextAlign.Center, style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp, fontWeight = FontWeight(800), color = MaterialTheme.appColors.primaryButtonColor), modifier = Modifier.padding(10.dp))
 
                 Button(onClick = { onDismiss() }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.appColors.primaryButtonColor), modifier = Modifier
                         .height(50.dp)

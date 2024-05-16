@@ -50,6 +50,8 @@ import com.thoughtcrimes.securesms.BaseActionBarActivity
 import com.thoughtcrimes.securesms.compose_utils.BChatTypography
 import com.thoughtcrimes.securesms.compose_utils.appColors
 import com.thoughtcrimes.securesms.util.SharedPreferenceUtil.Companion.SELECTED_NODE_PREFS_NAME
+import com.thoughtcrimes.securesms.util.UiMode
+import com.thoughtcrimes.securesms.util.UiModeUtilities
 import com.thoughtcrimes.securesms.wallet.CheckOnline
 import io.beldex.bchat.R
 
@@ -201,7 +203,7 @@ fun WalletSettingsScreen(navigate : (WalletSettingsItem) -> Unit, navItem : (Wal
 
             Row(verticalAlignment=Alignment.CenterVertically, horizontalArrangement=Arrangement.Center, modifier=Modifier.padding(vertical=10.dp, horizontal=24.dp)) {
                 Icon(
-                        painter=painterResource(id=R.drawable.ic_addressbook),
+                        painter=painterResource(id=R.drawable.ic_save_recipient_address),
                         contentDescription="",
                         tint=MaterialTheme.appColors.editTextColor,
                 )

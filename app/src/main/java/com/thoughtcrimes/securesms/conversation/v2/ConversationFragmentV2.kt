@@ -179,11 +179,14 @@ import io.beldex.bchat.R
 import io.beldex.bchat.databinding.FragmentConversationV2Binding
 import io.beldex.bchat.databinding.ViewVisibleMessageBinding
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import nl.komponents.kovenant.ui.successUi
+import org.apache.commons.lang3.time.DurationFormatUtils
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
@@ -457,6 +460,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private var isNetworkAvailable = true
     private var callViewModel : CallViewModel? =null
     private var bns_Name : String? = null
+    private val callDurationFormat = "HH:mm:ss"
+    private var uiJob: Job? = null
 
 
     interface Listener {
@@ -507,6 +512,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         audioRecorder = AudioRecorder(requireActivity().applicationContext)
 
 //        val thread = threadDb.getRecipientForThreadId(viewModel.threadId)
+        callViewModel = ViewModelProvider(requireActivity())[CallViewModel::class.java]
         lifecycleScope.launch {
             viewModel.backToHome.collectLatest {
                 if (it) {
@@ -679,6 +685,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     override fun onResume() {
         super.onResume()
+        setupCallActionBar()
         ApplicationContext.getInstance(requireActivity()).messageNotifier.setVisibleThread(viewModel.threadId)
         if (!viewModel.markAllRead())
             return
@@ -737,6 +744,48 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             this.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
     }
+
+    private fun setupCallActionBar() {
+        val startTimeNew = callViewModel!!.callStartTime
+        if (startTimeNew == -1L) {
+            binding.callActionBarView.isVisible = false
+        } else {
+            binding.callActionBarView.isVisible = true
+            uiJob = lifecycleScope.launch {
+                launch {
+                    while (isActive) {
+                        val startTime = callViewModel!!.callStartTime
+                        if (startTime == -1L) {
+                            binding.callActionBarView.isVisible = false
+                        } else {
+                            binding.callActionBarView.isVisible = true
+                            binding.callDurationCall.text = DurationFormatUtils.formatDuration(
+                                    System.currentTimeMillis() - startTime,
+                                    callDurationFormat
+                            )
+                        }
+
+                        delay(1_000)
+                    }
+                }
+            }
+        }
+        binding.hanUpCall.setOnClickListener {
+            requireActivity().applicationContext.startService(WebRtcCallService.hangupIntent(requireActivity().applicationContext))
+            binding.callActionBarView.isVisible = false
+            Toast.makeText(requireActivity().applicationContext, "Call ended", Toast.LENGTH_SHORT).show()
+        }
+        binding.callActionBarView.setOnClickListener {
+            callWebRTCCallScreen()
+        }
+    }
+
+    private fun callWebRTCCallScreen(){
+        Intent(requireContext(), WebRTCComposeActivity::class.java).also {
+            startActivity(it)
+        }
+    }
+
 
     private fun networkChange(networkAvailable: Boolean) {
         isNetworkAvailable = networkAvailable

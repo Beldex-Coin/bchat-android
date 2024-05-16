@@ -1,0 +1,56 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/call_notification_background"
+    android:padding="10dp">
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginEnd="10dp"
+        android:contentDescription="recipient_profile"
+        android:src="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/image"
+        android:text="Testing"
+        android:textColor="#000"
+        android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        android:layout_toEndOf="@id/image"
+        android:text="Testing SubTitle"
+        android:textColor="#000"
+        android:textSize="13sp" />
+
+    <Button
+        android:id="@+id/hangUpButton"
+        style="@style/Widget.Bchat.Button.Common.ProminentFilled_DeclineCall"
+        android:layout_width="70dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="20dp"
+        android:layout_toEndOf="@id/text"
+        android:text="@string/hang_up"
+        android:textSize="11sp" />
+
+    <Button
+        android:id="@+id/answerButton"
+        style="@style/Widget.Bchat.Button.Common.ProminentFilled_AnswerCall"
+        android:layout_width="70dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@id/hangUpButton"
+        android:text="Answer"
+        android:textSize="11sp" />
+
+</RelativeLayout>

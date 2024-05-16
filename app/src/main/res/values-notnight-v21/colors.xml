@@ -159,4 +159,5 @@
     <color name="wallet_rescan_background">#E0E0E0</color>
     <color name="transaction_history_background">#EBEBEB</color>
     <color name="total_balance">#ACACAC</color>
+    <color name="call_notification_background">#FFFFFF</color>
 </resources>

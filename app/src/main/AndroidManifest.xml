@@ -115,7 +115,7 @@
             android:name="com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.password.CreateWalletPassword"
             android:exported="false"
@@ -308,7 +308,7 @@
             android:name="com.thoughtcrimes.securesms.onboarding.AppLockActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.onboarding.CreatePasswordActivity"
             android:exported="false"

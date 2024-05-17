@@ -253,40 +253,43 @@ fun FromDatePickerView(
         convertMillisToDate(it)
     }?: ""
 
-    DatePickerDialog(onDismissRequest = { }, dismissButton = {
-        Button(
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.appColors.cancelButtonColor,
-                contentColor = MaterialTheme.appColors.cancelButtonTextColor,
-            ),
-            onClick = {
-                onDismiss()
+    DatePickerDialog(
+        onDismissRequest = {},
+        dismissButton = {
+            Button(
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.appColors.cancelButtonColor,
+                    contentColor = MaterialTheme.appColors.cancelButtonTextColor,
+                ),
+                onClick = {
+                    onDismiss()
+                }
+            ) {
+                Text(stringResource(id = R.string.cancel))
             }
-        ){
-            Text(stringResource(id = R.string.cancel))
-        }
-    }, confirmButton = {
-
-        Button(
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.appColors.primaryButtonColor,
-                contentColor = MaterialTheme.appColors.textColor,
-            ),
-            onClick = {
-                selectedDateValue(selectedFromDate,selectedDate)
-                onDismiss()
+        },
+        confirmButton = {
+            Button(
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.appColors.primaryButtonColor,
+                    contentColor = MaterialTheme.appColors.textColor,
+                ),
+                onClick = {
+                    selectedDateValue(selectedFromDate, selectedDate)
+                    onDismiss()
+                }
+            ) {
+                Text(stringResource(id = R.string.ok))
             }
-        ){
-            Text(stringResource(id = R.string.ok))
         }
-    }) {
+    ) {
         DatePicker(
             state = datePickerState,
             showModeToggle = false,
             title = null,
             headline = null,
             dateValidator = {
-                it<System.currentTimeMillis()
+                it < System.currentTimeMillis()
             },
             colors = DatePickerDefaults.colors(
                 containerColor = MaterialTheme.appColors.cardBackground,

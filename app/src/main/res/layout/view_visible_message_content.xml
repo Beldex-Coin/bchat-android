@@ -51,7 +51,7 @@
             <include
                 android:id="@+id/voiceMessageView"
                 layout="@layout/view_voice_message"
-                android:layout_width="160dp"
+                android:layout_width="250dp"
                 android:layout_height="36dp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -156,22 +156,6 @@
                     tools:visibility="visible" />
 
             </com.google.android.material.card.MaterialCardView>
-
-<!--            <com.google.android.material.card.MaterialCardView-->
-<!--                android:id="@+id/albumThumbnailViewContainer"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent"-->
-<!--                app:cardCornerRadius="24dp"-->
-<!--                app:cardBackgroundColor="@color/received_call_detail_background"-->
-<!--                android:layout_margin="8dp">-->
-
-<!--                -->
-
-<!--            </com.google.android.material.card.MaterialCardView>-->
 
             <com.thoughtcrimes.securesms.components.emoji.EmojiTextView
                 android:id="@+id/bodyTextView"

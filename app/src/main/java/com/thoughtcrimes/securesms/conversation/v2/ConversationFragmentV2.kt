@@ -148,6 +148,8 @@ import com.thoughtcrimes.securesms.mms.VideoSlide
 import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
 import com.thoughtcrimes.securesms.model.PendingTransaction
 import com.thoughtcrimes.securesms.model.Wallet
+import com.thoughtcrimes.securesms.onboarding.ui.EXTRA_PIN_CODE_ACTION
+import com.thoughtcrimes.securesms.onboarding.ui.PinCodeAction
 import com.thoughtcrimes.securesms.permissions.Permissions
 import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
 import com.thoughtcrimes.securesms.service.WebRtcCallService
@@ -3142,7 +3144,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             LockManager.getInstance() as LockManager<CustomPinActivity>
         lockManager.enableAppLock(requireActivity(), CustomPinActivity::class.java)
         val intent = Intent(requireActivity(), CustomPinActivity::class.java)
-        intent.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN)
+        intent.putExtra(EXTRA_PIN_CODE_ACTION, PinCodeAction.VerifyWalletPin.action)
         intent.putExtra("change_pin", false)
         intent.putExtra("send_authentication", true)
         resultLaunchers.launch(intent)

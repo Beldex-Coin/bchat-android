@@ -43,7 +43,7 @@ class PinCodeViewModel @Inject constructor(
 
     init {
         savedPassword = sharedPreferenceUtil.getSavedPassword()
-        action = savedStateHandle.get<Int>("action") ?: PinCodeAction.VerifyPinCode.action
+        action = savedStateHandle.get<Int>(EXTRA_PIN_CODE_ACTION) ?: PinCodeAction.VerifyPinCode.action
         _state.update {
             when (action) {
                 PinCodeAction.CreatePinCode.action -> {
@@ -59,6 +59,24 @@ class PinCodeViewModel @Inject constructor(
                     )
                 }
                 PinCodeAction.ChangePinCode.action -> {
+                    it.copy(
+                        step = PinCodeSteps.OldPin,
+                        stepTitle = resourceProvider.getString(R.string.enter_old_pin)
+                    )
+                }
+                PinCodeAction.VerifyWalletPin.action -> {
+                    it.copy(
+                        step = PinCodeSteps.VerifyPin,
+                        stepTitle = resourceProvider.getString(R.string.enter_your_4_digit_wallet_pin)
+                    )
+                }
+                PinCodeAction.CreateWalletPin.action -> {
+                    it.copy(
+                        step = PinCodeSteps.EnterPin,
+                        stepTitle = resourceProvider.getString(R.string.enter_your_pin)
+                    )
+                }
+                PinCodeAction.ChangeWalletPin.action -> {
                     it.copy(
                         step = PinCodeSteps.OldPin,
                         stepTitle = resourceProvider.getString(R.string.enter_old_pin)
@@ -101,7 +119,7 @@ class PinCodeViewModel @Inject constructor(
                                     pin  = event.pinCode
                                 )
                             }
-                            if (event.pinCode.length == 4) {
+                            if (action != PinCodeAction.VerifyWalletPin.action && event.pinCode.length == 4) {
                                 viewModelScope.launch {
                                     if (event.pinCode == savedPassword) {
                                         _successEvent.emit(true)
@@ -166,6 +184,31 @@ class PinCodeViewModel @Inject constructor(
                         PinCodeSteps.VerifyPin -> Unit
                     }
                 }
+            }
+        }
+    }
+
+    fun handleWalletPinActions() {
+        with(state.value) {
+            when (step) {
+                PinCodeSteps.OldPin -> {
+                    _state.update {
+                        it.copy(
+                            step = PinCodeSteps.EnterPin,
+                            stepTitle = resourceProvider.getString(R.string.enter_new_pin)
+                        )
+                    }
+                }
+                PinCodeSteps.EnterPin -> {
+                    _state.update {
+                        it.copy(
+                            step = PinCodeSteps.ReEnterPin,
+                            stepTitle = resourceProvider.getString(R.string.re_enter_your_pin)
+                        )
+                    }
+                }
+                PinCodeSteps.ReEnterPin -> Unit
+                PinCodeSteps.VerifyPin -> Unit
             }
         }
     }

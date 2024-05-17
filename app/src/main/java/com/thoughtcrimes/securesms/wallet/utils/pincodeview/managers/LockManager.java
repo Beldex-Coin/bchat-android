@@ -37,7 +37,7 @@ public class LockManager<T extends AppLockActivity> {
      * You must call that into your custom {@link android.app.Application} to enable the
      * {@link com.thoughtcrimes.securesms.wallet.utils.pincodeview.PinActivity}
      */
-    public void enableAppLock(Context context, Class<T> activityClass) {
+    public <T extends AppLockActivity> void enableAppLock(Context context, Class<T> activityClass) {
         if (mAppLocker != null) {
             mAppLocker.disable();
         }

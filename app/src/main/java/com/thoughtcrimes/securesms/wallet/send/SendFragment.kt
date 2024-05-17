@@ -54,6 +54,8 @@ import java.lang.Exception
 import java.util.concurrent.Executor
 import androidx.compose.material3.Surface
 import com.thoughtcrimes.securesms.compose_utils.appColors
+import com.thoughtcrimes.securesms.onboarding.ui.EXTRA_PIN_CODE_ACTION
+import com.thoughtcrimes.securesms.onboarding.ui.PinCodeAction
 
 
 class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletScannedListener, OnBackPressedListener {
@@ -476,7 +478,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
                         LockManager.getInstance() as LockManager<CustomPinActivity>
                     lockManager.enableAppLock(requireActivity(), CustomPinActivity::class.java)
                     val intent = Intent(requireActivity(), CustomPinActivity::class.java)
-                    intent.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN)
+                    intent.putExtra(EXTRA_PIN_CODE_ACTION, PinCodeAction.VerifyWalletPin.action)
                     intent.putExtra("change_pin", false)
                     intent.putExtra("send_authentication", true)
                     resultLaunchers.launch(intent)

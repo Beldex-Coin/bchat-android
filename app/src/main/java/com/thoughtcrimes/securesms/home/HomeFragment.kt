@@ -80,6 +80,8 @@ import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.my_account.ui.MyAccountActivity
 import com.thoughtcrimes.securesms.my_account.ui.MyAccountScreens
 import com.thoughtcrimes.securesms.my_account.ui.MyProfileActivity
+import com.thoughtcrimes.securesms.onboarding.ui.EXTRA_PIN_CODE_ACTION
+import com.thoughtcrimes.securesms.onboarding.ui.PinCodeAction
 import com.thoughtcrimes.securesms.preferences.NotificationSettingsActivity
 import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
 import com.thoughtcrimes.securesms.search.SearchActivityResults
@@ -91,6 +93,7 @@ import com.thoughtcrimes.securesms.wallet.info.WalletInfoActivity
 import com.thoughtcrimes.securesms.wallet.startwallet.StartWalletInfo
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
+import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLockActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
 import com.thoughtcrimes.securesms.webrtc.WebRTCComposeActivity
@@ -245,6 +248,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                     is SearchActivityResults.SavedMessage -> {
                         passGlobalSearchAdapterModelSavedMessagesValue(result.address)
                     }
+                    else -> {}
                 }
             }
         }
@@ -1330,19 +1334,17 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     private fun openMyWallet() {
         val walletName = TextSecurePreferences.getWalletName(requireContext())
         val walletPassword = TextSecurePreferences.getWalletPassword(requireContext())
-        if (walletName != null && walletPassword !=null) {
+        if (walletName != null && walletPassword != null) {
             //startWallet(walletName, walletPassword, fingerprintUsed = false, streetmode = false)
             val lockManager: LockManager<CustomPinActivity> = LockManager.getInstance() as LockManager<CustomPinActivity>
             lockManager.enableAppLock(requireContext(), CustomPinActivity::class.java)
             Intent(requireContext(), CustomPinActivity::class.java).also {
-                if(TextSecurePreferences.getWalletEntryPassword(requireContext())!=null) {
-                    it.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN)
-                    it.putExtra("change_pin",false)
+                if(TextSecurePreferences.getWalletEntryPassword(requireContext()) != null) {
+                    it.putExtra(EXTRA_PIN_CODE_ACTION, PinCodeAction.VerifyWalletPin.action)
                     it.putExtra("send_authentication",false)
                     customPinActivityResultLauncher.launch(it)
                 } else{
-                    it.putExtra(AppLock.EXTRA_TYPE, AppLock.ENABLE_PINLOCK)
-                    it.putExtra("change_pin",false)
+                    it.putExtra(EXTRA_PIN_CODE_ACTION, PinCodeAction.CreateWalletPin.action)
                     it.putExtra("send_authentication",false)
                     customPinActivityResultLauncher.launch(it)
                 }

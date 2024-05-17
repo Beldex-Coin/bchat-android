@@ -35,7 +35,7 @@ import io.beldex.bchat.R;
  * Call this activity in normal or singleTop mode (not singleTask or singleInstance, it does not work
  * with {@link android.app.Activity#startActivityForResult(android.content.Intent, int)}).
  */
-public abstract class AppLockActivity extends PinActivity implements KeyboardButtonClickedListener, View.OnClickListener, FingerprintUiHelper.Callback {
+public abstract class AppLockActivityDuplicate extends PinActivity implements KeyboardButtonClickedListener, View.OnClickListener, FingerprintUiHelper.Callback {
 
     public static final String TAG = AppLockActivity.class.getSimpleName();
     public static final String ACTION_CANCEL = TAG + ".actionCancelled";
@@ -108,7 +108,7 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
         titleName.setText(getString(R.string.activity_wallet_password_page_title));
         backButton.setOnClickListener(view -> {
             onBackPressed();
-         /*  onSupportNavigateUp();*/
+            /*  onSupportNavigateUp();*/
         });
     }
    /* @Override
@@ -132,7 +132,7 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
     @Override
     protected void onResume() {
         super.onResume();
-       /* initializeToolbar();*/
+        /* initializeToolbar();*/
         //Init layout for Fingerprint
         //initLayoutForFingerprint();
     }
@@ -186,14 +186,14 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
         /*mForgotTextView.setText(getForgotText());
         mForgotTextView.setVisibility(mLockManager.getAppLock().shouldShowForgot() ? View.VISIBLE : View.GONE);*/
 
-       Log.d("AppLockActivity 1",String.valueOf(mType));
-       if(changePin) {
-           Log.d("AppLockActivity 2",String.valueOf(mType));
-           mStepTextView.setText(getStepText(AppLock.CHANGE_PIN));
-       }else{
-           Log.d("AppLockActivity 3",String.valueOf(mType));
-           setStepText();
-       }
+        Log.d("AppLockActivity 1",String.valueOf(mType));
+        if(changePin) {
+            Log.d("AppLockActivity 2",String.valueOf(mType));
+            mStepTextView.setText(getStepText(AppLock.CHANGE_PIN));
+        }else{
+            Log.d("AppLockActivity 3",String.valueOf(mType));
+            setStepText();
+        }
     }
 
     /**
@@ -467,7 +467,7 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
                 mPinCodeRoundView.refresh(mPinCode.length());
                 mPinCode = "";
                 Animation animation = AnimationUtils.loadAnimation(
-                        AppLockActivity.this, R.anim.shake);
+                        AppLockActivityDuplicate.this, R.anim.shake);
                 mKeyboardView.startAnimation(animation);
                 animation.setAnimationListener(new Animation.AnimationListener() {
                     @Override
@@ -490,7 +490,7 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
         runOnUiThread(thread);
     }
 
-    protected void onPinCodeSuccess(int pinLockStatus, AppLockActivity appLockActivity) {
+    protected void onPinCodeSuccess(int pinLockStatus, AppLockActivityDuplicate appLockActivity) {
         //ENABLE_PINLOCK = 0 DISABLE_PINLOCK = 1 CHANGE_PIN = 2 CONFIRM_PIN = 3, UNLOCK_PIN = 4, FINGERPRINT_UNLOCK = 5 SEND_AUTHENTICATION = 6 CHANGE_PIN pop up confirmation = 7
         onPinSuccess(mAttempts,pinLockStatus,appLockActivity);
         mAttempts = 1;
@@ -541,7 +541,7 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
      * @param attempts the number of attempts the user had used
      * @param appLockActivity
      */
-    public abstract void onPinSuccess(int attempts, int pinLockStatus, AppLockActivity appLockActivity);
+    public abstract void onPinSuccess(int attempts, int pinLockStatus, AppLockActivityDuplicate appLockActivity);
 
     /**
      * Gets the resource id to the {@link View} to be set with {@link #setContentView(int)}.
@@ -564,7 +564,7 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
      * @return the number of digits in the PIN
      */
     public int getPinLength() {
-        return AppLockActivity.DEFAULT_PIN_LENGTH;
+        return DEFAULT_PIN_LENGTH;
     }
 
     /**
@@ -573,7 +573,7 @@ public abstract class AppLockActivity extends PinActivity implements KeyboardBut
      *
      * @return the current class extending {@link AppLockActivity}
      */
-    public Class<? extends AppLockActivity> getCustomAppLockActivityClass() {
+    public Class<? extends AppLockActivityDuplicate> getCustomAppLockActivityClass() {
         return this.getClass();
     }
 }

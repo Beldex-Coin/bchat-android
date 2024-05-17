@@ -51,6 +51,8 @@ import com.thoughtcrimes.securesms.util.UiMode
 import com.thoughtcrimes.securesms.util.UiModeUtilities
 import io.beldex.bchat.R
 
+const val EXTRA_PIN_CODE_ACTION = "action"
+
 data class PinCodeState(
     val step:PinCodeSteps = PinCodeSteps.OldPin,
     val stepTitle: String = "",

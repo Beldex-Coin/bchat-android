@@ -11,8 +11,6 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.view.children
 import androidx.core.view.isVisible
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.AlbumThumbnailViewBinding
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentTransferProgress
 import com.beldex.libbchat.messaging.sending_receiving.attachments.DatabaseAttachment
 import com.beldex.libbchat.utilities.recipients.Recipient
@@ -23,6 +21,8 @@ import com.thoughtcrimes.securesms.database.model.MmsMessageRecord
 import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.mms.Slide
 import com.thoughtcrimes.securesms.util.ActivityDispatcher
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.AlbumThumbnailViewBinding
 
 class AlbumThumbnailView : RelativeLayout {
 

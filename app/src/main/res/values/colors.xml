@@ -132,7 +132,7 @@
     <color name="keyboard_background">#131319</color>
     <color name="button_background">#2F2F3C</color>
     <color name="button_text">#FFFFFF</color>
-    <color name="send_message_background">#008D06</color>
+    <color name="send_message_background">#00BD40</color>
     <color name="chat_id_card_background">#282833</color>
     <color name="chat_id_description_text">#82828D</color>
     <color name="beldex_address">#1782FF</color>
@@ -239,4 +239,8 @@
     <color name="wallet_rescan_background">#333343</color>
     <color name="transaction_history_background">#11111A</color>
     <color name="total_balance">#ACACAC</color>
+    <color name="dialled_call_detail_background">#008D06</color>
+    <color name="received_call_detail_background">#1C1C26</color>
+    <color name="sent_message_time_color">#EBEBEB</color>
+    <color name="received_message_time_color">#A7A7BA</color>
 </resources>

@@ -5,8 +5,10 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
@@ -26,6 +28,8 @@ class InputBarRecordingView : RelativeLayout {
     private var dotViewAnimation: ValueAnimator? = null
     private var pulseAnimation: ValueAnimator? = null
     var delegate: InputBarRecordingViewDelegate? = null
+    private val sendButton by lazy { InputBarButton(context, R.drawable.send, true, isMessageBox = true) }
+    private var sendButtonLastClickTime: Long = 0
 
     val lockView: LinearLayout
         get() = binding.lockView
@@ -48,14 +52,25 @@ class InputBarRecordingView : RelativeLayout {
     private fun initialize() {
         binding = ViewInputBarRecordingBinding.inflate(LayoutInflater.from(context), this, true)
         binding.inputBarMiddleContentContainer.disableClipping()
-        binding.inputBarCancelButton.setOnClickListener { hide() }
+//        binding.inputBarCancelButton.setOnClickListener { hide() }
+        binding.microphoneOrSendButtonContainer.addView(sendButton)
+        sendButton.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+        sendButton.onUp = {
+            if (SystemClock.elapsedRealtime() - sendButtonLastClickTime >= 500){
+                sendButtonLastClickTime = SystemClock.elapsedRealtime()
+                delegate?.sendVoiceMessage()
+            }
+        }
+        binding.deleteView.setOnClickListener {
+            delegate?.cancelVoiceMessage()
+        }
     }
 
     fun show() {
         isTimerRunning = true
         startTimestamp = Date().time
         binding.recordButtonOverlayImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_microphone, context.theme))
-        binding.inputBarCancelButton.alpha = 0.0f
+//        binding.inputBarCancelButton.alpha = 0.0f
         binding.inputBarMiddleContentContainer.alpha = 1.0f
         binding.lockView.alpha = 1.0f
         isVisible = true
@@ -138,23 +153,37 @@ class InputBarRecordingView : RelativeLayout {
         }
     }
 
+    fun addAmplitude(amp: Float) {
+        binding.audioWaveForm.addAmplitude(amp)
+    }
+
     fun lock() {
         val fadeOutAnimation = ValueAnimator.ofObject(FloatEvaluator(), 1.0f, 0.0f)
         fadeOutAnimation.duration = 250L
         fadeOutAnimation.addUpdateListener { animator ->
             binding.inputBarMiddleContentContainer.alpha = animator.animatedValue as Float
             binding.lockView.alpha = animator.animatedValue as Float
+            binding.pulseView.alpha = animator.animatedValue as Float
+            binding.recordButtonOverlay.alpha = animator.animatedValue as Float
+            pulseAnimation?.removeAllUpdateListeners()
         }
         fadeOutAnimation.start()
-        val fadeInAnimation = ValueAnimator.ofObject(FloatEvaluator(), 0.0f, 1.0f)
-        fadeInAnimation.duration = 250L
-        fadeInAnimation.addUpdateListener { animator ->
-            binding.inputBarCancelButton.alpha = animator.animatedValue as Float
-        }
-        fadeInAnimation.start()
-        binding.recordButtonOverlayImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_arrow_up, context.theme))
-        binding.recordButtonOverlay.setOnClickListener { delegate?.sendVoiceMessage() }
-        binding.inputBarCancelButton.setOnClickListener { delegate?.cancelVoiceMessage() }
+//        val fadeInAnimation = ValueAnimator.ofObject(FloatEvaluator(), 0.0f, 1.0f)
+//        fadeInAnimation.duration = 250L
+//        fadeInAnimation.addUpdateListener { animator ->
+//            binding.inputBarCancelButton.alpha = animator.animatedValue as Float
+//        }
+//        fadeInAnimation.start()
+//        binding.recordButtonOverlayImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_arrow_up, context.theme))
+//        binding.recordButtonOverlay.setOnClickListener { delegate?.sendVoiceMessage() }
+//        binding.pulseGroup.visibility = View.GONE
+        binding.microphoneOrSendButtonContainer.isVisible = true
+        binding.audioWaveForm.visibility = View.VISIBLE
+        binding.playPause.visibility = View.VISIBLE
+        binding.dotView.visibility = View.GONE
+        dotViewAnimation?.repeatCount = 0
+        binding.deleteView.visibility = View.VISIBLE
+//        binding.inputBarCancelButton.setOnClickListener { delegate?.cancelVoiceMessage() }
     }
 }
 

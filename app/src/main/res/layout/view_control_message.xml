@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
-    android:orientation="vertical"
-    android:paddingVertical="@dimen/medium_spacing">
+    android:orientation="vertical">
     <!--android:paddingHorizontal="@dimen/massive_spacing"-->
 
     <TextView
@@ -140,44 +139,75 @@
         android:layout_height="wrap_content"
         app:cardBackgroundColor="@color/received_message_background"
         app:cardCornerRadius="24dp"
-        app:contentPadding="16dp"
+        app:contentPadding="8dp"
         android:layout_gravity="start"
         android:layout_marginStart="8dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/receivedCallIcon"
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:srcCompat="@drawable/ic_filled_circle_missed_call"/>
+                app:cardCornerRadius="16dp"
+                app:contentPadding="8dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/received_call_detail_background">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/receivedCallIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:srcCompat="@drawable/ic_filled_circle_missed_call"/>
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/receivedCallText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toEndOf="@id/receivedCallIcon"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="Voice Call"
+                        android:textColor="@color/received_message_text_color"
+                        android:fontFamily="@font/open_sans_medium"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="16dp"/>
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/receivedCallTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="@id/receivedCallText"
+                        app:layout_constraintTop_toBottomOf="@id/receivedCallText"
+                        tools:text="4 min"
+                        android:fontFamily="@font/open_sans_regular"
+                        android:textSize="11sp"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/receivedCallText"
+                android:id="@+id/received_message_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toEndOf="@id/receivedCallIcon"
-                app:layout_constraintTop_toTopOf="parent"
-                android:text="Voice Call"
-                android:textColor="@color/received_message_text_color"
-                android:fontFamily="@font/open_sans_medium"
-                android:layout_marginStart="8dp"/>
+                android:fontFamily="@font/open_sans_regular"
+                android:textSize="11sp"
+                tools:text="12:00 pm"
+                android:layout_gravity="end"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="4dp"/>
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/receivedCallTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="@id/receivedCallText"
-                app:layout_constraintTop_toBottomOf="@id/receivedCallText"
-                android:text="4 min"
-                android:fontFamily="@font/open_sans_regular" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
 
@@ -187,45 +217,77 @@
         android:layout_height="wrap_content"
         app:cardBackgroundColor="@color/send_message_background"
         app:cardCornerRadius="24dp"
-        app:contentPadding="16dp"
+        app:contentPadding="8dp"
         android:layout_gravity="end"
         android:layout_marginEnd="8dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/dialledCallIcon"
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:srcCompat="@drawable/ic_filled_circle_incoming_call"/>
+                app:cardCornerRadius="16dp"
+                app:contentPadding="8dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/dialled_call_detail_background">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/dialledCallIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:srcCompat="@drawable/ic_filled_circle_incoming_call"/>
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/dialledCallText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toEndOf="@id/dialledCallIcon"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="Voice Call"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/open_sans_medium"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="16dp"/>
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/dialledCallTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="@id/dialledCallText"
+                        app:layout_constraintTop_toBottomOf="@id/dialledCallText"
+                        android:textColor="@color/white"
+                        tools:text="4 min"
+                        android:fontFamily="@font/open_sans_regular"
+                        android:textSize="11sp"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/dialledCallText"
+                android:id="@+id/dialled_message_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toEndOf="@id/dialledCallIcon"
-                app:layout_constraintTop_toTopOf="parent"
-                android:text="Voice Call"
-                android:textColor="@color/white"
-                android:fontFamily="@font/open_sans_medium"
-                android:layout_marginStart="8dp"/>
+                android:fontFamily="@font/open_sans_regular"
+                android:textSize="11sp"
+                tools:text="12:00 pm"
+                android:layout_gravity="end"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="4dp"
+                android:textColor="@color/received_message_text_color"/>
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/dialledCallTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="@id/dialledCallText"
-                app:layout_constraintTop_toBottomOf="@id/dialledCallText"
-                android:textColor="@color/white"
-                android:text="4 min"
-                android:fontFamily="@font/open_sans_regular" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
 

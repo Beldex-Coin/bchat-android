@@ -159,4 +159,8 @@
     <color name="wallet_rescan_background">#E0E0E0</color>
     <color name="transaction_history_background">#EBEBEB</color>
     <color name="total_balance">#ACACAC</color>
+    <color name="dialled_call_detail_background">#008D06</color>
+    <color name="received_call_detail_background">#1C1C26</color>
+    <color name="sent_message_time_color">#EBEBEB</color>
+    <color name="received_message_time_color">#A7A7BA</color>
 </resources>

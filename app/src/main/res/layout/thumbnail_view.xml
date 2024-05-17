@@ -15,7 +15,6 @@
         android:clickable="false"
         android:longClickable="false"
         android:scaleType="fitCenter"
-        android:padding="3dp"
         android:contentDescription="@string/conversation_item__mms_image_description" />
 
     <ProgressBar

@@ -178,6 +178,7 @@ import io.beldex.bchat.R
 import io.beldex.bchat.databinding.FragmentConversationV2Binding
 import io.beldex.bchat.databinding.ViewVisibleMessageBinding
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -382,6 +383,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
     private val messageToScrollTimestamp = AtomicLong(-1)
     private val messageToScrollAuthor = AtomicReference<Address?>(null)
+    private var amplitudeJob: Job? = null
 
     companion object {
         @JvmStatic
@@ -1117,6 +1119,15 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 showVoiceMessageUI()
                 this.activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 audioRecorder.startRecording()
+//                amplitudeJob = lifecycleScope.launch {
+//                    while (isActive) {
+//                        val amplitude = audioRecorder.amplitude
+//                        println(">>>>amplitude--${amplitude}")
+//                        if (amplitude != -1f)
+//                            binding.inputBarRecordingView.addAmplitude(amplitude)
+//                        delay(100)
+//                    }
+//                }
                 stopAudioHandler.postDelayed(
                         stopVoiceMessageRecordingTask,
                         300000
@@ -1442,39 +1453,41 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun sendVoiceMessage() {
-            hideVoiceMessageUI()
-            this.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            val future = audioRecorder.stopRecording()
-            stopAudioHandler.removeCallbacks(stopVoiceMessageRecordingTask)
-            future.addListener(object : ListenableFuture.Listener<Pair<Uri, Long>> {
+        hideVoiceMessageUI()
+        this.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        val future = audioRecorder.stopRecording()
+//        amplitudeJob?.cancel()
+        stopAudioHandler.removeCallbacks(stopVoiceMessageRecordingTask)
+        future.addListener(object : ListenableFuture.Listener<Pair<Uri, Long>> {
 
-                override fun onSuccess(result: Pair<Uri, Long>) {
-                    val audioSlide = AudioSlide(
-                        requireActivity(),
-                        result.first,
-                        result.second,
-                        MediaTypes.AUDIO_AAC,
-                        true
-                    )
-                    val slideDeck = SlideDeck()
-                    slideDeck.addSlide(audioSlide)
-                    sendAttachments(slideDeck.asAttachments(), null)
-                }
+            override fun onSuccess(result: Pair<Uri, Long>) {
+                val audioSlide = AudioSlide(
+                    requireActivity(),
+                    result.first,
+                    result.second,
+                    MediaTypes.AUDIO_AAC,
+                    true
+                )
+                val slideDeck = SlideDeck()
+                slideDeck.addSlide(audioSlide)
+                sendAttachments(slideDeck.asAttachments(), null)
+            }
 
-                override fun onFailure(e: ExecutionException) {
-                    Toast.makeText(
-                        requireActivity(),
-                        R.string.ConversationActivity_unable_to_record_audio,
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            })
+            override fun onFailure(e: ExecutionException) {
+                Toast.makeText(
+                    requireActivity(),
+                    R.string.ConversationActivity_unable_to_record_audio,
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        })
     }
 
     override fun cancelVoiceMessage() {
         hideVoiceMessageUI()
         this.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         audioRecorder.stopRecording()
+//        amplitudeJob?.cancel()
         stopAudioHandler.removeCallbacks(stopVoiceMessageRecordingTask)
     }
 

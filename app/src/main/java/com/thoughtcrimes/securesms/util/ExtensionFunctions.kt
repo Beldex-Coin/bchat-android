@@ -14,6 +14,7 @@ import android.view.ContextThemeWrapper
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
+import com.thoughtcrimes.securesms.database.model.MessageRecord
 import dagger.hilt.android.internal.managers.ViewComponentManager
 import java.io.Serializable
 
@@ -68,4 +69,9 @@ fun Context.toPx(dp: Int): Float = TypedValue.applyDimension(
 
 fun getScreenWidth(): Int {
   return Resources.getSystem().displayMetrics.widthPixels
+}
+
+fun isSameDayMessage(current: MessageRecord, previous: MessageRecord?): Boolean {
+  previous ?: return false
+  return DateUtils.isSameDay(current.timestamp, previous.timestamp)
 }

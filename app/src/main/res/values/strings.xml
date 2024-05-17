@@ -1484,4 +1484,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name ="wallet_settings" translatable="false">Wallet settings</string>
     <string name="transactions" translatable="false">Transactions</string>
     <string name="transaction_filter" translatable="false">Transaction Filter</string>
+    <string name="voice_call">Voice Call</string>
+    <string name="missed_voice_call">Missed Voice Call</string>
+    <string name="tap_to_callback">Tap to Callback</string>
 </resources>

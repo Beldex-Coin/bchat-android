@@ -39,6 +39,7 @@ import com.thoughtcrimes.securesms.util.ActivityDispatcher
 import com.thoughtcrimes.securesms.util.DateUtils
 import com.thoughtcrimes.securesms.util.disableClipping
 import com.thoughtcrimes.securesms.util.getColorWithID
+import com.thoughtcrimes.securesms.util.isSameDayMessage
 import com.thoughtcrimes.securesms.util.toDp
 import com.thoughtcrimes.securesms.util.toPx
 import dagger.hilt.android.AndroidEntryPoint
@@ -193,11 +194,6 @@ class VisibleMessageView : LinearLayout {
             onAttachmentNeedsDownload)
         binding.messageContentView.root.delegate = contentViewDelegate
         onDoubleTap = { binding.messageContentView.root.onContentDoubleTap?.invoke() }
-    }
-
-    private fun isSameDayMessage(current: MessageRecord, previous: MessageRecord?): Boolean {
-        previous ?: return false
-        return DateUtils.isSameDay(current.timestamp, previous.timestamp)
     }
 
     private fun isStartOfMessageCluster(current: MessageRecord, previous: MessageRecord?, isGroupThread: Boolean): Boolean {

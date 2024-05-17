@@ -66,7 +66,7 @@ fun CopySeedScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = stringResource(id = R.string.show_seed_content_title),
+                text = stringResource(id = R.string.copy_your_recovery_seed),
                 style = MaterialTheme.typography.titleMedium.copy(
                     color = MaterialTheme.appColors.seedInfoTextColor
                 )

@@ -45,7 +45,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.beldex.libbchat.utilities.TextSecurePreferences
@@ -81,26 +80,26 @@ fun DisplayBalanceDialog(onDismiss : () -> Unit, onClick : (Int?) -> Unit) {
                 Modifier
                     .fillMaxWidth()
                     .padding(20.dp), Arrangement.Center, Alignment.CenterHorizontally) {
-                Icon(
+
+                Row(modifier = Modifier.padding(bottom = 20.dp)){
+                    Text(text=stringResource(id=R.string.display_balance_as),
+                        style=MaterialTheme.typography.titleMedium.copy(
+                            fontSize=20.sp,
+                            fontWeight=FontWeight(700),
+                            color=MaterialTheme.appColors.primaryButtonColor),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.weight(1f).align(Alignment.CenterVertically))
+
+                    Icon(
                         painter=painterResource(id=R.drawable.ic_close),
                         contentDescription="",
                         tint=MaterialTheme.appColors.editTextColor,
                         modifier= Modifier
-                            .align(Alignment.End)
-                            .padding(horizontal = 10.dp)
                             .clickable {
                                 onDismiss()
                             }
-                )
-
-                Text(text=stringResource(id=R.string.display_balance_as),
-                        style=MaterialTheme.typography.titleMedium.copy(
-                                fontSize=16.sp,
-                                fontWeight=FontWeight(800),
-                                color=MaterialTheme.appColors.primaryButtonColor),
-                        modifier=Modifier.padding(vertical=20.dp))
-
-
+                    )
+                }
 
                 LazyColumn(
                         verticalArrangement=Arrangement.spacedBy(16.dp),
@@ -174,26 +173,26 @@ fun DecimalDialog(onDismiss : () -> Unit, onClick : (String?) -> Unit) {
                 Modifier
                     .fillMaxWidth()
                     .padding(20.dp), Arrangement.Center, Alignment.CenterHorizontally) {
-                Icon(
+
+                Row(modifier = Modifier.padding(bottom = 20.dp)){
+                    Text(text=stringResource(id=R.string.decimals),
+                        style=MaterialTheme.typography.titleMedium.copy(
+                            fontSize=20.sp,
+                            fontWeight=FontWeight(700),
+                            color=MaterialTheme.appColors.primaryButtonColor),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.weight(1f).align(Alignment.CenterVertically))
+
+                    Icon(
                         painter=painterResource(id=R.drawable.ic_close),
                         contentDescription="",
                         tint=MaterialTheme.appColors.editTextColor,
                         modifier= Modifier
-                            .align(Alignment.End)
-                            .padding(horizontal = 10.dp)
                             .clickable {
                                 onDismiss()
                             }
-                )
-
-                Text(text=stringResource(id=R.string.decimals),
-                        style=MaterialTheme.typography.titleMedium.copy(
-                                fontSize=16.sp,
-                                fontWeight=FontWeight(800),
-                                color=MaterialTheme.appColors.primaryButtonColor),
-                        modifier=Modifier.padding(vertical=20.dp))
-
-
+                    )
+                }
 
                 LazyColumn(
                         verticalArrangement=Arrangement.spacedBy(16.dp),
@@ -279,30 +278,28 @@ fun CurrencyDialog(onDismiss : () -> Unit, onClick : (String?) -> Unit) {
     currencyList.add("VEF")
     currencyList.add("ZAR")
 
+    var searchQuery by remember {
+        mutableStateOf("")
+    }
+
     var fiatCurrencyList by remember {
         mutableStateOf(currencyList)
     }
 
-    var searchQuery by remember {
-        mutableStateOf("")
-    }
     val context=LocalContext.current
     var selectedItemIndex by remember {
         mutableStateOf(TextSecurePreferences.getCurrency(context))
     }
     val isDarkTheme=UiModeUtilities.getUserSelectedUiMode(LocalContext.current) == UiMode.NIGHT
 
-    fun filterFiatCurrency(text: String?, arrayList: MutableList<String>) {
-        val temp: MutableList<String> = ArrayList()
-        for (d in arrayList) {
-            //or use .equal(text) with you want equal match
-            //use .toLowerCase() for better matches
-            if (d.lowercase().contains(text!!.lowercase())) {
-                temp.add(d)
+    fun filterFiatCurrency() {
+        fiatCurrencyList = currencyList.filter {
+            if(searchQuery.isNotEmpty()){
+                it.lowercase().contains(searchQuery.lowercase())
+            }else{
+                it.isNotEmpty()
             }
-        }
-        //update recyclerview
-        fiatCurrencyList = temp
+        }.toMutableList()
     }
 
     DialogContainer(
@@ -318,30 +315,32 @@ fun CurrencyDialog(onDismiss : () -> Unit, onClick : (String?) -> Unit) {
                 Modifier
                     .fillMaxWidth()
                     .padding(20.dp), Arrangement.Center, Alignment.CenterHorizontally) {
-                Icon(
+
+                Row(modifier = Modifier.padding(bottom = 20.dp)){
+                    Text(text=stringResource(id=R.string.currency),
+                        style=MaterialTheme.typography.titleMedium.copy(
+                            fontSize=20.sp,
+                            fontWeight=FontWeight(700),
+                            color=MaterialTheme.appColors.primaryButtonColor),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.weight(1f).align(Alignment.CenterVertically))
+
+                    Icon(
                         painter=painterResource(id=R.drawable.ic_close),
                         contentDescription="",
                         tint=MaterialTheme.appColors.editTextColor,
                         modifier= Modifier
-                            .align(Alignment.End)
-                            .padding(horizontal = 10.dp)
                             .clickable {
                                 onDismiss()
                             }
-                )
-
-                Text(text=stringResource(id=R.string.currency),
-                        style=MaterialTheme.typography.titleMedium.copy(
-                                fontSize=16.sp,
-                                fontWeight=FontWeight(800),
-                                color=MaterialTheme.appColors.primaryButtonColor),
-                        modifier=Modifier.padding(vertical=10.dp))
+                    )
+                }
 
                 BChatOutlinedTextField(
                         value =searchQuery,
                         onValueChange ={
                             searchQuery=it
-                            filterFiatCurrency(searchQuery,currencyList)
+                            filterFiatCurrency()
                         },
                         placeHolder =stringResource(R.string.search_currency),
                         shape =RoundedCornerShape(36.dp),
@@ -349,7 +348,7 @@ fun CurrencyDialog(onDismiss : () -> Unit, onClick : (String?) -> Unit) {
                             IconButton(onClick = {
                                 if(searchQuery.isNotEmpty()){
                                     searchQuery = ""
-                                    filterFiatCurrency("",currencyList)
+                                    filterFiatCurrency()
                                 }
                             }) {
                                 Icon(
@@ -361,7 +360,7 @@ fun CurrencyDialog(onDismiss : () -> Unit, onClick : (String?) -> Unit) {
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 10.dp),
+                            .padding(bottom = 10.dp),
                 )
                 Row(
                         modifier= Modifier
@@ -516,26 +515,26 @@ fun FeePriorityDialog(onDismiss : () -> Unit, onClick : (Int?) -> Unit) {
                 Modifier
                     .fillMaxWidth()
                     .padding(20.dp), Arrangement.Center, Alignment.CenterHorizontally) {
-                Icon(
+
+                Row(modifier = Modifier.padding(bottom = 20.dp)){
+                    Text(text=stringResource(id=R.string.fee_priority),
+                        style=MaterialTheme.typography.titleMedium.copy(
+                            fontSize=20.sp,
+                            fontWeight=FontWeight(700),
+                            color=MaterialTheme.appColors.primaryButtonColor),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.weight(1f).align(Alignment.CenterVertically))
+
+                    Icon(
                         painter=painterResource(id=R.drawable.ic_close),
                         contentDescription="",
                         tint=MaterialTheme.appColors.editTextColor,
                         modifier= Modifier
-                            .align(Alignment.End)
-                            .padding(horizontal = 10.dp)
                             .clickable {
                                 onDismiss()
                             }
-                )
-
-                Text(text=stringResource(id=R.string.fee_priority),
-                        style=MaterialTheme.typography.titleMedium.copy(
-                                fontSize=16.sp,
-                                fontWeight=FontWeight(800),
-                                color=MaterialTheme.appColors.primaryButtonColor),
-                        modifier=Modifier.padding(vertical=20.dp))
-
-
+                    )
+                }
 
                 LazyColumn(
                         verticalArrangement=Arrangement.spacedBy(16.dp),

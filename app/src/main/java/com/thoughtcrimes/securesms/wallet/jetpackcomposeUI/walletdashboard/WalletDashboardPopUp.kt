@@ -50,16 +50,13 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.GregorianCalendar
-import java.util.Locale
 
 @Composable
 fun FilterTransactionByDatePopUp(
     onDismiss: () -> Unit,
+    selectedDates: (listOfDates :List<Date>,arrayList: MutableList<TransactionInfo>,) -> Unit,
     context: Context,
-    incomingTransactionIsChecked: Boolean,
-    outgoingTransactionIsChecked: Boolean,
     viewModels: WalletViewModels,
-    emptyList: MutableList<TransactionInfo>,
 ) {
     var fromDateStr by remember {
         mutableStateOf("")
@@ -182,45 +179,8 @@ fun FilterTransactionByDatePopUp(
                                 context.getString(R.string.filter_applied),
                                 Toast.LENGTH_LONG
                             ).show()
-                            if(incomingTransactionIsChecked && outgoingTransactionIsChecked){
-                                viewModels.adapterTransactionInfoItems.value?.let {list->
-                                    filterTransactionsByDate(getDaysBetweenDates(Date(selectedFromDate),Date(selectedToDate)), list, viewModels,onDismiss = {
-                                        onDismiss()
-                                    })
-                                }
-                            }else if(incomingTransactionIsChecked){
-                                viewModels.adapterTransactionInfoItems.value?.let {list->
-                                    filterTempList(TransactionInfo.Direction.Direction_In,
-                                        list
-                                    )
-                                }?.let {
-                                    filterTransactionsByDate(
-                                        getDaysBetweenDates(Date(selectedFromDate),Date(selectedToDate)),
-                                        it, viewModels,onDismiss = {
-                                            onDismiss()
-                                        }
-                                    )
-                                }
-                            }else if(outgoingTransactionIsChecked){
-                                viewModels.adapterTransactionInfoItems.value?.let {list->
-                                    filterTempList(TransactionInfo.Direction.Direction_Out,
-                                        list
-                                    )
-                                }?.let {
-                                    filterTransactionsByDate(
-                                        getDaysBetweenDates(Date(selectedFromDate),Date(selectedToDate)),
-                                        it, viewModels,onDismiss = {
-                                            onDismiss()
-                                        }
-                                    )
-                                }
-                            }else{
-                                filterTransactionsByDate(
-                                    getDaysBetweenDates(Date(selectedFromDate),Date(selectedToDate)),
-                                    emptyList, viewModels,onDismiss = {
-                                        onDismiss()
-                                    }
-                                )
+                            viewModels.transactionInfoItems.value?.let { list->
+                                selectedDates(getDaysBetweenDates(Date(selectedFromDate),Date(selectedToDate)),list)
                             }
                         }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.appColors.primaryButtonColor), modifier = Modifier.weight(1f)) {
                             Text(text = stringResource(id = R.string.ok), style = MaterialTheme.typography.bodyMedium.copy(color = Color.White), fontWeight = FontWeight.Bold)
@@ -251,46 +211,6 @@ fun FilterTransactionByDatePopUp(
         },onDismiss = {
             showToDatePicker = false
         })
-    }
-}
-
-private fun filterTempList(text: TransactionInfo.Direction, arrayList: MutableList<TransactionInfo>):MutableList<TransactionInfo> {
-    val temp: MutableList<TransactionInfo> = ArrayList()
-    for (d in arrayList) {
-        if (d.direction == text) {
-            temp.add(d)
-        }
-    }
-    return temp
-}
-
-private fun filterTransactionsByDate(
-    dates: List<Date>,
-    arrayList: MutableList<TransactionInfo>,
-    viewModels: WalletViewModels,
-    onDismiss: () -> Unit
-) {
-    val temp: MutableList<TransactionInfo> = ArrayList()
-    val DATETIME_FORMATTER = SimpleDateFormat("dd-MM-yyyy", Locale.US)
-    for (datesItem in dates) {
-        for (d in arrayList) {
-            if (DATETIME_FORMATTER.format(d.timestamp) == DATETIME_FORMATTER.format(datesItem)) {
-                temp.add(d)
-            }
-        }
-    }
-    callIfTransactionListEmpty(temp.size, viewModels)
-    //update recyclerview
-    viewModels.updateTransactionInfoItems(temp)
-    onDismiss()
-}
-
-private fun callIfTransactionListEmpty(size: Int, viewModels: WalletViewModels) {
-    if (size > 0) {
-        viewModels.setTransactionListContainerIsVisible(true)
-    } else {
-        viewModels.setFilterTransactionIconIsClickable(true)
-        viewModels.setTransactionListContainerIsVisible(false)
     }
 }
 

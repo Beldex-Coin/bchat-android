@@ -79,10 +79,12 @@ fun RecoverySeedView(
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = stringResource(id = R.string.show_seed_content_title),
+            text = stringResource(id = R.string.copy_your_recovery_seed),
             style = MaterialTheme.typography.titleMedium.copy(
                 color = MaterialTheme.appColors.seedInfoTextColor
-            )
+            ),
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally)
         )
 
         Spacer(modifier = Modifier.height(16.dp))

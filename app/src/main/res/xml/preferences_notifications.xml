@@ -96,7 +96,7 @@
             android:dependency="pref_key_enable_notifications"
             android:defaultValue="true"
             app:layout="@layout/preference_layout"
-            app:icon="@drawable/ic_all_nodification_setting"/>
+            app:icon="@drawable/ic_chat_sound_setting"/>
 
         <com.thoughtcrimes.securesms.preferences.widgets.SignalListPreference
             android:key="pref_repeat_alerts"

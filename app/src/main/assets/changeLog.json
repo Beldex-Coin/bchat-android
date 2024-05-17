@@ -4,10 +4,10 @@
       "title": "1.0.0",
       "descriptions": [
         {
-          "description":"- Initial Release"
+          "description":"Initial Release"
         },
         {
-          "description":"- Added Changelog"
+          "description":"Added Changelog"
         }
       ]
     },
@@ -15,7 +15,7 @@
       "title": "1.0.1",
       "descriptions": [
         {
-          "description":"- Minor Bug Fixes"
+          "description":"Minor Bug Fixes"
         }
       ]
     },
@@ -23,10 +23,10 @@
       "title": "1.0.2",
       "descriptions": [
         {
-          "description":"- ScheduleReminder Bug Fixes"
+          "description":"ScheduleReminder Bug Fixes"
         },
         {
-          "description":"- Minor Bug Fixes"
+          "description":"Minor Bug Fixes"
         }
       ]
     },
@@ -34,10 +34,10 @@
       "title": "1.0.3",
       "descriptions": [
         {
-          "description":"- Updated Font Family"
+          "description":"Updated Font Family"
         },
         {
-          "description":"- Minor Bug Fixes"
+          "description":"Minor Bug Fixes"
         }
       ]
     },
@@ -45,13 +45,13 @@
       "title": "1.0.4",
       "descriptions": [
         {
-          "description":"- Updated Font Family"
+          "description":"Updated Font Family"
         },
         {
-          "description":"- Airdrop Pop-up Removed"
+          "description":"Airdrop Pop-up Removed"
         },
         {
-          "description":"- Updated Minor Content"
+          "description":"Updated Minor Content"
         }
       ]
     },
@@ -59,19 +59,19 @@
       "title": "1.1.1",
       "descriptions": [
         {
-          "description":"- Implemented Message Request"
+          "description":"Implemented Message Request"
         },
         {
-          "description":"- UI Improvements"
+          "description":"UI Improvements"
         },
         {
-          "description":"- Set Link Preview as Default"
+          "description":"Set Link Preview as Default"
         },
         {
-          "description":"- Updated Splashscreen"
+          "description":"Updated Splashscreen"
         },
         {
-          "description":"- Minor Bug Fixes"
+          "description":"Minor Bug Fixes"
         }
       ]
     },
@@ -79,19 +79,19 @@
       "title": "1.2.0",
       "descriptions": [
         {
-          "description":"- Introduced one to one voice call functionality"
+          "description":"Introduced one to one voice call functionality"
         },
         {
-          "description":"- Introduced one to one video call functionality"
+          "description":"Introduced one to one video call functionality"
         },
         {
-          "description":"- Blocked contacts list feature added"
+          "description":"Blocked contacts list feature added"
         },
         {
-          "description":"- Faster message response"
+          "description":"Faster message response"
         },
         {
-          "description":"- Minor bug fixes"
+          "description":"Minor bug fixes"
         }
 
 
@@ -101,10 +101,10 @@
       "title": "1.2.1",
       "descriptions": [
         {
-          "description":"- Fix crash issue on first incoming call"
+          "description":"Fix crash issue on first incoming call"
         },
         {
-          "description":"- Minor bug fixes"
+          "description":"Minor bug fixes"
         }
       ]
     },
@@ -112,37 +112,37 @@
       "title": "2.0.0",
       "descriptions": [
         {
-          "description":"- Wallet Integration Beta release"
+          "description":"Wallet Integration Beta release"
         },
         {
-          "description":"- Introduced Address book of contacts in Wallet"
+          "description":"Introduced Address book of contacts in Wallet"
         },
         {
-          "description":"- Introduced report issue feature"
+          "description":"Introduced report issue feature"
         },
         {
-          "description":"- Added text label on FAB"
+          "description":"Added text label on FAB"
         },
         {
-          "description":"- Made the App content more informative"
+          "description":"Made the App content more informative"
         },
         {
-          "description":"- Validation updated in restore height"
+          "description":"Validation updated in restore height"
         },
         {
-          "description":"- Added Foreground Service for preventing crash in Device with android version 8.0 and above"
+          "description":"Added Foreground Service for preventing crash in Device with android version 8.0 and above"
         },
         {
-          "description":"- Improved memory management during running call and message services"
+          "description":"Improved memory management during running call and message services"
         },
         {
-          "description":"- Fixed Crashes happening due to null object reference"
+          "description":"Fixed Crashes happening due to null object reference"
         },
         {
-          "description":"- Fixed Crash issue happening during media preview"
+          "description":"Fixed Crash issue happening during media preview"
         },
         {
-          "description":"- Custom notifications improved for android version 12"
+          "description":"Custom notifications improved for android version 12"
         }
       ]
     },
@@ -150,10 +150,10 @@
       "title": "2.0.1",
       "descriptions": [
         {
-          "description":"- Fix some of the crash issues in the wallet"
+          "description":"Fix some of the crash issues in the wallet"
         },
         {
-          "description":"- Fix crash when call getting disconnected while wallet is syncing"
+          "description":"Fix crash when call getting disconnected while wallet is syncing"
         }
       ]
     },
@@ -161,10 +161,10 @@
       "title": "2.0.2",
       "descriptions": [
         {
-          "description":"- Fix Crash issues in wallet"
+          "description":"Fix Crash issues in wallet"
         },
         {
-          "description":"- Fix ANR issues in wallet"
+          "description":"Fix ANR issues in wallet"
         }
       ]
     },
@@ -172,31 +172,31 @@
       "title": "2.0.3",
       "descriptions": [
         {
-          "description":"- Added font size customization for Chat"
+          "description":"Added font size customization for Chat"
         },
         {
-          "description":"- BChat Font changed to standard font 'Open Sans' across all platforms"
+          "description":"BChat Font changed to standard font 'Open Sans' across all platforms"
         },
         {
-          "description":"- Added ringtone while calling and alert sound when call ends"
+          "description":"Added ringtone while calling and alert sound when call ends"
         },
         {
-          "description":"- Users can select multiple contacts in the address book to unblock them all at once"
+          "description":"Users can select multiple contacts in the address book to unblock them all at once"
         },
         {
-          "description":"- Users won't be allowed to call blocked contacts"
+          "description":"Users won't be allowed to call blocked contacts"
         },
         {
-          "description":"- Beldex address in the address book will only appear if a message request is accepted"
+          "description":"Beldex address in the address book will only appear if a message request is accepted"
         },
         {
-          "description":"- Fixed crashes in Video Calls"
+          "description":"Fixed crashes in Video Calls"
         },
         {
-          "description":"- Fixed crash due to big icon size in social group"
+          "description":"Fixed crash due to big icon size in social group"
         },
         {
-          "description":"- Fixed crashes from wallet beta release"
+          "description":"Fixed crashes from wallet beta release"
         }
       ]
     },
@@ -204,10 +204,10 @@
       "title": "2.0.4",
       "descriptions": [
         {
-          "description":"- Added support for inchat payment card"
+          "description":"Added support for inchat payment card"
         },
         {
-          "description":"- Fixed reply preview of social group invitation"
+          "description":"Fixed reply preview of social group invitation"
         }
       ]
     },
@@ -215,28 +215,28 @@
       "title": "2.1.0",
       "descriptions": [
         {
-          "description":"- Feature Pay as you chat"
+          "description":"Feature Pay as you chat"
         },
         {
-          "description":"- Fixed issue in add node feature"
+          "description":"Fixed issue in add node feature"
         },
         {
-          "description":"- Fixed multiple ANR and Crash issues"
+          "description":"Fixed multiple ANR and Crash issues"
         },
         {
-          "description":"- Fixed crash while adding media"
+          "description":"Fixed crash while adding media"
         },
         {
-          "description":"- Fixed alignment issues in UI for different screen sizes"
+          "description":"Fixed alignment issues in UI for different screen sizes"
         },
         {
-          "description":"- Fixed Crash caused due opening notification when messages are getting restored"
+          "description":"Fixed Crash caused due opening notification when messages are getting restored"
         },
         {
-          "description":"- Updated settings and validation in Secret group"
+          "description":"Updated settings and validation in Secret group"
         },
         {
-          "description":"- Improved UI and Content"
+          "description":"Improved UI and Content"
         }
       ]
     },
@@ -244,13 +244,13 @@
       "title": "2.1.1",
       "descriptions": [
         {
-          "description":"- Added support for Android version 13"
+          "description":"Added support for Android version 13"
         },
         {
-          "description":"- Fixed ANR issues"
+          "description":"Fixed ANR issues"
         },
         {
-          "description":"- Minor Bug fixes"
+          "description":"Minor Bug fixes"
         }
       ]
     },
@@ -258,34 +258,34 @@
       "title": "2.2.0",
       "descriptions": [
         {
-          "description":"- Provided wallet as Opt-in feature"
+          "description":"Provided wallet as Opt-in feature"
         },
         {
-          "description":"- Provided Scan from gallery feature"
+          "description":"Provided Scan from gallery feature"
         },
         {
-          "description":"- User can remove profile picture now"
+          "description":"User can remove profile picture now"
         },
         {
-          "description":"- Improved user experience when there is no internet"
+          "description":"Improved user experience when there is no internet"
         },
         {
-          "description":"- Profile picture in note to self issue fixed"
+          "description":"Profile picture in note to self issue fixed"
         },
         {
-          "description":"- Fixed app crash issue while changing theme"
+          "description":"Fixed app crash issue while changing theme"
         },
         {
-          "description":"- Node validation improved in Add node feature"
+          "description":"Node validation improved in Add node feature"
         },
         {
-          "description":"- Fixed Crash and ANR issues"
+          "description":"Fixed Crash and ANR issues"
         },
         {
-          "description":"- Fixed crash issues in low speed network in wallet"
+          "description":"Fixed crash issues in low speed network in wallet"
         },
         {
-          "description":"- Fixed issue in message request count"
+          "description":"Fixed issue in message request count"
         }
       ]
     },
@@ -293,10 +293,10 @@
       "title": "2.2.1",
       "descriptions": [
         {
-          "description":"- Updated storage server authentication"
+          "description":"Updated storage server authentication"
         },
         {
-          "description":"- Revamped User experience for delete account flow"
+          "description":"Revamped User experience for delete account flow"
         }
       ]
     },
@@ -304,10 +304,10 @@
       "title": "2.2.2",
       "descriptions": [
         {
-          "description":"- Fixed alignment issues"
+          "description":"Fixed alignment issues"
         },
         {
-          "description":"- Fixed minor bugs"
+          "description":"Fixed minor bugs"
         }
       ]
     },
@@ -315,10 +315,10 @@
       "title": "2.3.0",
       "descriptions": [
         {
-          "description":"- Update for Hardfork 18"
+          "description":"Update for Hardfork 18"
         },
         {
-          "description":"- Minor Bug fixes"
+          "description":"Minor Bug fixes"
         }
       ]
     },
@@ -326,10 +326,10 @@
       "title": "2.4.0",
       "descriptions": [
         {
-          "description":"- Integrated BNS in BChat"
+          "description":"Integrated BNS in BChat"
         },
         {
-          "description":"- Minor Bug fixes"
+          "description":"Minor Bug fixes"
         }
       ]
     },
@@ -337,7 +337,7 @@
       "title": "2.4.1",
       "descriptions": [
         {
-          "description":"- Minor Bug fixes"
+          "description":"Minor Bug fixes"
         }
       ]
     },
@@ -345,22 +345,22 @@
       "title": "2.5.0",
       "descriptions": [
         {
-          "description":"- Fixed message delay issue"
+          "description":"Fixed message delay issue"
         },
         {
-          "description":"- Introduced BNS feature for starting new chat and sending funds"
+          "description":"Introduced BNS feature for starting new chat and sending funds"
         },
         {
-          "description":"- Fixed missing payment ID details for integrated address transaction"
+          "description":"Fixed missing payment ID details for integrated address transaction"
         },
         {
-          "description":"- Added support for android version 14"
+          "description":"Added support for android version 14"
         },
         {
-          "description":"- Updated Node list"
+          "description":"Updated Node list"
         },
         {
-          "description":"- Minor Bug fixes"
+          "description":"Minor Bug fixes"
         }
       ]
     }

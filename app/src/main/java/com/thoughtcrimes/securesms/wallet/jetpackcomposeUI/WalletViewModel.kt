@@ -85,9 +85,6 @@ class WalletViewModels : ViewModel() {
     private val _transactionInfoItems = MutableLiveData<MutableList<TransactionInfo>>()
     val transactionInfoItems: LiveData<MutableList<TransactionInfo>> get () = _transactionInfoItems
 
-    private val _adapterTransactionInfoItems = MutableLiveData<MutableList<TransactionInfo>>()
-    val adapterTransactionInfoItems: LiveData<MutableList<TransactionInfo>> get () = _adapterTransactionInfoItems
-
     fun sendCardViewButtonIsEnabled(isEnabled: Boolean){
         _sendCardViewButtonIsEnabled.value = isEnabled
     }
@@ -159,10 +156,5 @@ class WalletViewModels : ViewModel() {
     fun setTransactionInfoItems(newItems: MutableList<TransactionInfo>) {
         newItems.sort()
         _transactionInfoItems.value = newItems
-    }
-
-    fun setAdapterTransactionInfoItems(newItems: MutableList<TransactionInfo>){
-        newItems.sort()
-        _adapterTransactionInfoItems.value = newItems
     }
 }

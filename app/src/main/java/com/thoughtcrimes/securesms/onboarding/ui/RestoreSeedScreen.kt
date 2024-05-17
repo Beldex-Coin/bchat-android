@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -40,6 +41,7 @@ import com.thoughtcrimes.securesms.compose_utils.BChatTheme
 import com.thoughtcrimes.securesms.compose_utils.MultilineTextField
 import com.thoughtcrimes.securesms.compose_utils.PrimaryButton
 import com.thoughtcrimes.securesms.compose_utils.appColors
+import io.beldex.bchat.R
 
 @Composable
 fun RestoreSeedScreen(
@@ -114,8 +116,8 @@ fun RestoreSeedScreen(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Icon(
-                    Icons.Default.ContentPaste,
-                    contentDescription = ""
+                    painterResource(id = R.drawable.ic_paste),
+                    contentDescription = "paste"
                 )
             }
         }

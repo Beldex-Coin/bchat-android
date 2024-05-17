@@ -48,66 +48,51 @@
                         android:maxLines="3"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/paste_icon"
+                        app:layout_constraintEnd_toStartOf="@id/recoveryPhrasePasteIcon"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/paste_icon"
+                        android:id="@+id/recoveryPhrasePasteIcon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:layout_constraintStart_toEndOf="@id/mnemonicEditText"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_paste_seed"
+                        app:srcCompat="@drawable/ic_paste"
                         app:tint="@color/button_green"
                         android:padding="8dp"/>
 
+                    <TextView
+                        android:id="@+id/recoveryPhraseCountWord"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:alpha="0.2"
+                        android:fontFamily="@font/open_sans_regular"
+                        app:layout_constraintStart_toEndOf="@id/mnemonicEditText"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:text="0/25"
+                        android:textColor="@color/text"
+                        android:textSize="@dimen/very_small_font_size" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.cardview.widget.CardView>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/recoveryPhrasePasteIcon"
+                android:id="@+id/clearButton"
                 style="@style/ContainedIconButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minHeight="56dp"
                 android:layout_gravity="end"
                 android:layout_marginEnd="20dp"
-                app:icon="@drawable/ic_paste_seed"
-                app:iconTint="@color/white"
+                app:icon="@drawable/ic_clear_seed"
+                app:iconTint="@color/version_color"
                 android:paddingStart="24dp"
                 android:paddingEnd="24dp"
-                android:text="Clear" />
+                android:text="@string/message_requests_clear" />
 
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/recoveryPhraseCountWord"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:alpha="0.2"
-            android:fontFamily="@font/open_sans_regular"
-            android:gravity="end"
-            android:text="/25"
-            android:textColor="@color/text"
-            android:textSize="@dimen/very_small_font_size"
-            android:visibility="gone" />
-
-        <Button
-            android:id="@+id/clearButton"
-            style="@style/clearButton"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:paddingLeft="50dp"
-            android:paddingRight="50dp"
-            android:text="Clear"
-            android:textAllCaps="false"
-            android:visibility="gone" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

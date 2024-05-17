@@ -34,7 +34,7 @@
 
     <PreferenceCategory android:layout="@layout/preference_divider"/> -->
 
-    <PreferenceCategory android:title="@string/preferences_chats__chats"
+    <PreferenceCategory android:title="@string/chat"
         app:iconSpaceReserved="false"
         app:layout="@layout/preference_layout_header">
 

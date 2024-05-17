@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,6 +42,7 @@ fun HopsScreen(
         modifier = Modifier
             .fillMaxWidth()
             .padding(24.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         Spacer(modifier = Modifier.height(16.dp))
         Text(
@@ -95,7 +98,7 @@ fun GetInternalNode(
     val color = MaterialTheme.appColors.primaryButtonColor
     val density = LocalDensity.current
     val lineHeight = with(density) {
-        64.dp.toPx()
+        48.dp.toPx()
     }
     val lineXOffset = with(density) {
         8.dp.toPx()
@@ -109,7 +112,7 @@ fun GetInternalNode(
     Column {
         Box(
             modifier = Modifier
-                .height(64.dp)
+                .height(48.dp)
                 .drawBehind {
                     drawLine(
                         color = color,

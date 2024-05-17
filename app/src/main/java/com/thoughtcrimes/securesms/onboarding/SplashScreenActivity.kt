@@ -15,7 +15,6 @@ class SplashScreenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        Log.d("SplashScreenActivity-->","OK")
         nextPage = intent.extras?.getBoolean("nextPage")!!
         Handler(Looper.getMainLooper()).postDelayed({
             if (nextPage) {

@@ -81,7 +81,7 @@ fun WalletScannerScreen(
                 ),
                 title = {
                     Text(
-                        text = stringResource(id = R.string.menu_rescan),
+                        text = stringResource(id = R.string.scan_qrcode_text),
                         style = MaterialTheme.typography.titleLarge.copy(
                             color = MaterialTheme.appColors.editTextColor,
                             fontWeight = FontWeight.ExtraBold,

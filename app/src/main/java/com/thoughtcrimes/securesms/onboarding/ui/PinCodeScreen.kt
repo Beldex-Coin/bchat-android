@@ -15,7 +15,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Backspace
 import androidx.compose.material3.Card
@@ -33,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -44,6 +47,8 @@ import com.thoughtcrimes.securesms.compose_utils.BChatTheme
 import com.thoughtcrimes.securesms.compose_utils.PinCodeView
 import com.thoughtcrimes.securesms.compose_utils.PrimaryButton
 import com.thoughtcrimes.securesms.compose_utils.appColors
+import com.thoughtcrimes.securesms.util.UiMode
+import com.thoughtcrimes.securesms.util.UiModeUtilities
 import io.beldex.bchat.R
 
 data class PinCodeState(
@@ -73,6 +78,7 @@ fun PinCodeScreen(
     state: PinCodeState,
     onEvent: (PinCodeEvents) -> Unit
 ) {
+    val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(LocalContext.current) == UiMode.NIGHT
     val pin by remember(state) {
         mutableStateOf(
             value = when (state.step) {
@@ -93,9 +99,10 @@ fun PinCodeScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
     ) {
         Image(
-            painter = painterResource(id = R.drawable.ic_password),
+            painter = painterResource(id = if(isDarkTheme) R.drawable.ic_password_dark else R.drawable.ic_password_light),
             contentDescription = "",
             modifier = Modifier
                 .weight(0.2f)
@@ -214,7 +221,14 @@ fun PinCodeScreen(
                                             .height(cellHeight)
                                             .clickable {
                                                 if (pin.isNotEmpty()) {
-                                                    onEvent(PinCodeEvents.PinCodeChanged(pin.substring(0, pin.length - 1)))
+                                                    onEvent(
+                                                        PinCodeEvents.PinCodeChanged(
+                                                            pin.substring(
+                                                                0,
+                                                                pin.length - 1
+                                                            )
+                                                        )
+                                                    )
                                                 }
                                             }
                                     ) {
@@ -278,7 +292,7 @@ fun PinCodeScreen(
                             }
                     ) {
                         Text(
-                            text = stringResource(id = R.string.continue_2),
+                            text = stringResource(id = R.string.next),
                             style = MaterialTheme.typography.titleMedium.copy(
                                 color = Color.White
                             ),

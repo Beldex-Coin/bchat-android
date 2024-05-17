@@ -14,7 +14,7 @@ class ChatSettingsActivity : PassphraseRequiredActionBarActivity() {
         setContentView(binding.root)
         with(binding) {
             back.setOnClickListener { finish() }
-            title.text = resources.getString(R.string.activity_chat_settings_title)
+            title.text = resources.getString(R.string.preferences_chats__chats)
         }
         val fragment = ChatsPreferenceFragment()
         val transaction = supportFragmentManager.beginTransaction()

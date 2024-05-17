@@ -224,7 +224,7 @@
             android:name="com.thoughtcrimes.securesms.onboarding.PasswordActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name="com.thoughtcrimes.securesms.applock.AppLockDetailsActivity"

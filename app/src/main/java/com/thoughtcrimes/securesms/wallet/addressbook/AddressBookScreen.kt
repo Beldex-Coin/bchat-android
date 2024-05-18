@@ -24,6 +24,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
@@ -44,10 +46,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -149,6 +155,11 @@ fun AddressBookScreen(
                     )
                 )
             },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Done
+            ),
             colors = TextFieldDefaults.colors(
                 disabledTextColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent,
@@ -163,7 +174,6 @@ fun AddressBookScreen(
                 )
             ),
             trailingIcon = {
-
                 IconButton(onClick = {
                     if (searchQuery.isNotEmpty()) {
                         searchQuery = ""
@@ -187,10 +197,40 @@ fun AddressBookScreen(
             contentAlignment = Alignment.Center,
             modifier = Modifier.fillMaxSize()
         ) {
-            Text(
-                text = stringResource(id = R.string.activity_home_empty_state_message),
-                style = MaterialTheme.typography.titleLarge
-            )
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                Image(
+                    painter = painterResource(id = R.drawable.ic_no_addresses),
+                    contentDescription = "",
+                    colorFilter = ColorFilter.tint(color = MaterialTheme.appColors.noAddressIcon)
+                )
+
+                Text(
+                    text = stringResource(id = R.string.no_addresses),
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        color = MaterialTheme.appColors.editTextHint,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        textAlign = TextAlign.Center
+                    ),
+                    modifier = Modifier.padding(top = 20.dp)
+                )
+
+                Text(
+                    text = stringResource(id = R.string.save_address_to_show),
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        color = MaterialTheme.appColors.walletSyncingSubTitle,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Normal,
+                        textAlign = TextAlign.Center
+                    ),
+                    modifier = Modifier.padding(top = 10.dp)
+                )
+
+            }
         }
     } else {
         Column(
@@ -288,8 +328,11 @@ fun AddressBookScreen(
 
 
                                     Image(
-                                        painter = painterResource(id = R.drawable.share),
+                                        painter = painterResource(id = R.drawable.wallet_send),
                                         contentDescription = "",
+                                        colorFilter = ColorFilter.tint(
+                                            color = MaterialTheme.appColors.selectDateRangeText
+                                        ),
                                         modifier = Modifier
                                             .clickable {
                                                 redirectToSend(getBeldexAddress(address), context)

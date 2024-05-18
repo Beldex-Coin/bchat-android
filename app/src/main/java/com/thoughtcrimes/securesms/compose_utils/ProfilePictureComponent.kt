@@ -26,6 +26,7 @@ import coil.imageLoader
 import coil.request.ImageRequest
 import coil.util.DebugLogger
 import com.beldex.libbchat.avatars.ContactColors
+import com.beldex.libbchat.avatars.PlaceholderAvatarPhoto
 import com.beldex.libbchat.avatars.ProfileContactPhoto
 import com.beldex.libbchat.avatars.ResourceContactPhoto
 import com.beldex.libbchat.utilities.Address
@@ -159,6 +160,27 @@ fun ProfilePicture(
                 modifier = Modifier
             )
         }
+        /*val placeholder = PlaceholderAvatarPhoto(publicKey, if (displayName.isNotEmpty() || displayName.isNotBlank())
+            displayName
+        else
+            "${publicKey.take(4)}...${publicKey.takeLast(4)}")
+
+        val imageLoader = LocalContext.current.imageLoader.newBuilder()
+            .logger(DebugLogger())
+            .build()
+        val imageRequest = ImageRequest.Builder(context)
+            .data(placeholder)
+            .placeholder(unknownRecipientDrawable)
+            .error(unknownRecipientDrawable)
+            .build()
+        AsyncImage(
+            model = imageRequest,
+            contentDescription = displayName,
+            imageLoader = imageLoader,
+            modifier = modifier
+                .size(containerSize)
+                .clip(CircleShape)
+        )*/
     }
 }
 

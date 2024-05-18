@@ -147,7 +147,7 @@ fun BChatOutlinedTextField(
             fontStyle = fontStyle,
             fontSize = fontSize,
             fontWeight = fontWeight,
-            color = TextColor,
+            color = textColor,
             textAlign = textAlign,
         ),
         colors = OutlinedTextFieldDefaults.colors(

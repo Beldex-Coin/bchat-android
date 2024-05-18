@@ -90,10 +90,13 @@ class MyProfileActivity: AppCompatActivity() {
     val viewModel: MyAccountViewModel by viewModels()
     private var shareButtonLastClickTime: Long = 0
 
+    var profileEditable:Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMyProfileBinding.inflate(LayoutInflater.from(this))
         glide = GlideApp.with(this)
+        profileEditable = intent.getBooleanExtra("profile_editable",false)
         setContentView(binding.root)
         setupProfilePictureView(binding.profilePictureView.root)
         binding.back.setOnClickListener {
@@ -105,6 +108,7 @@ class MyProfileActivity: AppCompatActivity() {
                 shareQRCode()
             }
         }
+        binding.cameraView.isVisible = profileEditable
         binding.cameraView.apply {
             setOnClickListener {
                 showEditProfilePictureUI()
@@ -143,7 +147,8 @@ class MyProfileActivity: AppCompatActivity() {
                         .fillMaxWidth()
                         .padding(
                             top = 48.dp
-                        )
+                        ),
+                    profileEditable
                 )
             }
         }

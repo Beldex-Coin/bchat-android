@@ -86,7 +86,13 @@ fun ProfilePicturePopup(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                Box {
+                ProfilePictureComponent(
+                    publicKey = publicKey,
+                    displayName = displayName,
+                    containerSize = ProfilePictureMode.LargePicture.size,
+                    pictureMode = ProfilePictureMode.LargePicture
+                )
+               /* Box {
                     ProfilePictureComponent(
                         publicKey = publicKey,
                         displayName = displayName,
@@ -112,7 +118,7 @@ fun ProfilePicturePopup(
                                 .size(20.dp)
                         )
                     }
-                }
+                }*/
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -146,7 +152,7 @@ fun ProfilePicturePopup(
                         .weight(1f)
                 ) {
                     Text(
-                        text = stringResource(id = R.string.save),
+                        text = stringResource(id = R.string.activity_settings_upload),
                         style = MaterialTheme.typography.bodySmall.copy(
                             color = Color.White
                         )

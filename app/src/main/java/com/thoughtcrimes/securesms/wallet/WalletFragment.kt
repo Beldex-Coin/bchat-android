@@ -166,11 +166,14 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         if(TextSecurePreferences.getDisplayBalanceAs(requireActivity())==2) {
             hideDisplayBalance()
         }else{
+            Log.d("FiatCurrency Exception: ", "onResume 1")
             if(walletAvailableBalance!=null) {
                 showSelectedDecimalBalance(walletAvailableBalance!!, walletSynchronized)
             }
             if(TextSecurePreferences.getChangedCurrency(requireActivity())) {
+                Log.d("FiatCurrency Exception: ", "onResume 2")
                 TextSecurePreferences.changeCurrency(requireActivity(),false)
+                Log.d("FiatCurrency Exception: ", "onResume 3")
                 callCurrencyConversionApi()
             }
         }
@@ -197,12 +200,14 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                             if(result.length()!=0) {
                                 price = result.getDouble(currency)
                                 if(walletAvailableBalance!=null) {
+                                    Log.d("FiatCurrency Exception: ", "one")
                                     updateFiatCurrency(walletAvailableBalance!!)
                                 }
                                 TextSecurePreferences.setCurrencyAmount(requireActivity(),price.toString())
                             }else{
                                 price = 0.00
                                 if(walletAvailableBalance!=null) {
+                                    Log.d("FiatCurrency Exception: ", "two")
                                     updateFiatCurrency(walletAvailableBalance!!)
                                 }
                                 TextSecurePreferences.setCurrencyAmount(requireActivity(),price.toString())
@@ -211,6 +216,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                     } else {
                         price = 0.00
                         if(walletAvailableBalance!=null) {
+                            Log.d("FiatCurrency Exception: ", "three")
                             updateFiatCurrency(walletAvailableBalance!!)
                         }
                         TextSecurePreferences.setCurrencyAmount(requireActivity(),price.toString())
@@ -555,6 +561,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                 viewModels.scanQRCodeButtonIsEnabled(true)
             }
         }
+        Log.d("FiatCurrency Exception: ", "four")
         //Update Fiat Currency
         updateFiatCurrency(balance)
     }
@@ -562,12 +569,15 @@ class WalletFragment : Fragment(),OnBackPressedListener {
     private fun updateFiatCurrency(balance: String) {
         if(balance.isNotEmpty() && balance!=null) {
             try {
+                Log.d("FiatCurrency Exception: ", "$balance, $price")
                 val amount: BigDecimal = BigDecimal(balance.replace(",","").toDouble()).multiply(BigDecimal(price))
                 viewModels.updateFiatCurrency(getString(R.string.fiat_currency, amount.toDouble(), TextSecurePreferences.getCurrency(requireActivity()).toString()))
+                Log.d("FiatCurrency Exception: ","try")
             }catch (e:NumberFormatException){
                 viewModels.updateFiatCurrency(getString(R.string.fiat_currency, 0.00, TextSecurePreferences.getCurrency(requireActivity()).toString()))
+                Log.d("FiatCurrency Exception: catch 1 ",e.message.toString())
             }catch(e:IllegalStateException){
-                Log.d("FiatCurrency Exception: ",e.message.toString())
+                Log.d("FiatCurrency Exception: catch 2 ",e.message.toString())
             }
         }
     }

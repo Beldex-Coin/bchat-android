@@ -497,7 +497,7 @@ private fun MyAccountScreenContainer(
                 .padding(16.dp)
         ) {
             Icon(
-                Icons.Default.ArrowBack,
+                painterResource(id = R.drawable.ic_back_arrow),
                 contentDescription = stringResource(R.string.back),
                 tint = MaterialTheme.appColors.editTextColor,
                 modifier = Modifier

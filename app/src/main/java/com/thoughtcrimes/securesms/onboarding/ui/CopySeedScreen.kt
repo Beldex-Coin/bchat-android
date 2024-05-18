@@ -31,6 +31,8 @@ import androidx.compose.ui.unit.dp
 import com.thoughtcrimes.securesms.compose_utils.PrimaryButton
 import com.thoughtcrimes.securesms.compose_utils.appColors
 import com.thoughtcrimes.securesms.compose_utils.ui.BChatPreviewContainer
+import com.thoughtcrimes.securesms.util.UiMode
+import com.thoughtcrimes.securesms.util.UiModeUtilities
 import com.thoughtcrimes.securesms.util.copyToClipBoard
 import io.beldex.bchat.R
 
@@ -40,6 +42,7 @@ fun CopySeedScreen(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(LocalContext.current) == UiMode.NIGHT
     var continueEnabled by remember {
         mutableStateOf(false)
     }
@@ -59,7 +62,7 @@ fun CopySeedScreen(
                 )
         ) {
             Image(
-                painter = painterResource(id = R.drawable.ic_warning_lock),
+                painter = painterResource(id = if(isDarkTheme) R.drawable.ic_warning_lock else R.drawable.ic_warning_lock_light),
                 contentDescription = ""
             )
 

@@ -68,6 +68,7 @@ fun CreatePrivateChatScreen() {
     }
     val gotoMyProfile: () -> Unit = {
         val intent = Intent(context, MyProfileActivity::class.java)
+        intent.putExtra("profile_editable",false)
         context.startActivity(intent)
     }
     val privateChatScanQRCodeActivityResultLauncher = rememberLauncherForActivityResult(

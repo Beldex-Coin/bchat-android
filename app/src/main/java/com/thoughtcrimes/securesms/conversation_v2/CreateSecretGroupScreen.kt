@@ -3,6 +3,7 @@ package com.thoughtcrimes.securesms.conversation_v2
 import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -65,13 +66,13 @@ fun CreateSecretGroup(
     searchQuery: String,
     contacts: List<Recipient>,
     selectedContact: List<String>,
-    onEvent: (SecretGroupEvents) -> Unit
+    onEvent: (SecretGroupEvents) -> Unit,
+    activity: NewConversationActivity
 ) {
     var groupName by remember {
         mutableStateOf("")
     }
     val context = LocalContext.current
-    val activity = (context as? Activity)
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -265,8 +266,7 @@ private fun createClosedGroup(name: String, context: Context, activity: Activity
     }
 }
 
-
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+/*@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun CreateSecretGroupScreenPreview() {
     BChatPreviewContainer {
@@ -274,7 +274,7 @@ fun CreateSecretGroupScreenPreview() {
             searchQuery = "",
             contacts = emptyList(),
             selectedContact = emptyList(),
-            onEvent = {}
+            onEvent = {},
         )
     }
 }
@@ -287,9 +287,9 @@ fun CreateSecretGroupScreenPreviewLight() {
             searchQuery = "",
             contacts = emptyList(),
             selectedContact = emptyList(),
-            onEvent = {}
+            onEvent = {},
         )
     }
-}
+}*/
 
 

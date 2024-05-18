@@ -3,6 +3,7 @@ package com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.send
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,11 +14,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
@@ -78,39 +81,45 @@ fun TransactionConfirmPopUp(
         Box(contentAlignment = Alignment.Center, modifier = Modifier) {
             OutlinedCard(colors = CardDefaults.cardColors(containerColor = MaterialTheme.appColors.dialogBackground), elevation = CardDefaults.cardElevation(defaultElevation = 4.dp), modifier = Modifier.fillMaxWidth()) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 16.dp)) {
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 16.dp)) {
                     Text(text = stringResource(id = R.string.confirm_sending), style = MaterialTheme.typography.titleSmall.copy(fontSize = 16.sp, fontWeight = FontWeight(800), color = MaterialTheme.appColors.primaryButtonColor), textAlign = TextAlign.Center, modifier = Modifier.padding(10.dp))
 
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center, modifier = Modifier
-                            .padding(horizontal = 10.dp)
-                            .background(color = MaterialTheme.appColors.settingsCardBackground, shape = RoundedCornerShape(12.dp))
+                        .padding(horizontal = 10.dp)
+                        .background(
+                            color = MaterialTheme.appColors.settingsCardBackground,
+                            shape = RoundedCornerShape(12.dp)
+                        )
 
                     ) {
                         Text(text = stringResource(id = R.string.send_amount_title), style = MaterialTheme.typography.titleSmall.copy(fontSize = 14.sp, fontWeight = FontWeight(800), color = MaterialTheme.appColors.textColor), modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp))
 
                         Divider(modifier = Modifier
-                                .height(70.dp)
-                                .width(1.dp), color = MaterialTheme.appColors.dividerColor)
+                            .height(70.dp)
+                            .width(1.dp), color = MaterialTheme.appColors.dividerColor)
                         Row {
 
 
                             Text(text = transferAmount, style = MaterialTheme.typography.bodyMedium.copy(fontSize = 22.sp, fontWeight = FontWeight(700), color = MaterialTheme.appColors.textColor), modifier = Modifier
-                                    .padding(10.dp)
-                                    .fillMaxWidth()
-                                    .weight(1f), textAlign = TextAlign.Start)
+                                .padding(10.dp)
+                                .fillMaxWidth()
+                                .weight(1f), textAlign = TextAlign.Start)
                             Image(painter = painterResource(id = R.drawable.slide_with_pay_coin), contentDescription = "", modifier = Modifier.padding(10.dp))
                         }
                     }
 
                     Column(horizontalAlignment = Alignment.Start, verticalArrangement = Arrangement.Center, modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp)
-                            .background(color = MaterialTheme.appColors.settingsCardBackground, shape = RoundedCornerShape(12.dp))) {
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                        .background(
+                            color = MaterialTheme.appColors.settingsCardBackground,
+                            shape = RoundedCornerShape(12.dp)
+                        )) {
                         Text(text = stringResource(id = R.string.address), style = MaterialTheme.typography.titleSmall.copy(fontSize = 12.sp, fontWeight = FontWeight(400), color = MaterialTheme.appColors.textColor), modifier = Modifier.padding(vertical = 5.dp,horizontal = 20.dp))
                         Card(modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 20.dp, top = 10.dp, end = 20.dp), colors = CardDefaults.cardColors(
+                            .fillMaxWidth()
+                            .padding(start = 20.dp, top = 10.dp, end = 20.dp), colors = CardDefaults.cardColors(
                                 containerColor = MaterialTheme.appColors.popUpAddressBackground,
                         )) {
                             Text(text = beldexAddress, modifier = Modifier.padding(10.dp), style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.textColor, fontSize = 13.sp, fontWeight = FontWeight(400)))
@@ -130,8 +139,8 @@ fun TransactionConfirmPopUp(
                     }
 
                     Row(modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp)) {
+                        .fillMaxWidth()
+                        .padding(10.dp)) {
                         Button(onClick = {onDismiss() }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.appColors.secondaryButtonColor), modifier = Modifier.weight(1f)) {
                             Text(text = stringResource(id = R.string.cancel), style = MaterialTheme.typography.bodyMedium)
                         }
@@ -168,18 +177,18 @@ fun TransactionSuccessPopup(onDismiss: () -> Unit) {
 
         OutlinedCard(colors = CardDefaults.cardColors(containerColor = MaterialTheme.appColors.dialogBackground), elevation = CardDefaults.cardElevation(defaultElevation = 4.dp), modifier = Modifier.fillMaxWidth()) {
             Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)) {
+                .fillMaxWidth()
+                .padding(10.dp)) {
                 LottieAnimation(composition, progress, modifier = Modifier
-                        .size(120.dp)
-                        .padding(20.dp)
-                        .align(Alignment.CenterHorizontally))
+                    .size(120.dp)
+                    .padding(20.dp)
+                    .align(Alignment.CenterHorizontally))
 
                 Text(text = stringResource(id = R.string.transaction_successful), textAlign = TextAlign.Center, style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp, fontWeight = FontWeight(800), color = MaterialTheme.appColors.primaryButtonColor), modifier = Modifier.padding(10.dp))
 
                 Button(onClick = { onDismiss() }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.appColors.primaryButtonColor), modifier = Modifier
-                        .height(50.dp)
-                        .width(150.dp)) {
+                    .height(50.dp)
+                    .width(150.dp)) {
                     Text(text = stringResource(id = R.string.ok), style = MaterialTheme.typography.bodyMedium.copy(color = Color.White))
                 }
             }
@@ -199,9 +208,20 @@ fun TransactionLoadingPopUp(onDismiss: () -> Unit) {
 
         OutlinedCard(colors = CardDefaults.cardColors(containerColor = MaterialTheme.appColors.dialogBackground), elevation = CardDefaults.cardElevation(defaultElevation = 4.dp), modifier = Modifier.fillMaxWidth()) {
             Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)) {
-                Image(painter = painterResource(id = R.drawable.slide_with_pay_coin), contentDescription = "", modifier = Modifier.padding(10.dp))
+                .fillMaxWidth()
+                .padding(15.dp)) {
+                Box(
+                    contentAlignment= Alignment.Center,
+                    modifier = Modifier
+                        .size(55.dp)
+                        .background(color = MaterialTheme.appColors.circularProgressBarBackground, shape = CircleShape),
+                ){
+                    CircularProgressIndicator(
+                        modifier = Modifier.padding(12.dp),
+                        color = MaterialTheme.appColors.primaryButtonColor,
+                        strokeWidth = 2.dp
+                    )
+                }
 
                 Text(text = stringResource(id = R.string.initiating_transaction), style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp, fontWeight = FontWeight(800), color = MaterialTheme.appColors.primaryButtonColor), modifier = Modifier.padding(10.dp))
 
@@ -225,15 +245,15 @@ fun TransactionFailedPopUp(onDismiss: () -> Unit, errorString: String) {
 
         OutlinedCard(colors = CardDefaults.cardColors(containerColor = MaterialTheme.appColors.dialogBackground), elevation = CardDefaults.cardElevation(defaultElevation = 4.dp), modifier = Modifier.fillMaxWidth()) {
             Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)) {
+                .fillMaxWidth()
+                .padding(10.dp)) {
                 Text(text = stringResource(id = R.string.dialog_title_send_failed), style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp, fontWeight = FontWeight(800), color = MaterialTheme.appColors.primaryButtonColor), modifier = Modifier.padding(10.dp))
 
                 Text(text = errorString, textAlign = TextAlign.Center, style = MaterialTheme.typography.titleMedium.copy(fontSize = 12.sp, fontWeight = FontWeight(400), color = MaterialTheme.appColors.textColor), modifier = Modifier.padding(10.dp))
 
                 Button(onClick = { onDismiss() }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.appColors.primaryButtonColor), modifier = Modifier
-                        .height(50.dp)
-                        .width(150.dp)) {
+                    .height(50.dp)
+                    .width(150.dp)) {
                     Text(text = stringResource(id = R.string.ok), style = MaterialTheme.typography.bodyMedium.copy(color = Color.White))
                 }
 

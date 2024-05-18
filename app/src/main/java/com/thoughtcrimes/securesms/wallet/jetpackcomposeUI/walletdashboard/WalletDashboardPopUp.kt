@@ -174,13 +174,24 @@ fun FilterTransactionByDatePopUp(
                         Spacer(modifier = Modifier.width(16.dp))
 
                         Button(onClick = {
-                            Toast.makeText(
-                                context,
-                                context.getString(R.string.filter_applied),
-                                Toast.LENGTH_LONG
-                            ).show()
-                            viewModels.transactionInfoItems.value?.let { list->
-                                selectedDates(getDaysBetweenDates(Date(selectedFromDate),Date(selectedToDate)),list)
+                            if(fromDateStr.isEmpty()){
+                                Toast.makeText(context, context.getString(R.string.alert_from_date),Toast.LENGTH_SHORT).show()
+                            }else if(toDateStr.isEmpty()){
+                                Toast.makeText(context, context.getString(R.string.alert_to_date),Toast.LENGTH_SHORT).show()
+                            }else {
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.filter_applied),
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                viewModels.transactionInfoItems.value?.let { list ->
+                                    selectedDates(
+                                        getDaysBetweenDates(
+                                            Date(selectedFromDate),
+                                            Date(selectedToDate)
+                                        ), list
+                                    )
+                                }
                             }
                         }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.appColors.primaryButtonColor), modifier = Modifier.weight(1f)) {
                             Text(text = stringResource(id = R.string.ok), style = MaterialTheme.typography.bodyMedium.copy(color = Color.White), fontWeight = FontWeight.Bold)

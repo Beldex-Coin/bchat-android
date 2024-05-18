@@ -27,7 +27,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:fontFamily="@font/open_sans_bold"
-                    android:text="Add Node"
+                    android:text="@string/node_fab_add"
                     android:textAlignment="center"
                     android:textSize="@dimen/large_font_size"
                     android:textStyle="bold" />

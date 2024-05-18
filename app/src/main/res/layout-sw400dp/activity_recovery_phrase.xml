@@ -38,6 +38,7 @@
             android:layout_marginBottom="@dimen/medium_spacing"
             android:textSize="18sp"
             android:textStyle="normal"
+            android:gravity="center"
             android:textAlignment="center"
             android:textColor="@color/recovery_seed_content"
             android:text="@string/copy_your_recovery_seed" />
@@ -87,7 +88,7 @@
                 android:layout_marginEnd="8dp"
                 android:text="@string/copy_seed"
                 app:icon="@drawable/ic_restore_copy"
-                app:iconGravity="end"
+                app:iconGravity="textEnd"
                 app:iconTint="@color/icon_tint"
                 app:backgroundTint="@color/your_bchat_id_bg"
                 android:textColor="@color/icon_tint"/>
@@ -102,40 +103,6 @@
                 android:textSize="@dimen/small_font_size"
                 android:text="@string/save" />
 
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:orientation="horizontal"
-            android:visibility="gone">
-
-            <Button
-                android:id="@+id/copyBtn"
-                style="@style/Widget.Bchat.Button.Common.Copy"
-                android:layout_width="150dp"
-                android:layout_height="45dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginStart="40dp"
-                android:layout_marginTop="30dp"
-                android:drawableStart="@drawable/ic_baseline_content_copy_24"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp"
-                android:text="Copy" />
-
-            <Button
-                android:id="@+id/shareBtn"
-                style="@style/Widget.Bchat.Button.Common.Copy"
-                android:layout_width="150dp"
-                android:layout_height="45dp"
-                android:layout_gravity="right"
-                android:layout_marginLeft="40dp"
-                android:drawableStart="@drawable/ic_baseline_share_24"
-                android:gravity="center"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp"
-                android:text="@string/share"
-                tools:ignore="RtlHardcoded" />
         </LinearLayout>
 
         <View

@@ -142,7 +142,7 @@ class WalletViewModels : ViewModel() {
     }
 
     fun updateFiatCurrency(fiatCurrency: String){
-        _fiatCurrency.value = fiatCurrency
+        _fiatCurrency.postValue(fiatCurrency)
     }
 
     fun updateFetchBalanceStatus(status: Boolean){

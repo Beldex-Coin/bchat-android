@@ -393,7 +393,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
         AsyncTaskCoroutine<Executor?, Double>() {
         override fun onPreExecute() {
             super.onPreExecute()
-            viewModels.updateEstimatedFee(getString(R.string.estimated_fee,"0.00"))
+            viewModels.updateEstimatedFee("0.00")
 
         }
         override fun doInBackground(vararg params: Executor?): Double {
@@ -410,7 +410,7 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
             }
         }
         override fun onPostExecute(result: Double?) {
-            viewModels.updateEstimatedFee(getString(R.string.estimated_fee,result.toString()))
+            viewModels.updateEstimatedFee(result.toString())
         }
     }
 

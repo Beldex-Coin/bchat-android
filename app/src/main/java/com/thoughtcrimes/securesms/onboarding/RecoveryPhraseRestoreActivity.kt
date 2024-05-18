@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
+import android.view.View
 import android.widget.Toast
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.crypto.MnemonicCodec
@@ -57,6 +58,11 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
             override fun afterTextChanged(s: Editable) {
                 var numberOfInputWords = 0
 
+                if(s.toString().isNotEmpty()){
+                    binding.pasteText.visibility = View.GONE
+                }else{
+                    binding.pasteText.visibility = View.VISIBLE
+                }
                 if(s.toString().isNotEmpty())
                     numberOfInputWords = s.toString().trim().split("\\s+".toRegex()).size
                 binding.recoveryPhraseCountWord.text = "$numberOfInputWords/25"
@@ -75,6 +81,7 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
         binding.clearButton.setOnClickListener {
             binding.mnemonicEditText.text.clear()
             binding.recoveryPhraseCountWord.text = "0/25"
+            binding.pasteText.visibility = View.GONE
         }
 
         binding.recoveryPhrasePasteIcon.setOnClickListener {
@@ -84,6 +91,7 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
                 val item = clipboard.primaryClip!!.getItemAt(0)
                 // Gets the clipboard as text.
                 binding.mnemonicEditText.setText(item.text.toString())
+                binding.pasteText.visibility = View.GONE
             } else {
                 Toast.makeText(this, R.string.no_copied_seed, Toast.LENGTH_SHORT)
                     .show()

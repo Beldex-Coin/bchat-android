@@ -29,6 +29,8 @@ import com.beldex.libsignal.utilities.Log
 import com.thoughtcrimes.securesms.ApplicationContext
 import com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
 import com.thoughtcrimes.securesms.home.HomeActivity
+import com.thoughtcrimes.securesms.onboarding.ui.EXTRA_PIN_CODE_ACTION
+import com.thoughtcrimes.securesms.onboarding.ui.PinCodeAction
 import com.thoughtcrimes.securesms.permissions.Permissions
 import com.thoughtcrimes.securesms.service.KeyCachingService
 import com.thoughtcrimes.securesms.util.CallNotificationBuilder.Companion.areNotificationsEnabled
@@ -251,14 +253,13 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
             val walletPassword = getWalletPassword(requireContext())
             if (walletName != null && walletPassword != null) {
                 val lockManager = LockManager.getInstance()
-                lockManager.enableAppLock(requireContext(), CustomPinActivity::class.java)
+                lockManager.enableAppLock<CustomPinActivity>(requireContext(), CustomPinActivity::class.java)
                 val intent = Intent(requireContext(), CustomPinActivity::class.java)
                 if (getWalletEntryPassword(requireContext()) != null) {
-                    intent.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN)
+                    intent.putExtra(EXTRA_PIN_CODE_ACTION, PinCodeAction.VerifyWalletPin.action)
                 } else {
-                    intent.putExtra(AppLock.EXTRA_TYPE, AppLock.ENABLE_PINLOCK)
+                    intent.putExtra(EXTRA_PIN_CODE_ACTION, PinCodeAction.CreateWalletPin)
                 }
-                intent.putExtra("change_pin", false)
                 intent.putExtra("send_authentication", false)
                 setUpWalletPinActivityResultLauncher.launch(intent)
             } else {

@@ -2,35 +2,28 @@ package com.thoughtcrimes.securesms.conversation.v2.messages
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.text.StaticLayout
 import android.util.AttributeSet
-import android.view.LayoutInflater
-import android.widget.LinearLayout
 import androidx.annotation.ColorInt
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.content.res.use
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
-import dagger.hilt.android.AndroidEntryPoint
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ViewQuoteBinding
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.utilities.recipients.Recipient
-import com.thoughtcrimes.securesms.database.model.Quote
+import com.thoughtcrimes.securesms.conversation.v2.utilities.MentionUtilities
+import com.thoughtcrimes.securesms.database.BchatContactDatabase
 import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.mms.SlideDeck
 import com.thoughtcrimes.securesms.util.MediaUtil
-import com.thoughtcrimes.securesms.util.toPx
-import com.thoughtcrimes.securesms.conversation.v2.utilities.MentionUtilities
-import com.thoughtcrimes.securesms.conversation.v2.utilities.TextUtilities
-import com.thoughtcrimes.securesms.database.BchatContactDatabase
 import com.thoughtcrimes.securesms.util.UiModeUtilities
+import com.thoughtcrimes.securesms.util.toPx
+import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ViewQuoteBinding
 import org.json.JSONException
 import org.json.JSONObject
 import javax.inject.Inject
-import kotlin.math.max
-import kotlin.math.min
 
 
 // There's quite some calculation going on here. It's a bit complex so don't make changes
@@ -154,10 +147,10 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         binding.quoteViewBodyTextView.setTextColor(getTextColor(isOutgoingMessage))
         // Accent line / attachment preview
         val hasAttachments = (attachments != null && attachments.asAttachments().isNotEmpty()) && !isOriginalMissing
-        binding.quoteViewAccentLine.isVisible = !hasAttachments
+//        binding.quoteViewAccentLine.isVisible = !hasAttachments
         binding.quoteViewAttachmentPreviewContainer.isVisible = hasAttachments
         if (!hasAttachments) {
-            binding.quoteViewAccentLine.setBackgroundColor(getLineColor(isOutgoingMessage))
+//            binding.quoteViewAccentLine.setBackgroundColor(getLineColor(isOutgoingMessage))
         } else if (attachments != null) {
             binding.quoteViewAttachmentPreviewImageView.imageTintList = ColorStateList.valueOf(ResourcesCompat.getColor(resources, R.color.white, context.theme))
             val backgroundColorID = if (UiModeUtilities.isDayUiMode(context)) R.color.black else R.color.accent

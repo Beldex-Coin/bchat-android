@@ -9,8 +9,10 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.database.model.MessageRecord
+import com.thoughtcrimes.securesms.util.DateUtils
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewControlMessageBinding
+import java.util.Locale
 
 
 class ControlMessageView : LinearLayout {
@@ -83,10 +85,25 @@ class ControlMessageView : LinearLayout {
             }
             message.isCallLog -> {
                 val drawable = when {
-                    message.isIncomingCall -> R.drawable.ic_filled_circle_incoming_call
-                    message.isOutgoingCall -> R.drawable.ic_filled_circle_outgoing_call
-                    message.isFirstMissedCall -> R.drawable.ic_first_missed_call
-                    else -> R.drawable.ic_filled_circle_missed_call
+                    message.isIncomingCall -> {
+                        binding.receivedCallText.text = context.resources.getString(R.string.voice_call)
+                        R.drawable.ic_filled_circle_incoming_call
+                    }
+                    message.isOutgoingCall -> {
+                        binding.dialledCallText.text = context.resources.getString(R.string.voice_call)
+                        R.drawable.ic_filled_circle_outgoing_call
+                    }
+                    message.isMissedCall -> {
+                        binding.receivedCallText.text = context.resources.getString(R.string.missed_voice_call)
+                        binding.receivedCallTime.text = context.resources.getString(R.string.tap_to_callback)
+                        R.drawable.ic_filled_circle_missed_call
+                    }
+//                    message.isFirstMissedCall -> {
+//                        R.drawable.ic_first_missed_call
+//                    }
+                    else -> {
+                        R.drawable.ic_filled_circle_missed_call
+                    }
                 }
                /* binding.iconImageView.setImageDrawable(
                     ResourcesCompat.getDrawable(
@@ -96,6 +113,7 @@ class ControlMessageView : LinearLayout {
                     )
                 )
                 binding.iconImageView.visibility = View.VISIBLE*/
+                message
 
                 //SteveJosephh21
                 if(message.isOutgoing){
@@ -109,6 +127,7 @@ class ControlMessageView : LinearLayout {
                     )
 //                    binding.senderStatusIconTextView.text = messageBody
                     messageBody = ""
+                    binding.dialledMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
                 }else{
                     binding.receivedCallCardView.visibility = View.VISIBLE
                     binding.receivedCallIcon.setImageDrawable(
@@ -120,6 +139,7 @@ class ControlMessageView : LinearLayout {
                     )
 //                    binding.receiverStatusIconTextView.text = messageBody
                     messageBody = ""
+                    binding.receivedMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
                 }
             }
             message.isMessageRequestResponse -> {

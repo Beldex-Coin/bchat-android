@@ -45,6 +45,8 @@ import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.compose_utils.BChatTheme
 import com.thoughtcrimes.securesms.compose_utils.appColors
 import com.thoughtcrimes.securesms.my_account.ui.CardContainer
+import com.thoughtcrimes.securesms.onboarding.ui.EXTRA_PIN_CODE_ACTION
+import com.thoughtcrimes.securesms.onboarding.ui.PinCodeAction
 import com.thoughtcrimes.securesms.util.UiMode
 import com.thoughtcrimes.securesms.util.UiModeUtilities
 import com.thoughtcrimes.securesms.wallet.addressbook.AddressBookScreen
@@ -232,7 +234,7 @@ fun changePin(context: Context) {
     val lockManager: LockManager<CustomPinActivity> =LockManager.getInstance() as LockManager<CustomPinActivity>
     lockManager.enableAppLock(context, CustomPinActivity::class.java)
     val intent=Intent(context, CustomPinActivity::class.java)
-    intent.putExtra(AppLock.EXTRA_TYPE, AppLock.CHANGE_PIN)
+    intent.putExtra(EXTRA_PIN_CODE_ACTION, PinCodeAction.ChangeWalletPin.action)
     intent.putExtra("change_pin", true)
     intent.putExtra("send_authentication", false)
     context.startActivity(intent)

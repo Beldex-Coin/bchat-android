@@ -9,15 +9,17 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/timer_container"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:cardCornerRadius="100dp"
         app:cardBackgroundColor="@color/input_bar_background"
         android:layout_gravity="bottom"
         tools:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/microphoneOrSendButtonContainer">
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/input_bar_height"
             android:layout_alignParentBottom="true"
@@ -25,28 +27,43 @@
 
             <!-- The left content (dot view + duration) -->
 
+            <ImageView
+                android:id="@+id/play_pause"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="8dp"
+                android:src="@drawable/ic_pause_new"
+                tools:visibility="visible"
+                android:visibility="gone"/>
+
             <LinearLayout
+                android:id="@+id/recordingTimer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/medium_spacing"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                app:layout_constraintStart_toEndOf="@id/play_pause"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="8dp">
 
                 <View
                     android:id="@+id/dotView"
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:background="@drawable/circle_tintable"
-                    android:backgroundTint="@color/destructive" />
+                    android:backgroundTint="@color/destructive"
+                    android:visibility="visible"
+                    android:layout_marginEnd="8dp"/>
 
                 <TextView
                     android:fontFamily="@font/open_sans_regular"
                     android:id="@+id/recordingViewDurationTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/small_spacing"
                     android:text="00:00"
                     android:textSize="@dimen/small_font_size"
                     android:textColor="@color/text" />
@@ -59,17 +76,18 @@
                 android:id="@+id/inputBarMiddleContentContainer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:paddingHorizontal="40dp"
                 android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:gravity="center"
+                android:layout_marginEnd="72dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
 
                 <ImageView
                     android:id="@+id/inputBarChevronImageView"
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:src="@drawable/ic_keyboard_arrow_left_grey600_24dp"
-                    android:layout_marginTop="1dp"
                     app:tint="@color/text"
                     android:alpha="0.6" />
 
@@ -86,31 +104,71 @@
 
             </LinearLayout>
 
+            <com.thoughtcrimes.securesms.conversation.v2.input_bar.WaveFormView
+                android:id="@+id/audioWaveForm"
+                android:layout_width="0dp"
+                android:layout_height="32dp"
+                app:layout_constraintStart_toEndOf="@id/recordingTimer"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="72dp"
+                android:layout_marginStart="8dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:visibility="gone"
+                tools:visibility="visible"/>
+
             <!-- The cancel button -->
 
-            <TextView
-                android:fontFamily="@font/open_sans_regular"
-                android:id="@+id/inputBarCancelButton"
-                android:layout_width="100dp"
-                android:layout_height="40dp"
-                android:layout_centerInParent="true"
-                android:alpha="0"
-                android:gravity="center"
-                android:text="@string/cancel"
-                android:textSize="@dimen/small_font_size"
-                android:textColor="@color/text"
-                android:textStyle="bold" />
+<!--            <TextView-->
+<!--                android:fontFamily="@font/open_sans_regular"-->
+<!--                android:id="@+id/inputBarCancelButton"-->
+<!--                android:layout_width="100dp"-->
+<!--                android:layout_height="40dp"-->
+<!--                android:layout_centerInParent="true"-->
+<!--                android:alpha="0"-->
+<!--                android:gravity="center"-->
+<!--                android:text="@string/cancel"-->
+<!--                android:textSize="@dimen/small_font_size"-->
+<!--                android:textColor="@color/text"-->
+<!--                android:textStyle="bold" />-->
 
-            <!-- Separator -->
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-<!--            <View-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="1px"-->
-<!--                android:layout_alignParentTop="true"-->
-<!--                android:background="@color/separator" />-->
+    </com.google.android.material.card.MaterialCardView>
 
-        </RelativeLayout>
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/delete_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/timer_container"
+        android:layout_marginBottom="16dp"
+        app:cardBackgroundColor="@color/received_message_background"
+        app:contentPadding="8dp"
+        app:cardCornerRadius="100dp"
+        android:visibility="gone">
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:paddingHorizontal="16dp">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_delete_24"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/delete"
+                android:textColor="@color/received_message_text_color"
+                android:layout_marginStart="8dp"/>
+
+        </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
     <LinearLayout
@@ -141,29 +199,16 @@
 
     </LinearLayout>
 
-    <!-- The pulse view -->
-
-<!--    <RelativeLayout-->
-<!--        android:id="@+id/pulse_container"-->
-<!--        android:layout_width="104dp"-->
-<!--        android:layout_height="104dp"-->
-<!--        android:layout_gravity="center"-->
-<!--        app:layout_constraintEnd_toEndOf="@id/timer_container"-->
-<!--        app:layout_constraintBottom_toBottomOf="@id/timer_container"-->
-<!--        android:elevation="15dp">-->
-
-        <View
-            android:id="@+id/pulseView"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:alpha="0.5"
-            android:background="@drawable/circle_tintable"
-            android:backgroundTint="@color/destructive"
-            app:layout_constraintEnd_toEndOf="@id/timer_container"
-            app:layout_constraintBottom_toBottomOf="@id/timer_container"
-            android:elevation="15dp"/>
-
-<!--    </RelativeLayout>-->
+    <View
+        android:id="@+id/pulseView"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:alpha="0.5"
+        android:background="@drawable/circle_tintable"
+        android:backgroundTint="@color/destructive"
+        app:layout_constraintEnd_toEndOf="@id/timer_container"
+        app:layout_constraintBottom_toBottomOf="@id/timer_container"
+        android:elevation="15dp"/>
 
     <!-- The actual record button overlay -->
 
@@ -189,5 +234,25 @@
             android:src="@drawable/ic_microphone" />
 
     </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/microphoneOrSendButtonContainer"
+        android:layout_width="@dimen/input_bar_button_expanded_size"
+        android:layout_height="@dimen/input_bar_button_expanded_size"
+        android:layout_marginEnd="@dimen/small_spacing"
+        android:layout_marginStart="@dimen/small_spacing"
+        android:layout_gravity="bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/timer_container"
+        app:layout_constraintBottom_toBottomOf="@id/timer_container"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/pulseGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="pulseView,lockView,recordButtonOverlay"
+        tools:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.BaseActionBarActivity
 import com.thoughtcrimes.securesms.data.NodeInfo
+import com.thoughtcrimes.securesms.onboarding.ui.EXTRA_PIN_CODE_ACTION
+import com.thoughtcrimes.securesms.onboarding.ui.PinCodeAction
 import com.thoughtcrimes.securesms.util.push
 import com.thoughtcrimes.securesms.util.setUpActionBarBchatLogo
 import com.thoughtcrimes.securesms.wallet.CheckOnline
@@ -125,7 +127,7 @@ class WalletSettings : BaseActionBarActivity(),WalletSubOptionsListAdapter.ItemC
                 val lockManager: LockManager<CustomPinActivity> = LockManager.getInstance() as LockManager<CustomPinActivity>
                 lockManager.enableAppLock(this@WalletSettings, CustomPinActivity::class.java)
                 val intent = Intent(this@WalletSettings, CustomPinActivity::class.java)
-                intent.putExtra(AppLock.EXTRA_TYPE, AppLock.CHANGE_PIN)
+                intent.putExtra(EXTRA_PIN_CODE_ACTION, PinCodeAction.ChangeWalletPin.action)
                 intent.putExtra("change_pin",true)
                 intent.putExtra("send_authentication",false)
                 push(intent)

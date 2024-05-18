@@ -7,133 +7,173 @@
     android:layout_height="wrap_content"
     app:message_sent_background_color="@color/bchat_id_text_color">
 
-    <!-- Content that will only show on its own -->
-    <include
-        android:id="@+id/deletedMessageView"
-        layout="@layout/view_deleted_message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <include
-        android:id="@+id/untrustedView"
-        layout="@layout/view_untrusted_attachment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <include
-        android:id="@+id/voiceMessageView"
-        layout="@layout/view_voice_message"
-        android:layout_width="160dp"
-        android:layout_height="36dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <include
-        android:id="@+id/openGroupInvitationView"
-        layout="@layout/view_open_group_invitation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.thoughtcrimes.securesms.conversation.v2.messages.PaymentCardView
-        android:id="@+id/paymentCardView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <include
-        android:id="@+id/documentView"
-        layout="@layout/view_document"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
-
-    <!-- Content that will show with other elements -->
-
-    <include
-        android:id="@+id/quoteView"
-        layout="@layout/view_quote"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <include
-        android:id="@+id/linkPreviewView"
-        layout="@layout/view_link_preview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/quoteView" />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/bodyBarrier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierAllowsGoneWidgets="true"
-        app:barrierDirection="end"
-        app:constraint_referenced_ids="albumThumbnailView,linkPreviewView,quoteView,voiceMessageView" />
-
-    <include
-        android:id="@+id/albumThumbnailView"
-        layout="@layout/album_thumbnail_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linkPreviewView"
-        tools:visibility="visible" />
-
     <LinearLayout
-        android:id="@+id/bodyView"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="@+id/bodyBarrier"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/albumThumbnailView"
-        android:orientation="vertical"
-        android:visibility="gone"
-        android:paddingVertical="8dp"
-        android:paddingHorizontal="12dp">
+        android:orientation="vertical">
 
-        <com.thoughtcrimes.securesms.components.emoji.EmojiTextView
-            android:id="@+id/bodyTextView"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/open_sans_regular"
-            android:maxWidth="@dimen/max_text_width"
-            android:minWidth="@dimen/min_text_width"
-            android:visibility="visible" />
+            android:layout_height="wrap_content">
+
+            <!-- Content that will only show on its own -->
+            <include
+                android:id="@+id/deletedMessageView"
+                layout="@layout/view_deleted_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:cardCornerRadius="100dp"
+                app:cardBackgroundColor="@color/received_call_detail_background"
+                android:layout_margin="8dp">
+
+                <include
+                    android:id="@+id/untrustedView"
+                    layout="@layout/view_untrusted_attachment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <include
+                android:id="@+id/voiceMessageView"
+                layout="@layout/view_voice_message"
+                android:layout_width="250dp"
+                android:layout_height="36dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <include
+                android:id="@+id/openGroupInvitationView"
+                layout="@layout/view_open_group_invitation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.thoughtcrimes.securesms.conversation.v2.messages.PaymentCardView
+                android:id="@+id/paymentCardView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <include
+                android:id="@+id/documentView"
+                layout="@layout/view_document"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible" />
+
+            <!-- Content that will show with other elements -->
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/quote_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:cardCornerRadius="100dp"
+                app:cardBackgroundColor="@color/dialled_call_detail_background"
+                android:layout_marginHorizontal="@dimen/small_spacing"
+                android:layout_marginTop="@dimen/small_spacing">
+
+                <include
+                    android:id="@+id/quoteView"
+                    layout="@layout/view_quote"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <include
+                android:id="@+id/linkPreviewView"
+                layout="@layout/view_link_preview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/quote_container" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/bodyBarrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierAllowsGoneWidgets="true"
+                app:barrierDirection="end"
+                app:constraint_referenced_ids="album_container,linkPreviewView,quote_container,voiceMessageView" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/album_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/linkPreviewView"
+                app:cardCornerRadius="24dp"
+                app:cardBackgroundColor="@color/dialled_call_detail_background"
+                android:layout_marginHorizontal="@dimen/small_spacing">
+
+                <include
+                    android:id="@+id/albumThumbnailView"
+                    layout="@layout/album_thumbnail_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/linkPreviewView"
+                    tools:visibility="visible" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.thoughtcrimes.securesms.components.emoji.EmojiTextView
+                android:id="@+id/bodyTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/open_sans_regular"
+                android:maxWidth="@dimen/max_text_width"
+                android:minWidth="@dimen/min_text_width"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/bodyBarrier"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/album_container"
+                android:paddingHorizontal="16dp"
+                android:paddingBottom="4dp"
+                android:paddingTop="8dp"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/message_time"
@@ -142,50 +182,10 @@
             android:fontFamily="@font/open_sans_regular"
             android:textSize="11sp"
             tools:text="12:00 pm"
-            android:layout_gravity="end"/>
+            android:layout_gravity="end"
+            android:layout_marginEnd="16dp"
+            android:layout_marginVertical="4dp"/>
 
     </LinearLayout>
-
-<!--    <com.thoughtcrimes.securesms.components.emoji.EmojiTextView-->
-<!--        android:id="@+id/bodyTextView"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:fontFamily="@font/open_sans_regular"-->
-<!--        android:maxWidth="@dimen/max_text_width"-->
-<!--        android:paddingHorizontal="12dp"-->
-<!--        android:paddingVertical="@dimen/small_spacing"-->
-<!--        android:visibility="gone"-->
-<!--        app:layout_constraintEnd_toEndOf="@+id/bodyBarrier"-->
-<!--        app:layout_constraintHorizontal_bias="0"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/albumThumbnailView" />-->
-
-<!--    <androidx.constraintlayout.widget.Guideline-->
-<!--        android:id="@+id/endGuideline"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:orientation="vertical"-->
-<!--        app:layout_constraintGuide_percent="0.9"/>-->
-
-<!--    <androidx.constraintlayout.widget.Barrier-->
-<!--        android:id="@+id/barrier"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:barrierDirection="bottom"-->
-<!--        app:barrierAllowsGoneWidgets="true"-->
-<!--        app:constraint_referenced_ids="deletedMessageView,untrustedView,voiceMessageView,openGroupInvitationView,paymentCardView,documentView,quoteView,linkPreviewView,albumThumbnailView,bodyTextView"/>-->
-
-<!--    <com.google.android.material.textview.MaterialTextView-->
-<!--        android:id="@+id/message_time"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        android:fontFamily="@font/open_sans_regular"-->
-<!--        android:textSize="11sp"-->
-<!--        tools:text="12:00 pm"-->
-<!--        android:paddingTop="4dp"-->
-<!--        android:layout_marginEnd="12dp"-->
-<!--        android:layout_marginTop="8dp"/>-->
 
 </com.thoughtcrimes.securesms.conversation.v2.messages.VisibleMessageContentView>

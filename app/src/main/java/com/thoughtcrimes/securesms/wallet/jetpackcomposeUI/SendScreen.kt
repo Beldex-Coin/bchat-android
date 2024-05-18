@@ -81,6 +81,8 @@ import com.thoughtcrimes.securesms.data.UserNotes
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.model.PendingTransaction
 import com.thoughtcrimes.securesms.model.Wallet
+import com.thoughtcrimes.securesms.onboarding.ui.EXTRA_PIN_CODE_ACTION
+import com.thoughtcrimes.securesms.onboarding.ui.PinCodeAction
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.serializable
 import com.thoughtcrimes.securesms.wallet.CheckOnline
@@ -594,7 +596,7 @@ fun SendScreen(
                 val lockManager: LockManager<CustomPinActivity> = LockManager.getInstance() as LockManager<CustomPinActivity>
                 lockManager.enableAppLock(context, CustomPinActivity::class.java)
                 val intent = Intent(context, CustomPinActivity::class.java)
-                intent.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN)
+                intent.putExtra(EXTRA_PIN_CODE_ACTION, PinCodeAction.VerifyWalletPin.action)
                 intent.putExtra("change_pin", false)
                 intent.putExtra("send_authentication", true)
                 resultLaunchers.launch(intent)

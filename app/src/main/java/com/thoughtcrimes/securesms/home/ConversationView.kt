@@ -86,6 +86,9 @@ class ConversationView : LinearLayout {
         binding.unreadCountTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize)
         binding.unreadCountTextView.setTypeface(Typeface.DEFAULT, if (unreadCount < 100) Typeface.BOLD else Typeface.NORMAL)
         binding.unreadCountIndicator.isVisible = (unreadCount != 0 && !thread.isRead)
+        if(unreadCount != 0 && !thread.isRead) {
+            binding.contentView.setBackgroundResource(R.drawable.unread_message_chat_background)
+        }
         val senderDisplayName = getUserDisplayName(thread.recipient)
                 ?: thread.recipient.address.toString()
         binding.conversationViewDisplayNameTextView.text = senderDisplayName

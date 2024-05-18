@@ -22,7 +22,7 @@ import com.beldex.libbchat.utilities.FutureTaskListener
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
-import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
+import com.thoughtcrimes.securesms.webrtc.WebRTCComposeActivity
 import com.thoughtcrimes.securesms.util.CallNotificationBuilder
 import com.thoughtcrimes.securesms.util.CallNotificationBuilder.Companion.TYPE_ESTABLISHED
 import com.thoughtcrimes.securesms.util.CallNotificationBuilder.Companion.TYPE_INCOMING_CONNECTING
@@ -218,7 +218,7 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
 
     @Synchronized
     private fun terminate() {
-        LocalBroadcastManager.getInstance(this).sendBroadcast(Intent(WebRtcCallActivity.ACTION_END))
+        LocalBroadcastManager.getInstance(this).sendBroadcast(Intent(WebRTCComposeActivity.ACTION_END))
         lockManager.updatePhoneState(LockManager.PhoneState.IDLE)
         callManager.stop()
         wantsToAnswer = false
@@ -442,6 +442,7 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
             callManager.initializeAudioForCall()
             callManager.startOutgoingRinger(OutgoingRinger.Type.RINGING)
             setCallInProgressNotification(TYPE_OUTGOING_RINGING, callManager.recipient)
+            println("call message insert called 2 ")
             callManager.insertCallMessage(recipient.address.serialize(), CallMessageType.CALL_OUTGOING)
             scheduledTimeout = timeoutExecutor.schedule(TimeoutRunnable(callId, this), TIMEOUT_SECONDS, TimeUnit.SECONDS)
             callManager.setAudioEnabled(true)
@@ -686,9 +687,9 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
         )
         if (!CallNotificationBuilder.areNotificationsEnabled(this) && type == TYPE_INCOMING_PRE_OFFER) {
             // start an intent for the fullscreen
-            val foregroundIntent = Intent(this, WebRtcCallActivity::class.java)
+            val foregroundIntent = Intent(this, WebRTCComposeActivity::class.java)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
-                .setAction(WebRtcCallActivity.ACTION_FULL_SCREEN_INTENT)
+                .setAction(WebRTCComposeActivity.ACTION_FULL_SCREEN_INTENT)
             startActivity(foregroundIntent)
         }
     }

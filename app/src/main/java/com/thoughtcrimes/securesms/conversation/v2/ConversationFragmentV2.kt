@@ -148,6 +148,8 @@ import com.thoughtcrimes.securesms.mms.VideoSlide
 import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
 import com.thoughtcrimes.securesms.model.PendingTransaction
 import com.thoughtcrimes.securesms.model.Wallet
+import com.thoughtcrimes.securesms.onboarding.ui.EXTRA_PIN_CODE_ACTION
+import com.thoughtcrimes.securesms.onboarding.ui.PinCodeAction
 import com.thoughtcrimes.securesms.permissions.Permissions
 import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
 import com.thoughtcrimes.securesms.service.WebRtcCallService
@@ -173,16 +175,20 @@ import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
 import com.thoughtcrimes.securesms.webrtc.NetworkChangeReceiver
+import com.thoughtcrimes.securesms.webrtc.WebRTCComposeActivity
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.FragmentConversationV2Binding
 import io.beldex.bchat.databinding.ViewVisibleMessageBinding
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import nl.komponents.kovenant.ui.successUi
+import org.apache.commons.lang3.time.DurationFormatUtils
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
@@ -382,6 +388,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
     private val messageToScrollTimestamp = AtomicLong(-1)
     private val messageToScrollAuthor = AtomicReference<Address?>(null)
+    private var amplitudeJob: Job? = null
 
     companion object {
         @JvmStatic
@@ -456,6 +463,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private var isNetworkAvailable = true
     private var callViewModel : CallViewModel? =null
     private var bns_Name : String? = null
+    private val callDurationFormat = "HH:mm:ss"
+    private var uiJob: Job? = null
 
 
     interface Listener {
@@ -506,6 +515,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         audioRecorder = AudioRecorder(requireActivity().applicationContext)
 
 //        val thread = threadDb.getRecipientForThreadId(viewModel.threadId)
+        callViewModel = ViewModelProvider(requireActivity())[CallViewModel::class.java]
         lifecycleScope.launch {
             viewModel.backToHome.collectLatest {
                 if (it) {
@@ -678,6 +688,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     override fun onResume() {
         super.onResume()
+        setupCallActionBar()
         ApplicationContext.getInstance(requireActivity()).messageNotifier.setVisibleThread(viewModel.threadId)
         if (!viewModel.markAllRead())
             return
@@ -736,6 +747,48 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             this.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
     }
+
+    private fun setupCallActionBar() {
+        val startTimeNew = callViewModel!!.callStartTime
+        if (startTimeNew == -1L) {
+            binding.callActionBarView.isVisible = false
+        } else {
+            binding.callActionBarView.isVisible = true
+            uiJob = lifecycleScope.launch {
+                launch {
+                    while (isActive) {
+                        val startTime = callViewModel!!.callStartTime
+                        if (startTime == -1L) {
+                            binding.callActionBarView.isVisible = false
+                        } else {
+                            binding.callActionBarView.isVisible = true
+                            binding.callDurationCall.text = DurationFormatUtils.formatDuration(
+                                    System.currentTimeMillis() - startTime,
+                                    callDurationFormat
+                            )
+                        }
+
+                        delay(1_000)
+                    }
+                }
+            }
+        }
+        binding.hanUpCall.setOnClickListener {
+            requireActivity().applicationContext.startService(WebRtcCallService.hangupIntent(requireActivity().applicationContext))
+            binding.callActionBarView.isVisible = false
+            Toast.makeText(requireActivity().applicationContext, "Call ended", Toast.LENGTH_SHORT).show()
+        }
+        binding.callActionBarView.setOnClickListener {
+            callWebRTCCallScreen()
+        }
+    }
+
+    private fun callWebRTCCallScreen(){
+        Intent(requireContext(), WebRTCComposeActivity::class.java).also {
+            startActivity(it)
+        }
+    }
+
 
     private fun networkChange(networkAvailable: Boolean) {
         isNetworkAvailable = networkAvailable
@@ -1117,6 +1170,15 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 showVoiceMessageUI()
                 this.activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 audioRecorder.startRecording()
+//                amplitudeJob = lifecycleScope.launch {
+//                    while (isActive) {
+//                        val amplitude = audioRecorder.amplitude
+//                        println(">>>>amplitude--${amplitude}")
+//                        if (amplitude != -1f)
+//                            binding.inputBarRecordingView.addAmplitude(amplitude)
+//                        delay(100)
+//                    }
+//                }
                 stopAudioHandler.postDelayed(
                         stopVoiceMessageRecordingTask,
                         300000
@@ -1442,39 +1504,41 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun sendVoiceMessage() {
-            hideVoiceMessageUI()
-            this.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            val future = audioRecorder.stopRecording()
-            stopAudioHandler.removeCallbacks(stopVoiceMessageRecordingTask)
-            future.addListener(object : ListenableFuture.Listener<Pair<Uri, Long>> {
+        hideVoiceMessageUI()
+        this.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        val future = audioRecorder.stopRecording()
+//        amplitudeJob?.cancel()
+        stopAudioHandler.removeCallbacks(stopVoiceMessageRecordingTask)
+        future.addListener(object : ListenableFuture.Listener<Pair<Uri, Long>> {
 
-                override fun onSuccess(result: Pair<Uri, Long>) {
-                    val audioSlide = AudioSlide(
-                        requireActivity(),
-                        result.first,
-                        result.second,
-                        MediaTypes.AUDIO_AAC,
-                        true
-                    )
-                    val slideDeck = SlideDeck()
-                    slideDeck.addSlide(audioSlide)
-                    sendAttachments(slideDeck.asAttachments(), null)
-                }
+            override fun onSuccess(result: Pair<Uri, Long>) {
+                val audioSlide = AudioSlide(
+                    requireActivity(),
+                    result.first,
+                    result.second,
+                    MediaTypes.AUDIO_AAC,
+                    true
+                )
+                val slideDeck = SlideDeck()
+                slideDeck.addSlide(audioSlide)
+                sendAttachments(slideDeck.asAttachments(), null)
+            }
 
-                override fun onFailure(e: ExecutionException) {
-                    Toast.makeText(
-                        requireActivity(),
-                        R.string.ConversationActivity_unable_to_record_audio,
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            })
+            override fun onFailure(e: ExecutionException) {
+                Toast.makeText(
+                    requireActivity(),
+                    R.string.ConversationActivity_unable_to_record_audio,
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        })
     }
 
     override fun cancelVoiceMessage() {
         hideVoiceMessageUI()
         this.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         audioRecorder.stopRecording()
+//        amplitudeJob?.cancel()
         stopAudioHandler.removeCallbacks(stopVoiceMessageRecordingTask)
     }
 
@@ -2407,8 +2471,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
         val service = WebRtcCallService.createCall(context, thread)
         context.startService(service)
-
-        val activity = Intent(context, WebRtcCallActivity::class.java).apply {
+        val activity = Intent(context, WebRTCComposeActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
         context.startActivity(activity)
@@ -3081,7 +3144,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             LockManager.getInstance() as LockManager<CustomPinActivity>
         lockManager.enableAppLock(requireActivity(), CustomPinActivity::class.java)
         val intent = Intent(requireActivity(), CustomPinActivity::class.java)
-        intent.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN)
+        intent.putExtra(EXTRA_PIN_CODE_ACTION, PinCodeAction.VerifyWalletPin.action)
         intent.putExtra("change_pin", false)
         intent.putExtra("send_authentication", true)
         resultLaunchers.launch(intent)

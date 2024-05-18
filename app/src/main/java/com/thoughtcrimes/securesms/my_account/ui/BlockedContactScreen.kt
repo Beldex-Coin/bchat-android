@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -38,6 +39,8 @@ import com.thoughtcrimes.securesms.compose_utils.BChatCheckBox
 import com.thoughtcrimes.securesms.compose_utils.BChatTheme
 import com.thoughtcrimes.securesms.compose_utils.DialogContainer
 import com.thoughtcrimes.securesms.compose_utils.PrimaryButton
+import com.thoughtcrimes.securesms.compose_utils.ProfilePictureComponent
+import com.thoughtcrimes.securesms.compose_utils.ProfilePictureMode
 import com.thoughtcrimes.securesms.compose_utils.appColors
 import io.beldex.bchat.R
 
@@ -219,14 +222,20 @@ private fun BlockedContactItem(
                     if (multiSelectActivated) 8.dp else 16.dp
                 )
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.dummy_user),
-                contentDescription = "",
-                modifier = Modifier
-                    .size(32.dp)
-                    .clip(RoundedCornerShape(15))
-            )
 
+            Box(
+                    modifier=Modifier
+                            .height(36.dp)
+                            .width(36.dp)
+                            .clip(RoundedCornerShape(15)),
+                    contentAlignment=Alignment.Center,
+            ) {
+                ProfilePictureComponent(
+                        publicKey=contact.address.toString(),
+                        displayName=contact.name.toString(),
+                        containerSize=36.dp,
+                        pictureMode=ProfilePictureMode.LargePicture)
+            }
             Text(
                 text = contact.name ?: "",
                 style = MaterialTheme.typography.titleMedium,

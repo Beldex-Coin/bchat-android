@@ -115,7 +115,7 @@
             android:name="com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.wallet.password.CreateWalletPassword"
             android:exported="false"
@@ -131,6 +131,18 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.thoughtcrimes.securesms.calls.WebRtcCallActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:parentActivityName="com.thoughtcrimes.securesms.home.HomeActivity"
+            android:screenOrientation="portrait"
+            android:showForAllUsers="true"
+            android:theme="@style/Theme.Bchat.CallActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.thoughtcrimes.securesms.home.HomeActivity" />
+        </activity>
+        <activity
+            android:name="com.thoughtcrimes.securesms.webrtc.WebRTCComposeActivity"
             android:exported="false"
             android:launchMode="singleTop"
             android:parentActivityName="com.thoughtcrimes.securesms.home.HomeActivity"
@@ -212,7 +224,7 @@
             android:name="com.thoughtcrimes.securesms.onboarding.PasswordActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name="com.thoughtcrimes.securesms.applock.AppLockDetailsActivity"
@@ -296,7 +308,7 @@
             android:name="com.thoughtcrimes.securesms.onboarding.AppLockActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.onboarding.CreatePasswordActivity"
             android:exported="false"

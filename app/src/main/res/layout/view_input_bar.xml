@@ -44,8 +44,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_centerInParent="true"
-                    android:layout_marginStart="48dp"
                     android:layout_toStartOf="@id/payAsYouChatLayout"
+                    android:layout_toEndOf="@id/attachmentsButtonContainer"
                     android:background="@null"
                     android:gravity="center_vertical"
                     android:fontFamily="@font/open_sans_medium"
@@ -59,7 +59,8 @@
                     android:layout_height="@dimen/input_bar_button_expanded_size"
                     android:layout_alignParentEnd="true"
                     android:gravity="center"
-                    android:layout_centerVertical="true">
+                    android:layout_centerVertical="true"
+                    android:visibility="visible">
 
                     <ImageView
                         android:id="@+id/inChatBDX"

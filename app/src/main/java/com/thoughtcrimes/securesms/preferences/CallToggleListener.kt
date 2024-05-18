@@ -1,8 +1,13 @@
 package com.thoughtcrimes.securesms.preferences
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.content.Intent
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.Button
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.Fragment
 import androidx.preference.Preference
@@ -32,18 +37,26 @@ internal class CallToggleListener(
             .execute()
     }
 
+    @SuppressLint("MissingInflatedId")
     override fun onPreferenceChange(preference: Preference, newValue: Any): Boolean {
         if (!(newValue as Boolean)) return true
         // check if we've shown the info dialog and check for microphone permissions
         if (setShownCallWarning(context.requireContext())) {
-            val dialog = AlertDialog.Builder(ContextThemeWrapper(context.requireContext(),  R.style.BChatAlertDialog))
-                .setTitle(R.string.dialog_voice_video_title)
-                .setMessage(R.string.dialog_voice_video_message)
-                .setPositiveButton(R.string.dialog_link_preview_enable_button_title) {  d: DialogInterface?, w: Int -> requestMicrophonePermission() }
-                .setNegativeButton(R.string.cancel) { d: DialogInterface?, w: Int -> }
-                .show()
-            val positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE)
-            positiveButton.contentDescription = "Enable"
+            val factory = LayoutInflater.from(context.requireContext())
+            val callPermissionDialogView: View= factory.inflate(R.layout.enable_call_permission, null)
+            val callPermissionDialog = AlertDialog.Builder(context.requireContext()).create()
+            callPermissionDialog.window?.setBackgroundDrawableResource(R.color.transparent)
+            callPermissionDialog.setView(callPermissionDialogView)
+            val enableButton = callPermissionDialogView.findViewById<Button>(R.id.callPermissionEnableButton)
+            val cancelButton = callPermissionDialogView.findViewById<Button>(R.id.callPermissionCancelButton)
+            enableButton.setOnClickListener {
+                requestMicrophonePermission()
+                callPermissionDialog.dismiss()
+            }
+            cancelButton.setOnClickListener {
+                callPermissionDialog.dismiss()
+            }
+            callPermissionDialog.show()
         } else {
             requestMicrophonePermission()
         }

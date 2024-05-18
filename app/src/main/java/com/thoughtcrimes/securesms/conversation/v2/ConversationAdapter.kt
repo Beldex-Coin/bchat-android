@@ -4,23 +4,22 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.database.Cursor
-import android.os.Build
 import android.util.SparseArray
 import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.annotation.WorkerThread
 import androidx.core.util.getOrDefault
 import androidx.core.util.set
 import androidx.lifecycle.LifecycleCoroutineScope
-
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.beldex.libbchat.messaging.contacts.Contact
+import com.thoughtcrimes.securesms.conversation.v2.messages.ControlMessageView
 import com.thoughtcrimes.securesms.conversation.v2.messages.VisibleMessageContentViewDelegate
 import com.thoughtcrimes.securesms.conversation.v2.messages.VisibleMessageView
-import com.thoughtcrimes.securesms.conversation.v2.messages.ControlMessageView
 import com.thoughtcrimes.securesms.database.CursorRecyclerViewAdapter
 import com.thoughtcrimes.securesms.database.model.MessageRecord
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
@@ -132,19 +131,20 @@ class ConversationAdapter(context: Context, cursor: Cursor, private val onItemPr
             }
             is ControlMessageViewHolder -> {
                 viewHolder.view.bind(message, messageBefore)
-                if (message.isCallLog && message.isFirstMissedCall) {
+                if (message.isCallLog && message.isMissedCall) {
                     viewHolder.view.setOnClickListener {
-                        AlertDialog.Builder(context,R.style.BChatAlertDialog_Call_Missed)
-                            .setTitle(R.string.CallNotificationBuilder_first_call_title)
-                            .setMessage(R.string.CallNotificationBuilder_first_call_message)
-                            .setPositiveButton(R.string.activity_settings_title) { _, _ ->
-                                val intent = Intent(context, PrivacySettingsActivity::class.java)
-                                context.startActivity(intent)
-                            }
-                            .setNeutralButton(R.string.cancel) { d, _ ->
-                                d.dismiss()
-                            }
-                            .show()
+                        val factory = LayoutInflater.from(context)
+                        val callMissedDialogView: View = factory.inflate(R.layout.call_missed_dialog_box, null)
+                        val callMissedDialog = AlertDialog.Builder(context).create()
+                        callMissedDialog.window?.setBackgroundDrawableResource(R.color.transparent)
+                        callMissedDialog.setView(callMissedDialogView)
+                       val okButton =  callMissedDialogView.findViewById<Button>(R.id.missedCallOkButton)
+                        okButton.setOnClickListener {
+                            val intent = Intent(context, PrivacySettingsActivity::class.java)
+                            context.startActivity(intent)
+                            callMissedDialog.dismiss()
+                        }
+                        callMissedDialog.show()
                     }
                 } else {
                     viewHolder.view.setOnClickListener(null)

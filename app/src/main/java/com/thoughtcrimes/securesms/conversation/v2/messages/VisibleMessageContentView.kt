@@ -24,7 +24,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
@@ -40,6 +39,7 @@ import com.beldex.libbchat.utilities.ThemeUtil
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import com.codewaves.stickyheadergrid.StickyHeaderGridLayoutManager
+import com.google.android.material.card.MaterialCardView
 import com.thoughtcrimes.securesms.conversation.v2.ModalUrlBottomSheet
 import com.thoughtcrimes.securesms.conversation.v2.utilities.MentionUtilities
 import com.thoughtcrimes.securesms.conversation.v2.utilities.ModalURLSpan
@@ -62,7 +62,7 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.util.Locale
 import kotlin.math.roundToInt
 
-class VisibleMessageContentView : ConstraintLayout {
+class VisibleMessageContentView : MaterialCardView {
     private val binding: ViewVisibleMessageContentBinding by lazy { ViewVisibleMessageContentBinding.bind(this) }
     var onContentClick: MutableList<((event: MotionEvent) -> Unit)> = mutableListOf()
     var onContentDoubleTap: (() -> Unit)? = null
@@ -124,7 +124,7 @@ class VisibleMessageContentView : ConstraintLayout {
                 message,
                 VisibleMessageContentView.getTextColor(context, message)
             )
-            binding.bodyView.isVisible = false
+            binding.bodyTextView.isVisible = false
             binding.quoteView.root.isVisible = false
             binding.linkPreviewView.root.isVisible = false
             binding.untrustedView.root.isVisible = false
@@ -305,7 +305,8 @@ class VisibleMessageContentView : ConstraintLayout {
                         isEnd = isEndOfMessageCluster
                     )
                     onContentClick.add { event ->
-                        binding.albumThumbnailView.root.calculateHitObject(event, message, thread, onAttachmentNeedsDownload)                    }
+                        binding.albumThumbnailView.root.calculateHitObject(event, message, thread, onAttachmentNeedsDownload)
+                    }
                 } else {
                     hideBody = true
                     binding.albumThumbnailView.root.clearViews()
@@ -334,12 +335,12 @@ class VisibleMessageContentView : ConstraintLayout {
             }
         }
 
-        binding.bodyView.isVisible = message.body.isNotEmpty() && !hideBody
-        val time = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
-        binding.messageTime.text = time
+        binding.bodyTextView.isVisible = message.body.isNotEmpty() && !hideBody
+        binding.messageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
+        binding.messageTime.setTextColor(getTimeTextColor(context, message.isOutgoing))
 
         // set it to use constraints if not only a text message, otherwise wrap content to whatever width it wants
-        val params = binding.bodyView.layoutParams
+        val params = binding.bodyTextView.layoutParams
         params.width =
             if (onlyBodyMessage || binding.barrierViewsGone()) ViewGroup.LayoutParams.MATCH_PARENT else 0
         val fontSize = TextSecurePreferences.getChatFontSize(context)
@@ -428,7 +429,7 @@ class VisibleMessageContentView : ConstraintLayout {
             binding.quoteView.root,
             binding.linkPreviewView.root,
             binding.albumThumbnailView.root,
-            binding.bodyView,
+            binding.bodyTextView,
         ).forEach { view:View -> view.isVisible = false }
     }
 
@@ -491,6 +492,16 @@ class VisibleMessageContentView : ConstraintLayout {
                 R.color.white
             } else {
                 R.color.received_message_text_color
+            }
+            return context.resources.getColorWithID(colorID, context.theme)
+        }
+
+        @ColorInt
+        fun getTimeTextColor(context: Context, isOutGoing: Boolean): Int {
+            val colorID = if (isOutGoing) {
+                R.color.sent_message_time_color
+            } else {
+                R.color.received_message_time_color
             }
             return context.resources.getColorWithID(colorID, context.theme)
         }

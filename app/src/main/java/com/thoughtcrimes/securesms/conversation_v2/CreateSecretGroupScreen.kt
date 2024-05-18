@@ -78,13 +78,13 @@ fun CreateSecretGroup(
     searchQuery: String,
     contacts: List<Recipient>,
     selectedContact: List<String>,
-    onEvent: (SecretGroupEvents) -> Unit
+    onEvent: (SecretGroupEvents) -> Unit,
+    activity: NewConversationActivity
 ) {
     var groupName by remember {
         mutableStateOf("")
     }
     val context=LocalContext.current
-    val activity=(context as? Activity)
     var showLoader by remember {
         mutableStateOf(false)
     }
@@ -355,7 +355,7 @@ private fun createClosedGroup(name: String, context: Context, activity: Activity
 }
 
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+/*@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun CreateSecretGroupScreenPreview() {
     BChatPreviewContainer {
@@ -379,6 +379,6 @@ fun CreateSecretGroupScreenPreviewLight() {
             onEvent = {}
         )
     }
-}
+}*/
 
 

@@ -1041,7 +1041,7 @@
     <string name="NotificationBarManager__answer_call" translatable="false">Answer call</string>
     <string name="NotificationBarManager__establishing_signal_call" translatable="false">Establishing call</string>
     <string name="NotificationBarManager__cancel_call" translatable="false">Cancel call</string>
-    <string name="NotificationBarManager_call_in_progress" translatable="false">Call in progress</string>
+    <string name="NotificationBarManager_call_in_progress" translatable="false">Person in call</string>
     <string name="NotificationBarManager__end_call" translatable="false">End call</string>
     <string name="WebRtcCallActivity_Bchat_Call" translatable="false">Bchat Call</string>
     <string name="WebRtcCallActivity_Reconnecting" translatable="false">Reconnecting…</string>
@@ -1488,4 +1488,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="by_date" translatable="false">By date</string>
     <string name="no_addresses" translatable="false">No Addresses!</string>
     <string name="save_address_to_show" translatable="false">Save address to show!</string>
+    <string name="voice_call">Voice Call</string>
+    <string name="missed_voice_call">Missed Voice Call</string>
+    <string name="tap_to_callback">Tap to Callback</string>
+    <string name="enter_your_4_digit_wallet_pin">Enter your 4 digit Wallet PIN</string>
 </resources>

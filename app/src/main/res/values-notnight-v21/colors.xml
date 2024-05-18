@@ -164,4 +164,8 @@
     <color name="sent_message_time_color">#EBEBEB</color>
     <color name="received_message_time_color">#A7A7BA</color>
     <color name="call_notification_background">#FFFFFF</color>
+    <color name="call_bottom_background">#E8E8E8</color>
+    <color name="unread_chat_background">#F4F4F4</color>
+    <color name="missed_call_dialog_background">#F8F8F8</color>
+    <color name="enable_call_icon_background">#EBEBEB</color>
 </resources>

@@ -54,9 +54,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -67,7 +67,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.utilities.TextSecurePreferences
@@ -128,6 +127,7 @@ class WebRTCComposeActivity : ComponentActivity() {
 
     @Composable
     fun WebRtcCallScreen() {
+        val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(LocalContext.current) == UiMode.NIGHT
         val callViewModel : CallViewModel=hiltViewModel()
         val context=LocalContext.current
         val profileSize=132.dp
@@ -551,9 +551,11 @@ class WebRTCComposeActivity : ComponentActivity() {
                 horizontalAlignment=Alignment.CenterHorizontally,
                 modifier=Modifier
                         .fillMaxSize()
-                        .paint(
-                        painterResource(id = R.drawable.call_background),
-                        contentScale = ContentScale.FillBounds)
+                        .paint( if(isDarkTheme)
+                                painterResource(id=R.drawable.call_background)
+                                else
+                                 painterResource(id=R.drawable.call_background_white),
+                                contentScale=ContentScale.FillBounds)
         ) {
 
             Column(
@@ -586,6 +588,7 @@ class WebRTCComposeActivity : ComponentActivity() {
                                 Icon(
                                         painter=painterResource(id=R.drawable.ic_lock_call),
                                         contentDescription=lockDescription,
+                                        tint = MaterialTheme.appColors.textColor,
                                         modifier=Modifier.padding(horizontal=5.dp)
                                 )
                                 Text(
@@ -687,8 +690,8 @@ class WebRTCComposeActivity : ComponentActivity() {
                     ) {
                         if (isShowAnswerOption) {
                             Box(modifier=Modifier
-                                    .height(72.dp)
-                                    .width(72.dp)
+                                    .height(65.dp)
+                                    .width(65.dp)
                                     .background(MaterialTheme.appColors.walletDashboardReceiveButtonBackground, shape=CircleShape)
                                     .clickable {
                                         if (callViewModel.currentCallState == CallViewModel.State.CALL_PRE_INIT) {
@@ -704,8 +707,8 @@ class WebRTCComposeActivity : ComponentActivity() {
                         }
                         if (isShowDeclineOption) {
                             Box(modifier=Modifier
-                                    .height(72.dp)
-                                    .width(72.dp)
+                                    .height(65.dp)
+                                    .width(65.dp)
                                     .background(MaterialTheme.appColors.errorMessageColor, shape=CircleShape)
                                     .clickable {
                                         val declineIntent=WebRtcCallService.denyCallIntent(context)
@@ -731,7 +734,9 @@ class WebRTCComposeActivity : ComponentActivity() {
                         Box(
                                 modifier=Modifier
                                         .wrapContentSize()
-                                        .paint(painterResource(id=R.drawable.call_bottom_background), contentScale=ContentScale.FillBounds),
+                                        .paint(painterResource(id=R.drawable.call_bottom_background_white),
+                                                contentScale=ContentScale.FillBounds,
+                                                colorFilter=ColorFilter.tint(MaterialTheme.appColors.callBottomBackground)),
                                 contentAlignment=Alignment.Center
                         ) {
                             Row(
@@ -757,7 +762,21 @@ class WebRTCComposeActivity : ComponentActivity() {
 
                                         ) {
 
-                                            Image(painter=if (isSelectedVideoOption) painterResource(id=R.drawable.ic_video_disabled_call) else painterResource(id=R.drawable.ic_video_call), contentDescription=enableVideoDescription, modifier=Modifier.padding(10.dp))
+                                            Image(painter=
+                                            if (isSelectedVideoOption) {
+                                                if (isDarkTheme) {
+                                                    painterResource(id=R.drawable.ic_video_disabled_call)
+                                                } else {
+                                                    painterResource(id=R.drawable.ic_video_disable_call_white)
+                                                }
+                                            } else {
+                                                if (isDarkTheme) {
+                                                    painterResource(id=R.drawable.ic_video_call)
+                                                } else {
+                                                    painterResource(id=R.drawable.ic_video_call_white)
+                                                }
+                                            },
+                                                    contentDescription=enableVideoDescription, modifier=Modifier.padding(10.dp))
                                         }
                                     }
 
@@ -774,7 +793,13 @@ class WebRTCComposeActivity : ComponentActivity() {
 
                                         ) {
 
-                                            Image(painter=painterResource(id=R.drawable.ic_switch_camera_call), contentDescription=switchCamDescription, modifier=Modifier.padding(10.dp))
+                                            Image(
+                                                    painter=painterResource(
+                                                            id=if (isDarkTheme) R.drawable.ic_switch_camera_call
+                                                            else R.drawable.ic_switch_camera_call_white),
+                                                    contentDescription=switchCamDescription,
+                                                    modifier=Modifier.padding(10.dp)
+                                            )
                                         }
                                     }
                                 }
@@ -792,7 +817,21 @@ class WebRTCComposeActivity : ComponentActivity() {
                                                 .clickable(isMuteOptionClickable) { enableMuteOption() }, contentAlignment=Alignment.Center
 
                                         ) {
-                                            Image(painter=if (isMuteOptionIconChange) painterResource(id=R.drawable.ic_unmute_call) else painterResource(id=R.drawable.ic_mute_call), contentDescription=muteDescription, modifier=Modifier.padding(10.dp))
+                                            Image(painter=
+                                            if (isMuteOptionIconChange) {
+                                                if (isDarkTheme) {
+                                                    painterResource(id=R.drawable.ic_unmute_call)
+                                                } else {
+                                                    painterResource(id=R.drawable.ic_unmute_call_white)
+                                                }
+                                            } else {
+                                                if (isDarkTheme) {
+                                                    painterResource(id=R.drawable.ic_mute_call)
+                                                } else {
+                                                    painterResource(id=R.drawable.ic_mute_call_white)
+                                                }
+                                            },
+                                                    contentDescription=muteDescription, modifier=Modifier.padding(10.dp))
                                         }
                                     }
 
@@ -805,9 +844,9 @@ class WebRTCComposeActivity : ComponentActivity() {
                                                 .width(42.dp)
                                                 .background(MaterialTheme.appColors.qrCodeBackground, shape=CircleShape)
                                                 .clickable {
-                                                    expanded=true
-                                                    /* val command=AudioManagerCommand.SetUserDevice(if (callViewModel.isSpeaker) SignalAudioManager.AudioDevice.EARPIECE else SignalAudioManager.AudioDevice.SPEAKER_PHONE)
-                                                WebRtcCallService.sendAudioManagerCommand(context, command)*/
+                                                    //expanded=true
+                                                     val command=AudioManagerCommand.SetUserDevice(if (callViewModel.isSpeaker) SignalAudioManager.AudioDevice.EARPIECE else SignalAudioManager.AudioDevice.SPEAKER_PHONE)
+                                                WebRtcCallService.sendAudioManagerCommand(context, command)
                                                 }, contentAlignment=Alignment.Center
 
                                         ) {
@@ -835,18 +874,24 @@ class WebRTCComposeActivity : ComponentActivity() {
                                                         })
                                             }
 
-                                            Image(
-                                                    painter=painterResource(id=R.drawable.ic_speaker_call),
+                                            Image(painter= if(isDarkTheme){
+                                                        painterResource(id=R.drawable.ic_speaker_call)
+                                                    }else{
+                                                        painterResource(id=R.drawable.ic_speaker_call_white)
+                                                    },
                                                     contentDescription=speakerDescription,
                                                     modifier=Modifier.align(Alignment.Center)
                                             )
 
                                             Image(
-                                                    painter=painterResource(id=R.drawable.ic_arrow_forward),
+                                                    painter= if(isDarkTheme) {
+                                                        painterResource(id=R.drawable.ic_switch_speaker_call)
+                                                    }else{
+                                                        painterResource(id=R.drawable.ic_switch_speaker_call_white)
+                                                    },
                                                     contentDescription=speakerDescription,
-                                                    modifier=Modifier.align(Alignment.BottomEnd)
+                                                    modifier=Modifier.align(Alignment.BottomEnd).offset(x= ((5).dp), y =((5).dp))
                                             )
-
 
                                         }
                                     }

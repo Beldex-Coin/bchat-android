@@ -45,7 +45,7 @@
                         android:gravity="start"
                         android:hint="@string/mnemonic_edit_text_hint"
                         android:inputType="textMultiLine"
-                        android:maxLines="3"
+                        android:maxLines="5"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/recoveryPhrasePasteIcon"
@@ -100,6 +100,7 @@
             android:layout_weight="1">
 
             <TextView
+                android:id="@+id/paste_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"

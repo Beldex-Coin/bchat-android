@@ -899,4 +899,16 @@
         <item name="android:thumbTint">#FFFFFF</item>
     </style>
 
+    <style name="Widget.Bchat.Button.Dialog.Ok">
+        <item name="android:fontFamily">@font/open_sans_semi_bold</item>
+        <item name="android:background">@drawable/bchat_dialog_button_shape</item>
+        <item name="android:shadowColor">@color/black</item>
+    </style>
+
+    <style name="Widget.Bchat.Button.Dialog.Enable">
+        <item name="android:fontFamily">@font/open_sans_semi_bold</item>
+        <item name="android:background">@drawable/bchat_dialog_positive_button_shape</item>
+        <item name="text_color">@color/white</item>
+        <item name="android:shadowColor">@color/black</item>
+    </style>
 </resources>

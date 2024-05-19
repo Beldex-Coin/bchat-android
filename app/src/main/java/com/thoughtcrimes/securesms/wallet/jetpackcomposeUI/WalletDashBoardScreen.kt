@@ -85,7 +85,8 @@ fun WalletDashBoardScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
     val clipboardManager = LocalClipboardManager.current
     val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.US)
-    val dateTimeFormat = SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.US)
+    val subDateFormat = SimpleDateFormat("dd-MMM-yyyy",Locale.US)
+    val dateTimeFormat = SimpleDateFormat("MMM dd, yyyy, HH:mm:ss a", Locale.US)
 
     var incomingTransactionIsChecked by remember {
         mutableStateOf(true)
@@ -308,7 +309,13 @@ fun WalletDashBoardScreen(
                     IconButton(onClick = {
                         activityCallback.walletOnBackPressed()
                     }) {
-                        Icon(Icons.Filled.ArrowBack, "backIcon")
+                        Icon(
+                            painterResource(id = R.drawable.ic_back_arrow),
+                            contentDescription = stringResource(
+                                id = R.string.back
+                            ),
+                            tint = MaterialTheme.appColors.editTextColor,
+                        )
                     }
                 },
                 modifier = Modifier
@@ -403,7 +410,7 @@ fun WalletDashBoardScreen(
                         ) {
                             Image(
                                 painter = painterResource(id = R.drawable.ic_beldex,),
-                                contentDescription = "",
+                                contentDescription = "beldex logo",
                                 colorFilter = ColorFilter.tint(
                                     color = if(sendCardViewButtonIsEnabled) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.textColor
                                 )
@@ -559,7 +566,8 @@ fun WalletDashBoardScreen(
                         text = stringResource(id = R.string.transactions),
                         style = MaterialTheme.typography.titleMedium.copy(
                             color = MaterialTheme.appColors.onMainContainerTextColor,
-                            fontSize = 18.sp
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.SemiBold
                         )
                     )
 
@@ -652,7 +660,7 @@ fun WalletDashBoardScreen(
                                             )
 
                                             Text(
-                                                text = "Incoming",
+                                                text = stringResource(id = R.string.incoming),
                                                 style = MaterialTheme.typography.titleMedium.copy(
                                                     color = MaterialTheme.appColors.transactionTypeTitle,
                                                     fontSize = 14.sp,
@@ -663,7 +671,7 @@ fun WalletDashBoardScreen(
                                         }
                                         Image(
                                             painter = painterResource(id = R.drawable.divider_dot),
-                                            contentDescription = ""
+                                            contentDescription = "divider circle"
                                         )
 
                                         Row(
@@ -704,7 +712,7 @@ fun WalletDashBoardScreen(
                                             )
 
                                             Text(
-                                                text = "Outgoing",
+                                                text = stringResource(id = R.string.outgoing),
                                                 style = MaterialTheme.typography.titleMedium.copy(
                                                     color = MaterialTheme.appColors.transactionTypeTitle,
                                                     fontSize = 14.sp,
@@ -715,7 +723,7 @@ fun WalletDashBoardScreen(
                                         }
                                         Image(
                                             painter = painterResource(id = R.drawable.divider_dot),
-                                            contentDescription = ""
+                                            contentDescription = "divider circle"
                                         )
                                         Row(
                                             verticalAlignment = Alignment.CenterVertically,
@@ -732,7 +740,7 @@ fun WalletDashBoardScreen(
                                             )
 
                                             Text(
-                                                text = "By date",
+                                                text = stringResource(id = R.string.by_date),
                                                 style = MaterialTheme.typography.titleMedium.copy(
                                                     color = MaterialTheme.appColors.transactionTypeTitle,
                                                     fontSize = 14.sp,
@@ -760,7 +768,7 @@ fun WalletDashBoardScreen(
                                     ) {
                                         Icon(
                                             painter = painterResource(id = R.drawable.ic_transaction_history_arrow_back),
-                                            contentDescription = "",
+                                            contentDescription = "back arrow",
                                             tint = MaterialTheme.appColors.transactionHistoryArrowBackIconColor,
                                             modifier = Modifier
                                                 .padding(start = 10.dp, top = 10.dp, bottom = 10.dp)
@@ -772,7 +780,7 @@ fun WalletDashBoardScreen(
                                         )
 
                                         Text(
-                                            text = "Details",
+                                            text = stringResource(R.string.details),
                                             modifier = Modifier
                                                 .fillMaxWidth()
                                                 .weight(1f)
@@ -815,7 +823,7 @@ fun WalletDashBoardScreen(
                                             var transactionStatus: String? = ""
                                             var transactionAmount: String? = ""
                                             var transactionAmountTextColor: Int
-                                            var transactionDateTime: String? = ""
+                                            var transactionDate: String? = ""
                                             if (isBNS) {
                                                 transactionStatusIcon =
                                                     R.drawable.bns_transaction
@@ -858,8 +866,8 @@ fun WalletDashBoardScreen(
                                                     }
                                                 }
                                             }
-                                            transactionDateTime =
-                                                getDateTime(infoItems.timestamp,dateTimeFormat)
+                                            transactionDate =
+                                                getDateTime(infoItems.timestamp,subDateFormat)
 
                                             if (infoItems.isFailed) {
                                                 transactionAmount = context.getString(
@@ -902,7 +910,7 @@ fun WalletDashBoardScreen(
                                                             )
                                                         )
                                                         Text(
-                                                            text = transactionDateTime!!,
+                                                            text = transactionDate!!,
                                                             style = MaterialTheme.typography.bodySmall.copy(
                                                                 color = MaterialTheme.appColors.transactionSubTitle,
                                                                 fontSize = 12.sp
@@ -954,6 +962,7 @@ fun WalletDashBoardScreen(
                                 var transactionPaymentIdIsVisible: Boolean = false
                                 var transactionBlockHeight: String? = ""
                                 var transactionDateTime: String? = ""
+                                var transactionDate: String? =""
                                 var transactionFee: String? = ""
                                 var transactionFeeIsVisible: Boolean = false
                                 var transactionRecipientAddress: String? = ""
@@ -1025,6 +1034,7 @@ fun WalletDashBoardScreen(
                                         transactionInfoItem!!.blockheight.toString()
                                     }
                                 }
+                                transactionDate = getDateTime(transactionInfoItem!!.timestamp,subDateFormat)
                                 transactionDateTime =
                                     getDateTime(transactionInfoItem!!.timestamp,dateTimeFormat)
 
@@ -1113,7 +1123,7 @@ fun WalletDashBoardScreen(
                                                 )
                                             )
                                             Text(
-                                                text = transactionDateTime!!,
+                                                text = transactionDate!!,
                                                 style = MaterialTheme.typography.bodySmall.copy(
                                                     color = MaterialTheme.appColors.transactionSubTitle,
                                                     fontSize = 12.sp

@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -32,6 +33,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.thoughtcrimes.securesms.compose_utils.PrimaryButton
 import com.thoughtcrimes.securesms.compose_utils.appColors
+import com.thoughtcrimes.securesms.util.UiMode
+import com.thoughtcrimes.securesms.util.UiModeUtilities
 import com.thoughtcrimes.securesms.util.copyToClipBoard
 import io.beldex.bchat.R
 
@@ -61,6 +64,7 @@ fun RecoverySeedView(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(LocalContext.current) == UiMode.NIGHT
     val copyToClipBoard: () -> Unit = {
         context.copyToClipBoard("Seed", seed)
     }
@@ -72,7 +76,7 @@ fun RecoverySeedView(
             )
     ) {
         Image(
-            painter = painterResource(id = R.drawable.ic_warning_lock),
+            painter = painterResource(id = if(isDarkTheme) R.drawable.ic_warning_lock else R.drawable.ic_warning_lock_light),
             contentDescription = ""
         )
 

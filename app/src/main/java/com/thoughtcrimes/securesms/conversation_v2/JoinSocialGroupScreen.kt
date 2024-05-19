@@ -216,9 +216,10 @@ fun JoinSocialGroupScreen(
         Text(
             text = stringResource(id = R.string.or_join),
             style = MaterialTheme.typography.titleMedium.copy(
-                color = MaterialTheme.appColors.editTextColor
-            ),
-            fontSize = 22.sp
+                color = MaterialTheme.appColors.editTextColor,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -247,7 +248,7 @@ fun JoinSocialGroupScreen(
                                     color = MaterialTheme.appColors.disabledButtonContainerColor,
                                     shape = RoundedCornerShape(8.dp)
                                 )
-                                .padding(16.dp)
+                                .padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 14.dp)
                                 .clickable {
                                     showLoader = true
                                     joinPublicChatIfPossible(
@@ -273,15 +274,15 @@ fun JoinSocialGroupScreen(
                                 )
                             }
 
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
 
                             Text(
-                                modifier = Modifier
-                                    .padding(top = 5.dp),
                                 text = groups[i].name,
                                 textAlign = TextAlign.Center,
                                 style = BChatTypography.bodySmall.copy(
-                                    fontSize = 12.sp
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.appColors.textFieldTextColor
                                 )
                             )
                         }

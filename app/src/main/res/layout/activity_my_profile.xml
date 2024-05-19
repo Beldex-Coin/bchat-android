@@ -20,8 +20,8 @@
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/back"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_baseline_arrow_back_24"/>
+                android:layout_height="match_parent"
+                app:srcCompat="@drawable/ic_back_arrow"/>
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/title"

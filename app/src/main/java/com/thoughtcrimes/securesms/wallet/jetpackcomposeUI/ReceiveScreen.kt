@@ -40,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
@@ -79,6 +80,7 @@ import java.util.HashMap
 fun ReceiveScreen(listenerCallback: ReceiveFragment.Listener?, modifier: Modifier) {
 
     val context = LocalContext.current
+    val numberRegex = remember { "[\\d]*[.]?[\\d]*".toRegex() }
 
     var beldexAmount by remember {
         mutableStateOf("")
@@ -225,7 +227,13 @@ fun ReceiveScreen(listenerCallback: ReceiveFragment.Listener?, modifier: Modifie
                     IconButton(onClick = {
                         listenerCallback!!.walletOnBackPressed()
                     }) {
-                        Icon(Icons.Filled.ArrowBack, "backIcon")
+                        Icon(
+                            painterResource(id = R.drawable.ic_back_arrow),
+                            contentDescription = stringResource(
+                                id = R.string.back
+                            ),
+                            tint = MaterialTheme.appColors.editTextColor,
+                        )
                     }
                 },
                 modifier = Modifier
@@ -268,17 +276,19 @@ fun ReceiveScreen(listenerCallback: ReceiveFragment.Listener?, modifier: Modifie
                                 keyboardType = KeyboardType.Decimal,
                                 imeAction = ImeAction.Done,
                                 onValueChange = {
-                                    beldexAmount = it
-                                    if (beldexAmount.isNotEmpty()) {
-                                        if (validateBELDEXAmount(it)) {
+                                    if(numberRegex.matches(it)) {
+                                        beldexAmount = it
+                                        if (beldexAmount.isNotEmpty()) {
+                                            if (validateBELDEXAmount(it)) {
+                                                errorAction = false
+                                                generateQr(beldexAddress, beldexAmount, "")
+                                            } else {
+                                                errorAction = true
+                                            }
+                                        } else {
                                             errorAction = false
                                             generateQr(beldexAddress, beldexAmount, "")
-                                        } else {
-                                            errorAction = true
                                         }
-                                    } else {
-                                        errorAction = false
-                                        generateQr(beldexAddress, beldexAmount, "")
                                     }
                                 },
                                 focusedBorderColor = MaterialTheme.appColors.textFiledBorderColor,
@@ -287,7 +297,12 @@ fun ReceiveScreen(listenerCallback: ReceiveFragment.Listener?, modifier: Modifie
                                 maxLen = 16,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(start = 20.dp, top = 10.dp, end = 20.dp, bottom = 20.dp),
+                                    .padding(
+                                        start = 20.dp,
+                                        top = 10.dp,
+                                        end = 20.dp,
+                                        bottom = 20.dp
+                                    ),
                                 shape = RoundedCornerShape(8.dp),
                             )
 
@@ -363,7 +378,7 @@ fun ReceiveScreen(listenerCallback: ReceiveFragment.Listener?, modifier: Modifie
                     .fillMaxWidth()
                     .padding(10.dp), shape = RoundedCornerShape(16.dp)) {
                     Image(painter = painterResource(id = R.drawable.share), contentDescription = "")
-                    Text(text = stringResource(id = R.string.share), modifier = Modifier.padding(8.dp), style = MaterialTheme.typography.titleMedium.copy(fontSize = 18.sp, fontWeight = FontWeight(700)))
+                    Text(text = stringResource(id = R.string.share), modifier = Modifier.padding(8.dp), style = MaterialTheme.typography.titleMedium.copy(fontSize = 18.sp, fontWeight = FontWeight(700), color = Color.White))
                 }
             }
         }

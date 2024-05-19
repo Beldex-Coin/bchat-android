@@ -39,6 +39,7 @@
             android:layout_marginBottom="@dimen/medium_spacing"
             android:textSize="18sp"
             android:textStyle="normal"
+            android:gravity="center"
             android:textAlignment="center"
             android:textColor="@color/recovery_seed_content"
             android:text="@string/copy_your_recovery_seed" />
@@ -89,7 +90,7 @@
                 android:layout_marginEnd="8dp"
                 android:text="@string/copy_seed"
                 app:icon="@drawable/ic_restore_copy"
-                app:iconGravity="end"
+                app:iconGravity="textEnd"
                 app:iconTint="@color/icon_tint"
                 app:backgroundTint="@color/your_bchat_id_bg"
                 android:textColor="@color/icon_tint"/>

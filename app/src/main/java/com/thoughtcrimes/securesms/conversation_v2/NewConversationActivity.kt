@@ -48,6 +48,7 @@ class NewConversationActivity: ComponentActivity() {
         super.onCreate(savedInstanceState)
         val destination = intent?.getStringExtra(EXTRA_DESTINATION) ?: NewConversationType.PublicGroup.destination
         setContent {
+            val context = this
             BChatTheme(
                 darkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
             ) {
@@ -101,11 +102,11 @@ class NewConversationActivity: ComponentActivity() {
                                         searchQuery = searchQuery,
                                         contacts = contacts,
                                         selectedContact = selectedContact,
-                                        onEvent = contactViewModel::onEvent
+                                        onEvent = contactViewModel::onEvent,
+                                        context
                                     )
                                 }
                             }
-
                             composable(
                                 route = NewConversationType.PublicGroup.destination
                             ) {

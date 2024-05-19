@@ -580,7 +580,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
     }
 
     private fun showSeed() {
-        SeedDialog().show(supportFragmentManager, "Recovery Phrase Dialog")
+        SeedDialog().show(supportFragmentManager, "Recovery Seed Dialog")
     }
 
     private fun clearAllData() {

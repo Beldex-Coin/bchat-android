@@ -71,14 +71,25 @@ class CallNotificationBuilder {
         fun getCallInProgressNotification(context: Context, type: Int, recipient: Recipient?): Notification {
             val contentIntent = Intent(context, WebRTCComposeActivity::class.java)
                 .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            val sizeInPX =context.resources.getDimensionPixelSize(R.dimen.extra_large_profile_picture_size)
 
             val contentView=RemoteViews(context.packageName, R.layout.custom_call_notification)
             val signalProfilePicture = recipient?.contactPhoto
 
-            var bitmap = decodeStream(signalProfilePicture?.openInputStream(context))
-            bitmap = BitmapUtil.createScaledBitmap(bitmap, 300, 300)
-            contentView.setImageViewBitmap(R.id.image, bitmap)
-
+            val bit=AvatarPlaceholderGenerator.generate(
+                    context,
+                    sizeInPX,
+                    recipient?.address.toString(),
+                    recipient?.name.toString()
+            )
+            if (signalProfilePicture != null) {
+                var bitmap=decodeStream(signalProfilePicture.openInputStream(context))
+                bitmap=BitmapUtil.createScaledBitmap(bitmap, 300, 300)
+                contentView.setImageViewBitmap(R.id.image, bitmap)
+            } else {
+                val bitmap=BitmapUtil.createScaledBitmap(bit.bitmap, 300, 300)
+                contentView.setImageViewBitmap(R.id.image, bitmap)
+            }
             val pendingIntent = PendingIntent.getActivity(context, 0, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             val intent = Intent(context, WebRtcCallService::class.java)
                     .setAction(WebRtcCallService.ACTION_DENY_CALL)

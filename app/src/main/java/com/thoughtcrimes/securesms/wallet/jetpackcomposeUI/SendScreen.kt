@@ -43,6 +43,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,6 +52,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -121,6 +123,8 @@ fun SendScreen(
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val scrollState = rememberScrollState()
+    val focusManager = LocalFocusManager.current
+    val numberRegex = remember { "[\\d]*[.]?[\\d]*".toRegex() }
 
     var showTransactionLoading by remember {
         mutableStateOf(false)
@@ -242,10 +246,6 @@ fun SendScreen(
         }
     }
 
-
-
-
-
     var beldexAddress by remember {
         mutableStateOf(address)
     }
@@ -274,14 +274,25 @@ fun SendScreen(
     }
 
     var currencyValue by remember {
-        mutableStateOf("0.00")
+        mutableStateOf("0.0000")
+    }
+
+    val price by remember {
+        if(TextSecurePreferences.getCurrencyAmount(context)!=null){
+            mutableDoubleStateOf(TextSecurePreferences.getCurrencyAmount(context)!!.toDouble())
+        }else{ mutableDoubleStateOf(0.0000)
+        }
+    }
+
+    val fiatCurrency by remember {
+        mutableStateOf(TextSecurePreferences.getCurrency(context).toString())
     }
 
     var onTransactionProgress by remember {
         mutableStateOf(false)
     }
 
-    var resolvingOA by remember {
+    val resolvingOA by remember {
         mutableStateOf(resolvingOA)
     }
 
@@ -289,11 +300,7 @@ fun SendScreen(
         mutableIntStateOf(TextSecurePreferences.getFeePriority(context))
     }
 
-
-
-
     val CLEAN_FORMAT = "%." + Helper.BDX_DECIMALS.toString() + "f"
-    val price = 0.00
     val possibleCryptos: MutableSet<Crypto> = HashSet()
     var selectedCrypto: Crypto? = null
     val INTEGRATED_ADDRESS_LENGTH = 106
@@ -305,8 +312,19 @@ fun SendScreen(
 
     var mode: Mode = Mode.BDX
 
-
-
+    fun checkBeldexAddressField(){
+        if ((beldexAddress.value.length > 106 || beldexAddress.value.length < 95) && !(beldexAddress.value.takeLast(4).equals(".bdx", ignoreCase = true))) {
+            addressErrorAction.value = true
+            addressErrorTextColorChanged.value = false
+            if(beldexAddress.value.isEmpty()) {
+                addressErrorText.value = context.getString(R.string.beldex_address_error_message)
+            }else{
+                addressErrorText.value = context.getString(R.string.invalid_destination_address)
+            }
+        }else{
+            addressErrorAction.value = false
+        }
+    }
 
     val resultLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) { result ->
         val data: Intent? = result.data
@@ -314,6 +332,7 @@ fun SendScreen(
         listener.setBarcodeData(null)
         if (add != null) {
             beldexAddress.value = add
+            checkBeldexAddressField()
         }
     }
 
@@ -416,8 +435,6 @@ fun SendScreen(
         }
     }
 
-
-
     fun openAddressBookActivity() {
         TextSecurePreferences.setSendAddressDisable(context, false)
         val intent = Intent(context, WalletSettingComposeActivity::class.java).apply {
@@ -425,7 +442,6 @@ fun SendScreen(
         }
         resultLauncher.launch(intent)
     }
-
 
     fun validateBELDEXAmount(amount: String): Boolean {
         val maxValue = 150000000.00000
@@ -462,8 +478,6 @@ fun SendScreen(
             null
         }
     }
-
-
 
     fun setMode(aMode: Mode) {
         if (mode != aMode) {
@@ -546,12 +560,7 @@ fun SendScreen(
 
     fun createTransactionIfPossible() {
         if (CheckOnline.isOnline(context)) {
-            if ((beldexAddress.value.length > 106 || beldexAddress.value.length < 95) && !(beldexAddress.value.takeLast(4).equals(".bdx", ignoreCase = true))) {
-                addressErrorAction.value = true
-                addressErrorTextColorChanged.value = false
-                addressErrorText.value = context.getString(R.string.invalid_destination_address)
-                return
-            }
+            checkBeldexAddressField()
             if (beldexAddress.value.isNotEmpty() && beldexAmount.value.isNotEmpty() && validateBELDEXAmount(beldexAmount.value) && beldexAmount.value.toDouble() > 0.00) {
                 //val txDatas: TxData = txData()
                 txData.destinationAddress = beldexAddress.value.trim()
@@ -581,7 +590,7 @@ fun SendScreen(
                 txData.mixin = MIXIN
                 beldexAmount.value = ""
                 beldexAddress.value = ""
-                currencyValue = "0.00"
+                currencyValue = "0.0000"
 
                 //Important
                 val lockManager: LockManager<CustomPinActivity> = LockManager.getInstance() as LockManager<CustomPinActivity>
@@ -636,7 +645,13 @@ fun SendScreen(
                     IconButton(onClick = {
                         listener.walletOnBackPressed()
                     }) {
-                        Icon(Icons.Filled.ArrowBack, "backIcon")
+                        Icon(
+                            painterResource(id = R.drawable.ic_back_arrow),
+                            contentDescription = stringResource(
+                                id = R.string.back
+                            ),
+                            tint = MaterialTheme.appColors.editTextColor,
+                        )
                     }
                 },
                 modifier = Modifier
@@ -650,7 +665,7 @@ fun SendScreen(
                 }
             )
         },
-        content = {
+        content = { it ->
             Column(modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(scrollState)
@@ -672,7 +687,7 @@ fun SendScreen(
                 if (showTransactionSentPopup) {
                     TransactionSuccessPopup(onDismiss = {
                         showTransactionSentPopup = false
-
+                        listener.walletOnBackPressed()
                     })
                 }
 
@@ -695,9 +710,8 @@ fun SendScreen(
                             .fillMaxWidth()
                             .padding(start = 10.dp, top = 10.dp, end = 10.dp))
                         Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(start = 10.dp, end = 10.dp)
-
                         ) {
-                            Image(painter = painterResource(id = R.drawable.total_balance), contentDescription = "", modifier = Modifier)
+                            Image(painter = painterResource(id = R.drawable.ic_beldex), contentDescription = "beldex logo", modifier = Modifier)
                             Text(text = totalBalance, style = MaterialTheme.typography.titleLarge.copy(color = MaterialTheme.appColors.textColor, fontSize = 24.sp, fontWeight = FontWeight(700)), modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(10.dp), fontSize = 24.sp)
@@ -727,48 +741,49 @@ fun SendScreen(
                                 keyboardType = KeyboardType.Decimal,
                                 imeAction = ImeAction.Next,
                                 onValueChange = {
-                                    beldexAmount.value = it
-                                    if (scanFromGallery.value) {
-                                        if (it.isNotEmpty()) {
-                                            scanFromGallery.value = false
-                                            if (validateBELDEXAmount(it)) {
-                                                amountErrorAction = false
-                                                val bdx = getCleanAmountString(it.toString())
-                                                val amount: BigDecimal = if (bdx != null) {
-                                                    BigDecimal(bdx.toDouble()).multiply(BigDecimal(price))
+                                    if(numberRegex.matches(it)){
+                                      beldexAmount.value = it
+                                        if (scanFromGallery.value) {
+                                            if (it.isNotEmpty()) {
+                                                scanFromGallery.value = false
+                                                if (validateBELDEXAmount(it)) {
+                                                    amountErrorAction = false
+                                                    val bdx = getCleanAmountString(it.toString())
+                                                    val amount: BigDecimal = if (bdx != null) {
+                                                        BigDecimal(bdx.toDouble()).multiply(BigDecimal(price))
+                                                    } else {
+                                                        BigDecimal(0L).multiply(BigDecimal(price))
+                                                    }
+                                                    currencyValue = String.format("%.4f", amount)
                                                 } else {
-                                                    BigDecimal(0L).multiply(BigDecimal(price))
+                                                    amountErrorAction = true
+                                                    amountErrorText = context.getString(R.string.beldex_amount_valid_error_message)
                                                 }
-                                                beldexAmount.value = String.format("%.4f", amount)
                                             } else {
-                                                amountErrorAction = true
-                                                amountErrorText = context.getString(R.string.beldex_amount_valid_error_message)
+                                                amountErrorAction = false
+                                                currencyValue = "0.0000"
                                             }
                                         } else {
-                                            amountErrorAction = false
-                                            beldexAmount.value = "0.00"
-                                        }
-                                    } else {
-                                        if (it.isNotEmpty()) {
-                                            if (validateBELDEXAmount(it)) {
-                                                amountErrorAction = false
-                                                val bdx = getCleanAmountString(it)
-                                                val amount: BigDecimal = if (bdx != null) {
-                                                    BigDecimal(bdx.toDouble()).multiply(BigDecimal(price))
+                                            if (it.isNotEmpty()) {
+                                                if (validateBELDEXAmount(it)) {
+                                                    amountErrorAction = false
+                                                    val bdx = getCleanAmountString(it)
+                                                    val amount: BigDecimal = if (bdx != null) {
+                                                        BigDecimal(bdx.toDouble()).multiply(BigDecimal(price))
+                                                    } else {
+                                                        BigDecimal(0L).multiply(BigDecimal(price))
+                                                    }
+                                                    currencyValue = String.format("%.4f", amount)
                                                 } else {
-                                                    BigDecimal(0L).multiply(BigDecimal(price))
+                                                    amountErrorAction = true
+                                                    amountErrorText = context.getString(R.string.beldex_amount_valid_error_message)
                                                 }
-                                                currencyValue = String.format("%.4f", amount)
                                             } else {
-                                                amountErrorAction = true
-                                                amountErrorText = context.getString(R.string.beldex_amount_valid_error_message)
+                                                amountErrorAction = false
+                                                currencyValue = "0.0000"
                                             }
-                                        } else {
-                                            amountErrorAction = false
-                                            currencyValue = "0.00"
                                         }
                                     }
-
                                 },
                                 focusedBorderColor = MaterialTheme.appColors.textFiledBorderColor,
                                 focusedLabelColor = MaterialTheme.appColors.textColor,
@@ -795,6 +810,7 @@ fun SendScreen(
                             Text(text = amountErrorText, modifier = Modifier.padding(start = 20.dp, bottom = 10.dp), style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.errorMessageColor, fontSize = 13.sp, fontWeight = FontWeight(400)))
                         }
 
+                        Text("$currencyValue $fiatCurrency", modifier = Modifier.padding(start = 20.dp, bottom = 20.dp),style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.editTextPlaceholder, fontSize = 16.sp, fontWeight = FontWeight(700)))
 
                         Row(horizontalArrangement = Arrangement.Start, verticalAlignment = Alignment.CenterVertically) {}
 
@@ -821,6 +837,7 @@ fun SendScreen(
                                     if (!CheckOnline.isOnline(context)) {
                                         Toast.makeText(context, R.string.please_check_your_internet_connection, Toast.LENGTH_SHORT).show()
                                     } else {
+                                        focusManager.clearFocus()
                                         listener.onScan()
                                     }
                                 })
@@ -843,7 +860,7 @@ fun SendScreen(
 
                         }
                         TextField(value = beldexAddress.value, placeholder = {
-                            Text(text = context.getString(R.string.enter_address), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.appColors.primaryButtonColor)
+                            Text(text = context.getString(R.string.enter_address), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.appColors.editTextPlaceholder)
                         }, keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.Done
@@ -898,13 +915,14 @@ fun SendScreen(
 
                         Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically, modifier = Modifier
                             .fillMaxWidth()
-                            .padding(20.dp, 20.dp, 20.dp, 20.dp)
+                            .padding(20.dp)
                             .border(
                                 width = 0.8.dp,
                                 color = colorResource(id = R.color.divider_color).copy(alpha = 0.5f),
                                 shape = RoundedCornerShape(8.dp)
                             )) {
-                            Text(text = estimatedFee, style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.textHint, fontSize = 14.sp, fontWeight = FontWeight(700)), modifier = Modifier.padding(20.dp))
+                            Text(text = "Estimated Fee : ", style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.textHint, fontSize = 14.sp, fontWeight = FontWeight.Bold), modifier = Modifier.padding(top = 20.dp, bottom = 20.dp, start = 20.dp))
+                            Text(text = "$estimatedFee BDX", style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.textColor, fontSize = 14.sp, fontWeight = FontWeight.ExtraBold), modifier = Modifier.padding(top = 20.dp, bottom = 20.dp, end = 20.dp))
                         }
 
 
@@ -952,7 +970,7 @@ fun PriorityDropDown(feePriorityOnClick: (selectedFeePriority: Int) -> Unit, fee
                         disabledIndicatorColor = Color.Transparent,
                 ),
 
-                textStyle = TextStyle(color = MaterialTheme.appColors.textColor, fontSize = 12.sp, fontWeight = FontWeight(400)),
+                textStyle = TextStyle(color = MaterialTheme.appColors.textColor, fontSize = 14.sp, fontWeight = FontWeight.Bold),
         )
         ExposedDropdownMenu(
                 expanded = expanded,
@@ -961,7 +979,9 @@ fun PriorityDropDown(feePriorityOnClick: (selectedFeePriority: Int) -> Unit, fee
         ) {
             options.forEach { selectionOption ->
                 DropdownMenuItem(
-                        text = { Text(selectionOption, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.appColors.textColor ) },
+                        text = { Text(selectionOption, style = MaterialTheme.typography.bodyMedium.copy(
+                            color = MaterialTheme.appColors.textColor, fontSize = 14.sp, fontWeight = FontWeight.Bold
+                        ), color = MaterialTheme.appColors.textColor ) },
                         modifier =
                         Modifier.padding(vertical = 10.dp, horizontal = 10.dp),
                         onClick = {

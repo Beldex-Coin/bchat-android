@@ -7,13 +7,16 @@ import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,8 +28,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -43,6 +49,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.messaging.sending_receiving.groupSizeLimit
@@ -53,6 +64,8 @@ import com.thoughtcrimes.securesms.compose_utils.BChatCheckBox
 import com.thoughtcrimes.securesms.compose_utils.BChatOutlinedTextField
 import com.thoughtcrimes.securesms.compose_utils.BChatTypography
 import com.thoughtcrimes.securesms.compose_utils.PrimaryButton
+import com.thoughtcrimes.securesms.compose_utils.ProfilePictureComponent
+import com.thoughtcrimes.securesms.compose_utils.ProfilePictureMode
 import com.thoughtcrimes.securesms.compose_utils.appColors
 import com.thoughtcrimes.securesms.compose_utils.ui.BChatPreviewContainer
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
@@ -65,118 +78,191 @@ fun CreateSecretGroup(
     searchQuery: String,
     contacts: List<Recipient>,
     selectedContact: List<String>,
-    onEvent: (SecretGroupEvents) -> Unit
+    onEvent: (SecretGroupEvents) -> Unit,
+    activity: NewConversationActivity
 ) {
     var groupName by remember {
         mutableStateOf("")
     }
-    val context = LocalContext.current
-    val activity = (context as? Activity)
+    val context=LocalContext.current
+    var showLoader by remember {
+        mutableStateOf(false)
+    }
+    val composition by rememberLottieComposition(
+            LottieCompositionSpec
+                    .RawRes(R.raw.load_animation)
+    )
+    val isPlaying by remember {
+        mutableStateOf(true)
+    }
+    // for speed
+    val speed by remember {
+        mutableFloatStateOf(1f)
+    }
 
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
+    val progress by animateLottieCompositionAsState(
+            composition,
+            iterations=LottieConstants.IterateForever,
+            isPlaying=isPlaying,
+            speed=speed,
+            restartOnPlay=false
+    )
+
+    Box(modifier=Modifier
             .fillMaxSize()
     ) {
+
         Column(
-            modifier = Modifier
-                .padding(16.dp)
+                verticalArrangement=Arrangement.Center,
+                horizontalAlignment=Alignment.CenterHorizontally,
+                modifier=Modifier
+                        .fillMaxSize()
         ) {
-            Text(
-                text = stringResource(R.string.create_secret_group),
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight(800)
+            Column(
+                    modifier=Modifier
+                            .padding(16.dp)
+            ) {
+                Text(
+                        text=stringResource(R.string.create_secret_group),
+                        style=MaterialTheme.typography.titleMedium.copy(
+                                fontSize=20.sp,
+                                fontWeight=FontWeight(800)
+                        ),
+                        modifier = Modifier.padding(vertical = 10.dp)
                 )
-            )
-            BChatOutlinedTextField(
-                value = groupName,
-                label = stringResource(R.string.enter_group_name),
-                onValueChange = {
-                    groupName = it
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        vertical = 8.dp
-                    ),
-                shape = RoundedCornerShape(8.dp)
-            )
-        }
-
-        Divider(
-            color = colorResource(id = R.color.divider_color),
-            modifier = Modifier
-                .fillMaxWidth()
-                .alpha(0.5f))
-
-        BChatOutlinedTextField(
-            value = searchQuery,
-            onValueChange = { onEvent(SecretGroupEvents.SearchQueryChanged(it)) },
-            label = stringResource(R.string.search_contact),
-            shape = RoundedCornerShape(36.dp),
-            trailingIcon = {
-                Icon(
-                    Icons.Default.Search,
-                    contentDescription = "",
-                    tint = MaterialTheme.appColors.iconTint
-                )
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-        )
-        LazyColumn(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    horizontal = 16.dp
-                )
-                .weight(1f)
-        ) {
-            items(contacts) {
-                GroupContact(
-                    recipient = it,
-                    isSelected = selectedContact.contains(it.address.toString()),
-                    onSelectionChanged = { contact, isSelected ->
-                        onEvent(SecretGroupEvents.RecipientSelectionChanged(contact, isSelected))
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            vertical = 8.dp
+                TextField(
+                        value = groupName,
+                        placeholder = {
+                            Text(
+                                    text = stringResource(R.string.enter_group_name),
+                                    style = MaterialTheme.typography.bodyMedium
+                            )
+                        },
+                        onValueChange = {
+                            groupName = it
+                        },
+                        modifier =Modifier
+                                .fillMaxWidth()
+                                .padding(vertical=8.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = TextFieldDefaults.colors(
+                                unfocusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
+                                focusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent,
+                                disabledIndicatorColor = Color.Transparent,
+                                cursorColor = colorResource(id = R.color.button_green)
                         )
                 )
             }
-        }
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp)
-                .background(
-                    color = MaterialTheme.appColors.createButtonBackground
-                ),
-            contentAlignment = Alignment.Center,
-        ) {
-            PrimaryButton(
-                onClick = {
-                    createClosedGroup(groupName,context,activity,selectedContact)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                shape = RoundedCornerShape(16.dp),
+
+            Divider(
+                    color=colorResource(id=R.color.divider_color),
+                    modifier=Modifier
+                            .fillMaxWidth()
+                            .alpha(0.5f))
+
+            TextField(
+                    value = searchQuery,
+                    placeholder = {
+                        Text(
+                                text = stringResource(R.string.search_contact),
+                                style = MaterialTheme.typography.bodyMedium
+                        )
+                    },
+                    onValueChange={ onEvent(SecretGroupEvents.SearchQueryChanged(it)) },
+                    modifier =Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                            .border(
+                                    width = 1.dp,
+                                    color = MaterialTheme.appColors.textFiledBorderColor,
+                                    shape = RoundedCornerShape(36.dp)
+                            )
+                    ,
+                    shape = RoundedCornerShape(36.dp),
+                    trailingIcon={
+                        Icon(
+                                Icons.Default.Search,
+                                contentDescription="search contact",
+                                tint=MaterialTheme.appColors.iconTint
+                        )
+                    },
+                    colors = TextFieldDefaults.colors(
+                            unfocusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
+                            focusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            disabledIndicatorColor = Color.Transparent,
+                            cursorColor = colorResource(id = R.color.button_green)
+                    )
+            )
+            LazyColumn(
+                    horizontalAlignment=Alignment.CenterHorizontally,
+                    verticalArrangement=Arrangement.spacedBy(8.dp),
+                    modifier=Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                    horizontal=16.dp
+                            )
+                            .weight(1f)
             ) {
-                Text(
-                    text = stringResource(id = R.string.create),
-                    style = BChatTypography.bodyLarge.copy(
-                        color = Color.White
-                    ),
-                    modifier = Modifier
-                        .padding(8.dp)
+                items(contacts) {
+                    GroupContact(
+                            recipient=it,
+                            isSelected=selectedContact.contains(it.address.toString()),
+                            onSelectionChanged={ contact, isSelected ->
+                                onEvent(SecretGroupEvents.RecipientSelectionChanged(contact, isSelected))
+                            },
+                            modifier=Modifier
+                                    .fillMaxWidth()
+                                    .padding(
+                                            vertical=8.dp
+                                    )
+                    )
+                }
+            }
+            Box(
+                    modifier=Modifier
+                            .fillMaxWidth()
+                            .padding(top=8.dp)
+                            .background(
+                                    color=MaterialTheme.appColors.createButtonBackground
+                            ),
+                    contentAlignment=Alignment.Center,
+            ) {
+                PrimaryButton(
+                        onClick={
+                            showLoader=true
+                            createClosedGroup(groupName, context, activity, selectedContact)
+                        },
+                        modifier=Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                        shape=RoundedCornerShape(16.dp),
+                ) {
+                    Text(
+                            text=stringResource(id=R.string.create),
+                            style=BChatTypography.bodyLarge.copy(
+                                    color=Color.White
+                            ),
+                            modifier=Modifier
+                                    .padding(8.dp)
+                    )
+                }
+            }
+        }
+        if (showLoader) {
+            Box(
+                    modifier=Modifier
+                            .fillMaxSize()
+                            .background(color=MaterialTheme.appColors.loaderBackground.copy(alpha=0.5f)),
+                    contentAlignment=Alignment.Center
+            ) {
+                LottieAnimation(
+                        composition,
+                        progress,
+                        modifier=Modifier.size(70.dp)
                 )
             }
         }
@@ -199,7 +285,7 @@ private fun GroupContact(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.appColors.contactCardBackground
         ),
-        modifier = modifier
+        modifier = modifier.padding(10.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -207,16 +293,19 @@ private fun GroupContact(
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_camera_profile_pic),
-                contentDescription = ""
-            )
+            Box(modifier=Modifier.padding(horizontal = 10.dp, vertical = 5.dp)){
+            ProfilePictureComponent(
+                    publicKey=recipient.address.toString(),
+                    displayName=recipient.name.toString(),
+                    containerSize=36.dp,
+                    pictureMode=ProfilePictureMode.LargePicture)}
 
             Text(
                 text = recipient.name.toString(),
                 textAlign = TextAlign.Start,
-                modifier = Modifier
-                    .weight(1f)
+                modifier =Modifier
+                        .weight(1f)
+                        .padding(horizontal=10.dp)
             )
 
             BChatCheckBox(
@@ -266,7 +355,7 @@ private fun createClosedGroup(name: String, context: Context, activity: Activity
 }
 
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+/*@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun CreateSecretGroupScreenPreview() {
     BChatPreviewContainer {
@@ -290,6 +379,6 @@ fun CreateSecretGroupScreenPreviewLight() {
             onEvent = {}
         )
     }
-}
+}*/
 
 

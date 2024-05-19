@@ -193,7 +193,8 @@ fun MyAccountScreen(
                         .fillMaxWidth()
                         .padding(
                             top = profileSize / 2
-                        )
+                        ),
+                    profileEditable = true
                 )
             }
 
@@ -267,7 +268,8 @@ fun MyAccountScreen(
 fun AccountHeader(
     uiState: MyAccountViewModel.UIState,
     saveDisplayName: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    profileEditable: Boolean
 ) {
     val context = LocalContext.current
     val beldexAddress by remember {
@@ -298,22 +300,24 @@ fun AccountHeader(
                 Text(
                     text = uiState.profileName ?: "",
                     style = MaterialTheme.typography.titleMedium.copy(
-                        color = MaterialTheme.appColors.titleTextColor
+                        color = MaterialTheme.appColors.titleTextColor,
+                        fontWeight = if(!profileEditable) FontWeight.SemiBold else null
                     ),
                     modifier = Modifier
                 )
+                if(profileEditable) {
+                    Spacer(modifier = Modifier.width(8.dp))
 
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_edit_name),
-                    contentDescription = "",
-                    tint = MaterialTheme.appColors.iconColor,
-                    modifier = Modifier
-                        .clickable {
-                            editingName = true
-                        }
-                )
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_edit_name),
+                        contentDescription = "",
+                        tint = MaterialTheme.appColors.iconColor,
+                        modifier = Modifier
+                            .clickable {
+                                editingName = true
+                            }
+                    )
+                }
             }
         } else {
             var textFieldValueState by remember {

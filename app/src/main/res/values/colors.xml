@@ -252,4 +252,8 @@
     <color name="clear_red_color">#FF3E3E</color>
     <color name="no_media_color">#A7A7BA</color>
     <color name="input_bar_stroke">#A7A7BA</color>
+    <color name="call_bottom_background">#11111A</color>
+    <color name="unread_chat_background">#282836</color>
+    <color name="missed_call_dialog_background">#111119</color>
+    <color name="enable_call_icon_background">#30303F</color>
 </resources>

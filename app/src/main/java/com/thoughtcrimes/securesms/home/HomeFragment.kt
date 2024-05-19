@@ -1376,10 +1376,14 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
 //        Intent(requireContext(), ShowQRCodeWithScanQRCodeActivity::class.java).also {
 //            showQRCodeWithScanQRCodeActivityResultLauncher.launch(it)
 //        }
-        Intent(activity, MyProfileActivity::class.java).also {
+        //Intent(activity, MyProfileActivity::class.java).also {
 //            it.putExtra(MyAccountActivity.extraStartDestination, MyAccountScreens.MyAccountScreen.route)
-            startActivity(it)
-        }
+            //startActivity(it)
+        //}
+
+        val intent = Intent(activity,MyProfileActivity::class.java)
+        intent.putExtra("profile_editable",true)
+        startActivity(intent)
     }
 
     private var showQRCodeWithScanQRCodeActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

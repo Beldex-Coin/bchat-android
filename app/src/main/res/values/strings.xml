@@ -1499,4 +1499,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="block_user_confirmation">Are you sure you want to Block this contact?</string>
     <string name="block_contact">Block Contact</string>
     <string name="unblock">Unblock</string>
+    <string name="blocked_user_message">You Blocked Person! Click here to Unblock.</string>
 </resources>

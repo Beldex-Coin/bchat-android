@@ -937,8 +937,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     // `position` is the adapter position; not the visual position
     private fun handleSwipeToReply(message: MessageRecord, position: Int) {
         //New Line
-        val params = binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
-        params.bottomMargin = 16
+//        val params = binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
+//        params.bottomMargin = 16
         val recipient = viewModel.recipient.value ?: return
         binding.inputBar.draftQuote(recipient, message, glide)
     }
@@ -967,6 +967,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun inputBarEditTextContentChanged(newContent: CharSequence) {
+        if (isShowingAttachmentOptions) {
+            binding.attachmentContainer.visibility = View.GONE
+            isShowingAttachmentOptions = !isShowingAttachmentOptions
+        }
         val inputBarText = binding.inputBar.text
         if (listenerCallback!!.gettextSecurePreferences().isLinkPreviewsEnabled()) {
             linkPreviewViewModel.onTextChanged(requireActivity(), inputBarText, 0, 0)
@@ -998,29 +1002,30 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             )
             return
         }
-        val targetAlpha = if (isShowingAttachmentOptions) 0.0f else 1.0f
-        val allButtonContainers = listOfNotNull(
-            binding.cameraButtonContainer,
-            binding.libraryButtonContainer,
-            binding.documentButtonContainer,
-            binding.gifButtonContainer
-        )
-        val isReversed = isShowingAttachmentOptions // Run the animation in reverse
-        val count = allButtonContainers.size
-        allButtonContainers.indices.forEach { index ->
-            val view = allButtonContainers[index]
-            val animation = ValueAnimator.ofObject(FloatEvaluator(), view.alpha, targetAlpha)
-            animation.duration = 250L
-            animation.startDelay =
-                if (isReversed) 50L * (count - index.toLong()) else 50L * index.toLong()
-            animation.addUpdateListener { animator ->
-                view.alpha = animator.animatedValue as Float
-            }
-            animation.start()
-        }
+//        val targetAlpha = if (isShowingAttachmentOptions) 0.0f else 1.0f
+//        val allButtonContainers = listOfNotNull(
+//            binding.cameraButtonContainer,
+//            binding.libraryButtonContainer,
+//            binding.documentButtonContainer,
+//            binding.gifButtonContainer
+//        )
+//        val isReversed = isShowingAttachmentOptions // Run the animation in reverse
+//        val count = allButtonContainers.size
+//        allButtonContainers.indices.forEach { index ->
+//            val view = allButtonContainers[index]
+//            val animation = ValueAnimator.ofObject(FloatEvaluator(), view.alpha, targetAlpha)
+//            animation.duration = 250L
+//            animation.startDelay =
+//                if (isReversed) 50L * (count - index.toLong()) else 50L * index.toLong()
+//            animation.addUpdateListener { animator ->
+//                view.alpha = animator.animatedValue as Float
+//            }
+//            animation.start()
+//        }
         isShowingAttachmentOptions = !isShowingAttachmentOptions
-        val allButtons = listOf(cameraButton, libraryButton, documentButton, gifButton)
-        allButtons.forEach { it.snIsEnabled = isShowingAttachmentOptions }
+        binding.attachmentContainer.isVisible = isShowingAttachmentOptions
+//        val allButtons = listOf(cameraButton, libraryButton, documentButton, gifButton)
+//        allButtons.forEach { it.snIsEnabled = isShowingAttachmentOptions }
     }
 
     override fun onRequestPermissionsResult(
@@ -1161,6 +1166,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun startRecordingVoiceMessage() {
+        toggleAttachmentOptions()
         val recipient = viewModel.recipient.value ?: return
         if (recipient.isBlocked) {
             BlockedDialog(recipient).show(
@@ -1174,15 +1180,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 showVoiceMessageUI()
                 this.activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 audioRecorder.startRecording()
-//                amplitudeJob = lifecycleScope.launch {
-//                    while (isActive) {
-//                        val amplitude = audioRecorder.amplitude
-//                        println(">>>>amplitude--${amplitude}")
-//                        if (amplitude != -1f)
-//                            binding.inputBarRecordingView.addAmplitude(amplitude)
-//                        delay(100)
-//                    }
-//                }
                 stopAudioHandler.postDelayed(
                         stopVoiceMessageRecordingTask,
                         300000
@@ -1261,6 +1258,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun sendMessage() {
+        toggleAttachmentOptions()
         val recipient = viewModel.recipient.value ?: callViewModel() ?: return
         if (recipient.isContactRecipient && recipient.isBlocked) {
             BlockedDialog(recipient).show(
@@ -1325,6 +1323,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun inChatBDXOptions() {
+        toggleAttachmentOptions()
         try {
                 val dialog = android.app.AlertDialog.Builder(requireActivity())
                 val inflater = layoutInflater
@@ -1360,6 +1359,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun walletDetailsUI() {
+        toggleAttachmentOptions()
         when {
             binding.tooltip.isVisible -> {
                 binding.tooltip.visibility = View.GONE
@@ -1819,8 +1819,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     override fun reply(messages: Set<MessageRecord>) {
         val recipient = viewModel.recipient.value ?: return
         //New Line
-        val params = binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
-        params.bottomMargin = 16
+//        val params = binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
+//        params.bottomMargin = 16
         if(messages.isNotEmpty()) {
             binding.inputBar.draftQuote(recipient, messages.first(), glide)
         }
@@ -2132,37 +2132,49 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         binding.inputBar.delegate = this
         binding.inputBarRecordingView.delegate = this
         // GIF button
-        binding.gifButtonContainer.addView(gifButton)
-        gifButton.layoutParams = RelativeLayout.LayoutParams(
-            RelativeLayout.LayoutParams.MATCH_PARENT,
-            RelativeLayout.LayoutParams.MATCH_PARENT
-        )
-        gifButton.onUp = { showGIFPicker() }
-        gifButton.snIsEnabled = false
-        // Document button
-        binding.documentButtonContainer.addView(documentButton)
-        documentButton.layoutParams = RelativeLayout.LayoutParams(
-            RelativeLayout.LayoutParams.MATCH_PARENT,
-            RelativeLayout.LayoutParams.MATCH_PARENT
-        )
-        documentButton.onUp = { showDocumentPicker() }
-        documentButton.snIsEnabled = false
-        // Library button
-        binding.libraryButtonContainer.addView(libraryButton)
-        libraryButton.layoutParams = RelativeLayout.LayoutParams(
-            RelativeLayout.LayoutParams.MATCH_PARENT,
-            RelativeLayout.LayoutParams.MATCH_PARENT
-        )
-        libraryButton.onUp = { pickFromLibrary() }
-        libraryButton.snIsEnabled = false
-        // Camera button
-        binding.cameraButtonContainer.addView(cameraButton)
-        cameraButton.layoutParams = RelativeLayout.LayoutParams(
-            RelativeLayout.LayoutParams.MATCH_PARENT,
-            RelativeLayout.LayoutParams.MATCH_PARENT
-        )
-        cameraButton.onUp = { showCamera() }
-        cameraButton.snIsEnabled = false
+//        binding.gifButtonContainer.addView(gifButton)
+//        gifButton.layoutParams = RelativeLayout.LayoutParams(
+//            RelativeLayout.LayoutParams.MATCH_PARENT,
+//            RelativeLayout.LayoutParams.MATCH_PARENT
+//        )
+//        gifButton.onUp = { showGIFPicker() }
+//        gifButton.snIsEnabled = false
+//        // Document button
+//        binding.documentButtonContainer.addView(documentButton)
+//        documentButton.layoutParams = RelativeLayout.LayoutParams(
+//            RelativeLayout.LayoutParams.MATCH_PARENT,
+//            RelativeLayout.LayoutParams.MATCH_PARENT
+//        )
+//        documentButton.onUp = { showDocumentPicker() }
+//        documentButton.snIsEnabled = false
+//        // Library button
+//        binding.libraryButtonContainer.addView(libraryButton)
+//        libraryButton.layoutParams = RelativeLayout.LayoutParams(
+//            RelativeLayout.LayoutParams.MATCH_PARENT,
+//            RelativeLayout.LayoutParams.MATCH_PARENT
+//        )
+//        libraryButton.onUp = { pickFromLibrary() }
+//        libraryButton.snIsEnabled = false
+//        // Camera button
+//        binding.cameraButtonContainer.addView(cameraButton)
+//        cameraButton.layoutParams = RelativeLayout.LayoutParams(
+//            RelativeLayout.LayoutParams.MATCH_PARENT,
+//            RelativeLayout.LayoutParams.MATCH_PARENT
+//        )
+//        cameraButton.onUp = { showCamera() }
+//        cameraButton.snIsEnabled = false
+        binding.cameraButton.setOnClickListener {
+            showCamera()
+            toggleAttachmentOptions()
+        }
+        binding.imageButton.setOnClickListener {
+            pickFromLibrary()
+            toggleAttachmentOptions()
+        }
+        binding.documentButton.setOnClickListener {
+            showDocumentPicker()
+            toggleAttachmentOptions()
+        }
     }
 
     private fun setUpLinkPreviewObserver() {
@@ -2174,25 +2186,25 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             when {
                 previewState.isLoading -> {
                     //New Line
-                    val params =
-                        binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
-                    params.bottomMargin = 20
+//                    val params =
+//                        binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
+//                    params.bottomMargin = 20
 
                     binding.inputBar.draftLinkPreview()
                 }
                 previewState.linkPreview.isPresent -> {
                     //New Line
-                    val params =
-                        binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
-                    params.bottomMargin = 20
+//                    val params =
+//                        binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
+//                    params.bottomMargin = 20
 
                     binding.inputBar.updateLinkPreviewDraft(glide, previewState.linkPreview.get())
                 }
                 else -> {
                     //New Line
-                    val params =
-                        binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
-                    params.bottomMargin = 16
+//                    val params =
+//                        binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
+//                    params.bottomMargin = 16
 
                     binding.inputBar.cancelLinkPreviewDraft(2)
                 }
@@ -2841,8 +2853,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         // Clear the input bar
         binding.inputBar.text = ""
         //New Line
-        val params = binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
-        params.bottomMargin = 16
+//        val params = binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
+//        params.bottomMargin = 16
 
         binding.inputBar.cancelQuoteDraft(2)
         binding.inputBar.cancelLinkPreviewDraft(2)
@@ -2887,8 +2899,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         // Clear the input bar
         binding.inputBar.text = ""
         //New Line
-        val params = binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
-        params.bottomMargin = 16
+//        val params = binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
+//        params.bottomMargin = 16
 
         binding.inputBar.cancelQuoteDraft(2)
         binding.inputBar.cancelLinkPreviewDraft(2)

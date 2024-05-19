@@ -258,4 +258,6 @@
     <color name="enable_call_icon_background">#30303F</color>
     <color name="search_background">#282836</color>
     <color name="search_background_border">#4B4B64</color>
+    <color name="attachment_container_background">#21212C</color>
+    <color name="attachment_button_background">#2C2C3B</color>
 </resources>

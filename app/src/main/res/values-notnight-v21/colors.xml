@@ -178,4 +178,6 @@
     <color name="enable_call_icon_background">#EBEBEB</color>
     <color name="search_background">#F4F4F4</color>
     <color name="search_background_border">#A7A7BA</color>
+    <color name="attachment_container_background">#EBEBEB</color>
+    <color name="attachment_button_background">#F4F4F4</color>
 </resources>

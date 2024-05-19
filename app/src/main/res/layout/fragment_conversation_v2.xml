@@ -406,45 +406,114 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/conversationRecyclerView" />
 
-            <LinearLayout
-                android:id="@+id/attachmentOptionsContainer"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/attachment_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_above="@id/slideToPayButton"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="@dimen/small_spacing"
-                android:layout_marginBottom="16dp"
-                android:orientation="horizontal">
+                android:layout_marginBottom="8dp"
+                app:cardCornerRadius="48dp"
+                app:cardBackgroundColor="@color/attachment_container_background"
+                android:visibility="gone">
 
-                <RelativeLayout
-                    android:id="@+id/cameraButtonContainer"
-                    android:layout_width="@dimen/input_bar_button_expanded_size"
-                    android:layout_height="@dimen/input_bar_button_expanded_size"
-                    android:layout_marginStart="15dp"
-                    android:alpha="0" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
 
-                <RelativeLayout
-                    android:id="@+id/libraryButtonContainer"
-                    android:layout_width="@dimen/input_bar_button_expanded_size"
-                    android:layout_height="@dimen/input_bar_button_expanded_size"
-                    android:layout_marginStart="8dp"
-                    android:alpha="0" />
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cameraButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="100dp"
+                        app:cardElevation="1dp"
+                        android:layout_margin="8dp"
+                        app:cardBackgroundColor="@color/attachment_button_background">
 
-                <RelativeLayout
-                    android:id="@+id/documentButtonContainer"
-                    android:layout_width="@dimen/input_bar_button_expanded_size"
-                    android:layout_height="@dimen/input_bar_button_expanded_size"
-                    android:layout_marginStart="8dp"
-                    android:alpha="0" />
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/ic_camera_new"
+                            android:padding="8dp"/>
 
-                <RelativeLayout
-                    android:id="@+id/gifButtonContainer"
-                    android:layout_width="@dimen/input_bar_button_expanded_size"
-                    android:layout_height="@dimen/input_bar_button_expanded_size"
-                    android:layout_marginStart="8dp"
-                    android:alpha="0"
-                    android:visibility="gone" />
-            </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/imageButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="100dp"
+                        android:layout_margin="8dp"
+                        app:cardBackgroundColor="@color/attachment_button_background">
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/ic_gallery_new"
+                            android:padding="8dp"/>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/documentButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="100dp"
+                        android:layout_margin="8dp"
+                        app:cardBackgroundColor="@color/attachment_button_background">
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@drawable/ic_document_new"
+                            android:padding="8dp"/>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+<!--            <LinearLayout-->
+<!--                android:id="@+id/attachmentOptionsContainer"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_above="@id/slideToPayButton"-->
+<!--                android:layout_alignParentStart="true"-->
+<!--                android:layout_marginStart="@dimen/small_spacing"-->
+<!--                android:layout_marginBottom="16dp"-->
+<!--                android:orientation="horizontal">-->
+
+<!--                <RelativeLayout-->
+<!--                    android:id="@+id/cameraButtonContainer"-->
+<!--                    android:layout_width="@dimen/input_bar_button_expanded_size"-->
+<!--                    android:layout_height="@dimen/input_bar_button_expanded_size"-->
+<!--                    android:layout_marginStart="15dp"-->
+<!--                    android:alpha="0" />-->
+
+<!--                <RelativeLayout-->
+<!--                    android:id="@+id/libraryButtonContainer"-->
+<!--                    android:layout_width="@dimen/input_bar_button_expanded_size"-->
+<!--                    android:layout_height="@dimen/input_bar_button_expanded_size"-->
+<!--                    android:layout_marginStart="8dp"-->
+<!--                    android:alpha="0" />-->
+
+<!--                <RelativeLayout-->
+<!--                    android:id="@+id/documentButtonContainer"-->
+<!--                    android:layout_width="@dimen/input_bar_button_expanded_size"-->
+<!--                    android:layout_height="@dimen/input_bar_button_expanded_size"-->
+<!--                    android:layout_marginStart="8dp"-->
+<!--                    android:alpha="0" />-->
+
+<!--                <RelativeLayout-->
+<!--                    android:id="@+id/gifButtonContainer"-->
+<!--                    android:layout_width="@dimen/input_bar_button_expanded_size"-->
+<!--                    android:layout_height="@dimen/input_bar_button_expanded_size"-->
+<!--                    android:layout_marginStart="8dp"-->
+<!--                    android:alpha="0"-->
+<!--                    android:visibility="gone" />-->
+<!--            </LinearLayout>-->
 
             <RelativeLayout
                 android:id="@+id/scrollToBottomButton"
@@ -547,12 +616,13 @@
                 android:orientation="vertical"
                 android:gravity="center"
                 android:background="@color/page_background"
-                android:padding="16dp">
+                android:padding="16dp"
+                android:visibility="gone">
 
                 <com.google.android.material.button.MaterialButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="You Blocked Person! Click here to Unblock."
+                    android:text="@string/blocked_user_message"
                     android:textAllCaps="false"
                     android:clickable="false"
                     android:textColor="@color/received_quoted_text_color"
@@ -560,7 +630,8 @@
                     app:cornerRadius="24dp"
                     android:backgroundTint="@color/received_message_background"
                     android:fontFamily="@font/open_sans_regular"
-                    android:enabled="false"/>
+                    android:enabled="false"
+                    android:padding="8dp"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"

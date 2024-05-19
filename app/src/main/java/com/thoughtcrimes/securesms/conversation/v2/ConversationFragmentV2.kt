@@ -26,11 +26,13 @@ import android.os.Looper
 import android.telephony.PhoneStateListener
 import android.telephony.TelephonyCallback
 import android.telephony.TelephonyManager
+import android.text.Editable
 import android.text.Html
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.TextUtils
+import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
 import android.util.Pair
 import android.util.TypedValue
@@ -587,6 +589,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         showOrHideInputIfNeeded()
         /*Hales63*/
         setUpMessageRequestsBar()
+        setSearchView()
 
 
 //        viewModel.recipient.value?.let { recipient ->
@@ -1975,22 +1978,27 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     fun onSearchOpened() {
         searchViewModel!!.onSearchOpened()
-        binding.searchBottomBar.visibility = View.VISIBLE
-        binding.searchBottomBar.setData(0, 0)
-        binding.inputBar.visibility = View.GONE
+//        binding.searchBottomBar.visibility = View.VISIBLE
+//        binding.searchBottomBar.setData(0, 0)
+//        binding.inputBar.visibility = View.GONE
+        binding.searchBar.visibility = View.VISIBLE
+        binding.searchQuery.setText("")
+        binding.searchQuery.requestFocus()
     }
 
     fun onSearchClosed() {
         searchViewModel!!.onSearchClosed()
-        binding.searchBottomBar.visibility = View.GONE
-        binding.inputBar.visibility = View.VISIBLE
+//        binding.searchBottomBar.visibility = View.GONE
+//        binding.inputBar.visibility = View.VISIBLE
+        binding.searchBar.visibility = View.GONE
         adapter.onSearchQueryUpdated(null)
+        binding.searchQuery.clearFocus()
         this.activity?.invalidateOptionsMenu()
     }
 
     fun onSearchQueryUpdated(query: String) {
         searchViewModel!!.onQueryUpdated(query, viewModel.threadId)
-        binding.searchBottomBar.showLoading()
+        binding.searchProgress.visibility = View.VISIBLE
         adapter.onSearchQueryUpdated(query)
     }
 
@@ -2599,8 +2607,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                             it.sentTimestampMs,
                             Runnable { searchViewModel!!.onMissingResult() })
                     }
+                    binding.searchUp.visibility = View.VISIBLE
+                    binding.searchDown.visibility = View.VISIBLE
+                    binding.searchProgress.visibility = View.GONE
                 }
-                binding.searchBottomBar.setData(result.position, result.getResults().size)
+//                binding.searchBottomBar.setData(result.position, result.getResults().size)
             })
     }
 
@@ -3668,6 +3679,36 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         )
         dialog.arguments = bundleOf(ComposeDialogContainer.EXTRA_ARGUMENT_1 to thread.expireMessages)
         dialog.show(childFragmentManager, ComposeDialogContainer.TAG)
+    }
+
+    override fun openSearch() {
+        onSearchOpened()
+    }
+
+    fun setSearchView() {
+        binding.searchUp.setOnClickListener {
+            onSearchMoveUpPressed()
+        }
+        binding.searchDown.setOnClickListener {
+            onSearchMoveDownPressed()
+        }
+        binding.closeSearch.setOnClickListener {
+            onSearchClosed()
+        }
+        binding.searchQuery.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                onSearchQueryUpdated(p0.toString())
+                binding.searchProgress.visibility = View.VISIBLE
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+        })
     }
 }
 //endregion

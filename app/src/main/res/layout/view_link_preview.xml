@@ -39,7 +39,8 @@
             android:layout_width="wrap_content"
             android:layout_height="72dp"
             style="@style/RightSideRoundedCard"
-            app:cardBackgroundColor="@color/link_preview_background">
+            app:cardBackgroundColor="@color/link_preview_background"
+            app:cardElevation="0dp">
 
             <TextView
                 android:fontFamily="@font/open_sans_regular"

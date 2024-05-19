@@ -21,8 +21,6 @@ import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
-import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
@@ -115,40 +113,40 @@ object ConversationMenuHelper {
         }
 
         // Search
-        val searchViewItem = menu.findItem(R.id.menu_search)
-        fragmentV2.searchViewItem = searchViewItem
-        val searchView = searchViewItem.actionView as SearchView
-
-        val queryListener = object : OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                return true
-            }
-
-            override fun onQueryTextChange(query: String): Boolean {
-                fragmentV2.onSearchQueryUpdated(query)
-                Log.d("Beldex","Search Query text change")
-                return true
-            }
-        }
-        searchViewItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
-            override fun onMenuItemActionExpand(item: MenuItem): Boolean {
-                Log.d("Beldex","Search expand listener")
-                searchView.setOnQueryTextListener(queryListener)
-                fragmentV2.onSearchOpened()
-                for (i in 0 until menu.size()) {
-                    if (menu.getItem(i) != searchViewItem) {
-                        menu.getItem(i).isVisible = false
-                    }
-                }
-                return true
-            }
-
-            override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-                searchView.setOnQueryTextListener(null)
-                fragmentV2.onSearchClosed()
-                return true
-            }
-        })
+//        val searchViewItem = menu.findItem(R.id.menu_search)
+//        fragmentV2.searchViewItem = searchViewItem
+//        val searchView = searchViewItem.actionView as SearchView
+//
+//        val queryListener = object : OnQueryTextListener {
+//            override fun onQueryTextSubmit(query: String): Boolean {
+//                return true
+//            }
+//
+//            override fun onQueryTextChange(query: String): Boolean {
+//                fragmentV2.onSearchQueryUpdated(query)
+//                Log.d("Beldex","Search Query text change")
+//                return true
+//            }
+//        }
+//        searchViewItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+//            override fun onMenuItemActionExpand(item: MenuItem): Boolean {
+//                Log.d("Beldex","Search expand listener")
+//                searchView.setOnQueryTextListener(queryListener)
+//                fragmentV2.onSearchOpened()
+//                for (i in 0 until menu.size()) {
+//                    if (menu.getItem(i) != searchViewItem) {
+//                        menu.getItem(i).isVisible = false
+//                    }
+//                }
+//                return true
+//            }
+//
+//            override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
+//                searchView.setOnQueryTextListener(null)
+//                fragmentV2.onSearchClosed()
+//                return true
+//            }
+//        })
 
     }
 
@@ -289,8 +287,10 @@ object ConversationMenuHelper {
     }
 
     private fun search(context: ConversationFragmentV2) {
-        val searchViewModel = context.searchViewModel
-        searchViewModel!!.onSearchOpened()
+//        val searchViewModel = context.searchViewModel
+//        searchViewModel!!.onSearchOpened()
+        val listener = context as? ConversationMenuListener ?: return
+        listener.openSearch()
     }
 
     //New Line
@@ -480,6 +480,7 @@ object ConversationMenuHelper {
         fun copyBchatID(bchatId: String)
         fun showExpiringMessagesDialog(thread: Recipient)
         fun showMuteOptionDialog(thread: Recipient)
+        fun openSearch()
     }
 
 }

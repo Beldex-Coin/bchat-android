@@ -12,17 +12,18 @@ import com.beldex.libbchat.messaging.sending_receiving.attachments.DatabaseAttac
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.audio.AudioSlidePlayer
 import com.thoughtcrimes.securesms.components.CornerMask
-import dagger.hilt.android.AndroidEntryPoint
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ViewVoiceMessageBinding
 import com.thoughtcrimes.securesms.conversation.v2.utilities.MessageBubbleUtilities
 import com.thoughtcrimes.securesms.database.AttachmentDatabase
 import com.thoughtcrimes.securesms.database.model.MmsMessageRecord
+import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ViewVoiceMessageBinding
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
+
 @AndroidEntryPoint
 class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
 
@@ -143,7 +144,7 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
     }
 
     private fun renderIcon() {
-        val iconID = if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play_new
+        val iconID = if (isPlaying) R.drawable.ic_pause_audio else R.drawable.ic_play_audio
         binding.voiceMessagePlaybackImageView.setImageResource(iconID)
     }
 

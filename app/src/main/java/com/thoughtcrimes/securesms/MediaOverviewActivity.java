@@ -31,6 +31,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -133,7 +134,7 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
     setSupportActionBar(this.toolbar);
     ActionBar actionBar = getSupportActionBar();
     actionBar.setTitle(recipient.toShortString());
-    actionBar.setHomeAsUpIndicator(R.drawable.ic_back);
+    actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
     actionBar.setDisplayHomeAsUpEnabled(true);
     this.recipient.addListener(recipient -> {
       Util.runOnMain(() -> actionBar.setTitle(recipient.toShortString()));
@@ -191,7 +192,7 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
     public static final String ADDRESS_EXTRA = "address";
     public static final String LOCALE_EXTRA  = "locale_extra";
 
-    protected TextView     noMedia;
+    protected LinearLayout noMedia;
     protected Recipient    recipient;
     protected RecyclerView recyclerView;
     protected Locale       locale;

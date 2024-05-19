@@ -53,6 +53,7 @@ import androidx.annotation.DimenRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -94,9 +95,9 @@ import com.beldex.libsignal.utilities.ListenableFuture
 import com.beldex.libsignal.utilities.guava.Optional
 import com.beldex.libsignal.utilities.hexEncodedPrivateKey
 import com.thoughtcrimes.securesms.ApplicationContext
-import com.thoughtcrimes.securesms.ExpirationDialog
 import com.thoughtcrimes.securesms.audio.AudioRecorder
-import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
+import com.thoughtcrimes.securesms.compose_utils.ComposeDialogContainer
+import com.thoughtcrimes.securesms.compose_utils.DialogType
 import com.thoughtcrimes.securesms.contacts.SelectContactsActivity
 import com.thoughtcrimes.securesms.contactshare.SimpleTextWatcher
 import com.thoughtcrimes.securesms.conversation.v2.dialogs.BlockedDialog
@@ -171,7 +172,6 @@ import com.thoughtcrimes.securesms.wallet.OnBackPressedListener
 import com.thoughtcrimes.securesms.wallet.send.SendFailedDialog
 import com.thoughtcrimes.securesms.wallet.send.interfaces.SendConfirm
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
-import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
 import com.thoughtcrimes.securesms.webrtc.NetworkChangeReceiver
@@ -197,6 +197,7 @@ import java.text.NumberFormat
 import java.util.Locale
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.Executor
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
@@ -1829,14 +1830,31 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     //SteveJosephh21 - 08
     override fun block(deleteThread: Boolean) {
-        val title = R.string.RecipientPreferenceActivity_block_this_contact_question
-        val message =
-            R.string.RecipientPreferenceActivity_you_will_no_longer_receive_messages_and_calls_from_this_contact
-        val dialog = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog_Clear_All)
-            .setTitle(title)
-            .setMessage(message)
-            .setNegativeButton(android.R.string.cancel, null)
-            .setPositiveButton(R.string.RecipientPreferenceActivity_block) { _, _ ->
+//        val title = R.string.RecipientPreferenceActivity_block_this_contact_question
+//        val message =
+//            R.string.RecipientPreferenceActivity_you_will_no_longer_receive_messages_and_calls_from_this_contact
+//        val dialog = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog_Clear_All)
+//            .setTitle(title)
+//            .setMessage(message)
+//            .setNegativeButton(android.R.string.cancel, null)
+//            .setPositiveButton(R.string.RecipientPreferenceActivity_block) { _, _ ->
+//                viewModel.block()
+//                viewModel.recipient.value?.let { thread ->
+//                    showBlockProgressBar(thread)
+//                }
+//                if (deleteThread) {
+//                    viewModel.deleteThread()
+//                }
+//            }.show()
+//        //New Line
+//        val textView: TextView? = dialog.findViewById(android.R.id.message)
+//        val face: Typeface =
+//            Typeface.createFromAsset(requireActivity().assets, "fonts/open_sans_medium.ttf")
+//        textView!!.typeface = face
+
+        val blockDialog = ComposeDialogContainer(
+            dialogType = DialogType.BlockUser,
+            onConfirm = {
                 viewModel.block()
                 viewModel.recipient.value?.let { thread ->
                     showBlockProgressBar(thread)
@@ -1844,34 +1862,44 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 if (deleteThread) {
                     viewModel.deleteThread()
                 }
-            }.show()
-        //New Line
-        val textView: TextView? = dialog.findViewById(android.R.id.message)
-        val face: Typeface =
-            Typeface.createFromAsset(requireActivity().assets, "fonts/open_sans_medium.ttf")
-        textView!!.typeface = face
+            },
+            onCancel = {},
+        )
+        blockDialog.show(childFragmentManager, ComposeDialogContainer.TAG)
     }
 
     override fun unblock() {
-        val title = R.string.ConversationActivity_unblock_this_contact_question
-        val message =
-            R.string.ConversationActivity_you_will_once_again_be_able_to_receive_messages_and_calls_from_this_contact
-        val dialog = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog_Clear_All)
-            .setTitle(title)
-            .setMessage(message)
-            .setNegativeButton(android.R.string.cancel, null)
-            .setPositiveButton(R.string.ConversationActivity_unblock) { _, _ ->
+//        val title = R.string.ConversationActivity_unblock_this_contact_question
+//        val message =
+//            R.string.ConversationActivity_you_will_once_again_be_able_to_receive_messages_and_calls_from_this_contact
+//        val dialog = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog_Clear_All)
+//            .setTitle(title)
+//            .setMessage(message)
+//            .setNegativeButton(android.R.string.cancel, null)
+//            .setPositiveButton(R.string.ConversationActivity_unblock) { _, _ ->
+//                viewModel.unblock()
+//                viewModel.recipient.value?.let { thread ->
+//                    showBlockProgressBar(thread)
+//                }
+//            }.show()
+//
+//        //New Line
+//        val textView: TextView? = dialog.findViewById(android.R.id.message)
+//        val face: Typeface =
+//            Typeface.createFromAsset(requireActivity().assets, "fonts/open_sans_medium.ttf")
+//        textView!!.typeface = face
+
+        val blockDialog = ComposeDialogContainer(
+            dialogType = DialogType.UnblockUser,
+            onConfirm = {
                 viewModel.unblock()
                 viewModel.recipient.value?.let { thread ->
                     showBlockProgressBar(thread)
                 }
-            }.show()
-
-        //New Line
-        val textView: TextView? = dialog.findViewById(android.R.id.message)
-        val face: Typeface =
-            Typeface.createFromAsset(requireActivity().assets, "fonts/open_sans_medium.ttf")
-        textView!!.typeface = face
+            },
+            onCancel = {},
+        )
+        blockDialog.show(childFragmentManager, ComposeDialogContainer.TAG)
     }
 
     fun getSystemService(name: String): Any? {
@@ -1895,17 +1923,39 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 return
             }
         }
-        ExpirationDialog.show(requireActivity(), thread.expireMessages) { expirationTime: Int ->
-            viewModel.setExpireMessages(thread, expirationTime)
-            val message = ExpirationTimerUpdate(expirationTime)
-            message.recipient = thread.address.serialize()
-            message.sentTimestamp = MnodeAPI.nowWithOffset
-            val expiringMessageManager =
-                ApplicationContext.getInstance(requireActivity()).expiringMessageManager
-            expiringMessageManager.setExpirationTimer(message)
-            MessageSender.send(message, thread.address)
-            this.activity?.invalidateOptionsMenu()
-        }
+        val dialog = ComposeDialogContainer(
+            dialogType = DialogType.DisappearingTimer,
+            onConfirm = {
+
+            },
+            onCancel = {},
+            onConfirmWithData = { time ->
+                val expirationTime = time as Int
+                viewModel.setExpireMessages(thread, expirationTime)
+                val message = ExpirationTimerUpdate(expirationTime)
+                message.recipient = thread.address.serialize()
+                message.sentTimestamp = MnodeAPI.nowWithOffset
+                val expiringMessageManager =
+                    ApplicationContext.getInstance(requireActivity()).expiringMessageManager
+                expiringMessageManager.setExpirationTimer(message)
+                MessageSender.send(message, thread.address)
+                this.activity?.invalidateOptionsMenu()
+            }
+        )
+        dialog.arguments = bundleOf(ComposeDialogContainer.EXTRA_ARGUMENT_1 to thread.expireMessages)
+        dialog.show(childFragmentManager, ComposeDialogContainer.TAG)
+
+//        ExpirationDialog.show(requireActivity(), thread.expireMessages) { expirationTime: Int ->
+//            viewModel.setExpireMessages(thread, expirationTime)
+//            val message = ExpirationTimerUpdate(expirationTime)
+//            message.recipient = thread.address.serialize()
+//            message.sentTimestamp = MnodeAPI.nowWithOffset
+//            val expiringMessageManager =
+//                ApplicationContext.getInstance(requireActivity()).expiringMessageManager
+//            expiringMessageManager.setExpirationTimer(message)
+//            MessageSender.send(message, thread.address)
+//            this.activity?.invalidateOptionsMenu()
+//        }
     }
 
     override fun scrollToMessageIfPossible(timestamp: Long) {
@@ -2496,17 +2546,44 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
         val contact = viewModel.getContactWithBChatId()
         val name = contact?.displayName(Contact.ContactContext.REGULAR) ?: recipient.address.toString()
-        binding.blockedBannerTextView.text =
-            resources.getString(R.string.activity_conversation_blocked_banner_text, name)
+//        binding.blockedBannerTextView.text =
+//            resources.getString(R.string.activity_conversation_blocked_banner_text, name)
         binding.blockedBanner.isVisible = recipient.isBlocked
         callShowPayAsYouChatBDXIcon(recipient)
         showBlockProgressBar(recipient)
-        binding.unblockButton.setOnClickListener {
-            viewModel.unblock()
-            viewModel.recipient.value?.let { thread ->
-                showBlockProgressBar(thread)
-            }
+        /*setting click listener on banner to avoid background click gesture - DO NOT REMOVE This line*/
+        binding.blockedBanner.setOnClickListener {  }
+        binding.clearChat.setOnClickListener {
+            clearChatDialog()
         }
+        binding.unblockButton.setOnClickListener {
+            unblockContactDialog()
+        }
+    }
+
+    private fun clearChatDialog() {
+        val dialog = ComposeDialogContainer(
+            dialogType = DialogType.ClearChat,
+            onConfirm = {
+
+            },
+            onCancel = {}
+        )
+        dialog.show(childFragmentManager, ComposeDialogContainer.TAG)
+    }
+
+    private fun unblockContactDialog() {
+        val dialog = ComposeDialogContainer(
+            dialogType = DialogType.UnblockUser,
+            onConfirm = {
+                viewModel.unblock()
+                viewModel.recipient.value?.let { thread ->
+                    showBlockProgressBar(thread)
+                }
+            },
+            onCancel = {}
+        )
+        dialog.show(childFragmentManager, ComposeDialogContainer.TAG)
     }
 
     // region Search
@@ -3571,6 +3648,26 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
             return true
         }
+    }
+
+    override fun showMuteOptionDialog(thread: Recipient) {
+        val dialog = ComposeDialogContainer(
+            dialogType = DialogType.MuteChat,
+            onConfirm = {},
+            onCancel = {},
+            onConfirmWithData = { index ->
+                val muteUntil = when (index as Int) {
+                    1 -> System.currentTimeMillis() + TimeUnit.HOURS.toMillis(2)
+                    2 -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1)
+                    3 -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(7)
+                    4 -> Long.MAX_VALUE
+                    else -> System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1)
+                }
+                DatabaseComponent.get(requireContext()).recipientDatabase().setMuted(thread, muteUntil)
+            }
+        )
+        dialog.arguments = bundleOf(ComposeDialogContainer.EXTRA_ARGUMENT_1 to thread.expireMessages)
+        dialog.show(childFragmentManager, ComposeDialogContainer.TAG)
     }
 }
 //endregion

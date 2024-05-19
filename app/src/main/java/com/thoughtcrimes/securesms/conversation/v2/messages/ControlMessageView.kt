@@ -94,7 +94,7 @@ class ControlMessageView : LinearLayout {
                         R.drawable.ic_filled_circle_outgoing_call
                     }
                     message.isMissedCall -> {
-                        binding.receivedCallText.text = context.resources.getString(R.string.missed_voice_call)
+                        binding.receivedCallText.text = context.resources.getString(R.string.ThreadRecord_missed_call)
                         binding.receivedCallTime.text = context.resources.getString(R.string.tap_to_callback)
                         R.drawable.ic_filled_circle_missed_call
                     }

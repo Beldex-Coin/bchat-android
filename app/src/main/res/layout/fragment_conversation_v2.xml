@@ -90,6 +90,7 @@
 
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
+
     <LinearLayout
         android:id="@+id/callActionBarView"
         android:layout_width="match_parent"
@@ -469,36 +470,68 @@
                 android:id="@+id/blockedBanner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/networkStatusLayout"
-                android:background="@color/page_background"
-                android:gravity="center"
+                android:layout_alignParentBottom="true"
                 android:orientation="vertical"
-                android:visibility="gone"
-                android:clickable="true"
-                tools:visibility="visible">
+                android:gravity="center"
+                android:background="@color/page_background"
+                android:padding="16dp">
 
-                <TextView
-                    android:id="@+id/blockedBannerTextView"
+                <com.google.android.material.button.MaterialButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:fontFamily="@font/open_sans_semi_bold"
-                    android:textColor="@color/text"
-                    android:textSize="@dimen/small_font_size"
-                    android:textStyle="bold"
-                    tools:text="Person is blocked. Unblock them?" />
+                    android:text="You Blocked Person! Click here to Unblock."
+                    android:textAllCaps="false"
+                    android:clickable="false"
+                    android:textColor="@color/received_quoted_text_color"
+                    android:textSize="12sp"
+                    app:cornerRadius="24dp"
+                    android:backgroundTint="@color/received_message_background"
+                    android:fontFamily="@font/open_sans_regular"
+                    android:enabled="false"/>
 
-                <Button
-                    android:id="@+id/unblockButton"
-                    style="@style/Widget.Bchat.Button.Common.ProminentFilled_ClearData_WhiteText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="38dp"
-                    android:layout_marginBottom="10dp"
-                    android:fontFamily="@font/open_sans_medium"
-                    android:paddingStart="30dp"
-                    android:paddingEnd="30dp"
-                    android:text="@string/ConversationActivity_unblock" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/clear_chat"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/open_sans_medium"
+                        android:text="@string/clear_chat"
+                        app:cornerRadius="24dp"
+                        android:textAllCaps="false"
+                        android:backgroundTint="@color/received_message_background"
+                        android:padding="16dp"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp"
+                        android:textColor="@color/clear_red_color"
+                        app:icon="@drawable/ic_clear_conversation"
+                        app:iconGravity="textStart"
+                        app:iconTint="@color/clear_red_color"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/unblockButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/open_sans_medium"
+                        android:text="@string/ConversationActivity_unblock"
+                        app:cornerRadius="24dp"
+                        android:textAllCaps="false"
+                        android:backgroundTint="@color/bchat_id_text_color"
+                        android:padding="16dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="8dp"
+                        android:textColor="@color/white"
+                        app:icon="@drawable/ic_unblock_user"
+                        app:iconGravity="textStart"
+                        app:iconTint="@color/white"/>
+
+                </LinearLayout>
+
             </LinearLayout>
 
             <androidx.cardview.widget.CardView

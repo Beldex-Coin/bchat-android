@@ -105,6 +105,9 @@ class Colors(
     val transactionFilterEnableColor : Color,
     val disableDateColor : Color,
     val selectedDateColor : Color,
+    val iconBackground: Color,
+    val clearColor: Color,
+    val cancelColor: Color
 )
 
 val lightColors = Colors(
@@ -193,8 +196,11 @@ val lightColors = Colors(
     disableButtonContentColor = Color(0xffA7A7BA),
     transactionFilterEnableColor = Color(0xffA7A7BA),
     disableDateColor = Color(0xffA7A7BA),
-    selectedDateColor = Color(0xff222222)
-    )
+    selectedDateColor = Color(0xff222222),
+    iconBackground = Color(0xFFE0E0E0),
+    clearColor = Color(0xFFFF3E3E),
+    cancelColor = Color(0xFFACACAC)
+)
 
 val darkColors = Colors(
     primaryButtonColor = Color(0xFF00BD40),
@@ -282,7 +288,10 @@ val darkColors = Colors(
     disableButtonContentColor = Color(0xffA7A7BA),
     transactionFilterEnableColor = Color(0xffACACAC),
     disableDateColor = Color(0xff333343),
-    selectedDateColor = Color(0xffFFFFFF)
+    selectedDateColor = Color(0xffFFFFFF),
+    iconBackground = Color(0xFF30303F),
+    clearColor = Color(0xFFFF3E3E),
+    cancelColor = Color(0xFFACACAC)
 
 )
 

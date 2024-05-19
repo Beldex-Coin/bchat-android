@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.thoughtcrimes.securesms.components.SquareFrameLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="2dp">
+<com.thoughtcrimes.securesms.components.SquareFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="2dp"
+    app:cardCornerRadius="16dp">
 
     <include layout="@layout/thumbnail_view"
             android:id="@+id/image"

@@ -1,11 +1,20 @@
 package com.thoughtcrimes.securesms.conversation.v2.menus
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.Typeface
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.AsyncTask
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -26,9 +35,10 @@ import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.guava.Optional
 import com.beldex.libsignal.utilities.toHexString
-import com.thoughtcrimes.securesms.*
+import com.thoughtcrimes.securesms.ShortcutLauncherActivity
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.contacts.SelectContactsActivity
+import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.conversation.v2.utilities.NotificationUtils
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.groups.EditClosedGroupActivity
@@ -37,13 +47,8 @@ import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
 import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.util.BitmapUtil
 import com.thoughtcrimes.securesms.util.getColorWithID
-import java.io.IOException
-import android.content.*
-import android.view.*
 import io.beldex.bchat.R
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
+import java.io.IOException
 
 object ConversationMenuHelper {
 
@@ -167,7 +172,7 @@ object ConversationMenuHelper {
             R.id.menu_leave_group -> { leaveClosedGroup(context, thread) }
             R.id.menu_invite_to_open_group -> { inviteContacts(context, thread) }
             R.id.menu_unmute_notifications -> { unmute(context, thread) }
-            R.id.menu_mute_notifications -> { mute(context, thread) }
+            R.id.menu_mute_notifications -> { mute(fragmentV2, thread) }
             R.id.menu_notification_settings -> { setNotifyType(context, thread) }
           /*  R.id.menu_call -> {
                 *//*Hales63*//*
@@ -454,10 +459,13 @@ object ConversationMenuHelper {
         DatabaseComponent.get(context).recipientDatabase().setMuted(thread, 0)
     }
 
-    private fun mute(context: Context, thread: Recipient) {
-        MuteDialog.show(context) { until: Long ->
-            DatabaseComponent.get(context).recipientDatabase().setMuted(thread, until)
-        }
+    private fun mute(context: ConversationFragmentV2, thread: Recipient) {
+//        MuteDialog.show(context) { until: Long ->
+//            DatabaseComponent.get(context).recipientDatabase().setMuted(thread, until)
+//        }
+        println(">>>>>mute---${thread.name}")
+        val listener = context as? ConversationMenuListener ?: return
+        listener.showMuteOptionDialog(thread)
     }
 
     private fun setNotifyType(context: Context, thread: Recipient) {
@@ -471,6 +479,7 @@ object ConversationMenuHelper {
         fun unblock()
         fun copyBchatID(bchatId: String)
         fun showExpiringMessagesDialog(thread: Recipient)
+        fun showMuteOptionDialog(thread: Recipient)
     }
 
 }

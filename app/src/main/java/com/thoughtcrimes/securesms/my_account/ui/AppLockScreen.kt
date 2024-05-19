@@ -49,6 +49,9 @@ fun AppLockScreen() {
     var showLockOptionsDialog by remember {
         mutableStateOf(false)
     }
+    val lockOptions = remember {
+        ScreenTimeoutOptions.entries.map { it.displayValue }.toList()
+    }
     var selectedLockOptions by remember {
         mutableStateOf(IdentityKeyUtil.retrieve(
             context,
@@ -101,6 +104,8 @@ fun AppLockScreen() {
     }
     if (showLockOptionsDialog) {
         LockOptionsDialog(
+            title = stringResource(R.string.screen_inactivity_timeout),
+            options = lockOptions,
             currentValue = selectedLockOptions,
             onDismiss = {
                 showLockOptionsDialog = false

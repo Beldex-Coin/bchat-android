@@ -244,4 +244,12 @@
     <color name="sent_message_time_color">#EBEBEB</color>
     <color name="received_message_time_color">#A7A7BA</color>
     <color name="call_notification_background">#2C2C3B</color>
+    <color name="quote_view_background">#11111A</color>
+    <color name="input_quoted_text_color">#A7A7BA</color>
+    <color name="quote_author_text_color">#00BD40</color>
+    <color name="sent_quoted_text_color">#EBEBEB</color>
+    <color name="received_quoted_text_color">#A7A7BA</color>
+    <color name="clear_red_color">#FF3E3E</color>
+    <color name="no_media_color">#A7A7BA</color>
+    <color name="input_bar_stroke">#A7A7BA</color>
 </resources>

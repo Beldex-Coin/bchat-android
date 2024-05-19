@@ -76,7 +76,7 @@
     <color name="keyboard_background">#D1D5DB</color>
     <color name="button_background">#F2F2F2</color>
     <color name="button_text">#737389</color>
-    <color name="send_message_background">#008D06</color>
+    <color name="send_message_background">#00BD40</color>
     <color name="chat_id_card_background">#F5F5F5</color>
     <color name="chat_id_description_text">#272727</color>
     <color name="beldex_address">#1782FF</color>
@@ -164,4 +164,12 @@
     <color name="sent_message_time_color">#EBEBEB</color>
     <color name="received_message_time_color">#A7A7BA</color>
     <color name="call_notification_background">#FFFFFF</color>
+    <color name="quote_view_background">#EBEBEB</color>
+    <color name="input_quoted_text_color">#8A8A9D</color>
+    <color name="quote_author_text_color">#333333</color>
+    <color name="sent_quoted_text_color">#EBEBEB</color>
+    <color name="received_quoted_text_color">#8A8A9D</color>
+    <color name="clear_red_color">#FF3E3E</color>
+    <color name="no_media_color">#A7A7BA</color>
+    <color name="input_bar_stroke">#A7A7BA</color>
 </resources>

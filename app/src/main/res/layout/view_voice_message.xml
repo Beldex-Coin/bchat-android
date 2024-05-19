@@ -30,7 +30,8 @@
         android:focusable="false"
         android:layout_toEndOf="@id/action_container"
         android:layout_toStartOf="@id/voiceMessageViewDurationTextView"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true"
+        style="@style/AudioSeekBar"/>
 
     <RelativeLayout
         android:id="@+id/action_container"
@@ -43,7 +44,7 @@
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_centerInParent="true"
-            android:src="@drawable/ic_play_new"
+            android:src="@drawable/ic_play_audio"
             app:tint="@color/white"/>
 
         <ProgressBar

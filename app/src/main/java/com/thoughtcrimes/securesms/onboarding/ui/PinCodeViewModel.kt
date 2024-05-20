@@ -185,6 +185,38 @@ class PinCodeViewModel @Inject constructor(
                     }
                 }
             }
+            PinCodeEvents.ResetPinCode -> {
+                when (state.value.step) {
+                    PinCodeSteps.EnterPin -> {
+                        _state.update {
+                            it.copy(
+                                newPin = ""
+                            )
+                        }
+                    }
+                    PinCodeSteps.OldPin -> {
+                        _state.update {
+                            it.copy(
+                                pin = ""
+                            )
+                        }
+                    }
+                    PinCodeSteps.ReEnterPin -> {
+                        _state.update {
+                            it.copy(
+                                reEnteredPin = ""
+                            )
+                        }
+                    }
+                    PinCodeSteps.VerifyPin -> {
+                        _state.update {
+                            it.copy(
+                                pin = ""
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 

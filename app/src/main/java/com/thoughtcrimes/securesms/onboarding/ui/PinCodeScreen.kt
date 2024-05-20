@@ -73,6 +73,7 @@ enum class PinCodeAction(val action: Int) {
 sealed interface PinCodeEvents {
     data object Submit: PinCodeEvents
     data class PinCodeChanged(val pinCode: String): PinCodeEvents
+    data object ResetPinCode: PinCodeEvents
 }
 
 @Composable

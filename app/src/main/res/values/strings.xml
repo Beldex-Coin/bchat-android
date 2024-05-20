@@ -1434,7 +1434,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="enter_new_pin">Enter New PIN</string>
     <string name="re_enter_your_pin">Re-Enter your PIN</string>
     <string name="incorrect_password_entered">Incorrect password entered</string>
-    <string name="old_new_password_same">New password should be same as old password.</string>
+    <string name="old_new_password_same">New password should not be same as old password.</string>
     <string name="password_does_not_match">Password does not match.</string>
     <string name="screen_inactivity_timeout">Screen Inactivity Timeout</string>
     <string name="title_activity_join_public_new_chat_screen">JoinPublicNewChatScreen</string>
@@ -1500,4 +1500,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="block_contact">Block Contact</string>
     <string name="unblock">Unblock</string>
     <string name="blocked_user_message">You Blocked Person! Click here to Unblock.</string>
+    <string name="password_mismatch">Both passwords should be same.</string>
+    <string name="incorrect_password">Incorrect password.</string>
 </resources>

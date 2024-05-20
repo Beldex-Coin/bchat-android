@@ -110,6 +110,10 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
                         val context = LocalContext.current
                         val viewModel: PinCodeViewModel = hiltViewModel()
                         val state by viewModel.state.collectAsState()
+                        val handleError: (String) -> Unit = { error ->
+                            showErrorMessage(error)
+                            viewModel.onEvent(PinCodeEvents.ResetPinCode)
+                        }
                         LaunchedEffect(key1 = true) {
                             launch {
                                 viewModel.errorMessage.collectLatest { message ->
@@ -129,7 +133,15 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
                                 onEvent = { event ->
                                     when (event) {
                                         PinCodeEvents.Submit -> {
-                                            handlePinCodeSetUp(state, viewModel)
+                                            handlePinCodeSetUp(
+                                                state = state,
+                                                handlePinCodeInput = {
+                                                    viewModel.handleWalletPinActions()
+                                                },
+                                                onPinCodeError = { error ->
+                                                    handleError(error ?: "")
+                                                }
+                                            )
                                         }
                                         is PinCodeEvents.PinCodeChanged -> {
                                             viewModel.onEvent(event)
@@ -145,13 +157,14 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
                                                             }
                                                             finish()
                                                         } else {
-                                                            onPinCodeError()
+                                                            handleError(context.resources.getString(R.string.incorrect_password))
                                                         }
                                                     }
                                                 }
                                                 else -> Unit
                                             }
                                         }
+                                        else -> viewModel.onEvent(event)
                                     }
                                 }
                             )
@@ -162,12 +175,20 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
         }
     }
 
-    private fun handlePinCodeSetUp(state: PinCodeState, viewModel: PinCodeViewModel) {
+    private fun showErrorMessage(msg: String) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun handlePinCodeSetUp(
+        state: PinCodeState,
+        handlePinCodeInput: () -> Unit,
+        onPinCodeError: (String?) -> Unit
+    ) {
         when (pinCodeAction) {
             PinCodeAction.CreateWalletPin.action -> {
                 when (state.step) {
                     PinCodeSteps.EnterPin -> {
-                        viewModel.handleWalletPinActions()
+                        handlePinCodeInput()
                     }
                     PinCodeSteps.ReEnterPin -> {
                         if (state.newPin == state.reEnteredPin) {
@@ -176,7 +197,7 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
                             mLockManager!!.appLock.setPasscode(state.newPin)
                             onPinCodeSuccess(3, this)
                         } else {
-                            onPinCodeError()
+                            onPinCodeError(getString(R.string.password_mismatch))
                         }
                     }
                     else -> Unit
@@ -185,14 +206,14 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
             PinCodeAction.ChangeWalletPin.action -> {
                 when (state.step) {
                     PinCodeSteps.EnterPin -> {
-                        viewModel.handleWalletPinActions()
+                        handlePinCodeInput()
                     }
                     PinCodeSteps.OldPin -> {
                         if (mLockManager!!.appLock.checkPasscode(state.pin)) {
-                            viewModel.handleWalletPinActions()
+                            handlePinCodeInput()
                             onPinCodeSuccess(2, this)
                         } else {
-                            onPinCodeError()
+                            onPinCodeError(getString(R.string.incorrect_password))
                         }
                     }
                     PinCodeSteps.ReEnterPin -> {
@@ -202,7 +223,7 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
                             mLockManager!!.appLock.setPasscode(state.newPin)
                             onPinCodeSuccess(7, this)
                         } else {
-                            onPinCodeError()
+                            onPinCodeError(getString(R.string.password_mismatch))
                         }
                     }
                     else -> Unit

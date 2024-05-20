@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Divider
-import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,8 +44,8 @@ fun NumberPicker(
     startIndex: Int = 0,
     visibleItemsCount: Int = 3,
     textModifier: Modifier = Modifier,
-    textStyle: TextStyle = LocalTextStyle.current,
-    dividerColor: Color = LocalContentColor.current,
+    textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
+    dividerColor: Color = MaterialTheme.appColors.numberPickerDivider,
 ) {
 
     val visibleItemsMiddle = visibleItemsCount / 2

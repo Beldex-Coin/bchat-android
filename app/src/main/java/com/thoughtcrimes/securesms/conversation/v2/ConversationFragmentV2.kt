@@ -3689,7 +3689,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 DatabaseComponent.get(requireContext()).recipientDatabase().setMuted(thread, muteUntil)
             }
         )
-        dialog.arguments = bundleOf(ComposeDialogContainer.EXTRA_ARGUMENT_1 to thread.expireMessages)
+        dialog.arguments = bundleOf(ComposeDialogContainer.EXTRA_ARGUMENT_1 to thread.mutedUntil)
         dialog.show(childFragmentManager, ComposeDialogContainer.TAG)
     }
 

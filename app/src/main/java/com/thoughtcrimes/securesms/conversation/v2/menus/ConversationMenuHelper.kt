@@ -463,7 +463,6 @@ object ConversationMenuHelper {
 //        MuteDialog.show(context) { until: Long ->
 //            DatabaseComponent.get(context).recipientDatabase().setMuted(thread, until)
 //        }
-        println(">>>>>mute---${thread.name}")
         val listener = context as? ConversationMenuListener ?: return
         listener.showMuteOptionDialog(thread)
     }

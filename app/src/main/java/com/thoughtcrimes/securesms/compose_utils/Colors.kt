@@ -113,6 +113,7 @@ class Colors(
     val circularProgressBarBackground : Color,
     val disablePrimaryButtonContent : Color,
     val noAddressIcon : Color,
+    val numberPickerDivider: Color
 )
 
 val lightColors = Colors(
@@ -209,7 +210,8 @@ val lightColors = Colors(
     callBottomBackground = Color(0xFFE8E8E8),
     circularProgressBarBackground = Color(0xffEBEBEB),
     disablePrimaryButtonContent = Color(0xFF8A8A9D),
-    noAddressIcon = Color(0xffA3A3B2)
+    noAddressIcon = Color(0xffA3A3B2),
+    numberPickerDivider = Color(0xFFA7A7BA)
 )
 
 val darkColors = Colors(
@@ -306,7 +308,8 @@ val darkColors = Colors(
     callBottomBackground = Color(0xFF11111A),
     circularProgressBarBackground = Color(0xff30303F),
     disablePrimaryButtonContent = Color(0xFF6C6C78),
-    noAddressIcon = Color(0xff65656E)
+    noAddressIcon = Color(0xff65656E),
+    numberPickerDivider = Color(0xFF4B4B64)
 )
 
 

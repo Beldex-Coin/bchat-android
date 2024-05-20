@@ -211,7 +211,7 @@ class ComposeDialogContainer(
                             LockOptionsDialog(
                                 title = stringResource(R.string.conversation_expiring_off__disappearing_messages),
                                 options = options,
-                                currentValue = argument1 ?: "0",
+                                currentValue = options[timesOption.indexOf(argument1?.toInt() ?: 0)],
                                 onDismiss = {
                                     dismiss()
                                 },

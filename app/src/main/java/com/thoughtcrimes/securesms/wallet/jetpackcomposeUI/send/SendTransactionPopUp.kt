@@ -166,9 +166,9 @@ fun TransactionSuccessPopup(onDismiss: () -> Unit) {
     }
     // for speed
     val speed by remember {
-        mutableStateOf(1f)
+        mutableStateOf(0.2f)
     }
-    val progress by animateLottieCompositionAsState(composition, iterations = LottieConstants.IterateForever, isPlaying = isPlaying, speed = speed, restartOnPlay = false)
+    val progress by animateLottieCompositionAsState(composition, isPlaying = isPlaying, speed = speed, restartOnPlay = false)
     DialogContainer(
         dismissOnBackPress = false,
         dismissOnClickOutside = false,

@@ -57,7 +57,7 @@ fun ChatSettingsScreen(
                         .fillMaxWidth(),
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                /*Spacer(modifier = Modifier.height(16.dp))
 
                 SettingsItem(
                     settingTitle = stringResource(id = R.string.preferences_chats__font_size),
@@ -65,7 +65,7 @@ fun ChatSettingsScreen(
                     containsSwitch = false,
                     modifier = Modifier
                         .fillMaxWidth(),
-                )
+                )*/
             }
         }
 

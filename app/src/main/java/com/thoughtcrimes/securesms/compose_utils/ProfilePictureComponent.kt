@@ -1,27 +1,31 @@
 package com.thoughtcrimes.securesms.compose_utils
 
+import android.graphics.drawable.Drawable
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import coil.compose.AsyncImage
+import coil.compose.rememberImagePainter
 import coil.imageLoader
 import coil.request.ImageRequest
 import coil.util.DebugLogger
@@ -31,6 +35,12 @@ import com.beldex.libbchat.avatars.ProfileContactPhoto
 import com.beldex.libbchat.avatars.ResourceContactPhoto
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.CenterInside
+import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import io.beldex.bchat.R
 
 enum class ProfilePictureMode(val size: Dp) {
@@ -126,7 +136,7 @@ fun ProfilePicture(
                 .size(containerSize)
                 .clip(CircleShape)
         )
-    } else if (recipient.isOpenGroupRecipient && recipient.groupAvatarId == null)  {
+    } else if (recipient.isOpenGroupRecipient && recipient.groupAvatarId == null) {
         val sizePx = with(LocalDensity.current) {
             containerSize.toPx()
         }.toInt()
@@ -140,47 +150,48 @@ fun ProfilePicture(
             modifier = modifier
         )
     } else {
-        val placeHolderKey = if (displayName.isNotEmpty() || displayName.isNotBlank())
-            displayName
-        else
-            "${publicKey.take(4)}...${publicKey.takeLast(4)}"
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = modifier
-                .size(containerSize)
-                .clip(CircleShape)
-                .background(Color.Red)
-        ) {
-            Text(
-                text = placeHolderKey.take(2).uppercase(),
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    fontWeight = FontWeight(800),
-                    fontSize = 20.sp
-                ),
+        var image by remember { mutableStateOf<Drawable?>(null) }
+        var status by remember {
+            mutableStateOf(true)
+        }
+
+        val placeholder = PlaceholderAvatarPhoto(
+            publicKey, if (displayName.isNotEmpty() || displayName.isNotBlank())
+                displayName
+            else
+                "${publicKey.take(4)}...${publicKey.takeLast(4)}"
+        )
+        if (status) {
+            Glide.with(context)
+                .load(placeholder)
+                .placeholder(unknownRecipientDrawable)
+                .diskCacheStrategy(DiskCacheStrategy.NONE).transform(
+                    CenterInside(),
+                    GranularRoundedCorners(20f, 20f, 20f, 20f)
+                )
+                .into(object : CustomTarget<Drawable>() {
+                    override fun onResourceReady(
+                        resource: Drawable,
+                        transition: Transition<in Drawable>?
+                    ) {
+                        image = resource
+                        status = false
+                    }
+                    override fun onLoadCleared(placeholder: Drawable?) {
+                        image = placeholder
+                    }
+                })
+        }
+        image?.let {
+            Image(
+                painter = rememberImagePainter(it),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
+                    .size(containerSize)
+                    .clip(CircleShape)
             )
         }
-        /*val placeholder = PlaceholderAvatarPhoto(publicKey, if (displayName.isNotEmpty() || displayName.isNotBlank())
-            displayName
-        else
-            "${publicKey.take(4)}...${publicKey.takeLast(4)}")
-
-        val imageLoader = LocalContext.current.imageLoader.newBuilder()
-            .logger(DebugLogger())
-            .build()
-        val imageRequest = ImageRequest.Builder(context)
-            .data(placeholder)
-            .placeholder(unknownRecipientDrawable)
-            .error(unknownRecipientDrawable)
-            .build()
-        AsyncImage(
-            model = imageRequest,
-            contentDescription = displayName,
-            imageLoader = imageLoader,
-            modifier = modifier
-                .size(containerSize)
-                .clip(CircleShape)
-        )*/
     }
 }
 

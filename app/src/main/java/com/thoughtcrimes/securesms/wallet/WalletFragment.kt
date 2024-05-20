@@ -405,7 +405,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                     viewModels.setSyncStatusTextColor(R.color.green_color)
                     viewModels.setProgressBarColor(R.color.green_color)
                     setProgress(3f)
-                    viewModels.setFilterTransactionIconIsClickable(true)
+                    //viewModels.setFilterTransactionIconIsClickable(true)
                     ///binding.syncStatusIcon.visibility=View.VISIBLE
                     ///binding.syncFailIcon.visibility = View.GONE
                     ///

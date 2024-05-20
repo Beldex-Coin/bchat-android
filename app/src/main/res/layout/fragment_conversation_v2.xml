@@ -597,7 +597,7 @@
                 app:inner_color="@color/green_color"
                 app:outer_color="@color/input_bar_background"
                 app:slider_icon_color="@color/text"
-                app:text="@string/slide_to_send_bdx"
+                app:text="@string/swipe_to_send_bdx"
                 app:slider_height="50dp"
                 app:slider_locked="false"
                 android:layout_alignParentBottom="true"

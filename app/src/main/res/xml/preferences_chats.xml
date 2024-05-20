@@ -75,7 +75,8 @@
             android:entries="@array/pref_chat_font_size_entries"
             android:entryValues="@array/pref_chat_font_size_values"
             app:layout="@layout/preference_layout"
-            app:icon="@drawable/ic_fonts"/>
+            app:icon="@drawable/ic_fonts"
+            app:isPreferenceVisible="false"/>
 
     </PreferenceCategory>
 

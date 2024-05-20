@@ -85,7 +85,7 @@ fun WalletDashBoardScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
     val clipboardManager = LocalClipboardManager.current
     val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.US)
-    val subDateFormat = SimpleDateFormat("dd-MMM-yyyy",Locale.US)
+    val subDateFormat = SimpleDateFormat("dd-MMM-yyyy", Locale.US)
     val dateTimeFormat = SimpleDateFormat("MMM dd, yyyy, HH:mm:ss a", Locale.US)
 
     var incomingTransactionIsChecked by remember {
@@ -211,32 +211,36 @@ fun WalletDashBoardScreen(
         fiatCurrencyPrice = it
     }
 
-    var transactionListMap = remember { mutableMapOf<String,List<TransactionInfo>>() }
+    var transactionListMap = remember { mutableMapOf<String, List<TransactionInfo>>() }
 
     var byDateIsEnable by remember {
         mutableStateOf(false)
     }
-    
-    val emptySelectedDateList : MutableList<Date> = ArrayList()
-    
+
+    val emptySelectedDateList: MutableList<Date> = ArrayList()
+
     var selectedDates by remember {
         mutableStateOf<List<Date>>(emptySelectedDateList)
     }
 
-    viewModels.transactionInfoItems.observe(lifecycleOwner) {list->
+    var showFilterOptions by remember {
+        mutableStateOf(true)
+    }
+
+    viewModels.transactionInfoItems.observe(lifecycleOwner) { list ->
         val filterByDirectionList = list.filter {
-            if(incomingTransactionIsChecked && outgoingTransactionIsChecked){
+            if (incomingTransactionIsChecked && outgoingTransactionIsChecked) {
                 it.direction == TransactionInfo.Direction.Direction_In || it.direction == TransactionInfo.Direction.Direction_Out
-            }else if(incomingTransactionIsChecked) {
+            } else if (incomingTransactionIsChecked) {
                 it.direction == TransactionInfo.Direction.Direction_In
-            }else if(outgoingTransactionIsChecked){
+            } else if (outgoingTransactionIsChecked) {
                 it.direction == TransactionInfo.Direction.Direction_Out
-            }else{
+            } else {
                 it.direction != TransactionInfo.Direction.Direction_In || it.direction != TransactionInfo.Direction.Direction_Out
             }
         }
 
-        val filterList = if(byDateIsEnable){
+        val filterList = if (byDateIsEnable) {
             val temp: MutableList<TransactionInfo> = ArrayList()
             for (datesItem in selectedDates) {
                 for (d in filterByDirectionList) {
@@ -246,14 +250,16 @@ fun WalletDashBoardScreen(
                 }
             }
             temp
-        }else{
+        } else {
             filterByDirectionList
         }
 
-        callIfTransactionListEmpty(filterList.size, viewModels)
+        callIfTransactionListEmpty(filterList.size, viewModels, showFilter = {
+            showFilterOptions = it
+        })
 
         transactionListMap = filterList.groupBy {
-            convertTimeStampToDateString(it.timestamp,dateFormat)
+            convertTimeStampToDateString(it.timestamp, dateFormat)
         }.toMutableMap()
     }
 
@@ -269,17 +275,13 @@ fun WalletDashBoardScreen(
         mutableStateOf(false)
     }
 
-    var showFilterOptions by remember {
-        mutableStateOf(true)
-    }
-
     if (showFilterTransactionByDatePopUp) {
         FilterTransactionByDatePopUp(
             onDismiss = {
                 //byDateIsEnable = false
                 showFilterTransactionByDatePopUp = false
             },
-            selectedDates = {selectedDateList,list->
+            selectedDates = { selectedDateList, list ->
                 byDateIsEnable = true
                 selectedDates = selectedDateList.toMutableList()
                 viewModels.updateTransactionInfoItems(list)
@@ -298,11 +300,14 @@ fun WalletDashBoardScreen(
                 ),
                 title = {
                     Text(
-                        text = stringResource(id = R.string.my_wallet), style = MaterialTheme.typography.titleLarge.copy(
+                        text = stringResource(id = R.string.my_wallet),
+                        style = MaterialTheme.typography.titleLarge.copy(
                             color = MaterialTheme.appColors.editTextColor,
                             fontWeight = FontWeight.ExtraBold,
                             fontSize = 22.sp,
-                        ), textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth()
+                        ),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
                     )
                 },
                 navigationIcon = {
@@ -325,7 +330,11 @@ fun WalletDashBoardScreen(
                     IconButton(onClick = {
                         activityCallback.callToolBarSettings()
                     }) {
-                        Icon(painterResource(id = R.drawable.ic_wallet_dashboard_setting), "wallet settings", tint = MaterialTheme.appColors.editTextColor)
+                        Icon(
+                            painterResource(id = R.drawable.ic_wallet_dashboard_setting),
+                            "wallet settings",
+                            tint = MaterialTheme.appColors.editTextColor
+                        )
                     }
                 }
             )
@@ -384,13 +393,15 @@ fun WalletDashBoardScreen(
                         }
 
                         if (progressBarIsVisible) {
-                            if(progress==2f){
-                                LinearProgressIndicator(modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(1.dp),
+                            if (progress == 2f) {
+                                LinearProgressIndicator(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(1.dp),
                                     trackColor = MaterialTheme.appColors.textFieldUnfocusedColor,
-                                    color = colorResource(id = progressBarColor))
-                            }else {
+                                    color = colorResource(id = progressBarColor)
+                                )
+                            } else {
                                 LinearProgressIndicator(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -409,10 +420,10 @@ fun WalletDashBoardScreen(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Image(
-                                painter = painterResource(id = R.drawable.ic_beldex,),
+                                painter = painterResource(id = R.drawable.ic_beldex),
                                 contentDescription = "beldex logo",
                                 colorFilter = ColorFilter.tint(
-                                    color = if(sendCardViewButtonIsEnabled) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.textColor
+                                    color = if (sendCardViewButtonIsEnabled) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.textColor
                                 )
                             )
 
@@ -473,7 +484,7 @@ fun WalletDashBoardScreen(
                                         painter = painterResource(id = R.drawable.wallet_scan),
                                         contentDescription = stringResource(id = R.string.scan_qrcode_text),
                                         modifier = Modifier.padding(10.dp),
-                                        colorFilter = ColorFilter.tint(color = if(scanQRCodeButtonIsEnabled)Color.Black else MaterialTheme.appColors.disableButtonContentColor)
+                                        colorFilter = ColorFilter.tint(color = if (scanQRCodeButtonIsEnabled) Color.Black else MaterialTheme.appColors.disableButtonContentColor)
                                     )
                                 }
                                 FilledIconButton(
@@ -495,7 +506,7 @@ fun WalletDashBoardScreen(
                                         painter = painterResource(id = R.drawable.wallet_send),
                                         contentDescription = stringResource(id = R.string.send),
                                         modifier = Modifier.padding(10.dp),
-                                        colorFilter = ColorFilter.tint(color = if(sendCardViewButtonIsEnabled)Color.White else MaterialTheme.appColors.disableButtonContentColor)
+                                        colorFilter = ColorFilter.tint(color = if (sendCardViewButtonIsEnabled) Color.White else MaterialTheme.appColors.disableButtonContentColor)
                                     )
                                 }
                                 FilledIconButton(
@@ -515,7 +526,7 @@ fun WalletDashBoardScreen(
                                         contentDescription = stringResource(id = R.string.activity_receive_page_title),
                                         modifier = Modifier.padding(10.dp),
 
-                                    )
+                                        )
                                 }
                                 FilledIconButton(
                                     modifier = Modifier.size(47.dp),
@@ -544,7 +555,7 @@ fun WalletDashBoardScreen(
                                         painter = painterResource(id = R.drawable.wallet_rescan),
                                         contentDescription = stringResource(id = R.string.menu_rescan),
                                         modifier = Modifier.padding(10.dp),
-                                        colorFilter = ColorFilter.tint(color = if(activityCallback.isSynced)MaterialTheme.appColors.titleTextColor else MaterialTheme.appColors.disableButtonContentColor)
+                                        colorFilter = ColorFilter.tint(color = if (activityCallback.isSynced) MaterialTheme.appColors.titleTextColor else MaterialTheme.appColors.disableButtonContentColor)
                                     )
                                 }
                             }
@@ -571,24 +582,22 @@ fun WalletDashBoardScreen(
                         )
                     )
 
-                    if(transactionListContainerIsVisible) {
-                        IconButton(
-                            colors = IconButtonDefaults.filledIconButtonColors(
-                                containerColor = if (showFilterOptions) MaterialTheme.appColors.transactionFilterBackground else Color.Transparent,
-                                contentColor = if (showFilterOptions) MaterialTheme.appColors.transactionFilterIcon else MaterialTheme.appColors.disableButtonContentColor,
-                            ),
-                            onClick = {
-                                if (filterTransactionIconIsClickable) {
-                                    showFilterOptions = !showFilterOptions
-                                }
+                    IconButton(
+                        colors = IconButtonDefaults.filledIconButtonColors(
+                            containerColor = if (showFilterOptions) MaterialTheme.appColors.transactionFilterBackground else Color.Transparent,
+                            contentColor = if (showFilterOptions) MaterialTheme.appColors.transactionFilterIcon else MaterialTheme.appColors.disableButtonContentColor,
+                        ),
+                        onClick = {
+                            if (filterTransactionIconIsClickable) {
+                                showFilterOptions = !showFilterOptions
                             }
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.transaction_filter_disable),
-                                contentDescription = stringResource(id = R.string.transaction_filter),
-                                colorFilter = ColorFilter.tint(color = if (showFilterOptions) MaterialTheme.appColors.transactionFilterIcon else MaterialTheme.appColors.transactionFilterEnableColor),
-                            )
                         }
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.transaction_filter_disable),
+                            contentDescription = stringResource(id = R.string.transaction_filter),
+                            colorFilter = ColorFilter.tint(color = if (showFilterOptions) MaterialTheme.appColors.transactionFilterIcon else MaterialTheme.appColors.transactionFilterEnableColor),
+                        )
                     }
                 }
 
@@ -635,20 +644,28 @@ fun WalletDashBoardScreen(
                                                         Toast.LENGTH_SHORT
                                                     ).show()
                                                     if (outgoingTransactionIsChecked && incomingTransactionIsChecked) {
-                                                        viewModels.transactionInfoItems.value?.let {list->
-                                                            viewModels.updateTransactionInfoItems(list)
+                                                        viewModels.transactionInfoItems.value?.let { list ->
+                                                            viewModels.updateTransactionInfoItems(
+                                                                list
+                                                            )
                                                         }
                                                     } else if (incomingTransactionIsChecked && !outgoingTransactionIsChecked) {
-                                                        viewModels.transactionInfoItems.value?.let {list->
-                                                            viewModels.updateTransactionInfoItems(list)
+                                                        viewModels.transactionInfoItems.value?.let { list ->
+                                                            viewModels.updateTransactionInfoItems(
+                                                                list
+                                                            )
                                                         }
                                                     } else if (!incomingTransactionIsChecked && outgoingTransactionIsChecked) {
-                                                        viewModels.transactionInfoItems.value?.let {list->
-                                                            viewModels.updateTransactionInfoItems(list)
+                                                        viewModels.transactionInfoItems.value?.let { list ->
+                                                            viewModels.updateTransactionInfoItems(
+                                                                list
+                                                            )
                                                         }
                                                     } else if (!outgoingTransactionIsChecked && !incomingTransactionIsChecked) {
-                                                        viewModels.transactionInfoItems.value?.let {list->
-                                                            viewModels.updateTransactionInfoItems(list)
+                                                        viewModels.transactionInfoItems.value?.let { list ->
+                                                            viewModels.updateTransactionInfoItems(
+                                                                list
+                                                            )
                                                         }
                                                     }
                                                 },
@@ -687,20 +704,28 @@ fun WalletDashBoardScreen(
                                                         Toast.LENGTH_SHORT
                                                     ).show()
                                                     if (incomingTransactionIsChecked && outgoingTransactionIsChecked) {
-                                                        viewModels.transactionInfoItems.value?.let {list->
-                                                            viewModels.updateTransactionInfoItems(list)
+                                                        viewModels.transactionInfoItems.value?.let { list ->
+                                                            viewModels.updateTransactionInfoItems(
+                                                                list
+                                                            )
                                                         }
                                                     } else if (outgoingTransactionIsChecked && !incomingTransactionIsChecked) {
-                                                        viewModels.transactionInfoItems.value?.let {list->
-                                                            viewModels.updateTransactionInfoItems(list)
+                                                        viewModels.transactionInfoItems.value?.let { list ->
+                                                            viewModels.updateTransactionInfoItems(
+                                                                list
+                                                            )
                                                         }
                                                     } else if (!outgoingTransactionIsChecked && incomingTransactionIsChecked) {
-                                                        viewModels.transactionInfoItems.value?.let {list->
-                                                            viewModels.updateTransactionInfoItems(list)
+                                                        viewModels.transactionInfoItems.value?.let { list ->
+                                                            viewModels.updateTransactionInfoItems(
+                                                                list
+                                                            )
                                                         }
                                                     } else if (!incomingTransactionIsChecked && !outgoingTransactionIsChecked) {
-                                                        viewModels.transactionInfoItems.value?.let {list->
-                                                            viewModels.updateTransactionInfoItems(list)
+                                                        viewModels.transactionInfoItems.value?.let { list ->
+                                                            viewModels.updateTransactionInfoItems(
+                                                                list
+                                                            )
                                                         }
                                                     }
                                                 },
@@ -729,7 +754,8 @@ fun WalletDashBoardScreen(
                                             verticalAlignment = Alignment.CenterVertically,
                                             modifier = Modifier.clickable(
                                                 onClick = {
-                                                    showFilterTransactionByDatePopUp = !showFilterTransactionByDatePopUp
+                                                    showFilterTransactionByDatePopUp =
+                                                        !showFilterTransactionByDatePopUp
                                                 }
                                             )
                                         ) {
@@ -811,9 +837,9 @@ fun WalletDashBoardScreen(
                                 ) {
                                     transactionListMap.forEach {
                                         item {
-                                            CategoryHeader(it.key, modifier = Modifier,dateFormat)
+                                            CategoryHeader(it.key, modifier = Modifier, dateFormat)
                                         }
-                                        items(it.value) {infoItems->
+                                        items(it.value) { infoItems ->
                                             val isBNS = infoItems.isBns
                                             val displayAmount: String = Helper.getDisplayAmount(
                                                 infoItems.amount,
@@ -867,7 +893,7 @@ fun WalletDashBoardScreen(
                                                 }
                                             }
                                             transactionDate =
-                                                getDateTime(infoItems.timestamp,subDateFormat)
+                                                getDateTime(infoItems.timestamp, subDateFormat)
 
                                             if (infoItems.isFailed) {
                                                 transactionAmount = context.getString(
@@ -882,7 +908,8 @@ fun WalletDashBoardScreen(
                                             } else if (infoItems.direction === TransactionInfo.Direction.Direction_In) {
                                                 transactionAmountTextColor = R.color.tx_plus
                                             } else {
-                                                transactionAmountTextColor = R.color.wallet_send_button
+                                                transactionAmountTextColor =
+                                                    R.color.wallet_send_button
                                             }
 
                                             Column {
@@ -962,7 +989,7 @@ fun WalletDashBoardScreen(
                                 var transactionPaymentIdIsVisible: Boolean = false
                                 var transactionBlockHeight: String? = ""
                                 var transactionDateTime: String? = ""
-                                var transactionDate: String? =""
+                                var transactionDate: String? = ""
                                 var transactionFee: String? = ""
                                 var transactionFeeIsVisible: Boolean = false
                                 var transactionRecipientAddress: String? = ""
@@ -1034,9 +1061,10 @@ fun WalletDashBoardScreen(
                                         transactionInfoItem!!.blockheight.toString()
                                     }
                                 }
-                                transactionDate = getDateTime(transactionInfoItem!!.timestamp,subDateFormat)
+                                transactionDate =
+                                    getDateTime(transactionInfoItem!!.timestamp, subDateFormat)
                                 transactionDateTime =
-                                    getDateTime(transactionInfoItem!!.timestamp,dateTimeFormat)
+                                    getDateTime(transactionInfoItem!!.timestamp, dateTimeFormat)
 
                                 if (transactionInfoItem!!.fee > 0) {
                                     val fee: String = Helper.getDisplayAmount(
@@ -1352,7 +1380,7 @@ fun WalletDashBoardScreen(
                                             .fillMaxWidth()
                                             .padding(start = 10.dp, end = 10.dp)
                                     )
-                                    if(transactionFeeIsVisible) {
+                                    if (transactionFeeIsVisible) {
                                         Row(
                                             horizontalArrangement = Arrangement.SpaceBetween,
                                             modifier = Modifier
@@ -1540,12 +1568,17 @@ private fun CategoryHeader(
     modifier: Modifier = Modifier,
     dateFormat: SimpleDateFormat
 ) {
-    val nowDate = convertStringToDate(convertTodayTimeStampToDateString(System.currentTimeMillis(),dateFormat),dateFormat)
-    val date= convertStringToDate(dateTimeStamp, dateFormat)
+    val nowDate = convertStringToDate(
+        convertTodayTimeStampToDateString(
+            System.currentTimeMillis(),
+            dateFormat
+        ), dateFormat
+    )
+    val date = convertStringToDate(dateTimeStamp, dateFormat)
     val diffDays: Long = date.time - System.currentTimeMillis()
 
-    val dayCount:Int = (diffDays.toFloat() / (24 * 60 * 60 * 1000)).toInt()
-    val isToday:Boolean = nowDate == date
+    val dayCount: Int = (diffDays.toFloat() / (24 * 60 * 60 * 1000)).toInt()
+    val isToday: Boolean = nowDate == date
     var title = ""
 
     title = if (isToday) {
@@ -1569,38 +1602,15 @@ private fun CategoryHeader(
     )
 }
 
-fun filter(
-    text: TransactionInfo.Direction,
-    arrayList: MutableList<TransactionInfo>,
-    viewModels: WalletViewModels
-) {
-    val temp: MutableList<TransactionInfo> = ArrayList()
-    for (d in arrayList) {
-        if (d.direction == text) {
-            temp.add(d)
-        }
-    }
-    callIfTransactionListEmpty(temp.size, viewModels)
-    //update recyclerview
-    viewModels.updateTransactionInfoItems(temp)
-}
-
-private fun filterAll(arrayList: MutableList<TransactionInfo>, viewModels: WalletViewModels) {
-    val temp: MutableList<TransactionInfo> = ArrayList()
-    for (d in arrayList) {
-        temp.add(d)
-    }
-    callIfTransactionListEmpty(temp.size, viewModels)
-    //update recyclerview
-    viewModels.updateTransactionInfoItems(temp)
-}
-
-private fun callIfTransactionListEmpty(size: Int, viewModels: WalletViewModels) {
+private fun callIfTransactionListEmpty(size: Int, viewModels: WalletViewModels,showFilter:(status : Boolean)-> Unit) {
     if (size > 0) {
-        viewModels.setTransactionListContainerIsVisible(true)
-    } else {
         viewModels.setFilterTransactionIconIsClickable(true)
+        viewModels.setTransactionListContainerIsVisible(true)
+        showFilter(true)
+    } else {
+        viewModels.setFilterTransactionIconIsClickable(false)
         viewModels.setTransactionListContainerIsVisible(false)
+        showFilter(false)
     }
 }
 

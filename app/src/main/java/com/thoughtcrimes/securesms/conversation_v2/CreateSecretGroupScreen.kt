@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CardDefaults
@@ -45,6 +46,8 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -84,13 +87,13 @@ fun CreateSecretGroup(
     var groupName by remember {
         mutableStateOf("")
     }
-    val context=LocalContext.current
+    val context = LocalContext.current
     var showLoader by remember {
         mutableStateOf(false)
     }
     val composition by rememberLottieComposition(
-            LottieCompositionSpec
-                    .RawRes(R.raw.load_animation)
+        LottieCompositionSpec
+            .RawRes(R.raw.load_animation)
     )
     val isPlaying by remember {
         mutableStateOf(true)
@@ -101,168 +104,180 @@ fun CreateSecretGroup(
     }
 
     val progress by animateLottieCompositionAsState(
-            composition,
-            iterations=LottieConstants.IterateForever,
-            isPlaying=isPlaying,
-            speed=speed,
-            restartOnPlay=false
+        composition,
+        iterations = LottieConstants.IterateForever,
+        isPlaying = isPlaying,
+        speed = speed,
+        restartOnPlay = false
     )
 
-    Box(modifier=Modifier
+    Box(
+        modifier = Modifier
             .fillMaxSize()
     ) {
 
         Column(
-                verticalArrangement=Arrangement.Center,
-                horizontalAlignment=Alignment.CenterHorizontally,
-                modifier=Modifier
-                        .fillMaxSize()
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxSize()
         ) {
             Column(
-                    modifier=Modifier
-                            .padding(16.dp)
+                modifier = Modifier
+                    .padding(16.dp)
             ) {
                 Text(
-                        text=stringResource(R.string.create_secret_group),
-                        style=MaterialTheme.typography.titleMedium.copy(
-                                fontSize=20.sp,
-                                fontWeight=FontWeight(800)
-                        ),
-                        modifier = Modifier.padding(vertical = 10.dp)
+                    text = stringResource(R.string.create_secret_group),
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight(800)
+                    ),
+                    modifier = Modifier.padding(vertical = 10.dp)
                 )
                 TextField(
-                        value = groupName,
-                        placeholder = {
-                            Text(
-                                    text = stringResource(R.string.enter_group_name),
-                                    style = MaterialTheme.typography.bodyMedium
-                            )
-                        },
-                        onValueChange = {
-                            groupName = it
-                        },
-                        modifier =Modifier
-                                .fillMaxWidth()
-                                .padding(vertical=8.dp),
-                        shape = RoundedCornerShape(16.dp),
-                        colors = TextFieldDefaults.colors(
-                                unfocusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
-                                focusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent,
-                                disabledIndicatorColor = Color.Transparent,
-                                cursorColor = colorResource(id = R.color.button_green)
+                    value = groupName,
+                    placeholder = {
+                        Text(
+                            text = stringResource(R.string.enter_group_name),
+                            style = MaterialTheme.typography.bodyMedium
                         )
+                    },
+                    onValueChange = {
+                        groupName = it
+                    },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Done
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = TextFieldDefaults.colors(
+                        unfocusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
+                        focusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                        cursorColor = colorResource(id = R.color.button_green)
+                    )
                 )
             }
 
             Divider(
-                    color=colorResource(id=R.color.divider_color),
-                    modifier=Modifier
-                            .fillMaxWidth()
-                            .alpha(0.5f))
+                color = colorResource(id = R.color.divider_color),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .alpha(0.5f)
+            )
 
             TextField(
-                    value = searchQuery,
-                    placeholder = {
-                        Text(
-                                text = stringResource(R.string.search_contact),
-                                style = MaterialTheme.typography.bodyMedium
-                        )
-                    },
-                    onValueChange={ onEvent(SecretGroupEvents.SearchQueryChanged(it)) },
-                    modifier =Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                            .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.appColors.textFiledBorderColor,
-                                    shape = RoundedCornerShape(36.dp)
-                            )
-                    ,
-                    shape = RoundedCornerShape(36.dp),
-                    trailingIcon={
-                        Icon(
-                                Icons.Default.Search,
-                                contentDescription="search contact",
-                                tint=MaterialTheme.appColors.iconTint
-                        )
-                    },
-                    colors = TextFieldDefaults.colors(
-                            unfocusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
-                            focusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            disabledIndicatorColor = Color.Transparent,
-                            cursorColor = colorResource(id = R.color.button_green)
+                value = searchQuery,
+                placeholder = {
+                    Text(
+                        text = stringResource(R.string.search_contact),
+                        style = MaterialTheme.typography.bodyMedium
                     )
+                },
+                onValueChange = { onEvent(SecretGroupEvents.SearchQueryChanged(it)) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.appColors.textFiledBorderColor,
+                        shape = RoundedCornerShape(36.dp)
+                    ),
+                shape = RoundedCornerShape(36.dp),
+                trailingIcon = {
+                    Icon(
+                        Icons.Default.Search,
+                        contentDescription = "search contact",
+                        tint = MaterialTheme.appColors.iconTint
+                    )
+                },
+                colors = TextFieldDefaults.colors(
+                    unfocusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
+                    focusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    cursorColor = colorResource(id = R.color.button_green)
+                )
             )
             LazyColumn(
-                    horizontalAlignment=Alignment.CenterHorizontally,
-                    verticalArrangement=Arrangement.spacedBy(8.dp),
-                    modifier=Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                    horizontal=16.dp
-                            )
-                            .weight(1f)
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = 16.dp
+                    )
+                    .weight(1f)
             ) {
                 items(contacts) {
                     GroupContact(
-                            recipient=it,
-                            isSelected=selectedContact.contains(it.address.toString()),
-                            onSelectionChanged={ contact, isSelected ->
-                                onEvent(SecretGroupEvents.RecipientSelectionChanged(contact, isSelected))
-                            },
-                            modifier=Modifier
-                                    .fillMaxWidth()
-                                    .padding(
-                                            vertical=8.dp
-                                    )
+                        recipient = it,
+                        isSelected = selectedContact.contains(it.address.toString()),
+                        onSelectionChanged = { contact, isSelected ->
+                            onEvent(
+                                SecretGroupEvents.RecipientSelectionChanged(
+                                    contact,
+                                    isSelected
+                                )
+                            )
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                vertical = 8.dp
+                            )
                     )
                 }
             }
             Box(
-                    modifier=Modifier
-                            .fillMaxWidth()
-                            .padding(top=8.dp)
-                            .background(
-                                    color=MaterialTheme.appColors.createButtonBackground
-                            ),
-                    contentAlignment=Alignment.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp)
+                    .background(
+                        color = MaterialTheme.appColors.createButtonBackground
+                    ),
+                contentAlignment = Alignment.Center,
             ) {
                 PrimaryButton(
-                        onClick={
-                            showLoader=true
-                            createClosedGroup(groupName, context, activity, selectedContact)
-                        },
-                        modifier=Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                        shape=RoundedCornerShape(16.dp),
+                    onClick = {
+                        createClosedGroup(groupName.trim(), context, activity, selectedContact, showLoader = {
+                            showLoader = it
+                        })
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    shape = RoundedCornerShape(16.dp),
                 ) {
                     Text(
-                            text=stringResource(id=R.string.create),
-                            style=BChatTypography.bodyLarge.copy(
-                                    color=Color.White
-                            ),
-                            modifier=Modifier
-                                    .padding(8.dp)
+                        text = stringResource(id = R.string.create),
+                        style = BChatTypography.bodyLarge.copy(
+                            color = Color.White
+                        ),
+                        modifier = Modifier
+                            .padding(8.dp)
                     )
                 }
             }
         }
         if (showLoader) {
             Box(
-                    modifier=Modifier
-                            .fillMaxSize()
-                            .background(color=MaterialTheme.appColors.loaderBackground.copy(alpha=0.5f)),
-                    contentAlignment=Alignment.Center
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = MaterialTheme.appColors.loaderBackground.copy(alpha = 0.5f)),
+                contentAlignment = Alignment.Center
             ) {
                 LottieAnimation(
-                        composition,
-                        progress,
-                        modifier=Modifier.size(70.dp)
+                    composition,
+                    progress,
+                    modifier = Modifier.size(70.dp)
                 )
             }
         }
@@ -293,19 +308,21 @@ private fun GroupContact(
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            Box(modifier=Modifier.padding(horizontal = 10.dp, vertical = 5.dp)){
-            ProfilePictureComponent(
-                    publicKey=recipient.address.toString(),
-                    displayName=recipient.name.toString(),
-                    containerSize=36.dp,
-                    pictureMode=ProfilePictureMode.LargePicture)}
+            Box(modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)) {
+                ProfilePictureComponent(
+                    publicKey = recipient.address.toString(),
+                    displayName = recipient.name.toString(),
+                    containerSize = 36.dp,
+                    pictureMode = ProfilePictureMode.LargePicture
+                )
+            }
 
             Text(
                 text = recipient.name.toString(),
                 textAlign = TextAlign.Start,
-                modifier =Modifier
-                        .weight(1f)
-                        .padding(horizontal=10.dp)
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 10.dp)
             )
 
             BChatCheckBox(
@@ -319,38 +336,67 @@ private fun GroupContact(
 }
 
 fun getUserDisplayName(publicKey: String, context: Context): String {
-    val contact = DatabaseComponent.get(context).bchatContactDatabase().getContactWithBchatID(publicKey)
+    val contact =
+        DatabaseComponent.get(context).bchatContactDatabase().getContactWithBchatID(publicKey)
     return contact?.displayName(Contact.ContactContext.REGULAR) ?: publicKey
 }
 
-private fun createClosedGroup(name: String, context: Context, activity: Activity?,selected: Collection<String>) {
-
+private fun createClosedGroup(
+    name: String,
+    context: Context,
+    activity: Activity?,
+    selected: Collection<String>,
+    showLoader: (status : Boolean) -> Unit
+) {
     if (name.isEmpty()) {
-        return Toast.makeText(context, R.string.activity_create_closed_group_group_name_missing_error, Toast.LENGTH_LONG).show()
+        return Toast.makeText(
+            context,
+            R.string.activity_create_closed_group_group_name_missing_error,
+            Toast.LENGTH_LONG
+        ).show()
     }
-    if (name.length >= 64) {
-        return Toast.makeText(context, R.string.activity_create_closed_group_group_name_too_long_error, Toast.LENGTH_LONG).show()
+    else if (name.length >= 64) {
+        return Toast.makeText(
+            context,
+            R.string.activity_create_closed_group_group_name_too_long_error,
+            Toast.LENGTH_LONG
+        ).show()
     }
-    if (selected.isEmpty()) {
+    else if (selected.isEmpty()) {
         return Toast.makeText(
             context,
             R.string.activity_create_closed_group_not_enough_group_members_error,
             Toast.LENGTH_LONG
         ).show()
     }
-    if (selected.count() >= groupSizeLimit) { // Minus one because we're going to include self later
-        return Toast.makeText(context, R.string.activity_create_closed_group_too_many_group_members_error, Toast.LENGTH_LONG).show()
-    }
-    val userPublicKey = TextSecurePreferences.getLocalNumber(context)!!
-    MessageSender.createClosedGroup(name, selected + setOf(userPublicKey)).successUi { groupID ->
-        val threadID = DatabaseComponent.get(context).threadDatabase().getOrCreateThreadIdFor(
-            Recipient.from(context, Address.fromSerialized(groupID), false))
-        if (!activity!!.isFinishing) {
-            openConversationActivity(threadID, Recipient.from(context, Address.fromSerialized(groupID), false),activity)
-            activity.finish()
+    else if (selected.count() >= groupSizeLimit) { // Minus one because we're going to include self later
+        return Toast.makeText(
+            context,
+            R.string.activity_create_closed_group_too_many_group_members_error,
+            Toast.LENGTH_LONG
+        ).show()
+    }else {
+        showLoader(true)
+        val userPublicKey = TextSecurePreferences.getLocalNumber(context)!!
+        MessageSender.createClosedGroup(name, selected + setOf(userPublicKey))
+            .successUi { groupID ->
+                val threadID =
+                    DatabaseComponent.get(context).threadDatabase().getOrCreateThreadIdFor(
+                        Recipient.from(context, Address.fromSerialized(groupID), false)
+                    )
+                if (!activity!!.isFinishing) {
+                    openConversationActivity(
+                        threadID,
+                        Recipient.from(context, Address.fromSerialized(groupID), false),
+                        activity
+                    )
+                    showLoader(false)
+                    activity.finish()
+                }
+            }.failUi {
+                showLoader(false)
+            Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
         }
-    }.failUi {
-        Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
     }
 }
 

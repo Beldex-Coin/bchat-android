@@ -452,7 +452,7 @@
     <string name="load_more_header__loading" translatable="false">Loading</string>
 
     <!-- media_overview_activity -->
-    <string name="media_overview_activity__no_media" translatable="false">No media</string>
+    <string name="media_overview_activity__no_media" translatable="false">No media items to show</string>
 
     <!-- message_recipients_list_item -->
     <string name="message_recipients_list_item__resend" translatable="false">Resend</string>
@@ -635,7 +635,7 @@
     <string name="media_preview__all_media_title" translatable="false">All media</string>
 
     <!-- media_overview -->
-    <string name="media_overview_documents_fragment__no_documents_found" translatable="false">No documents</string>
+    <string name="media_overview_documents_fragment__no_documents_found" translatable="false">No document items to show!</string>
 
     <!-- media_preview_activity -->
     <string name="media_preview_activity__media_content_description" translatable="false">Media preview</string>
@@ -1492,4 +1492,12 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="missed_voice_call">Missed Voice Call</string>
     <string name="tap_to_callback">Tap to Callback</string>
     <string name="enter_your_4_digit_wallet_pin">Enter your 4 digit Wallet PIN</string>
+    <string name="clear_chat">Clear Chat</string>
+    <string name="clear_chat_confirmation">Are you sure you want to clear all the chat from this contact?</string>
+    <string name="unblock_contact">Unblock Contact</string>
+    <string name="unblock_user_confirmation">Are you sure you want to Unblock this contact?</string>
+    <string name="block_user_confirmation">Are you sure you want to Block this contact?</string>
+    <string name="block_contact">Block Contact</string>
+    <string name="unblock">Unblock</string>
+    <string name="blocked_user_message">You Blocked Person! Click here to Unblock.</string>
 </resources>

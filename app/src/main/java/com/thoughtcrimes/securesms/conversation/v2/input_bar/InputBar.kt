@@ -25,6 +25,8 @@ import com.thoughtcrimes.securesms.conversation.v2.messages.QuoteViewDelegate
 import com.thoughtcrimes.securesms.database.model.MessageRecord
 import com.thoughtcrimes.securesms.database.model.MmsMessageRecord
 import com.thoughtcrimes.securesms.mms.GlideRequests
+import com.thoughtcrimes.securesms.util.UiMode
+import com.thoughtcrimes.securesms.util.UiModeUtilities
 import com.thoughtcrimes.securesms.util.getColorWithID
 import com.thoughtcrimes.securesms.util.toDp
 import com.thoughtcrimes.securesms.util.toPx
@@ -130,8 +132,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         /* Hales63 */
         val incognitoFlag = if (TextSecurePreferences.isIncognitoKeyboardEnabled(context)) 16777216 else 0
         binding.inputBarEditText.imeOptions = binding.inputBarEditText.imeOptions or incognitoFlag
-        if(TextSecurePreferences.isEnterSendsEnabled(context))
-        {
+        if(TextSecurePreferences.isEnterSendsEnabled(context)) {
             //Log.d("Beldex","is enter send enable if ${TextSecurePreferences.isEnterSendsEnabled(context)}")
             binding.inputBarEditText.inputType = (EditorInfo.TYPE_CLASS_TEXT)
             binding.inputBarEditText.imeOptions = (EditorInfo.IME_ACTION_SEND);
@@ -146,6 +147,12 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
                 }
                 false
             })
+        }
+        val isDarkMode = UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
+        binding.containerCardView.strokeWidth = if (isDarkMode) {
+            0
+        } else {
+            2
         }
     }
     // endregion
@@ -235,16 +242,17 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
 
     private fun showOrHideInputIfNeeded() {
         if (showInput) {
-            setOf( binding.inputBarEditText, attachmentsButton ).forEach { it.isVisible = true }
+            setOf( binding.inputBarEditText, attachmentsButton, binding.microphoneOrSendButtonContainer ).forEach { it.isVisible = true }
             microphoneButton.isVisible = text.isEmpty() || text.isBlank()
             sendButton.isVisible = text.isNotEmpty() && text.isNotBlank()
             binding.noLongerParticipantTextView.isVisible = false
         } else {
             cancelQuoteDraft(2)
             cancelLinkPreviewDraft(2)
-            val views = setOf( binding.inputBarEditText, attachmentsButton, microphoneButton, sendButton )
+            val views = setOf( binding.inputBarEditText, attachmentsButton, microphoneButton, sendButton, binding.microphoneOrSendButtonContainer )
             views.forEach { it.isVisible = false }
             binding.noLongerParticipantTextView.isVisible = true
+//            binding.containerCardView.setContentPadding(16, 16, 16, 16)
         }
     }
     /*Hales63*/

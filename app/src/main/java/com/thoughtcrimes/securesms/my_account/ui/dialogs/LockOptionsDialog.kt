@@ -9,7 +9,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,11 +22,12 @@ import com.thoughtcrimes.securesms.compose_utils.PrimaryButton
 import com.thoughtcrimes.securesms.compose_utils.appColors
 import com.thoughtcrimes.securesms.compose_utils.ui.NumberPicker
 import com.thoughtcrimes.securesms.compose_utils.ui.rememberPickerState
-import com.thoughtcrimes.securesms.my_account.ui.ScreenTimeoutOptions
 import io.beldex.bchat.R
 
 @Composable
 fun LockOptionsDialog(
+    title: String,
+    options: List<String>,
     currentValue: String,
     onDismiss: () -> Unit,
     onValueChanged: (String, Int) -> Unit
@@ -38,9 +38,6 @@ fun LockOptionsDialog(
         onDismissRequest = onDismiss,
     ) {
         val valuesPickerState = rememberPickerState()
-        val lockOptions = remember {
-            ScreenTimeoutOptions.entries.map { it.displayValue }.toList()
-        }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
@@ -48,7 +45,7 @@ fun LockOptionsDialog(
                 .padding(16.dp)
         ) {
             Text(
-                text = stringResource(R.string.screen_inactivity_timeout),
+                text = title,
                 style = MaterialTheme.typography.titleMedium.copy(
                     color = MaterialTheme.appColors.primaryButtonColor,
                     fontWeight = FontWeight.Bold
@@ -62,9 +59,9 @@ fun LockOptionsDialog(
 
             NumberPicker(
                 state = valuesPickerState,
-                items = lockOptions,
+                items = options,
                 visibleItemsCount = 3,
-                startIndex = lockOptions.indexOf(currentValue),
+                startIndex = options.indexOf(currentValue),
                 textModifier = Modifier.padding(12.dp),
                 textStyle = MaterialTheme.typography.titleMedium,
                 modifier = Modifier
@@ -75,7 +72,7 @@ fun LockOptionsDialog(
 
             PrimaryButton(
                 onClick = {
-                    onValueChanged(valuesPickerState.selectedItem, lockOptions.indexOf(valuesPickerState.selectedItem))
+                    onValueChanged(valuesPickerState.selectedItem, options.indexOf(valuesPickerState.selectedItem))
                 },
                 shape = RoundedCornerShape(50)
             ) {
@@ -84,7 +81,11 @@ fun LockOptionsDialog(
                     style = MaterialTheme.typography.titleMedium.copy(
                         color = Color.White,
                         fontWeight = FontWeight.Bold
-                    )
+                    ),
+                    modifier = Modifier
+                        .padding(
+                            horizontal = 16.dp
+                        )
                 )
             }
         }
@@ -95,6 +96,8 @@ fun LockOptionsDialog(
 @Composable
 fun LockOptionsDialogPreview() {
     LockOptionsDialog(
+        title = "",
+        options = listOf(),
         currentValue = "",
         onDismiss = {},
         onValueChanged = {_, _ -> }

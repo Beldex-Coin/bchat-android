@@ -20,21 +20,38 @@
                 android:layout_height="?android:attr/actionBarSize"
                 app:layout_scrollFlags="scroll|enterAlways"/>
 
-        <com.thoughtcrimes.securesms.components.ControllableTabLayout
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        style="@style/CustomCardViewStyle"
+        app:cardBackgroundColor="@color/new_card_background"
+        android:scrollbars="none"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.thoughtcrimes.securesms.components.ControllableTabLayout
                 android:id="@+id/tab_layout"
                 style="@style/Widget.Bchat.TabLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="top"/>
+                android:layout_gravity="top"
+                app:tabIndicatorFullWidth="true"/>
 
-    </com.google.android.material.appbar.AppBarLayout>
+            <com.thoughtcrimes.securesms.components.ControllableViewPager
+                android:id="@+id/pager"
+                android:layout_width="match_parent"
+                android:background="@color/page_background"
+                android:layout_height="match_parent" />
 
-    <com.thoughtcrimes.securesms.components.ControllableViewPager
-            android:id="@+id/pager"
-            android:layout_width="match_parent"
-            android:background="@color/page_background"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

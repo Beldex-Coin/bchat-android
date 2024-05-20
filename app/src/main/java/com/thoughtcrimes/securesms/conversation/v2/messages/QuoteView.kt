@@ -3,14 +3,15 @@ package com.thoughtcrimes.securesms.conversation.v2.messages
 import android.content.Context
 import android.content.res.ColorStateList
 import android.util.AttributeSet
+import android.view.View
 import androidx.annotation.ColorInt
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.content.res.use
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.utilities.recipients.Recipient
+import com.google.android.material.card.MaterialCardView
 import com.thoughtcrimes.securesms.conversation.v2.utilities.MentionUtilities
 import com.thoughtcrimes.securesms.database.BchatContactDatabase
 import com.thoughtcrimes.securesms.mms.GlideRequests
@@ -33,7 +34,7 @@ import javax.inject.Inject
 // • Quoted voice messages and documents in both private chats and group chats
 // • All of the above in both dark mode and light mode
 @AndroidEntryPoint
-class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : ConstraintLayout(context, attrs) {
+class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : MaterialCardView(context, attrs) {
 
     @Inject lateinit var contactDb: BchatContactDatabase
 
@@ -61,7 +62,7 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             Mode.Draft -> binding.quoteViewCancelButton.setOnClickListener { delegate?.cancelQuoteDraft(1)}
             Mode.Regular -> {
                 binding.quoteViewCancelButton.isVisible = false
-                binding.mainQuoteViewContainer.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.transparent, context.theme))
+//                binding.mainQuoteViewContainer.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.transparent, context.theme))
             }
         }
     }
@@ -151,11 +152,17 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         binding.quoteViewAttachmentPreviewContainer.isVisible = hasAttachments
         if (!hasAttachments) {
 //            binding.quoteViewAccentLine.setBackgroundColor(getLineColor(isOutgoingMessage))
+            binding.quoteViewAuthorTextView.isVisible = mode != Mode.Regular
+            binding.contentTypeIcon.isVisible = false
         } else if (attachments != null) {
+            binding.mainQuoteViewContainer.post {
+                val w = binding.mainQuoteViewContainer.width
+                binding.container.minimumWidth = (w * 0.9).toInt()
+            }
             binding.quoteViewAttachmentPreviewImageView.imageTintList = ColorStateList.valueOf(ResourcesCompat.getColor(resources, R.color.white, context.theme))
             val backgroundColorID = if (UiModeUtilities.isDayUiMode(context)) R.color.black else R.color.accent
             val backgroundColor = ResourcesCompat.getColor(resources, backgroundColorID, context.theme)
-            binding.quoteViewAttachmentPreviewContainer.backgroundTintList = ColorStateList.valueOf(backgroundColor)
+//            binding.quoteViewAttachmentPreviewContainer.backgroundTintList = ColorStateList.valueOf(backgroundColor)
             binding.quoteViewAttachmentPreviewImageView.isVisible = false
             binding.quoteViewAttachmentThumbnailImageView.root.isVisible = false
             when {
@@ -163,11 +170,13 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                     binding.quoteViewAttachmentPreviewImageView.setImageResource(R.drawable.ic_microphone)
                     binding.quoteViewAttachmentPreviewImageView.isVisible = true
                     binding.quoteViewBodyTextView.text = resources.getString(R.string.Slide_audio)
+                    binding.contentTypeIcon.visibility = View.GONE
                 }
                 attachments.documentSlide != null -> {
                     binding.quoteViewAttachmentPreviewImageView.setImageResource(R.drawable.ic_document_large_light)
                     binding.quoteViewAttachmentPreviewImageView.isVisible = true
                     binding.quoteViewBodyTextView.text = resources.getString(R.string.document)
+                    binding.contentTypeIcon.visibility = View.GONE
                 }
                 attachments.thumbnailSlide != null -> {
                     val slide = attachments.thumbnailSlide!!
@@ -176,12 +185,43 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                     binding.quoteViewAttachmentThumbnailImageView.root.setImageResource(glide, slide, false, null)
                     binding.quoteViewAttachmentThumbnailImageView.root.isVisible = true
                     binding.quoteViewBodyTextView.text = if (MediaUtil.isVideo(slide.asAttachment())) resources.getString(R.string.Slide_video) else resources.getString(R.string.Slide_image)
+                    binding.contentTypeIcon.visibility = View.VISIBLE
                 }
+            }
+        }
+        if (mode == Mode.Regular) {
+            binding.mainQuoteViewContainer.setBackgroundColor(resources.getColor(getContainerColor(isOutgoingMessage), null))
+            binding.quoteViewAuthorTextView.setTextColor(resources.getColor(getAuthorTextColor(isOutgoingMessage), null))
+            binding.mainQuoteViewContainer.radius = if (hasAttachments) 24f else 100f
+            if (hasAttachments) {
+                val quotedTextColor = quotedTextColor(isOutgoingMessage)
+                binding.quoteViewBodyTextView.setTextColor(resources.getColor(quotedTextColor, null))
+//                binding.contentTypeIcon.setColorFilter(ContextCompat.getColor(context, quotedTextColor), android.graphics.PorterDuff.Mode.SRC_OUT)
             }
         }
     }
     // endregion
 
+    private fun getContainerColor(isOutgoingMessage: Boolean): Int {
+        return when {
+            isOutgoingMessage -> R.color.dialled_call_detail_background
+            else -> R.color.quote_view_background
+        }
+    }
+
+    private fun getAuthorTextColor(isOutgoingMessage: Boolean): Int {
+        return when {
+            isOutgoingMessage -> R.color.white
+            else -> R.color.quote_author_text_color
+        }
+    }
+
+    private fun quotedTextColor(isOutgoingMessage: Boolean): Int {
+        return when {
+            isOutgoingMessage -> R.color.sent_quoted_text_color
+            else -> R.color.received_quoted_text_color
+        }
+    }
     // region Convenience
     @ColorInt private fun getLineColor(isOutgoingMessage: Boolean): Int {
         val isLightMode = UiModeUtilities.isDayUiMode(context)

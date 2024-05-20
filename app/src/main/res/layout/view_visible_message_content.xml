@@ -5,7 +5,7 @@
     android:id="@+id/mainContainerConstraint"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    app:message_sent_background_color="@color/bchat_id_text_color">
+    app:message_sent_background_color="@color/send_message_background">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -37,7 +37,8 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:cardCornerRadius="100dp"
                 app:cardBackgroundColor="@color/received_call_detail_background"
-                android:layout_margin="8dp">
+                android:layout_margin="8dp"
+                app:cardElevation="0dp">
 
                 <include
                     android:id="@+id/untrustedView"
@@ -100,17 +101,20 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:cardCornerRadius="100dp"
-                app:cardBackgroundColor="@color/dialled_call_detail_background"
+                app:cardCornerRadius="24dp"
                 android:layout_marginHorizontal="@dimen/small_spacing"
-                android:layout_marginTop="@dimen/small_spacing">
+                android:layout_marginTop="@dimen/small_spacing"
+                app:cardElevation="0dp">
 
                 <include
                     android:id="@+id/quoteView"
                     layout="@layout/view_quote"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
 
             </com.google.android.material.card.MaterialCardView>
 
@@ -121,7 +125,7 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/quote_container" />
+                app:layout_constraintTop_toBottomOf="@id/quote_container" />
 
             <androidx.constraintlayout.widget.Barrier
                 android:id="@+id/bodyBarrier"
@@ -141,7 +145,8 @@
                 app:layout_constraintTop_toBottomOf="@id/linkPreviewView"
                 app:cardCornerRadius="24dp"
                 app:cardBackgroundColor="@color/dialled_call_detail_background"
-                android:layout_marginHorizontal="@dimen/small_spacing">
+                android:layout_marginHorizontal="@dimen/small_spacing"
+                app:cardElevation="0dp">
 
                 <include
                     android:id="@+id/albumThumbnailView"

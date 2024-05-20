@@ -147,9 +147,9 @@ class VisibleMessageContentView : MaterialCardView {
         binding.linkPreviewView.root.bodyTextView = binding.bodyTextView
 
         val linkPreviewLayout = binding.linkPreviewView.root.layoutParams
-        linkPreviewLayout.width =
-            if (mediaThumbnailMessage) 0 else ViewGroup.LayoutParams.WRAP_CONTENT
-        binding.linkPreviewView.root.layoutParams = linkPreviewLayout
+//        linkPreviewLayout.width =
+//            if (mediaThumbnailMessage) 0 else ViewGroup.LayoutParams.WRAP_CONTENT
+//        binding.linkPreviewView.root.layoutParams = linkPreviewLayout
 
 
         binding.untrustedView.root.isVisible =
@@ -187,7 +187,7 @@ class VisibleMessageContentView : MaterialCardView {
             }
             val layoutParams = binding.quoteView.root.layoutParams as MarginLayoutParams
             val hasMedia = message.slideDeck.asAttachments().isNotEmpty()
-            binding.quoteView.root.minWidth = if (hasMedia) 0 else toPx(300,context.resources)
+            binding.quoteView.root.minimumWidth = if (hasMedia) 0 else toPx(300,context.resources)
         }
 
         if (message is MmsMessageRecord) {

@@ -7,9 +7,11 @@ import android.os.Build.VERSION_CODES;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
+import com.google.android.material.card.MaterialCardView;
+
 import io.beldex.bchat.R;
 
-public class SquareFrameLayout extends FrameLayout {
+public class SquareFrameLayout extends MaterialCardView {
 
   private final boolean squareHeight;
 

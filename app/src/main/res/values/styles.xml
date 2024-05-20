@@ -839,11 +839,23 @@
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners</item>
     </style>
 
+    <style name="RightSideRoundedCard" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_right_corners_rounded</item>
+    </style>
+
     <style name="ShapeAppearanceOverlay_card_custom_corners" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSizeTopRight">16dp</item>
         <item name="cornerSizeTopLeft">16dp</item>
         <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay_card_right_corners_rounded" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">16dp</item>
+        <item name="cornerSizeTopLeft">0dp</item>
+        <item name="cornerSizeBottomRight">16dp</item>
         <item name="cornerSizeBottomLeft">0dp</item>
     </style>
 
@@ -881,6 +893,12 @@
         <item name="android:minHeight">64dp</item>
     </style>
 
+    <style name="AudioSeekBar" parent="Widget.AppCompat.SeekBar">
+        <item name="android:progressBackgroundTint">#B2D7B2</item>
+        <item name="android:progressTint">#FFFFFF</item>
+        <item name="android:thumbTint">#FFFFFF</item>
+    </style>
+
     <style name="Widget.Bchat.Button.Dialog.Ok">
         <item name="android:fontFamily">@font/open_sans_semi_bold</item>
         <item name="android:background">@drawable/bchat_dialog_button_shape</item>
@@ -893,6 +911,4 @@
         <item name="text_color">@color/white</item>
         <item name="android:shadowColor">@color/black</item>
     </style>
-
-
 </resources>

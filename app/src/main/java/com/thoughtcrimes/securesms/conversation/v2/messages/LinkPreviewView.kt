@@ -4,24 +4,20 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Rect
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ViewLinkPreviewBinding
 import com.thoughtcrimes.securesms.components.CornerMask
 import com.thoughtcrimes.securesms.conversation.v2.ModalUrlBottomSheet
-import com.thoughtcrimes.securesms.conversation.v2.utilities.MessageBubbleUtilities
-import com.thoughtcrimes.securesms.conversation.v2.utilities.TextUtilities.getIntersectedModalSpans
 import com.thoughtcrimes.securesms.database.model.MmsMessageRecord
 import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.mms.ImageSlide
 import com.thoughtcrimes.securesms.util.ActivityDispatcher
 import com.thoughtcrimes.securesms.util.UiModeUtilities
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ViewLinkPreviewBinding
 
 class LinkPreviewView : LinearLayout {
     private val binding: ViewLinkPreviewBinding by lazy { ViewLinkPreviewBinding.bind(this) }
@@ -63,12 +59,12 @@ class LinkPreviewView : LinearLayout {
         binding.titleTextView.setTextColor(ResourcesCompat.getColor(resources, textColorID, context.theme))
         // Body
         binding.titleTextView.setTextColor(ResourcesCompat.getColor(resources, textColorID, context.theme))
-        // Corner radii
-        val cornerRadii = MessageBubbleUtilities.calculateRadii(context, isStartOfMessageCluster, isEndOfMessageCluster, message.isOutgoing)
-        cornerMask.setTopLeftRadius(cornerRadii[0])
-        cornerMask.setTopRightRadius(cornerRadii[1])
-        cornerMask.setBottomRightRadius(cornerRadii[2])
-        cornerMask.setBottomLeftRadius(cornerRadii[3])
+//        // Corner radii
+//        val cornerRadii = MessageBubbleUtilities.calculateRadii(context, isStartOfMessageCluster, isEndOfMessageCluster, message.isOutgoing)
+//        cornerMask.setTopLeftRadius(cornerRadii[0])
+//        cornerMask.setTopRightRadius(cornerRadii[1])
+//        cornerMask.setBottomRightRadius(cornerRadii[2])
+//        cornerMask.setBottomLeftRadius(cornerRadii[3])
     }
 
     override fun dispatchDraw(canvas: Canvas) {

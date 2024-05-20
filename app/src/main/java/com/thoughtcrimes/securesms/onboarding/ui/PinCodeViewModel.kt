@@ -124,6 +124,11 @@ class PinCodeViewModel @Inject constructor(
                                     if (event.pinCode == savedPassword) {
                                         _successEvent.emit(true)
                                     } else {
+                                        _state.update {
+                                            it.copy(
+                                                pin = ""
+                                            )
+                                        }
                                         _errorMessage.emit(resourceProvider.getString(R.string.invalid_password))
                                     }
                                 }
@@ -137,6 +142,11 @@ class PinCodeViewModel @Inject constructor(
                     when (step) {
                         PinCodeSteps.OldPin -> {
                             if (pin != savedPassword) {
+                                _state.update {
+                                    it.copy(
+                                        pin = ""
+                                    )
+                                }
                                 viewModelScope.launch {
                                     _errorMessage.emit(resourceProvider.getString(R.string.incorrect_password_entered))
                                 }
@@ -151,6 +161,11 @@ class PinCodeViewModel @Inject constructor(
                         }
                         PinCodeSteps.EnterPin -> {
                             if (action == PinCodeAction.ChangePinCode.action && newPin == savedPassword) {
+                                _state.update {
+                                    it.copy(
+                                        newPin = ""
+                                    )
+                                }
                                 viewModelScope.launch {
                                     _errorMessage.emit(resourceProvider.getString(R.string.old_new_password_same))
                                 }
@@ -165,6 +180,11 @@ class PinCodeViewModel @Inject constructor(
                         }
                         PinCodeSteps.ReEnterPin -> {
                             if (reEnteredPin != newPin) {
+                                _state.update {
+                                    it.copy(
+                                        reEnteredPin = ""
+                                    )
+                                }
                                 viewModelScope.launch {
                                     _errorMessage.emit(resourceProvider.getString(R.string.password_does_not_match))
                                 }

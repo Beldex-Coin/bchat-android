@@ -13,6 +13,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -51,7 +53,6 @@ import com.beldex.libsignal.utilities.ThreadUtils
 import com.beldex.libsignal.utilities.toHexString
 import com.thoughtcrimes.securesms.ApplicationContext
 import com.thoughtcrimes.securesms.MuteDialog
-import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.components.ProfilePictureView
 import com.thoughtcrimes.securesms.compose_utils.BChatTheme
 import com.thoughtcrimes.securesms.compose_utils.ComposeDialogContainer
@@ -90,10 +91,7 @@ import com.thoughtcrimes.securesms.util.*
 import com.thoughtcrimes.securesms.wallet.CheckOnline
 import com.thoughtcrimes.securesms.wallet.WalletFragment
 import com.thoughtcrimes.securesms.wallet.info.WalletInfoActivity
-import com.thoughtcrimes.securesms.wallet.startwallet.StartWalletInfo
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
-import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
-import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLockActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
 import com.thoughtcrimes.securesms.webrtc.WebRTCComposeActivity
@@ -524,11 +522,11 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                         openChat = {
                             onConversationClick(it.threadId)
                         },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                horizontal = 16.dp
-                            )
+                        modifier =Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                        horizontal=16.dp
+                                )
                     )
                 }
             }
@@ -581,6 +579,8 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
             }
         }
         binding.navigationMenu.version.text = resources.getString(R.string.version_name).format(BuildConfig.VERSION_NAME)
+        // binding.navigationMenu.uiMode.text = "Dark Mode"
+
     }
 
     private fun showRequestDeleteDialog(record: ThreadRecord) {
@@ -872,18 +872,29 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
 
     override fun onLongConversationClick(thread: ThreadRecord, view: View) {
         val recipient = thread.recipient
-        val popupMenu = PopupMenu(requireContext(), view)
+        val popupMenu = PopupMenu(requireContext(), view, R.style.PopupMenu)
         popupMenu.menuInflater.inflate(R.menu.menu_conversation_v2, popupMenu.menu)
         popupMenu.gravity = Gravity.END
         popupMenu.setForceShowIcon(true)
+        val item : MenuItem= popupMenu.menu.findItem(R.id.menu_delete)
+        val s=SpannableString("Delete")
+        s.setSpan(ForegroundColorSpan(requireContext().getColor(R.color.red)), 0, s.length, 0)
+        item.setTitle(s)
         with(popupMenu.menu) {
             if (recipient.isGroupRecipient && !recipient.isLocalNumber) {
+                findItem(R.id.menu_details).setVisible(false)
+                findItem(R.id.menu_unblock).setVisible(false)
+                findItem(R.id.menu_block).setVisible(false)
+            } else if(recipient.isLocalNumber){
+                findItem(R.id.menu_details).setVisible(false)
+                findItem(R.id.menu_unblock).setVisible(false)
+                findItem(R.id.menu_block).setVisible(false)
+            }else{
                 findItem(R.id.menu_details).setVisible(true)
                 findItem(R.id.menu_unblock).setVisible(recipient.isBlocked)
                 findItem(R.id.menu_block).setVisible(!recipient.isBlocked)
-            } else {
-                findItem(R.id.menu_details).setVisible(false)
             }
+
             findItem(R.id.menu_unmute_notifications).setVisible(recipient.isMuted && !recipient.isLocalNumber)
             findItem(R.id.menu_mute_notifications).setVisible(!recipient.isMuted && !recipient.isLocalNumber)
             findItem(R.id.menu_notification_settings).setVisible(recipient.isGroupRecipient && !recipient.isMuted)

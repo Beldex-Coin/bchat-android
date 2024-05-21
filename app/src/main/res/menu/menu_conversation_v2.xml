@@ -6,32 +6,32 @@
     <item
         android:title="@string/details"
         android:id="@+id/menu_details"
-        android:icon="@drawable/ic_pin" />
+        android:icon="@drawable/ic_details_menu" />
 
     <item
         android:title="@string/conversation_pin"
         android:id="@+id/menu_pin"
-        android:icon="@drawable/ic_pin"/>
+        android:icon="@drawable/ic_pin_menu"/>
 
     <item
         android:title="@string/conversation_unpin"
         android:id="@+id/menu_unpin"
-        android:icon="@drawable/ic_pin"/>
+        android:icon="@drawable/ic_unpin"/>
 
     <item
         android:title="@string/RecipientPreferenceActivity_block"
         android:id="@+id/menu_block"
-        android:icon="@drawable/ic_pin"/>
+        android:icon="@drawable/ic_block"/>
 
     <item
         android:title="@string/RecipientPreferenceActivity_unblock"
         android:id="@+id/menu_unblock"
-        android:icon="@drawable/ic_pin"/>
+        android:icon="@drawable/ic_block"/>
 
     <item
         android:title="@string/MuteDialog_mute_notifications"
         android:id="@+id/menu_mute_notifications"
-        android:icon="@drawable/ic_outline_notifications_off_24"/>
+        android:icon="@drawable/ic_mute_notification_menu"/>
 
     <item
         android:title="@string/conversation_muted__unmute"
@@ -41,7 +41,7 @@
     <item
         android:title="@string/RecipientPreferenceActivity_notification_settings"
         android:id="@+id/menu_notification_settings"
-        android:icon="@drawable/ic_outline_notification_important_24"/>
+        android:icon="@drawable/ic_notification_settings_menu"/>
 
     <item
         android:title="@string/MessageNotifier_mark_all_as_read"
@@ -51,6 +51,6 @@
     <item
         android:title="@string/delete"
         android:id="@+id/menu_delete"
-        android:icon="?attr/menu_trash_icon"/>
+        android:icon="@drawable/ic_delete_menu" />
 
 </menu>

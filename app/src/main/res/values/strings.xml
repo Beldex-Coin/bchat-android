@@ -1502,4 +1502,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="blocked_user_message">You Blocked Person! Click here to Unblock.</string>
     <string name="password_mismatch">Both passwords should be same.</string>
     <string name="incorrect_password">Incorrect password.</string>
+    <string name="dark_mode">Dark Mode</string>
 </resources>

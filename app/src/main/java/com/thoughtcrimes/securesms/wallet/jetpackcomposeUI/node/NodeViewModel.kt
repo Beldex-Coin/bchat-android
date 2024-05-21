@@ -42,6 +42,9 @@ class NodeViewModel @Inject constructor(
     private var _favouritesNodes = MutableLiveData<MutableSet<NodeInfo>>()
     val favouritesNodes: LiveData<MutableSet<NodeInfo>> = _favouritesNodes
 
+    private val _currentNode = MutableLiveData<String>()
+    val currentNode: LiveData<String> get()= _currentNode
+
     init {
         _favouritesNodes.value = mutableSetOf()
     }
@@ -138,6 +141,7 @@ class NodeViewModel @Inject constructor(
             editor.clear()
         } else {
             editor.putString("0", getNode().toNodeString())
+            _currentNode.postValue(getNode().toNodeString())
         }
         editor.apply()
     }
@@ -161,6 +165,7 @@ class NodeViewModel @Inject constructor(
             val nodeString=info.toNodeString()
             editor.putString(i.toString(), nodeString)
             i++
+            _currentNode.value = nodeString
         }
         editor.apply()
     }

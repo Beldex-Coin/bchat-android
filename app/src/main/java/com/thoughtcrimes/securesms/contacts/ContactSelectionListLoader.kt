@@ -46,7 +46,7 @@ class ContactSelectionListLoader(context: Context, val mode: Int, val filter: St
 
     private fun getContacts(contacts: List<Recipient>): List<ContactSelectionListItem> {
         return getItems(contacts, context.getString(R.string.fragment_contact_selection_contacts_title)) {
-            !it.isGroupRecipient
+            !it.isGroupRecipient && it.isApproved
         }
     }
 

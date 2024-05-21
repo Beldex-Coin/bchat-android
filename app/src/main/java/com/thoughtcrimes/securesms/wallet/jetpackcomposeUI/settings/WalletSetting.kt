@@ -1,5 +1,7 @@
 package com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.settings
 
+import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.background
@@ -65,7 +67,7 @@ enum class WalletSettingsNavItem(val title : Int) {
 
 
 @Composable
-fun WalletSettingsScreen(navigate : (WalletSettingsItem) -> Unit, navItem : (WalletSettingsNavItem) -> Unit, saveRecipientAddress : Boolean, viewModel : WalletSettingViewModel, navController : NavHostController) {
+fun WalletSettingsScreen(navigate : (WalletSettingsItem) -> Unit, navItem : (WalletSettingsNavItem) -> Unit, saveRecipientAddress : Boolean, viewModel : WalletSettingViewModel, navController : NavHostController, selectedNode: String) {
     val scrollState=rememberScrollState()
     val context=LocalContext.current
     val lifecycleOwner=LocalLifecycleOwner.current
@@ -106,6 +108,10 @@ fun WalletSettingsScreen(navigate : (WalletSettingsItem) -> Unit, navItem : (Wal
 
     }
 
+    val currentSelectedNode by remember {
+        mutableStateOf(selectedNode.split(":"))
+    }
+
     fun getSelectedNodeId() : String? {
         return context.getSharedPreferences(SELECTED_NODE_PREFS_NAME, BaseActionBarActivity.MODE_PRIVATE).getString("0", null)
     }
@@ -114,23 +120,6 @@ fun WalletSettingsScreen(navigate : (WalletSettingsItem) -> Unit, navItem : (Wal
         val selectedNodeId=getSelectedNodeId()
         return selectedNodeId.toString()
     }
-
-    val parts by remember {
-        mutableStateOf(getNode().split(":"))
-    }
-    var currentNode by remember {
-        mutableStateOf("")
-    }
-    currentNode=if (CheckOnline.isOnline(context)) {
-        if (parts[0] != "null") {
-            parts[0]
-        } else {
-            context.getString(R.string.waiting_for_connection)
-        }
-    } else {
-        context.getString(R.string.waiting_for_network)
-    }
-
     Column(modifier=Modifier
             .verticalScroll(scrollState)
             .background(color=MaterialTheme.appColors.backgroundColor)) {
@@ -155,7 +144,16 @@ fun WalletSettingsScreen(navigate : (WalletSettingsItem) -> Unit, navItem : (Wal
                         .weight(0.7f)) {
 
                     Text(text=stringResource(id=R.string.current_node), style=BChatTypography.titleMedium.copy(color=MaterialTheme.appColors.primaryButtonColor, fontSize=16.sp, fontWeight=FontWeight(700)))
-                    Text(text=currentNode, style=BChatTypography.titleSmall.copy(color=MaterialTheme.appColors.editTextColor, fontSize=12.sp, fontWeight=FontWeight(400)), modifier=Modifier.padding(vertical=5.dp))
+                    Text(
+                            text=currentSelectedNode[0].ifEmpty {
+                                if (CheckOnline.isOnline(context)) {
+                                    if (getNode().split(":")[0] != "null") getNode().split(":")[0]
+                                    else context.getString(R.string.waiting_for_connection)
+                                } else {
+                                    context.getString(R.string.waiting_for_network)
+                                }
+                            },
+                            style=BChatTypography.titleSmall.copy(color=MaterialTheme.appColors.editTextColor, fontSize=12.sp, fontWeight=FontWeight(400)), modifier=Modifier.padding(vertical=5.dp))
                 }
                 Icon(
                         Icons.Default.KeyboardArrowRight,

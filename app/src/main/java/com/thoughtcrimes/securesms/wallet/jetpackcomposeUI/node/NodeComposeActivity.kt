@@ -1,7 +1,9 @@
 package com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.node
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
@@ -78,11 +80,13 @@ import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getNodeIsMa
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getNodeIsTested
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setNodeIsMainnet
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setNodeIsTested
+import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
 import com.thoughtcrimes.securesms.compose_utils.BChatTheme
 import com.thoughtcrimes.securesms.compose_utils.BChatTypography
 import com.thoughtcrimes.securesms.compose_utils.DialogContainer
 import com.thoughtcrimes.securesms.compose_utils.PrimaryButton
 import com.thoughtcrimes.securesms.compose_utils.appColors
+import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.data.NetworkNodes.getNodes
 import com.thoughtcrimes.securesms.data.Node
 import com.thoughtcrimes.securesms.data.NodeInfo
@@ -93,6 +97,7 @@ import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.NodePinger
 import com.thoughtcrimes.securesms.util.UiMode
 import com.thoughtcrimes.securesms.util.UiModeUtilities
+import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.settings.WalletSettingViewModel
 import com.thoughtcrimes.securesms.wallet.node.DiffCallback
 import com.thoughtcrimes.securesms.wallet.node.Dispatcher
 import com.thoughtcrimes.securesms.wallet.node.NodeInfoAdapter
@@ -124,10 +129,22 @@ class NodeComposeActivity : ComponentActivity() {
                             containerColor=MaterialTheme.colorScheme.primary,
                     ) {
                         val context=LocalContext.current
+                        val lifecycleOwner=LocalLifecycleOwner.current
                         pingSelectedNode(context, nodeViewModel)
                         nodeViewModel.loadFavouritesWithNetwork()
+                        var nodesValue by remember {
+                            mutableStateOf("")
+                        }
+                        nodeViewModel.currentNode.observe(lifecycleOwner){ nodes->
+                            nodesValue = nodes
+                        }
                         NodeScreenContainer(title=stringResource(id=R.string.label_nodes), onBackClick={
-                            (context as ComponentActivity).finish()
+                            val returnIntent = Intent()
+                            returnIntent.putExtra("selected_node_key",nodesValue)
+                            (context as Activity).run {
+                                setResult(PassphraseRequiredActionBarActivity.RESULT_OK, returnIntent)
+                                (context as ComponentActivity).finish()
+                            }
                         }) {
                             val test = true
                             NodeScreen(test)
@@ -377,9 +394,9 @@ fun NodeScreen(test:Boolean = false) {
         })
     }
 
-    Column(modifier= Modifier
-        .fillMaxSize()
-        .padding(vertical = 10.dp)) {
+    Column(modifier=Modifier
+            .fillMaxSize()
+            .padding(vertical=10.dp)) {
 
         AnimatedContent(targetState=isVisible, label="NodeList") {
             if (it) {
@@ -387,22 +404,22 @@ fun NodeScreen(test:Boolean = false) {
 
                 ) {
                     itemsIndexed(data.toMutableList()) { index, item ->
-                        Card(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.editTextBackground), border=BorderStroke(width=2.dp, color=if (item.isSelected) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.editTextBackground), shape=RoundedCornerShape(16.dp), elevation=CardDefaults.cardElevation(defaultElevation=4.dp), modifier= Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .combinedClickable(
-                                onClick = {
-                                    selectedItemIndex = index
-                                    showChangeNodePopup = true
+                        Card(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.editTextBackground), border=BorderStroke(width=2.dp, color=if (item.isSelected) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.editTextBackground), shape=RoundedCornerShape(16.dp), elevation=CardDefaults.cardElevation(defaultElevation=4.dp), modifier=Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal=16.dp)
+                                .combinedClickable(
+                                        onClick={
+                                            selectedItemIndex=index
+                                            showChangeNodePopup=true
 
-                                },
-                                onLongClick = {
-                                    selectedItemIndex = index
-                                    showAddNodeEdit = true
-                                    showAddNode = true
+                                        },
+                                        onLongClick={
+                                            selectedItemIndex=index
+                                            showAddNodeEdit=true
+                                            showAddNode=true
 
-                                },
-                            )) {
+                                        },
+                                )) {
                             nodeName=item.name
                             nodeAddress=item.address
 
@@ -411,9 +428,9 @@ fun NodeScreen(test:Boolean = false) {
 
                                 )
 
-                                Column(horizontalAlignment=Alignment.Start, verticalArrangement=Arrangement.Center, modifier= Modifier
-                                    .padding(vertical = 10.dp, horizontal = 20.dp)
-                                    .weight(0.7f)) {
+                                Column(horizontalAlignment=Alignment.Start, verticalArrangement=Arrangement.Center, modifier=Modifier
+                                        .padding(vertical=10.dp, horizontal=20.dp)
+                                        .weight(0.7f)) {
                                     if (item.isTested) {
                                         if (item.isValid) {
                                             errorAction=false
@@ -447,9 +464,9 @@ fun NodeScreen(test:Boolean = false) {
 
                 verticalArrangement=Arrangement.Bottom, horizontalAlignment=Alignment.CenterHorizontally, modifier=Modifier.fillMaxHeight()) {
 
-            Row(modifier= Modifier
-                .fillMaxWidth()
-                .padding(16.dp)) {
+            Row(modifier=Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)) {
                 Button(onClick={
                     showRefreshNodePopup = true
                 }, colors=ButtonDefaults.buttonColors(containerColor=MaterialTheme.appColors.secondaryButtonColor), modifier=Modifier.weight(1f)) {
@@ -479,9 +496,9 @@ fun RefreshNodePopup(onDismiss: () -> Unit,onCallRefresh: () -> Unit) {
     ) {
 
         OutlinedCard(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.dialogBackground), elevation=CardDefaults.cardElevation(defaultElevation=4.dp), modifier=Modifier.fillMaxWidth()) {
-            Column(horizontalAlignment=Alignment.CenterHorizontally, verticalArrangement=Arrangement.Center, modifier= Modifier
-                .fillMaxWidth()
-                .padding(10.dp)) {
+            Column(horizontalAlignment=Alignment.CenterHorizontally, verticalArrangement=Arrangement.Center, modifier=Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)) {
 
                 Text(
                     text=stringResource(id=R.string.refresh_node_alert),
@@ -493,9 +510,9 @@ fun RefreshNodePopup(onDismiss: () -> Unit,onCallRefresh: () -> Unit) {
                     modifier=Modifier.padding(vertical=20.dp, horizontal=40.dp))
 
                 Row(
-                    modifier= Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
+                    modifier=Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
                 ) {
                     Button(
                         onClick={ onDismiss() },
@@ -776,13 +793,13 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
         OutlinedCard(
                 colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.dialogBackground),
                 elevation=CardDefaults.cardElevation(defaultElevation=4.dp)) {
-            Column(verticalArrangement=Arrangement.Center, modifier= Modifier
-                .fillMaxWidth()
-                .padding(10.dp)) {
-
-                Text(text= stringResource(id = R.string.node_fab_add), modifier= Modifier
+            Column(verticalArrangement=Arrangement.Center, modifier=Modifier
                     .fillMaxWidth()
-                    .padding(top = 10.dp, bottom = 5.dp, start = 10.dp),
+                    .padding(10.dp)) {
+
+                Text(text= stringResource(id = R.string.node_fab_add), modifier=Modifier
+                        .fillMaxWidth()
+                        .padding(top=10.dp, bottom=5.dp, start=10.dp),
                         style=MaterialTheme.typography.bodyLarge.copy(
                                 fontSize=18.sp,
                                 fontWeight=FontWeight(700),
@@ -816,14 +833,14 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                                 color=MaterialTheme.appColors.textColor,
                                 fontSize=13.sp,
                                 fontWeight=FontWeight(400)),
-                        modifier= Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp)
-                            .border(
-                                1.dp,
-                                MaterialTheme.appColors.textFiledBorderColor,
-                                shape = RoundedCornerShape(12.dp)
-                            )
+                        modifier=Modifier
+                                .fillMaxWidth()
+                                .padding(10.dp)
+                                .border(
+                                        1.dp,
+                                        MaterialTheme.appColors.textFiledBorderColor,
+                                        shape=RoundedCornerShape(12.dp)
+                                )
                 )
                 if (nodeAddressErrorAction) {
                     Text(
@@ -867,14 +884,14 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                                 color=MaterialTheme.appColors.textColor,
                                 fontSize=13.sp,
                                 fontWeight=FontWeight(400)),
-                        modifier= Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp)
-                            .border(
-                                1.dp,
-                                MaterialTheme.appColors.textFiledBorderColor,
-                                shape = RoundedCornerShape(12.dp)
-                            ),
+                        modifier=Modifier
+                                .fillMaxWidth()
+                                .padding(10.dp)
+                                .border(
+                                        1.dp,
+                                        MaterialTheme.appColors.textFiledBorderColor,
+                                        shape=RoundedCornerShape(12.dp)
+                                ),
                 )
                 if (nodePortErrorAction) {
                     Text(
@@ -898,9 +915,9 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                 }, onValueChange={
                     nodeName=it
 
-                }, modifier= Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
+                }, modifier=Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
                         shape=RoundedCornerShape(12.dp),
                         colors=TextFieldDefaults.colors(
                                 unfocusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
@@ -923,9 +940,9 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                 }, onValueChange={
                     nodeUserName=it
 
-                }, modifier= Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
+                }, modifier=Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
                         shape=RoundedCornerShape(12.dp),
                         colors=TextFieldDefaults.colors(
                                 unfocusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
@@ -948,9 +965,9 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                 }, onValueChange={
                     nodePassword=it
 
-                }, modifier= Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
+                }, modifier=Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
                         shape=RoundedCornerShape(12.dp),
                         colors=TextFieldDefaults.colors(
                                 unfocusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
@@ -1034,9 +1051,9 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                 }
 
                 Row(
-                        modifier= Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
+                        modifier=Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
                 ) {
                     Button(
                             onClick={ onDismiss() },
@@ -1092,7 +1109,6 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
 fun SwitchNodePopUp(onDismiss: () -> Unit, nodeViewModel: NodeViewModel, nodeInfo: NodeInfo) {
 
     val context=LocalContext.current
-    println("switch node crash issue called 1111 $nodeInfo")
 
     DialogContainer(
         dismissOnBackPress = true,
@@ -1204,9 +1220,9 @@ private fun NodeScreenContainer(
     ) {
         Row(
                 verticalAlignment=Alignment.CenterVertically,
-                modifier= Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
+                modifier=Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
         ) {
             Icon(
                     painterResource(id = R.drawable.ic_back_arrow),
@@ -1238,9 +1254,9 @@ private fun NodeScreenContainer(
 
         if (wrapInCard) {
             CardContainer(
-                    modifier= Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
+                    modifier=Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
             ) {
                 content()
             }

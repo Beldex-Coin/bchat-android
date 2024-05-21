@@ -36,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -73,6 +74,9 @@ import com.thoughtcrimes.securesms.compose_utils.appColors
 import com.thoughtcrimes.securesms.compose_utils.ui.BChatPreviewContainer
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import io.beldex.bchat.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
 
@@ -102,6 +106,10 @@ fun CreateSecretGroup(
     val speed by remember {
         mutableFloatStateOf(1f)
     }
+    var isButtonEnabled by remember {
+        mutableStateOf(true)
+    }
+    val scope = rememberCoroutineScope()
 
     val progress by animateLottieCompositionAsState(
         composition,
@@ -247,9 +255,18 @@ fun CreateSecretGroup(
             ) {
                 PrimaryButton(
                     onClick = {
-                        createClosedGroup(groupName.trim(), context, activity, selectedContact, showLoader = {
-                            showLoader = it
-                        })
+                        if(isButtonEnabled) {
+                            isButtonEnabled = false
+                            scope.launch(Dispatchers.Main) {
+                                createClosedGroup(groupName.trim(), context, activity, selectedContact, showLoader = {
+                                    showLoader = it
+                                })
+                                delay(4000)
+                                isButtonEnabled = true
+                            }
+                        }
+
+
                     },
                     modifier = Modifier
                         .fillMaxWidth()

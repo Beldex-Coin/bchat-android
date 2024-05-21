@@ -252,16 +252,19 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
             val walletName = getWalletName(requireContext())
             val walletPassword = getWalletPassword(requireContext())
             if (walletName != null && walletPassword != null) {
-                val lockManager = LockManager.getInstance()
-                lockManager.enableAppLock<CustomPinActivity>(requireContext(), CustomPinActivity::class.java)
-                val intent = Intent(requireContext(), CustomPinActivity::class.java)
-                if (getWalletEntryPassword(requireContext()) != null) {
-                    intent.putExtra(EXTRA_PIN_CODE_ACTION, PinCodeAction.VerifyWalletPin.action)
-                } else {
-                    intent.putExtra(EXTRA_PIN_CODE_ACTION, PinCodeAction.CreateWalletPin)
+                val lockManager: LockManager<CustomPinActivity> = LockManager.getInstance() as LockManager<CustomPinActivity>
+                lockManager.enableAppLock(requireContext(), CustomPinActivity::class.java)
+                Intent(requireContext(), CustomPinActivity::class.java).also {
+                    if(getWalletEntryPassword(requireContext()) != null) {
+                        it.putExtra(EXTRA_PIN_CODE_ACTION, PinCodeAction.VerifyWalletPin.action)
+                        it.putExtra("send_authentication",false)
+                        setUpWalletPinActivityResultLauncher.launch(it)
+                    } else{
+                        it.putExtra(EXTRA_PIN_CODE_ACTION, PinCodeAction.CreateWalletPin.action)
+                        it.putExtra("send_authentication",false)
+                        setUpWalletPinActivityResultLauncher.launch(it)
+                    }
                 }
-                intent.putExtra("send_authentication", false)
-                setUpWalletPinActivityResultLauncher.launch(intent)
             } else {
                 val intent = Intent(requireContext(), WalletInfoActivity::class.java)
                 startActivity(intent)

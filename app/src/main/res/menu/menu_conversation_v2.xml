@@ -36,7 +36,7 @@
     <item
         android:title="@string/conversation_muted__unmute"
         android:id="@+id/menu_unmute_notifications"
-        android:icon="@drawable/ic_outline_notifications_off_24"/>
+        android:icon="@drawable/ic_unmute_notification_menu"/>
 
     <item
         android:title="@string/RecipientPreferenceActivity_notification_settings"
@@ -46,7 +46,7 @@
     <item
         android:title="@string/MessageNotifier_mark_all_as_read"
         android:id="@+id/menu_mark_read"
-        android:icon="?attr/menu_mark_all_as_read"/>
+        android:icon="@drawable/ic_mark_as_read_menu"/>
 
     <item
         android:title="@string/delete"

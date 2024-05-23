@@ -30,7 +30,7 @@
             android:maxLines="1"
             android:ellipsize="end"
             android:textAlignment="viewStart"
-            android:textSize="@dimen/medium_font_size"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@color/text"
             tools:text="I'm a very long display name. What are you going to do about it?"
@@ -38,7 +38,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/snippetTextView"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="36dp"
             app:layout_constraintEnd_toStartOf="@id/unreadCountIndicator"/>
 
         <TextView
@@ -49,22 +49,24 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/text"
-            android:textSize="@dimen/medium_font_size"
+            android:textSize="@dimen/very_small_font_size"
             tools:text="Sorry, gotta go fight crime again"
             app:layout_constraintStart_toStartOf="@id/conversationViewDisplayNameTextView"
             app:layout_constraintEnd_toStartOf="@id/timestampTextView"
             app:layout_constraintTop_toBottomOf="@id/conversationViewDisplayNameTextView"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="16dp"
+            />
 
         <RelativeLayout
             android:id="@+id/unreadCountIndicator"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:background="@drawable/rounded_indicator"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/timestampTextView"
-            app:layout_constraintEnd_toStartOf="@id/mute_icon"
-            android:layout_marginEnd="16dp">
+            android:layout_marginEnd="16dp"
+            >
 
             <TextView
                 android:id="@+id/unreadCountTextView"
@@ -91,7 +93,7 @@
             android:textColor="@color/text"
             android:alpha="0.4"
             tools:text="9:41 AM"
-            app:layout_constraintEnd_toStartOf="@id/mute_icon"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/snippetTextView"
             android:layout_marginEnd="16dp"/>
 
@@ -99,10 +101,14 @@
             android:id="@+id/mute_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@android:drawable/ic_lock_silent_mode"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_mute_home"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toTopOf="@id/timestampTextView"
+            app:layout_constraintEnd_toStartOf="@id/unreadCountIndicator"
+            android:layout_marginEnd="5dp"
+
+
+            />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -111,16 +117,16 @@
         android:id="@+id/pinnedViewContainer"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:background="@drawable/rounded_indicator"
+        android:background="@drawable/pin_rounded_indicator"
         android:layout_gravity="center_vertical|end"
         android:gravity="center"
-        android:visibility="gone">
+        android:layout_marginStart="20dp"
+        android:visibility="visible">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_pin"
-            app:tint="@color/white"/>
+            android:src="@drawable/ic_pin" />
 
     </RelativeLayout>
 

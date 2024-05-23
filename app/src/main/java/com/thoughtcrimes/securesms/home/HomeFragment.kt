@@ -42,6 +42,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -468,6 +469,9 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         homeAdapter.glide = glide
         binding.recyclerView.adapter = homeAdapter
         swipeHelper.attachToRecyclerView(binding.recyclerView)
+        val itemDecorator = DividerItemDecoration(requireContext(),
+                DividerItemDecoration.VERTICAL)
+        binding.recyclerView.addItemDecoration(itemDecorator)
 //        val itemTouchHelper = ItemTouchHelper(swipeController)
 //        itemTouchHelper.attachToRecyclerView(binding.recyclerView)
 //        binding.recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {

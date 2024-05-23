@@ -9,8 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.thoughtcrimes.securesms.conversation.v2.utilities.MentionUtilities.highlightMentions
@@ -50,10 +52,16 @@ class ConversationView : LinearLayout {
         val isMuted = recipient.isMuted || recipient.notifyType != NOTIFY_TYPE_ALL
         if (thread.isPinned || isMuted) {
             binding.contentView.apply {
-                background = ContextCompat.getDrawable(context, R.drawable.conversation_pinned_background)
+                background = ContextCompat.getDrawable(context,R.drawable.unread_message_chat_background)
                 val params = layoutParams as FrameLayout.LayoutParams
-                params.setMargins(0, 0, if (isMuted) 0 else context.toPx(16).toInt(), 0)
+                params.setMargins(0, 16, 16, 16)
                 layoutParams = params
+                if(isMuted && thread.unreadCount == 0 && !thread.isRead){
+                    binding.muteIcon.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                        rightMargin=40
+                    }
+                }
+
             }
             binding.pinnedViewContainer.isVisible = thread.isPinned
         } else {
@@ -87,7 +95,12 @@ class ConversationView : LinearLayout {
         binding.unreadCountTextView.setTypeface(Typeface.DEFAULT, if (unreadCount < 100) Typeface.BOLD else Typeface.NORMAL)
         binding.unreadCountIndicator.isVisible = (unreadCount != 0 && !thread.isRead)
         if(unreadCount != 0 && !thread.isRead) {
-            binding.contentView.setBackgroundResource(R.drawable.unread_message_chat_background)
+            binding.contentView.apply {
+                background = ContextCompat.getDrawable(context,R.drawable.unread_message_chat_background)
+                val params = layoutParams as FrameLayout.LayoutParams
+                params.setMargins(0, 16, 16, 16)
+                layoutParams = params
+            }
         }
         val senderDisplayName = getUserDisplayName(thread.recipient)
                 ?: thread.recipient.address.toString()
@@ -95,7 +108,7 @@ class ConversationView : LinearLayout {
         binding.timestampTextView.text = DateUtils.getDisplayFormattedTimeSpanString(context, Locale.getDefault(), thread.date)
         binding.muteIcon.isVisible = isMuted
         val drawableRes = if (recipient.isMuted || recipient.notifyType == NOTIFY_TYPE_NONE) {
-            android.R.drawable.ic_lock_silent_mode
+            R.drawable.ic_mute_home
         } else {
             android.R.drawable.ic_lock_silent_mode_off
         }

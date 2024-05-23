@@ -60,6 +60,11 @@ fun MessageRequestsScreen(
     onRequestClick: (ThreadRecord) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+    val requestToTakeAction: ThreadRecord? = null
+    var threadRecord by remember {
+        mutableStateOf(requestToTakeAction)
+    }
     if (requestsList.isEmpty()) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -79,8 +84,6 @@ fun MessageRequestsScreen(
             )
         }
     } else {
-        val context = LocalContext.current
-        var requestToTakeAction: ThreadRecord? = null
         var showBlockConfirmationDialog by remember {
             mutableStateOf(false)
         }
@@ -93,10 +96,10 @@ fun MessageRequestsScreen(
                 message = stringResource(id = R.string.message_requests_block_message),
                 actionTitle = stringResource(id = R.string.yes),
                 onConfirmation = {
-                    requestToTakeAction?.let {
+                    threadRecord?.let {
                         onEvent(MessageRequestEvents.BlockRequest(it))
                     }
-                    requestToTakeAction = null
+                    threadRecord = null
                 },
                 onDismissRequest = {
                     showBlockConfirmationDialog = false
@@ -105,16 +108,16 @@ fun MessageRequestsScreen(
         }
         if (showDeleteConfirmationDialog) {
             RequestBlockConfirmationDialog(
-                message = stringResource(id = R.string.message_requests_decline_messages),
+                message = stringResource(id = R.string.message_requests_delete_message),
                 actionTitle = stringResource(id = R.string.yes),
                 onConfirmation = {
-                    requestToTakeAction?.let {
+                    threadRecord?.let {
                         onEvent(MessageRequestEvents.DeleteRequest(it))
                         coroutineScope.launch(Dispatchers.IO) {
                             ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(context)
                         }
                     }
-                    requestToTakeAction = null
+                    threadRecord = null
                 },
                 onDismissRequest = {
                     showDeleteConfirmationDialog = false
@@ -136,23 +139,23 @@ fun MessageRequestsScreen(
                     context = context,
                     request = recipient,
                     deleteRequest = { request ->
+                        threadRecord = request
                         showDeleteConfirmationDialog = true
-                        requestToTakeAction = request
                     },
                     blockRequest = { request ->
+                        threadRecord = request
                         showBlockConfirmationDialog = true
-                        requestToTakeAction = request
                     },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            color = MaterialTheme.appColors.settingsCardBackground,
-                            shape = RoundedCornerShape(50)
-                        )
-                        .padding(16.dp)
-                        .clickable {
-                            onRequestClick(recipient)
-                        }
+                    modifier =Modifier
+                            .fillMaxWidth()
+                            .background(
+                                    color=MaterialTheme.appColors.settingsCardBackground,
+                                    shape=RoundedCornerShape(50)
+                            )
+                            .padding(16.dp)
+                            .clickable {
+                                onRequestClick(recipient)
+                            }
                 )
             }
         }
@@ -218,15 +221,16 @@ fun MessageRequestItem(
 
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .size(32.dp)
-                .background(
-                    color = MaterialTheme.appColors.actionIconBackground,
-                    shape = RoundedCornerShape(15)
-                )
-                .clickable {
-                    deleteRequest(request)
-                }
+            modifier =Modifier
+                    .size(32.dp)
+                    .background(
+                            color=MaterialTheme.appColors.actionIconBackground,
+                            shape=RoundedCornerShape(15)
+                    )
+                    .clickable {
+
+                        deleteRequest(request)
+                    }
         ) {
             Image(
                 painter = painterResource(id = R.drawable.ic_delete_24),
@@ -240,15 +244,15 @@ fun MessageRequestItem(
 
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .size(32.dp)
-                .background(
-                    color = MaterialTheme.appColors.actionIconBackground,
-                    shape = RoundedCornerShape(15)
-                )
-                .clickable {
-                    blockRequest(request)
-                }
+            modifier =Modifier
+                    .size(32.dp)
+                    .background(
+                            color=MaterialTheme.appColors.actionIconBackground,
+                            shape=RoundedCornerShape(15)
+                    )
+                    .clickable {
+                        blockRequest(request)
+                    }
         ) {
             Image(
                 painter = painterResource(id = R.drawable.ic_block_request),
@@ -263,12 +267,12 @@ fun MessageRequestItem(
 
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .size(32.dp)
-                .background(
-                    color = MaterialTheme.appColors.primaryButtonColor,
-                    shape = RoundedCornerShape(15)
-                )
+            modifier =Modifier
+                    .size(32.dp)
+                    .background(
+                            color=MaterialTheme.appColors.primaryButtonColor,
+                            shape=RoundedCornerShape(15)
+                    )
         ) {
             Icon(
                 Icons.Default.Check,
@@ -299,8 +303,8 @@ fun MessageRequestsScreenPreview() {
         requestsList = emptyList(),
         onEvent = {},
         onRequestClick = {},
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
+        modifier =Modifier
+                .fillMaxSize()
+                .padding(16.dp)
     )
 }

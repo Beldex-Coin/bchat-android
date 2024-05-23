@@ -22,10 +22,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -86,7 +88,8 @@ fun CreateSecretGroup(
     contacts: List<Recipient>,
     selectedContact: List<String>,
     onEvent: (SecretGroupEvents) -> Unit,
-    activity: NewConversationActivity
+    activity: NewConversationActivity,
+    onSearchClear: () -> Unit,
 ) {
     var groupName by remember {
         mutableStateOf("")
@@ -158,9 +161,9 @@ fun CreateSecretGroup(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Done
                     ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
+                    modifier =Modifier
+                            .fillMaxWidth()
+                            .padding(vertical=8.dp),
                     shape = RoundedCornerShape(16.dp),
                     colors = TextFieldDefaults.colors(
                         unfocusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
@@ -175,9 +178,9 @@ fun CreateSecretGroup(
 
             Divider(
                 color = colorResource(id = R.color.divider_color),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .alpha(0.5f)
+                modifier =Modifier
+                        .fillMaxWidth()
+                        .alpha(0.5f)
             )
 
             TextField(
@@ -189,22 +192,28 @@ fun CreateSecretGroup(
                     )
                 },
                 onValueChange = { onEvent(SecretGroupEvents.SearchQueryChanged(it)) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .border(
-                        width = 1.dp,
-                        color = MaterialTheme.appColors.textFiledBorderColor,
-                        shape = RoundedCornerShape(36.dp)
-                    ),
+                modifier =Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .border(
+                                width=1.dp,
+                                color=MaterialTheme.appColors.textFiledBorderColor,
+                                shape=RoundedCornerShape(36.dp)
+                        ),
                 shape = RoundedCornerShape(36.dp),
-                trailingIcon = {
-                    Icon(
-                        Icons.Default.Search,
-                        contentDescription = "search contact",
-                        tint = MaterialTheme.appColors.iconTint
-                    )
-                },
+                    trailingIcon={
+                        IconButton(onClick={
+                            if (searchQuery.isNotEmpty()) {
+                                onSearchClear()
+                            }
+                        }) {
+                            Icon(
+                                    imageVector=if (searchQuery.isNotEmpty()) Icons.Default.Clear else Icons.Default.Search,
+                                    contentDescription="search contact",
+                                    tint=MaterialTheme.appColors.iconTint,
+                            )
+                        }
+                    },
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
                     focusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
@@ -217,12 +226,12 @@ fun CreateSecretGroup(
             LazyColumn(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        horizontal = 16.dp
-                    )
-                    .weight(1f)
+                modifier =Modifier
+                        .fillMaxWidth()
+                        .padding(
+                                horizontal=16.dp
+                        )
+                        .weight(1f)
             ) {
                 items(contacts) {
                     GroupContact(
@@ -236,21 +245,21 @@ fun CreateSecretGroup(
                                 )
                             )
                         },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                vertical = 8.dp
-                            )
+                        modifier =Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                        vertical=8.dp
+                                )
                     )
                 }
             }
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp)
-                    .background(
-                        color = MaterialTheme.appColors.createButtonBackground
-                    ),
+                modifier =Modifier
+                        .fillMaxWidth()
+                        .padding(top=8.dp)
+                        .background(
+                                color=MaterialTheme.appColors.createButtonBackground
+                        ),
                 contentAlignment = Alignment.Center,
             ) {
                 PrimaryButton(
@@ -268,9 +277,9 @@ fun CreateSecretGroup(
 
 
                     },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
+                    modifier =Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
                     shape = RoundedCornerShape(16.dp),
                 ) {
                     Text(
@@ -286,9 +295,9 @@ fun CreateSecretGroup(
         }
         if (showLoader) {
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(color = MaterialTheme.appColors.loaderBackground.copy(alpha = 0.5f)),
+                modifier =Modifier
+                        .fillMaxSize()
+                        .background(color=MaterialTheme.appColors.loaderBackground.copy(alpha=0.5f)),
                 contentAlignment = Alignment.Center
             ) {
                 LottieAnimation(
@@ -337,9 +346,9 @@ private fun GroupContact(
             Text(
                 text = recipient.name.toString(),
                 textAlign = TextAlign.Start,
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = 10.dp)
+                modifier =Modifier
+                        .weight(1f)
+                        .padding(horizontal=10.dp)
             )
 
             BChatCheckBox(

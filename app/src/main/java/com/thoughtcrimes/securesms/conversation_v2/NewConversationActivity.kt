@@ -103,8 +103,7 @@ class NewConversationActivity: ComponentActivity() {
                                         contacts = contacts,
                                         selectedContact = selectedContact,
                                         onEvent = contactViewModel::onEvent,
-                                        context,
-                                        onSearchClear = { contactViewModel.updateSearchQuery("") }
+                                        context
                                     )
                                 }
                             }

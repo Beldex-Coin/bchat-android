@@ -31,6 +31,10 @@ class CreateSecretGroupViewModel@Inject constructor(
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
+    fun updateSearchQuery(value: String){
+        _searchQuery.value = value
+    }
+
     private val _recipients = MutableStateFlow(listOf<Recipient>())
     val recipients = searchQuery
         .combine(_recipients) { query, recipients ->

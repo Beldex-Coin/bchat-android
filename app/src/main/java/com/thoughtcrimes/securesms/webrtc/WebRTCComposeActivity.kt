@@ -631,11 +631,7 @@ class WebRTCComposeActivity : ComponentActivity() {
 
                                     )
                         }
-                        if (isShowReConnecting) {
-                            Text(text=isStatusReConnectingText, style=BChatTypography.titleMedium.copy(color=MaterialTheme.appColors.textColor, fontSize=12.sp, fontWeight=FontWeight(400))
 
-                            )
-                        }
 
                         Column(verticalArrangement=Arrangement.Bottom, horizontalAlignment=Alignment.CenterHorizontally, modifier=Modifier.fillMaxSize()) {
 
@@ -645,10 +641,25 @@ class WebRTCComposeActivity : ComponentActivity() {
                             if (isShowCallAudioStatus) {
                                 Text(isStatusCallAudioText, Modifier.padding(all=12.dp), style=BChatTypography.titleMedium.copy(color=MaterialTheme.appColors.textColor, fontSize=12.sp, fontWeight=FontWeight(400)))
                             }
+                            if (isShowReConnecting) {
+                                Text(
+                                        text=isStatusReConnectingText,
+                                        style=BChatTypography.titleMedium.copy(
+                                                color=MaterialTheme.appColors.textColor,
+                                                fontSize=12.sp,
+                                                fontWeight=FontWeight(400)),
+                                        modifier = Modifier.offset(y=(-80).dp)
+                                )
+                            }
 
                             if (isShowCallDurationStatus) {
-                                Text(isStatusCallDurationText, Modifier.padding(all=12.dp), style=BChatTypography.titleMedium.copy(color=MaterialTheme.appColors.textColor, fontSize=12.sp, fontWeight=FontWeight(400)))
-                            }
+                                Text(isStatusCallDurationText,
+                                        Modifier.padding(all=12.dp).offset(y=(-70).dp),
+                                        style=BChatTypography.titleMedium.copy(
+                                                color=MaterialTheme.appColors.textColor,
+                                                fontSize=12.sp,
+                                                fontWeight=FontWeight(400)))
+                           }
                         }
                     } else {
                         Surface(color=Color.Black,

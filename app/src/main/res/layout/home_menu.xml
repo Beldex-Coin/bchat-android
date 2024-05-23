@@ -176,6 +176,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:gravity="end"
+            app:track="@drawable/switch_toggle_background"
+            android:background="@drawable/switch_toggle_background"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/version"
             app:layout_constraintBottom_toBottomOf="@id/version"

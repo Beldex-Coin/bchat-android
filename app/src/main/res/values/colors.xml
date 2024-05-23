@@ -260,4 +260,7 @@
     <color name="search_background_border">#4B4B64</color>
     <color name="attachment_container_background">#21212C</color>
     <color name="attachment_button_background">#2C2C3B</color>
+    <color name="pin_rounded_background">#42425F</color>
+    <color name="pin_icon_home">#FFFFFF</color>
+    <color name="switch_track">#363645</color>
 </resources>

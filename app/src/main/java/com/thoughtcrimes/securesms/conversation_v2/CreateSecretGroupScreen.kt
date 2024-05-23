@@ -8,6 +8,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -188,6 +190,11 @@ fun CreateSecretGroup(
                         style = MaterialTheme.typography.bodyMedium
                     )
                 },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done
+                ),
                 onValueChange = { onEvent(SecretGroupEvents.SearchQueryChanged(it)) },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -200,9 +207,14 @@ fun CreateSecretGroup(
                 shape = RoundedCornerShape(36.dp),
                 trailingIcon = {
                     Icon(
-                        Icons.Default.Search,
-                        contentDescription = "search contact",
-                        tint = MaterialTheme.appColors.iconTint
+                        imageVector = if (searchQuery.isNotEmpty()) Icons.Default.Clear else Icons.Default.Search,
+                        contentDescription = "search contact and clear search text",
+                        tint = MaterialTheme.appColors.iconTint,
+                        modifier = Modifier.clickable {
+                            if(searchQuery.isNotEmpty()){
+                                onEvent(SecretGroupEvents.SearchQueryChanged(""))
+                            }
+                        }
                     )
                 },
                 colors = TextFieldDefaults.colors(

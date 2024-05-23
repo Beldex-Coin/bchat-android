@@ -102,7 +102,6 @@ import com.thoughtcrimes.securesms.compose_utils.ComposeDialogContainer
 import com.thoughtcrimes.securesms.compose_utils.DialogType
 import com.thoughtcrimes.securesms.contacts.SelectContactsActivity
 import com.thoughtcrimes.securesms.contactshare.SimpleTextWatcher
-import com.thoughtcrimes.securesms.conversation.v2.dialogs.BlockedDialog
 import com.thoughtcrimes.securesms.conversation.v2.dialogs.LinkPreviewDialog
 import com.thoughtcrimes.securesms.conversation.v2.dialogs.SendSeedDialog
 import com.thoughtcrimes.securesms.conversation.v2.input_bar.InputBarButton
@@ -940,6 +939,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 //        val params = binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
 //        params.bottomMargin = 16
         val recipient = viewModel.recipient.value ?: return
+        binding.slideToPayButton.visibility = View.GONE
         binding.inputBar.draftQuote(recipient, message, glide)
     }
 
@@ -993,15 +993,16 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
     }
 
-    override fun toggleAttachmentOptions() {
+    private fun checkUnBlock(){
         val recipient = viewModel.recipient.value ?: return
         if (recipient.isBlocked) {
-            BlockedDialog(recipient).show(
-                    requireActivity().supportFragmentManager,
-                    "Blocked Dialog"
-            )
+            unblock()
             return
         }
+    }
+
+    override fun toggleAttachmentOptions() {
+        checkUnBlock()
 //        val targetAlpha = if (isShowingAttachmentOptions) 0.0f else 1.0f
 //        val allButtonContainers = listOfNotNull(
 //            binding.cameraButtonContainer,
@@ -1166,13 +1167,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun startRecordingVoiceMessage() {
-        toggleAttachmentOptions()
+        checkUnBlock()
         val recipient = viewModel.recipient.value ?: return
         if (recipient.isBlocked) {
-            BlockedDialog(recipient).show(
-                    requireActivity().supportFragmentManager,
-                    "Blocked Dialog"
-            )
+            unblock()
             return
         }
         if(callViewModel?.callStartTime == -1L) {
@@ -1258,13 +1256,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun sendMessage() {
-        toggleAttachmentOptions()
+        checkUnBlock()
         val recipient = viewModel.recipient.value ?: callViewModel() ?: return
         if (recipient.isContactRecipient && recipient.isBlocked) {
-            BlockedDialog(recipient).show(
-                requireActivity().supportFragmentManager,
-                "Blocked Dialog"
-            )
+            unblock()
             return
         }
 
@@ -1323,7 +1318,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun inChatBDXOptions() {
-        toggleAttachmentOptions()
+        checkUnBlock()
         try {
                 val dialog = android.app.AlertDialog.Builder(requireActivity())
                 val inflater = layoutInflater
@@ -1359,7 +1354,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun walletDetailsUI() {
-        toggleAttachmentOptions()
+        checkUnBlock()
         when {
             binding.tooltip.isVisible -> {
                 binding.tooltip.visibility = View.GONE
@@ -1822,6 +1817,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 //        val params = binding.attachmentOptionsContainer.layoutParams as ViewGroup.MarginLayoutParams
 //        params.bottomMargin = 16
         if(messages.isNotEmpty()) {
+            binding.slideToPayButton.visibility = View.GONE
             binding.inputBar.draftQuote(recipient, messages.first(), glide)
         }
         endActionMode()
@@ -1997,9 +1993,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     fun onSearchQueryUpdated(query: String) {
-        searchViewModel!!.onQueryUpdated(query, viewModel.threadId)
-        binding.searchProgress.visibility = View.VISIBLE
-        adapter.onSearchQueryUpdated(query)
+        if(query.trim().isNotEmpty()) {
+            searchViewModel!!.onQueryUpdated(query, viewModel.threadId)
+            binding.searchProgress.visibility = View.VISIBLE
+            adapter.onSearchQueryUpdated(query)
+        }
     }
 
     override fun onSearchMoveUpPressed() {
@@ -2398,10 +2396,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         } else if (item.itemId == R.id.menu_call) {
             val recipient = viewModel.recipient.value ?: return false
             if (recipient.isContactRecipient && recipient.isBlocked) {
-                BlockedDialog(recipient).show(
-                    requireActivity().supportFragmentManager,
-                    "Blocked Dialog"
-                )
+                unblock()
             } else {
                 if (Helper.getPhoneStatePermission(requireActivity())) {
                     isMenuCall()
@@ -2524,13 +2519,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 factory.inflate(R.layout.call_permissions_dialog_box, null)
             val callPermissionDialog = AlertDialog.Builder(requireActivity()).create()
             callPermissionDialog.setView(callPermissionDialogView)
-            callPermissionDialogView.findViewById<TextView>(R.id.settingsDialogBoxButton)
+            callPermissionDialogView.findViewById<Button>(R.id.settingsDialogBoxButton)
                 .setOnClickListener {
                     val intent = Intent(requireActivity(), PrivacySettingsActivity::class.java)
                     this.activity?.startActivity(intent)
                     callPermissionDialog.dismiss()
                 }
-            callPermissionDialogView.findViewById<TextView>(R.id.cancelDialogBoxButton)
+            callPermissionDialogView.findViewById<Button>(R.id.cancelDialogBoxButton)
                 .setOnClickListener {
                     callPermissionDialog.dismiss()
                 }
@@ -2622,6 +2617,14 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     binding.searchUp.visibility = View.VISIBLE
                     binding.searchDown.visibility = View.VISIBLE
                     binding.searchProgress.visibility = View.GONE
+                    binding.closeSearch.visibility = View.VISIBLE
+                    binding.search.visibility = View.GONE
+                }else{
+                    binding.searchUp.visibility = View.GONE
+                    binding.searchDown.visibility = View.GONE
+                    binding.searchProgress.visibility = View.GONE
+                    binding.closeSearch.visibility = View.GONE
+                    binding.search.visibility = View.VISIBLE
                 }
 //                binding.searchBottomBar.setData(result.position, result.getResults().size)
             })
@@ -3713,8 +3716,17 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                onSearchQueryUpdated(p0.toString())
-                binding.searchProgress.visibility = View.VISIBLE
+                if(p0 != null && p0.trim().isNotEmpty()) {
+                    onSearchQueryUpdated(p0.toString())
+                    binding.searchProgress.visibility = View.VISIBLE
+                    binding.closeSearch.visibility = View.VISIBLE
+                    binding.search.visibility = View.GONE
+                }else{
+                    binding.closeSearch.visibility = View.GONE
+                    binding.search.visibility = View.VISIBLE
+                    binding.searchUp.visibility = View.GONE
+                    binding.searchDown.visibility = View.GONE
+                }
             }
 
             override fun afterTextChanged(p0: Editable?) {

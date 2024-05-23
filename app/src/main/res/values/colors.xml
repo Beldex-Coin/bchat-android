@@ -260,4 +260,9 @@
     <color name="search_background_border">#4B4B64</color>
     <color name="attachment_container_background">#21212C</color>
     <color name="attachment_button_background">#2C2C3B</color>
+    <color name="dialog_box_background_border">#4B4B64</color>
+    <color name="cancel_button">#1C1C26</color>
+    <color name="cancel_button_text">#ACACAC</color>
+    <color name="download_icon">#EBEBEB</color>
+    <color name="download_icon_background">#30303F</color>
 </resources>

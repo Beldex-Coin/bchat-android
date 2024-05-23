@@ -180,4 +180,9 @@
     <color name="search_background_border">#A7A7BA</color>
     <color name="attachment_container_background">#EBEBEB</color>
     <color name="attachment_button_background">#F4F4F4</color>
+    <color name="dialog_box_background_border">#A7A7BA</color>
+    <color name="cancel_button">#EBEBEB</color>
+    <color name="cancel_button_text">#333333</color>
+    <color name="download_icon">#333333</color>
+    <color name="download_icon_background">#EBEBEB</color>
 </resources>

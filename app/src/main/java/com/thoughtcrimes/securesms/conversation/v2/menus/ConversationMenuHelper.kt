@@ -15,6 +15,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -312,12 +313,12 @@ object ConversationMenuHelper {
             val callPermissionDialogView: View = factory.inflate(R.layout.call_permissions_dialog_box, null)
             val callPermissionDialog = AlertDialog.Builder(context).create()
             callPermissionDialog.setView(callPermissionDialogView)
-            callPermissionDialogView.findViewById<TextView>(R.id.settingsDialogBoxButton).setOnClickListener{
+            callPermissionDialogView.findViewById<Button>(R.id.settingsDialogBoxButton).setOnClickListener{
                 val intent = Intent(context, PrivacySettingsActivity::class.java)
                 context.startActivity(intent)
                 callPermissionDialog.dismiss()
             }
-            callPermissionDialogView.findViewById<TextView>(R.id.cancelDialogBoxButton).setOnClickListener{
+            callPermissionDialogView.findViewById<Button>(R.id.cancelDialogBoxButton).setOnClickListener{
                     callPermissionDialog.dismiss()
             }
             callPermissionDialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)

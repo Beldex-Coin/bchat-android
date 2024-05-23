@@ -1,5 +1,6 @@
 package com.thoughtcrimes.securesms.service
 
+import android.app.ForegroundServiceStartNotAllowedException
 import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -681,10 +682,16 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
     }
 
     private fun setCallInProgressNotification(type: Int, recipient: Recipient?) {
-        startForeground(
-            CallNotificationBuilder.WEBRTC_NOTIFICATION,
-            CallNotificationBuilder.getCallInProgressNotification(this, type, recipient)
-        )
+        try {
+            startForeground(
+                CallNotificationBuilder.WEBRTC_NOTIFICATION,
+                CallNotificationBuilder.getCallInProgressNotification(this, type, recipient)
+            )
+        }
+        catch(e: ForegroundServiceStartNotAllowedException) {
+            Log.e(TAG, "Failed to setCallInProgressNotification as a foreground service for type: ${type}, trying to update instead")
+        }
+
         if (!CallNotificationBuilder.areNotificationsEnabled(this) && type == TYPE_INCOMING_PRE_OFFER) {
             // start an intent for the fullscreen
             val foregroundIntent = Intent(this, WebRTCComposeActivity::class.java)

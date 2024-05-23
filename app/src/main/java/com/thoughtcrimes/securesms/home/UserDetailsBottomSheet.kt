@@ -132,6 +132,11 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
         window.setDimAmount(if (isLightMode) 0.1f else 0.75f)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        hideSoftKeyboard()
+    }
+
     private fun saveNickName(recipient: Recipient) = with(binding) {
         if (nicknameEditText.text.trim().isEmpty()) {
             Toast.makeText(context,R.string.enter_a_valid_nickname,Toast.LENGTH_SHORT).show()

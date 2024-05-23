@@ -795,16 +795,13 @@ fun SendScreen(
                                     .weight(1f),
                                 shape = RoundedCornerShape(8.dp),
                             )
-
-                            Box(
+                           /* Box(
                                 modifier = Modifier.background(color = MaterialTheme.appColors.maxAmountBackground, shape = RoundedCornerShape(10.dp)),
                                 contentAlignment = Alignment.Center,
                             ) {
 
                                 Text(text = "Max", style = MaterialTheme.typography.titleMedium.copy(color = colorResource(id = R.color.white), fontSize = 16.sp), modifier = Modifier.padding(15.dp), textAlign = TextAlign.Center)
-                            }
-
-
+                            }*/
                         }
                         if (amountErrorAction) {
                             Text(text = amountErrorText, modifier = Modifier.padding(start = 20.dp, bottom = 10.dp), style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.errorMessageColor, fontSize = 13.sp, fontWeight = FontWeight(400)))

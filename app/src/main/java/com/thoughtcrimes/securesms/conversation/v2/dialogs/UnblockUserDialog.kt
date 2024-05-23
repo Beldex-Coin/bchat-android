@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.thoughtcrimes.securesms.compose_utils.DialogContainer
 import com.thoughtcrimes.securesms.compose_utils.appColors
 import io.beldex.bchat.R
@@ -48,7 +49,9 @@ fun UnblockUserDialog(
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    color = if(positiveButtonTitle == stringResource(id = R.string.unblock)) MaterialTheme.appColors.secondaryContentColor else MaterialTheme.appColors.primaryButtonColor
                 ),
             )
 

@@ -115,10 +115,15 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/search_query"
                 android:layout_width="0dp"
+                android:hint="Search"
+                android:textColorHint="#A7A7BA"
+                android:layout_marginStart="10dp"
                 android:layout_height="wrap_content"
                 app:boxStrokeWidth="0dp"
                 app:boxStrokeWidthFocused="0dp"
                 android:background="@null"
+                android:singleLine="true"
+                android:imeOptions="actionDone"
                 android:layout_weight="1"/>
 
             <ImageView
@@ -152,6 +157,17 @@
                 android:background="?selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_close"
                 android:tint="@color/red"
+                android:visibility="gone"
+                tools:ignore="UseAppTint" />
+
+            <ImageView
+                android:id="@+id/search"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:padding="4dp"
+                android:background="?selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_baseline_search_24"
+                android:tint="#A7A7BA"
                 tools:ignore="UseAppTint" />
 
             <ProgressBar

@@ -894,7 +894,7 @@
     <string name="dialog_link_preview_enable_button_title" translatable="false">Enable</string>
 
     <string name="dialog_download_title" translatable="false">Trust %s?</string>
-    <string name="dialog_download_explanation" translatable="false">Are you sure you want to download media sent by %s?</string>
+    <string name="dialog_download_explanation" translatable="false">Are you sure you want to download media sent by <b>%s</b>?</string>
     <string name="dialog_download_button_title" translatable="false">Download</string>
 
     <string name="activity_conversation_blocked_banner_text" translatable="false">%s is blocked. Unblock them?</string>
@@ -1347,7 +1347,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="please_try_after_some_time" translatable="false">Please try after some time</string>
     <string name="conversation_transition_name" translatable="false">conversation_transition</string>
     <string name="in_chat_payment" translatable="false">In-Chat Payment</string>
-    <string name="pay_as_you_chat" translatable="false">Pay As You Chat</string>
+    <string name="pay_as_you_chat" translatable="false">Pay as you chat</string>
     <string name="subtitle_balance" translatable="false">Balance :</string>
     <string name="subtitle_unlocked_balance" translatable="false">Unlocked Balance :</string>
     <string name="subtitle_current_height" translatable="false">Current Height :</string>
@@ -1503,4 +1503,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="password_mismatch">Both passwords should be same.</string>
     <string name="incorrect_password">Incorrect password.</string>
     <string name="dark_mode">Dark Mode</string>
+    <string name="call_permission_required_title">Call Permission Required!</string>
+    <string name="call_permission_required_description">You can enable the <b>‘Voice and video calls\'</b> permission in the <b>Privacy Settings.</b></string>
 </resources>

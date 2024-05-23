@@ -920,8 +920,8 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                         .padding(10.dp),
                         shape=RoundedCornerShape(12.dp),
                         colors=TextFieldDefaults.colors(
-                                unfocusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
-                                focusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
+                                unfocusedContainerColor=MaterialTheme.appColors.optionalTextfieldBackground,
+                                focusedContainerColor=MaterialTheme.appColors.optionalTextfieldBackground,
                                 focusedIndicatorColor=Color.Transparent,
                                 unfocusedIndicatorColor=Color.Transparent,
                                 disabledIndicatorColor=Color.Transparent,
@@ -945,8 +945,8 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                         .padding(10.dp),
                         shape=RoundedCornerShape(12.dp),
                         colors=TextFieldDefaults.colors(
-                                unfocusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
-                                focusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
+                                unfocusedContainerColor=MaterialTheme.appColors.optionalTextfieldBackground,
+                                focusedContainerColor=MaterialTheme.appColors.optionalTextfieldBackground,
                                 focusedIndicatorColor=Color.Transparent,
                                 unfocusedIndicatorColor=Color.Transparent,
                                 disabledIndicatorColor=Color.Transparent,
@@ -970,8 +970,8 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                         .padding(10.dp),
                         shape=RoundedCornerShape(12.dp),
                         colors=TextFieldDefaults.colors(
-                                unfocusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
-                                focusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
+                                unfocusedContainerColor=MaterialTheme.appColors.optionalTextfieldBackground,
+                                focusedContainerColor=MaterialTheme.appColors.optionalTextfieldBackground,
                                 focusedIndicatorColor=Color.Transparent,
                                 unfocusedIndicatorColor=Color.Transparent,
                                 disabledIndicatorColor=Color.Transparent,

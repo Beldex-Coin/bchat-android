@@ -153,7 +153,9 @@ class DisplayNameActivity : BaseActionBarActivity() {
                 }
             })
             registerButton.setOnClickListener {
-                register()
+                if (displayNameEditText.text.isNotEmpty()) {
+                    register()
+                }
             }
         }
         //New Line load favourites with network function

@@ -1,103 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/transparent_black"
-    tools:ignore="MissingDefaultResource">
+    android:layout_height="match_parent"
+    android:background="@drawable/default_dialog_background_inset"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:elevation="4dp"
+    android:padding="32dp">
 
-    <androidx.cardview.widget.CardView
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_call_permission"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:fontFamily="@font/open_sans_medium"
+        android:id="@+id/downloadTitleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/call_permission_required_title"
+        android:textColor="@color/text"
+        android:textStyle="bold"
+        android:textSize="16sp" />
+
+    <TextView
+        android:fontFamily="@font/open_sans_medium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/call_permission_required_description"
+        android:paddingHorizontal="@dimen/medium_spacing"
+        android:textColor="@color/text"
+        android:textSize="@dimen/small_font_size"
+        android:textAlignment="center" />
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="290dp"
-        app:cardCornerRadius="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        app:cardBackgroundColor="@color/card_color"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/cancelDialogBoxButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel"
+            android:textAllCaps="false"
+            android:layout_marginEnd="5dp"
+            android:backgroundTint="@color/cancel_button"
+            android:textColor="@color/cancel_button_text"
+            android:padding="12dp"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:layout_weight="1"
+            android:background = "@drawable/rounded_button"
+            android:textStyle="bold"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:background="@color/dialog_header_background"
-                android:orientation="horizontal"
-                android:gravity="center">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_missed_call"
-                    android:layout_marginEnd="10dp"
-                    tools:ignore="ContentDescription"/>
+        <Button
+            android:id="@+id/settingsDialogBoxButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/activity_settings_title"
+            android:textAllCaps="false"
+            android:layout_marginStart="5dp"
+            android:backgroundTint="#00BD40"
+            android:textColor="@color/white"
+            android:padding="12dp"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:layout_weight="1"
+            android:textStyle="bold"
+            android:background = "@drawable/rounded_button"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans_medium"
-                    android:text="Call Permission required"
-                    android:textColor="@color/white"
-                    android:textSize="20sp"
-                    tools:ignore="HardcodedText,RtlHardcoded,SpUsage"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="2"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginStart="20dp"
-                    android:fontFamily="@font/open_sans_medium"
-                    android:text="You can enable the ‘Voice and video calls' permission in the privacy Settings"
-                    android:textAlignment="center"
-                    android:gravity="center"
-                    android:textColor="@color/text"
-                    android:textSize="16sp"
-                    tools:ignore="HardcodedText,NestedWeights,RtlHardcoded,SpUsage"/>
+    </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="0.4"
-                    android:gravity="end"
-                    android:layout_marginEnd="20dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/cancelDialogBoxButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:fontFamily="@font/open_sans_medium"
-                        android:layout_marginEnd="20dp"
-                        android:text="@string/cancel"
-                        android:textColor="@color/text"
-                        android:textSize="16sp"/>
-                    <TextView
-                        android:id="@+id/settingsDialogBoxButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:textAlignment="viewEnd"
-                        android:fontFamily="@font/open_sans_medium"
-                        android:text="@string/activity_settings_title"
-                        android:textColor="@color/text"
-                        android:textSize="16sp"/>
-                </LinearLayout>
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </androidx.cardview.widget.CardView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

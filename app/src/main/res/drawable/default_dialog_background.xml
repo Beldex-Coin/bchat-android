@@ -3,8 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
 
-    <solid android:color="@color/default_dialog_background_color_inset" />
+    <solid android:color="@color/syncing_option_card_background" />
 
-    <corners android:radius="@dimen/dialog_corner_radius" />
+    <corners android:radius="16dp" />
+    <stroke android:color="@color/dialog_box_background_border" android:width="1dp"/>
 
 </shape>

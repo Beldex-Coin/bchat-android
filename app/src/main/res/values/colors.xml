@@ -263,4 +263,9 @@
     <color name="pin_rounded_background">#42425F</color>
     <color name="pin_icon_home">#FFFFFF</color>
     <color name="switch_track">#363645</color>
+    <color name="dialog_box_background_border">#4B4B64</color>
+    <color name="cancel_button">#1C1C26</color>
+    <color name="cancel_button_text">#ACACAC</color>
+    <color name="download_icon">#EBEBEB</color>
+    <color name="download_icon_background">#30303F</color>
 </resources>

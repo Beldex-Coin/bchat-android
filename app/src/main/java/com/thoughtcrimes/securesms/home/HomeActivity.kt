@@ -1013,15 +1013,15 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                     getWallet()!!.disposePendingTransaction()
                     if(currentFragment is ConversationFragmentV2){
                         currentFragment.onCreateTransactionFailed(errorText)
-                    }else if(currentFragment is SendFragment){
+                    }/*else if(currentFragment is SendFragment){
                         currentFragment.onCreateTransactionFailed(errorText)
-                    }
+                    }*/
                 } else {
                      if(currentFragment is ConversationFragmentV2){
                         currentFragment.onTransactionCreated("txTag", pendingTransaction)
-                    }else if(currentFragment is SendFragment){
+                    }/*else if(currentFragment is SendFragment){
                         currentFragment.onTransactionCreated("txTag", pendingTransaction)
-                    }
+                    }*/
                 }
             }
         } catch (ex: ClassCastException) {
@@ -1040,9 +1040,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             val currentFragment = getCurrentFragment()
             if(currentFragment is ConversationFragmentV2){
                 runOnUiThread { currentFragment.onTransactionSent(txId) }
-            }else if(currentFragment is SendFragment){
+            }/*else if(currentFragment is SendFragment){
                 runOnUiThread { currentFragment.onTransactionSent(txId) }
-            }
+            }*/
         } catch (ex: ClassCastException) {
             // not in spend fragment
             Timber.d(ex.localizedMessage)

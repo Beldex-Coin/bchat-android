@@ -416,7 +416,7 @@ fun WalletDashBoardScreen(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(start = 20.dp, top = 20.dp, end = 20.dp, bottom = 50.dp),
+                                .padding(start = 20.dp, top = 10.dp, end = 20.dp, bottom = 50.dp),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Image(
@@ -1606,7 +1606,7 @@ private fun callIfTransactionListEmpty(size: Int, viewModels: WalletViewModels,s
     if (size > 0) {
         viewModels.setFilterTransactionIconIsClickable(true)
         viewModels.setTransactionListContainerIsVisible(true)
-        showFilter(true)
+        //showFilter(true)
     } else {
         viewModels.setFilterTransactionIconIsClickable(false)
         viewModels.setTransactionListContainerIsVisible(false)

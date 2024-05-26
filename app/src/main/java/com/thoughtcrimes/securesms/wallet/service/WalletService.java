@@ -338,7 +338,7 @@ public class WalletService extends Service {
                             TxData txData = extras.getParcelable(REQUEST_CMD_TX_DATA);
                             PendingTransaction pendingTransaction = myWallet.createTransaction(txData);
                             if (observer != null) {
-                                //observer.onTransactionCreated("txTag", pendingTransaction);
+                                observer.onTransactionCreated("txTag", pendingTransaction);
                             } else {
                                 myWallet.disposePendingTransaction();
                             }
@@ -356,7 +356,7 @@ public class WalletService extends Service {
                             String txTag = extras.getString(REQUEST_CMD_TX_TAG);
                             PendingTransaction pendingTransaction = myWallet.createSweepUnmixableTransaction();
                             if (observer != null) {
-                                //observer.onTransactionCreated(txTag, pendingTransaction);
+                                observer.onTransactionCreated(txTag, pendingTransaction);
                             } else {
                                 myWallet.disposePendingTransaction();
                             }
@@ -376,7 +376,7 @@ public class WalletService extends Service {
                             if (pendingTransaction.getStatus() != PendingTransaction.Status.Status_Ok) {
                                 final String error = pendingTransaction.getErrorString();
                                 myWallet.disposePendingTransaction(); // it's broken anyway
-                                // if (observer != null) observer.onSendTransactionFailed(error);
+                                if (observer != null) observer.onSendTransactionFailed(error);
                                 Bundle bundle = new Bundle();
                                 bundle.putSerializable("type", WalletCallbackType.SendTransactionFailed);
                                 bundle.putString("data", error);
@@ -387,7 +387,7 @@ public class WalletService extends Service {
                             boolean success = pendingTransaction.commit("", true);
                             if (success) {
                                 myWallet.disposePendingTransaction();
-                                // if (observer != null) observer.onTransactionSent(txid);
+                                if (observer != null) observer.onTransactionSent(txid);
                                 Bundle bundle = new Bundle();
                                 bundle.putSerializable("type", WalletCallbackType.TransactionSent);
                                 bundle.putString("data", txid);
@@ -410,7 +410,7 @@ public class WalletService extends Service {
                             } else {
                                 final String error = pendingTransaction.getErrorString();
                                 myWallet.disposePendingTransaction();
-                                // if (observer != null) observer.onSendTransactionFailed(error);
+                                if (observer != null) observer.onSendTransactionFailed(error);
                                 Bundle bundle = new Bundle();
                                 bundle.putSerializable("type", WalletCallbackType.SendTransactionFailed);
                                 bundle.putString("data", error);

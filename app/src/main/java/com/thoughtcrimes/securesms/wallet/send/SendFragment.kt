@@ -119,7 +119,8 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
     }
 
     fun onCreateTransactionFailed(errorText: String?) {
-        createTransactionFailed(errorText)
+        //Important wallet service
+        //createTransactionFailed(errorText)
     }
 
    private fun openSomeActivityForResult() {
@@ -144,8 +145,9 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
     // callbacks from send service
     fun onTransactionCreated(txTag: String?, pendingTransaction: PendingTransaction?) {
-        pendingTx = PendingTx(pendingTransaction)
-        transactionCreated(txTag, pendingTransaction)
+        //Important wallet service
+        //pendingTx = PendingTx(pendingTransaction)
+        //transactionCreated(txTag, pendingTransaction)
     }
 
     fun disposeTransaction() {
@@ -155,12 +157,13 @@ class SendFragment : Fragment(), OnUriScannedListener,SendConfirm,OnUriWalletSca
 
     //If Transaction successfully completed after call this function
     fun onTransactionSent(txId: String?) {
-        hideProgress()
+        //Important wallet service
+        /*hideProgress()
         val activity = activity
         if(isAdded && activity != null) {
             this.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
-        SendSuccessDialog(this).show(requireActivity().supportFragmentManager,"")
+        SendSuccessDialog(this).show(requireActivity().supportFragmentManager,"")*/
     }
 
     var committedTx: PendingTx? = null

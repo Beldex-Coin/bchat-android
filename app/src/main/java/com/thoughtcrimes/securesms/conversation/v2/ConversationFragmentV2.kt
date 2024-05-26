@@ -337,7 +337,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 handleSwipeToReply(message, position)
             },
             onItemLongPress = { message, position ->
-                handleLongPress(message, position)
+                if(isSecretGroupIsActive()){
+                    handleLongPress(message, position)
+                }
             },
             onDeselect = { message, position ->
                 actionMode?.let {
@@ -355,6 +357,17 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         )
         adapter.visibleMessageContentViewDelegate = this
         adapter
+    }
+
+    private fun isSecretGroupIsActive():Boolean {
+        val recipient = viewModel.recipient.value
+        return if (recipient != null && recipient.isClosedGroupRecipient && mContext != null) {
+            val group = viewModel.getGroup(recipient)
+            val isActive = (group?.isActive == true)
+            isActive
+        } else {
+            true
+        }
     }
 
     private val glide by lazy { GlideApp.with(this) }
@@ -2657,14 +2670,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun showOrHideInputIfNeeded() {
-        val recipient = viewModel.recipient.value
-        if (recipient != null && recipient.isClosedGroupRecipient && mContext != null) {
-            val group = viewModel.getGroup(recipient)
-            val isActive = (group?.isActive == true)
-            binding.inputBar.showInput = isActive
-        } else {
-            binding.inputBar.showInput = true
-        }
+        binding.inputBar.showInput = isSecretGroupIsActive()
     }
 
     private fun isIncomingMessageRequestThread(): Boolean {

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/in_chat_payment_dialog_background"
+    android:background="@drawable/default_dialog_background_inset"
     android:elevation="4dp"
     android:gravity="center_horizontal"
     android:orientation="vertical"
@@ -13,13 +13,13 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:fontFamily="@font/open_sans_bold"
         android:text="@string/in_chat_payment"
-        android:textColor="@color/text"
-        android:textSize="@dimen/medium_font_size"
+        android:textColor="@color/button_green"
+        android:textSize="16sp"
         android:textStyle="bold" />
 
     <androidx.cardview.widget.CardView
@@ -30,7 +30,7 @@
         android:layout_marginRight="15dp"
         android:layout_marginBottom="10dp"
         app:cardBackgroundColor="@color/in_chat_payment_field"
-        app:cardCornerRadius="10dp">
+        app:cardCornerRadius="12dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -49,8 +49,8 @@
                 android:gravity="center_vertical"
                 android:padding="10dp"
                 android:text="@string/in_chat_amount"
-                android:textColor="@color/text"
-                android:textSize="@dimen/medium_font_size" />
+                android:textColor="@color/setting_icon_tint"
+                android:textSize="@dimen/small_font_size" />
 
             <View
                 android:id="@+id/view"
@@ -76,8 +76,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:fontFamily="@font/open_sans_bold"
-                    android:textColor="@color/text"
-                    android:textSize="@dimen/medium_font_size" />
+                    android:textColor="@color/setting_icon_tint"
+                    android:textSize="@dimen/large_font_size" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -97,7 +97,7 @@
         android:layout_marginRight="15dp"
         android:layout_marginBottom="10dp"
         app:cardBackgroundColor="@color/in_chat_payment_field"
-        app:cardCornerRadius="10dp">
+        app:cardCornerRadius="12dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -108,21 +108,21 @@
                 android:id="@+id/dialogReceiverAddressTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
+                android:layout_marginStart="30dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="15dp"
                 android:layout_marginBottom="10dp"
                 android:fontFamily="@font/open_sans_medium"
                 android:text="@string/address"
                 android:textColor="@color/text"
-                android:textSize="@dimen/small_font_size" />
+                android:textSize="@dimen/very_small_font_size" />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
                 android:layout_marginEnd="15dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="5dp"
                 app:cardBackgroundColor="@color/in_chat_address_background"
                 app:cardCornerRadius="10dp">
 
@@ -131,16 +131,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/open_sans_medium"
-                    android:padding="15dp"
-                    android:textColor="@color/text"
-                    android:textSize="@dimen/small_font_size" />
+                    android:padding="10dp"
+                    android:textColor="@color/setting_icon_tint"
+                    android:textSize="10sp" />
             </androidx.cardview.widget.CardView>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
+                android:layout_marginStart="30dp"
                 android:layout_marginEnd="15dp"
+                android:layout_marginBottom="15dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -148,11 +149,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:layout_marginBottom="10dp"
                     android:fontFamily="@font/open_sans_medium"
                     android:text="@string/fee"
-                    android:textColor="@color/text"
-                    android:textSize="@dimen/small_font_size" />
+                    android:textColor="@color/setting_icon_tint"
+                    android:textSize="@dimen/very_small_font_size" />
 
                 <TextView
                     android:id="@+id/dialogTransactionFee"
@@ -163,36 +163,11 @@
                     android:layout_marginEnd="20dp"
                     android:layout_weight="1"
                     android:fontFamily="@font/open_sans_bold"
-                    android:textColor="@color/text"
-                    android:textSize="@dimen/small_font_size" />
+                    android:textColor="@color/setting_icon_tint"
+                    android:textSize="@dimen/very_small_font_size" />
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-
-    <TextView
-        android:id="@+id/dialogCommitTransaction"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="32dp"
-        android:fontFamily="@font/open_sans_medium"
-        android:text="@string/commit_transaction"
-        android:textColor="@color/green_color"
-        android:textSize="@dimen/small_font_size"
-        android:visibility="gone" />
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="32dp"
-        android:orientation="horizontal">
-
-
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -205,26 +180,35 @@
 
         <Button
             android:id="@+id/cancelButton"
-            style="@style/Widget.Bchat.Button.Dialog.Unimportant.New"
             android:layout_width="0dp"
-            android:layout_height="@dimen/medium_button_height"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel"
+            android:textAllCaps="false"
+            android:layout_marginEnd="5dp"
+            android:backgroundTint="@color/cancel_button"
+            android:textColor="@color/cancel_button_text"
+            android:padding="12dp"
+            android:gravity="center"
+            android:textSize="14sp"
             android:layout_weight="1"
-            android:text="@string/cancel" />
+            android:background = "@drawable/rounded_button"
+            android:textStyle="bold"/>
 
         <Button
             android:id="@+id/okButton"
-            style="@style/Widget.Bchat.Button.Common.ProminentFilled"
             android:layout_width="0dp"
-            android:layout_height="@dimen/medium_button_height"
-            android:layout_marginStart="@dimen/medium_spacing"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp"
+            android:layout_height="wrap_content"
+            android:text="@string/ok"
+            android:textAllCaps="false"
+            android:layout_marginStart="5dp"
+            android:backgroundTint="#00BD40"
+            android:textColor="@color/white"
+            android:padding="12dp"
+            android:gravity="center"
+            android:textSize="14sp"
             android:layout_weight="1"
-            android:text="@string/ok" />
+            android:textStyle="bold"
+            android:background = "@drawable/rounded_button"/>
 
     </LinearLayout>
 

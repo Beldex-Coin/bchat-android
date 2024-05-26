@@ -135,7 +135,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#A4000000"
-            android:visibility="gone">
+            android:clickable="true"
+            android:visibility="gone"
+            android:focusable="true">
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/defaultRoomsLoader"
@@ -144,6 +146,8 @@
                 android:layout_centerInParent="true"
                 android:layout_marginTop="8dp"
                 android:adjustViewBounds="true"
+                android:clickable="true"
+                android:focusable="true"
                 app:layout_constraintDimensionRatio="1:1"
                 app:lottie_autoPlay="true"
                 app:lottie_enableMergePathsForKitKatAndAbove="true"

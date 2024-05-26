@@ -126,10 +126,10 @@
     <color name="beta_icon">#797984</color>
     <color name="receive_payment_card_background">#128B17</color>
     <color name="copy_link_background">#FCFCFC</color>
-    <color name="in_chat_address_background">#FFFFFF</color>
-    <color name="in_chat_payment_field">#EDEDED</color>
+    <color name="in_chat_address_background">#F8F8F8</color>
+    <color name="in_chat_payment_field">#EBEBEB</color>
     <color name="in_chat_payment_dialog_background">#FFFFFF</color>
-    <color name="in_chat_amount_divider">#C9C9C9</color>
+    <color name="in_chat_amount_divider">#A7A7BA</color>
     <color name="edit_text_title">#EBEBEB</color>
     <color name="recovery_seed_content">#ECAB0F</color>
     <color name="your_bchat_id_bg">#F8F8F8</color>

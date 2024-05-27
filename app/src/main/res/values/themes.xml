@@ -131,6 +131,13 @@
         <item name="windowActionModeOverlay">true</item>
         <item name="android:popupMenuStyle">@style/PopupMenu</item>
         <item name="popupMenuStyle">@style/PopupMenu</item>
+        <item name="actionOverflowMenuStyle">@style/OverflowMenu</item>
+    </style>
+
+    <style name="OverflowMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
+        <!-- Required for Lollipop. -->
+        <item name="android:overlapAnchor">false</item>
+        <item name="android:popupBackground">@drawable/overflow_menu_background</item>
     </style>
 
     <style name="PopupMenu" parent="@android:style/Widget.PopupMenu">

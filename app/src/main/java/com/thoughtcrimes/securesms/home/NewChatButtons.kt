@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -40,9 +41,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.thoughtcrimes.securesms.compose_utils.BChatTheme
 import com.thoughtcrimes.securesms.compose_utils.appColors
 import com.thoughtcrimes.securesms.compose_utils.noRippleCallback
+import com.thoughtcrimes.securesms.compose_utils.ui.BChatPreviewContainer
 import io.beldex.bchat.R
 
 @Composable
@@ -124,6 +125,12 @@ fun NewChatButtons(
                     changeExpandedStatus(!isExpanded)
                 },
                 containerColor = MaterialTheme.appColors.primaryButtonColor,
+                elevation = FloatingActionButtonDefaults.elevation(
+                    defaultElevation = 0.dp,
+                    pressedElevation = 0.dp,
+                    focusedElevation = 0.dp,
+                    hoveredElevation = 0.dp
+                ),
                 modifier = Modifier
                     .padding(
                         bottom = 8.dp,
@@ -185,7 +192,7 @@ private fun ChatOptionButton(
 @Preview
 @Composable
 fun NewChatButtonsPreview() {
-    BChatTheme {
+    BChatPreviewContainer {
         NewChatButtons(
             isExpanded = true,
             changeExpandedStatus = {},
@@ -197,11 +204,11 @@ fun NewChatButtonsPreview() {
 }
 
 @Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES
+    uiMode = Configuration.UI_MODE_NIGHT_NO
 )
 @Composable
 fun NewChatButtonsPreviewDark() {
-    BChatTheme {
+    BChatPreviewContainer {
         NewChatButtons(
             isExpanded = true,
             changeExpandedStatus = {},

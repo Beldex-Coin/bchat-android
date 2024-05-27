@@ -169,90 +169,6 @@ object ConversationMenuHelper {
             R.id.menu_unmute_notifications -> { unmute(context, thread) }
             R.id.menu_mute_notifications -> { mute(context, thread) }
             R.id.menu_notification_settings -> { setNotifyType(context, thread) }
-          /*  R.id.menu_call -> {
-                *//*Hales63*//*
-                if (isOnline(context)) {
-                    Log.d("Beldex","Call state issue called")
-                    val tm = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-                    if (ContextCompat.checkSelfPermission(
-                            context,
-                            Manifest.permission.READ_PHONE_STATE
-                        ) == PackageManager.PERMISSION_GRANTED
-                    ) {
-                        Log.d("Beldex","Call state issue called 1")
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                            Log.d("Beldex","Call state issue called 2")
-                            tm.registerTelephonyCallback(
-                                context.mainExecutor,
-                                object : TelephonyCallback(), TelephonyCallback.CallStateListener {
-                                    override fun onCallStateChanged(state: Int) {
-                                        when (state) {
-                                            TelephonyManager.CALL_STATE_RINGING -> {
-                                                Log.d("Beldex","Call state issue called 3")
-                                                Toast.makeText(
-                                                    context,
-                                                    "BChat call won't allow ,Because your phone call ringing",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-                                            TelephonyManager.CALL_STATE_OFFHOOK -> {
-                                                Log.d("Beldex","Call state issue called 4")
-                                                Toast.makeText(
-                                                    context,
-                                                    "BChat call won't allow ,Because your phone call is on going",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-
-                                            }
-                                            TelephonyManager.CALL_STATE_IDLE -> {
-                                                Log.d("Beldex","Call state issue called 5")
-                                                call(context, thread)
-                                            }
-                                        }
-                                    }
-                                })
-
-                        } else {
-                            Log.d("Beldex","Call state issue called 6")
-                            tm.listen(object : PhoneStateListener() {
-                                override fun onCallStateChanged(state: Int, phoneNumber: String?) {
-                                    super.onCallStateChanged(state, phoneNumber)
-                                    when (state) {
-                                        TelephonyManager.CALL_STATE_RINGING -> {
-                                            Log.d("Beldex","Call state issue called 7")
-                                            Toast.makeText(
-                                                context,
-                                                "BChat call won't allow ,Because your phone call ringing",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                        }
-                                        TelephonyManager.CALL_STATE_OFFHOOK -> {
-                                            Log.d("Beldex","Call state issue called 8")
-                                            Toast.makeText(
-                                                context,
-                                                "BChat call won't allow ,Because your phone call is on going",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-
-                                        }
-                                        TelephonyManager.CALL_STATE_IDLE -> {
-                                            Log.d("Beldex","Call state issue called 9" )
-                                            call(context, thread)
-                                        }
-                                    }
-                                }
-                            }, PhoneStateListener.LISTEN_CALL_STATE)
-                        }
-                    }
-                    else{
-
-                        Log.d("Beldex","Call state issue called else")
-                    }
-
-                } else {
-                    Toast.makeText(context, "Check your Internet", Toast.LENGTH_SHORT).show()
-                }
-            }*/
         }
         return true
     }
@@ -292,16 +208,16 @@ object ConversationMenuHelper {
     private fun call(context: Context, thread: Recipient) {
 
         if (!TextSecurePreferences.isCallNotificationsEnabled(context)) {
-           /* AlertDialog.Builder(context)
-                .setTitle(R.string.ConversationActivity_call_title)
-                .setMessage(R.string.ConversationActivity_call_prompt)
-                .setPositiveButton(R.string.activity_settings_title) { _, _ ->
-                    val intent = Intent(context, PrivacySettingsActivity::class.java)
-                    context.startActivity(intent)
-                }
-                .setNeutralButton(R.string.cancel) { d, _ ->
-                    d.dismiss()
-                }.show()*/
+            /* AlertDialog.Builder(context)
+                 .setTitle(R.string.ConversationActivity_call_title)
+                 .setMessage(R.string.ConversationActivity_call_prompt)
+                 .setPositiveButton(R.string.activity_settings_title) { _, _ ->
+                     val intent = Intent(context, PrivacySettingsActivity::class.java)
+                     context.startActivity(intent)
+                 }
+                 .setNeutralButton(R.string.cancel) { d, _ ->
+                     d.dismiss()
+                 }.show()*/
             //SteveJosephh22
             val factory = LayoutInflater.from(context)
             val callPermissionDialogView: View = factory.inflate(R.layout.call_permissions_dialog_box, null)
@@ -313,7 +229,7 @@ object ConversationMenuHelper {
                 callPermissionDialog.dismiss()
             }
             callPermissionDialogView.findViewById<TextView>(R.id.cancelDialogBoxButton).setOnClickListener{
-                    callPermissionDialog.dismiss()
+                callPermissionDialog.dismiss()
             }
             callPermissionDialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
             callPermissionDialog.show()
@@ -411,31 +327,31 @@ object ConversationMenuHelper {
             context.resources.getString(R.string.ConversationActivity_are_you_sure_you_want_to_leave_this_group)
         }
         val builder = AlertDialog.Builder(context,R.style.BChatAlertDialog_Clear_All)
-        .setTitle(context.resources.getString(R.string.ConversationActivity_leave_group))
-        .setCancelable(true)
-        .setMessage(message)
-        .setPositiveButton(R.string.leave) { _, _ ->
-            var groupPublicKey: String?
-            var isClosedGroup: Boolean
-            try {
-                groupPublicKey = doubleDecodeGroupID(thread.address.toString()).toHexString()
-                isClosedGroup = DatabaseComponent.get(context).beldexAPIDatabase().isClosedGroup(groupPublicKey)
-            } catch (e: IOException) {
-                groupPublicKey = null
-                isClosedGroup = false
-            }
-            try {
-                if (isClosedGroup) {
-                    MessageSender.leave(groupPublicKey!!, true)
-                } else {
+            .setTitle(context.resources.getString(R.string.ConversationActivity_leave_group))
+            .setCancelable(true)
+            .setMessage(message)
+            .setPositiveButton(R.string.leave) { _, _ ->
+                var groupPublicKey: String?
+                var isClosedGroup: Boolean
+                try {
+                    groupPublicKey = doubleDecodeGroupID(thread.address.toString()).toHexString()
+                    isClosedGroup = DatabaseComponent.get(context).beldexAPIDatabase().isClosedGroup(groupPublicKey)
+                } catch (e: IOException) {
+                    groupPublicKey = null
+                    isClosedGroup = false
+                }
+                try {
+                    if (isClosedGroup) {
+                        MessageSender.leave(groupPublicKey!!, true)
+                    } else {
+                        Toast.makeText(context, R.string.ConversationActivity_error_leaving_group, Toast.LENGTH_LONG).show()
+                    }
+                } catch (e: Exception) {
                     Toast.makeText(context, R.string.ConversationActivity_error_leaving_group, Toast.LENGTH_LONG).show()
                 }
-            } catch (e: Exception) {
-                Toast.makeText(context, R.string.ConversationActivity_error_leaving_group, Toast.LENGTH_LONG).show()
             }
-        }
-        .setNegativeButton(R.string.no, null)
-        .show()
+            .setNegativeButton(R.string.no, null)
+            .show()
 
         //New Line
         val textView: TextView? = builder.findViewById(android.R.id.message)
@@ -474,5 +390,4 @@ object ConversationMenuHelper {
     }
 
 }
-
 

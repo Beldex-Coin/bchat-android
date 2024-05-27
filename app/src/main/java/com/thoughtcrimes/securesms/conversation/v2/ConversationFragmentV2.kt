@@ -32,6 +32,7 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.util.Pair
 import android.util.TypedValue
 import android.view.ActionMode
@@ -224,7 +225,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         )[LinkPreviewViewModel::class.java]
     }
 
-//    var threadId: Long? = -1L
+    //    var threadId: Long? = -1L
     @Inject
     lateinit var threadDb: ThreadDatabase
 
@@ -240,7 +241,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun callViewModel():Recipient?{
-         val viewModels: ConversationViewModel by viewModels {
+        val viewModels: ConversationViewModel by viewModels {
             var threadId = requireArguments().getLong(THREAD_ID,-1L)
             if (threadId == -1L) {
                 requireArguments().parcelable<Address>(ADDRESS)?.let { address ->
@@ -936,8 +937,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         val recipient = viewModel.recipient.value ?: return
         if (recipient.isBlocked) {
             BlockedDialog(recipient).show(
-                    requireActivity().supportFragmentManager,
-                    "Blocked Dialog"
+                requireActivity().supportFragmentManager,
+                "Blocked Dialog"
             )
             return
         }
@@ -1107,8 +1108,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         val recipient = viewModel.recipient.value ?: return
         if (recipient.isBlocked) {
             BlockedDialog(recipient).show(
-                    requireActivity().supportFragmentManager,
-                    "Blocked Dialog"
+                requireActivity().supportFragmentManager,
+                "Blocked Dialog"
             )
             return
         }
@@ -1118,8 +1119,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 this.activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 audioRecorder.startRecording()
                 stopAudioHandler.postDelayed(
-                        stopVoiceMessageRecordingTask,
-                        300000
+                    stopVoiceMessageRecordingTask,
+                    300000
                 ) // Limit voice messages to 5 minute each
             } else {
                 Permissions.with(this)
@@ -1260,34 +1261,34 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     override fun inChatBDXOptions() {
         try {
-                val dialog = android.app.AlertDialog.Builder(requireActivity())
-                val inflater = layoutInflater
-                val dialogView = inflater.inflate(R.layout.pay_as_you_chat, null)
-                dialog.setView(dialogView)
+            val dialog = android.app.AlertDialog.Builder(requireActivity())
+            val inflater = layoutInflater
+            val dialogView = inflater.inflate(R.layout.pay_as_you_chat, null)
+            dialog.setView(dialogView)
 
-                val okButton = dialogView.findViewById<Button>(R.id.okButton)
-                val cancelButton = dialogView.findViewById<Button>(R.id.cancelButton)
-                val enableInstruction =
-                    dialogView.findViewById<TextView>(R.id.payAsYouChatEnable_Instruction)
-                val alert = dialog.create()
-                alert.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                alert.setCanceledOnTouchOutside(false)
-                alert.show()
-                if (TextSecurePreferences.isPayAsYouChat(requireActivity())) {
-                    enableInstruction.text =
-                        fromHtml("To disable pay as you chat, go to <b>Settings -> Wallet Settings -> Pay As You Chat</b> to use this option")
-                } else {
-                    enableInstruction.text =
-                        fromHtml("Enable pay as you chat from <b>Settings -> Wallet Settings -> Pay As You Chat</b> to use this option")
-                }
-                okButton.setOnClickListener {
-                    val intent = Intent(requireActivity(), PrivacySettingsActivity::class.java)
-                    this.activity?.startActivity(intent)
-                    alert.dismiss()
-                }
-                cancelButton.setOnClickListener {
-                    alert.dismiss()
-                }
+            val okButton = dialogView.findViewById<Button>(R.id.okButton)
+            val cancelButton = dialogView.findViewById<Button>(R.id.cancelButton)
+            val enableInstruction =
+                dialogView.findViewById<TextView>(R.id.payAsYouChatEnable_Instruction)
+            val alert = dialog.create()
+            alert.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            alert.setCanceledOnTouchOutside(false)
+            alert.show()
+            if (TextSecurePreferences.isPayAsYouChat(requireActivity())) {
+                enableInstruction.text =
+                    fromHtml("To disable pay as you chat, go to <b>Settings -> Wallet Settings -> Pay As You Chat</b> to use this option")
+            } else {
+                enableInstruction.text =
+                    fromHtml("Enable pay as you chat from <b>Settings -> Wallet Settings -> Pay As You Chat</b> to use this option")
+            }
+            okButton.setOnClickListener {
+                val intent = Intent(requireActivity(), PrivacySettingsActivity::class.java)
+                this.activity?.startActivity(intent)
+                alert.dismiss()
+            }
+            cancelButton.setOnClickListener {
+                alert.dismiss()
+            }
         } catch (exception: Exception) {
             Timber.tag("Beldex").d("PayAsYouChat exception $exception")
         }
@@ -1442,33 +1443,33 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun sendVoiceMessage() {
-            hideVoiceMessageUI()
-            this.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            val future = audioRecorder.stopRecording()
-            stopAudioHandler.removeCallbacks(stopVoiceMessageRecordingTask)
-            future.addListener(object : ListenableFuture.Listener<Pair<Uri, Long>> {
+        hideVoiceMessageUI()
+        this.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        val future = audioRecorder.stopRecording()
+        stopAudioHandler.removeCallbacks(stopVoiceMessageRecordingTask)
+        future.addListener(object : ListenableFuture.Listener<Pair<Uri, Long>> {
 
-                override fun onSuccess(result: Pair<Uri, Long>) {
-                    val audioSlide = AudioSlide(
-                        requireActivity(),
-                        result.first,
-                        result.second,
-                        MediaTypes.AUDIO_AAC,
-                        true
-                    )
-                    val slideDeck = SlideDeck()
-                    slideDeck.addSlide(audioSlide)
-                    sendAttachments(slideDeck.asAttachments(), null)
-                }
+            override fun onSuccess(result: Pair<Uri, Long>) {
+                val audioSlide = AudioSlide(
+                    requireActivity(),
+                    result.first,
+                    result.second,
+                    MediaTypes.AUDIO_AAC,
+                    true
+                )
+                val slideDeck = SlideDeck()
+                slideDeck.addSlide(audioSlide)
+                sendAttachments(slideDeck.asAttachments(), null)
+            }
 
-                override fun onFailure(e: ExecutionException) {
-                    Toast.makeText(
-                        requireActivity(),
-                        R.string.ConversationActivity_unable_to_record_audio,
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            })
+            override fun onFailure(e: ExecutionException) {
+                Toast.makeText(
+                    requireActivity(),
+                    R.string.ConversationActivity_unable_to_record_audio,
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        })
     }
 
     override fun cancelVoiceMessage() {
@@ -2192,7 +2193,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         } else {
             binding.inputBar.addTextChangedListener(object : SimpleTextWatcher() {
                 override fun onTextChanged(text: String?) {
-                   checkInputBarTextOnTextChanged(text,thread)
+                    checkInputBarTextOnTextChanged(text,thread)
                 }
             })
         }
@@ -2240,7 +2241,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     try {
                         if (userCount != null) {
                             binding.conversationSubtitleView.text =
-                                    getString(R.string.ConversationActivity_member_count, userCount)
+                                getString(R.string.ConversationActivity_member_count, userCount)
                         } else {
                             binding.conversationSubtitleView.isVisible = false
                         }
@@ -2333,7 +2334,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                             })
 
                     } else {
-                        tm.listen(object : PhoneStateListener() {
+                        /*tm.listen(object : PhoneStateListener() {
                             override fun onCallStateChanged(state: Int, phoneNumber: String?) {
                                 super. onCallStateChanged(state, phoneNumber)
                                 when (state) {
@@ -2361,7 +2362,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                                     }
                                 }
                             }
-                        }, PhoneStateListener.LISTEN_CALL_STATE)
+                        }, PhoneStateListener.LISTEN_CALL_STATE)*/
+                        viewModel.recipient.value?.let { recipient ->
+                            call(requireActivity(), recipient)
+                        }
                     }
                 } else {
                     viewModel.recipient.value?.let { recipient ->
@@ -2418,7 +2422,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private fun getLatestOpenGroupInfoIfNeeded() {
         try {
             val openGroup = viewModel.getOpenGroupChat()
-                    ?: return
+                ?: return
             OpenGroupAPIV2.getMemberCount(openGroup.room, openGroup.server)
                 .successUi { updateSubtitle() }
         } catch (ex: NullPointerException) {
@@ -3109,7 +3113,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     override fun createTransactionFailed(errorText: String?) {
         hideProgress()
         if(getString(R.string.invalid_destination_address) == errorText!!){
-           //showAlert(getString(R.string.send_create_tx_error_title), getString(R.string.receiver_address_is_not_available))
+            //showAlert(getString(R.string.send_create_tx_error_title), getString(R.string.receiver_address_is_not_available))
             SendFailedDialog(getString(R.string.receiver_address_is_not_available)).show(requireActivity().supportFragmentManager,"")
             transactionInProgress = false
         }else{
@@ -3377,7 +3381,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                         false
                     )
                     sync =
-                    getString(R.string.status_synchronized)
+                        getString(R.string.status_synchronized)
                     valueOfWallet = "${df.format(walletSyncPercentage)}%"
                     binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false,valueOfWallet)
                     //SteveJosephh21

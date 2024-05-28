@@ -1,0 +1,3 @@
+BChat is a private messaging application used for the purpose of secure communication between our friends and family. Privacy is everyone’s basic right; we can’t categorize people into those that need privacy and those that don’t. Why should others peek their noses in our business? Would you accept constant monitoring? Of course not. Everyone needs privacy. If anyone can watch our day-to-day activities without our knowledge, then where’s the security of these apps?
+
+

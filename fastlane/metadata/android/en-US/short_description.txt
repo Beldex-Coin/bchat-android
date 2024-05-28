@@ -1,0 +1,1 @@
+BChat is a secure, decentralized Web3 messaging platform built on top of the Beldex blockchain.

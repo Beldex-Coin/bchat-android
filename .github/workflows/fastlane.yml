@@ -1,5 +1,8 @@
 name: Fastlane verify
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - f-droid
 jobs:
   # required to run on Linux because this is a docker container action
   verify-metadata:

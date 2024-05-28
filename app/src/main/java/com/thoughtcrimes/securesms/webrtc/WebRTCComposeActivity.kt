@@ -92,6 +92,8 @@ import org.apache.commons.lang3.time.DurationFormatUtils
 @AndroidEntryPoint
 class WebRTCComposeActivity : ComponentActivity() {
 
+    private var hangupReceiver: BroadcastReceiver? = null
+
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState : Bundle?) {
         super.onCreate(savedInstanceState)
@@ -122,6 +124,9 @@ class WebRTCComposeActivity : ComponentActivity() {
         super.onDestroy()
         TextSecurePreferences.setCallisActive(this,false)
         TextSecurePreferences.setMuteVide(this, false)
+        hangupReceiver?.let { receiver ->
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
+        }
     }
 
 
@@ -279,7 +284,7 @@ class WebRTCComposeActivity : ComponentActivity() {
 
         var expanded by remember { mutableStateOf(false) }
 
-        val hangupReceiver=remember {
+         hangupReceiver=remember {
             object : BroadcastReceiver() {
                 override fun onReceive(p0 : Context?, p1 : Intent?) {
                     isShowDialingStatus=false
@@ -352,14 +357,7 @@ class WebRTCComposeActivity : ComponentActivity() {
             }
         }
 
-        LocalBroadcastManager.getInstance(context).registerReceiver(hangupReceiver, IntentFilter(ACTION_END))
-
-        DisposableEffect(Unit) {
-            context.registerReceiver(hangupReceiver, IntentFilter("action"))
-            onDispose {
-                context.unregisterReceiver(hangupReceiver)
-            }
-        }
+        LocalBroadcastManager.getInstance(context).registerReceiver(hangupReceiver as BroadcastReceiver, IntentFilter(ACTION_END))
 
         fun enableCamera() {
             Permissions.with(context as Activity).request(Manifest.permission.CAMERA).onAllGranted {

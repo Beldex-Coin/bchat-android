@@ -115,6 +115,8 @@ class Colors(
     val noAddressIcon : Color,
     val numberPickerDivider: Color,
     val optionalTextfieldBackground: Color,
+    val clearDataSubTitle: Color,
+    val textSelectionColor: Color
 )
 
 val lightColors = Colors(
@@ -213,7 +215,9 @@ val lightColors = Colors(
     disablePrimaryButtonContent = Color(0xFF8A8A9D),
     noAddressIcon = Color(0xffA3A3B2),
     numberPickerDivider = Color(0xFFA7A7BA),
-    optionalTextfieldBackground = Color(0xFFF4F4F4)
+    optionalTextfieldBackground = Color(0xFFF4F4F4),
+    clearDataSubTitle = Color(0XFF6A6A77),
+    textSelectionColor= Color(0xFF008D06)
 )
 
 val darkColors = Colors(
@@ -312,7 +316,9 @@ val darkColors = Colors(
     disablePrimaryButtonContent = Color(0xFF6C6C78),
     noAddressIcon = Color(0xff65656E),
     numberPickerDivider = Color(0xFF4B4B64),
-    optionalTextfieldBackground = Color(0xFF1C1C26)
+    optionalTextfieldBackground = Color(0xFF1C1C26),
+    clearDataSubTitle = Color(0XFF6A6A77),
+    textSelectionColor= Color(0xFF008D06)
 )
 
 

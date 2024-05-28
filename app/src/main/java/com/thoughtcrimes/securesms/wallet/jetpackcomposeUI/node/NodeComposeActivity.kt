@@ -34,6 +34,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -828,6 +829,7 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                                 focusedIndicatorColor=Color.Transparent,
                                 unfocusedIndicatorColor=Color.Transparent,
                                 disabledIndicatorColor=Color.Transparent,
+                                selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
                                 cursorColor=MaterialTheme.appColors.textColor),
                         textStyle=TextStyle(
                                 color=MaterialTheme.appColors.textColor,
@@ -879,6 +881,7 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                                 focusedIndicatorColor=Color.Transparent,
                                 unfocusedIndicatorColor=Color.Transparent,
                                 disabledIndicatorColor=Color.Transparent,
+                                selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
                                 cursorColor=MaterialTheme.appColors.textColor),
                         textStyle=TextStyle(
                                 color=MaterialTheme.appColors.textColor,
@@ -917,14 +920,18 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
 
                 }, modifier=Modifier
                         .fillMaxWidth()
-                        .padding(10.dp),
-                        shape=RoundedCornerShape(12.dp),
+                        .padding(10.dp)
+                        .border(
+                                1.dp, MaterialTheme.appColors.textFiledBorderColor,
+                                shape=RoundedCornerShape(12.dp)
+                        ),
                         colors=TextFieldDefaults.colors(
-                                unfocusedContainerColor=MaterialTheme.appColors.optionalTextfieldBackground,
-                                focusedContainerColor=MaterialTheme.appColors.optionalTextfieldBackground,
+                                unfocusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
+                                focusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
                                 focusedIndicatorColor=Color.Transparent,
                                 unfocusedIndicatorColor=Color.Transparent,
                                 disabledIndicatorColor=Color.Transparent,
+                                selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
                                 cursorColor=MaterialTheme.appColors.textColor),
                         textStyle=TextStyle(
                                 color=MaterialTheme.appColors.primaryButtonColor,
@@ -942,14 +949,18 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
 
                 }, modifier=Modifier
                         .fillMaxWidth()
-                        .padding(10.dp),
-                        shape=RoundedCornerShape(12.dp),
+                        .padding(10.dp)
+                        .border(
+                                1.dp, MaterialTheme.appColors.textFiledBorderColor,
+                                shape=RoundedCornerShape(12.dp)
+                        ),
                         colors=TextFieldDefaults.colors(
-                                unfocusedContainerColor=MaterialTheme.appColors.optionalTextfieldBackground,
-                                focusedContainerColor=MaterialTheme.appColors.optionalTextfieldBackground,
+                                unfocusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
+                                focusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
                                 focusedIndicatorColor=Color.Transparent,
                                 unfocusedIndicatorColor=Color.Transparent,
                                 disabledIndicatorColor=Color.Transparent,
+                                selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
                                 cursorColor=MaterialTheme.appColors.textColor),
                         textStyle=TextStyle(
                                 color=MaterialTheme.appColors.textColor,
@@ -967,14 +978,18 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
 
                 }, modifier=Modifier
                         .fillMaxWidth()
-                        .padding(10.dp),
-                        shape=RoundedCornerShape(12.dp),
+                        .padding(10.dp)
+                        .border(
+                                1.dp, MaterialTheme.appColors.textFiledBorderColor,
+                                shape=RoundedCornerShape(12.dp)
+                        ),
                         colors=TextFieldDefaults.colors(
-                                unfocusedContainerColor=MaterialTheme.appColors.optionalTextfieldBackground,
-                                focusedContainerColor=MaterialTheme.appColors.optionalTextfieldBackground,
+                                unfocusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
+                                focusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
                                 focusedIndicatorColor=Color.Transparent,
                                 unfocusedIndicatorColor=Color.Transparent,
                                 disabledIndicatorColor=Color.Transparent,
+                                selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
                                 cursorColor=MaterialTheme.appColors.textColor),
                         textStyle=TextStyle(
                                 color=MaterialTheme.appColors.textColor,

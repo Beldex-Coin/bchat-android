@@ -1055,8 +1055,9 @@
     <string name="dismiss" translatable="false">Dismiss</string>
     <string name="preferences__voice_video_calls" translatable="false">Voice and video calls</string>
     <string name="preferences__allow_access_voice_video" translatable="false">Allow access to accept voice and video calls from other users</string>
-    <string name="incoming_call" translatable="false">Incoming Call</string>
+    <string name="incoming_call" translatable="false">Incoming Call..</string>
     <string name="outgoing_call" translatable="false">Outgoing Call</string>
+    <string name="calling" translatable="false">Calling..</string>
     <string name="end_to_end_encrypted" translatable="false">End to End Encrypted</string>
     <string name="call_duration" translatable="false">00:10:10</string>
     <string name="hang_up" translatable="false">Hangup</string>
@@ -1505,4 +1506,6 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="dark_mode">Dark Mode</string>
     <string name="call_permission_required_title">Call Permission Required!</string>
     <string name="call_permission_required_description">You can enable the <b>‘Voice and video calls\'</b> permission in the <b>Privacy Settings.</b></string>
+    <string name="wallet_setup">Wallet Setup</string>
+    <string name="message_status_icon_description" translatable="false">Message delivery status</string>
 </resources>

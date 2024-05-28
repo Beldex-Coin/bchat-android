@@ -100,9 +100,11 @@ fun MessageRequestsScreen(
                         onEvent(MessageRequestEvents.BlockRequest(it))
                     }
                     threadRecord = null
+                    showBlockConfirmationDialog = false
                 },
                 onDismissRequest = {
                     showBlockConfirmationDialog = false
+
                 }
             )
         }
@@ -118,6 +120,7 @@ fun MessageRequestsScreen(
                         }
                     }
                     threadRecord = null
+                    showDeleteConfirmationDialog = false
                 },
                 onDismissRequest = {
                     showDeleteConfirmationDialog = false

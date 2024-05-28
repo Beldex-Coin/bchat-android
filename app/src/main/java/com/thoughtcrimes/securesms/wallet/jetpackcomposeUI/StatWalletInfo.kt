@@ -6,24 +6,29 @@ import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,21 +42,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.fragment.app.DialogFragment
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import com.beldex.libsignal.utilities.Log
 import com.thoughtcrimes.securesms.compose_utils.BChatTypography
+import com.thoughtcrimes.securesms.compose_utils.DialogContainer
 import com.thoughtcrimes.securesms.compose_utils.PrimaryButton
 import com.thoughtcrimes.securesms.compose_utils.appColors
 import com.thoughtcrimes.securesms.home.HomeActivity
-import com.thoughtcrimes.securesms.wallet.WalletSetupLoadingBar
-import com.thoughtcrimes.securesms.wallet.startwallet.StartWalletInfo
 import io.beldex.bchat.R
 
 
@@ -63,23 +68,32 @@ fun StatWalletInfo(modifier: Modifier) {
     var isChecked by remember {
         mutableStateOf(false)
     }
+    var showLoader by remember {
+        mutableStateOf(false)
+    }
+    if (showLoader) {
+        WalletSetupLoadingPopUp(onDismiss = {
+            showLoader = false
+
+        })
+    }
 
     Column(
             horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
-        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier
-            .wrapContentHeight()
-            .padding(10.dp)
-            .clip(shape = RoundedCornerShape(10.dp))
-            .background(color = MaterialTheme.appColors.walletInfoBackground)
-            .border(
-                border = BorderStroke(
-                    width = 1.dp,
-                    MaterialTheme.appColors.walletInfoBackgroundBorder
-                ), shape = RoundedCornerShape(10.dp)
-            )
-            .verticalScroll(rememberScrollState())
+        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier =modifier
+                .wrapContentHeight()
+                .padding(10.dp)
+                .clip(shape=RoundedCornerShape(10.dp))
+                .background(color=MaterialTheme.appColors.walletInfoBackground)
+                .border(
+                        border=BorderStroke(
+                                width=1.dp,
+                                MaterialTheme.appColors.walletInfoBackgroundBorder
+                        ), shape=RoundedCornerShape(10.dp)
+                )
+                .verticalScroll(rememberScrollState())
 
         ) {
 
@@ -153,16 +167,15 @@ fun StatWalletInfo(modifier: Modifier) {
 
             PrimaryButton(onClick = {
                 TextSecurePreferences.setBooleanPreference(context, TextSecurePreferences.IS_WALLET_ACTIVE, true)
-                showProgress(context)
+                showLoader = true
                 val handler = Handler(Looper.getMainLooper())
                 handler.postDelayed({
-                    hideProgress(context)
+                    showLoader = false
                     restartHome(context, activity)
                 }, 2000)
-                Toast.makeText(context, "Enabled Wallet", Toast.LENGTH_SHORT).show()
-            }, modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, bottom = 24.dp), shape = RoundedCornerShape(16.dp), enabled = isChecked) {
+            }, modifier =Modifier
+                    .fillMaxWidth()
+                    .padding(start=16.dp, end=16.dp, bottom=24.dp), shape = RoundedCornerShape(16.dp), enabled = isChecked) {
                 Text(text = context.getString(R.string.enable_wallet), style = BChatTypography.bodyLarge.copy(color = Color.White), modifier = Modifier.padding(8.dp))
             }
 
@@ -176,20 +189,40 @@ private fun restartHome(context: Context, activity: Activity) {
     activity.startActivity(intent)
 }
 
-private fun showProgress(context: Context) {
-    val activity = context as? AppCompatActivity ?: return
-    WalletSetupLoadingBar().show(activity.supportFragmentManager, "wallet_setup_progressbar_tag")
-}
 
-private fun hideProgress(context: Context) {
-    val activity = context as? AppCompatActivity ?: return
-    val fragment = activity.supportFragmentManager.findFragmentByTag("wallet_setup_progressbar_tag") as WalletSetupLoadingBar
-    val dialogFragment = DialogFragment()
-    try {
-        dialogFragment.dismiss()
-    } catch (ex: IllegalStateException) {
-        Log.e("Beldex", "IllegalStateException $ex")
+@Composable
+fun WalletSetupLoadingPopUp(onDismiss: () -> Unit) {
+    DialogContainer(
+            dismissOnBackPress = false,
+            dismissOnClickOutside = false,
+            onDismissRequest = onDismiss,
+    ) {
+
+        OutlinedCard(colors = CardDefaults.cardColors(containerColor = MaterialTheme.appColors.dialogBackground), elevation = CardDefaults.cardElevation(defaultElevation = 4.dp), modifier = Modifier.fillMaxWidth()) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier =Modifier
+                    .fillMaxWidth()
+                    .padding(15.dp)) {
+                Box(
+                        contentAlignment= Alignment.Center,
+                        modifier =Modifier
+                                .size(55.dp)
+                                .background(color=MaterialTheme.appColors.circularProgressBarBackground, shape=CircleShape),
+                ){
+                    CircularProgressIndicator(
+                            modifier = Modifier.padding(12.dp),
+                            color = MaterialTheme.appColors.primaryButtonColor,
+                            strokeWidth = 2.dp
+                    )
+                }
+
+                Text(text = stringResource(id = R.string.wallet_setup), style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp, fontWeight = FontWeight(800), color = MaterialTheme.appColors.primaryButtonColor), modifier = Modifier.padding(10.dp))
+
+                Text(text = stringResource(id = R.string.wallet_setup_loading_content), textAlign = TextAlign.Center, style = MaterialTheme.typography.titleMedium.copy(fontSize = 12.sp, fontWeight = FontWeight(400), color = MaterialTheme.appColors.textColor), modifier = Modifier.padding(10.dp))
+
+            }
+        }
     }
+
 }
 
 

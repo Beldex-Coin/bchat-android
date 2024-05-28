@@ -189,5 +189,6 @@
     <color name="cancel_button_text">#333333</color>
     <color name="download_icon">#333333</color>
     <color name="download_icon_background">#EBEBEB</color>
+    <color name="circle_background">#EBEBEB</color>
 
 </resources>

@@ -1,1 +1,12 @@
 name: Fastlane verifier
+on: workflow_dispatch
+jobs:
+  # required to run on Linux because this is a docker container action
+  verify-metadata:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ashutoshgngwr/validate-fastlane-supply-metadata@v2
+        with:
+          fastlaneDir: ./android-metadata # optional
+          usePlayStoreLocales: true # optional

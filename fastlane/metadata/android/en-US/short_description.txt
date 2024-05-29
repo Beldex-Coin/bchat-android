@@ -1,1 +1,1 @@
-BChat is a secure, decentralized Web3 messaging platform built on top of the Beldex blockchain.
+Send truly private messages with the BChat privacy messenger. Chat with freedom.

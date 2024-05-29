@@ -1,3 +1,10 @@
-BChat is a private messaging application used for the purpose of secure communication between our friends and family. Privacy is everyone’s basic right; we can’t categorize people into those that need privacy and those that don’t. Why should others peek their noses in our business? Would you accept constant monitoring? Of course not. Everyone needs privacy. If anyone can watch our day-to-day activities without our knowledge, then where’s the security of these apps?
-
-
+BChat gives power to the people. It's a decentralized, privacy messenger built over the Beldex blockchain.
+Complete privacy: BChat is not just for encrypted messaging. BChat is inherently private. It does not collect your personal information such as your name, phone number, email ID or location.
+Own Your Identity: We understand that identities are complex. On BChat, you can assume your real-world identity or any identity that you prefer. Stay truly anonymous.
+Own Your Data: Our privacy policy is simple. You control your data and we own none of it. The messages and files that you send are stored on your device and can only be accessed by you. And if you want to delete your data forever, do it with a single click.
+Reliable messaging: BChat achieves low latency and high throughput with a network of Beldex masternodes distributed across the globe. Your messages always reach their destination. They are sent whether the recipient is online or offline.
+Open source: BChat's codebase is open source. It is built by contributors like you. Anyone can contribute to the development of the application.
+Do More: BChat strives to be not just a messaging application. There's more in store in subsequent releases such as high definition voice calls, video calls, and the 'pay as you chat' feature that lets you make BDX transfers to your contacts instantly.
+Support: For any queries about BChat and Beldex, reach out to us at either support@beldex.io or bchat@beldex.io.
+Contribution: You can contribute to the development of the application here: https://www.beldex.io/beldex-contributor.html
+Follow us on Twitter (@bchat_official) and Reddit (r/BChat_Official).

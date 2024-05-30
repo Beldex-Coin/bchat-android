@@ -172,7 +172,7 @@ class VisibleMessageView : LinearLayout {
         } else {
             binding.dateBreakTextView.isVisible = false
         }
-        val (iconID, iconColor) = getMessageStatusImage(message)
+       /* val (iconID, iconColor) = getMessageStatusImage(message)
         if (iconID != null) {
             val drawable = ContextCompat.getDrawable(context, iconID)?.mutate()
             if (iconColor != null) {
@@ -185,7 +185,7 @@ class VisibleMessageView : LinearLayout {
             binding.messageStatusImageView.isVisible = (iconID != null && (!message.isSent || message.id == lastMessageID))
         } else {
             binding.messageStatusImageView.isVisible = false
-        }
+        }*/
         // Expiration timer
         updateExpirationTimer(message)
         // Populate content view
@@ -220,10 +220,10 @@ class VisibleMessageView : LinearLayout {
         return when {
             !message.isOutgoing -> null to null
             message.isPending -> R.drawable.ic_circle_dot_dot_dot to null
-            message.isRead -> R.drawable.ic_filled_circle_check to null
-            message.isSent -> R.drawable.ic_circle_check to null
-            message.isFailed -> R.drawable.ic_error to resources.getColor(R.color.destructive, context.theme)
-            else -> R.drawable.ic_circle_check to null
+            message.isRead -> R.drawable.ic_message_seen to null
+            message.isSent -> R.drawable.ic_message_sent to null
+            message.isFailed -> R.drawable.ic_message_failed to null
+            else -> R.drawable.ic_message_sent to null
         }
     }
 
@@ -232,8 +232,10 @@ class VisibleMessageView : LinearLayout {
         val content = binding.messageContentView.root
         val expiration = binding.expirationTimerView
         val spacing = binding.messageContentSpacing
+        val statusView = binding.messageStatusImageView
         container.removeAllViewsInLayout()
         container.addView(if (message.isOutgoing) expiration else content)
+        container.addView(statusView)
         container.addView(if (message.isOutgoing) content else expiration)
        /* val expirationTimerViewSize = toPx(12, resources)
         val smallSpacing = resources.getDimension(R.dimen.small_spacing).roundToInt()
@@ -244,6 +246,22 @@ class VisibleMessageView : LinearLayout {
         val containerParams = container.layoutParams as ConstraintLayout.LayoutParams
         containerParams.horizontalBias = if (message.isOutgoing) 1f else 0f
         container.layoutParams = containerParams
+
+        val (iconID, iconColor) = getMessageStatusImage(message)
+        if (iconID != null) {
+            val drawable = ContextCompat.getDrawable(context, iconID)?.mutate()
+            if (iconColor != null) {
+                drawable?.setTint(iconColor)
+            }
+            binding.messageStatusImageView.setImageDrawable(drawable)
+        }
+        if (message.isOutgoing) {
+            val lastMessageID = mmsSmsDb.getLastMessageID(message.threadId)
+            binding.messageStatusImageView.isVisible = (iconID != null && (!message.isSent || message.id == lastMessageID))
+        } else {
+            binding.messageStatusImageView.isVisible = false
+        }
+
         if (message.expiresIn > 0 && !message.isPending) {
             binding.expirationTimerView.setColorFilter(ResourcesCompat.getColor(resources, R.color.text, context.theme))
             binding.expirationTimerView.isInvisible = false

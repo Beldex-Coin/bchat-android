@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -889,7 +890,21 @@ fun SendScreen(
                         }, modifier = Modifier
                             .fillMaxWidth()
                             .height(120.dp)
-                            .padding(10.dp), shape = RoundedCornerShape(12.dp), colors = TextFieldDefaults.colors(unfocusedContainerColor = MaterialTheme.appColors.beldexAddressBackground, focusedContainerColor = MaterialTheme.appColors.beldexAddressBackground, focusedIndicatorColor = Color.Transparent, unfocusedIndicatorColor = Color.Transparent, disabledIndicatorColor = Color.Transparent, cursorColor = colorResource(id = R.color.button_green)), textStyle = TextStyle(color = MaterialTheme.appColors.primaryButtonColor, fontSize = 13.sp, fontWeight = FontWeight(400)), maxLines = 106
+                            .padding(10.dp),
+                                shape = RoundedCornerShape(12.dp),
+                                colors = TextFieldDefaults.colors(
+                                        unfocusedContainerColor = MaterialTheme.appColors.beldexAddressBackground,
+                                        focusedContainerColor = MaterialTheme.appColors.beldexAddressBackground,
+                                        focusedIndicatorColor = Color.Transparent,
+                                        unfocusedIndicatorColor = Color.Transparent,
+                                        disabledIndicatorColor = Color.Transparent,
+                                        selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
+                                        cursorColor = colorResource(id = R.color.button_green)),
+                                textStyle = TextStyle(
+                                        color = MaterialTheme.appColors.primaryButtonColor,
+                                        fontSize = 13.sp,
+                                        fontWeight = FontWeight(400)),
+                                maxLines = 106
 
                         )
 

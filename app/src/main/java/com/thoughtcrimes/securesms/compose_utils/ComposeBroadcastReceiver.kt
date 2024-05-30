@@ -29,14 +29,12 @@ fun ComposeBroadcastReceiver(
                 currentOnSystemEvent( intent )
             }
         }
-
-       context.registerReceiver( receiver, intentFilter)
         LocalBroadcastManager.getInstance(context).registerReceiver(
-            receiver, intentFilter
+                receiver, intentFilter
         )
-
         onDispose {
-            context.unregisterReceiver(receiver)
+            LocalBroadcastManager.getInstance(context).unregisterReceiver(
+                    receiver)
         }
     }
 }

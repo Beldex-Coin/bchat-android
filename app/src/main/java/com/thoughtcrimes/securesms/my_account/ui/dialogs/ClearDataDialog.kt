@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.utilities.Log
@@ -199,7 +200,10 @@ fun ClearDataDialog(
                         ""
                     }
                 },
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -229,13 +233,19 @@ fun ClearDataDialog(
                 Steps.INFO_PROMPT -> {
                     Text(
                         text = stringResource(id = R.string.dialog_clear_all_data_explanation),
-                        style = MaterialTheme.typography.titleMedium
+                        style = MaterialTheme.typography.titleMedium,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Normal,
+                            textAlign = TextAlign.Center
                     )
                 }
                 Steps.NETWORK_PROMPT -> {
                     Text(
                         text = stringResource(id = R.string.dialog_clear_all_data_network_explanation),
-                        style = MaterialTheme.typography.titleMedium
+                        style = MaterialTheme.typography.titleMedium,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Normal,
+                            textAlign = TextAlign.Center
                     )
                 }
                 Steps.DELETING -> {
@@ -264,7 +274,8 @@ fun ClearDataDialog(
                     ) {
                         Text(
                             text = stringResource(id = R.string.cancel),
-                            style = MaterialTheme.typography.bodyMedium
+                            style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight(700)
                         )
                     }
 
@@ -285,10 +296,11 @@ fun ClearDataDialog(
                     ) {
                         Text(
                             text = buttonTitle.toString(),
-                            style = MaterialTheme.typography.bodyMedium.copy(
+                            style = MaterialTheme.typography.titleMedium.copy(
                                 color = if(buttonTitle == stringResource(R.string.clear) || buttonTitle == stringResource(
                                         id = R.string.delete
-                                    )) Color.Red else Color.White
+                                    )) Color.Red else Color.White,
+                                    fontWeight = FontWeight(700)
                             )
                         )
                     }
@@ -329,14 +341,16 @@ fun DeleteOption(
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Normal,
+                        fontSize = 16.sp,
                 )
             )
 
             Text(
                 text = description,
                 style = MaterialTheme.typography.labelMedium.copy(
-                    color = MaterialTheme.appColors.secondaryTextColor
+                    color = MaterialTheme.appColors.clearDataSubTitle,
+                        fontSize = 14.sp
                 ),
                 textAlign = TextAlign.Center
             )

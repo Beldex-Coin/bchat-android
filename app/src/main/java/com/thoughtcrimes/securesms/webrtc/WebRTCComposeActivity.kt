@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -45,6 +46,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -68,6 +70,11 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.compose_utils.BChatTheme
@@ -91,6 +98,8 @@ import org.apache.commons.lang3.time.DurationFormatUtils
 
 @AndroidEntryPoint
 class WebRTCComposeActivity : ComponentActivity() {
+
+    private var hangupReceiver: BroadcastReceiver? = null
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState : Bundle?) {
@@ -122,6 +131,9 @@ class WebRTCComposeActivity : ComponentActivity() {
         super.onDestroy()
         TextSecurePreferences.setCallisActive(this,false)
         TextSecurePreferences.setMuteVide(this, false)
+        hangupReceiver?.let { receiver ->
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
+        }
     }
 
 
@@ -224,6 +236,12 @@ class WebRTCComposeActivity : ComponentActivity() {
             mutableStateOf("")
         }
 
+        var isShowIncomingStatus by remember {
+            mutableStateOf(false)
+        }
+        val isStatusInComingText by remember {
+            mutableStateOf(context.getString(R.string.incoming_call))
+        }
         var isShowCallDurationStatus by remember {
             mutableStateOf(false)
         }
@@ -276,10 +294,34 @@ class WebRTCComposeActivity : ComponentActivity() {
         var localVideoView by remember {
             mutableStateOf(false)
         }
+        var callLoading by remember {
+            mutableStateOf(false)
+        }
+
+        val composition by rememberLottieComposition(
+                LottieCompositionSpec
+                        .RawRes(R.raw.call_connect)
+        )
+        val isPlaying by remember {
+            mutableStateOf(true)
+        }
+        // for speed
+        val speed by remember {
+            mutableFloatStateOf(1f)
+        }
+
+        val progress by animateLottieCompositionAsState(
+                composition,
+                iterations = LottieConstants.IterateForever,
+                isPlaying = isPlaying,
+                speed = speed,
+                restartOnPlay = false
+        )
+
 
         var expanded by remember { mutableStateOf(false) }
 
-        val hangupReceiver=remember {
+         hangupReceiver=remember {
             object : BroadcastReceiver() {
                 override fun onReceive(p0 : Context?, p1 : Intent?) {
                     isShowDialingStatus=false
@@ -326,6 +368,7 @@ class WebRTCComposeActivity : ComponentActivity() {
         fun incomingControl(isVisible : Boolean) {
             isShowAnswerOption=isVisible
             isShowDeclineOption=isVisible
+            isShowIncomingStatus=isVisible
             isShowEndCallOption=false
 
         }
@@ -340,26 +383,21 @@ class WebRTCComposeActivity : ComponentActivity() {
                 }
             } else {
                 isShowVideoOption=state in listOf(CallViewModel.State.CALL_CONNECTED, CallViewModel.State.CALL_OUTGOING, CallViewModel.State.CALL_INCOMING) || (state == CallViewModel.State.CALL_PRE_INIT && wantsToAnswer)
+                callLoading=state !in listOf(CallViewModel.State.CALL_CONNECTED, CallViewModel.State.CALL_RINGING, CallViewModel.State.CALL_PRE_INIT) || wantsToAnswer
                 isShowSwitchCameraOption=state in listOf(CallViewModel.State.CALL_CONNECTED, CallViewModel.State.CALL_OUTGOING, CallViewModel.State.CALL_INCOMING) || (state == CallViewModel.State.CALL_PRE_INIT && wantsToAnswer)
                 isShowMuteOption=state in listOf(CallViewModel.State.CALL_CONNECTED, CallViewModel.State.CALL_OUTGOING, CallViewModel.State.CALL_INCOMING) || (state == CallViewModel.State.CALL_PRE_INIT && wantsToAnswer)
                 isShowSpeakerOption=state in listOf(CallViewModel.State.CALL_CONNECTED, CallViewModel.State.CALL_OUTGOING, CallViewModel.State.CALL_INCOMING) || (state == CallViewModel.State.CALL_PRE_INIT && wantsToAnswer)
                 isShowCallConnecting=state !in listOf(CallViewModel.State.CALL_CONNECTED, CallViewModel.State.CALL_RINGING, CallViewModel.State.CALL_PRE_INIT) || wantsToAnswer
                 isShowAnswerOption=state in listOf(CallViewModel.State.CALL_RINGING, CallViewModel.State.CALL_PRE_INIT) && !wantsToAnswer
                 isShowDeclineOption=state in listOf(CallViewModel.State.CALL_RINGING, CallViewModel.State.CALL_PRE_INIT) && !wantsToAnswer
+                isShowIncomingStatus=state in listOf(CallViewModel.State.CALL_RINGING, CallViewModel.State.CALL_PRE_INIT) && !wantsToAnswer
                 isShowReConnecting=state == CallViewModel.State.CALL_RECONNECTING
                 isShowEndCallOption=!(state in listOf(CallViewModel.State.CALL_RINGING, CallViewModel.State.CALL_PRE_INIT) && !wantsToAnswer)
                 isShowEndCallOption=isShowEndCallOption == true || state == CallViewModel.State.CALL_RECONNECTING
             }
         }
 
-        LocalBroadcastManager.getInstance(context).registerReceiver(hangupReceiver, IntentFilter(ACTION_END))
-
-        DisposableEffect(Unit) {
-            context.registerReceiver(hangupReceiver, IntentFilter("action"))
-            onDispose {
-                context.unregisterReceiver(hangupReceiver)
-            }
-        }
+        LocalBroadcastManager.getInstance(context).registerReceiver(hangupReceiver as BroadcastReceiver, IntentFilter(ACTION_END))
 
         fun enableCamera() {
             Permissions.with(context as Activity).request(Manifest.permission.CAMERA).onAllGranted {
@@ -451,6 +489,7 @@ class WebRTCComposeActivity : ComponentActivity() {
 
                             CallViewModel.State.CALL_OUTGOING -> {
                                 isShowDialingStatus=true
+                                isStatusDialingText=context.getString(R.string.calling)
                             }
 
                             CallViewModel.State.CALL_CONNECTED -> {
@@ -551,12 +590,28 @@ class WebRTCComposeActivity : ComponentActivity() {
                 horizontalAlignment=Alignment.CenterHorizontally,
                 modifier=Modifier
                         .fillMaxSize()
-                        .paint( if(isDarkTheme)
-                                painterResource(id=R.drawable.call_background)
-                                else
-                                 painterResource(id=R.drawable.call_background_white),
+                        .paint(if (isDarkTheme)
+                            painterResource(id=R.drawable.call_background)
+                        else
+                            painterResource(id=R.drawable.call_background_white),
                                 contentScale=ContentScale.FillBounds)
         ) {
+            Row(
+                    verticalAlignment=Alignment.CenterVertically,
+                    modifier=Modifier
+                            .fillMaxWidth()
+                            .padding(top=16.dp, start=16.dp, end=16.dp, bottom=0.dp)
+            ) {
+                Icon(
+                        painterResource(id=R.drawable.ic_back_arrow),
+                        contentDescription=stringResource(R.string.back),
+                        tint=MaterialTheme.appColors.editTextColor,
+                        modifier=Modifier
+                                .clickable {
+                                    (context as ComponentActivity).finish()
+                                }
+                )
+            }
 
             Column(
                     modifier=Modifier
@@ -575,7 +630,6 @@ class WebRTCComposeActivity : ComponentActivity() {
                                     text=isStatusText,
                                     style=BChatTypography.titleMedium.copy(color=MaterialTheme.appColors.textColor, fontSize=24.sp, fontWeight=FontWeight(700)),
                                     textAlign=TextAlign.Center,
-                                    modifier=Modifier.padding(all=12.dp),
 
                                     )
                             Row(
@@ -634,9 +688,19 @@ class WebRTCComposeActivity : ComponentActivity() {
 
 
                         Column(verticalArrangement=Arrangement.Bottom, horizontalAlignment=Alignment.CenterHorizontally, modifier=Modifier.fillMaxSize()) {
-
                             if (isShowDialingStatus) {
-                                Text(isStatusDialingText, Modifier.padding(all=12.dp), style=BChatTypography.titleMedium.copy(color=MaterialTheme.appColors.textColor, fontSize=12.sp, fontWeight=FontWeight(400)))
+                                Text(isStatusDialingText,
+                                        Modifier.padding(all=12.dp).offset(y=(-50).dp),
+                                        style=BChatTypography.titleMedium.copy(
+                                                color=MaterialTheme.appColors.textColor,
+                                                fontSize=18.sp, fontWeight=FontWeight(400)))
+                            }
+                            if(isShowIncomingStatus){
+                                Text(isStatusInComingText,
+                                        Modifier.padding(all=12.dp).offset(y=(-60).dp),
+                                        style=BChatTypography.titleMedium.copy(
+                                                color=MaterialTheme.appColors.textColor,
+                                                fontSize=18.sp, fontWeight=FontWeight(400)))
                             }
                             if (isShowCallAudioStatus) {
                                 Text(isStatusCallAudioText, Modifier.padding(all=12.dp), style=BChatTypography.titleMedium.copy(color=MaterialTheme.appColors.textColor, fontSize=12.sp, fontWeight=FontWeight(400)))
@@ -646,20 +710,36 @@ class WebRTCComposeActivity : ComponentActivity() {
                                         text=isStatusReConnectingText,
                                         style=BChatTypography.titleMedium.copy(
                                                 color=MaterialTheme.appColors.textColor,
-                                                fontSize=12.sp,
+                                                fontSize=18.sp,
                                                 fontWeight=FontWeight(400)),
-                                        modifier = Modifier.offset(y=(-80).dp)
+                                        modifier=Modifier.offset(y=(-80).dp)
                                 )
                             }
 
                             if (isShowCallDurationStatus) {
                                 Text(isStatusCallDurationText,
-                                        Modifier.padding(all=12.dp).offset(y=(-70).dp),
+                                        Modifier
+                                                .padding(all=12.dp)
+                                                .offset(y=(-50).dp),
                                         style=BChatTypography.titleMedium.copy(
                                                 color=MaterialTheme.appColors.textColor,
-                                                fontSize=12.sp,
+                                                fontSize=18.sp,
                                                 fontWeight=FontWeight(400)))
-                           }
+                            }
+                            if (callLoading) {
+                                Box(
+                                        modifier=Modifier
+                                                .wrapContentSize()
+                                                .offset(y=(-70).dp),
+                                        contentAlignment=Alignment.Center
+                                ) {
+                                    LottieAnimation(
+                                            composition,
+                                            progress,
+                                            modifier=Modifier.size(70.dp)
+                                    )
+                                }
+                            }
                         }
                     } else {
                         Surface(color=Color.Black,
@@ -856,8 +936,8 @@ class WebRTCComposeActivity : ComponentActivity() {
                                                 .background(MaterialTheme.appColors.qrCodeBackground, shape=CircleShape)
                                                 .clickable {
                                                     //expanded=true
-                                                     val command=AudioManagerCommand.SetUserDevice(if (callViewModel.isSpeaker) SignalAudioManager.AudioDevice.EARPIECE else SignalAudioManager.AudioDevice.SPEAKER_PHONE)
-                                                WebRtcCallService.sendAudioManagerCommand(context, command)
+                                                    val command=AudioManagerCommand.SetUserDevice(if (callViewModel.isSpeaker) SignalAudioManager.AudioDevice.EARPIECE else SignalAudioManager.AudioDevice.SPEAKER_PHONE)
+                                                    WebRtcCallService.sendAudioManagerCommand(context, command)
                                                 }, contentAlignment=Alignment.Center
 
                                         ) {
@@ -901,7 +981,9 @@ class WebRTCComposeActivity : ComponentActivity() {
                                                         painterResource(id=R.drawable.ic_switch_speaker_call_white)
                                                     },
                                                     contentDescription=speakerDescription,
-                                                    modifier=Modifier.align(Alignment.BottomEnd).offset(x= ((5).dp), y =((5).dp))
+                                                    modifier=Modifier
+                                                            .align(Alignment.BottomEnd)
+                                                            .offset(x=((5).dp), y=((5).dp))
                                             )
 
                                         }

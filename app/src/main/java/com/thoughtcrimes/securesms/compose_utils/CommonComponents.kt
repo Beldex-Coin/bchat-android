@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActionScope
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonElevation
@@ -90,6 +91,7 @@ fun BChatOutlinedTextField(
     focusedContainerColor: Color = MaterialTheme.appColors.disabledButtonContainerColor,
     unFocusedContainerColor: Color = MaterialTheme.appColors.disabledButtonContainerColor,
     cursorColor: Color = MaterialTheme.appColors.textFieldCursorColor,
+    selectionColors : Color = MaterialTheme.appColors.textSelectionColor,
     imeAction: ImeAction = ImeAction.Done,
     keyboardType: KeyboardType = KeyboardType.Text,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
@@ -156,6 +158,7 @@ fun BChatOutlinedTextField(
             focusedLabelColor = focusedLabelColor,
             unfocusedLabelColor = unFocusedLabelColor,
             cursorColor = cursorColor,
+            selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
             unfocusedContainerColor = unFocusedContainerColor,
             focusedContainerColor = focusedContainerColor,
         ),

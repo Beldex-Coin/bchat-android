@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -40,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -63,6 +65,7 @@ import io.beldex.bchat.R
 @Composable
 fun CreatePrivateChatScreen() {
     val context = LocalContext.current
+    val keyboardController = LocalSoftwareKeyboardController.current
     var bChatId by remember {
         mutableStateOf("")
     }
@@ -131,6 +134,7 @@ fun CreatePrivateChatScreen() {
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
                         disabledIndicatorColor = Color.Transparent,
+                        selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
                         cursorColor = colorResource(id = R.color.button_green)
                     )
                 )
@@ -174,6 +178,7 @@ fun CreatePrivateChatScreen() {
                         ).show()
                     } else {
                         createPrivateChatIfPossible(bChatId, context)
+                        keyboardController?.hide()
                     }
                 },
                 modifier = Modifier

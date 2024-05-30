@@ -79,10 +79,22 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:orientation="horizontal"
+            android:layout_marginEnd="26dp"
             app:layout_constraintBottom_toBottomOf="@+id/profilePictureView"
-            app:layout_constraintEnd_toStartOf="@+id/messageTimestampContainer"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/profilePictureView"
             app:layout_constraintTop_toBottomOf="@+id/senderNameTextView">
+
+            <ImageView
+                android:id="@+id/messageStatusImageView"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:padding="2dp"
+                android:src="@drawable/ic_delivery_status_sent"
+                android:contentDescription="@string/message_status_icon_description" />
 
             <include
                 android:id="@+id/messageContentView"
@@ -96,7 +108,6 @@
                 android:layout_width="12dp"
                 android:layout_height="12dp"
                 android:layout_gravity="center_vertical"
-                android:layout_marginHorizontal="@dimen/small_spacing"
                 android:visibility="invisible"
                 tools:visibility="visible" />
 
@@ -108,24 +119,6 @@
                 android:minWidth="@dimen/very_large_spacing" />
 
         </LinearLayout>
-
-        <RelativeLayout
-            android:id="@+id/messageTimestampContainer"
-            android:layout_width="@dimen/medium_spacing"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/expirationTimerViewContainer"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <ImageView
-                android:id="@+id/messageStatusImageView"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:padding="2dp"
-                android:src="@drawable/ic_delivery_status_sent" />
-
-        </RelativeLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

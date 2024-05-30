@@ -47,6 +47,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -166,6 +167,12 @@ private fun SearchView(
 ) {
     val lifeCycle = LocalLifecycleOwner.current
     val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+
+    val onSearchResultClick: (SearchResults) -> Unit = { result ->
+        focusManager.clearFocus()
+        onClick(result)
+    }
     LaunchedEffect(key1 = Unit) {
         lifeCycle.lifecycleScope.launch {
             lifeCycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -251,13 +258,13 @@ private fun SearchView(
                     is SearchResults.Contact -> {
                         ContactView(
                             model = it,
-                            onClick = onClick
+                            onClick = onSearchResultClick
                         )
                     }
                     is SearchResults.GroupConversation -> {
                         GroupConversationView(
                             model = it,
-                            onClick = onClick
+                            onClick = onSearchResultClick
                         )
                     }
                     is SearchResults.Header -> {
@@ -269,7 +276,7 @@ private fun SearchView(
                     is SearchResults.Message -> {
                         MessageView(
                             model = it,
-                            onClick = onClick
+                            onClick = onSearchResultClick
                         )
                     }
                     is SearchResults.SavedMessages -> {
@@ -278,7 +285,7 @@ private fun SearchView(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    onClick(it)
+                                    onSearchResultClick(it)
                                 }
                         ) {
                             Image(

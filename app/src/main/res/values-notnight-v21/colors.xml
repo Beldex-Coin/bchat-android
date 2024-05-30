@@ -19,7 +19,7 @@
     <color name="pn_option_background">#FCFCFC</color>
     <color name="open_group_chip_color">#0D000000</color>
     <color name="message_selected">#292979FB</color>
-    <color name="input_bar_background">@color/card_color</color>
+    <color name="input_bar_background">#F8F8F8</color>
     <color name="input_bar_button_background">#0D000000</color>
     <color name="input_bar_button_background_opaque">#EFEFEF</color>
     <color name="input_bar_button_background_opaque_border">#33000000</color>
@@ -179,7 +179,7 @@
     <color name="enable_call_icon_background">#EBEBEB</color>
     <color name="search_background">#F4F4F4</color>
     <color name="search_background_border">#A7A7BA</color>
-    <color name="attachment_container_background">#EBEBEB</color>
+    <color name="attachment_container_background">#F8F8F8</color>
     <color name="attachment_button_background">#F4F4F4</color>
     <color name="pin_rounded_background">#FFFFFF</color>
     <color name="pin_icon_home">#8A8A9D</color>
@@ -191,5 +191,7 @@
     <color name="download_icon_background">#EBEBEB</color>
     <color name="circle_background">#EBEBEB</color>
     <color name="flip_camera_icon_tint">#A7A7BA</color>
+    <color name="conversation_day_color">#333333</color>
+    <color name="popup_menu_background">#F8F8F8</color>
 
 </resources>

@@ -25,7 +25,7 @@
     <color name="pn_option_border">#212121</color>
     <color name="paths_building">#FFCE3A</color>
     <color name="message_selected">#292979FB</color>
-    <color name="input_bar_background">@color/card_color</color>
+    <color name="input_bar_background">#1C1C26</color>
     <color name="input_bar_button_background">#0D000000</color>
     <color name="input_bar_button_background_opaque">#232323</color>
     <color name="input_bar_button_background_opaque_border">#33FFFFFF</color>
@@ -271,4 +271,6 @@
     <color name="download_icon_background">#30303F</color>
     <color name="circle_background">#30303F</color>
     <color name="flip_camera_icon_tint">#5F5F76</color>
+    <color name="conversation_day_color">#5F5F76</color>
+    <color name="popup_menu_background">#2C2C3B</color>
 </resources>

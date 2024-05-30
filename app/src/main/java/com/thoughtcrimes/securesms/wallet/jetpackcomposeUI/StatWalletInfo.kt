@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,12 +34,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -144,11 +148,12 @@ fun StatWalletInfo(modifier: Modifier) {
                 )
             }
 
-            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.padding(start = 20.dp, end = 20.dp)) {
+            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth().padding(top = 15.dp, start = 20.dp, end = 20.dp), verticalAlignment = Alignment.CenterVertically) {
 
-                Text(text = "Yes, I Understand", modifier = Modifier.padding(top = 15.dp, end = 5.dp), style = MaterialTheme.typography.labelMedium, fontSize = 15.sp)
+                Text(text = "Yes, I Understand", style = MaterialTheme.typography.labelMedium, fontSize = 15.sp, fontWeight = FontWeight(400), textAlign = TextAlign.Center)
 
-                Checkbox(checked = isChecked, onCheckedChange = { isChecked = it }, colors = CheckboxDefaults.colors(checkedColor = colorResource(id = R.color.button_green), uncheckedColor = MaterialTheme.appColors.textColor, checkmarkColor = colorResource(id = R.color.white)))
+                Checkbox(checked = isChecked, onCheckedChange = { isChecked = it }, colors = CheckboxDefaults.colors(checkedColor = colorResource(id = R.color.button_green), uncheckedColor = MaterialTheme.appColors.textColor, checkmarkColor = colorResource(id = R.color.white)),
+                    modifier = Modifier.scale(0.65f))
             }
 
             PrimaryButton(onClick = {

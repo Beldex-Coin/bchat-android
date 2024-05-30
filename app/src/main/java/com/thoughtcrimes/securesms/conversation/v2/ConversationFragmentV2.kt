@@ -34,6 +34,7 @@ import android.text.Spanned
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.util.Pair
 import android.util.TypedValue
 import android.view.ActionMode
@@ -2619,9 +2620,12 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         searchViewModel!!.searchResults.observe(
             requireActivity(),
             Observer { result: SearchViewModel.SearchResult? ->
+                Log.d("SearchResult-> ","0")
                 if (result == null) return@Observer
+                Log.d("SearchResult-> ","1")
                 if (result.getResults().isNotEmpty()) {
                     result.getResults()[result.position]?.let {
+                        Log.d("SearchResult-> ","${it.threadId},${it.bodySnippet}")
                         jumpToMessage(
                             it.messageRecipient.address,
                             it.sentTimestampMs,
@@ -2638,6 +2642,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     binding.searchProgress.visibility = View.GONE
                     binding.closeSearch.visibility = View.GONE
                     binding.search.visibility = View.VISIBLE
+                    Toast.makeText(requireActivity(),"No Matches found!",Toast.LENGTH_SHORT).show()
                 }
 //                binding.searchBottomBar.setData(result.position, result.getResults().size)
             })

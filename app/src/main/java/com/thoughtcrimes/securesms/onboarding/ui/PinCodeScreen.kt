@@ -292,12 +292,13 @@ fun PinCodeScreen(
                             .align(Alignment.CenterHorizontally)
                             .onSizeChanged {
                                 buttonSize = it
-                            }
+                            },
+                        disabledContainerColor = MaterialTheme.appColors.beldexAddressBackground
                     ) {
                         Text(
                             text = stringResource(id = R.string.next),
                             style = MaterialTheme.typography.titleMedium.copy(
-                                color = Color.White
+                                color = if(pin.length == 4) Color.White else MaterialTheme.appColors.disabledNextButtonColor
                             ),
                             modifier = Modifier
                                 .padding(4.dp)

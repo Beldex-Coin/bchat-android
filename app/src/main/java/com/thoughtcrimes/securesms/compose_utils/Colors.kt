@@ -115,6 +115,9 @@ class Colors(
     val noAddressIcon : Color,
     val numberPickerDivider: Color,
     val optionalTextfieldBackground: Color,
+    val disabledNextButtonColor : Color,
+    val disableWalletButtonColor : Color,
+    val disableWalletButtonContentColor : Color
 )
 
 val lightColors = Colors(
@@ -213,7 +216,10 @@ val lightColors = Colors(
     disablePrimaryButtonContent = Color(0xFF8A8A9D),
     noAddressIcon = Color(0xffA3A3B2),
     numberPickerDivider = Color(0xFFA7A7BA),
-    optionalTextfieldBackground = Color(0xFFF4F4F4)
+    optionalTextfieldBackground = Color(0xFFF4F4F4),
+    disabledNextButtonColor = Color(0xFFA7A7BA),
+    disableWalletButtonColor = Color(0xFFE0E0E0),
+    disableWalletButtonContentColor = Color(0xFF000000)
 )
 
 val darkColors = Colors(
@@ -312,7 +318,10 @@ val darkColors = Colors(
     disablePrimaryButtonContent = Color(0xFF6C6C78),
     noAddressIcon = Color(0xff65656E),
     numberPickerDivider = Color(0xFF4B4B64),
-    optionalTextfieldBackground = Color(0xFF1C1C26)
+    optionalTextfieldBackground = Color(0xFF1C1C26),
+    disabledNextButtonColor = Color(0xFF6C6C78),
+    disableWalletButtonColor = Color(0xFF333343),
+    disableWalletButtonContentColor = Color(0xFF000000)
 )
 
 

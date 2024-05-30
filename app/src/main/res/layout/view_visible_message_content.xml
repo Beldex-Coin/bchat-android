@@ -5,6 +5,7 @@
     android:id="@+id/mainContainerConstraint"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    app:cardElevation="0dp"
     app:message_sent_background_color="@color/send_message_background">
 
     <LinearLayout
@@ -189,7 +190,8 @@
             tools:text="12:00 pm"
             android:layout_gravity="end"
             android:layout_marginEnd="16dp"
-            android:layout_marginVertical="4dp"/>
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="10dp"/>
 
     </LinearLayout>
 

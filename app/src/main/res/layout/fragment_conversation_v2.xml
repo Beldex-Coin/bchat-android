@@ -320,7 +320,7 @@
         android:layout_height="match_parent"
         app:cardBackgroundColor="@color/new_card_background"
         style="@style/CustomCardViewStyle"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="8dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -438,54 +438,37 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/cameraButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="100dp"
-                        app:cardElevation="1dp"
-                        android:layout_margin="8dp"
-                        app:cardBackgroundColor="@color/attachment_button_background">
-
                         <ImageView
+                            android:id="@+id/cameraButton"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginBottom="8dp"
                             android:src="@drawable/ic_camera_new"
-                            android:padding="8dp"/>
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/imageButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="100dp"
-                        android:layout_margin="8dp"
-                        app:cardBackgroundColor="@color/attachment_button_background">
+                            android:padding="3dp"/>
 
                         <ImageView
+                            android:id="@+id/imageButton"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginEnd="5dp"
                             android:src="@drawable/ic_gallery_new"
-                            android:padding="8dp"/>
+                            android:padding="3dp"/>
 
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/documentButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="100dp"
-                        android:layout_margin="8dp"
-                        app:cardBackgroundColor="@color/attachment_button_background">
 
                         <ImageView
+                            android:id="@+id/documentButton"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginEnd="8dp"
                             android:src="@drawable/ic_document_new"
-                            android:padding="8dp"/>
-
-                    </com.google.android.material.card.MaterialCardView>
+                            android:padding="3dp"/>
 
                 </LinearLayout>
 

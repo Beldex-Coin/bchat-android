@@ -6,11 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="4dp">
+    android:padding="13dp">
     <ImageView
         android:id="@+id/navigation_icon"
-        android:layout_width="35sp"
-        android:layout_height="35sp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         android:layout_gravity="center_vertical"
         android:scaleType="centerInside"
         android:src="@android:drawable/btn_star_big_on"

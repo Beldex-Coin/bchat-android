@@ -179,7 +179,6 @@ fun CreateSecretGroup(
                 color = colorResource(id = R.color.divider_color),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .alpha(0.5f)
             )
 
             TextField(
@@ -329,7 +328,7 @@ private fun GroupContact(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.appColors.contactCardBackground
         ),
-        modifier = modifier.padding(10.dp)
+        modifier = modifier.padding(bottom = 10.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,

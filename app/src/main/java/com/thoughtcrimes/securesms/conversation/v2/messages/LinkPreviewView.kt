@@ -16,6 +16,7 @@ import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.mms.ImageSlide
 import com.thoughtcrimes.securesms.util.ActivityDispatcher
 import com.thoughtcrimes.securesms.util.UiModeUtilities
+import com.thoughtcrimes.securesms.util.toPx
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewLinkPreviewBinding
 
@@ -59,6 +60,13 @@ class LinkPreviewView : LinearLayout {
         binding.titleTextView.setTextColor(ResourcesCompat.getColor(resources, textColorID, context.theme))
         // Body
         binding.titleTextView.setTextColor(ResourcesCompat.getColor(resources, textColorID, context.theme))
+        val cardBackgroundColorID = if (message.isOutgoing) {
+            R.color.dialled_call_detail_background
+        } else {
+            R.color.transaction_history_background
+        }
+        binding.linkPreviewCard.setCardBackgroundColor(ResourcesCompat.getColor(resources, cardBackgroundColorID, context.theme))
+
 //        // Corner radii
 //        val cornerRadii = MessageBubbleUtilities.calculateRadii(context, isStartOfMessageCluster, isEndOfMessageCluster, message.isOutgoing)
 //        cornerMask.setTopLeftRadius(cornerRadii[0])

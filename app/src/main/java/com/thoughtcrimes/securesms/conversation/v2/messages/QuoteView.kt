@@ -145,7 +145,7 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 bodyText
             }
         }
-        binding.quoteViewBodyTextView.setTextColor(getTextColor(isOutgoingMessage))
+        //binding.quoteViewBodyTextView.setTextColor(getTextColor(isOutgoingMessage))
         // Accent line / attachment preview
         val hasAttachments = (attachments != null && attachments.asAttachments().isNotEmpty()) && !isOriginalMissing
 //        binding.quoteViewAccentLine.isVisible = !hasAttachments
@@ -160,9 +160,9 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 binding.container.minimumWidth = (w * 0.9).toInt()
             }
             binding.quoteViewAttachmentPreviewImageView.imageTintList = ColorStateList.valueOf(ResourcesCompat.getColor(resources, R.color.white, context.theme))
-            val backgroundColorID = if (UiModeUtilities.isDayUiMode(context)) R.color.black else R.color.accent
+            val backgroundColorID = R.color.quote_view_background//if (UiModeUtilities.isDayUiMode(context)) R.color.black else R.color.accent
             val backgroundColor = ResourcesCompat.getColor(resources, backgroundColorID, context.theme)
-//            binding.quoteViewAttachmentPreviewContainer.backgroundTintList = ColorStateList.valueOf(backgroundColor)
+            binding.quoteViewAttachmentPreviewContainer.backgroundTintList = ColorStateList.valueOf(backgroundColor)
             binding.quoteViewAttachmentPreviewImageView.isVisible = false
             binding.quoteViewAttachmentThumbnailImageView.root.isVisible = false
             when {
@@ -170,12 +170,14 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                     binding.quoteViewAttachmentPreviewImageView.setImageResource(R.drawable.ic_microphone)
                     binding.quoteViewAttachmentPreviewImageView.isVisible = true
                     binding.quoteViewBodyTextView.text = resources.getString(R.string.Slide_audio)
+                    binding.quoteViewBodyTextView.setTextColor(getTextColor(isOutgoingMessage))
                     binding.contentTypeIcon.visibility = View.GONE
                 }
                 attachments.documentSlide != null -> {
                     binding.quoteViewAttachmentPreviewImageView.setImageResource(R.drawable.ic_document_large_light)
                     binding.quoteViewAttachmentPreviewImageView.isVisible = true
                     binding.quoteViewBodyTextView.text = resources.getString(R.string.document)
+                    binding.quoteViewBodyTextView.setTextColor(getTextColor(isOutgoingMessage))
                     binding.contentTypeIcon.visibility = View.GONE
                 }
                 attachments.thumbnailSlide != null -> {
@@ -196,7 +198,7 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             if (hasAttachments) {
                 val quotedTextColor = quotedTextColor(isOutgoingMessage)
                 binding.quoteViewBodyTextView.setTextColor(resources.getColor(quotedTextColor, null))
-//                binding.contentTypeIcon.setColorFilter(ContextCompat.getColor(context, quotedTextColor), android.graphics.PorterDuff.Mode.SRC_OUT)
+                binding.contentTypeIcon.setColorFilter(resources.getColor(quotedTextColor,null), android.graphics.PorterDuff.Mode.SRC_OUT)
             }
         }
     }

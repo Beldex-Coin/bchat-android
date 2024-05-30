@@ -25,7 +25,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_landing_bubble"
-                android:layout_gravity="center|end"/>
+                android:layout_gravity="center|end"
+                android:paddingBottom="28dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -38,7 +39,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/open_sans_bold"
                     android:text="Welcome to"
-                    android:textSize="@dimen/large_font_size"
+                    android:textSize="@dimen/very_large_font_size"
                     android:textStyle="bold"/>
 
                 <LinearLayout
@@ -68,9 +69,9 @@
                     android:fontFamily="@font/open_sans_bold"
                     android:text="@string/hello"
                     android:textAlignment="viewStart"
-                    android:textSize="@dimen/large_font_size"
+                    android:textSize="@dimen/very_large_font_size"
                     android:textStyle="bold"
-                    android:layout_marginTop="24dp"/>
+                    android:layout_marginTop="36dp"/>
 
                 <TextView
                     android:id="@+id/sub_title_first"
@@ -78,8 +79,9 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/open_sans_bold"
                     android:text="@string/we_are_thrilled"
-                    android:textSize="@dimen/large_font_size"
-                    android:textStyle="bold" />
+                    android:textSize="@dimen/very_large_font_size"
+                    android:textStyle="bold"
+                    android:layout_marginTop="12dp"/>
 
                 <TextView
                     android:id="@+id/sub_title_second"
@@ -88,10 +90,10 @@
                     android:fontFamily="@font/open_sans_regular"
                     android:text="@string/landing_screen_content"
                     android:textAlignment="textStart"
-                    android:textSize="@dimen/very_small_font_size"
+                    android:textSize="@dimen/small_font_size"
                     android:textColor="@color/text_hint"
                     android:textStyle="normal"
-                    android:layout_marginTop="16dp"/>
+                    android:layout_marginTop="20dp"/>
 
             </LinearLayout>
 

@@ -9,6 +9,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -295,7 +296,8 @@ fun AccountHeader(
         if (!editingName) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
             ) {
                 Text(
                     text = uiState.profileName ?: "",
@@ -346,7 +348,8 @@ fun AccountHeader(
                     singleLine = true,
                     textStyle = MaterialTheme.typography.bodyMedium.copy(
                         fontSize = 18.sp,
-                        fontWeight = FontWeight(700)
+                        fontWeight = FontWeight(700),
+                        textAlign = TextAlign.Center
                     ),
                     cursorBrush = SolidColor(MaterialTheme.appColors.primaryButtonColor),
                     decorationBox = { innerTextField ->
@@ -373,7 +376,7 @@ fun AccountHeader(
                         .focusRequester(focusRequester)
                 )
 
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(2.dp))
 
                 Box(
                     contentAlignment = Alignment.Center,

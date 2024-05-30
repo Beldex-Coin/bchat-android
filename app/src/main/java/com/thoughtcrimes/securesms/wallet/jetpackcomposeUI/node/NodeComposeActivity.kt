@@ -404,7 +404,7 @@ fun NodeScreen(test:Boolean = false) {
 
                 ) {
                     itemsIndexed(data.toMutableList()) { index, item ->
-                        Card(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.editTextBackground), border=BorderStroke(width=2.dp, color=if (item.isSelected) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.editTextBackground), shape=RoundedCornerShape(16.dp), elevation=CardDefaults.cardElevation(defaultElevation=4.dp), modifier=Modifier
+                        Card(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.editTextBackground), border=BorderStroke(width=2.dp, color=if (item.isSelected) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.editTextBackground), shape=RoundedCornerShape(16.dp), elevation=CardDefaults.cardElevation(defaultElevation=0.dp), modifier=Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal=16.dp)
                                 .combinedClickable(
@@ -429,7 +429,7 @@ fun NodeScreen(test:Boolean = false) {
                                 )
 
                                 Column(horizontalAlignment=Alignment.Start, verticalArrangement=Arrangement.Center, modifier=Modifier
-                                        .padding(vertical=10.dp, horizontal=20.dp)
+                                        .padding(top =10.dp, bottom = 10.dp, start = 15.dp, end = 10.dp)
                                         .weight(0.7f)) {
                                     if (item.isTested) {
                                         if (item.isValid) {
@@ -469,7 +469,7 @@ fun NodeScreen(test:Boolean = false) {
                     .padding(16.dp)) {
                 Button(onClick={
                     showRefreshNodePopup = true
-                }, colors=ButtonDefaults.buttonColors(containerColor=MaterialTheme.appColors.secondaryButtonColor), modifier=Modifier.weight(1f)) {
+                }, colors=ButtonDefaults.buttonColors(containerColor=MaterialTheme.appColors.searchBackground), modifier=Modifier.weight(1f)) {
                     Text(text="Refresh", style=MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.appColors.secondaryContentColor, fontWeight = FontWeight.Bold), modifier=Modifier.padding(10.dp))
                     Icon(painter=painterResource(id=R.drawable.ic_refresh), contentDescription="Refresh", modifier=Modifier, tint = MaterialTheme.appColors.secondaryContentColor)
                 }

@@ -125,7 +125,7 @@ fun AppLockScreen() {
                 containerColor = MaterialTheme.colorScheme.primary
             ),
             elevation = CardDefaults.cardElevation(
-                defaultElevation = 4.dp
+                defaultElevation = 0.dp
             ),
             modifier = Modifier
                 .fillMaxWidth()
@@ -163,7 +163,7 @@ fun AppLockScreen() {
                 containerColor = MaterialTheme.colorScheme.primary
             ),
             elevation = CardDefaults.cardElevation(
-                defaultElevation = 4.dp
+                defaultElevation = 0.dp
             ),
             modifier = Modifier
                 .fillMaxWidth()

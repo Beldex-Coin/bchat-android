@@ -79,7 +79,7 @@ fun DisplayBalanceDialog(onDismiss : () -> Unit, onClick : (Int?) -> Unit) {
             Column(
                 Modifier
                     .fillMaxWidth()
-                    .padding(20.dp), Arrangement.Center, Alignment.CenterHorizontally) {
+                    .padding(start = 20.dp, end = 20.dp, top = 25.dp, bottom = 25.dp), Arrangement.Center, Alignment.CenterHorizontally) {
 
                 Row(modifier = Modifier.padding(bottom = 20.dp)){
                     Text(text=stringResource(id=R.string.display_balance_as),
@@ -102,7 +102,7 @@ fun DisplayBalanceDialog(onDismiss : () -> Unit, onClick : (Int?) -> Unit) {
                 }
 
                 LazyColumn(
-                        verticalArrangement=Arrangement.spacedBy(16.dp),
+                        verticalArrangement=Arrangement.spacedBy(10.dp),
                         horizontalAlignment=Alignment.CenterHorizontally,
                         modifier=Modifier
                                 .fillMaxWidth()
@@ -115,10 +115,10 @@ fun DisplayBalanceDialog(onDismiss : () -> Unit, onClick : (Int?) -> Unit) {
                                 ),
                                 border=BorderStroke(
                                         width=2.dp,
-                                        color=if (index == selectedItemIndex) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.colorScheme.outline
+                                        color=if (index == selectedItemIndex) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.textFiledBorderColor
                                 ),
                                 elevation=CardDefaults.cardElevation(
-                                        defaultElevation=if (isDarkTheme) 0.dp else 4.dp
+                                        defaultElevation=0.dp
                                 ),
                                 modifier= Modifier
                                     .fillMaxWidth()
@@ -132,14 +132,14 @@ fun DisplayBalanceDialog(onDismiss : () -> Unit, onClick : (Int?) -> Unit) {
                             Column(
                                     modifier= Modifier
                                         .fillMaxSize()
-                                        .padding(vertical = 5.dp),
+                                        .padding(vertical = 10.dp),
                                     verticalArrangement=Arrangement.Center,
                                     horizontalAlignment=Alignment.CenterHorizontally,
                             ) {
 
                                 Text(text=item, style=MaterialTheme.typography.titleMedium.copy(
-                                        color=MaterialTheme.appColors.secondaryTextColor, fontSize=16.sp, fontWeight=FontWeight(600)
-                                ), modifier=Modifier.padding(10.dp))
+                                        color= if (index == selectedItemIndex) MaterialTheme.appColors.secondaryContentColor else MaterialTheme.appColors.secondaryTextColor, fontSize=18.sp, fontWeight=FontWeight(600)
+                                ), modifier=Modifier.padding(13.dp))
                             }
                         }
 
@@ -172,7 +172,7 @@ fun DecimalDialog(onDismiss : () -> Unit, onClick : (String?) -> Unit) {
             Column(
                 Modifier
                     .fillMaxWidth()
-                    .padding(20.dp), Arrangement.Center, Alignment.CenterHorizontally) {
+                    .padding(start = 20.dp, end = 20.dp, top = 25.dp, bottom = 25.dp), Arrangement.Center, Alignment.CenterHorizontally) {
 
                 Row(modifier = Modifier.padding(bottom = 20.dp)){
                     Text(text=stringResource(id=R.string.decimals),
@@ -195,7 +195,7 @@ fun DecimalDialog(onDismiss : () -> Unit, onClick : (String?) -> Unit) {
                 }
 
                 LazyColumn(
-                        verticalArrangement=Arrangement.spacedBy(16.dp),
+                        verticalArrangement=Arrangement.spacedBy(10.dp),
                         horizontalAlignment=Alignment.CenterHorizontally,
                         modifier=Modifier
                                 .fillMaxWidth()
@@ -208,10 +208,10 @@ fun DecimalDialog(onDismiss : () -> Unit, onClick : (String?) -> Unit) {
                                 ),
                                 border=BorderStroke(
                                         width=2.dp,
-                                        color=if (item == selectedItemIndex) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.colorScheme.outline
+                                        color=if (item == selectedItemIndex) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.textFiledBorderColor
                                 ),
                                 elevation=CardDefaults.cardElevation(
-                                        defaultElevation=if (isDarkTheme) 0.dp else 4.dp
+                                        defaultElevation=0.dp
                                 ),
                                 modifier= Modifier
                                     .fillMaxWidth()
@@ -225,14 +225,14 @@ fun DecimalDialog(onDismiss : () -> Unit, onClick : (String?) -> Unit) {
                             Column(
                                     modifier= Modifier
                                         .fillMaxSize()
-                                        .padding(vertical = 5.dp),
+                                        .padding(vertical = 10.dp),
                                     verticalArrangement=Arrangement.Center,
                                     horizontalAlignment=Alignment.CenterHorizontally,
                             ) {
 
                                 Text(text=item, style=MaterialTheme.typography.titleMedium.copy(
-                                        color=MaterialTheme.appColors.secondaryTextColor, fontSize=16.sp, fontWeight=FontWeight(600)
-                                ), modifier=Modifier.padding(10.dp))
+                                        color=if (item == selectedItemIndex) MaterialTheme.appColors.secondaryContentColor else MaterialTheme.appColors.secondaryTextColor, fontSize=18.sp, fontWeight=FontWeight(600)
+                                ), modifier=Modifier.padding(13.dp))
                             }
                         }
 
@@ -314,7 +314,7 @@ fun CurrencyDialog(onDismiss : () -> Unit, onClick : (String?) -> Unit) {
             Column(
                 Modifier
                     .fillMaxWidth()
-                    .padding(20.dp), Arrangement.Center, Alignment.CenterHorizontally) {
+                    .padding(start = 20.dp, end = 20.dp, top = 25.dp, bottom = 25.dp), Arrangement.Center, Alignment.CenterHorizontally) {
 
                 Row(modifier = Modifier.padding(bottom = 20.dp)){
                     Text(text=stringResource(id=R.string.currency),
@@ -514,7 +514,7 @@ fun FeePriorityDialog(onDismiss : () -> Unit, onClick : (Int?) -> Unit) {
             Column(
                 Modifier
                     .fillMaxWidth()
-                    .padding(20.dp), Arrangement.Center, Alignment.CenterHorizontally) {
+                    .padding(start = 20.dp, end = 20.dp, top = 25.dp, bottom = 25.dp), Arrangement.Center, Alignment.CenterHorizontally) {
 
                 Row(modifier = Modifier.padding(bottom = 20.dp)){
                     Text(text=stringResource(id=R.string.fee_priority),
@@ -537,7 +537,7 @@ fun FeePriorityDialog(onDismiss : () -> Unit, onClick : (Int?) -> Unit) {
                 }
 
                 LazyColumn(
-                        verticalArrangement=Arrangement.spacedBy(16.dp),
+                        verticalArrangement=Arrangement.spacedBy(10.dp),
                         horizontalAlignment=Alignment.CenterHorizontally,
                         modifier=Modifier
                                 .fillMaxWidth()
@@ -550,10 +550,10 @@ fun FeePriorityDialog(onDismiss : () -> Unit, onClick : (Int?) -> Unit) {
                                 ),
                                 border=BorderStroke(
                                         width=2.dp,
-                                        color=if (index == selectedItemIndex) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.colorScheme.outline
+                                        color=if (index == selectedItemIndex) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.textFiledBorderColor
                                 ),
                                 elevation=CardDefaults.cardElevation(
-                                        defaultElevation=if (isDarkTheme) 0.dp else 4.dp
+                                        defaultElevation=0.dp
                                 ),
                                 modifier= Modifier
                                     .fillMaxWidth()
@@ -567,14 +567,14 @@ fun FeePriorityDialog(onDismiss : () -> Unit, onClick : (Int?) -> Unit) {
                             Column(
                                     modifier= Modifier
                                         .fillMaxSize()
-                                        .padding(vertical = 5.dp),
+                                        .padding(vertical = 10.dp),
                                     verticalArrangement=Arrangement.Center,
                                     horizontalAlignment=Alignment.CenterHorizontally,
                             ) {
 
                                 Text(text=item, style=MaterialTheme.typography.titleMedium.copy(
-                                        color=MaterialTheme.appColors.secondaryTextColor, fontSize=16.sp, fontWeight=FontWeight(600)
-                                ), modifier=Modifier.padding(10.dp))
+                                        color=if (index == selectedItemIndex) MaterialTheme.appColors.secondaryContentColor else MaterialTheme.appColors.secondaryTextColor, fontSize=18.sp, fontWeight=FontWeight(600)
+                                ), modifier=Modifier.padding(13.dp))
                             }
                         }
 

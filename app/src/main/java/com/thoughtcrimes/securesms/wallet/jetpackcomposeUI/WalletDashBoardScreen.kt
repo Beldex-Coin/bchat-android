@@ -122,7 +122,7 @@ fun WalletDashBoardScreen(
     }
 
     var syncStatusTextColor by remember {
-        mutableStateOf(R.color.green_color)
+        mutableStateOf(R.color.icon_tint)
     }
 
     viewModels.syncStatusTextColor.observe(lifecycleOwner) {
@@ -473,8 +473,8 @@ fun WalletDashBoardScreen(
                                     colors = IconButtonDefaults.filledIconButtonColors(
                                         containerColor = MaterialTheme.appColors.walletDashboardQRButtonBackground,
                                         contentColor = Color.Black,
-                                        disabledContainerColor = MaterialTheme.appColors.disableButtonBackgroundColor,
-                                        disabledContentColor = MaterialTheme.appColors.disableButtonContentColor
+                                        disabledContainerColor = MaterialTheme.appColors.disableWalletButtonColor,
+                                        disabledContentColor = MaterialTheme.appColors.disableWalletButtonContentColor
                                     ),
                                     enabled = scanQRCodeButtonIsEnabled,
                                     onClick = {
@@ -484,7 +484,7 @@ fun WalletDashBoardScreen(
                                         painter = painterResource(id = R.drawable.wallet_scan),
                                         contentDescription = stringResource(id = R.string.scan_qrcode_text),
                                         modifier = Modifier.padding(10.dp),
-                                        colorFilter = ColorFilter.tint(color = if (scanQRCodeButtonIsEnabled) Color.Black else MaterialTheme.appColors.disableButtonContentColor)
+                                        colorFilter = ColorFilter.tint(color = if (scanQRCodeButtonIsEnabled) Color.Black else MaterialTheme.appColors.disableWalletButtonContentColor)
                                     )
                                 }
                                 FilledIconButton(
@@ -493,8 +493,8 @@ fun WalletDashBoardScreen(
                                     colors = IconButtonDefaults.filledIconButtonColors(
                                         containerColor = MaterialTheme.appColors.walletDashboardSendButtonBackground,
                                         contentColor = Color.White,
-                                        disabledContainerColor = MaterialTheme.appColors.disableButtonBackgroundColor,
-                                        disabledContentColor = MaterialTheme.appColors.disableButtonContentColor
+                                        disabledContainerColor = MaterialTheme.appColors.disableWalletButtonColor,
+                                        disabledContentColor = MaterialTheme.appColors.disableWalletButtonContentColor
                                     ),
                                     enabled = sendCardViewButtonIsEnabled,
                                     onClick = {
@@ -506,7 +506,7 @@ fun WalletDashBoardScreen(
                                         painter = painterResource(id = R.drawable.wallet_send),
                                         contentDescription = stringResource(id = R.string.send),
                                         modifier = Modifier.padding(10.dp),
-                                        colorFilter = ColorFilter.tint(color = if (sendCardViewButtonIsEnabled) Color.White else MaterialTheme.appColors.disableButtonContentColor)
+                                        colorFilter = ColorFilter.tint(color = if (sendCardViewButtonIsEnabled) Color.White else MaterialTheme.appColors.disableWalletButtonContentColor)
                                     )
                                 }
                                 FilledIconButton(
@@ -534,8 +534,8 @@ fun WalletDashBoardScreen(
                                     colors = IconButtonDefaults.filledIconButtonColors(
                                         containerColor = MaterialTheme.appColors.walletDashboardRescanButtonBackground,
                                         contentColor = MaterialTheme.appColors.titleTextColor,
-                                        disabledContainerColor = MaterialTheme.appColors.disableButtonBackgroundColor,
-                                        disabledContentColor = MaterialTheme.appColors.disableButtonContentColor
+                                        disabledContainerColor = MaterialTheme.appColors.disableWalletButtonColor,
+                                        disabledContentColor = MaterialTheme.appColors.disableWalletButtonContentColor
                                     ),
                                     enabled = activityCallback.isSynced,
                                     onClick = {
@@ -555,7 +555,7 @@ fun WalletDashBoardScreen(
                                         painter = painterResource(id = R.drawable.wallet_rescan),
                                         contentDescription = stringResource(id = R.string.menu_rescan),
                                         modifier = Modifier.padding(10.dp),
-                                        colorFilter = ColorFilter.tint(color = if (activityCallback.isSynced) MaterialTheme.appColors.titleTextColor else MaterialTheme.appColors.disableButtonContentColor)
+                                        colorFilter = ColorFilter.tint(color = if (activityCallback.isSynced) MaterialTheme.appColors.titleTextColor else MaterialTheme.appColors.disableWalletButtonContentColor)
                                     )
                                 }
                             }

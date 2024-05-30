@@ -130,7 +130,7 @@ fun WalletSettingsScreen(navigate : (WalletSettingsItem) -> Unit, navItem : (Wal
                 .padding(vertical=16.dp, horizontal=16.dp)
                 .clickable {
                     navItem(WalletSettingsNavItem.CurrentNode)
-                }, RoundedCornerShape(16.dp), CardDefaults.cardColors(containerColor=MaterialTheme.appColors.settingsCardBackground), CardDefaults.cardElevation(defaultElevation=4.dp)) {
+                }, RoundedCornerShape(16.dp), CardDefaults.cardColors(containerColor=MaterialTheme.appColors.settingsCardBackground), CardDefaults.cardElevation(defaultElevation=0.dp)) {
 
             Row(verticalAlignment=Alignment.CenterVertically, horizontalArrangement=Arrangement.Center, modifier=Modifier.padding(vertical=16.dp, horizontal=24.dp)) {
                 Icon(
@@ -153,7 +153,7 @@ fun WalletSettingsScreen(navigate : (WalletSettingsItem) -> Unit, navItem : (Wal
                                     context.getString(R.string.waiting_for_network)
                                 }
                             },
-                            style=BChatTypography.titleSmall.copy(color=MaterialTheme.appColors.editTextColor, fontSize=12.sp, fontWeight=FontWeight(400)), modifier=Modifier.padding(vertical=5.dp))
+                            style=BChatTypography.titleSmall.copy(color=MaterialTheme.appColors.editTextColor, fontSize=14.sp, fontWeight=FontWeight(400)), modifier=Modifier.padding(vertical=5.dp))
                 }
                 Icon(
                         Icons.Default.KeyboardArrowRight,
@@ -171,7 +171,7 @@ fun WalletSettingsScreen(navigate : (WalletSettingsItem) -> Unit, navItem : (Wal
                 modifier=Modifier.padding(horizontal=30.dp))
 
 
-        Card(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.settingsCardBackground), shape=RoundedCornerShape(16.dp), elevation=CardDefaults.cardElevation(defaultElevation=4.dp), modifier=Modifier
+        Card(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.settingsCardBackground), shape=RoundedCornerShape(16.dp), elevation=CardDefaults.cardElevation(defaultElevation=0.dp), modifier=Modifier
                 .fillMaxWidth()
                 .padding(vertical=16.dp, horizontal=16.dp)
 
@@ -209,9 +209,9 @@ fun WalletSettingsScreen(navigate : (WalletSettingsItem) -> Unit, navItem : (Wal
                 Text(
                         text=stringResource(id=R.string.save_recipient_address),
                         style=BChatTypography.titleMedium.copy(
-                                color=MaterialTheme.appColors.editTextColor),
+                                color=MaterialTheme.appColors.editTextColor, fontSize=16.sp, fontWeight=FontWeight(600)),
                         modifier=Modifier
-                        .padding(16.dp)
+                        .padding(start = 16.dp, top = 16.dp, bottom = 16.dp, end = 14.dp)
                         .weight(0.7f))
                 Switch(checked=checkedState.value, onCheckedChange={
                     if (checkedState.value) {
@@ -229,7 +229,7 @@ fun WalletSettingsScreen(navigate : (WalletSettingsItem) -> Unit, navItem : (Wal
             }
         }
         Text(text="Personal", style=BChatTypography.titleMedium.copy(color=MaterialTheme.appColors.primaryButtonColor, fontSize=18.sp, fontWeight=FontWeight(600)), modifier=Modifier.padding(horizontal=30.dp))
-        Card(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.settingsCardBackground), shape=RoundedCornerShape(16.dp), elevation=CardDefaults.cardElevation(defaultElevation=4.dp), modifier=Modifier
+        Card(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.settingsCardBackground), shape=RoundedCornerShape(16.dp), elevation=CardDefaults.cardElevation(defaultElevation=0.dp), modifier=Modifier
                 .fillMaxWidth()
                 .padding(vertical=16.dp, horizontal=16.dp)
                 .clickable {
@@ -247,7 +247,7 @@ fun WalletSettingsScreen(navigate : (WalletSettingsItem) -> Unit, navItem : (Wal
                         tint=MaterialTheme.appColors.editTextColor,
                 )
 
-                Text(text=stringResource(id=R.string.activity_address_book_page_title), style=BChatTypography.titleMedium.copy(color=MaterialTheme.appColors.editTextColor), modifier=Modifier
+                Text(text=stringResource(id=R.string.activity_address_book_page_title), style=BChatTypography.titleMedium.copy(color=MaterialTheme.appColors.editTextColor, fontSize=16.sp, fontWeight=FontWeight(600)), modifier=Modifier
                         .padding(10.dp)
                         .weight(0.7f))
                 Icon(
@@ -267,7 +267,7 @@ fun WalletSettingsScreen(navigate : (WalletSettingsItem) -> Unit, navItem : (Wal
                         tint=MaterialTheme.appColors.editTextColor,
                 )
 
-                Text(text=stringResource(id=R.string.change_pin), style=BChatTypography.titleMedium.copy(color=MaterialTheme.appColors.editTextColor), modifier=Modifier
+                Text(text=stringResource(id=R.string.change_pin), style=BChatTypography.titleMedium.copy(color=MaterialTheme.appColors.editTextColor,  fontSize=16.sp, fontWeight=FontWeight(600)), modifier=Modifier
                         .padding(10.dp)
                         .weight(0.7f))
                 Icon(
@@ -301,7 +301,7 @@ private fun MyWalletSettingItem(title : String, subTitle : Any, icon : Painter, 
         Row(verticalAlignment=Alignment.CenterVertically, modifier=Modifier.weight(0.7f)) {
             Column(horizontalAlignment=Alignment.Start, verticalArrangement=Arrangement.Center) {
 
-                Text(text=title, style=BChatTypography.titleMedium.copy(color=MaterialTheme.appColors.editTextColor))
+                Text(text=title, style=BChatTypography.titleMedium.copy(color=MaterialTheme.appColors.editTextColor, fontSize=16.sp, fontWeight=FontWeight(600)))
                 Text(text=subTitle.toString(), style=BChatTypography.titleSmall.copy(
                         color=Color(0xACACACAC),
                         fontSize=14.sp,

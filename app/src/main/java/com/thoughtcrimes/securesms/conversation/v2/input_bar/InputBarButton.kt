@@ -51,7 +51,7 @@ class InputBarButton : RelativeLayout {
         } else if (isSendButton) {
             R.color.accent
         } else if (isMessageBox){
-            R.color.card_color
+            R.color.input_bar_background
         }
         else {
             R.color.accent

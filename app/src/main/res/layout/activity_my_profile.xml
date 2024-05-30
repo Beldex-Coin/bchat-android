@@ -87,7 +87,6 @@
                             android:layout_width="@dimen/large_profile_picture_size"
                             android:layout_height="@dimen/large_profile_picture_size"
                             android:layout_alignParentTop="true"
-                            android:layout_marginStart="10dp"
                             android:layout_marginTop="0dp"
                             android:gravity="center" />
 

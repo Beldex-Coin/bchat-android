@@ -102,7 +102,7 @@ fun MessageRequestsView(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         if (requests.isNotEmpty()) {
             var showRequests by remember {
@@ -181,7 +181,7 @@ fun MessageRequestsView(
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
     }
 }
 

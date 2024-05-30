@@ -5,6 +5,7 @@
     android:id="@+id/visibleMessageView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    app:cardElevation="0dp"
     android:orientation="vertical">
 
     <TextView
@@ -13,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/large_spacing"
         android:gravity="center"
-        android:textColor="@color/text"
+        android:textColor="@color/conversation_day_color"
         android:textSize="@dimen/very_small_font_size"
         android:textStyle="bold"
         tools:text="@tools:sample/date/hhmmss" />

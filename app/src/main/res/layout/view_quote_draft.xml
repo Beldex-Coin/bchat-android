@@ -9,6 +9,8 @@
     app:quote_mode="draft"
     app:cardCornerRadius="16dp"
     android:layout_margin="8dp"
+    android:elevation="0dp"
+    app:cardElevation="0dp"
     app:cardBackgroundColor="@color/quote_view_background"
     app:contentPadding="8dp">
 
@@ -72,7 +74,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/input_quoted_text_color"
+            android:textColor="#A7A7BA"
             android:textSize="@dimen/small_font_size"
             tools:text="@tools:sample/lorem/random"
             app:layout_constraintStart_toEndOf="@id/contentTypeIcon"
@@ -116,12 +118,12 @@
         <ImageView
             tools:visibility="visible"
             android:id="@+id/quoteViewCancelButton"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:src="@drawable/ic_close_white_48dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/text" />
+            app:tint="@color/icon_tint" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

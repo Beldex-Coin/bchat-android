@@ -61,7 +61,6 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/ic_paste"
-                        app:tint="@color/button_green"
                         android:padding="8dp"/>
 
                     <TextView
@@ -105,7 +104,7 @@
                 android:id="@+id/paste_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="7dp"
                 android:text="Paste the seed to continue"
                 android:textAlignment="center"
                 android:textColor="#A7A7BA"
@@ -120,7 +119,7 @@
                 android:layout_height="@dimen/medium_button_height"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                android:layout_marginBottom="15dp"
+                android:layout_marginBottom="10dp"
                 android:text="@string/continue_2"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

@@ -62,7 +62,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
             ///binding.syncFailIcon.visibility = View.GONE
         }
         if(text==getString(R.string.reconnecting) || text == getString(R.string.status_wallet_loading) || text == getString(R.string.status_wallet_connecting)){
-            viewModels.setSyncStatusTextColor(R.color.green_color)
+            viewModels.setSyncStatusTextColor(R.color.icon_tint)
             viewModels.setProgressBarColor(R.color.green_color)
         }
         syncText = text
@@ -396,7 +396,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                     viewModels.setFilterTransactionIconIsClickable(false)
                     ///binding.syncStatusIcon.visibility=View.GONE
                     ///binding.syncFailIcon.visibility = View.GONE
-                    viewModels.setSyncStatusTextColor(R.color.green_color)
+                    viewModels.setSyncStatusTextColor(R.color.icon_tint)
                     viewModels.setProgressBarColor(R.color.green_color)
                 } else {
                     syncingBlocks = 0
@@ -422,7 +422,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                 ///binding.syncFailIcon.visibility = View.GONE
                 sync = getString(R.string.status_wallet_connecting)
                 setProgress(2f)
-                viewModels.setSyncStatusTextColor(R.color.green_color)
+                viewModels.setSyncStatusTextColor(R.color.icon_tint)
                 viewModels.setProgressBarColor(R.color.green_color)
 
             } else {
@@ -489,7 +489,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         ///binding.syncFailIcon.visibility = View.GONE
         setProgress(getString(R.string.status_wallet_connecting))
         setProgress(2f)
-        viewModels.setSyncStatusTextColor(R.color.green_color)
+        viewModels.setSyncStatusTextColor(R.color.icon_tint)
         viewModels.setProgressBarColor(R.color.green_color)
     }
 

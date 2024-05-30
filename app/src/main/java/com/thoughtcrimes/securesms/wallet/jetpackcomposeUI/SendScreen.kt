@@ -788,6 +788,8 @@ fun SendScreen(
                                 focusedBorderColor = MaterialTheme.appColors.textFiledBorderColor,
                                 focusedLabelColor = MaterialTheme.appColors.textColor,
                                 textColor = MaterialTheme.appColors.textColor,
+                                focusedContainerColor = MaterialTheme.appColors.beldexAddressBackground,
+                                unFocusedContainerColor = MaterialTheme.appColors.beldexAddressBackground,
                                 maxLen = 16,
                                 modifier = Modifier
                                     .padding(10.dp)

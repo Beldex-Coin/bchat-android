@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:gravity="center"
-        android:textColor="@color/text"
+        android:textColor="@color/conversation_day_color"
         android:textSize="@dimen/very_small_font_size"
         android:textStyle="bold"
         tools:text="@tools:sample/date/hhmm" />
@@ -23,20 +23,26 @@
         android:id="@+id/iconImageView"
         android:layout_width="12dp"
         android:layout_height="12dp"
-        android:layout_marginBottom="@dimen/small_spacing"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
         app:tint="@color/text"
         tools:src="@drawable/ic_timer" />
 
     <TextView
         android:fontFamily="@font/open_sans_regular"
         android:id="@+id/textView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textColor="@color/text"
-        android:textSize="@dimen/very_small_font_size"
-        android:textStyle="bold"
-        tools:text="@string/MessageRecord_you_disabled_disappearing_messages" />
+        android:textColor="@color/icon_tint"
+        android:background="@drawable/control_message_background_shape"
+        android:textSize="10sp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        tools:text="@string/MessageRecord_you_disabled_disappearing_messages"
+        tools:ignore="SmallSp" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/receiverStatusIconCardView"
@@ -140,6 +146,7 @@
         app:cardBackgroundColor="@color/received_message_background"
         app:cardCornerRadius="24dp"
         app:contentPadding="8dp"
+        app:cardElevation="0dp"
         android:layout_gravity="start"
         android:layout_marginStart="8dp">
 
@@ -205,7 +212,8 @@
                 tools:text="12:00 pm"
                 android:layout_gravity="end"
                 android:layout_marginTop="4dp"
-                android:layout_marginEnd="4dp"/>
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="10dp"/>
 
         </LinearLayout>
 
@@ -218,6 +226,7 @@
         app:cardBackgroundColor="@color/send_message_background"
         app:cardCornerRadius="24dp"
         app:contentPadding="8dp"
+        app:cardElevation="0dp"
         android:layout_gravity="end"
         android:layout_marginEnd="8dp">
 
@@ -285,6 +294,7 @@
                 android:layout_gravity="end"
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="4dp"
+                android:layout_marginBottom="10dp"
                 android:textColor="@color/received_message_text_color"/>
 
         </LinearLayout>

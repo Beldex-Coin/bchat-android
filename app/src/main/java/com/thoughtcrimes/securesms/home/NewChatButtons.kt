@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -37,6 +38,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -75,14 +77,14 @@ fun NewChatButtons(
         ) {
             Card(
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.appColors.contactCardBackground,
+                    containerColor = MaterialTheme.appColors.beldexAddressBackground,
                 ),
                 elevation = CardDefaults.cardElevation(
-                    defaultElevation = 4.dp
+                    defaultElevation = 1.dp
                 ),
                 shape = RoundedCornerShape(24.dp),
                 modifier = Modifier
-                    .width(IntrinsicSize.Max)
+                    .width(IntrinsicSize.Max).padding(end = 2.dp)
             ) {
                 ChatOptionButton(
                     title = stringResource(id = R.string.activity_create_private_chat_title),
@@ -120,6 +122,12 @@ fun NewChatButtons(
             modifier = Modifier
         ) {
             FloatingActionButton(
+                elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation(
+                    defaultElevation = 0.dp,
+                    pressedElevation = 0.dp,
+                    focusedElevation = 0.dp,
+                    hoveredElevation = 0.dp
+                ),
                 onClick = {
                     changeExpandedStatus(!isExpanded)
                 },
@@ -168,7 +176,8 @@ private fun ChatOptionButton(
             text = title,
             style = MaterialTheme.typography.bodyMedium.copy(
                 color = MaterialTheme.appColors.primaryButtonColor,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.End
             ),
             modifier = Modifier.weight(1f)
         )

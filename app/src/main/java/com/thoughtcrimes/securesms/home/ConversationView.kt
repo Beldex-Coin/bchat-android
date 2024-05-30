@@ -110,7 +110,7 @@ class ConversationView : LinearLayout {
         val drawableRes = if (recipient.isMuted || recipient.notifyType == NOTIFY_TYPE_NONE) {
             R.drawable.ic_mute_home
         } else {
-            android.R.drawable.ic_lock_silent_mode_off
+            R.drawable.ic_mention_home
         }
         binding.muteIcon.setImageResource(drawableRes)
         val rawSnippet = thread.getDisplayBody(context)

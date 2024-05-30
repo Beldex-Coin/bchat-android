@@ -93,7 +93,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingVertical="16dp">
+                    android:paddingVertical="8dp">
 
                     <RelativeLayout
                         android:id="@+id/bchat_toolbar"
@@ -229,7 +229,7 @@
                 android:id="@+id/requests"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?colorPrimary"/>
+                android:background="?colorPrimary" />
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"

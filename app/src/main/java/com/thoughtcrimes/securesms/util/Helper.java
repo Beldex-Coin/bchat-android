@@ -95,6 +95,7 @@ public class Helper {
 
     static public final int PERMISSIONS_REQUEST_CAMERA = 7;
     static public  final int PERMISSION_REQUEST_PHONE_STATE = 1;
+    static public  final int PERMISSION_REQUEST_BLUETOOTH_STATE = 2;
 
     static public boolean getCameraPermission(Activity context) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
@@ -119,6 +120,22 @@ public class Helper {
                 Timber.w("Permission denied for Phone - requesting it");
                 String[] permissions = {Manifest.permission.READ_PHONE_STATE};
                 context.requestPermissions(permissions, PERMISSION_REQUEST_PHONE_STATE);
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return true;
+        }
+    }
+
+    static public boolean getBlueToothStatePermission(Activity context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (context.checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT)
+                    == PackageManager.PERMISSION_DENIED) {
+                Timber.w("Permission denied for Phone - requesting it");
+                String[] permissions = {Manifest.permission.BLUETOOTH_CONNECT};
+                context.requestPermissions(permissions, PERMISSION_REQUEST_BLUETOOTH_STATE);
                 return false;
             } else {
                 return true;

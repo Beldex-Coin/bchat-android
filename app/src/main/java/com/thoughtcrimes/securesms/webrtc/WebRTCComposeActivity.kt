@@ -319,8 +319,15 @@ class WebRTCComposeActivity : ComponentActivity() {
         )
 
 
-        var expanded by remember { mutableStateOf(false) }
-
+        var expanded by remember {
+            mutableStateOf(false)
+        }
+        var isBluetoothIsSelected by remember{
+            mutableStateOf(false)
+        }
+        var isBluetoothIsConnected by remember{
+            mutableStateOf(false)
+        }
          hangupReceiver=remember {
             object : BroadcastReceiver() {
                 override fun onReceive(p0 : Context?, p1 : Intent?) {
@@ -394,6 +401,7 @@ class WebRTCComposeActivity : ComponentActivity() {
                 isShowReConnecting=state == CallViewModel.State.CALL_RECONNECTING
                 isShowEndCallOption=!(state in listOf(CallViewModel.State.CALL_RINGING, CallViewModel.State.CALL_PRE_INIT) && !wantsToAnswer)
                 isShowEndCallOption=isShowEndCallOption == true || state == CallViewModel.State.CALL_RECONNECTING
+                isBluetoothIsConnected  = state == CallViewModel.State.CALL_DISCONNECTED
             }
         }
 
@@ -476,6 +484,17 @@ class WebRTCComposeActivity : ComponentActivity() {
                         }
                     }
                 }
+                launch {
+                    callViewModel.audioBluetoothDeviceState.collect{ state ->
+                        isBluetoothIsSelected = state.selectedDevice == SignalAudioManager.AudioDevice.BLUETOOTH
+                    }
+                }
+
+                launch {
+                    callViewModel.bluetoothConnectionState.observe(lifecycleOwner) { newValue ->
+                        isBluetoothIsConnected=newValue
+                    }
+                }
 
                 launch {
                     callViewModel.callState.collect { state ->
@@ -517,6 +536,11 @@ class WebRTCComposeActivity : ComponentActivity() {
                 launch {
                     while (isActive) {
                         val startTime=callViewModel.callStartTime
+                        if(callViewModel.bluetoothConnectionStatus){
+                            callViewModel.setBooleanValue(callViewModel.bluetoothConnectionStatus)
+                        }else{
+                            callViewModel.setBooleanValue(callViewModel.bluetoothConnectionStatus)
+                        }
                         if (startTime == -1L) {
                             isShowCallDurationStatus=false
                             isMuteOptionClickable=false
@@ -772,6 +796,50 @@ class WebRTCComposeActivity : ComponentActivity() {
 
                     }
 
+                    if(expanded) {
+
+                        Column(
+                                horizontalAlignment=Alignment.CenterHorizontally,
+                                verticalArrangement=Arrangement.SpaceBetween,
+                                modifier=Modifier
+                                        .padding(16.dp)
+                                        .align(Alignment.BottomEnd)
+                                        .offset(x=(-26).dp, y=(10).dp)
+                                        .background(color=MaterialTheme.appColors.callBottomBackground, shape=RoundedCornerShape(50.dp))
+                        )
+                        {
+                            Image(
+                                    painter=painterResource(id=R.drawable.ic_bluetooth_call),
+                                    contentDescription="endCallDescription",
+                                    colorFilter = ColorFilter.tint(
+                                            color = (if(isBluetoothIsSelected) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.iconTint)
+                                    ),
+                                    modifier =Modifier
+                                            .padding(16.dp)
+                                            .clickable {
+                                                val command=AudioManagerCommand.SetUserDevice(if (callViewModel.isBluetooth) SignalAudioManager.AudioDevice.EARPIECE else SignalAudioManager.AudioDevice.BLUETOOTH)
+                                                WebRtcCallService.sendAudioManagerCommand(context, command)
+                                                expanded=false
+                                            }
+                            )
+                            Image(
+                                    painter=painterResource(id=R.drawable.ic_speaker_call),
+                                    contentDescription="endCallDescription",
+                                    colorFilter = ColorFilter.tint(
+                                            color = (if(isSpeakerIsSelected) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.iconTint)
+                                    ),
+                                     modifier =Modifier
+                                             .padding(16.dp)
+                                             .clickable {
+                                                 val command=AudioManagerCommand.SetUserDevice(if (callViewModel.isSpeaker) SignalAudioManager.AudioDevice.EARPIECE else SignalAudioManager.AudioDevice.SPEAKER_PHONE)
+                                                 WebRtcCallService.sendAudioManagerCommand(context, command)
+                                                 expanded=false
+                                             }
+                            )
+
+                        }
+                    }
+
                 }
                 if (isShowAnswerOption && isShowDeclineOption) {
 
@@ -935,44 +1003,42 @@ class WebRTCComposeActivity : ComponentActivity() {
                                                 .width(42.dp)
                                                 .background(MaterialTheme.appColors.qrCodeBackground, shape=CircleShape)
                                                 .clickable {
-                                                    //expanded=true
-                                                    val command=AudioManagerCommand.SetUserDevice(if (callViewModel.isSpeaker) SignalAudioManager.AudioDevice.EARPIECE else SignalAudioManager.AudioDevice.SPEAKER_PHONE)
+                                                    if(isBluetoothIsConnected) {
+                                                        expanded=!expanded
+                                                    }else{
+                                                         val command=AudioManagerCommand.SetUserDevice(if (callViewModel.isSpeaker) SignalAudioManager.AudioDevice.EARPIECE else SignalAudioManager.AudioDevice.SPEAKER_PHONE)
                                                     WebRtcCallService.sendAudioManagerCommand(context, command)
                                                 }, contentAlignment=Alignment.Center
 
                                         ) {
-                                            DropdownMenu(
-                                                    expanded=expanded,
-                                                    onDismissRequest={ expanded=false }
-                                            ) {
-                                                DropdownMenuItem(
-                                                        text={ },
-                                                        onClick={  /*Handle edit!*/ },
-                                                        leadingIcon={
-                                                            Icon(
-                                                                    painterResource(id=R.drawable.ic_bluetooth_call),
-                                                                    contentDescription=bluetoothDescription
-                                                            )
-                                                        })
-                                                DropdownMenuItem(
-                                                        text={ },
-                                                        onClick={  /*Handle settings!*/ },
-                                                        leadingIcon={
-                                                            Icon(
-                                                                    painterResource(id=R.drawable.ic_speaker_call),
-                                                                    contentDescription=speakerDescription
-                                                            )
-                                                        })
-                                            }
+                                            if(isBluetoothIsSelected && isBluetoothIsConnected) {
 
-                                            Image(painter= if(isDarkTheme){
-                                                        painterResource(id=R.drawable.ic_speaker_call)
-                                                    }else{
-                                                        painterResource(id=R.drawable.ic_speaker_call_white)
-                                                    },
-                                                    contentDescription=speakerDescription,
-                                                    modifier=Modifier.align(Alignment.Center)
-                                            )
+                                                Image(painter=if (isDarkTheme) {
+                                                    painterResource(id=R.drawable.ic_bluetooth_call)
+                                                } else {
+                                                    painterResource(id=R.drawable.ic_bluetooth_call)
+                                                },
+                                                        colorFilter=ColorFilter.tint(
+                                                                color=MaterialTheme.appColors.primaryButtonColor
+                                                        ),
+                                                        contentDescription=speakerDescription,
+                                                        modifier=Modifier.align(Alignment.Center)
+
+                                                )
+                                            }else{
+                                                Image(painter= if(isDarkTheme){
+                                                    painterResource(id=R.drawable.ic_speaker_call)
+                                                }else{
+                                                    painterResource(id=R.drawable.ic_speaker_call_white)
+                                                },
+                                                        colorFilter = ColorFilter.tint(
+                                                                color = (if(isSpeakerIsSelected) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.iconTint)
+                                                        ),
+                                                        contentDescription=speakerDescription,
+                                                        modifier=Modifier.align(Alignment.Center)
+
+                                                )
+                                            }
 
                                             Image(
                                                     painter= if(isDarkTheme) {

@@ -190,5 +190,6 @@
     <color name="download_icon">#333333</color>
     <color name="download_icon_background">#EBEBEB</color>
     <color name="circle_background">#EBEBEB</color>
+    <color name="flip_camera_icon_tint">#A7A7BA</color>
 
 </resources>

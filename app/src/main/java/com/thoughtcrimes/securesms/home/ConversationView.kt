@@ -21,7 +21,6 @@ import com.thoughtcrimes.securesms.database.RecipientDatabase.NOTIFY_TYPE_NONE
 import com.thoughtcrimes.securesms.database.model.ThreadRecord
 import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.util.DateUtils
-import com.thoughtcrimes.securesms.util.toPx
 import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewConversationBinding
@@ -104,7 +103,9 @@ class ConversationView : LinearLayout {
         }
         val senderDisplayName = getUserDisplayName(thread.recipient)
                 ?: thread.recipient.address.toString()
-        binding.conversationViewDisplayNameTextView.text = senderDisplayName
+        val recipientName : String=senderDisplayName.substring(0, 1).uppercase(Locale.ROOT) + senderDisplayName.substring(1).lowercase(Locale.ROOT)
+
+        binding.conversationViewDisplayNameTextView.text = recipientName
         binding.timestampTextView.text = DateUtils.getDisplayFormattedTimeSpanString(context, Locale.getDefault(), thread.date)
         binding.muteIcon.isVisible = isMuted
         val drawableRes = if (recipient.isMuted || recipient.notifyType == NOTIFY_TYPE_NONE) {

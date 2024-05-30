@@ -20,6 +20,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -41,6 +42,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
@@ -395,65 +397,72 @@ fun NodeScreen(test:Boolean = false) {
         })
     }
 
-    Column(modifier=Modifier
-            .fillMaxSize()
-            .padding(vertical=10.dp)) {
+        Column(modifier=Modifier
+                .fillMaxSize()
+                .padding(vertical=10.dp)) {
 
-        AnimatedContent(targetState=isVisible, label="NodeList") {
-            if (it) {
-                LazyColumn(verticalArrangement=Arrangement.spacedBy(16.dp), horizontalAlignment=Alignment.CenterHorizontally, modifier=Modifier.fillMaxWidth()
 
-                ) {
-                    itemsIndexed(data.toMutableList()) { index, item ->
-                        Card(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.editTextBackground), border=BorderStroke(width=2.dp, color=if (item.isSelected) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.editTextBackground), shape=RoundedCornerShape(16.dp), elevation=CardDefaults.cardElevation(defaultElevation=0.dp), modifier=Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal=16.dp)
-                                .combinedClickable(
-                                        onClick={
-                                            selectedItemIndex=index
-                                            showChangeNodePopup=true
+            Column(modifier = Modifier.fillMaxWidth().weight(1f)) {
 
-                                        },
-                                        onLongClick={
-                                            selectedItemIndex=index
-                                            showAddNodeEdit=true
-                                            showAddNode=true
 
-                                        },
-                                )) {
-                            nodeName=item.name
-                            nodeAddress=item.address
+            AnimatedContent(targetState=isVisible, label="NodeList",
+                    modifier=Modifier)
+            {
+                if (it) {
+                    LazyColumn(verticalArrangement=Arrangement.spacedBy(16.dp), horizontalAlignment=Alignment.CenterHorizontally
 
-                            Row(verticalAlignment=Alignment.CenterVertically, horizontalArrangement=Arrangement.Center, modifier=Modifier.padding(horizontal=24.dp)) {
-                                Icon(painter=painterResource(id=R.drawable.ic_connected), contentDescription="", tint=if (errorAction) MaterialTheme.appColors.errorMessageColor else MaterialTheme.appColors.primaryButtonColor, modifier=Modifier.size(10.dp)
+                    ) {
+                        itemsIndexed(data.toMutableList()) { index, item ->
+                            Card(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.editTextBackground), border=BorderStroke(width=2.dp, color=if (item.isSelected) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.editTextBackground), shape=RoundedCornerShape(16.dp), elevation=CardDefaults.cardElevation(defaultElevation=4.dp), modifier=Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal=16.dp )
+                                    .combinedClickable(
+                                            onClick={
+                                                selectedItemIndex=index
+                                                showChangeNodePopup=true
 
-                                )
+                                            },
+                                            onLongClick={
+                                                selectedItemIndex=index
+                                                showAddNodeEdit=true
+                                                showAddNode=true
 
-                                Column(horizontalAlignment=Alignment.Start, verticalArrangement=Arrangement.Center, modifier=Modifier
-                                        .padding(top =10.dp, bottom = 10.dp, start = 15.dp, end = 10.dp)
-                                        .weight(0.7f)) {
-                                    if (item.isTested) {
-                                        if (item.isValid) {
-                                            errorAction=false
-                                            //IMPORTANT
-                                            //Helper.showTimeDifference(nodeAddress., item.timestamp)
-                                            // need to update node status image
-                                            /*nodeStatusView_Connect.setVisibility(View.VISIBLE)
+                                            },
+                                    )) {
+                                nodeName=item.name
+                                nodeAddress=item.address
+
+                                Row(verticalAlignment=Alignment.CenterVertically, horizontalArrangement=Arrangement.Center, modifier=Modifier.padding(horizontal=24.dp)) {
+                                    Icon(painter=painterResource(id=R.drawable.ic_connected), contentDescription="", tint=if (errorAction) MaterialTheme.appColors.errorMessageColor else MaterialTheme.appColors.primaryButtonColor, modifier=Modifier.size(10.dp)
+
+                                    )
+
+                                    Column(horizontalAlignment=Alignment.Start, verticalArrangement=Arrangement.Center, modifier=Modifier
+                                            .padding(vertical=10.dp, horizontal=20.dp)
+                                            .weight(0.7f)) {
+                                        if (item.isTested) {
+                                            if (item.isValid) {
+                                                errorAction=false
+                                                //IMPORTANT
+                                                //Helper.showTimeDifference(nodeAddress., item.timestamp)
+                                                // need to update node status image
+                                                /*nodeStatusView_Connect.setVisibility(View.VISIBLE)
                                             nodeStatusView_Error.setVisibility(View.INVISIBLE)*/
-                                        } else {
-                                            nodeAddress=getResponseErrorText(context, item.responseCode)
-                                            errorAction=true
-                                            // need to update color for address and status image
-                                            /*nodeAddress.setTextColor(ThemeHelper.getThemedColor(context, R.attr.colorError))
+                                            } else {
+                                                nodeAddress=getResponseErrorText(context, item.responseCode)
+                                                errorAction=true
+                                                // need to update color for address and status image
+                                                /*nodeAddress.setTextColor(ThemeHelper.getThemedColor(context, R.attr.colorError))
                                              nodeStatusView_Error.setVisibility(View.VISIBLE)
                                              nodeStatusView_Connect.setVisibility(View.VISIBLE)*/
+                                            }
+                                        } else {
+                                            nodeAddress=context.resources.getString(R.string.node_testing, item.hostAddress)
                                         }
-                                    } else {
-                                        nodeAddress=context.resources.getString(R.string.node_testing, item.hostAddress)
-                                    }
 
-                                    Text(text=nodeName, style=BChatTypography.titleMedium.copy(color=if(item.isSelected) MaterialTheme.appColors.textColor else if (errorAction) MaterialTheme.appColors.errorMessageColor else MaterialTheme.appColors.primaryButtonColor, fontSize=16.sp, fontWeight=FontWeight(700)))
-                                    Text(text=nodeAddress, style=BChatTypography.titleSmall.copy(color=MaterialTheme.appColors.editTextColor, fontSize=12.sp, fontWeight=FontWeight(400)), modifier=Modifier.padding(vertical=5.dp))
+                                        Text(text=nodeName, style=BChatTypography.titleMedium.copy(color=if (item.isSelected) MaterialTheme.appColors.textColor else if (errorAction) MaterialTheme.appColors.errorMessageColor else MaterialTheme.appColors.primaryButtonColor, fontSize=16.sp, fontWeight=FontWeight(700)))
+                                        Text(text=nodeAddress, style=BChatTypography.titleSmall.copy(color=MaterialTheme.appColors.editTextColor, fontSize=12.sp, fontWeight=FontWeight(400)), modifier=Modifier.padding(vertical=5.dp))
+                                    }
                                 }
                             }
                         }
@@ -461,30 +470,30 @@ fun NodeScreen(test:Boolean = false) {
                 }
             }
         }
-        Column(
+            Column(
 
-                verticalArrangement=Arrangement.Bottom, horizontalAlignment=Alignment.CenterHorizontally, modifier=Modifier.fillMaxHeight()) {
+                verticalArrangement=Arrangement.Bottom, horizontalAlignment=Alignment.CenterHorizontally, modifier=Modifier.fillMaxWidth()) {
 
-            Row(modifier=Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)) {
-                Button(onClick={
-                    showRefreshNodePopup = true
-                }, colors=ButtonDefaults.buttonColors(containerColor=MaterialTheme.appColors.searchBackground), modifier=Modifier.weight(1f)) {
-                    Text(text="Refresh", style=MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.appColors.secondaryContentColor, fontWeight = FontWeight.Bold), modifier=Modifier.padding(10.dp))
-                    Icon(painter=painterResource(id=R.drawable.ic_refresh), contentDescription="Refresh", modifier=Modifier, tint = MaterialTheme.appColors.secondaryContentColor)
-                }
+                Row(modifier=Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)) {
+                    Button(onClick={
+                        showRefreshNodePopup=true
+                    }, colors=ButtonDefaults.buttonColors(containerColor=MaterialTheme.appColors.secondaryButtonColor), modifier=Modifier.weight(1f)) {
+                        Text(text="Refresh", style=MaterialTheme.typography.bodyMedium.copy(color=MaterialTheme.appColors.secondaryContentColor, fontWeight=FontWeight.Bold), modifier=Modifier.padding(10.dp))
+                        Icon(painter=painterResource(id=R.drawable.ic_refresh), contentDescription="Refresh", modifier=Modifier, tint=MaterialTheme.appColors.secondaryContentColor)
+                    }
 
-                Spacer(modifier=Modifier.width(16.dp))
+                    Spacer(modifier=Modifier.width(16.dp))
 
-                Button(onClick={
-                    showAddNode=true
-                }, colors=ButtonDefaults.buttonColors(containerColor=MaterialTheme.appColors.primaryButtonColor), modifier=Modifier.weight(1f)) {
-                    Text(text=stringResource(id=R.string.node_fab_add), style=MaterialTheme.typography.bodyMedium.copy(color=Color.White, fontWeight = FontWeight.Bold), modifier=Modifier.padding(10.dp))
+                    Button(onClick={
+                        showAddNode=true
+                    }, colors=ButtonDefaults.buttonColors(containerColor=MaterialTheme.appColors.primaryButtonColor), modifier=Modifier.weight(1f)) {
+                        Text(text=stringResource(id=R.string.node_fab_add), style=MaterialTheme.typography.bodyMedium.copy(color=Color.White, fontWeight=FontWeight.Bold), modifier=Modifier.padding(10.dp))
+                    }
                 }
             }
         }
-    }
 }
 
 @Composable
@@ -617,6 +626,10 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
         mutableStateOf(false)
     }
 
+    var testingLoader by remember{
+        mutableStateOf(false)
+    }
+
 
     fun setNodes(newItemsCollection: Collection<NodeInfo>?, nodeViewModel: NodeViewModel) {
         val newItems: List<NodeInfo>
@@ -642,16 +655,20 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
     }
 
     fun showTestResult() {
-        if (nodeInfo.isSuccessful) {
-            nodeStatusSuccessAction=true
-            nodeStatusErrorAction=false
-            nodeStatus=context.getString(R.string.add_node_success)
-            setNodeIsTested(context, true)
-        } else {
-            nodeStatusSuccessAction=false
-            nodeStatusErrorAction=true
-            nodeStatus=(NodeInfoAdapter.getResponseErrorText(context, nodeInfo.responseCode))
-            setNodeIsTested(context, false)
+        if(nodeInfo.isTested) {
+            if (nodeInfo.isSuccessful) {
+                nodeStatusSuccessAction=true
+                nodeStatusErrorAction=false
+                testingLoader=false
+                nodeStatus=context.getString(R.string.add_node_success)
+                setNodeIsTested(context, true)
+            } else {
+                nodeStatusSuccessAction=false
+                testingLoader=false
+                nodeStatusErrorAction=true
+                nodeStatus=(NodeInfoAdapter.getResponseErrorText(context, nodeInfo.responseCode))
+                setNodeIsTested(context, false)
+            }
         }
     }
 
@@ -1009,6 +1026,10 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                     Button(
                             onClick={
                                 testNode()
+                                nodeStatusSuccessAction=false
+                                nodeStatusErrorAction=false
+                                testingLoader=true
+
                             },
                             colors=ButtonDefaults.buttonColors(
                                     containerColor=MaterialTheme.appColors.secondaryButtonColor
@@ -1030,8 +1051,15 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                                 modifier=Modifier.padding(horizontal=10.dp)
                         )
                     }
+                    if(testingLoader) {
+                        CircularProgressIndicator(
+                                modifier=Modifier.height(16.dp).width(16.dp),
+                                color=MaterialTheme.appColors.primaryButtonColor,
+                                strokeWidth=2.dp
+                        )
+                    }
                     if (nodeStatusSuccessAction) {
-                        Text(text="Success", modifier=Modifier,
+                        Text(text=nodeStatus, modifier=Modifier,
                                 style=MaterialTheme.typography.bodyLarge.copy(
                                         fontSize=12.sp,
                                         fontWeight=FontWeight(700),
@@ -1047,7 +1075,7 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                                         .padding(horizontal=5.dp))
                     }
                     if (nodeStatusErrorAction) {
-                        Text(text="Connection Error", modifier=Modifier,
+                        Text(text=nodeStatus, modifier=Modifier,
                                 style=MaterialTheme.typography.bodyLarge.copy(
                                         fontSize=12.sp,
                                         fontWeight=FontWeight(700),
@@ -1132,9 +1160,9 @@ fun SwitchNodePopUp(onDismiss: () -> Unit, nodeViewModel: NodeViewModel, nodeInf
     ) {
 
         OutlinedCard(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.dialogBackground), elevation=CardDefaults.cardElevation(defaultElevation=4.dp), modifier=Modifier.fillMaxWidth()) {
-            Column(horizontalAlignment=Alignment.CenterHorizontally, verticalArrangement=Arrangement.Center, modifier= Modifier
-                .fillMaxWidth()
-                .padding(10.dp)) {
+            Column(horizontalAlignment=Alignment.CenterHorizontally, verticalArrangement=Arrangement.Center, modifier=Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)) {
 
                 Text(
                         text=stringResource(id=R.string.switch_node_alert),
@@ -1146,9 +1174,9 @@ fun SwitchNodePopUp(onDismiss: () -> Unit, nodeViewModel: NodeViewModel, nodeInf
                         modifier=Modifier.padding(vertical=20.dp, horizontal=40.dp))
 
                 Row(
-                        modifier= Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
+                        modifier=Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
                 ) {
                     Button(
                             onClick={ onDismiss() },

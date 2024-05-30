@@ -2102,9 +2102,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (bnsName != null && adapter.cursor?.count == 0) {
             profileManager.setName(requireContext(), recipient, bnsName)
         }
+        val recipientName : String=recipient.toShortString().substring(0, 1).uppercase(Locale.ROOT) + recipient.toShortString().substring(1).lowercase(Locale.ROOT)
+
         binding.conversationTitleView.text = when {
             recipient.isLocalNumber -> getString(R.string.note_to_self)
-            else -> recipient.toShortString()
+            else -> recipientName
         }
         @DimenRes val sizeID: Int = if (recipient.isClosedGroupRecipient) {
             R.dimen.medium_profile_picture_size
@@ -2412,7 +2414,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 unblock()
             } else {
                 if (Helper.getPhoneStatePermission(requireActivity())) {
-                    isMenuCall()
+                    if(Helper.getBlueToothStatePermission(requireActivity())) {
+                        isMenuCall()
+                    }
                 } else {
                     Timber.tag("Beldex").d("Permission not granted")
                 }

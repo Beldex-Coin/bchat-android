@@ -14,6 +14,7 @@ import android.os.Looper
 import android.view.SurfaceView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -35,6 +36,10 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -57,8 +62,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -69,6 +76,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -82,7 +90,10 @@ import com.thoughtcrimes.securesms.compose_utils.BChatTypography
 import com.thoughtcrimes.securesms.compose_utils.ProfilePictureComponent
 import com.thoughtcrimes.securesms.compose_utils.ProfilePictureMode
 import com.thoughtcrimes.securesms.compose_utils.appColors
+import com.thoughtcrimes.securesms.compose_utils.ui.ScreenContainer
+import com.thoughtcrimes.securesms.conversation_v2.CreateSecretGroup
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
+import com.thoughtcrimes.securesms.my_account.ui.CardContainer
 import com.thoughtcrimes.securesms.permissions.Permissions
 import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.util.UiMode
@@ -100,6 +111,7 @@ import org.apache.commons.lang3.time.DurationFormatUtils
 class WebRTCComposeActivity : ComponentActivity() {
 
     private var hangupReceiver: BroadcastReceiver? = null
+    val viewModel:CallViewModel by viewModels()
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState : Bundle?) {
@@ -142,6 +154,7 @@ class WebRTCComposeActivity : ComponentActivity() {
         val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(LocalContext.current) == UiMode.NIGHT
         val callViewModel : CallViewModel=hiltViewModel()
         val context=LocalContext.current
+        val lifecycleOwner=LocalLifecycleOwner.current
         val profileSize=132.dp
 
         var wantsToAnswer=false
@@ -295,6 +308,9 @@ class WebRTCComposeActivity : ComponentActivity() {
             mutableStateOf(false)
         }
         var callLoading by remember {
+            mutableStateOf(false)
+        }
+        var isSwitchCameraFlipEnabled by remember{
             mutableStateOf(false)
         }
 
@@ -568,6 +584,7 @@ class WebRTCComposeActivity : ComponentActivity() {
                     callViewModel.localVideoEnabledState.collect { isEnabled ->
                         isShowVideoCallLocalView=false
                         localVideoView=isEnabled
+                        isSwitchCameraFlipEnabled=isEnabled
                         isStatusText=if (isEnabled) {
                             "Video Call"
                         } else {
@@ -620,26 +637,7 @@ class WebRTCComposeActivity : ComponentActivity() {
                             painterResource(id=R.drawable.call_background_white),
                                 contentScale=ContentScale.FillBounds)
         ) {
-            Row(
-                    verticalAlignment=Alignment.CenterVertically,
-                    modifier=Modifier
-                            .fillMaxWidth()
-                            .padding(top=16.dp, start=16.dp, end=16.dp, bottom=0.dp)
-            ) {
-                Icon(
-                        painterResource(id=R.drawable.ic_back_arrow),
-                        contentDescription=stringResource(R.string.back),
-                        tint=MaterialTheme.appColors.editTextColor,
-                        modifier=Modifier
-                                .clickable {
-                                    (context as ComponentActivity).finish()
-                                }
-                )
-            }
 
-            Column(
-                    modifier=Modifier
-            ) {
                 Box(modifier=Modifier
                         .fillMaxWidth()
                         .weight(1f)
@@ -648,7 +646,10 @@ class WebRTCComposeActivity : ComponentActivity() {
                     if (!remoteVideoView) {
 
                         Column(horizontalAlignment=Alignment.CenterHorizontally,
-                                modifier=Modifier.fillMaxWidth()) {
+                                modifier=Modifier
+                                        .fillMaxWidth()
+                                        .padding(top=16.dp)
+                        ) {
 
                             Text(
                                     text=isStatusText,
@@ -714,14 +715,18 @@ class WebRTCComposeActivity : ComponentActivity() {
                         Column(verticalArrangement=Arrangement.Bottom, horizontalAlignment=Alignment.CenterHorizontally, modifier=Modifier.fillMaxSize()) {
                             if (isShowDialingStatus) {
                                 Text(isStatusDialingText,
-                                        Modifier.padding(all=12.dp).offset(y=(-50).dp),
+                                        Modifier
+                                                .padding(all=12.dp)
+                                                .offset(y=(-50).dp),
                                         style=BChatTypography.titleMedium.copy(
                                                 color=MaterialTheme.appColors.textColor,
                                                 fontSize=18.sp, fontWeight=FontWeight(400)))
                             }
                             if(isShowIncomingStatus){
                                 Text(isStatusInComingText,
-                                        Modifier.padding(all=12.dp).offset(y=(-60).dp),
+                                        Modifier
+                                                .padding(all=12.dp)
+                                                .offset(y=(-60).dp),
                                         style=BChatTypography.titleMedium.copy(
                                                 color=MaterialTheme.appColors.textColor,
                                                 fontSize=18.sp, fontWeight=FontWeight(400)))
@@ -773,6 +778,23 @@ class WebRTCComposeActivity : ComponentActivity() {
                                         surfaceView=it)
                             }
                         }
+                    }
+                    Row(
+                            verticalAlignment=Alignment.CenterVertically,
+                            modifier=Modifier
+                                    .fillMaxWidth()
+                                    .align(Alignment.TopCenter)
+                                    .padding(top=16.dp, start=16.dp)
+                    ) {
+                        Icon(
+                                painterResource(id=R.drawable.ic_back_call),
+                                contentDescription=stringResource(R.string.back),
+                                tint=MaterialTheme.appColors.editTextColor,
+                                modifier=Modifier
+                                        .clickable {
+                                            (context as ComponentActivity).finish()
+                                        }
+                        )
                     }
 
                     if (localVideoView) {
@@ -946,7 +968,7 @@ class WebRTCComposeActivity : ComponentActivity() {
                                                 .height(42.dp)
                                                 .width(42.dp)
                                                 .background(MaterialTheme.appColors.qrCodeBackground, shape=CircleShape)
-                                                .clickable() {
+                                                .clickable(enabled = isSwitchCameraFlipEnabled) {
                                                     switchCamera()
                                                 }, contentAlignment=Alignment.Center
 
@@ -954,8 +976,9 @@ class WebRTCComposeActivity : ComponentActivity() {
 
                                             Image(
                                                     painter=painterResource(
-                                                            id=if (isDarkTheme) R.drawable.ic_switch_camera_call
-                                                            else R.drawable.ic_switch_camera_call_white),
+                                                            id= if (isDarkTheme && isSwitchCameraFlipEnabled) R.drawable.ic_switch_camera_call
+                                                            else if(!isDarkTheme && isSwitchCameraFlipEnabled ) R.drawable.ic_switch_camera_call_white
+                                                                 else   R.drawable.ic_switch_camera_disable_call),
                                                     contentDescription=switchCamDescription,
                                                     modifier=Modifier.padding(10.dp)
                                             )
@@ -997,7 +1020,6 @@ class WebRTCComposeActivity : ComponentActivity() {
                                     Spacer(modifier=Modifier.width(20.dp))
 
                                     if (isShowSpeakerOption) {
-
                                         Box(modifier=Modifier
                                                 .height(42.dp)
                                                 .width(42.dp)
@@ -1008,6 +1030,9 @@ class WebRTCComposeActivity : ComponentActivity() {
                                                     }else{
                                                          val command=AudioManagerCommand.SetUserDevice(if (callViewModel.isSpeaker) SignalAudioManager.AudioDevice.EARPIECE else SignalAudioManager.AudioDevice.SPEAKER_PHONE)
                                                     WebRtcCallService.sendAudioManagerCommand(context, command)
+                                                    }
+
+
                                                 }, contentAlignment=Alignment.Center
 
                                         ) {
@@ -1078,7 +1103,6 @@ class WebRTCComposeActivity : ComponentActivity() {
                         }
                     }
                 }
-            }
         }
     }
 

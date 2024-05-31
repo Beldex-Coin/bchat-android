@@ -2,6 +2,7 @@ package com.thoughtcrimes.securesms.contacts
 
 import android.content.Context
 import com.beldex.libbchat.utilities.recipients.Recipient
+import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.util.AsyncLoader
 import io.beldex.bchat.R
 import com.thoughtcrimes.securesms.util.ContactUtilities
@@ -52,7 +53,8 @@ class ContactSelectionListLoader(context: Context, val mode: Int, val filter: St
 
     private fun getClosedGroups(contacts: List<Recipient>): List<ContactSelectionListItem> {
         return getItems(contacts, context.getString(R.string.fragment_contact_selection_closed_groups_title)) {
-            it.address.isClosedGroup
+            it.address.isClosedGroup && DatabaseComponent.get(context)
+                    .groupDatabase().isActive(it.address.toGroupString())
         }
     }
 

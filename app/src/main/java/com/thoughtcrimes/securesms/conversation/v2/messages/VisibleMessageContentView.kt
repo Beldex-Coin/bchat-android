@@ -185,9 +185,10 @@ class VisibleMessageContentView : MaterialCardView {
                     delegate?.scrollToMessageIfPossible(quote.id)
                 }
             }
-            val layoutParams = binding.quoteView.root.layoutParams as MarginLayoutParams
+            // cmd for forward message alignment issue.
+            /*val layoutParams = binding.quoteView.root.layoutParams as MarginLayoutParams
             val hasMedia = message.slideDeck.asAttachments().isNotEmpty()
-            binding.quoteView.root.minimumWidth = if (hasMedia) 0 else toPx(300,context.resources)
+            binding.quoteView.root.minimumWidth = if (hasMedia) 0 else toPx(300,context.resources)*/
         }
 
         if (message is MmsMessageRecord) {
@@ -341,8 +342,7 @@ class VisibleMessageContentView : MaterialCardView {
 
         // set it to use constraints if not only a text message, otherwise wrap content to whatever width it wants
         val params = binding.bodyTextView.layoutParams
-        params.width =
-            if (onlyBodyMessage || binding.barrierViewsGone()) ViewGroup.LayoutParams.MATCH_PARENT else 0
+       // params.width =if (onlyBodyMessage || binding.barrierViewsGone()) ViewGroup.LayoutParams.MATCH_PARENT else 0
         val fontSize = TextSecurePreferences.getChatFontSize(context)
         binding.bodyTextView.textSize = fontSize!!.toFloat()
 

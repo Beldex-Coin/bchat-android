@@ -483,7 +483,6 @@
     <string name="arrays__mute_for_two_hours" translatable="false">Mute for 2 hours</string>
     <string name="arrays__mute_for_one_day" translatable="false">Mute for 1 day</string>
     <string name="arrays__mute_for_seven_days" translatable="false">Mute for 7 days</string>
-    <string name="arrays__mute_for_one_year" translatable="false">Mute for 1 year</string>
     <string name="arrays__mute_forever" translatable="false">Mute forever</string>
 
     <string name="arrays__settings_default" translatable="false">Settings default</string>

@@ -11,6 +11,8 @@
     android:layout_margin="8dp"
     android:elevation="0dp"
     app:cardElevation="0dp"
+    android:clickable="true"
+    android:focusable="true"
     app:cardBackgroundColor="@color/quote_view_background"
     app:contentPadding="8dp">
 

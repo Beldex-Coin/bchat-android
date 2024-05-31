@@ -281,11 +281,14 @@ public class RecipientDatabase extends Database {
   }
 
   public void setMuted(@NonNull Recipient recipient, long until) {
+    Log.d("Mute Value 2-> ",""+until);
     ContentValues values = new ContentValues();
     values.put(MUTE_UNTIL, until);
     updateOrInsert(recipient.getAddress(), values);
     recipient.resolve().setMuted(until);
+    Log.d("Mute Value 3-> ",""+until);
     notifyRecipientListeners();
+    Log.d("Mute Value 4-> ",""+until);
   }
 
   /**

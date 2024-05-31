@@ -84,4 +84,6 @@
     <string name="five_minutes" translatable="false">5 Minutes</string>
     <string name="fifteen_minutes" translatable="false">15 Minutes</string>
     <string name="thirty_minutes" translatable="false">30 Minutes</string>
+
+    <string name="MessageRecord_is_blocked">You Blocked %s! Click here to Unblock.</string>
 </resources>

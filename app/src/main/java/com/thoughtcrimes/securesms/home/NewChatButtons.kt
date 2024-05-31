@@ -132,12 +132,6 @@ fun NewChatButtons(
                     changeExpandedStatus(!isExpanded)
                 },
                 containerColor = MaterialTheme.appColors.primaryButtonColor,
-                elevation = FloatingActionButtonDefaults.elevation(
-                    defaultElevation = 0.dp,
-                    pressedElevation = 0.dp,
-                    focusedElevation = 0.dp,
-                    hoveredElevation = 0.dp
-                ),
                 modifier = Modifier
                     .padding(
                         bottom = 8.dp,

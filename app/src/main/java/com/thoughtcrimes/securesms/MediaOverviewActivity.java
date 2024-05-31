@@ -71,6 +71,7 @@ import com.thoughtcrimes.securesms.mms.GlideApp;
 import com.thoughtcrimes.securesms.permissions.Permissions;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.thoughtcrimes.securesms.util.AttachmentUtil;
+import com.thoughtcrimes.securesms.util.GridSpaceItemDecoration;
 import com.thoughtcrimes.securesms.util.SaveAttachmentTask;
 import com.thoughtcrimes.securesms.util.StickyHeaderDecoration;
 import com.beldex.libbchat.utilities.Util;
@@ -236,7 +237,9 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
                                                            new BucketedThreadMedia(getContext()),
                                                            locale,
                                                            this));
+      GridSpaceItemDecoration itemDecoration = new GridSpaceItemDecoration(getContext(), R.dimen.item_offset);
       this.recyclerView.setLayoutManager(gridManager);
+      this.recyclerView.addItemDecoration(itemDecoration);
       this.recyclerView.setHasFixedSize(true);
 
       return view;

@@ -335,7 +335,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 handlePress(message, position, view, event)
             },
             onItemSwipeToReply = { message, position ->
-                handleSwipeToReply(message, position)
+                if(isSecretGroupIsActive()) {
+                    handleSwipeToReply(message, position)
+                }
             },
             onItemLongPress = { message, position ->
                 if(isSecretGroupIsActive()){
@@ -634,7 +636,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if (listenerCallback!!.getNode() == null) {
             setProgress(getString(R.string.failed_to_connect_to_node))
             setProgress(2f)
-            binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext,true,valueOfWallet)
+            binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext,true,valueOfWallet,2f)
         }
 
 
@@ -3480,7 +3482,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     R.string.status_wallet_connecting
                 )
             ) {
-                binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false,valueOfWallet)
+                binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false,valueOfWallet,4f)
             }
             syncText = text
         } catch (ex: IllegalStateException) {
@@ -3492,21 +3494,43 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         syncProgress = n
         when {
             n==4f -> {
-                //viewModels.setProgress(1f)
-                binding.inputBar.showProgressBar(false)
+                binding.inputBar.showProgressBar(blockProgressBarVisible)
             }
             n==2f -> {
-                //viewModels.setProgress(1f)
                 binding.inputBar.showProgressBar(blockProgressBarVisible)
             }
             n==3f -> {
                 binding.inputBar.showProgressBar(blockProgressBarVisible)
-                binding.inputBar.setProgress(1f)
+                binding.inputBar.setProgress(100)
                 //viewModels.setProgress(1f)
             }
             n<1f && n >= 0f -> {
                 //viewModels.setProgress(n)
-                binding.inputBar.setProgress(n)
+                if(n>=0.01f && n<0.1f){
+                    binding.inputBar.setProgress(5)
+                }else if(n>=0.1f && n<0.2f){
+                    binding.inputBar.setProgress(10)
+                }else if(n>=0.2f && n<0.3f){
+                    binding.inputBar.setProgress(20)
+                }else if(n>=0.3f && n<0.4f){
+                    binding.inputBar.setProgress(30)
+                }else if(n>=0.4f && n<0.5f){
+                    binding.inputBar.setProgress(40)
+                }else if(n>=0.55f && n<0.6f){
+                    binding.inputBar.setProgress(55)
+                }else if(n>=0.6f && n<0.7f){
+                    binding.inputBar.setProgress(60)
+                }else if(n>=0.7f && n<0.8f){
+                    binding.inputBar.setProgress(70)
+                }else if(n>=0.8f && n<0.9f){
+                    binding.inputBar.setProgress(80)
+                }else if(n>=0.9f && n<0.95f){
+                    binding.inputBar.setProgress(90)
+                }else if(n>=0.95f && n<0.99f){
+                    binding.inputBar.setProgress(95)
+                }else{
+                    binding.inputBar.setProgress(100)
+                }
                 binding.inputBar.showProgressBar(blockProgressBarVisible)
             }
             else -> { // <0
@@ -3555,13 +3579,15 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     }
                     var x = (100 - Math.round(100f * n / (1f * daemonHeight - firstBlock))).toInt()
                     if (x == 0) x = 1 // indeterminate
+                    valueOfWallet = "${df.format(walletSyncPercentage)}%"
                     if(x>=0){
-                        setProgress((x/100.0).toFloat())
+                        val progress = (x/100.0).toFloat()
+                        setProgress(progress)
+                        binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false,valueOfWallet, progress)
                     }else{
                         setProgress(x.toFloat())
+                        binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false,valueOfWallet, x.toFloat())
                     }
-                    valueOfWallet = "${df.format(walletSyncPercentage)}%"
-                    binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false,valueOfWallet)
                 } else {
                     ApplicationContext.getInstance(context).messageNotifier.setHomeScreenVisible(
                         false
@@ -3569,7 +3595,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     sync =
                     getString(R.string.status_synchronized)
                     valueOfWallet = "${df.format(walletSyncPercentage)}%"
-                    binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false,valueOfWallet)
+                    binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, false,valueOfWallet,3f)
                     //SteveJosephh21
                     setProgress(3f)
                 }
@@ -3577,18 +3603,18 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 sync = getString(R.string.status_wallet_connecting)
                 setProgress(4f)
                 valueOfWallet = "--"
-                binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, true, valueOfWallet)
+                binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, true, valueOfWallet,4f)
             } else {
                 sync = getString(R.string.failed_connected_to_the_node)
                 setProgress(4f)
                 valueOfWallet = "--"
-                binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, true, valueOfWallet)
+                binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, true, valueOfWallet,4f)
             }
             setProgress(sync)
         } else {
             setProgress(getString(R.string.no_node_connection))
             valueOfWallet ="--"
-            binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, true,valueOfWallet)
+            binding.inputBar.setDrawableProgressBar(requireActivity().applicationContext, true,valueOfWallet,4f)
         }
         toolTip()
     }

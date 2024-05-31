@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.database.model.MessageRecord
@@ -146,6 +147,7 @@ class ControlMessageView : LinearLayout {
                 messageBody = context.getString(R.string.message_requests_accepted)
             }
         }
+        binding.textView.isVisible = messageBody.trim().isNotEmpty()
         binding.textView.text = messageBody
     }
 

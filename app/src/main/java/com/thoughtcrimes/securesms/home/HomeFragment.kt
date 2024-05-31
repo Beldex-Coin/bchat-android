@@ -47,11 +47,13 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
+import com.beldex.libbchat.mnode.OnionRequestAPI
 import com.beldex.libbchat.utilities.*
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.ThreadUtils
 import com.beldex.libsignal.utilities.toHexString
+import com.jakewharton.rxbinding3.view.visibility
 import com.thoughtcrimes.securesms.ApplicationContext
 import com.thoughtcrimes.securesms.MuteDialog
 import com.thoughtcrimes.securesms.components.ProfilePictureView
@@ -95,6 +97,7 @@ import com.thoughtcrimes.securesms.wallet.info.WalletInfoActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
+import com.thoughtcrimes.securesms.webrtc.NetworkChangeReceiver
 import com.thoughtcrimes.securesms.webrtc.WebRTCComposeActivity
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.BuildConfig
@@ -338,6 +341,9 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         return binding.root
     }
 
+    private var networkChangedReceiver: NetworkChangeReceiver? = null
+    private var isNetworkAvailable = true
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -349,6 +355,15 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         glide = GlideApp.with(this)
         // Set up toolbar buttons
         binding.profileButton.root.glide = glide
+
+        //Hops Warning
+        networkChangedReceiver = NetworkChangeReceiver(::networkChange)
+        networkChangedReceiver!!.register(requireContext())
+        /*if (OnionRequestAPI.paths.isNotEmpty() || isNetworkAvailable) {
+            binding.hopsWarningLayout.visibility = View.GONE
+        } else {
+            binding.hopsWarningLayout.visibility = View.VISIBLE
+        }*/
 
 //        binding.bchatVersion.text = "BChat V${BuildConfig.VERSION_NAME}"
         //New Line
@@ -585,6 +600,15 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         binding.navigationMenu.version.text = resources.getString(R.string.version_name).format(BuildConfig.VERSION_NAME)
         // binding.navigationMenu.uiMode.text = "Dark Mode"
 
+    }
+
+    private fun networkChange(networkAvailable: Boolean) {
+        isNetworkAvailable = networkAvailable
+        if (networkAvailable) {
+            binding.hopsWarningLayout.visibility = View.GONE
+        } else {
+            binding.hopsWarningLayout.visibility = View.VISIBLE
+        }
     }
 
     private fun showRequestDeleteDialog(record: ThreadRecord) {
@@ -825,6 +849,9 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     }
 
     override fun onDestroy() {
+        isNetworkAvailable = false
+        networkChangedReceiver?.unregister(requireContext())
+        networkChangedReceiver = null
         val broadcastReceiver = this.broadcastReceiver
         if (broadcastReceiver != null) {
             LocalBroadcastManager.getInstance(requireActivity().applicationContext).unregisterReceiver(broadcastReceiver)

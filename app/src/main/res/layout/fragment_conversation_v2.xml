@@ -688,6 +688,7 @@
                 android:layout_marginBottom="70dp"
                 app:cardBackgroundColor="@color/card_color"
                 app:cardCornerRadius="5dp"
+                app:cardElevation="0dp"
                 tools:visibility="gone">
 
                 <LinearLayout

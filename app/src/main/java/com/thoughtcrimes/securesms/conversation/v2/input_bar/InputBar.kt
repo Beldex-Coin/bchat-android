@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.SystemClock
 import android.text.TextWatcher
 import android.util.AttributeSet
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -135,7 +136,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         if(TextSecurePreferences.isEnterSendsEnabled(context)) {
             //Log.d("Beldex","is enter send enable if ${TextSecurePreferences.isEnterSendsEnabled(context)}")
             binding.inputBarEditText.inputType = (EditorInfo.TYPE_CLASS_TEXT)
-            binding.inputBarEditText.imeOptions = (EditorInfo.IME_ACTION_SEND);
+            binding.inputBarEditText.imeOptions = (EditorInfo.IME_ACTION_SEND)
             binding.inputBarEditText.setOnKeyListener(OnKeyListener { v, keyCode, event -> // If the event is a key-down event on the "enter" button
                 if (event.action == KeyEvent.ACTION_DOWN &&
                     keyCode == KeyEvent.KEYCODE_ENTER
@@ -290,7 +291,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && reportIssueId!=thread.address.toString() && !thread.isLocalNumber && TextSecurePreferences.isWalletActive(context)) {
             binding.payAsYouChatLayout.visibility = View.VISIBLE
         }else{
-            binding.payAsYouChatLayout.visibility = View.GONE
+            binding.payAsYouChatLayout.visibility = View.INVISIBLE
         }
     }
 
@@ -303,11 +304,11 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         binding.failedBlockProgressBar.progress = 0
     }
 
-    fun setProgress(progress:Float){
-        binding.blockProgressBar.progress = progress.toInt()
+    fun setProgress(progress:Int){
+        binding.blockProgressBar.progress = progress
     }
 
-    fun setDrawableProgressBar(context: Context, type: Boolean,syncStatus: String) {
+    fun setDrawableProgressBar(context: Context, type: Boolean,syncStatus: String,n: Float) {
         if(TextSecurePreferences.isPayAsYouChat(context)) {
             if (type) {
                 binding.failedBlockProgressBar.isVisible = type
@@ -318,6 +319,50 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
                 binding.blockProgressBar.isVisible = !type
                 if(syncStatus == "100%" && syncStatus != "--") {
                     binding.blockProgressBar.progress = 100
+                }else{
+                    when {
+                        n==4f -> {
+                            binding.blockProgressBar.isVisible = !type
+                        }
+                        n==2f -> {
+                            binding.blockProgressBar.isVisible = !type
+                        }
+                        n==3f -> {
+                            binding.blockProgressBar.isVisible = !type
+                            binding.blockProgressBar.progress = 100
+                        }
+                        n<1f && n >= 0f -> {
+                            if(n>=0.01f && n<0.1f){
+                                binding.blockProgressBar.progress = 5
+                            }else if(n>=0.1f && n<0.2f){
+                                binding.blockProgressBar.progress = 10
+                            }else if(n>=0.2f && n<0.3f){
+                                binding.blockProgressBar.progress = 20
+                            }else if(n>=0.3f && n<0.4f){
+                                binding.blockProgressBar.progress = 30
+                            }else if(n>=0.4f && n<0.5f){
+                                binding.blockProgressBar.progress = 40
+                            }else if(n>=0.55f && n<0.6f){
+                                binding.blockProgressBar.progress = 55
+                            }else if(n>=0.6f && n<0.7f){
+                                binding.blockProgressBar.progress = 60
+                            }else if(n>=0.7f && n<0.8f){
+                                binding.blockProgressBar.progress = 70
+                            }else if(n>=0.8f && n<0.9f){
+                                binding.blockProgressBar.progress = 80
+                            }else if(n>=0.9f && n<0.95f){
+                                binding.blockProgressBar.progress = 90
+                            }else if(n>=0.95f && n<0.99f){
+                                binding.blockProgressBar.progress = 95
+                            }else{
+                                binding.blockProgressBar.progress = 100
+                            }
+                            binding.blockProgressBar.isVisible = !type
+                        }
+                        else -> { // <0
+                            binding.blockProgressBar.isVisible = false
+                        }
+                    }
                 }
                 binding.failedBlockProgressBar.isVisible = type
                 binding.failedBlockProgressBar.progress = 0

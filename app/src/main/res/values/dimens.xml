@@ -164,4 +164,5 @@
     <dimen name="max_text_width">200dp</dimen>
     <dimen name="min_text_width">100dp</dimen>
     <dimen name="extra_large_profile_picture_size">128dp</dimen>
+    <dimen name="item_offset">5dp</dimen>
 </resources>

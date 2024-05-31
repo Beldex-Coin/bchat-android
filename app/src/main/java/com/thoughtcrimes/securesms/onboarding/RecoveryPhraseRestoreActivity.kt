@@ -81,7 +81,7 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
         binding.clearButton.setOnClickListener {
             binding.mnemonicEditText.text.clear()
             binding.recoveryPhraseCountWord.text = "0/25"
-            binding.pasteText.visibility = View.GONE
+            binding.pasteText.visibility = View.VISIBLE
         }
 
         binding.recoveryPhrasePasteIcon.setOnClickListener {

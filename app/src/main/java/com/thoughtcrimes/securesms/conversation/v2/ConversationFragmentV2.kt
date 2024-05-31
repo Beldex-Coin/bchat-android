@@ -1203,7 +1203,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     .request(Manifest.permission.RECORD_AUDIO)
                     .withRationaleDialog(
                         getString(R.string.ConversationActivity_to_send_audio_messages_allow_signal_access_to_your_microphone),
-                        R.drawable.ic_microphone_permission
+                        R.drawable.ic_microphone
                     )
                     .withPermanentDenialDialog(getString(R.string.ConversationActivity_signal_requires_the_microphone_permission_in_order_to_send_audio_messages))
                     .execute()

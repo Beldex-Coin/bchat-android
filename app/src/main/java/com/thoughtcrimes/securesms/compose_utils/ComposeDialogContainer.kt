@@ -230,13 +230,13 @@ class ComposeDialogContainer(
                             LockOptionsDialog(
                                 title = stringResource(R.string.conversation_unmuted__mute_notifications),
                                 options = timesOption.toList(),
-                                currentValue = argument1 ?: "0",
+                                currentValue = timesOption[argument1?.toInt() ?: 0],
                                 onDismiss = {
                                     dismiss()
                                 },
                                 onValueChanged = { _, index ->
+                                    onConfirmWithData(index)
                                     dismiss()
-                                    onConfirmWithData(timesOption[index])
                                 }
                             )
                         }

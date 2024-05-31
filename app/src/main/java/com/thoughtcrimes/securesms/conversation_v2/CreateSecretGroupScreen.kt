@@ -230,7 +230,6 @@ fun CreateSecretGroup(
             )
             LazyColumn(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
@@ -252,9 +251,6 @@ fun CreateSecretGroup(
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(
-                                vertical = 8.dp
-                            )
                     )
                 }
             }
@@ -338,6 +334,7 @@ private fun GroupContact(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
+                    .padding(vertical = 4.dp)
         ) {
             Box(modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)) {
                 ProfilePictureComponent(

@@ -626,9 +626,6 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
         mutableStateOf(false)
     }
 
-    var testingLoader by remember{
-        mutableStateOf(false)
-    }
 
 
     fun setNodes(newItemsCollection: Collection<NodeInfo>?, nodeViewModel: NodeViewModel) {
@@ -659,12 +656,10 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
             if (nodeInfo.isSuccessful) {
                 nodeStatusSuccessAction=true
                 nodeStatusErrorAction=false
-                testingLoader=false
                 nodeStatus=context.getString(R.string.add_node_success)
                 setNodeIsTested(context, true)
             } else {
                 nodeStatusSuccessAction=false
-                testingLoader=false
                 nodeStatusErrorAction=true
                 nodeStatus=(NodeInfoAdapter.getResponseErrorText(context, nodeInfo.responseCode))
                 setNodeIsTested(context, false)
@@ -1028,7 +1023,6 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                                 testNode()
                                 nodeStatusSuccessAction=false
                                 nodeStatusErrorAction=false
-                                testingLoader=true
 
                             },
                             colors=ButtonDefaults.buttonColors(
@@ -1051,7 +1045,7 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                                 modifier=Modifier.padding(horizontal=10.dp)
                         )
                     }
-                    if(testingLoader) {
+                    if(testProgressAction) {
                         CircularProgressIndicator(
                                 modifier=Modifier.height(16.dp).width(16.dp),
                                 color=MaterialTheme.appColors.primaryButtonColor,

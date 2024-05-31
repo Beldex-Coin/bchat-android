@@ -65,6 +65,7 @@ import com.thoughtcrimes.securesms.compose_utils.appColors
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.model.TransactionInfo
 import com.thoughtcrimes.securesms.util.Helper
+import com.thoughtcrimes.securesms.util.copyToClipBoard
 import com.thoughtcrimes.securesms.wallet.WalletFragment
 import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.walletdashboard.FilterTransactionByDatePopUp
 import io.beldex.bchat.BuildConfig
@@ -83,7 +84,6 @@ fun WalletDashBoardScreen(
 
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    val clipboardManager = LocalClipboardManager.current
     val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.US)
     val subDateFormat = SimpleDateFormat("dd-MMM-yyyy", Locale.US)
     val dateTimeFormat = SimpleDateFormat("MMM dd, yyyy, HH:mm:ss a", Locale.US)
@@ -224,7 +224,7 @@ fun WalletDashBoardScreen(
     }
 
     var showFilterOptions by remember {
-        mutableStateOf(true)
+        mutableStateOf(false)
     }
 
     viewModels.transactionInfoItems.observe(lifecycleOwner) { list ->
@@ -1224,13 +1224,7 @@ fun WalletDashBoardScreen(
                                                 .padding(10.dp)
                                                 .clickable(
                                                     onClick = {
-                                                        if (transactionId!!.isNotEmpty()) {
-                                                            clipboardManager.setText(
-                                                                AnnotatedString(
-                                                                    transactionId!!
-                                                                )
-                                                            )
-                                                        }
+                                                        context.copyToClipBoard("Transaction Id", transactionId)
                                                     }
                                                 )
                                         )
@@ -1274,11 +1268,7 @@ fun WalletDashBoardScreen(
                                                     .padding(10.dp)
                                                     .clickable(
                                                         onClick = {
-                                                            clipboardManager.setText(
-                                                                AnnotatedString(
-                                                                    transactionPaymentId!!
-                                                                )
-                                                            )
+                                                            context.copyToClipBoard("Payment Id", transactionPaymentId)
                                                         }
                                                     )
                                             )
@@ -1443,11 +1433,7 @@ fun WalletDashBoardScreen(
                                                 contentDescription = "",
                                                 modifier = Modifier.clickable(
                                                     onClick = {
-                                                        clipboardManager.setText(
-                                                            AnnotatedString(
-                                                                transactionRecipientAddress!!
-                                                            )
-                                                        )
+                                                        context.copyToClipBoard("Recipient Address", transactionRecipientAddress)
                                                     }
                                                 )
                                             )
@@ -1606,7 +1592,6 @@ private fun callIfTransactionListEmpty(size: Int, viewModels: WalletViewModels,s
     if (size > 0) {
         viewModels.setFilterTransactionIconIsClickable(true)
         viewModels.setTransactionListContainerIsVisible(true)
-        //showFilter(true)
     } else {
         viewModels.setFilterTransactionIconIsClickable(false)
         viewModels.setTransactionListContainerIsVisible(false)

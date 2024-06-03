@@ -121,10 +121,10 @@
         <item quantity="other">This will permanently delete all %1$d selected messages.</item>
     </plurals>
     <string name="ConversationFragment_ban_selected_user" translatable="false">Ban this user?</string>
-    <string name="ConversationFragment_save_to_sd_card" translatable="false">Save to storage?</string>
+    <string name="ConversationFragment_save_to_sd_card" translatable="false">Save to Storage?</string>
     <plurals name="ConversationFragment_saving_n_media_to_storage_warning">
-        <item quantity="one">Saving this media to storage will allow any other apps on your device to access it.\n\nContinue?</item>
-        <item quantity="other">Saving all %1$d media to storage will allow any other apps on your device to access them.\n\nContinue?</item>
+        <item quantity="one">Saving this media to storage will allow any other apps on your device to access it.</item>
+        <item quantity="other">Saving all %1$d media to storage will allow any other apps on your device to access them.</item>
     </plurals>
     <plurals name="ConversationFragment_error_while_saving_attachments_to_sd_card">
         <item quantity="one">Error while saving attachment to storage!</item>
@@ -645,9 +645,9 @@
     <string name="trimmer__old_messages_successfully_deleted" translatable="false">Old messages successfully deleted</string>
 
     <!-- transport_selection_list_item -->
-    <string name="Permissions_permission_required" translatable="false">Permission required</string>
-    <string name="Permissions_continue" translatable="false">Continue</string>
-    <string name="Permissions_not_now" translatable="false">Not now</string>
+    <string name="Permissions_permission_required" translatable="false">Permission Required!</string>
+    <string name="Permissions_allow" translatable="false">   Allow   </string>
+    <string name="Permissions_deny" translatable="false">   Deny   </string>
     <string name="backup_enable_dialog__backups_will_be_saved_to_external_storage_and_encrypted_with_the_passphrase_below_you_must_have_this_passphrase_in_order_to_restore_a_backup" translatable="false">Backups will be saved to external storage and encrypted with the passphrase below. You must have this passphrase in order to restore a backup.</string>
     <string name="backup_enable_dialog__i_have_written_down_this_passphrase" translatable="false">I have written down this passphrase. Without it, I will be unable to restore a backup.</string>
     <string name="registration_activity__skip" translatable="false">Skip</string>

@@ -332,6 +332,9 @@
     <style name="Theme.TextSecure.Dialog.Rationale" parent="Theme.AppCompat.DayNight.Dialog.Alert">
         <item name="android:fontFamily">@font/open_sans_semi_bold</item>
         <item name="android:windowBackground">@drawable/default_dialog_background</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:buttonBarNeutralButtonStyle">@style/Widget.Bchat.AlertDialog.NegativeButtonStyle.Permission</item>
+        <item name="android:buttonBarPositiveButtonStyle">@style/Widget.Bchat.AlertDialog.PositiveButtonStyle.Permission</item>
     </style>
 
     <style name="Theme.TextSecure.Dialog.MediaSendProgress" parent="@android:style/Theme.Dialog">

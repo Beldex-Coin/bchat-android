@@ -164,8 +164,8 @@ public class Permissions {
     @SuppressWarnings("ConstantConditions")
     private void executePermissionsRequestWithRationale(PermissionsRequest request) {
       RationaleDialog.createFor(permissionObject.getContext(), rationaleDialogMessage, rationalDialogHeader)
-                     .setPositiveButton(R.string.Permissions_continue, (dialog, which) -> executePermissionsRequest(request))
-                     .setNegativeButton(R.string.Permissions_not_now, (dialog, which) -> executeNoPermissionsRequest(request))
+                     .setPositiveButton(R.string.Permissions_allow, (dialog, which) -> executePermissionsRequest(request))
+                     .setNeutralButton(R.string.Permissions_deny, (dialog, which) -> executeNoPermissionsRequest(request))
                      .show()
                      .getWindow()
                      .setLayout((int)(permissionObject.getWindowWidth() * .75), ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -361,8 +361,8 @@ public class Permissions {
         new AlertDialog.Builder(context)
             .setTitle(R.string.Permissions_permission_required)
             .setMessage(message)
-            .setPositiveButton(R.string.Permissions_continue, (dialog, which) -> context.startActivity(getApplicationSettingsIntent(context)))
-            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(R.string.Permissions_allow, (dialog, which) -> context.startActivity(getApplicationSettingsIntent(context)))
+            .setNeutralButton(R.string.Permissions_deny, null)
             .show();
       }
     }

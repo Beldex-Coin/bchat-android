@@ -32,7 +32,7 @@
         android:layout_marginTop="10dp"
         android:text="@string/call_permission_required_description"
         android:paddingHorizontal="@dimen/medium_spacing"
-        android:textColor="@color/text"
+        android:textColor="@color/download_icon"
         android:textSize="@dimen/small_font_size"
         android:textAlignment="center" />
 

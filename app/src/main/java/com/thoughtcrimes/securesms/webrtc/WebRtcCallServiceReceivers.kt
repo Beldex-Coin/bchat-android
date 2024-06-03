@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.telephony.PhoneStateListener
 import android.telephony.TelephonyCallback
 import android.telephony.TelephonyManager
 import androidx.annotation.RequiresApi
@@ -15,7 +14,7 @@ import com.thoughtcrimes.securesms.ApplicationContext
 import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.webrtc.locks.LockManager
 
-class HangUpRtcOnPstnCallAnsweredListener(private val hangupListener: ()->Unit): PhoneStateListener() {
+/*class HangUpRtcOnPstnCallAnsweredListener(private val hangupListener: ()->Unit): PhoneStateListener() {
 
     companion object {
         private val TAG = Log.tag(HangUpRtcOnPstnCallAnsweredListener::class.java)
@@ -28,7 +27,7 @@ class HangUpRtcOnPstnCallAnsweredListener(private val hangupListener: ()->Unit):
             Log.i(TAG, "Device phone call ended BChat call.")
         }
     }
-}
+}*/
 
 @RequiresApi(Build.VERSION_CODES.S)
 class HangUpRtcTelephonyCallback(private val hangupListener: ()->Unit): TelephonyCallback(), TelephonyCallback.CallStateListener {

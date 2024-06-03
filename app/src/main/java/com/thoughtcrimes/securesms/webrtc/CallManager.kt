@@ -311,12 +311,12 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
 
                 MessageSender.sendNonDurably(
                     CallMessage(
-                    ICE_CANDIDATES,
-                    sdps = sdps,
-                    sdpMLineIndexes = sdpMLineIndexes,
-                    sdpMids = sdpMids,
-                    currentCallId
-                ), currentRecipient.address)
+                        ICE_CANDIDATES,
+                        sdps = sdps,
+                        sdpMLineIndexes = sdpMLineIndexes,
+                        sdpMids = sdpMids,
+                        currentCallId
+                    ), currentRecipient.address)
             }
         }
     }
@@ -733,7 +733,7 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
                 val intent = WebRtcCallService.cameraEnabled(context, true)
                 context.startService(intent)
             }
-         }
+        }
     }
 
     fun handleResponseMessage(recipient: Recipient, callId: UUID, answer: SessionDescription) {
@@ -812,42 +812,6 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
             MessageSender.sendNonDurably(CallMessage.offer(offer.description, callId), recipient.address)
         }
     }
-private fun isCallIdle(context: Context): Int {
-    var isCall = -1
-    val tm = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-    if (ContextCompat.checkSelfPermission(
-            context,
-            android.Manifest.permission.READ_PHONE_STATE
-        ) == PackageManager.PERMISSION_GRANTED
-    ) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            tm.registerTelephonyCallback(
-                context.mainExecutor,
-                object : TelephonyCallback(), TelephonyCallback.CallStateListener {
-                    override fun onCallStateChanged(state: Int) {
-                        when (state) {
-                            TelephonyManager.CALL_STATE_IDLE -> {
-                                isCall = 0
-                            }
-                        }
-                    }
-                })
-
-        } else {
-            tm.listen(object : PhoneStateListener() {
-                override fun onCallStateChanged(state: Int, phoneNumber: String?) {
-                    super.onCallStateChanged(state, phoneNumber)
-                    if (state == TelephonyManager.CALL_STATE_IDLE) {
-                        isCall = 0
-                    }
-                }
-            }, PhoneStateListener.LISTEN_CALL_STATE)
-        }
-    } else {
-        isCall = 0
-    }
-    return isCall
-}
 
     fun isInitiator(): Boolean = peerConnection?.isInitiator() == true
 

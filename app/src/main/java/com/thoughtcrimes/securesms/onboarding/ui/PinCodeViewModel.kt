@@ -38,6 +38,13 @@ class PinCodeViewModel @Inject constructor(
     )
     val successEvent = _successEvent.asSharedFlow()
 
+    private val _successContent = MutableSharedFlow<String?>(
+            replay = 1,
+            onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+
+    val successContent = _successContent.asSharedFlow()
+
     private var savedPassword: String? = null
     private var action: Int = -1
 
@@ -195,8 +202,10 @@ class PinCodeViewModel @Inject constructor(
                                         resourceProvider.getString(R.string.pincode_created)
                                     } else {
                                         resourceProvider.getString(R.string.pincode_changed)
+
                                     }
-                                    _errorMessage.emit(message)
+                                    _successContent.emit(message)
+                                    /*_errorMessage.emit(message)*/
                                     _successEvent.emit(true)
                                 }
                             }

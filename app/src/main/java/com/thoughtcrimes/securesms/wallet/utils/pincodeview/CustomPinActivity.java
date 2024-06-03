@@ -14,6 +14,8 @@ import android.widget.TextView;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLockActivity;
 
+import java.util.Objects;
+
 import io.beldex.bchat.R;
 
 
@@ -64,7 +66,7 @@ public class CustomPinActivity extends AppLockActivity {
         }
 
         AlertDialog alert = dialog.create();
-        alert.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Objects.requireNonNull(alert.getWindow()).setBackgroundDrawableResource(R.color.transparent);
         alert.setCanceledOnTouchOutside(false);
         alert.show();
 

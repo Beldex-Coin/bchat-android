@@ -1,24 +1,27 @@
 package com.thoughtcrimes.securesms.applock
 
+import android.app.AlertDialog
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
-import android.text.InputType
 import android.text.TextWatcher
-import android.text.method.PasswordTransformationMethod
 import android.view.MotionEvent
 import android.view.View
+import android.view.Window
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
-import io.beldex.bchat.databinding.ActivityChangePasswordBinding
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.BaseActionBarActivity
-import com.thoughtcrimes.securesms.keyboard.CustomKeyboardView
 import com.thoughtcrimes.securesms.util.setUpActionBarBchatLogo
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ActivityChangePasswordBinding
+import java.util.Objects
 
 class ChangePasswordActivity : BaseActionBarActivity() {
     private lateinit var binding: ActivityChangePasswordBinding
@@ -76,11 +79,12 @@ class ChangePasswordActivity : BaseActionBarActivity() {
                             this@ChangePasswordActivity,
                             newPasswordEditTxt.text.toString()
                         )
-                        Toast.makeText(
+                       /* Toast.makeText(
                             this@ChangePasswordActivity,
                             "Password Changed Successfully",
                             Toast.LENGTH_LONG
-                        ).show()
+                        ).show()*/
+                        passwordChangedAlert()
                         oldPasswordEditTxt.text.clear()
                         newPasswordEditTxt.text.clear()
                         finish()
@@ -148,5 +152,27 @@ class ChangePasswordActivity : BaseActionBarActivity() {
     }
     override fun onBackPressed() {
         super.onBackPressed()
+    }
+
+    private fun passwordChangedAlert(){
+        val dialog=AlertDialog.Builder(this)
+        val inflater=layoutInflater
+        val dialogView : View=inflater.inflate(R.layout.setup_pin_success, null)
+
+        dialog.setView(dialogView)
+
+        val okButton=dialogView.findViewById<Button>(R.id.okButton)
+        val title=dialogView.findViewById<TextView>(R.id.setUpPinSuccessTitle)
+        title.setText(R.string.your_pin_has_been_changed_successfully)
+
+        val alert=dialog.create()
+        Objects.requireNonNull<Window?>(alert.window).setBackgroundDrawableResource(R.color.transparent)
+        alert.setCanceledOnTouchOutside(false)
+        alert.show()
+
+        okButton.setOnClickListener {
+            alert.dismiss()
+        }
+
     }
 }

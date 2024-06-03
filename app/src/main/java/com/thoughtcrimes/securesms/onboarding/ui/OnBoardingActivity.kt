@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,12 +15,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -27,12 +31,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
@@ -45,7 +56,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.thoughtcrimes.securesms.compose_utils.BChatTheme
+import com.thoughtcrimes.securesms.compose_utils.DialogContainer
 import com.thoughtcrimes.securesms.compose_utils.appColors
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
@@ -153,6 +169,32 @@ fun OnBoardingNavHost(
             val pinCodeAction = it.arguments?.getInt("action")
             val viewModel: PinCodeViewModel = hiltViewModel()
             val state by viewModel.state.collectAsStateWithLifecycle()
+            var showPinChangedPopup by remember {
+                mutableStateOf(false)
+            }
+            var showPinChangedPopupTitle by remember {
+                mutableStateOf("")
+            }
+
+            if (showPinChangedPopup) {
+                PassWordChangedPopup(
+                        onDismiss={
+                            showPinChangedPopup=false
+                            if (finish) {
+                                (context as Activity).apply {
+                                    val data=Intent().apply {
+                                        putExtra("success", true)
+                                    }
+                                    setResult(Activity.RESULT_OK, data)
+                                    finish()
+                                }
+                            } else {
+                                navController.navigate(OnBoardingScreens.CopyRestoreSeedScreen.route)
+                            }
+                        },
+                        showPinChangedPopupTitle
+                )
+            }
             LaunchedEffect(key1 = true) {
                 launch {
                     viewModel.errorMessage.collectLatest { message ->
@@ -162,18 +204,16 @@ fun OnBoardingNavHost(
                 launch {
                     viewModel.successEvent.collectLatest { success ->
                         if (success) {
-                            if (finish) {
-                                (context as Activity).apply {
-                                    val data = Intent().apply {
-                                        putExtra("success", true)
-                                    }
-                                    setResult(Activity.RESULT_OK, data)
-                                    finish()
-                                }
-                            } else {
-                                navController.navigate(OnBoardingScreens.CopyRestoreSeedScreen.route)
-                            }
+                            showPinChangedPopup = true
                         }
+                    }
+                }
+                launch {
+                    viewModel.successContent.collectLatest { message ->
+                        if (message != null) {
+                            showPinChangedPopupTitle =message
+                        }
+
                     }
                 }
             }
@@ -246,9 +286,9 @@ fun OnBoardingNavHost(
             ) {
                 CopySeedScreen(
                     seed = "Ut34co m56m 77odo8 6ve66ne natis023 3diam0id 5accum s3an3 6383ut7 purus eges tas34f acilisis is0233 diam0 id5acc ums3an36383ut7p",
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp)
+                    modifier =Modifier
+                            .fillMaxSize()
+                            .padding(16.dp)
                 )
             }
         }
@@ -267,19 +307,19 @@ private fun ScreenContainer(
             .fillMaxSize()
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+            modifier =Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
         ) {
             Icon(
                 painterResource(id = R.drawable.ic_back_arrow),
                 contentDescription = stringResource(R.string.back),
                 tint = MaterialTheme.appColors.editTextColor,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .clickable {
-                        onBackClick()
-                    }
+                modifier =Modifier
+                        .align(Alignment.TopStart)
+                        .clickable {
+                            onBackClick()
+                        }
             )
 
             Text(
@@ -298,9 +338,9 @@ private fun ScreenContainer(
 
         if (wrapInCard) {
             CardContainer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
+                modifier =Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
             ) {
                 content()
             }
@@ -308,6 +348,62 @@ private fun ScreenContainer(
             content()
         }
     }
+}
+
+
+@Composable
+fun PassWordChangedPopup(onDismiss : () -> Unit, showPinChangedPopupTitle : String) {
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.sent))
+    val isPlaying by remember {
+        mutableStateOf(true)
+    }
+    // for speed
+    val speed by remember {
+        mutableFloatStateOf(1f)
+    }
+    val progress by animateLottieCompositionAsState(composition, isPlaying = isPlaying, speed = speed, restartOnPlay = false)
+    DialogContainer(
+            dismissOnBackPress = false,
+            dismissOnClickOutside = false,
+            onDismissRequest = onDismiss,
+    ) {
+
+        OutlinedCard(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.dialogBackground), elevation=CardDefaults.cardElevation(defaultElevation=4.dp), modifier=Modifier.fillMaxWidth()) {
+            Column(horizontalAlignment=Alignment.CenterHorizontally, verticalArrangement=Arrangement.Center, modifier=Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)) {
+                LottieAnimation(composition, progress, modifier=Modifier
+                        .size(120.dp)
+                        .align(Alignment.CenterHorizontally))
+
+                Text(text=showPinChangedPopupTitle,
+                        textAlign=TextAlign.Center,
+                        style=MaterialTheme.typography.titleMedium.copy(
+                                fontSize=16.sp,
+                                fontWeight=FontWeight(800),
+                                color=MaterialTheme.appColors.primaryButtonColor),
+                        modifier=Modifier.padding(vertical=16.dp)
+                        )
+
+                Button(onClick={ onDismiss() }, colors=ButtonDefaults.buttonColors(containerColor=MaterialTheme.appColors.primaryButtonColor), modifier=Modifier
+                        .height(50.dp)
+                        .width(150.dp)
+                ) {
+                    Text(text=stringResource(id=R.string.ok), style=MaterialTheme.typography.bodyMedium.copy(color=Color.White))
+                }
+            }
+
+        }
+    }
+
+}
+
+@Preview
+@Composable
+fun PopUpPreview(){
+    PassWordChangedPopup({
+
+    }, showPinChangedPopupTitle = "")
 }
 
 @Composable

@@ -363,6 +363,14 @@
           "description":"- Minor Bug fixes"
         }
       ]
+    },
+    {
+      "title": "2.5.1",
+      "descriptions": [
+        {
+          "description":"- Updated call functionalities to adhere with google play's developer guidelines"
+        }
+      ]
     }
   ]
 }

@@ -331,7 +331,7 @@ fun AddressBookScreen(
                                         painter = painterResource(id = R.drawable.wallet_send),
                                         contentDescription = "",
                                         colorFilter = ColorFilter.tint(
-                                            color = MaterialTheme.appColors.selectDateRangeText
+                                            color = MaterialTheme.appColors.primaryButtonColor
                                         ),
                                         modifier = Modifier
                                             .clickable {

@@ -5,12 +5,18 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory.decodeStream
+import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
+import android.graphics.Rect
 import android.os.Build
 import android.view.View
 import android.widget.RemoteViews
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.ui.graphics.Canvas
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.beldex.libbchat.utilities.recipients.Recipient
@@ -19,6 +25,7 @@ import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
 import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.webrtc.WebRTCComposeActivity
 import io.beldex.bchat.R
+
 
 class CallNotificationBuilder {
 
@@ -83,12 +90,44 @@ class CallNotificationBuilder {
                     recipient?.name.toString()
             )
             if (signalProfilePicture != null) {
-                var bitmap=decodeStream(signalProfilePicture.openInputStream(context))
-                bitmap=BitmapUtil.createScaledBitmap(bitmap, 300, 300)
-                contentView.setImageViewBitmap(R.id.image, bitmap)
+                val bitmap=decodeStream(signalProfilePicture.openInputStream(context))
+                val output = Bitmap.createBitmap(
+                    bitmap.width,
+                    bitmap.height, Bitmap.Config.ARGB_8888
+                )
+                val canvas = android.graphics.Canvas(output)
+
+                val paint = Paint()
+                val rect = Rect(0, 0, bitmap.width, bitmap.height)
+
+                paint.isAntiAlias = true
+                canvas.drawARGB(0, 0, 0, 0)
+                canvas.drawCircle(
+                    (bitmap.width / 2).toFloat(), (bitmap.height / 2).toFloat(),
+                    (bitmap.width / 2).toFloat(), paint
+                )
+                paint.setXfermode(PorterDuffXfermode(PorterDuff.Mode.SRC_IN))
+                canvas.drawBitmap(bitmap, rect, rect, paint)
+                contentView.setImageViewBitmap(R.id.image, output)
             } else {
-                val bitmap=BitmapUtil.createScaledBitmap(bit.bitmap, 300, 300)
-                contentView.setImageViewBitmap(R.id.image, bitmap)
+                val output = Bitmap.createBitmap(
+                    bit.bitmap.width,
+                    bit.bitmap.height, Bitmap.Config.ARGB_8888
+                )
+                val canvas = android.graphics.Canvas(output)
+
+                val paint = Paint()
+                val rect = Rect(0, 0, bit.bitmap.width, bit.bitmap.height)
+
+                paint.isAntiAlias = true
+                canvas.drawARGB(0, 0, 0, 0)
+                canvas.drawCircle(
+                    (bit.bitmap.width / 2).toFloat(), (bit.bitmap.height / 2).toFloat(),
+                    (bit.bitmap.width / 2).toFloat(), paint
+                )
+                paint.setXfermode(PorterDuffXfermode(PorterDuff.Mode.SRC_IN))
+                canvas.drawBitmap(bit.bitmap, rect, rect, paint)
+                contentView.setImageViewBitmap(R.id.image, output)
             }
             val pendingIntent = PendingIntent.getActivity(context, 0, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             val intent = Intent(context, WebRtcCallService::class.java)
@@ -98,10 +137,14 @@ class CallNotificationBuilder {
             val answerIntent = Intent(context, WebRTCComposeActivity::class.java)
                     .setAction( if (type == TYPE_INCOMING_PRE_OFFER) WebRTCComposeActivity.ACTION_PRE_OFFER else WebRTCComposeActivity.ACTION_ANSWER)
 
-            val answerPendingIntent = PendingIntent.getService(context, 0, answerIntent, PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            val answerPendingIntent = PendingIntent.getActivity(context, 0, answerIntent, PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
             val builder = NotificationCompat.Builder(context, NotificationChannels.CALLS)
+                .setFullScreenIntent(getFullScreenPendingIntent(
+                    context
+                ), true)
                 .setSound(null)
+                .setColor(context.getColor(R.color.call_notification_background))
                 .setSmallIcon(R.drawable.ic_baseline_call_24)
                 .setContentIntent(pendingIntent)
                     .setOngoing(true)

@@ -2134,7 +2134,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     }
 
-    private fun backToHome() {
+    fun backToHome() {
         val homeFragment: Fragment = HomeFragment()
         requireActivity().supportFragmentManager.beginTransaction()
             .replace(

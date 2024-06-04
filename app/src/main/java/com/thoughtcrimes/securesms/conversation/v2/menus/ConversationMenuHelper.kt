@@ -168,7 +168,7 @@ object ConversationMenuHelper {
             R.id.menu_block -> { block(fragmentV2, thread,deleteThread = false) }
             R.id.menu_copy_bchat_id -> { copyBchatID(fragmentV2, thread) }
             R.id.menu_edit_group -> { editClosedGroup(context, thread) }
-            R.id.menu_leave_group -> { leaveClosedGroup(context, thread) }
+            R.id.menu_leave_group -> { leaveClosedGroup(context, thread,fragmentV2) }
             R.id.menu_invite_to_open_group -> { inviteContacts(context, thread) }
             R.id.menu_unmute_notifications -> { unmute(context, thread) }
             R.id.menu_mute_notifications -> { mute(fragmentV2, thread) }
@@ -405,7 +405,11 @@ object ConversationMenuHelper {
         context.startActivity(intent)
     }
 
-    private fun leaveClosedGroup(context: Context, thread: Recipient) {
+    private fun leaveClosedGroup(
+        context: Context,
+        thread: Recipient,
+        fragmentV2: ConversationFragmentV2
+    ) {
         if (!thread.isClosedGroupRecipient) { return }
         val group = DatabaseComponent.get(context).groupDatabase().getGroup(thread.address.toGroupString()).orNull()
         val admins = group.admins
@@ -433,6 +437,7 @@ object ConversationMenuHelper {
             try {
                 if (isClosedGroup) {
                     MessageSender.leave(groupPublicKey!!, true)
+                    fragmentV2.backToHome()
                 } else {
                     Toast.makeText(context, R.string.ConversationActivity_error_leaving_group, Toast.LENGTH_LONG).show()
                 }

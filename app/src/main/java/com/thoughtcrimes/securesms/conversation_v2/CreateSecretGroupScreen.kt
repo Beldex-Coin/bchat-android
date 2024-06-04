@@ -298,7 +298,12 @@ fun CreateSecretGroup(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = MaterialTheme.appColors.loaderBackground.copy(alpha = 0.5f)),
+                    .background(color = MaterialTheme.appColors.loaderBackground.copy(alpha = 0.5f)).clickable(
+                        enabled = true,
+                        onClick = {
+
+                        }
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 LottieAnimation(

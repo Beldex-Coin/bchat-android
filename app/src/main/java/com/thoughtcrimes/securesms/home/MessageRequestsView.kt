@@ -192,8 +192,8 @@ fun RequestItem(
     onClick: (ThreadRecord) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val address = request.recipient.address.toString()
-    val displayName = getDisplayName(LocalContext.current, address)
+    val context = LocalContext.current
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
@@ -203,7 +203,7 @@ fun RequestItem(
         ) {
             ProfilePictureComponent(
                 publicKey = request.recipient.address.toString(),
-                displayName = displayName,
+                displayName = getDisplayName(context, request.recipient.address.toString()),
                 containerSize = ProfilePictureMode.SmallPicture.size,
                 pictureMode = ProfilePictureMode.SmallPicture,
                 modifier = Modifier

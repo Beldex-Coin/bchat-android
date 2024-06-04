@@ -229,13 +229,13 @@
 
     <!-- MessageRecord -->
     <string name="MessageRecord_message_encrypted_with_a_legacy_protocol_version_that_is_no_longer_supported" translatable="false">Received a message encrypted using an old version of BChat that is no longer supported. Please ask the sender to update to the most recent version and resend the message.</string>
-    <string name="MessageRecord_left_group" translatable="false">You have left the group.</string>
-    <string name="MessageRecord_you_updated_group" translatable="false">You updated the group.</string>
-    <string name="MessageRecord_s_updated_group" translatable="false">%s updated the group.</string>
+    <string name="MessageRecord_left_group" translatable="false">You left this group</string>
+    <string name="MessageRecord_you_updated_group" translatable="false">You updated the group</string>
+    <string name="MessageRecord_s_updated_group" translatable="false">%s updated the group</string>
 
     <!-- ExpirationDialog -->
     <string name="ExpirationDialog_disappearing_messages" translatable="false">Disappearing messages</string>
-    <string name="ExpirationDialog_your_messages_will_not_expire" translatable="false">Your messages will not expire.</string>
+    <string name="ExpirationDialog_your_messages_will_not_expire" translatable="false">Your messages will not expire</string>
     <string name="ExpirationDialog_your_messages_will_disappear_s_after_they_have_been_seen" translatable="false">Messages sent and received in this conversation will disappear %s after they have been seen.</string>
 
     <!-- PassphrasePromptActivity -->
@@ -1507,4 +1507,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="call_permission_required_description">You can enable the <b>‘Voice and video calls\'</b> permission in the <b>Privacy Settings.</b></string>
     <string name="wallet_setup">Wallet Setup</string>
     <string name="message_status_icon_description" translatable="false">Message delivery status</string>
+    <string name="delete_item" translatable="false">Delete Item?</string>
+    <string name="delete_item_description" translatable="false">Are you sure you want to delete the media from device?</string>
+    <string name="all_media" translatable="false">All Media</string>
 </resources>

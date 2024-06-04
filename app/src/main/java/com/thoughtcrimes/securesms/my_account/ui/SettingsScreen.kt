@@ -21,9 +21,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -31,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.thoughtcrimes.securesms.compose_utils.BChatTypography
 import com.thoughtcrimes.securesms.compose_utils.appColors
+import com.thoughtcrimes.securesms.my_account.domain.PathNodeModel
 import io.beldex.bchat.R
 
 enum class SettingItem(val title: Int) {
@@ -46,9 +50,11 @@ enum class SettingItem(val title: Int) {
 
 @Composable
 fun SettingsScreen(
-    navigate: (SettingItem) -> Unit
+    navigate: (SettingItem) -> Unit,
+    viewModel: MyAccountViewModel
 ) {
     val scrollState = rememberScrollState()
+    val nodes by viewModel.pathState.collectAsState()
     Column(
         modifier = Modifier
             .verticalScroll(scrollState)
@@ -57,6 +63,7 @@ fun SettingsScreen(
 
         SettingItem.entries.forEach { item ->
             MyAccountItem(
+                nodes = nodes,
                 title = stringResource(id = item.title),
                 icon = when (item) {
                     SettingItem.Hops -> painterResource(id = R.drawable.ic_hops)
@@ -88,6 +95,7 @@ fun SettingsScreen(
 
 @Composable
 private fun MyAccountItem(
+    nodes: List<PathNodeModel>,
     title: String,
     icon: Painter,
     drawDot: Boolean,
@@ -123,7 +131,7 @@ private fun MyAccountItem(
                         .size(8.dp)
                         .clip(CircleShape)
                         .background(
-                            color = MaterialTheme.appColors.primaryButtonColor
+                            color = if(nodes.isNotEmpty()) MaterialTheme.appColors.primaryButtonColor else Color(0xFFFFCE3A)
                         )
                 )
             }
@@ -137,14 +145,15 @@ private fun MyAccountItem(
     }
 }
 
+/*
 @Preview
 @Composable
 fun SettingScreenPreview() {
-    SettingsScreen(navigate = {})
+    SettingsScreen(navigate = {}, viewModel = MyAccountViewModel)
 }
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun SettingScreenPreviewDark() {
-    SettingsScreen(navigate = {})
-}
+    SettingsScreen(navigate = {}, viewModel = MyAccountViewModel)
+}*/

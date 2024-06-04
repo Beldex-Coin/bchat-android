@@ -36,6 +36,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -69,6 +70,9 @@ import com.thoughtcrimes.securesms.util.copyToClipBoard
 import com.thoughtcrimes.securesms.util.toPx
 import com.thoughtcrimes.securesms.wallet.receive.ReceiveFragment
 import io.beldex.bchat.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
@@ -92,6 +96,10 @@ fun ReceiveScreen(listenerCallback: ReceiveFragment.Listener?, modifier: Modifie
     val beldexAddress by remember {
         mutableStateOf(IdentityKeyUtil.retrieve(context, IdentityKeyUtil.IDENTITY_W_ADDRESS_PREF))
     }
+    var isButtonEnabled by remember {
+        mutableStateOf(true)
+    }
+    val scope = rememberCoroutineScope()
 
     var bcData: BarcodeData?
     var logo: Bitmap? = null
@@ -373,7 +381,15 @@ fun ReceiveScreen(listenerCallback: ReceiveFragment.Listener?, modifier: Modifie
 
 
                 PrimaryButton(onClick = {
-                    shareQrCode()
+                    if(isButtonEnabled) {
+                        isButtonEnabled = false
+                        scope.launch(Dispatchers.Main) {
+                            shareQrCode()
+                            delay(4000)
+                            isButtonEnabled = true
+                        }
+                    }
+
                 }, modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp), shape = RoundedCornerShape(16.dp)) {

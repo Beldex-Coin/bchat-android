@@ -686,6 +686,7 @@ fun SendScreen(
                     }, pendingTransactions!!, txData, onClick = { send()})
                 }
                 if (showTransactionSentPopup) {
+                    showTransactionLoading = false
                     TransactionSuccessPopup(onDismiss = {
                         showTransactionSentPopup = false
                         listener.walletOnBackPressed()

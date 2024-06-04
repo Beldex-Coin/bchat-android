@@ -17,10 +17,11 @@
             android:adjustViewBounds="true"
             app:layout_constraintDimensionRatio="1:1"
             app:lottie_autoPlay="true"
+            app:lottie_loop="false"
             android:layout_gravity="center"
             app:lottie_enableMergePathsForKitKatAndAbove="true"
             app:lottie_fileName="sent.json"
-            app:lottie_speed="1"
+            app:lottie_speed="0.2"
             tools:ignore="ContentDescription" />
 
 

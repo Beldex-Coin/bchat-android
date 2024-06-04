@@ -146,6 +146,7 @@
         app:cardBackgroundColor="@color/received_message_background"
         app:cardCornerRadius="24dp"
         app:contentPadding="8dp"
+        android:layout_marginBottom="8dp"
         app:cardElevation="0dp"
         android:layout_gravity="start"
         android:layout_marginStart="8dp">
@@ -161,7 +162,7 @@
                 app:cardCornerRadius="16dp"
                 app:contentPadding="8dp"
                 app:cardElevation="0dp"
-                app:cardBackgroundColor="@color/received_call_detail_background">
+                app:cardBackgroundColor="@color/received_call_card_background">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -227,6 +228,7 @@
         app:cardCornerRadius="24dp"
         app:contentPadding="8dp"
         app:cardElevation="0dp"
+        android:layout_marginBottom="8dp"
         android:layout_gravity="end"
         android:layout_marginEnd="8dp">
 

@@ -193,5 +193,6 @@
     <color name="flip_camera_icon_tint">#A7A7BA</color>
     <color name="conversation_day_color">#333333</color>
     <color name="popup_menu_background">#F8F8F8</color>
+    <color name="received_call_card_background">#EBEBEB</color>
 
 </resources>

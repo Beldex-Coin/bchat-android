@@ -273,4 +273,5 @@
     <color name="flip_camera_icon_tint">#5F5F76</color>
     <color name="conversation_day_color">#5F5F76</color>
     <color name="popup_menu_background">#2C2C3B</color>
+    <color name="received_call_card_background">#1C1C26</color>
 </resources>

@@ -75,6 +75,8 @@ class PasswordActivity : BaseActionBarActivity() {
                                 viewModel.successEvent.collectLatest { success ->
                                     if (success) {
                                         validateSuccess()
+                                    }else{
+                                        validateSuccess()
                                     }
                                 }
                             }

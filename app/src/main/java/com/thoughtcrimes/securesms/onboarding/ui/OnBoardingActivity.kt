@@ -205,6 +205,18 @@ fun OnBoardingNavHost(
                     viewModel.successEvent.collectLatest { success ->
                         if (success) {
                             showPinChangedPopup = true
+                        }else{
+                            if (finish) {
+                                (context as Activity).apply {
+                                    val data=Intent().apply {
+                                        putExtra("success", true)
+                                    }
+                                    setResult(Activity.RESULT_OK, data)
+                                    finish()
+                                }
+                            } else {
+                                navController.navigate(OnBoardingScreens.CopyRestoreSeedScreen.route)
+                            }
                         }
                     }
                 }

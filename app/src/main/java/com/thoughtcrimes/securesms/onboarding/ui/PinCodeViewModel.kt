@@ -129,7 +129,7 @@ class PinCodeViewModel @Inject constructor(
                             if (action != PinCodeAction.VerifyWalletPin.action && event.pinCode.length == 4) {
                                 viewModelScope.launch {
                                     if (event.pinCode == savedPassword) {
-                                        _successEvent.emit(true)
+                                        _successEvent.emit(false)
                                     } else {
                                         _state.update {
                                             it.copy(

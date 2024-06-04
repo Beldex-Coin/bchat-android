@@ -5,6 +5,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.View
 import android.widget.Toast
 import androidx.compose.ui.platform.LocalContext
@@ -27,6 +28,7 @@ import io.beldex.bchat.databinding.ActivityRecoveryPhraseBinding
 class RecoveryPhraseActivity : BaseActionBarActivity() {
     private lateinit var binding: ActivityRecoveryPhraseBinding
     var copiedSeed = false
+    private var shareButtonLastClickTime: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,7 +75,10 @@ class RecoveryPhraseActivity : BaseActionBarActivity() {
                 copySeed()
             }
             shareButton.setOnClickListener() {
-                shareAddress()
+                if (SystemClock.elapsedRealtime() - shareButtonLastClickTime >= 1000) {
+                    shareButtonLastClickTime = SystemClock.elapsedRealtime()
+                    shareAddress()
+                }
             }
             if (bChatSeedTextView != null) {
                 bChatSeedTextView.text = seed

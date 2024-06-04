@@ -165,7 +165,6 @@ class NodeViewModel @Inject constructor(
             val nodeString=info.toNodeString()
             editor.putString(i.toString(), nodeString)
             i++
-            _currentNode.value = nodeString
         }
         editor.apply()
     }

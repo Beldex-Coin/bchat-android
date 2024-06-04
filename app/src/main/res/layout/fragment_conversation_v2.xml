@@ -640,11 +640,11 @@
                     android:layout_marginTop="8dp">
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/clear_chat"
+                        android:id="@+id/delete_chat"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/open_sans_medium"
-                        android:text="@string/clear_chat"
+                        android:text="@string/delete_chat"
                         app:cornerRadius="24dp"
                         android:textAllCaps="false"
                         android:backgroundTint="@color/received_message_background"

@@ -129,6 +129,7 @@ import com.thoughtcrimes.securesms.data.UserNotes
 import com.thoughtcrimes.securesms.database.ThreadDatabase
 import com.thoughtcrimes.securesms.database.model.MessageRecord
 import com.thoughtcrimes.securesms.database.model.MmsMessageRecord
+import com.thoughtcrimes.securesms.database.model.ThreadRecord
 import com.thoughtcrimes.securesms.delegates.WalletDelegates
 import com.thoughtcrimes.securesms.delegates.WalletDelegatesImpl
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
@@ -194,6 +195,7 @@ import org.apache.commons.lang3.time.DurationFormatUtils
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
+import java.io.IOException
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Locale
@@ -236,6 +238,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 //    var threadId: Long? = -1L
     @Inject
     lateinit var threadDb: ThreadDatabase
+
+    lateinit var threadRecord : ThreadRecord
 
     private val viewModel: ConversationViewModel by viewModels {
         var threadId = requireArguments().getLong(THREAD_ID,-1L)
@@ -2588,7 +2592,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         showBlockProgressBar(recipient)
         /*setting click listener on banner to avoid background click gesture - DO NOT REMOVE This line*/
         binding.blockedBanner.setOnClickListener {  }
-        binding.clearChat.setOnClickListener {
+        binding.deleteChat.setOnClickListener {
             clearChatDialog()
         }
         binding.unblockButton.setOnClickListener {
@@ -2597,15 +2601,37 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun clearChatDialog() {
-        val dialog = ComposeDialogContainer(
-            dialogType = DialogType.ClearChat,
-            onConfirm = {
-
-            },
-            onCancel = {}
+        val dialog=ComposeDialogContainer(
+                dialogType=DialogType.ClearChat,
+                onConfirm={
+                    deleteBlockedConversation()
+                },
+                onCancel={},
         )
         dialog.show(childFragmentManager, ComposeDialogContainer.TAG)
     }
+
+    private fun deleteBlockedConversation() {
+        lifecycleScope.launch(Dispatchers.Main) {
+            val context=requireActivity() as Context
+            // Cancel any outstanding jobs
+            DatabaseComponent.get(context).bchatJobDatabase()
+                    .cancelPendingMessageSendJobs(viewModel.threadId)
+            // Delete the conversation
+            lifecycleScope.launch(Dispatchers.IO) {
+                threadDb.deleteConversation(viewModel.threadId)
+            }
+            // Update the badge count
+            ApplicationContext.getInstance(context).messageNotifier.updateNotification(
+                    context
+            )
+            // Notify the user
+            val toastMessage=R.string.activity_home_conversation_deleted_message
+            Toast.makeText(context, toastMessage, Toast.LENGTH_LONG).show()
+            listenerCallback?.walletOnBackPressed()
+        }
+    }
+
 
     private fun unblockContactDialog() {
         val dialog = ComposeDialogContainer(

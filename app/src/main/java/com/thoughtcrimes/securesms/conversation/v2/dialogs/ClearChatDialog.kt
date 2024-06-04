@@ -63,7 +63,7 @@ fun ClearChatDialog(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = stringResource(id = R.string.clear_chat),
+                text = stringResource(id = R.string.delete_chat),
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.SemiBold
                 ),
@@ -72,7 +72,7 @@ fun ClearChatDialog(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = stringResource(id = R.string.clear_chat_confirmation),
+                text = stringResource(id = R.string.delete_chat_confirmation),
                 style = MaterialTheme.typography.bodyMedium.copy(
 
                 ),
@@ -115,7 +115,7 @@ fun ClearChatDialog(
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(
-                        text = stringResource(id = R.string.clear),
+                        text = stringResource(id = R.string.delete),
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontWeight = FontWeight.Medium,
                             color = MaterialTheme.appColors.clearColor
@@ -153,9 +153,11 @@ fun ClearChatDialog(
 @Composable
 fun ClearChatDialogPreviewDark() {
     BChatTheme {
-        ClearChatDialog(
+        /*ClearChatDialog(
             onAccept = {},
-            onCancel = {}
-        )
+            onCancel = {},
+                threadRecord = ThreadRecord,
+            thread = {},
+        )*/
     }
 }

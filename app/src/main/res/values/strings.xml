@@ -1507,4 +1507,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="call_permission_required_description">You can enable the <b>‘Voice and video calls\'</b> permission in the <b>Privacy Settings.</b></string>
     <string name="wallet_setup">Wallet Setup</string>
     <string name="message_status_icon_description" translatable="false">Message delivery status</string>
+    <string name="all_media_title" translatable="false">All Media</string>
 </resources>

@@ -41,6 +41,8 @@
         android:paddingBottom="8dp"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         tools:text="@string/MessageRecord_you_disabled_disappearing_messages"
         tools:ignore="SmallSp" />
 

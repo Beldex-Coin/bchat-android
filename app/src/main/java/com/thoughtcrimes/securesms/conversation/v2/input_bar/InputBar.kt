@@ -272,7 +272,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
     //Payment Tag
 
     fun setTextColor(thread: Recipient?, reportIssueId: String, status: Boolean) {
-        if (!thread?.isGroupRecipient!! && thread.hasApprovedMe() && !thread.isBlocked && reportIssueId != thread.address.toString() && !thread.isLocalNumber) {
+        if (!thread?.isGroupRecipient!! && thread.hasApprovedMe() && !thread.isBlocked && thread.isApproved && reportIssueId != thread.address.toString() && !thread.isLocalNumber) {
             if (status) {
                 val face = Typeface.createFromAsset(context!!.assets,
                     "fonts/open_sans_bold.ttf")
@@ -288,7 +288,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
     }
 
     fun showPayAsYouChatBDXIcon(thread: Recipient,reportIssueId:String) {
-        if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && reportIssueId!=thread.address.toString() && !thread.isLocalNumber && TextSecurePreferences.isWalletActive(context)) {
+        if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && thread.isApproved && reportIssueId!=thread.address.toString() && !thread.isLocalNumber && TextSecurePreferences.isWalletActive(context)) {
             binding.payAsYouChatLayout.visibility = View.VISIBLE
         }else{
             binding.payAsYouChatLayout.visibility = View.INVISIBLE

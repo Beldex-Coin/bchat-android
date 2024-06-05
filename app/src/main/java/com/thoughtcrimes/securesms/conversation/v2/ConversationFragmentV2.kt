@@ -829,7 +829,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun showPayWithSlide(thread: Recipient?, status: Boolean) {
-        if (thread != null && !thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && HomeActivity.reportIssueBChatID!=thread.address.toString() && !thread.isLocalNumber && status) {
+        if (thread != null && !thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && thread.isApproved && HomeActivity.reportIssueBChatID!=thread.address.toString() && !thread.isLocalNumber && status) {
             binding.slideToPayButton.visibility = View.VISIBLE
         }else{
             binding.slideToPayButton.visibility = View.GONE
@@ -2541,11 +2541,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             val factory = LayoutInflater.from(context)
             val callPermissionDialogView: View =
                 factory.inflate(R.layout.call_permissions_dialog_box, null)
-            val callPermissionDialog = AlertDialog.Builder(requireActivity()).create()
+            val callPermissionDialog = AlertDialog.Builder(context).create()
             callPermissionDialog.setView(callPermissionDialogView)
             callPermissionDialogView.findViewById<Button>(R.id.settingsDialogBoxButton)
                 .setOnClickListener {
-                    val intent = Intent(requireActivity(), PrivacySettingsActivity::class.java)
+                    val intent = Intent(context, PrivacySettingsActivity::class.java)
                     this.activity?.startActivity(intent)
                     callPermissionDialog.dismiss()
                 }

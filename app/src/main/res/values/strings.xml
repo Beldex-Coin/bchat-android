@@ -1455,7 +1455,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="or_join">Or Join</string>
     <string name="let_s_bchat">Let\'s BChat</string>
     <string name="your_chat_id">Your Chat ID</string>
-    <string name="enter_chat_id">Enter Chat ID</string>
+    <string name="enter_chat_id">Enter Chat ID or BNS Name</string>
     <string name="restore_account">Restore Account</string>
     <string name="hello">Hello,</string>
     <string name="we_are_thrilled">We\'re thrilled to have you on board!</string>
@@ -1510,4 +1510,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="delete_item" translatable="false">Delete Item?</string>
     <string name="delete_item_description" translatable="false">Are you sure you want to delete the media from device?</string>
     <string name="all_media" translatable="false">All Media</string>
+    <string name="verify_bns" translatable="false">BNS Name verifying...</string>
 </resources>

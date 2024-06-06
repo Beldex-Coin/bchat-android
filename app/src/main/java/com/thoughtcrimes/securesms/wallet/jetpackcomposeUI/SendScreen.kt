@@ -149,7 +149,7 @@ fun SendScreen(
         mutableStateOf("")
     }
     var totalFunds by remember {
-        mutableStateOf("")
+        mutableStateOf(0L)
     }
 
     val pendingTransactionObj: PendingTransaction? = null
@@ -182,7 +182,7 @@ fun SendScreen(
     }
 
     viewModels.unLockedBalance.observe(lifecycleOwner){unlockedBalance ->
-        totalFunds = unlockedBalance.toString()
+        totalFunds = unlockedBalance
     }
 
     viewModels.selectedOption.observe(lifecycleOwner) { selectedOption ->
@@ -467,16 +467,16 @@ fun SendScreen(
         return isValid
     }
 
-    fun getCleanAmountString(enteredAmount: String): String? {
+    fun getCleanAmountString(enteredAmount: String): String {
         return try {
             val amount = enteredAmount.toDouble()
             if (amount >= 0) {
                 String.format(Locale.US, CLEAN_FORMAT, amount)
             } else {
-                null
+                "0.0"
             }
         } catch (ex: NumberFormatException) {
-            null
+            "0.0"
         }
     }
 
@@ -562,12 +562,12 @@ fun SendScreen(
     fun createTransactionIfPossible() {
         if (CheckOnline.isOnline(context)) {
             checkBeldexAddressField()
-            if (beldexAddress.value.isNotEmpty() && beldexAmount.value.isNotEmpty() && validateBELDEXAmount(beldexAmount.value) && beldexAmount.value.toDouble() > 0.00) {
+            if (beldexAddress.value.isNotEmpty() && beldexAmount.value.isNotEmpty() && validateBELDEXAmount(beldexAmount.value) && beldexAmount.value.toDouble() > 0.00 && totalFunds != 0.0.toLong()) {
                 //val txDatas: TxData = txData()
                 txData.destinationAddress = beldexAddress.value.trim()
                 ServiceHelper.ASSET = null
-                if (getCleanAmountString(beldexAmount.value).equals(Wallet.getDisplayAmount(totalFunds.toLong()))) {
-                    val amount = (totalFunds.toLong() - 10485760)// 10485760 == 050000000
+                if (getCleanAmountString(beldexAmount.value).equals(Wallet.getDisplayAmount(totalFunds))) {
+                    val amount = (totalFunds - 10485760)// 10485760 == 050000000
                     val bdx = getCleanAmountString(beldexAmount.value)
                     if (bdx != null) {
                         txData.amount = amount
@@ -604,7 +604,7 @@ fun SendScreen(
             } else if (beldexAmount.value.isEmpty()) {
                 amountErrorAction = true
                 amountErrorText = context.getString(R.string.beldex_amount_error_message)
-            } else if (beldexAmount.value == ".") {
+            } else if (beldexAmount.value == "." || totalFunds == 0.0.toLong()) {
                 amountErrorAction = true
                 amountErrorText = context.getString(R.string.beldex_amount_valid_error_message)
             } else if (!validateBELDEXAmount(beldexAmount.value)) {
@@ -748,7 +748,7 @@ fun SendScreen(
                                         if (scanFromGallery.value) {
                                             if (it.isNotEmpty()) {
                                                 scanFromGallery.value = false
-                                                if (validateBELDEXAmount(it)) {
+                                                if (validateBELDEXAmount(it) && totalFunds != 0.0.toLong()) {
                                                     amountErrorAction = false
                                                     val bdx = getCleanAmountString(it.toString())
                                                     val amount: BigDecimal = if (bdx != null) {
@@ -767,7 +767,7 @@ fun SendScreen(
                                             }
                                         } else {
                                             if (it.isNotEmpty()) {
-                                                if (validateBELDEXAmount(it)) {
+                                                if (validateBELDEXAmount(it) && totalFunds != 0.0.toLong()) {
                                                     amountErrorAction = false
                                                     val bdx = getCleanAmountString(it)
                                                     val amount: BigDecimal = if (bdx != null) {

@@ -2538,14 +2538,14 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
         if (!TextSecurePreferences.isCallNotificationsEnabled(context)) {
             //SteveJosephh22
-            val factory = LayoutInflater.from(context)
+            val factory = LayoutInflater.from(requireActivity())
             val callPermissionDialogView: View =
                 factory.inflate(R.layout.call_permissions_dialog_box, null)
-            val callPermissionDialog = AlertDialog.Builder(context).create()
+            val callPermissionDialog = AlertDialog.Builder(requireActivity()).create()
             callPermissionDialog.setView(callPermissionDialogView)
             callPermissionDialogView.findViewById<Button>(R.id.settingsDialogBoxButton)
                 .setOnClickListener {
-                    val intent = Intent(context, PrivacySettingsActivity::class.java)
+                    val intent = Intent(requireActivity(), PrivacySettingsActivity::class.java)
                     this.activity?.startActivity(intent)
                     callPermissionDialog.dismiss()
                 }

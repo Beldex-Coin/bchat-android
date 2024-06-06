@@ -132,6 +132,7 @@
         <item name="android:popupMenuStyle">@style/PopupMenu</item>
         <item name="popupMenuStyle">@style/PopupMenu</item>
         <item name="actionOverflowMenuStyle">@style/OverflowMenu</item>
+        <item name="android:statusBarColor">@color/screen_background</item>
     </style>
 
     <style name="OverflowMenu" parent="Widget.AppCompat.PopupMenu.Overflow">

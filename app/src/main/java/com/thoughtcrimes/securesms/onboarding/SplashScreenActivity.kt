@@ -2,9 +2,6 @@ package com.thoughtcrimes.securesms.onboarding
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.thoughtcrimes.securesms.onboarding.ui.PinCodeAction
 import io.beldex.bchat.databinding.ActivitySplashScreenBinding
@@ -17,16 +14,14 @@ class SplashScreenActivity : AppCompatActivity() {
         binding = ActivitySplashScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
         nextPage = intent.extras?.getBoolean("nextPage")!!
-        Handler(Looper.getMainLooper()).postDelayed({
-            if (nextPage) {
-                startActivity(Intent(this, PasswordActivity::class.java).apply {
-                    putExtra("action", PinCodeAction.VerifyPinCode.action)
-                })
-                finish()
-            } else {
-                startActivity(Intent(this, LandingActivity::class.java))
-                finish()
-            }
-        }, 1000)
+        if (nextPage) {
+            startActivity(Intent(this, PasswordActivity::class.java).apply {
+                putExtra("action", PinCodeAction.VerifyPinCode.action)
+            })
+            finish()
+        } else {
+            startActivity(Intent(this, LandingActivity::class.java))
+            finish()
+        }
     }
 }

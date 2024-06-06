@@ -195,7 +195,6 @@ import org.apache.commons.lang3.time.DurationFormatUtils
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
-import java.io.IOException
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Locale
@@ -1998,6 +1997,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 //        binding.searchBottomBar.setData(0, 0)
 //        binding.inputBar.visibility = View.GONE
         binding.searchBar.visibility = View.VISIBLE
+        binding.noMatchesFoundTextview.visibility = View.GONE
         binding.searchQuery.setText("")
         binding.searchQuery.requestFocus()
     }
@@ -2007,6 +2007,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 //        binding.searchBottomBar.visibility = View.GONE
 //        binding.inputBar.visibility = View.VISIBLE
         binding.searchBar.visibility = View.GONE
+        binding.noMatchesFoundTextview.visibility = View.GONE
         adapter.onSearchQueryUpdated(null)
         binding.searchQuery.clearFocus()
         this.activity?.invalidateOptionsMenu()
@@ -2649,35 +2650,37 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     // region Search
     private fun setUpSearchResultObserver() {
-        searchViewModel!!.searchResults.observe(
-            requireActivity(),
-            Observer { result: SearchViewModel.SearchResult? ->
-                Log.d("SearchResult-> ","0")
-                if (result == null) return@Observer
-                Log.d("SearchResult-> ","1")
-                if (result.getResults().isNotEmpty()) {
-                    result.getResults()[result.position]?.let {
-                        Log.d("SearchResult-> ","${it.threadId},${it.bodySnippet}")
-                        jumpToMessage(
-                            it.messageRecipient.address,
-                            it.sentTimestampMs,
-                            Runnable { searchViewModel!!.onMissingResult() })
+        try {
+            searchViewModel!!.searchResults.observe(
+                requireActivity(),
+                Observer { result: SearchViewModel.SearchResult? ->
+                    if (result == null) return@Observer
+                    if (result.getResults().isNotEmpty()) {
+                        result.getResults()[result.position]?.let {
+                            jumpToMessage(
+                                it.messageRecipient.address,
+                                it.sentTimestampMs,
+                                Runnable { searchViewModel!!.onMissingResult() })
+                        }
+                        binding.searchUp.visibility = View.VISIBLE
+                        binding.searchDown.visibility = View.VISIBLE
+                        binding.searchProgress.visibility = View.GONE
+                        binding.closeSearch.visibility = View.VISIBLE
+                        binding.search.visibility = View.GONE
+                        binding.noMatchesFoundTextview.visibility = View.GONE
+                    } else {
+                        binding.searchUp.visibility = View.GONE
+                        binding.searchDown.visibility = View.GONE
+                        binding.searchProgress.visibility = View.GONE
+                        binding.closeSearch.visibility = View.GONE
+                        binding.search.visibility = View.VISIBLE
+                        binding.noMatchesFoundTextview.visibility = View.VISIBLE
                     }
-                    binding.searchUp.visibility = View.VISIBLE
-                    binding.searchDown.visibility = View.VISIBLE
-                    binding.searchProgress.visibility = View.GONE
-                    binding.closeSearch.visibility = View.VISIBLE
-                    binding.search.visibility = View.GONE
-                }else{
-                    binding.searchUp.visibility = View.GONE
-                    binding.searchDown.visibility = View.GONE
-                    binding.searchProgress.visibility = View.GONE
-                    binding.closeSearch.visibility = View.GONE
-                    binding.search.visibility = View.VISIBLE
-                    Toast.makeText(requireActivity(),"No Matches found!",Toast.LENGTH_SHORT).show()
-                }
 //                binding.searchBottomBar.setData(result.position, result.getResults().size)
-            })
+                })
+        }catch(ex:Exception){
+            Log.e("Search result Exception -> ",ex.message.toString())
+        }
     }
 
 

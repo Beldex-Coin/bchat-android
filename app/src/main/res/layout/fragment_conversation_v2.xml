@@ -127,6 +127,7 @@
                     app:boxStrokeWidthFocused="0dp"
                     android:background="@null"
                     android:singleLine="true"
+                    android:longClickable="false"
                     android:imeOptions="actionDone"
                     android:layout_weight="1"/>
 

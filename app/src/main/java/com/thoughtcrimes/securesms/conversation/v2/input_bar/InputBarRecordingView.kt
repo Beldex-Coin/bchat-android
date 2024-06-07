@@ -163,19 +163,19 @@ class InputBarRecordingView : RelativeLayout {
         fadeOutAnimation.addUpdateListener { animator ->
             binding.inputBarMiddleContentContainer.alpha = animator.animatedValue as Float
             binding.lockView.alpha = animator.animatedValue as Float
-            binding.pulseView.alpha = animator.animatedValue as Float
+            /*binding.pulseView.alpha = animator.animatedValue as Float
             binding.recordButtonOverlay.alpha = animator.animatedValue as Float
-            pulseAnimation?.removeAllUpdateListeners()
+            pulseAnimation?.removeAllUpdateListeners()*/
         }
         fadeOutAnimation.start()
-//        val fadeInAnimation = ValueAnimator.ofObject(FloatEvaluator(), 0.0f, 1.0f)
-//        fadeInAnimation.duration = 250L
-//        fadeInAnimation.addUpdateListener { animator ->
-//            binding.inputBarCancelButton.alpha = animator.animatedValue as Float
-//        }
-//        fadeInAnimation.start()
-//        binding.recordButtonOverlayImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_arrow_up, context.theme))
-//        binding.recordButtonOverlay.setOnClickListener { delegate?.sendVoiceMessage() }
+        val fadeInAnimation = ValueAnimator.ofObject(FloatEvaluator(), 0.0f, 1.0f)
+        fadeInAnimation.duration = 250L
+       /* fadeInAnimation.addUpdateListener { animator ->
+            binding.inputBarCancelButton.alpha = animator.animatedValue as Float
+        }*/
+        fadeInAnimation.start()
+        binding.recordButtonOverlayImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_arrow_up, context.theme))
+        binding.recordButtonOverlay.setOnClickListener { delegate?.sendVoiceMessage() }
 //        binding.pulseGroup.visibility = View.GONE
         binding.microphoneOrSendButtonContainer.isVisible = true
         binding.audioWaveForm.visibility = View.VISIBLE

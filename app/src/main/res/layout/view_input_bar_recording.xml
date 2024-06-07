@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="100dp"
         app:cardBackgroundColor="@color/input_bar_background"
+        android:layout_marginEnd="8dp"
         android:layout_gravity="bottom"
         tools:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -23,6 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/input_bar_height"
             android:layout_alignParentBottom="true"
+
             android:orientation="vertical">
 
             <!-- The left content (dot view + duration) -->
@@ -174,14 +176,13 @@
     <LinearLayout
         android:id="@+id/lockView"
         android:layout_width="48dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center_horizontal"
         android:paddingVertical="16dp"
         android:background="@drawable/view_lock_background"
         app:layout_constraintStart_toStartOf="@id/pulseView"
-        app:layout_constraintEnd_toEndOf="@id/pulseView"
-        app:layout_constraintBottom_toBottomOf="@id/timer_container"
+        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="8dp">
 
         <ImageView
@@ -206,7 +207,8 @@
         android:alpha="0.5"
         android:background="@drawable/circle_tintable"
         android:backgroundTint="@color/destructive"
-        app:layout_constraintEnd_toEndOf="@id/timer_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lockView"
         app:layout_constraintBottom_toBottomOf="@id/timer_container"
         android:elevation="15dp"/>
 
@@ -252,7 +254,8 @@
         android:id="@+id/pulseGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         app:constraint_referenced_ids="pulseView,lockView,recordButtonOverlay"
-        tools:visibility="gone"/>
+        tools:visibility="visible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

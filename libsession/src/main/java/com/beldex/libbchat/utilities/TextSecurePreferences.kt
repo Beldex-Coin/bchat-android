@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import com.beldex.libbchat.R
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.CALL_NOTIFICATIONS_ENABLED
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_LOCAL_PROFILE
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_MUTE_VIDEO
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.LAST_VACUUM_TIME
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.PREF_DIALOG_CLICKED
@@ -257,6 +258,8 @@ interface TextSecurePreferences {
     fun getPromotionDialogClicked(): Boolean
     fun setPromotionDialogIgnoreCount(count: Int)
     fun setPromotionDialogClicked()
+    fun setIsLocalProfile(status : Boolean)
+    fun getIsLocalProfile(): Boolean
 
 
     companion object {
@@ -373,6 +376,7 @@ interface TextSecurePreferences {
         const val IS_MUTE_VIDEO = "is_mute_video"
         const val PREF_DIALOG_CLICKED = "promotion_dialog_clicked"
         const val PREF_DIALOG_IGNORED_COUNT = "promotion_dialog_ignored_count"
+        const val IS_LOCAL_PROFILE = "is_local_profile"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -789,7 +793,7 @@ interface TextSecurePreferences {
 
         @JvmStatic
         fun isScreenSecurityEnabled(context: Context): Boolean {
-            return getBooleanPreference(context, SCREEN_SECURITY_PREF, true)
+            return getBooleanPreference(context, SCREEN_SECURITY_PREF, false)
         }
 
         @JvmStatic
@@ -1387,6 +1391,16 @@ interface TextSecurePreferences {
             return getBooleanPreference(context, IS_MUTE_VIDEO, false)
         }
 
+        @JvmStatic
+        fun setIsLocalProfile(context: Context,status: Boolean) {
+            setBooleanPreference(context, IS_LOCAL_PROFILE, status)
+        }
+
+        @JvmStatic
+        fun getIsLocalProfile(context: Context):Boolean {
+            return getBooleanPreference(context, IS_LOCAL_PROFILE, true)
+        }
+
     }
 }
 
@@ -1754,7 +1768,7 @@ class AppTextSecurePreferences @Inject constructor(
     }
 
     override fun isScreenSecurityEnabled(): Boolean {
-        return getBooleanPreference(TextSecurePreferences.SCREEN_SECURITY_PREF, true)
+        return getBooleanPreference(TextSecurePreferences.SCREEN_SECURITY_PREF, false)
     }
 
     override fun setScreenSecurityPreference(status:Boolean) {
@@ -2266,5 +2280,13 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun setPromotionDialogClicked() {
         setBooleanPreference(PREF_DIALOG_CLICKED, true)
+    }
+
+    override fun setIsLocalProfile(status : Boolean) {
+        setBooleanPreference(IS_LOCAL_PROFILE,status)
+    }
+
+    override fun getIsLocalProfile() : Boolean {
+        return getBooleanPreference(IS_LOCAL_PROFILE,true)
     }
 }

@@ -2,10 +2,8 @@ package com.thoughtcrimes.securesms.conversation_v2
 
 import android.app.Activity
 import android.content.Context
-import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -15,7 +13,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -43,17 +40,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.airbnb.lottie.compose.LottieAnimation
@@ -68,13 +62,11 @@ import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.thoughtcrimes.securesms.compose_utils.BChatCheckBox
-import com.thoughtcrimes.securesms.compose_utils.BChatOutlinedTextField
 import com.thoughtcrimes.securesms.compose_utils.BChatTypography
 import com.thoughtcrimes.securesms.compose_utils.PrimaryButton
 import com.thoughtcrimes.securesms.compose_utils.ProfilePictureComponent
 import com.thoughtcrimes.securesms.compose_utils.ProfilePictureMode
 import com.thoughtcrimes.securesms.compose_utils.appColors
-import com.thoughtcrimes.securesms.compose_utils.ui.BChatPreviewContainer
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import io.beldex.bchat.R
 import kotlinx.coroutines.Dispatchers
@@ -282,11 +274,17 @@ fun CreateSecretGroup(
                         .fillMaxWidth()
                         .padding(16.dp),
                     shape = RoundedCornerShape(16.dp),
+                    enabled = groupName.isNotEmpty(),
+                    disabledContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
                 ) {
                     Text(
                         text = stringResource(id = R.string.create),
                         style = BChatTypography.bodyLarge.copy(
-                            color = Color.White
+                            color = if (groupName.isNotEmpty()) {
+                                Color.White
+                            } else {
+                                MaterialTheme.appColors.disabledButtonContent
+                            }
                         ),
                         modifier = Modifier
                             .padding(8.dp)

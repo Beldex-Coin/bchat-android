@@ -51,7 +51,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -59,7 +58,6 @@ import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.PublicKeyValidation
-import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
 import com.thoughtcrimes.securesms.compose_utils.BChatTypography
 import com.thoughtcrimes.securesms.compose_utils.DialogContainer
 import com.thoughtcrimes.securesms.compose_utils.PrimaryButton
@@ -69,7 +67,6 @@ import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.dms.PrivateChatScanQRCodeActivity
 import com.thoughtcrimes.securesms.my_account.ui.MyProfileActivity
-import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.send.TransactionLoadingPopUp
 import io.beldex.bchat.R
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
@@ -229,12 +226,18 @@ fun CreatePrivateChatScreen() {
                 modifier =Modifier
                         .fillMaxWidth()
                         .padding(start=16.dp, end=16.dp, bottom=16.dp),
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(16.dp),
+                enabled = bChatId.isNotEmpty(),
+                disabledContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
             ) {
                 Text(
                     text = stringResource(R.string.let_s_bchat),
                     style = BChatTypography.titleMedium.copy(
-                        color = Color.White,
+                        color = if (bChatId.isNotEmpty()) {
+                            Color.White
+                        } else {
+                            MaterialTheme.appColors.disabledButtonContent
+                        },
                         fontWeight = FontWeight(600)
                     ),
                     modifier = Modifier

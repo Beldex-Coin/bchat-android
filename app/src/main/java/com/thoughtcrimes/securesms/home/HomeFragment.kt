@@ -331,6 +331,8 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         }
     }
 
+    private val broadcastReceivers = mutableListOf<BroadcastReceiver>()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -340,9 +342,6 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         (activity as HomeActivity).setSupportActionBar(binding.toolbar)
         return binding.root
     }
-
-    private var networkChangedReceiver: NetworkChangeReceiver? = null
-    private var isNetworkAvailable = true
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -355,17 +354,6 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         glide = GlideApp.with(this)
         // Set up toolbar buttons
         binding.profileButton.root.glide = glide
-
-        //Hops Warning
-        networkChangedReceiver = NetworkChangeReceiver(::networkChange)
-        networkChangedReceiver!!.register(requireContext())
-        /*if (OnionRequestAPI.paths.isNotEmpty() || isNetworkAvailable) {
-            binding.hopsWarningLayout.visibility = View.GONE
-        } else {
-            binding.hopsWarningLayout.visibility = View.VISIBLE
-        }*/
-
-//        binding.bchatVersion.text = "BChat V${BuildConfig.VERSION_NAME}"
         //New Line
         // Setup Recyclerview's Layout
         binding.navigationMenu.navigationRv.layoutManager = LinearLayoutManager(requireActivity().applicationContext)
@@ -567,8 +555,9 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
             }
         }
         this.broadcastReceiver = broadcastReceiver
-        LocalBroadcastManager.getInstance(requireActivity().applicationContext)
-            .registerReceiver(broadcastReceiver, IntentFilter("blockedContactsChanged"))
+        LocalBroadcastManager.getInstance(requireActivity().applicationContext).registerReceiver(broadcastReceiver, IntentFilter("blockedContactsChanged"))
+        //PathStatus
+        registerObservers()
         activityCallback?.callLifeCycleScope(binding.recyclerView, mmsSmsDatabase,globalSearchAdapter,publicKey,binding.profileButton.root,binding.navigationMenu.drawerProfileName,binding.navigationMenu.drawerProfileIcon.root)
         binding.chatButtons.setContent {
             val isExpanded by homeViewModel.isButtonExpanded.collectAsState()
@@ -601,10 +590,30 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         // binding.navigationMenu.uiMode.text = "Dark Mode"
 
     }
+    private fun registerObservers() {
+        val buildingPathsReceiver: BroadcastReceiver = object : BroadcastReceiver() {
 
-    private fun networkChange(networkAvailable: Boolean) {
-        isNetworkAvailable = networkAvailable
-        if (networkAvailable) {
+            override fun onReceive(context: Context, intent: Intent) {
+                handleBuildingPathsEvent()
+            }
+        }
+        broadcastReceivers.add(buildingPathsReceiver)
+        LocalBroadcastManager.getInstance(requireActivity().applicationContext).registerReceiver(buildingPathsReceiver, IntentFilter("buildingPaths"))
+        val pathsBuiltReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+
+            override fun onReceive(context: Context, intent: Intent) {
+                handlePathsBuiltEvent()
+            }
+        }
+        broadcastReceivers.add(pathsBuiltReceiver)
+        LocalBroadcastManager.getInstance(requireActivity().applicationContext).registerReceiver(pathsBuiltReceiver, IntentFilter("pathsBuilt"))
+    }
+
+    private fun handleBuildingPathsEvent() { update() }
+    private fun handlePathsBuiltEvent() { update() }
+
+    private fun update() {
+        if (OnionRequestAPI.paths.isNotEmpty()) {
             binding.hopsWarningLayout.visibility = View.GONE
         } else {
             binding.hopsWarningLayout.visibility = View.VISIBLE
@@ -849,12 +858,13 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     }
 
     override fun onDestroy() {
-        isNetworkAvailable = false
-        networkChangedReceiver?.unregister(requireContext())
-        networkChangedReceiver = null
         val broadcastReceiver = this.broadcastReceiver
         if (broadcastReceiver != null) {
             LocalBroadcastManager.getInstance(requireActivity().applicationContext).unregisterReceiver(broadcastReceiver)
+        }
+        //PathStatus
+        for (receiver in broadcastReceivers) {
+            LocalBroadcastManager.getInstance(requireActivity().applicationContext).unregisterReceiver(receiver)
         }
         super.onDestroy()
 

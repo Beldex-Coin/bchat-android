@@ -212,8 +212,7 @@ fun MyAccountNavHost(
                                 navController.navigate(MyAccountScreens.ChangeLogScreen.route)
                             }
                         }
-                    },
-                    viewModel = viewModel
+                    }
                 )
             }
         }

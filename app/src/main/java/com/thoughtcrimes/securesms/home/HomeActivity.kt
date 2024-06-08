@@ -242,6 +242,16 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             }
         }
 
+        observeRemoteDialogData()
+
+        /*if(TextSecurePreferences.getAirdropAnimationStatus(this)) {
+            //New Line AirDrop
+            TextSecurePreferences.setAirdropAnimationStatus(this,false)
+            launchSuccessLottieDialog()
+        }*/
+    }
+
+    private fun observeRemoteDialogData() {
         lifecycleScope.launch {
             delay(2000)
             val showPromotion = remoteConfig.showPromotionalOffer()
@@ -253,12 +263,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 dialog.show(supportFragmentManager, PromotionOfferDialog.TAG)
             }
         }
-
-        /*if(TextSecurePreferences.getAirdropAnimationStatus(this)) {
-            //New Line AirDrop
-            TextSecurePreferences.setAirdropAnimationStatus(this,false)
-            launchSuccessLottieDialog()
-        }*/
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

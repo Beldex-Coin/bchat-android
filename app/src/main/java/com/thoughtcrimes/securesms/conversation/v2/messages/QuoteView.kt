@@ -10,6 +10,7 @@ import androidx.core.content.res.use
 import androidx.core.text.toSpannable
 import androidx.core.view.isVisible
 import com.beldex.libbchat.messaging.contacts.Contact
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.google.android.material.card.MaterialCardView
 import com.thoughtcrimes.securesms.conversation.v2.utilities.MentionUtilities
@@ -76,9 +77,17 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     ) {
         // Author
         val author = contactDb.getContactWithBchatID(authorPublicKey)
-        val authorDisplayName = author?.displayName(Contact.contextForRecipient(thread)) ?: "${authorPublicKey.take(4)}...${authorPublicKey.takeLast(4)}"
+        val localNumber = TextSecurePreferences.getLocalNumber(context)
+        val quoteIsLocalUser = localNumber != null && localNumber != null && authorPublicKey == localNumber
+        val authorDisplayName =
+            if (quoteIsLocalUser) context.getString(R.string.QuoteView_you)
+            else author?.displayName(Contact.contextForRecipient(thread)) ?: "${authorPublicKey.take(4)}...${authorPublicKey.takeLast(4)}"
         binding.quoteViewAuthorTextView.text = authorDisplayName
-        binding.quoteViewAuthorTextView.setTextColor(getTextColor(isOutgoingMessage))
+        binding.quoteViewAuthorTextView.setTextColor(if(quoteIsLocalUser){
+            ResourcesCompat.getColor(resources, R.color.button_green, context.theme)
+        }else {
+           getTextColor(isOutgoingMessage)
+        })
         // Body
         binding.quoteViewBodyTextView.text = when {
             isOpenGroupInvitation -> {

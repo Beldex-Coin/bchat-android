@@ -10,6 +10,7 @@ import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedContent
@@ -167,6 +168,22 @@ fun NodeScreen(test:Boolean = false) {
     val nodeViewModel: NodeViewModel=hiltViewModel()
     val context=LocalContext.current
     val lifecycleOwner=LocalLifecycleOwner.current
+
+    var nodesValue by remember {
+        mutableStateOf("")
+    }
+    nodeViewModel.currentNode.observe(lifecycleOwner){ nodes->
+        nodesValue = nodes
+    }
+
+    BackHandler {
+        val returnIntent = Intent()
+        returnIntent.putExtra("selected_node_key",nodesValue)
+        (context as Activity).run {
+            setResult(PassphraseRequiredActionBarActivity.RESULT_OK, returnIntent)
+            (context as ComponentActivity).finish()
+        }
+    }
 
     var callAsyncNodes by remember {
         mutableStateOf(test)
@@ -402,7 +419,9 @@ fun NodeScreen(test:Boolean = false) {
                 .padding(vertical=10.dp)) {
 
 
-            Column(modifier = Modifier.fillMaxWidth().weight(1f)) {
+            Column(modifier =Modifier
+                    .fillMaxWidth()
+                    .weight(1f)) {
 
 
             AnimatedContent(targetState=isVisible, label="NodeList",
@@ -415,7 +434,7 @@ fun NodeScreen(test:Boolean = false) {
                         itemsIndexed(data.toMutableList()) { index, item ->
                             Card(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.editTextBackground), border=BorderStroke(width=2.dp, color=if (item.isSelected) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.editTextBackground), shape=RoundedCornerShape(16.dp), elevation=CardDefaults.cardElevation(defaultElevation=4.dp), modifier=Modifier
                                     .fillMaxWidth()
-                                    .padding(horizontal=16.dp )
+                                    .padding(horizontal=16.dp)
                                     .combinedClickable(
                                             onClick={
                                                 selectedItemIndex=index
@@ -1047,7 +1066,9 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                     }
                     if(testProgressAction) {
                         CircularProgressIndicator(
-                                modifier=Modifier.height(16.dp).width(16.dp),
+                                modifier=Modifier
+                                        .height(16.dp)
+                                        .width(16.dp),
                                 color=MaterialTheme.appColors.primaryButtonColor,
                                 strokeWidth=2.dp
                         )

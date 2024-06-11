@@ -51,6 +51,7 @@ import com.thoughtcrimes.securesms.mms.GlideApp
 import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.permissions.Permissions
 import com.thoughtcrimes.securesms.profiles.ProfileMediaConstraints
+import com.thoughtcrimes.securesms.util.AvatarPlaceholderGenerator
 import com.thoughtcrimes.securesms.util.BitmapDecodingException
 import com.thoughtcrimes.securesms.util.BitmapUtil
 import com.thoughtcrimes.securesms.util.ConfigurationMessageUtilities
@@ -219,7 +220,21 @@ class MyProfileActivity: AppCompatActivity() {
     }
 
     private fun removeAvatar() {
-        updateProfile(true)
+        val latestName = TextSecurePreferences.getProfileName(this)
+        val profile =TextSecurePreferences.getLocalNumber(this)?.let {
+            val sizeInPX =
+                    resources.getDimensionPixelSize(R.dimen.small_profile_picture_size)
+            AvatarPlaceholderGenerator.generate(
+                    this,
+                    sizeInPX,
+                    it,
+                    latestName
+            ).bitmap
+
+        }
+        val profilePictureToBeUploaded = BitmapUtil.toByteArray(profile)
+        TextSecurePreferences.setIsLocalProfile(this,true)
+        updateProfile(true, profilePictureToBeUploaded,displayName = latestName)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -253,6 +268,7 @@ class MyProfileActivity: AppCompatActivity() {
                             ProfileMediaConstraints()
                         ).bitmap
                         Handler(Looper.getMainLooper()).post {
+                            TextSecurePreferences.setIsLocalProfile(this,false)
                             updateProfile(true,profilePictureToBeUploaded)
                         }
                     } catch (e: BitmapDecodingException) {
@@ -343,7 +359,20 @@ class MyProfileActivity: AppCompatActivity() {
             ).show()
             return false
         }
-        updateProfile(false, displayName = displayName)
+       val profile =TextSecurePreferences.getLocalNumber(this)?.let {
+           val sizeInPX =
+                   resources.getDimensionPixelSize(R.dimen.small_profile_picture_size)
+           AvatarPlaceholderGenerator.generate(
+               this,
+               sizeInPX,
+                   it,
+               displayName
+       ).bitmap
+
+       }
+        val profilePictureToBeUploaded = BitmapUtil.toByteArray(profile)
+        val checkGalleryProfile = TextSecurePreferences.getIsLocalProfile(this)
+        updateProfile(checkGalleryProfile,profilePictureToBeUploaded, displayName = displayName)
         return true
     }
 }

@@ -174,67 +174,67 @@ fun MyAccountScreen(
                 )
         ) {
             Card(
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                ),
-                shape = RoundedCornerShape(16.dp),
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 4.dp
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        top = profileSize / 2
-                    )
+                    colors=CardDefaults.cardColors(
+                            containerColor=MaterialTheme.colorScheme.primary
+                    ),
+                    shape=RoundedCornerShape(16.dp),
+                    elevation=CardDefaults.cardElevation(
+                            defaultElevation=4.dp
+                    ),
+                    modifier=Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                    top=profileSize / 2
+                            )
             ) {
                 AccountHeader(
-                    uiState = uiState,
-                    saveDisplayName = {},
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            top = profileSize / 2
-                        ),
-                    profileEditable = true
+                        uiState=uiState,
+                        saveDisplayName={},
+                        modifier=Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                        top=profileSize / 2
+                                ),
+                        profileEditable=true
                 )
             }
 
             Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
+                    contentAlignment=Alignment.Center,
+                    modifier=Modifier
+                            .fillMaxWidth()
             ) {
                 Box(
-                    modifier = Modifier
-                        .clickable {
-                            showPictureDialog = true
-                        }
+                        modifier=Modifier
+                                .clickable {
+                                    showPictureDialog=true
+                                }
                 ) {
                     ProfilePictureComponent(
-                        publicKey = uiState.publicKey,
-                        displayName = uiState.profileName ?: "",
-                        additionalPublicKey = uiState.additionalPublicKey,
-                        additionalDisplayName = uiState.additionalDisplayName,
-                        containerSize = profileSize,
-                        pictureMode = ProfilePictureMode.LargePicture
+                            publicKey=uiState.publicKey,
+                            displayName=uiState.profileName ?: "",
+                            additionalPublicKey=uiState.additionalPublicKey,
+                            additionalDisplayName=uiState.additionalDisplayName,
+                            containerSize=profileSize,
+                            pictureMode=ProfilePictureMode.LargePicture
                     )
 
                     Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .size(32.dp)
-                            .clip(CircleShape)
-                            .background(
-                                color = MaterialTheme.appColors.backgroundColor
-                            )
-                            .align(Alignment.BottomEnd)
+                            contentAlignment=Alignment.Center,
+                            modifier=Modifier
+                                    .size(32.dp)
+                                    .clip(CircleShape)
+                                    .background(
+                                            color=MaterialTheme.appColors.backgroundColor
+                                    )
+                                    .align(Alignment.BottomEnd)
                     ) {
                         Icon(
-                            Icons.Outlined.CameraAlt,
-                            contentDescription = "",
-                            tint = MaterialTheme.appColors.editTextColor,
-                            modifier = Modifier
-                                .size(20.dp)
+                                Icons.Outlined.CameraAlt,
+                                contentDescription="",
+                                tint=MaterialTheme.appColors.editTextColor,
+                                modifier=Modifier
+                                        .size(20.dp)
                         )
                     }
                 }
@@ -289,9 +289,9 @@ fun AccountHeader(
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp)
+        modifier =modifier
+                .fillMaxWidth()
+                .padding(16.dp)
     ) {
         if (!editingName) {
             Row(
@@ -362,34 +362,34 @@ fun AccountHeader(
                             Spacer(modifier = Modifier.height(8.dp))
 
                             Box(
-                                modifier = Modifier
-                                    .height(1.dp)
-                                    .fillMaxWidth()
-                                    .background(
-                                        color = MaterialTheme.appColors.primaryButtonColor
-                                    )
+                                modifier =Modifier
+                                        .height(1.dp)
+                                        .fillMaxWidth()
+                                        .background(
+                                                color=MaterialTheme.appColors.primaryButtonColor
+                                        )
                             )
                         }
                     },
-                    modifier = Modifier
-                        .weight(1f)
-                        .focusRequester(focusRequester)
+                    modifier =Modifier
+                            .weight(1f)
+                            .focusRequester(focusRequester)
                 )
 
                 Spacer(modifier = Modifier.width(2.dp))
 
                 Box(
                     contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .size(24.dp)
-                        .clip(CircleShape)
-                        .background(
-                            color = MaterialTheme.appColors.primaryButtonColor
-                        )
-                        .clickable {
-                            saveDisplayName(textFieldValueState.text)
-                            editingName = false
-                        }
+                    modifier =Modifier
+                            .size(24.dp)
+                            .clip(CircleShape)
+                            .background(
+                                    color=MaterialTheme.appColors.primaryButtonColor
+                            )
+                            .clickable {
+                                saveDisplayName(textFieldValueState.text)
+                                editingName=false
+                            }
                 ) {
                     Icon(
                         Icons.Default.Check,
@@ -464,12 +464,12 @@ fun AccountHeader(
                 Image(
                     bitmap = bitMap.asImageBitmap(),
                     contentDescription = "",
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f)
-                        .aspectRatio(1f)
-                        .padding(
-                            16.dp
-                        )
+                    modifier =Modifier
+                            .fillMaxWidth(0.5f)
+                            .aspectRatio(1f)
+                            .padding(
+                                    16.dp
+                            )
                 )
             } else {
                 Box(
@@ -512,15 +512,15 @@ fun KeyContainer(
 
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .size(32.dp)
-                .clip(CircleShape)
-                .background(
-                    color = MaterialTheme.appColors.primaryButtonColor
-                )
-                .clickable {
-                    onCopy()
-                }
+            modifier =Modifier
+                    .size(32.dp)
+                    .clip(CircleShape)
+                    .background(
+                            color=MaterialTheme.appColors.primaryButtonColor
+                    )
+                    .clickable {
+                        onCopy()
+                    }
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_copy),

@@ -27,6 +27,7 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -97,10 +98,7 @@ fun TransactionConfirmPopUp(
 
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center, modifier =Modifier
                             .padding(horizontal=10.dp)
-                            .background(
-                                    color=MaterialTheme.appColors.settingsCardBackground,
-                                    shape=RoundedCornerShape(12.dp)
-                            )
+                            .background(color=MaterialTheme.appColors.settingsCardBackground, shape=RoundedCornerShape(12.dp))
 
                     ) {
                         Text(text = stringResource(id = R.string.send_amount_title), style = MaterialTheme.typography.titleSmall.copy(fontSize = 14.sp, fontWeight = FontWeight(800), color = MaterialTheme.appColors.textColor), modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp))
@@ -122,10 +120,7 @@ fun TransactionConfirmPopUp(
                     Column(horizontalAlignment = Alignment.Start, verticalArrangement = Arrangement.Center, modifier =Modifier
                             .fillMaxWidth()
                             .padding(10.dp)
-                            .background(
-                                    color=MaterialTheme.appColors.settingsCardBackground,
-                                    shape=RoundedCornerShape(12.dp)
-                            )) {
+                            .background(color=MaterialTheme.appColors.settingsCardBackground, shape=RoundedCornerShape(12.dp))) {
                         Text(text = stringResource(id = R.string.address), style = MaterialTheme.typography.titleSmall.copy(fontSize = 12.sp, fontWeight = FontWeight(400), color = MaterialTheme.appColors.textColor), modifier = Modifier.padding(vertical = 5.dp,horizontal = 20.dp))
                         Card(modifier =Modifier
                                 .fillMaxWidth()
@@ -186,7 +181,7 @@ fun TransactionSuccessPopup(onDismiss: () -> Unit) {
     }
     // for speed
     val speed by remember {
-        mutableStateOf(0.2f)
+        mutableFloatStateOf(1f)
     }
     val scope = rememberCoroutineScope()
     val progress by animateLottieCompositionAsState(composition, isPlaying = isPlaying, speed = speed, restartOnPlay = false)
@@ -196,28 +191,32 @@ fun TransactionSuccessPopup(onDismiss: () -> Unit) {
         onDismissRequest = onDismiss,
     ) {
 
-        OutlinedCard(colors = CardDefaults.cardColors(containerColor = MaterialTheme.appColors.dialogBackground), elevation = CardDefaults.cardElevation(defaultElevation = 4.dp), modifier = Modifier.fillMaxWidth()) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier =Modifier
+        OutlinedCard(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.dialogBackground), elevation=CardDefaults.cardElevation(defaultElevation=4.dp), modifier=Modifier.fillMaxWidth()) {
+            Column(horizontalAlignment=Alignment.CenterHorizontally, verticalArrangement=Arrangement.Center, modifier=Modifier
                     .fillMaxWidth()
                     .padding(10.dp)) {
-                LottieAnimation(composition, progress, modifier =Modifier
+                LottieAnimation(composition, progress, modifier=Modifier
                         .size(120.dp)
-                        .padding(20.dp)
                         .align(Alignment.CenterHorizontally))
 
-                Text(text = stringResource(id = R.string.transaction_successful), textAlign = TextAlign.Center, style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp, fontWeight = FontWeight(800), color = MaterialTheme.appColors.primaryButtonColor), modifier = Modifier.padding(10.dp))
+                Text(
+                        text=stringResource(id=R.string.transaction_successful),
+                        textAlign=TextAlign.Center,
+                        style=MaterialTheme.typography.titleMedium.copy(
+                                fontSize=16.sp,
+                                fontWeight=FontWeight(800),
+                                color=MaterialTheme.appColors.primaryButtonColor),
+                )
 
-                Button(onClick = {
-                    println("not attached to window manager crash called 1")
+                Button(onClick={
                     scope.launch {
                         onDismiss()
                     }
-
-                    println("not attached to window manager crash called 2")
-                                 }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.appColors.primaryButtonColor), modifier =Modifier
+                }, colors=ButtonDefaults.buttonColors(containerColor=MaterialTheme.appColors.primaryButtonColor), modifier=Modifier
+                        .padding(vertical=16.dp)
                         .height(50.dp)
                         .width(150.dp)) {
-                    Text(text = stringResource(id = R.string.ok), style = MaterialTheme.typography.bodyMedium.copy(color = Color.White))
+                    Text(text=stringResource(id=R.string.ok), style=MaterialTheme.typography.bodyMedium.copy(color=Color.White))
                 }
             }
 

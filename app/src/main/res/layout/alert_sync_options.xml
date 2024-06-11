@@ -1,33 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="10dp"
-    app:cardBackgroundColor="@color/syncing_option_card_background"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/transparent">
+    android:background="@drawable/default_dialog_background_inset"
+    android:elevation="4dp"
+    android:padding="16dp"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:orientation="vertical"
-        android:layout_gravity="center"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
-        tools:ignore="MissingConstraints">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="26dp"
             android:fontFamily="@font/open_sans_bold"
-            android:text="Syncing Option"
+            android:text="@string/sync_option"
             android:textAlignment="center"
             android:textSize="@dimen/medium_font_size"
             android:textStyle="bold"
-            android:textColor="#00BD40"/>
+            android:textColor="@color/button_green"/>
 
         <Button
             android:id="@+id/reConnectButton_Alert"
@@ -41,7 +32,7 @@
             android:gravity="center"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
-            android:text="Reconnect"
+            android:text="@string/sync_reconnect"
             android:textColor="@color/text"
             android:textSize="16sp" />
 
@@ -58,10 +49,9 @@
             android:gravity="center"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
-            android:text="Rescan"
+            android:text="@string/sync_rescan"
             android:textColor="@color/text"
             android:textSize="16sp" />
 
 
-    </LinearLayout>
-    </androidx.cardview.widget.CardView>
+</LinearLayout>

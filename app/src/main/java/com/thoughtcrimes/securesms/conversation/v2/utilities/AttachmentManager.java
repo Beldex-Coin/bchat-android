@@ -33,6 +33,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import com.thoughtcrimes.securesms.giph.ui.GiphyActivity;
 import com.thoughtcrimes.securesms.mediasend.MediaSendActivity;
@@ -62,6 +63,7 @@ import java.util.List;
 
 import io.beldex.bchat.R;
 
+@RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
 public class AttachmentManager {
 
   private final static String TAG = AttachmentManager.class.getSimpleName();
@@ -244,11 +246,15 @@ public class AttachmentManager {
     selectMediaType(activity, "*/*", null, requestCode);
   }
 
+  public static String[] storage_permissions_33 = {
+          Manifest.permission.READ_MEDIA_IMAGES,
+          Manifest.permission.READ_MEDIA_VIDEO
+  };
+
   public static void selectGallery(Activity activity, int requestCode, @NonNull Recipient recipient, @NonNull String body) {
     Permissions.PermissionsBuilder builder = Permissions.with(activity);
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-      builder = builder.request(Manifest.permission.READ_MEDIA_VIDEO)
-              .request(Manifest.permission.READ_MEDIA_IMAGES);
+      builder = builder.request(storage_permissions_33);
     } else {
       builder = builder.request(Manifest.permission.READ_EXTERNAL_STORAGE);
     }

@@ -21,7 +21,7 @@
             android:layout_gravity="center"
             app:lottie_enableMergePathsForKitKatAndAbove="true"
             app:lottie_fileName="sent.json"
-            app:lottie_speed="0.2"
+            app:lottie_speed="1"
             tools:ignore="ContentDescription" />
 
 

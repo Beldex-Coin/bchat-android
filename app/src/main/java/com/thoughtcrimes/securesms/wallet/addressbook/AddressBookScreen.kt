@@ -139,7 +139,7 @@ fun AddressBookScreen(
         shape = RoundedCornerShape(50),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(20.dp)
+                .padding(16.dp)
     ) {
         TextField(
             value = searchQuery,
@@ -191,8 +191,31 @@ fun AddressBookScreen(
                 .fillMaxWidth()
         )
     }
+    if(searchQuery.isNotEmpty() && listOfContacts.isEmpty()) {
+        Card(
+                colors=CardDefaults.cardColors(
+                        containerColor=MaterialTheme.appColors.searchBackground
+                ),
+                shape=RoundedCornerShape(50),
+                modifier=Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal=16.dp)
+        ) {
 
-    if (listOfContacts.isEmpty()) {
+            Text(
+                    text=stringResource(id=R.string.no_contacts),
+                    style=MaterialTheme.typography.titleMedium.copy(
+                            color=MaterialTheme.appColors.editTextHint,
+                            fontSize=14.sp,
+                            fontWeight=FontWeight.Normal,
+                            textAlign=TextAlign.Center
+                    ),
+                    modifier=Modifier.padding(horizontal=16.dp, vertical=16.dp)
+            )
+        }
+    }
+
+    if (listOfContacts.isEmpty() && searchQuery.isEmpty()) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier.fillMaxSize()
@@ -235,7 +258,7 @@ fun AddressBookScreen(
     } else {
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier
+            modifier = Modifier.padding(bottom = 16.dp)
         ) {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -259,7 +282,7 @@ fun AddressBookScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp)
+                            .padding(horizontal = 16.dp)
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,

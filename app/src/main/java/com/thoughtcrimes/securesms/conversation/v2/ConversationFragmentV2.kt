@@ -1186,6 +1186,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun startRecordingVoiceMessage() {
+        hideAttachmentContainer()
         checkUnBlock()
         val recipient = viewModel.recipient.value ?: return
         if (recipient.isBlocked) {
@@ -1337,6 +1338,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun inChatBDXOptions() {
+        hideAttachmentContainer()
         checkUnBlock()
         try {
                 val dialog = android.app.AlertDialog.Builder(requireActivity())
@@ -1373,6 +1375,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun walletDetailsUI() {
+        hideAttachmentContainer()
         checkUnBlock()
         when {
             binding.tooltip.isVisible -> {
@@ -2131,6 +2134,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         binding.profilePictureView.root.update(recipient)
         binding.layoutConversation.setOnClickListener()
         {
+            hideAttachmentContainer()
             ConversationMenuHelper.showAllMedia(recipient, listenerCallback)
         }
         binding.backToHomeBtn.setOnClickListener {
@@ -2413,10 +2417,17 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
     }
 
+    private fun hideAttachmentContainer(){
+        isShowingAttachmentOptions = false
+        binding.attachmentContainer.isVisible = isShowingAttachmentOptions
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
+            hideAttachmentContainer()
             return false
         } else if (item.itemId == R.id.menu_call) {
+            hideAttachmentContainer()
             val recipient = viewModel.recipient.value ?: return false
             if (recipient.isContactRecipient && recipient.isBlocked) {
                 unblock()
@@ -2697,6 +2708,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         val recipient = viewModel.recipient.value ?: return
         //New Line
         if (!isMessageRequestThread()) {
+            hideAttachmentContainer()
             ConversationMenuHelper.onPrepareOptionsMenu(
                 menu,
                 requireActivity().menuInflater,

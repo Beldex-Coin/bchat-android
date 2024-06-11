@@ -303,16 +303,14 @@ class VisibleMessageView : LinearLayout {
     override fun onDraw(canvas: Canvas) {
         val spacing = context.resources.getDimensionPixelSize(R.dimen.small_spacing)
         val iconSize = toPx(24, context.resources)
-        val left = binding.expirationTimerViewContainer.left + binding.messageContentView.root.right + spacing
         val top = height - (binding.expirationTimerViewContainer.height / 2) - binding.profilePictureView.root.marginBottom - (iconSize / 2)
-        val right = left + iconSize
         val bottom = top + iconSize
-        swipeToReplyIconRect.left = left
+        swipeToReplyIconRect.left = -(spacing+spacing)
         swipeToReplyIconRect.top = top
-        swipeToReplyIconRect.right = right
+        swipeToReplyIconRect.right = binding.expirationTimerViewContainer.left
         swipeToReplyIconRect.bottom = bottom
 
-        if (translationX < 0 && !binding.expirationTimerView.isVisible) {
+        if (translationX > 0 && !binding.expirationTimerView.isVisible) {
             val threshold = swipeToReplyThreshold
             swipeToReplyIcon.bounds = swipeToReplyIconRect
             swipeToReplyIcon.alpha = (255.0f * (min(abs(translationX), threshold) / threshold)).roundToInt()
@@ -357,15 +355,15 @@ class VisibleMessageView : LinearLayout {
         } else {
             longPressCallback?.let { gestureHandler.removeCallbacks(it) }
         }
-        if (translationX > 0) { return } // Only allow swipes to the left
+        if (translationX < 0) { return } // Only allow swipes to the left
         // The idea here is to asymptotically approach a maximum drag distance
         val damping = 50.0f
-        val sign = -1.0f
+        val sign = 1.0f
         val x = (damping * (sqrt(abs(translationX)) / sqrt(damping))) * sign
         this.translationX = x
         binding.dateBreakTextView.translationX = -x // Bit of a hack to keep the date break text view from moving
         postInvalidate() // Ensure onDraw(canvas:) is called
-        if (abs(x) > swipeToReplyThreshold && abs(previousTranslationX) < swipeToReplyThreshold) {
+        if (abs(x) < swipeToReplyThreshold && abs(previousTranslationX) > swipeToReplyThreshold) {
             performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK)
         }
         previousTranslationX = x

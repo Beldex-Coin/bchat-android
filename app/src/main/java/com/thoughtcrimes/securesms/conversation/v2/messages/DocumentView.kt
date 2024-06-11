@@ -23,12 +23,24 @@ class DocumentView : LinearLayout {
     fun bind(message: MmsMessageRecord, @ColorInt textColor: Int) {
         val document = message.slideDeck.documentSlide!!
         val fontSize = TextSecurePreferences.getChatFontSize(context)
+        val fileName = document.fileName.or("Untitled File").toString()
+        val fileFormat = fileName.substringAfter(".","-")
+        val fileNameWithoutFormat = fileName.substringBefore(".",fileName)
+        val newFileName=if(fileNameWithoutFormat.length >12){
+            "${fileNameWithoutFormat.subSequence(0,12)}... "
+        }else{
+            fileNameWithoutFormat
+        }
         binding.documentTitleTextView.textSize = fontSize!!.toFloat()
-        binding.documentTitleTextView.text = document.fileName.or("Untitled File")
+        if(fileFormat == "-"){
+            binding.documentTitleTextView.text = newFileName
+        }else{
+            binding.documentTitleTextView.text = "$newFileName.$fileFormat"
+        }
         binding.documentTitleTextView.setTextColor(textColor)
         binding.documentViewIconImageView.imageTintList = ColorStateList.valueOf(textColor)
-        binding.documentViewIconTextView.text = binding.documentTitleTextView.text.substring(
-            binding.documentTitleTextView.text.lastIndexOf(".") + 1
+        binding.documentViewIconTextView.text = fileName.substring(
+                fileName.lastIndexOf(".") + 1
         )
         //New Line Image Upload time show progress bar function
         if (!message.isFailed) {

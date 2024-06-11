@@ -145,7 +145,7 @@ fun MyAccountNavHost(
             route = MyAccountScreens.SettingsScreen.route
         ) {
             MyAccountScreenContainer(
-                title = stringResource(id = R.string.activity_settings_title),
+                title = stringResource(id = R.string.account_settings),
                 onBackClick = {
                     (context as ComponentActivity).finish()
                 }

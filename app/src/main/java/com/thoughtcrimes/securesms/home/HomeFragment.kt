@@ -212,7 +212,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     private lateinit var adapter: NavigationRVAdapter
 
     private var items = arrayListOf(
-        NavigationItemModel(R.drawable.ic_menu_outline, "My Account",0),
+        NavigationItemModel(R.drawable.ic_menu_outline, "Account Settings",0),
         NavigationItemModel(R.drawable.ic_settings_outline, "Settings",0),
         NavigationItemModel(R.drawable.ic_notification_outline, "Notification",0),
         NavigationItemModel(R.drawable.ic_msg_rqst_outline, "Message Requests",0),

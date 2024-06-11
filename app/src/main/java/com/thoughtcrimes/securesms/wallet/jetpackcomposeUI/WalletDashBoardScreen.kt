@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -61,6 +62,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.thoughtcrimes.securesms.compose_utils.appColors
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.model.TransactionInfo
@@ -291,6 +297,24 @@ fun WalletDashBoardScreen(
             viewModels,
         )
     }
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.fetch_balance))
+    val isPlaying by remember {
+        mutableStateOf(true)
+    }
+    // for speed
+    val speed by remember {
+        mutableFloatStateOf(1f)
+    }
+
+    val lottieProgress by animateLottieCompositionAsState(composition, iterations = LottieConstants.IterateForever,isPlaying = isPlaying, speed = speed, restartOnPlay = false)
+
+    var fetchBalanceStatus by remember {
+        mutableStateOf(false)
+    }
+
+    viewModels.fetchBalanceStatus.observe(lifecycleOwner) {
+        fetchBalanceStatus = it
+    }
 
     Scaffold(
         topBar = {
@@ -418,28 +442,50 @@ fun WalletDashBoardScreen(
                                 .fillMaxWidth()
                                 .padding(start = 20.dp, top = 10.dp, end = 20.dp, bottom = 50.dp),
                             verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_beldex),
-                                contentDescription = "beldex logo",
-                                colorFilter = ColorFilter.tint(
-                                    color = if (sendCardViewButtonIsEnabled) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.textColor
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ){
+                            Row(
+                                 verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.ic_beldex),
+                                    contentDescription = "beldex logo",
+                                    colorFilter = ColorFilter.tint(
+                                        color = if (sendCardViewButtonIsEnabled) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.textColor
+                                    )
                                 )
-                            )
 
-                            Text(
-                                text = walletBalance,
-                                style = MaterialTheme.typography.bodyMedium.copy(
-                                    color = MaterialTheme.appColors.onMainContainerTextColor,
-                                    fontSize = 25.sp,
-                                    fontWeight = FontWeight.Bold
-                                ),
-                                modifier = Modifier
-                                    .padding(10.dp)
-                            )
+                                Text(
+                                    text = walletBalance,
+                                    style = MaterialTheme.typography.bodyMedium.copy(
+                                        color = MaterialTheme.appColors.onMainContainerTextColor,
+                                        fontSize = 25.sp,
+                                        fontWeight = FontWeight.Bold
+                                    ),
+                                    modifier = Modifier
+                                        .padding(10.dp)
+                                )
+                            }
+                            if (fetchBalanceStatus) {
+                                Row(
+                                    horizontalArrangement = Arrangement.Start,
+                                    verticalAlignment = Alignment.Bottom
+                                ) {
+                                    Text(
+                                        stringResource(id = R.string.fetching_balance),
+                                        style = MaterialTheme.typography.bodyMedium.copy(
+                                            color = MaterialTheme.appColors.editTextHint,
+                                            fontSize = 12.sp
+                                        ),
+                                    )
+                                    LottieAnimation(
+                                        composition, lottieProgress, modifier = Modifier
+                                            .width(10.dp)
+                                            .height(5.dp)
+                                    )
+                                }
+                            }
                         }
-
-
                     }
                     Box(modifier = Modifier.padding(top = 55.dp)) {
 
@@ -1224,7 +1270,10 @@ fun WalletDashBoardScreen(
                                                 .padding(10.dp)
                                                 .clickable(
                                                     onClick = {
-                                                        context.copyToClipBoard("Transaction Id", transactionId)
+                                                        context.copyToClipBoard(
+                                                            "Transaction Id",
+                                                            transactionId
+                                                        )
                                                     }
                                                 )
                                         )
@@ -1268,7 +1317,10 @@ fun WalletDashBoardScreen(
                                                     .padding(10.dp)
                                                     .clickable(
                                                         onClick = {
-                                                            context.copyToClipBoard("Payment Id", transactionPaymentId)
+                                                            context.copyToClipBoard(
+                                                                "Payment Id",
+                                                                transactionPaymentId
+                                                            )
                                                         }
                                                     )
                                             )

@@ -274,4 +274,7 @@
     <color name="conversation_day_color">#5F5F76</color>
     <color name="popup_menu_background">#2C2C3B</color>
     <color name="received_call_card_background">#1C1C26</color>
+    <color name="view_message_view_duration">#EBEBEB</color>
+    <color name="outgoingMessageProgressBackgroundTintColor">#00BD40</color>
+    <color name="incomingMessageProgressBackgroundTintColor">#DDFFFF</color>
 </resources>

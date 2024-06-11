@@ -1,6 +1,7 @@
 package com.thoughtcrimes.securesms.conversation.v2.messages
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Canvas
 import android.os.Handler
 import android.util.AttributeSet
@@ -72,6 +73,23 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
         cornerMask.setTopRightRadius(cornerRadii[1])
         cornerMask.setBottomRightRadius(cornerRadii[2])
         cornerMask.setBottomLeftRadius(cornerRadii[3])
+        if(message.isOutgoing) {
+            binding.voiceMessageViewLoader.indeterminateTintList = ColorStateList.valueOf(context.getColor(R.color.white))
+            binding.seekbarAudio.progressBackgroundTintList = ColorStateList.valueOf(context.getColor(R.color.outgoingMessageProgressBackgroundTintColor))
+            binding.seekbarAudio.progressTintList = ColorStateList.valueOf(context.getColor(R.color.white))
+            binding.seekbarAudio.thumbTintList = ColorStateList.valueOf(context.getColor(R.color.white))
+            binding.voiceMessageViewDurationTextView.setTextColor(context.getColor(R.color.white))
+            binding.voiceMessagePlaybackImageView.setColorFilter(context.getColor(R.color.white))
+            binding.viewVoiceMessageCard.setCardBackgroundColor(context.getColor(R.color.dialled_call_detail_background))
+        }else{
+            binding.voiceMessageViewLoader.indeterminateTintList = ColorStateList.valueOf(context.getColor(R.color.icon_tint))
+            binding.seekbarAudio.progressBackgroundTintList = ColorStateList.valueOf(context.getColor(R.color.incomingMessageProgressBackgroundTintColor))
+            binding.seekbarAudio.progressTintList = ColorStateList.valueOf(context.getColor(R.color.outgoingMessageProgressBackgroundTintColor))
+            binding.seekbarAudio.thumbTintList = ColorStateList.valueOf(context.getColor(R.color.outgoingMessageProgressBackgroundTintColor))
+            binding.voiceMessageViewDurationTextView.setTextColor(context.getColor(R.color.view_message_view_duration))
+            binding.voiceMessagePlaybackImageView.setColorFilter(context.getColor(R.color.icon_tint))
+            binding.viewVoiceMessageCard.setCardBackgroundColor(context.getColor(R.color.received_call_card_background))
+        }
 
         // only process audio if downloaded
         if (audio.isPendingDownload || audio.isInProgress) {

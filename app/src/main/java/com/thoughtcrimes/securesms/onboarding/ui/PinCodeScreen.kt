@@ -39,11 +39,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.coerceAtMost
 import androidx.compose.ui.unit.dp
 import com.thoughtcrimes.securesms.compose_utils.BChatTheme
+import com.thoughtcrimes.securesms.compose_utils.BChatTypography
 import com.thoughtcrimes.securesms.compose_utils.PinCodeView
 import com.thoughtcrimes.securesms.compose_utils.PrimaryButton
 import com.thoughtcrimes.securesms.compose_utils.appColors
@@ -288,20 +290,26 @@ fun PinCodeScreen(
                         },
                         enabled = pin.length == 4,
                         modifier = Modifier
-                            .fillMaxWidth(0.8f)
+                            .fillMaxWidth().
+                            padding(
+                                start = 16.dp,
+                                end = 16.dp,
+                            )
                             .align(Alignment.CenterHorizontally)
                             .onSizeChanged {
                                 buttonSize = it
                             },
+                        shape = RoundedCornerShape(16.dp),
                         disabledContainerColor = MaterialTheme.appColors.beldexAddressBackground
                     ) {
                         Text(
                             text = stringResource(id = R.string.next),
-                            style = MaterialTheme.typography.titleMedium.copy(
+                            style = BChatTypography.titleMedium.copy(
+                                fontWeight = FontWeight.Medium,
                                 color = if(pin.length == 4) Color.White else MaterialTheme.appColors.disabledNextButtonColor
                             ),
                             modifier = Modifier
-                                .padding(4.dp)
+                                .padding(8.dp)
                         )
                     }
                 }

@@ -10,6 +10,7 @@ import android.graphics.Typeface
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.AsyncTask
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -25,6 +26,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
+import androidx.fragment.app.FragmentManager
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.messaging.sending_receiving.leave
 import com.beldex.libbchat.utilities.ExpirationUtil
@@ -36,9 +38,10 @@ import com.beldex.libsignal.utilities.guava.Optional
 import com.beldex.libsignal.utilities.toHexString
 import com.thoughtcrimes.securesms.ShortcutLauncherActivity
 import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
+import com.thoughtcrimes.securesms.compose_utils.ComposeDialogContainer
+import com.thoughtcrimes.securesms.compose_utils.DialogType
 import com.thoughtcrimes.securesms.contacts.SelectContactsActivity
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
-import com.thoughtcrimes.securesms.conversation.v2.utilities.NotificationUtils
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.groups.EditClosedGroupActivity
 import com.thoughtcrimes.securesms.groups.EditClosedGroupActivity.Companion.groupIDKey
@@ -152,11 +155,12 @@ object ConversationMenuHelper {
     }
 
     fun onOptionItemSelected(
-        context: Context,
-        fragmentV2: ConversationFragmentV2,
-        item: MenuItem,
-        thread: Recipient,
-        listenerCallback: ConversationFragmentV2.Listener?
+            context : Context,
+            fragmentV2 : ConversationFragmentV2,
+            item : MenuItem,
+            thread : Recipient,
+            listenerCallback : ConversationFragmentV2.Listener?,
+            childFragmentManager : FragmentManager
     ): Boolean {
         when (item.itemId) {
             R.id.menu_view_all_media -> { showAllMedia(thread,listenerCallback) }
@@ -172,7 +176,7 @@ object ConversationMenuHelper {
             R.id.menu_invite_to_open_group -> { inviteContacts(context, thread) }
             R.id.menu_unmute_notifications -> { unmute(context, thread) }
             R.id.menu_mute_notifications -> { mute(fragmentV2, thread) }
-            R.id.menu_notification_settings -> { setNotifyType(context, thread) }
+            R.id.menu_notification_settings -> { setNotifyType(context, thread, childFragmentManager) }
           /*  R.id.menu_call -> {
                 *//*Hales63*//*
                 if (isOnline(context)) {
@@ -473,10 +477,23 @@ object ConversationMenuHelper {
         listener.showMuteOptionDialog(thread)
     }
 
-    private fun setNotifyType(context: Context, thread: Recipient) {
-        NotificationUtils.showNotifyDialog(context, thread) { notifyType ->
-            DatabaseComponent.get(context).recipientDatabase().setNotifyType(thread, notifyType)
+    private fun setNotifyType(context : Context, thread : Recipient, fragmentManager : FragmentManager) {
+        val dialog = ComposeDialogContainer(
+                dialogType = DialogType.NotificationSettings,
+                onConfirm = {
+
+                },
+                onCancel = {},
+                onConfirmWithData = { index ->
+                    DatabaseComponent.get(context).recipientDatabase().setNotifyType(thread, index.toString().toInt())
+                }
+        )
+        dialog.apply {
+            arguments = Bundle().apply {
+                putInt(ComposeDialogContainer.EXTRA_ARGUMENT_1,thread.notifyType)
+            }
         }
+        dialog.show(fragmentManager, ComposeDialogContainer.TAG)
     }
 
     interface ConversationMenuListener {

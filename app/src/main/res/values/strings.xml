@@ -1517,4 +1517,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="sync_rescan" translatable="false">Rescan</string>
     <string name="bns_name_warning_message" translatable="false">Invalid BNS</string>
     <string name="account_settings" translatable="false">Account Settings</string>
+    <string name="delete_conversation" translatable="false">Delete Conversation?</string>
+    <string name="accept_request" translatable="false">Accept Request?</string>
+    <string name="decline_request" translatable="false">Decline Request?</string>
 </resources>

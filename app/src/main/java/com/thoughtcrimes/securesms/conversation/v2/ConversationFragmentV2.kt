@@ -2447,7 +2447,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 this,
                 item,
                 recipient,
-                listenerCallback
+                listenerCallback,
+                childFragmentManager
             )
         } ?: false
     }
@@ -3187,44 +3188,32 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     /*Hales63*/
     private fun acceptAlertDialog() {
-        val dialog = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog)
-            .setMessage(resources.getString(R.string.message_requests_accept_message))
-            .setPositiveButton(R.string.accept) { _, _ ->
-                acceptMessageRequest()
-                viewModel.recipient.value?.let {
-                    showBlockProgressBar(it)
-                }
-            }
-            .setNegativeButton(R.string.cancel) { _, _ ->
-                // Do nothing
-            }.show()
-
-        //SteveJosephh21
-        val textView: TextView? = dialog.findViewById(android.R.id.message)
-        val face: Typeface =
-            Typeface.createFromAsset(requireActivity().assets, "fonts/open_sans_medium.ttf")
-        textView!!.typeface = face
+        val acceptRequest = ComposeDialogContainer(
+                dialogType = DialogType.AcceptRequest,
+                onConfirm = {
+                    acceptMessageRequest()
+                    viewModel.recipient.value?.let {
+                        showBlockProgressBar(it)
+                    }
+                },
+                onCancel = {},
+        )
+        acceptRequest.show(childFragmentManager, ComposeDialogContainer.TAG)
     }
 
     private fun declineAlertDialog() {
-        val dialog = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog_Clear_All)
-            .setMessage(resources.getString(R.string.message_requests_decline_message))
-            .setPositiveButton(R.string.decline) { _, _ ->
-                viewModel.declineMessageRequest()
-                lifecycleScope.launch(Dispatchers.IO) {
-                    ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(requireActivity())
-                }
-                backToHome()
-            }
-            .setNegativeButton(R.string.cancel) { _, _ ->
-                // Do nothing
-            }.show()
-
-        //SteveJosephh21
-        val textView: TextView? = dialog.findViewById(android.R.id.message)
-        val face: Typeface =
-            Typeface.createFromAsset(requireActivity().assets, "fonts/open_sans_medium.ttf")
-        textView!!.typeface = face
+        val declineRequest = ComposeDialogContainer(
+                dialogType = DialogType.DeclineRequest,
+                onConfirm = {
+                    viewModel.declineMessageRequest()
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(requireActivity())
+                    }
+                    backToHome()
+                },
+                onCancel = {},
+        )
+        declineRequest.show(childFragmentManager, ComposeDialogContainer.TAG)
     }
 
     private fun handleMentionSelected(mention: Mention) {

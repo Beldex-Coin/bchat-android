@@ -108,6 +108,7 @@ import org.apache.commons.lang3.time.DurationFormatUtils
 import timber.log.Timber
 import java.io.IOException
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -280,6 +281,81 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         ) = true
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+        /*    val threadID = thread.threadId
+            val recipient = thread.recipient
+            val message = if (recipient.isGroupRecipient) {
+                val group = groupDb.getGroup(recipient.address.toString()).orNull()
+                if (group != null && group.admins.map { it.toString() }
+                                .contains(TextSecurePreferences.getLocalNumber(requireActivity()))) {
+                    "Because you are the creator of this group it will be deleted for everyone. This cannot be undone."
+                } else {
+                    resources.getString(R.string.activity_home_leave_group_dialog_message)
+                }
+            } else {
+                resources.getString(R.string.activity_home_delete_conversation_dialog_message)
+            }
+
+            val deleteConversation = ComposeDialogContainer(
+                    dialogType = DialogType.DeleteChat,
+                    onConfirm = {
+                        lifecycleScope.launch(Dispatchers.Main) {
+                            val context = requireActivity() as Context
+                            // Cancel any outstanding jobs
+                            DatabaseComponent.get(context).bchatJobDatabase()
+                                    .cancelPendingMessageSendJobs(threadID)
+                            // Send a leave group message if this is an active closed group
+                            if (recipient.address.isClosedGroup && DatabaseComponent.get(context)
+                                            .groupDatabase().isActive(recipient.address.toGroupString())
+                            ) {
+                                var isClosedGroup: Boolean
+                                var groupPublicKey: String?
+                                try {
+                                    groupPublicKey =
+                                            GroupUtil.doubleDecodeGroupID(recipient.address.toString())
+                                                    .toHexString()
+                                    isClosedGroup = DatabaseComponent.get(context).beldexAPIDatabase()
+                                            .isClosedGroup(groupPublicKey)
+                                } catch (e: IOException) {
+                                    groupPublicKey = null
+                                    isClosedGroup = false
+                                }
+                                if (isClosedGroup) {
+                                    MessageSender.explicitLeave(groupPublicKey!!, false)
+                                }
+                            }
+                            // Delete the conversation
+                            val v2OpenGroup =
+                                    DatabaseComponent.get(requireActivity()).beldexThreadDatabase()
+                                            .getOpenGroupChat(threadID)
+                            if (v2OpenGroup != null) {
+                                OpenGroupManager.delete(
+                                        v2OpenGroup.server,
+                                        v2OpenGroup.room,
+                                        requireActivity()
+                                )
+                            } else {
+                                lifecycleScope.launch(Dispatchers.IO) {
+                                    threadDb.deleteConversation(threadID)
+                                }
+                            }
+                            // Update the badge count
+                            ApplicationContext.getInstance(context).messageNotifier.updateNotification(
+                                    context
+                            )
+                            // Notify the user
+                            val toastMessage =
+                                    if (recipient.isGroupRecipient) R.string.MessageRecord_left_group else R.string.activity_home_conversation_deleted_message
+                            Toast.makeText(context, toastMessage, Toast.LENGTH_LONG).show()
+                        }
+                    },
+                    onCancel = {},
+            )
+            deleteConversation.apply {
+                arguments = Bundle().apply {
+                    putString(ComposeDialogContainer.EXTRA_ARGUMENT_1,message)
+                }
+            }
+            deleteConversation.show(childFragmentManager, ComposeDialogContainer.TAG)*/
             Toast.makeText(requireContext(), "Message Deleted", Toast.LENGTH_SHORT).show()
         }
 
@@ -1035,9 +1111,23 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                 setConversationMuted(thread, false)
             }
             R.id.menu_notification_settings -> {
-                NotificationUtils.showNotifyDialog(requireActivity(), thread.recipient) { notifyType ->
-                    setNotifyType(thread, notifyType)
+                val dialog = ComposeDialogContainer(
+                        dialogType = DialogType.NotificationSettings,
+                        onConfirm = {
+
+                        },
+                        onCancel = {},
+                        onConfirmWithData = { index ->
+                            DatabaseComponent.get(requireActivity()).recipientDatabase().setNotifyType(thread.recipient, index.toString().toInt())
+                            binding.recyclerView.adapter?.notifyDataSetChanged()
+                        }
+                )
+                dialog.apply {
+                    arguments = Bundle().apply {
+                        putInt(ComposeDialogContainer.EXTRA_ARGUMENT_1,thread.recipient.notifyType)
+                    }
                 }
+                dialog.show(childFragmentManager, ComposeDialogContainer.TAG)
             }
             R.id.menu_mark_read -> {
                 markAllAsRead(thread)
@@ -1050,44 +1140,35 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     }
 
     private fun blockConversation(thread: ThreadRecord) {
-        val dialog = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog)
-            .setTitle(R.string.RecipientPreferenceActivity_block_this_contact_question)
-            .setMessage(R.string.RecipientPreferenceActivity_you_will_no_longer_receive_messages_and_calls_from_this_contact)
-            .setNegativeButton(android.R.string.cancel, null)
-            .setPositiveButton(R.string.RecipientPreferenceActivity_block) { dialog, _ ->
-                lifecycleScope.launch(Dispatchers.IO) {
-                    recipientDatabase.setBlocked(thread.recipient, true)
-                    withContext(Dispatchers.Main) {
-                        binding.recyclerView.adapter!!.notifyDataSetChanged()
-                        dialog.dismiss()
+        val blockDialog = ComposeDialogContainer(
+                dialogType = DialogType.BlockUser,
+                onConfirm = {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        recipientDatabase.setBlocked(thread.recipient, true)
+                        withContext(Dispatchers.Main) {
+                            binding.recyclerView.adapter!!.notifyDataSetChanged()
+                        }
                     }
-                }
-            }.show()
-        //New Line
-        val textView: TextView = dialog.findViewById(android.R.id.message)
-        val face: Typeface = Typeface.createFromAsset(requireActivity().assets, "fonts/open_sans_medium.ttf")
-        textView.typeface = face
+                },
+                onCancel = {},
+        )
+        blockDialog.show(childFragmentManager, ComposeDialogContainer.TAG)
     }
 
     private fun unblockConversation(thread: ThreadRecord) {
-        val dialog = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog)
-            .setTitle(R.string.RecipientPreferenceActivity_unblock_this_contact_question)
-            .setMessage(R.string.RecipientPreferenceActivity_you_will_once_again_be_able_to_receive_messages_and_calls_from_this_contact)
-            .setNegativeButton(android.R.string.cancel, null)
-            .setPositiveButton(R.string.RecipientPreferenceActivity_unblock) { dialog, _ ->
-                lifecycleScope.launch(Dispatchers.IO) {
-                    recipientDatabase.setBlocked(thread.recipient, false)
-                    withContext(Dispatchers.Main) {
-                        binding.recyclerView.adapter!!.notifyDataSetChanged()
-                        dialog.dismiss()
+        val unBlockDialog = ComposeDialogContainer(
+                dialogType = DialogType.UnblockUser,
+                onConfirm = {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        recipientDatabase.setBlocked(thread.recipient, false)
+                        withContext(Dispatchers.Main) {
+                            binding.recyclerView.adapter!!.notifyDataSetChanged()
+                        }
                     }
-                }
-            }.show()
-
-        //New Line
-        val textView: TextView = dialog.findViewById(android.R.id.message)
-        val face: Typeface = Typeface.createFromAsset(requireActivity().assets, "fonts/open_sans_medium.ttf")
-        textView.typeface = face
+                },
+                onCancel = {},
+        )
+        unBlockDialog.show(childFragmentManager, ComposeDialogContainer.TAG)
     }
 
     private fun setConversationMuted(thread: ThreadRecord, isMuted: Boolean) {
@@ -1099,14 +1180,30 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                 }
             }
         } else {
-            MuteDialog.show(requireActivity()) { until: Long ->
-                lifecycleScope.launch(Dispatchers.IO) {
-                    recipientDatabase.setMuted(thread.recipient, until)
-                    withContext(Dispatchers.Main) {
-                        binding.recyclerView.adapter!!.notifyDataSetChanged()
+            val dialog = ComposeDialogContainer(
+                    dialogType = DialogType.MuteChat,
+                    onConfirm = {
+                                println("mute notification called 1")
+                    },
+                    onCancel = {},
+                    onConfirmWithData = { index ->
+                        val muteUntil = when (index as Int) {
+                            1 -> System.currentTimeMillis() + TimeUnit.HOURS.toMillis(2)
+                            2 -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1)
+                            3 -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(7)
+                            4 -> Long.MAX_VALUE
+                            else -> System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1)
+                        }
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            DatabaseComponent.get(requireContext()).recipientDatabase().setMuted(thread.recipient, muteUntil)
+                            withContext(Dispatchers.Main) {
+                                binding.recyclerView.adapter!!.notifyDataSetChanged()
+                            }
+                        }
                     }
-                }
-            }
+            )
+            dialog.arguments = bundleOf(ComposeDialogContainer.EXTRA_ARGUMENT_1 to thread.recipient.mutedUntil)
+            dialog.show(childFragmentManager, ComposeDialogContainer.TAG)
         }
     }
 
@@ -1149,68 +1246,67 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         } else {
             resources.getString(R.string.activity_home_delete_conversation_dialog_message)
         }
-        val dialog = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog)
-            .setMessage(message)
-            .setPositiveButton(R.string.yes) { _, _ ->
-                lifecycleScope.launch(Dispatchers.Main) {
-                    val context = requireActivity() as Context
-                    // Cancel any outstanding jobs
-                    DatabaseComponent.get(context).bchatJobDatabase()
-                        .cancelPendingMessageSendJobs(threadID)
-                    // Send a leave group message if this is an active closed group
-                    if (recipient.address.isClosedGroup && DatabaseComponent.get(context)
-                            .groupDatabase().isActive(recipient.address.toGroupString())
-                    ) {
-                        var isClosedGroup: Boolean
-                        var groupPublicKey: String?
-                        try {
-                            groupPublicKey =
-                                GroupUtil.doubleDecodeGroupID(recipient.address.toString())
-                                    .toHexString()
-                            isClosedGroup = DatabaseComponent.get(context).beldexAPIDatabase()
-                                .isClosedGroup(groupPublicKey)
-                        } catch (e: IOException) {
-                            groupPublicKey = null
-                            isClosedGroup = false
+        val deleteConversation = ComposeDialogContainer(
+                dialogType = DialogType.DeleteChat,
+                onConfirm = {
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        val context = requireActivity() as Context
+                        // Cancel any outstanding jobs
+                        DatabaseComponent.get(context).bchatJobDatabase()
+                                .cancelPendingMessageSendJobs(threadID)
+                        // Send a leave group message if this is an active closed group
+                        if (recipient.address.isClosedGroup && DatabaseComponent.get(context)
+                                        .groupDatabase().isActive(recipient.address.toGroupString())
+                        ) {
+                            var isClosedGroup: Boolean
+                            var groupPublicKey: String?
+                            try {
+                                groupPublicKey =
+                                        GroupUtil.doubleDecodeGroupID(recipient.address.toString())
+                                                .toHexString()
+                                isClosedGroup = DatabaseComponent.get(context).beldexAPIDatabase()
+                                        .isClosedGroup(groupPublicKey)
+                            } catch (e: IOException) {
+                                groupPublicKey = null
+                                isClosedGroup = false
+                            }
+                            if (isClosedGroup) {
+                                MessageSender.explicitLeave(groupPublicKey!!, false)
+                            }
                         }
-                        if (isClosedGroup) {
-                            MessageSender.explicitLeave(groupPublicKey!!, false)
+                        // Delete the conversation
+                        val v2OpenGroup =
+                                DatabaseComponent.get(requireActivity()).beldexThreadDatabase()
+                                        .getOpenGroupChat(threadID)
+                        if (v2OpenGroup != null) {
+                            OpenGroupManager.delete(
+                                    v2OpenGroup.server,
+                                    v2OpenGroup.room,
+                                    requireActivity()
+                            )
+                        } else {
+                            lifecycleScope.launch(Dispatchers.IO) {
+                                threadDb.deleteConversation(threadID)
+                            }
                         }
-                    }
-                    // Delete the conversation
-                    val v2OpenGroup =
-                        DatabaseComponent.get(requireActivity()).beldexThreadDatabase()
-                            .getOpenGroupChat(threadID)
-                    if (v2OpenGroup != null) {
-                        OpenGroupManager.delete(
-                            v2OpenGroup.server,
-                            v2OpenGroup.room,
-                            requireActivity()
+                        // Update the badge count
+                        ApplicationContext.getInstance(context).messageNotifier.updateNotification(
+                                context
                         )
-                    } else {
-                        lifecycleScope.launch(Dispatchers.IO) {
-                            threadDb.deleteConversation(threadID)
-                        }
+                        // Notify the user
+                        val toastMessage =
+                                if (recipient.isGroupRecipient) R.string.MessageRecord_left_group else R.string.activity_home_conversation_deleted_message
+                        Toast.makeText(context, toastMessage, Toast.LENGTH_LONG).show()
                     }
-                    // Update the badge count
-                    ApplicationContext.getInstance(context).messageNotifier.updateNotification(
-                        context
-                    )
-                    // Notify the user
-                    val toastMessage =
-                        if (recipient.isGroupRecipient) R.string.MessageRecord_left_group else R.string.activity_home_conversation_deleted_message
-                    Toast.makeText(context, toastMessage, Toast.LENGTH_LONG).show()
-                }
+                },
+                onCancel = {},
+        )
+        deleteConversation.apply {
+            arguments = Bundle().apply {
+                putString(ComposeDialogContainer.EXTRA_ARGUMENT_1,message)
             }
-            .setNegativeButton(R.string.no) { _, _ ->
-                // Do nothing
-            }.show()
-
-        //New Line
-        val textView: TextView? = dialog.findViewById(android.R.id.message)
-        val face: Typeface =
-            Typeface.createFromAsset(requireActivity().assets, "fonts/open_sans_medium.ttf")
-        textView!!.typeface = face
+        }
+        deleteConversation.show(childFragmentManager, ComposeDialogContainer.TAG)
     }
 
     interface HomeFragmentListener{

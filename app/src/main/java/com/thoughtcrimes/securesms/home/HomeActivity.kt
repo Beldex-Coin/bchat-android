@@ -51,6 +51,8 @@ import com.thoughtcrimes.securesms.ApplicationContext
 import com.thoughtcrimes.securesms.MediaOverviewActivity
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
 import com.thoughtcrimes.securesms.components.ProfilePictureView
+import com.thoughtcrimes.securesms.compose_utils.ComposeDialogContainer
+import com.thoughtcrimes.securesms.compose_utils.DialogType
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.conversation.v2.ConversationViewModel
 import com.thoughtcrimes.securesms.conversation.v2.messages.VoiceMessageViewDelegate
@@ -556,28 +558,19 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     private fun backToHome(fragment: HomeFragment?) {
         when {
             !synced && TextSecurePreferences.isWalletActive(this) -> {
-                val dialog: AlertDialog.Builder =
-                    AlertDialog.Builder(this, R.style.BChatAlertDialog_Wallet_Syncing_Exit_Alert)
-                dialog.setTitle(getString(R.string.wallet_syncing_alert_title))
-                dialog.setMessage(getString(R.string.wallet_syncing_alert_message))
-
-                dialog.setPositiveButton(R.string.exit) { _, _ ->
-                    if (CheckOnline.isOnline(this)) {
-                        onDisposeRequest()
-                    }
-                    setBarcodeData(null)
-                    fragment!!.onBackPressed()
-                    finish()
-                }
-                dialog.setNegativeButton(R.string.cancel) { _, _ ->
-                    // Do nothing
-                }
-                val alert: AlertDialog = dialog.create()
-                alert.show()
-                alert.getButton(DialogInterface.BUTTON_NEGATIVE)
-                    .setTextColor(ContextCompat.getColor(this, R.color.text))
-                alert.getButton(DialogInterface.BUTTON_POSITIVE)
-                    .setTextColor(ContextCompat.getColor(this, R.color.alert_ok))
+                val walletSyncDialog = ComposeDialogContainer(
+                        dialogType = DialogType.WalletSyncing,
+                        onConfirm = {
+                            if (CheckOnline.isOnline(this)) {
+                                onDisposeRequest()
+                            }
+                            setBarcodeData(null)
+                            fragment!!.onBackPressed()
+                            finish()
+                        },
+                        onCancel = {}
+                )
+                walletSyncDialog.show(this.supportFragmentManager, ComposeDialogContainer.TAG)
             }
             else -> {
                 if (CheckOnline.isOnline(this)) {

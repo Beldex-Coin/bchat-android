@@ -1717,7 +1717,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 }
                 body = resources.getString(R.string.reply_payment_card_message, direction, amount)
             } else if (message.isOpenGroupInvitation) {
-                body = resources.getString(R.string.ThreadRecord_open_group_invitation)
+                val mainObject = JSONObject(message.body)
+                val uniObject = mainObject.getJSONObject("kind")
+                val groupLink = uniObject.getString("groupUrl")
+                body = groupLink
             }
 
             if (TextUtils.isEmpty(body)) {

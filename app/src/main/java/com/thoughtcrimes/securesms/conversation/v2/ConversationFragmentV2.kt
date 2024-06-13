@@ -563,7 +563,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             unreadCount = viewModel.getUnreadCount()
             withContext(Dispatchers.Main) {
                 setUpRecyclerView()
-                setUpTypingObserver(viewModel.recipient.value!!)
+                viewModel.recipient.value?.let { recipient ->
+                    setUpTypingObserver(recipient)
+                }
                 setUpRecipientObserver()
                 getLatestOpenGroupInfoIfNeeded()
                 setUpSearchResultObserver()

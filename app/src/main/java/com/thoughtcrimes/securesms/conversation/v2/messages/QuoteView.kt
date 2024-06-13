@@ -113,7 +113,7 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             }
             else -> {
                 var bodyText=""
-                if(body!=null && body.isNotEmpty()){
+                if(!body.isNullOrEmpty()){
                     var type = ""
                     try {
                         val mainObject: JSONObject = JSONObject(body)

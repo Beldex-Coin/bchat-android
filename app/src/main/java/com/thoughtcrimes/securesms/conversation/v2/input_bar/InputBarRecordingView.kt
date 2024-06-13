@@ -179,7 +179,6 @@ class InputBarRecordingView : RelativeLayout {
 //        binding.pulseGroup.visibility = View.GONE
         binding.microphoneOrSendButtonContainer.isVisible = true
         binding.audioWaveForm.visibility = View.VISIBLE
-        binding.playPause.visibility = View.VISIBLE
         binding.dotView.visibility = View.GONE
         dotViewAnimation?.repeatCount = 0
         binding.deleteView.visibility = View.VISIBLE

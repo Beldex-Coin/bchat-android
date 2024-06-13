@@ -29,17 +29,6 @@
 
             <!-- The left content (dot view + duration) -->
 
-            <ImageView
-                android:id="@+id/play_pause"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginStart="8dp"
-                android:src="@drawable/ic_pause_new"
-                tools:visibility="visible"
-                android:visibility="gone"/>
 
             <LinearLayout
                 android:id="@+id/recordingTimer"
@@ -47,10 +36,11 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                app:layout_constraintStart_toEndOf="@id/play_pause"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginStart="8dp">
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="16dp"
+                tools:ignore="MissingConstraints">
 
                 <View
                     android:id="@+id/dotView"

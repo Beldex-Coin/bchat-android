@@ -131,7 +131,7 @@ class ConversationAdapter(context: Context, cursor: Cursor, private val onItemPr
             }
             is ControlMessageViewHolder -> {
                 viewHolder.view.bind(message, messageBefore)
-                if (message.isCallLog && message.isMissedCall) {
+                if (message.isCallLog && message.isFirstMissedCall) {
                     viewHolder.view.setOnClickListener {
                         val factory = LayoutInflater.from(context)
                         val callMissedDialogView: View = factory.inflate(R.layout.call_missed_dialog_box, null)

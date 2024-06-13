@@ -35,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -56,6 +57,8 @@ import com.thoughtcrimes.securesms.compose_utils.appColors
 import com.thoughtcrimes.securesms.data.TxData
 import com.thoughtcrimes.securesms.model.PendingTransaction
 import com.thoughtcrimes.securesms.model.Wallet
+import com.thoughtcrimes.securesms.util.UiMode
+import com.thoughtcrimes.securesms.util.UiModeUtilities
 import com.thoughtcrimes.securesms.wallet.send.SendFragment
 import io.beldex.bchat.R
 import kotlinx.coroutines.Dispatchers
@@ -155,11 +158,7 @@ fun TransactionConfirmPopUp(
                         Button(onClick = {
                             if (isButtonEnabled) {
                                 isButtonEnabled=false
-                                scope.launch(Dispatchers.Main) {
-                                    onClick()
-                                    delay(4000)
-                                    isButtonEnabled=true
-                                }
+                                onClick()
                             }
                         }, enabled = isButtonEnabled,
                                 colors=ButtonDefaults.buttonColors(containerColor=MaterialTheme.appColors.primaryButtonColor), modifier=Modifier.weight(1f)) {
@@ -175,7 +174,12 @@ fun TransactionConfirmPopUp(
 
 @Composable
 fun TransactionSuccessPopup(onDismiss: () -> Unit) {
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.sent))
+    var isButtonEnabled by remember {
+        mutableStateOf(true)
+    }
+    val context = LocalContext.current
+    val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(if(isDarkTheme) R.raw.sent else R.raw.sent_light))
     val isPlaying by remember {
         mutableStateOf(true)
     }
@@ -210,9 +214,12 @@ fun TransactionSuccessPopup(onDismiss: () -> Unit) {
 
                 Button(onClick={
                     scope.launch {
-                        onDismiss()
+                        if (isButtonEnabled) {
+                            isButtonEnabled=false
+                            onDismiss()
+                        }
                     }
-                }, colors=ButtonDefaults.buttonColors(containerColor=MaterialTheme.appColors.primaryButtonColor), modifier=Modifier
+                }, enabled = isButtonEnabled,colors=ButtonDefaults.buttonColors(containerColor=MaterialTheme.appColors.primaryButtonColor), modifier=Modifier
                         .padding(vertical=16.dp)
                         .height(50.dp)
                         .width(150.dp)) {

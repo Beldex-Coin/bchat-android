@@ -63,6 +63,8 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.thoughtcrimes.securesms.compose_utils.BChatTheme
 import com.thoughtcrimes.securesms.compose_utils.DialogContainer
 import com.thoughtcrimes.securesms.compose_utils.appColors
+import com.thoughtcrimes.securesms.util.UiMode
+import com.thoughtcrimes.securesms.util.UiModeUtilities
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
 import kotlinx.coroutines.flow.collectLatest
@@ -365,7 +367,9 @@ private fun ScreenContainer(
 
 @Composable
 fun PassWordChangedPopup(onDismiss : () -> Unit, showPinChangedPopupTitle : String) {
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.sent))
+    val context = LocalContext.current
+    val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(if(isDarkTheme) R.raw.sent else R.raw.sent_light))
     val isPlaying by remember {
         mutableStateOf(true)
     }

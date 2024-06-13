@@ -2711,7 +2711,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     override fun onPrepareOptionsMenu(menu: Menu) {
         val recipient = viewModel.recipient.value ?: return
         //New Line
-        if (!isMessageRequestThread()) {
+        if (isMessageRequestThread()|| recipient.isLocalNumber) {
             hideAttachmentContainer()
             ConversationMenuHelper.onPrepareOptionsMenu(
                 menu,
@@ -3252,7 +3252,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private fun isMessageRequestThread(): Boolean {
         //New Line v32
         val recipient = viewModel.recipient.value ?: return false
-        return !recipient.isGroupRecipient && !recipient.isApproved
+        return recipient.isGroupRecipient && recipient.isApproved
     }
 
     override fun onBackPressed(): Boolean {

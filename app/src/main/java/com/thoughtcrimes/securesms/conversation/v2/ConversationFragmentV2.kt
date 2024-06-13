@@ -365,7 +365,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         adapter
     }
 
-    private fun isSecretGroupIsActive():Boolean {
+    fun isSecretGroupIsActive():Boolean {
         val recipient = viewModel.recipient.value
         return if (recipient != null && recipient.isClosedGroupRecipient && mContext != null) {
             val group = viewModel.getGroup(recipient)
@@ -2711,18 +2711,24 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     override fun onPrepareOptionsMenu(menu: Menu) {
         val recipient = viewModel.recipient.value ?: return
         //New Line
-        if (isMessageRequestThread()|| recipient.isLocalNumber) {
-            hideAttachmentContainer()
-            ConversationMenuHelper.onPrepareOptionsMenu(
-                menu,
-                requireActivity().menuInflater,
-                recipient,
-                viewModel.threadId,
-                requireActivity().applicationContext,
-                this
-            ) { onOptionsItemSelected(it) }
+        if (!isMessageRequestThread()) {
+            callOnPrepareOptionsMenu(menu, recipient)
+        } else if (recipient.isLocalNumber) {
+            callOnPrepareOptionsMenu(menu, recipient)
         }
         super.onPrepareOptionsMenu(menu)
+    }
+
+    private fun callOnPrepareOptionsMenu(menu: Menu, recipient: Recipient) {
+        hideAttachmentContainer()
+        ConversationMenuHelper.onPrepareOptionsMenu(
+            menu,
+            requireActivity().menuInflater,
+            recipient,
+            viewModel.threadId,
+            requireActivity().applicationContext,
+            this
+        ) { onOptionsItemSelected(it) }
     }
 
     private fun showOrHideInputIfNeeded() {
@@ -3252,7 +3258,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private fun isMessageRequestThread(): Boolean {
         //New Line v32
         val recipient = viewModel.recipient.value ?: return false
-        return recipient.isGroupRecipient && recipient.isApproved
+        return !recipient.isGroupRecipient && !recipient.isApproved
     }
 
     override fun onBackPressed(): Boolean {

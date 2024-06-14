@@ -385,7 +385,7 @@ fun ReceiveScreen(listenerCallback: ReceiveFragment.Listener?, modifier: Modifie
                         isButtonEnabled = false
                         scope.launch(Dispatchers.Main) {
                             shareQrCode()
-                            delay(4000)
+                            delay(2000)
                             isButtonEnabled = true
                         }
                     }

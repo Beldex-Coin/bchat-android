@@ -68,6 +68,7 @@ import com.thoughtcrimes.securesms.compose_utils.ProfilePictureComponent
 import com.thoughtcrimes.securesms.compose_utils.ProfilePictureMode
 import com.thoughtcrimes.securesms.compose_utils.appColors
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
+import com.thoughtcrimes.securesms.wallet.CheckOnline
 import io.beldex.bchat.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -260,10 +261,14 @@ fun CreateSecretGroup(
                         if(isButtonEnabled) {
                             isButtonEnabled = false
                             scope.launch(Dispatchers.Main) {
-                                createClosedGroup(groupName.trim(), context, activity, selectedContact, showLoader = {
-                                    showLoader = it
-                                })
-                                delay(4000)
+                                if(CheckOnline.isOnline(context)) {
+                                    createClosedGroup(groupName.trim(), context, activity, selectedContact, showLoader={
+                                        showLoader=it
+                                    })
+                                }else {
+                                    Toast.makeText(context, context.getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
+                                }
+                                delay(2000)
                                 isButtonEnabled = true
                             }
                         }

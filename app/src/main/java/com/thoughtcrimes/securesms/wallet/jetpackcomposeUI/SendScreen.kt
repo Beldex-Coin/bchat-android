@@ -592,6 +592,7 @@ fun SendScreen(
                 beldexAmount.value = ""
                 beldexAddress.value = ""
                 currencyValue = "0.0000"
+                selectedFeePriority= TextSecurePreferences.getFeePriority(context)
 
                 //Important
                 val lockManager: LockManager<CustomPinActivity> = LockManager.getInstance() as LockManager<CustomPinActivity>

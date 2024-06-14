@@ -18,10 +18,10 @@
 
 
     <item android:drawable="@drawable/white_mode"
-        android:bottom="8dp"
-        android:top="8dp"
-        android:left="8dp"
-        android:right="8dp"
+        android:bottom="6dp"
+        android:top="6dp"
+        android:left="6dp"
+        android:right="6dp"
         />
 
 

@@ -19,7 +19,7 @@
         app:layout_constraintDimensionRatio="1:1"
         app:lottie_fileName="send.json"
         app:lottie_loop="false"
-        app:lottie_speed="0.2"
+        app:lottie_speed="1"
         app:lottie_autoPlay="true"
         app:lottie_enableMergePathsForKitKatAndAbove="true"
         tools:ignore="ContentDescription"/>

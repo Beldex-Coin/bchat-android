@@ -322,6 +322,7 @@ class ComposeDialogContainer(
                                     },
                                     onDismissRequest = {
                                         dismiss()
+                                        onCancel()
                                     },
                             )
                         }

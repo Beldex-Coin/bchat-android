@@ -277,4 +277,5 @@
     <color name="view_message_view_duration">#EBEBEB</color>
     <color name="outgoingMessageProgressBackgroundTintColor">#00BD40</color>
     <color name="incomingMessageProgressBackgroundTintColor">#DDFFFF</color>
+    <color name="untrusted_attachment_background">#1C1C26</color>
 </resources>

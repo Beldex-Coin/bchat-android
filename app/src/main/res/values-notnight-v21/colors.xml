@@ -124,7 +124,7 @@
     <color name="wallet_options_disable">#F4F4F4</color>
     <color name="scan_qr_code_background">#EAEAEA</color>
     <color name="beta_icon">#797984</color>
-    <color name="receive_payment_card_background">#128B17</color>
+    <color name="receive_payment_card_background">#E0E0E0</color>
     <color name="copy_link_background">#FCFCFC</color>
     <color name="in_chat_address_background">#F8F8F8</color>
     <color name="in_chat_payment_field">#EBEBEB</color>
@@ -198,5 +198,11 @@
     <color name="outgoingMessageProgressBackgroundTintColor">#00BD40</color>
     <color name="incomingMessageProgressBackgroundTintColor">#A7A7BA</color>
     <color name="untrusted_attachment_background">#EBEBEB</color>
+    <color name="outgoing_message_bdx_text">#CCFFDD</color>
+    <color name="incoming_message_bdx_text">#ACACAC</color>
+    <color name="outgoing_message_amount_text">#FFFFFF</color>
+    <color name="incoming_message_amount_text">#333333</color>
+    <color name="outgoing_message_card_background">#00A939</color>
+    <color name="incoming_message_card_background">#EBEBEB</color>
 
 </resources>

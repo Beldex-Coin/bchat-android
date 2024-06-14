@@ -95,11 +95,12 @@ class VisibleMessageContentView : MaterialCardView {
             }*/
             R.attr.message_sent_background_color
         } else {
-            if(message.isPayment){
+            /*if(message.isPayment){
                 R.attr.payment_message_received_background_color
             }else {
                 R.attr.message_received_background_color
-            }
+            }*/
+            R.attr.message_received_background_color
         }
         val color = ThemeUtil.getThemedColor(context, colorID)
         val filter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bchat_id_text_view_background"
+    android:background="@drawable/default_dialog_background"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:paddingTop="@dimen/large_spacing"
@@ -11,9 +11,21 @@
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="end">
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/openURLTitleTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/open_sans_bold"
+            android:text="@string/dialog_open_url_title"
+            android:textAlignment="center"
+            android:textColor="@color/text"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/cancelButton"
@@ -24,15 +36,6 @@
             android:textAlignment="viewEnd" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/openURLTitleTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/open_sans_bold"
-        android:text="@string/dialog_open_url_title"
-        android:textColor="@color/text"
-        android:textSize="@dimen/large_font_size"
-        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/openURLExplanationTextView"
@@ -47,56 +50,75 @@
         android:textSize="@dimen/small_font_size" />
 
     <LinearLayout
-        android:id="@+id/openURLButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/massive_spacing"
-        android:layout_marginEnd="@dimen/massive_spacing"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/prominent_filled_button_medium_background"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <TextView
-            style="@style/BottomSheetActionItem"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/open_sans_medium"
-            android:text="@string/open_link"
-            android:textAlignment="center"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
-
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_external_link" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/copyButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/massive_spacing"
-        android:layout_marginEnd="@dimen/massive_spacing"
+        android:layout_gravity="center"
         android:layout_marginBottom="20dp"
-        android:background="@drawable/copy_link_background"
         android:gravity="center"
         android:orientation="horizontal">
 
-        <TextView
-            style="@style/BottomSheetActionItem"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/open_sans_medium"
-            android:text="@string/copy_link"
-            android:textAlignment="center"
-            android:textStyle="bold" />
+        <LinearLayout
+            android:id="@+id/copyButton"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/large_button_height"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_weight="1"
+            android:background="@drawable/bchat_dialog_button_shape"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/copy_icon" />
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_copy_link"
+                android:contentDescription="@string/copy_link" />
+
+            <TextView
+                style="@style/BottomSheetActionItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/open_sans_medium"
+                android:text="@string/copy"
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/openURLButton"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/large_button_height"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_weight="1"
+            android:background="@drawable/bchat_dialog_positive_button_shape"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_open_link"
+                android:contentDescription="@string/open_url_icon_description" />
+
+            <TextView
+                style="@style/BottomSheetActionItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/open_sans_medium"
+                android:text="@string/open"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
     </LinearLayout>
-
 </LinearLayout>

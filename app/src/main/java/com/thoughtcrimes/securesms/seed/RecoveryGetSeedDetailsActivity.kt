@@ -339,6 +339,7 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
        /* TextSecurePreferences.setRestorationTime(this, 0)
         TextSecurePreferences.setHasViewedSeed(this, false)
 */
+        binding.restoreSeedRestoreButton.isEnabled = true
         val intent = Intent(Intent.ACTION_VIEW, "onboarding://manage_pin?finish=true&action=${PinCodeAction.CreatePinCode.action}".toUri())
         pinCodeLauncher.launch(intent)
 //        val intent = Intent(this, CreatePasswordActivity::class.java)
@@ -481,11 +482,9 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
                     selectedNode.testRpcService()
             } else throw java.lang.IllegalStateException()
             return if (selectedNode != null && selectedNode.isValid) {
-                Timber.d("Testing-->12")
                 recoveryGetSeedDetailsActivity.setNode(selectedNode)
                 selectedNode
             } else {
-                Timber.d("Testing-->13")
                 recoveryGetSeedDetailsActivity.setNode(null)
                 null
             }
@@ -565,12 +564,9 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         getSeed: String?,
         restoreHeight: Long
     ) {
-        Log.d("recovery Wallet 1","OK")
-        Log.d("Beldex"," Restore Height $restoreHeight")
         createWallet(name, password,
             object : WalletCreator {
                 override fun createWallet(aFile: File?, password: String?): Boolean {
-                    Log.d("recovery Wallet 2","OK")
                     //val currentNode: NodeInfo = getNode()
                     // get it from the connected node if we have one, and go back ca. 4 days
                     //val restoreHeight: Long = if (currentNode != null) currentNode.getHeight() - 2000 else -1
@@ -602,7 +598,6 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         name: String?, password: String?,
         walletCreator: WalletCreator
     ) {
-        Timber.d("create Wallet","OK")
         if (name != null && password != null) {
 
             AsyncCreateWallet(name, password, walletCreator, this)
@@ -639,7 +634,6 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
             recoveryGetSeedDetailsActivity.dismissProgressDialog()
             if (result == true) {
                 //startDetails(newWalletFile, walletPassword, GenerateReviewFragment.VIEW_TYPE_ACCEPT)
-                Log.d("Recovery Wallet","OK")
 
                 /*val intent = Intent(recoveryGetSeedDetailsActivity, RegisterActivity::class.java)
                 val b = Bundle()
@@ -669,8 +663,10 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
             val keysFile = File(walletFolder, "$walletName.keys")
             val addressFile = File(walletFolder, "$walletName.address.txt")
             if (cacheFile.exists() || keysFile.exists() || addressFile.exists()) {
-                Timber.e("Some wallet files already exist for %s", cacheFile.absolutePath)
-                return false
+                cacheFile.delete()
+                keysFile.delete()
+                addressFile.delete()
+                //return false
             }
             newWalletFile = File(walletFolder, walletName)
             val success = walletCreator.createWallet(newWalletFile, walletPassword)

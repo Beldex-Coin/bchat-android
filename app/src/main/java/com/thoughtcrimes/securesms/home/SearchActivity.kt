@@ -1,6 +1,7 @@
 package com.thoughtcrimes.securesms.home
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
@@ -68,6 +69,7 @@ import com.thoughtcrimes.securesms.compose_utils.ProfilePictureMode
 import com.thoughtcrimes.securesms.compose_utils.appColors
 import com.thoughtcrimes.securesms.compose_utils.ui.ScreenContainer
 import com.thoughtcrimes.securesms.conversation_v2.getUserDisplayName
+import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.home.search.GlobalSearchViewModel
 import com.thoughtcrimes.securesms.home.search.getSearchName
 import com.thoughtcrimes.securesms.search.SearchActivityResults
@@ -253,7 +255,28 @@ private fun SearchView(
                 .fillMaxWidth()
                 .weight(1f)
         ) {
-            items(results) {
+            items(
+                items = results,
+                key = {
+                    when (it) {
+                        is SearchResults.Contact -> {
+                            it.contact.bchatID
+                        }
+                        is SearchResults.GroupConversation -> {
+                            it.groupRecord.encodedId
+                        }
+                        is SearchResults.Header -> {
+                            it.title
+                        }
+                        is SearchResults.Message -> {
+                            it.messageResult.sentTimestampMs
+                        }
+                        is SearchResults.SavedMessages -> {
+                            it.currentUserPublicKey
+                        }
+                    }
+                }
+            ) {
                 when (it) {
                     is SearchResults.Contact -> {
                         ContactView(
@@ -365,21 +388,32 @@ private fun MessageView(
             val text = "${model.messageResult.messageRecipient.getSearchName()}: "
             textSpannable.append(text)
         }
-//        textSpannable.append(
-//            getHighlight(
-//            query,
-//            model.messageResult.bodySnippet
-//        )
-//        )
         textSpannable.append(
             model.messageResult.bodySnippet
         )
-        ProfilePictureComponent(
-            publicKey = recipient.address.toString(),
-            displayName = getUserDisplayName(recipient.address.toString(), context),
-            containerSize = ProfilePictureMode.SmallPicture.size,
-            pictureMode = ProfilePictureMode.SmallPicture
-        )
+        val address = recipient.address
+        if (recipient.isGroupRecipient) {
+            val groupRecipients = remember {
+                DatabaseComponent.get(context).groupDatabase()
+                    .getGroupMemberAddresses(recipient.address.toGroupString(), true)
+                    .sorted()
+                    .take(2)
+                    .toMutableList()
+            }
+            GetGroupProfilePicture(
+                context = context,
+                isOpenGroup = recipient.isOpenGroupRecipient,
+                address = address,
+                groupRecipients = groupRecipients
+            )
+        } else {
+            ProfilePictureComponent(
+                publicKey = address.toString(),
+                displayName = getUserDisplayName(address.toString(), context),
+                containerSize = ProfilePictureMode.SmallPicture.size,
+                pictureMode = ProfilePictureMode.SmallPicture
+            )
+        }
 
         Spacer(modifier = Modifier.width(16.dp))
 
@@ -430,27 +464,17 @@ private fun GroupConversationView(
                 onClick(model)
             }
     ) {
-        val pictureMode = ProfilePictureMode.GroupPicture
-//        val threadRecipient = Recipient.from(context, Address.fromSerialized(model.groupRecord.encodedId), false)
         val nameString = model.groupRecord.title
         val groupRecipients = model.groupRecord.members.map { Recipient.from(context, it, false) }
         val membersString = groupRecipients.joinToString {
             val address = it.address.serialize()
             it.name ?: "${address.take(4)}...${address.takeLast(4)}"
         }
-        val pk = groupRecipients.getOrNull(0)?.address?.serialize() ?: ""
-        val displayName = getUserDisplayName(pk, context)
-        val additionalPk = groupRecipients.getOrNull(1)?.address?.serialize() ?: ""
-        val additionalDisplay =
-            getUserDisplayName(additionalPk, context)
-
-        ProfilePictureComponent(
-            publicKey = pk,
-            displayName = displayName,
-            additionalPublicKey = additionalPk,
-            additionalDisplayName = additionalDisplay,
-            containerSize = pictureMode.size,
-            pictureMode = pictureMode
+        GetGroupProfilePicture(
+            context = context,
+            isOpenGroup = model.groupRecord.isOpenGroup,
+            address = Address.fromSerialized(model.groupRecord.encodedId),
+            groupRecipients = groupRecipients.map { it.address }
         )
 
         Spacer(modifier = Modifier.width(16.dp))
@@ -462,13 +486,56 @@ private fun GroupConversationView(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-            Text(
-                text = membersString,
-                style = MaterialTheme.typography.bodyMedium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            if (model.groupRecord.isClosedGroup) {
+                Text(
+                    text = membersString,
+                    style = MaterialTheme.typography.bodyMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         }
+    }
+}
+
+@Composable
+private fun GetGroupProfilePicture(
+    context: Context,
+    isOpenGroup: Boolean,
+    address: Address,
+    modifier: Modifier = Modifier,
+    groupRecipients: List<Address> = emptyList()
+) {
+    if (isOpenGroup) {
+        val pictureMode = ProfilePictureMode.SmallPicture
+        val threadRecipient = Recipient.from(context, address, false)
+        val pk = threadRecipient.address.toString()
+        val displayName = getUserDisplayName(pk, context)
+        ProfilePictureComponent(
+            publicKey = pk,
+            displayName = displayName,
+            containerSize = pictureMode.size,
+            pictureMode = pictureMode
+        )
+    } else {
+        val pictureMode = if (groupRecipients.size >= 2)
+            ProfilePictureMode.GroupPicture
+        else
+            ProfilePictureMode.SmallPicture
+        val pk = groupRecipients.getOrNull(0)?.serialize() ?: ""
+        val displayName = getUserDisplayName(pk, context)
+        val additionalPk = groupRecipients.getOrNull(1)?.serialize() ?: ""
+        val additionalDisplay =
+            getUserDisplayName(additionalPk, context)
+
+        ProfilePictureComponent(
+            publicKey = pk,
+            displayName = displayName,
+            additionalPublicKey = additionalPk,
+            additionalDisplayName = additionalDisplay,
+            containerSize = pictureMode.size,
+            pictureMode = pictureMode
+        )
     }
 }
 

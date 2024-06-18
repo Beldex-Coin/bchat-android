@@ -192,10 +192,13 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 attachments.thumbnailSlide != null -> {
                     val slide = attachments.thumbnailSlide!!
                     // This internally fetches the thumbnail
-                    binding.quoteViewAttachmentThumbnailImageView.root.radius = toPx(4, resources)
                     binding.quoteViewAttachmentThumbnailImageView.root.setImageResource(glide, slide, false, null)
+                    binding.quoteViewAttachmentThumbnailImageView.root.radius = toPx(10, resources)
                     binding.quoteViewAttachmentThumbnailImageView.root.isVisible = true
                     binding.quoteViewBodyTextView.text = if (MediaUtil.isVideo(slide.asAttachment())) resources.getString(R.string.Slide_video) else resources.getString(R.string.Slide_image)
+                    binding.contentTypeIcon.setImageResource(
+                        if (MediaUtil.isVideo(slide.asAttachment())) R.drawable.ic_video_attachment else R.drawable.ic_image_attachment
+                    )
                     binding.contentTypeIcon.visibility = View.VISIBLE
                 }
             }
@@ -207,7 +210,7 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             if (hasAttachments) {
                 val quotedTextColor = quotedTextColor(isOutgoingMessage)
                 binding.quoteViewBodyTextView.setTextColor(resources.getColor(quotedTextColor, null))
-                binding.contentTypeIcon.setColorFilter(resources.getColor(quotedTextColor,null), android.graphics.PorterDuff.Mode.SRC_OUT)
+                binding.contentTypeIcon.setColorFilter(resources.getColor(quotedTextColor,null))
             }
         }
     }

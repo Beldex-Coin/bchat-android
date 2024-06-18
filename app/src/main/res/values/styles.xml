@@ -925,4 +925,8 @@
         <item name="text_color">@color/white</item>
         <item name="android:shadowColor">@color/black</item>
     </style>
+    <style name="roundedCornersImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">10dp</item>
+    </style>
 </resources>

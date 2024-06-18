@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+ <?xml version="1.0" encoding="utf-8"?>
 <com.thoughtcrimes.securesms.conversation.v2.utilities.ThumbnailView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -15,6 +15,7 @@
         android:clickable="false"
         android:longClickable="false"
         android:scaleType="fitCenter"
+        app:shapeAppearanceOverlay="@style/roundedCornersImageView"
         android:contentDescription="@string/conversation_item__mms_image_description" />
 
     <ProgressBar
@@ -38,7 +39,6 @@
         android:id="@+id/play_overlay"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:background="@drawable/circle_white"
         android:layout_gravity="center"
         android:longClickable="false"
         android:visibility="gone">

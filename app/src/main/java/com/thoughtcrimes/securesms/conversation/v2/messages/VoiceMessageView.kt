@@ -126,6 +126,7 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
         if (progress == 1.0) {
             togglePlayback()
             handleProgressChanged(0.0)
+            binding.seekbarAudio.progress = 0
             delegate?.playVoiceMessageAtIndexIfPossible(indexInAdapter - 1)
         } else {
             handleProgressChanged(progress)

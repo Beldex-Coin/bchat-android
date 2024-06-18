@@ -10,7 +10,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:clickable="true"
+        android:layout_height="match_parent"
+        android:focusable="true">
 
         <TextView
             android:id="@+id/drawer_settings_title"
@@ -149,10 +151,12 @@
             android:textAlignment="viewEnd"
             android:textColor="@color/version_color"
             android:textStyle="normal"
+            android:clickable="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:text="BChat V2.2.2"
-            android:padding="8dp" />
+            android:padding="8dp"
+            android:focusable="true" />
 
         <TextView
             android:id="@+id/ui_mode"
@@ -164,11 +168,13 @@
             android:textColor="@color/appearance_text"
             android:textStyle="normal"
             android:textSize="12sp"
+            android:clickable="true"
             android:text="@string/dark_mode"
             app:layout_constraintBottom_toBottomOf="@id/drawer_appearance_toggle_button"
             app:layout_constraintEnd_toStartOf="@id/drawer_appearance_toggle_button"
             app:layout_constraintTop_toTopOf="@id/drawer_appearance_toggle_button"
-            tools:text="Dark Mode" />
+            tools:text="Dark Mode"
+            android:focusable="true" />
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/drawer_appearance_toggle_button"

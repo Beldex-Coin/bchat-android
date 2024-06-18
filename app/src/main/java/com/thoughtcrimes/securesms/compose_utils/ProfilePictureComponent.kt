@@ -22,24 +22,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
-import coil.imageLoader
-import coil.request.ImageRequest
-import coil.util.DebugLogger
 import com.beldex.libbchat.avatars.ContactColors
 import com.beldex.libbchat.avatars.PlaceholderAvatarPhoto
 import com.beldex.libbchat.avatars.ProfileContactPhoto
 import com.beldex.libbchat.avatars.ResourceContactPhoto
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
-import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterInside
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.thoughtcrimes.securesms.hilt.GlideProvider
+import dagger.hilt.android.EntryPointAccessors.fromApplication
 import io.beldex.bchat.R
+
 
 enum class ProfilePictureMode(val size: Dp) {
     GroupPicture(40.dp),
@@ -107,6 +106,12 @@ fun ProfilePicture(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    val glide = remember {
+        fromApplication(
+            context,
+            GlideProvider::class.java
+        ).provideGlide()
+    }
     val recipient = Recipient.from(context, Address.fromSerialized(publicKey), false)
 //    if (profilePicturesCache.containsKey(publicKey) && profilePicturesCache[publicKey] == recipient.profileAvatar) return
     val signalProfilePicture = recipient.contactPhoto
@@ -118,21 +123,44 @@ fun ProfilePicture(
         .asDrawable(context, ContactColors.UNKNOWN_COLOR.toConversationColor(context), false)
 
     if (signalProfilePicture != null && avatar != "0" && avatar != "") {
-        val imageLoader = LocalContext.current.imageLoader.newBuilder()
-            .logger(DebugLogger())
-            .build()
-        val imageRequest = ImageRequest.Builder(context)
-            .data(signalProfilePicture.getUri(context))
-            .placeholder(unknownRecipientDrawable)
-            .error(unknownDrawable)
-            .build()
-        AsyncImage(
-            model = imageRequest,
-            contentDescription = displayName,
-            imageLoader = imageLoader,
+//        val updatedUrl = rememberUpdatedState(signalProfilePicture.getUri(context))
+//        val imageLoader = LocalContext.current.imageLoader.newBuilder()
+//            .logger(DebugLogger())
+//            .build()
+//        val imageRequest = remember() {
+//            ImageRequest.Builder(context)
+//                .data(updatedUrl.value)
+//                .placeholder(unknownRecipientDrawable)
+//                .diskCachePolicy(CachePolicy.DISABLED)
+//                .error(unknownDrawable)
+//                .build()
+//        }
+//        AsyncImage(
+//            model = imageRequest,
+//            contentDescription = displayName,
+//            imageLoader = imageLoader,
+//            modifier = modifier
+//                .size(containerSize)
+//                .clip(CircleShape)
+//        )
+        val sizePx = with(LocalDensity.current) {
+            containerSize.toPx()
+        }.toInt()
+        AndroidView(
+            factory = { ctx ->
+                val imageView = ImageView(ctx).apply {
+                    layoutParams = ViewGroup.LayoutParams(sizePx, sizePx)
+                }
+                glide.load(signalProfilePicture)
+                    .placeholder(unknownRecipientDrawable)
+                    .error(unknownRecipientDrawable)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .transform(CenterInside(),
+                        CircleCrop())
+                    .into(imageView)
+                imageView
+            },
             modifier = modifier
-                .size(containerSize)
-                .clip(CircleShape)
         )
     } else if (recipient.isOpenGroupRecipient && recipient.groupAvatarId == null) {
         val sizePx = with(LocalDensity.current) {
@@ -160,7 +188,7 @@ fun ProfilePicture(
                 "${publicKey.take(4)}...${publicKey.takeLast(4)}"
         )
         if (status) {
-            Glide.with(context)
+            glide
                 .load(placeholder)
                 .placeholder(unknownRecipientDrawable)
                 .diskCacheStrategy(DiskCacheStrategy.NONE).transform(

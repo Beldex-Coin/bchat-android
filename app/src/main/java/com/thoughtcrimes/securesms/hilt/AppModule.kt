@@ -1,6 +1,8 @@
 package com.thoughtcrimes.securesms.hilt
 
 import android.app.Application
+import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.thoughtcrimes.securesms.ApplicationContext
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.model.WalletManager
@@ -40,6 +42,12 @@ object AppModule {
     @Provides
     fun providesDatabaseComponent(application: Application): DatabaseComponent {
         return ApplicationContext.getInstance(application.applicationContext).databaseComponent
+    }
+
+    @Singleton
+    @Provides
+    fun providesGlide(application: Application): RequestManager {
+        return Glide.with(application.baseContext)
     }
 
 }

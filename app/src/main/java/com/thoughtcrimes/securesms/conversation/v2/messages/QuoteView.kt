@@ -168,33 +168,56 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                 val w = binding.mainQuoteViewContainer.width
                 binding.container.minimumWidth = (w * 0.9).toInt()
             }
-            binding.quoteViewAttachmentPreviewImageView.imageTintList = ColorStateList.valueOf(ResourcesCompat.getColor(resources, R.color.white, context.theme))
-            val backgroundColorID = R.color.quote_view_background//if (UiModeUtilities.isDayUiMode(context)) R.color.black else R.color.accent
-            val backgroundColor = ResourcesCompat.getColor(resources, backgroundColorID, context.theme)
-            binding.quoteViewAttachmentPreviewContainer.backgroundTintList = ColorStateList.valueOf(backgroundColor)
-            binding.quoteViewAttachmentPreviewImageView.isVisible = false
-            binding.quoteViewAttachmentThumbnailImageView.root.isVisible = false
+            binding.quoteViewAttachmentPreviewImageView.imageTintList = ColorStateList.valueOf(ResourcesCompat.getColor(resources, if (outgoing) {
+                R.color.outgoing_reply_message_icon
+            } else {
+                R.color.incoming_reply_message_icon
+            }, context.theme))
+            if(mode == Mode.Regular) {
+                val backgroundColorID = if (outgoing) {
+                    R.color.outgoingMessageProgressBackgroundTintColor
+                } else {
+                    R.color.incoming_reply_message_icon_background
+                }
+                val backgroundColor =
+                    ResourcesCompat.getColor(resources, backgroundColorID, context.theme)
+                binding.quoteViewAttachmentPreviewContainer.backgroundTintList =
+                    ColorStateList.valueOf(backgroundColor)
+                binding.quoteViewAttachmentPreviewImageView.isVisible = false
+                binding.quoteViewAttachmentThumbnailImageView.root.isVisible = false
+            }else{
+                val backgroundColorID = R.color.quote_view_background
+                val backgroundColor =
+                    ResourcesCompat.getColor(resources, backgroundColorID, context.theme)
+                binding.quoteViewAttachmentPreviewContainer.backgroundTintList =
+                    ColorStateList.valueOf(backgroundColor)
+                binding.quoteViewAttachmentPreviewImageView.setColorFilter(resources.getColor(R.color.incoming_reply_message_icon,null))
+                binding.contentTypeIcon.setColorFilter(resources.getColor(R.color.incoming_reply_message_icon,null))
+            }
             when {
                 attachments.audioSlide != null -> {
                     binding.quoteViewAttachmentPreviewImageView.setImageResource(R.drawable.ic_microphone)
                     binding.quoteViewAttachmentPreviewImageView.isVisible = true
                     binding.quoteViewBodyTextView.text = resources.getString(R.string.Slide_audio)
-                    binding.quoteViewBodyTextView.setTextColor(getTextColor(isOutgoingMessage))
-                    binding.contentTypeIcon.visibility = View.GONE
+                    binding.contentTypeIcon.setImageResource(
+                        R.drawable.ic_microphone
+                    )
+                    binding.contentTypeIcon.visibility = View.VISIBLE
                 }
                 attachments.documentSlide != null -> {
                     binding.quoteViewAttachmentPreviewImageView.setImageResource(R.drawable.ic_document_large_light)
                     binding.quoteViewAttachmentPreviewImageView.isVisible = true
                     binding.quoteViewBodyTextView.text = resources.getString(R.string.document)
-                    binding.quoteViewBodyTextView.setTextColor(getTextColor(isOutgoingMessage))
                     binding.contentTypeIcon.visibility = View.GONE
                 }
                 attachments.thumbnailSlide != null -> {
                     val slide = attachments.thumbnailSlide!!
                     // This internally fetches the thumbnail
-                    binding.quoteViewAttachmentThumbnailImageView.root.setImageResource(glide, slide, false, null)
+                    /*binding.quoteViewAttachmentThumbnailImageView.root.setImageResource(glide, slide, false, null)
                     binding.quoteViewAttachmentThumbnailImageView.root.radius = toPx(10, resources)
-                    binding.quoteViewAttachmentThumbnailImageView.root.isVisible = true
+                    binding.quoteViewAttachmentThumbnailImageView.root.isVisible = true*/
+                    binding.quoteViewAttachmentPreviewImageView.setImageResource(if (MediaUtil.isVideo(slide.asAttachment())) R.drawable.ic_video_attachment else R.drawable.ic_image_attachment)
+                    binding.quoteViewAttachmentPreviewImageView.isVisible = true
                     binding.quoteViewBodyTextView.text = if (MediaUtil.isVideo(slide.asAttachment())) resources.getString(R.string.Slide_video) else resources.getString(R.string.Slide_image)
                     binding.contentTypeIcon.setImageResource(
                         if (MediaUtil.isVideo(slide.asAttachment())) R.drawable.ic_video_attachment else R.drawable.ic_image_attachment
@@ -207,9 +230,9 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             binding.mainQuoteViewContainer.setBackgroundColor(resources.getColor(getContainerColor(isOutgoingMessage), null))
             binding.quoteViewAuthorTextView.setTextColor(resources.getColor(getAuthorTextColor(isOutgoingMessage), null))
             binding.mainQuoteViewContainer.radius = if (hasAttachments) 24f else 100f
+            val quotedTextColor = quotedTextColor(isOutgoingMessage)
+            binding.quoteViewBodyTextView.setTextColor(resources.getColor(quotedTextColor, null))
             if (hasAttachments) {
-                val quotedTextColor = quotedTextColor(isOutgoingMessage)
-                binding.quoteViewBodyTextView.setTextColor(resources.getColor(quotedTextColor, null))
                 binding.contentTypeIcon.setColorFilter(resources.getColor(quotedTextColor,null))
             }
         }

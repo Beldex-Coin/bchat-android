@@ -204,5 +204,8 @@
     <color name="incoming_message_amount_text">#333333</color>
     <color name="outgoing_message_card_background">#00A939</color>
     <color name="incoming_message_card_background">#EBEBEB</color>
+    <color name="incoming_reply_message_icon_background">#E0E0E0</color>
+    <color name="outgoing_reply_message_icon">#EBEBEB</color>
+    <color name="incoming_reply_message_icon">#A7A7BA</color>
 
 </resources>

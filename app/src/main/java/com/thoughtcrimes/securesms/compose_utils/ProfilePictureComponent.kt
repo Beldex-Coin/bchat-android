@@ -150,6 +150,7 @@ fun ProfilePicture(
             factory = { ctx ->
                 val imageView = ImageView(ctx).apply {
                     layoutParams = ViewGroup.LayoutParams(sizePx, sizePx)
+                    contentDescription = displayName
                 }
                 glide.load(signalProfilePicture)
                     .placeholder(unknownRecipientDrawable)

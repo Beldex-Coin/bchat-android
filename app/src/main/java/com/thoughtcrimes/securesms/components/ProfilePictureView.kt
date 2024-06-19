@@ -3,7 +3,6 @@ package com.thoughtcrimes.securesms.components
 import android.content.Context
 import android.util.AttributeSet
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
@@ -22,7 +21,6 @@ import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.mms.GlideRequests
-import com.thoughtcrimes.securesms.util.AvatarPlaceholderGenerator
 
 class ProfilePictureView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
@@ -69,10 +67,10 @@ class ProfilePictureView @JvmOverloads constructor(
             displayName = getUserDisplayName(publicKey)
             additionalPublicKey = null
         }
-        update()
+        update(displayName)
     }
 
-    fun update() {
+    fun update(displayName: String? = publicKey) {
         val publicKey = publicKey ?: return
         val additionalPublicKey = additionalPublicKey
         if (additionalPublicKey != null) {

@@ -501,14 +501,14 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         profileButton.publicKey = publicKey
         profileButton.displayName = TextSecurePreferences.getProfileName(this)
         profileButton.recycle()
-        profileButton.update()
+        profileButton.update(TextSecurePreferences.getProfileName(this))
 
         //New Line
         drawerProfileName.text = TextSecurePreferences.getProfileName(this)
         drawerProfileIcon.publicKey = publicKey
         drawerProfileIcon.displayName = TextSecurePreferences.getProfileName(this)
         drawerProfileIcon.recycle()
-        drawerProfileIcon.update()
+        drawerProfileIcon.update(TextSecurePreferences.getProfileName(this))
     }
 
     //Important

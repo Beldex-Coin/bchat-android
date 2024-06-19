@@ -805,11 +805,11 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
             return; } // This can be the case after a secondary device is auto-cleared
         IdentityKeyUtil.checkUpdate(requireActivity().applicationContext)
         binding.profileButton.root.recycle() // clear cached image before update tje profilePictureView
-        binding.profileButton.root.update()
+        binding.profileButton.root.update(TextSecurePreferences.getProfileName(requireActivity().applicationContext))
 
         //New Line
         binding.navigationMenu.drawerProfileIcon.root.recycle()
-        binding.navigationMenu.drawerProfileIcon.root.update()
+        binding.navigationMenu.drawerProfileIcon.root.update(TextSecurePreferences.getProfileName(requireActivity().applicationContext))
 
         if (TextSecurePreferences.getConfigurationMessageSynced(requireActivity().applicationContext)) {
             lifecycleScope.launch(Dispatchers.IO) {
@@ -893,14 +893,14 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         binding.profileButton.root.publicKey = publicKey
         binding.profileButton.root.displayName = TextSecurePreferences.getProfileName(requireActivity().applicationContext)
         binding.profileButton.root.recycle()
-        binding.profileButton.root.update()
+        binding.profileButton.root.update(TextSecurePreferences.getProfileName(requireActivity().applicationContext))
 
         //New Line
         binding.navigationMenu.drawerProfileName.text = TextSecurePreferences.getProfileName(requireActivity().applicationContext)
         binding.navigationMenu.drawerProfileIcon.root.publicKey = publicKey
         binding.navigationMenu.drawerProfileIcon.root.displayName = TextSecurePreferences.getProfileName(requireActivity().applicationContext)
         binding.navigationMenu.drawerProfileIcon.root.recycle()
-        binding.navigationMenu.drawerProfileIcon.root.update()
+        binding.navigationMenu.drawerProfileIcon.root.update(TextSecurePreferences.getProfileName(requireActivity().applicationContext))
     }
 
     fun onBackPressed() {

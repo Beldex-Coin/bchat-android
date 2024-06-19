@@ -181,7 +181,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             publicKey = hexEncodedPublicKey
             displayName = getDisplayName()
             isLarge = true
-            update()
+            update(displayName)
         }
     }
 
@@ -374,7 +374,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             }
             if (isUpdatingProfilePicture) {
                 binding.profilePictureView.root.recycle() // Clear the cached image before updating
-                binding.profilePictureView.root.update()
+                binding.profilePictureView.root.update(displayName)
             }
             binding.loader.isVisible = false
         }

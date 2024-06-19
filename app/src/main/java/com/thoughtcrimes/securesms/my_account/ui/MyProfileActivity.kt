@@ -161,7 +161,7 @@ class MyProfileActivity: AppCompatActivity() {
             publicKey = hexEncodedPublicKey
             displayName = getDisplayName()
             isLarge = true
-            update()
+            update(displayName)
         }
     }
 
@@ -221,7 +221,7 @@ class MyProfileActivity: AppCompatActivity() {
 
     private fun removeAvatar() {
         val latestName = TextSecurePreferences.getProfileName(this)
-        val profile =TextSecurePreferences.getLocalNumber(this)?.let {
+        /*val profile =TextSecurePreferences.getLocalNumber(this)?.let {
             val sizeInPX =
                     resources.getDimensionPixelSize(R.dimen.small_profile_picture_size)
             AvatarPlaceholderGenerator.generate(
@@ -232,9 +232,9 @@ class MyProfileActivity: AppCompatActivity() {
             ).bitmap
 
         }
-        val profilePictureToBeUploaded = BitmapUtil.toByteArray(profile)
+        val profilePictureToBeUploaded = BitmapUtil.toByteArray(profile)*/
         TextSecurePreferences.setIsLocalProfile(this,true)
-        updateProfile(true, profilePictureToBeUploaded,displayName = latestName)
+        updateProfile(true, null,displayName = latestName)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -328,7 +328,7 @@ class MyProfileActivity: AppCompatActivity() {
         compoundPromise.alwaysUi {
             if (isUpdatingProfilePicture) {
                 binding.profilePictureView.root.recycle() // Clear the cached image before updating
-                binding.profilePictureView.root.update()
+                binding.profilePictureView.root.update(displayName)
             }
             binding.loader.isVisible = false
         }
@@ -359,7 +359,7 @@ class MyProfileActivity: AppCompatActivity() {
             ).show()
             return false
         }
-       val profile =TextSecurePreferences.getLocalNumber(this)?.let {
+       /*val profile =TextSecurePreferences.getLocalNumber(this)?.let {
            val sizeInPX =
                    resources.getDimensionPixelSize(R.dimen.small_profile_picture_size)
            AvatarPlaceholderGenerator.generate(
@@ -370,9 +370,9 @@ class MyProfileActivity: AppCompatActivity() {
        ).bitmap
 
        }
-        val profilePictureToBeUploaded = BitmapUtil.toByteArray(profile)
+        val profilePictureToBeUploaded = BitmapUtil.toByteArray(profile)*/
         val checkGalleryProfile = TextSecurePreferences.getIsLocalProfile(this)
-        updateProfile(checkGalleryProfile,profilePictureToBeUploaded, displayName = displayName)
+        updateProfile(checkGalleryProfile,null, displayName = displayName)
         return true
     }
 }

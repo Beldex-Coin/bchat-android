@@ -889,6 +889,9 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         }
     }
 
+    fun updateAdapter(){
+        homeAdapter.notifyDataSetChanged()
+    }
     fun updateProfileButton() {
         binding.profileButton.root.publicKey = publicKey
         binding.profileButton.root.displayName = TextSecurePreferences.getProfileName(requireActivity().applicationContext)

@@ -277,6 +277,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             val currentFragment = getCurrentFragment()
             if(currentFragment is HomeFragment) {
                 currentFragment.homeViewModel.tryUpdateChannel()
+                currentFragment.updateAdapter()
             }
         }
     }

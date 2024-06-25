@@ -110,6 +110,14 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
         threadDb.update(threadId, unarchive)
     }
 
+    override fun setIsBnsHolder(senderPublicKey: String, isBnsHolder: Boolean) {
+        val contactDB   = DatabaseComponent.get(context).bchatContactDatabase()
+        val contact = contactDB.getContactWithBchatID(senderPublicKey)
+        if (contact != null) {
+            contactDB.setIsBnsHolder(contact, isBnsHolder,1)
+        }
+    }
+
     override fun persist(message: VisibleMessage, quotes: QuoteModel?, linkPreview: List<LinkPreview?>, groupPublicKey: String?, openGroupID: String?, attachments: List<Attachment>,runIncrement:Boolean,runThreadUpdate:Boolean): Long? {
         var messageID: Long? = null
         val senderAddress = Address.fromSerialized(message.sender!!)
@@ -839,5 +847,9 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
     override fun blockedContacts(): List<Recipient> {
         val recipientDb = DatabaseComponent.get(context).recipientDatabase()
         return recipientDb.blockedContacts
+    }
+
+    override fun getIsBnsHolder():String? {
+        return TextSecurePreferences.getIsBNSHolder(context)
     }
 }

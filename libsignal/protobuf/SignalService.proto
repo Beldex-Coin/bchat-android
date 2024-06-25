@@ -20,6 +20,7 @@ message Envelope {
   required uint64 timestamp       = 5;
   optional bytes  content         = 8;
   optional uint64 serverTimestamp = 10;
+  optional bool isBnsHolder = 9;
 }
 
 message TypingMessage {

@@ -133,6 +133,7 @@ object MessageSender {
             // Wrap the result
             val kind: SignalServiceProtos.Envelope.Type
             val senderPublicKey: String
+            var isBnsHolder = false
             // TODO: this might change in future for config messages
             val forkInfo = MnodeAPI.forkInfo
             val namespaces: List<Int> = when {
@@ -146,6 +147,7 @@ object MessageSender {
                 is Destination.Contact -> {
                     kind = SignalServiceProtos.Envelope.Type.BCHAT_MESSAGE
                     senderPublicKey = ""
+                    isBnsHolder = !storage.getIsBnsHolder().isNullOrEmpty()
                 }
                 is Destination.ClosedGroup -> {
                     kind = SignalServiceProtos.Envelope.Type.CLOSED_GROUP_MESSAGE
@@ -153,7 +155,7 @@ object MessageSender {
                 }
                 is Destination.OpenGroupV2 -> throw IllegalStateException("Destination should not be social group.")
             }
-            val wrappedMessage = MessageWrapper.wrap(kind, message.sentTimestamp!!, senderPublicKey, ciphertext)
+            val wrappedMessage = MessageWrapper.wrap(kind, message.sentTimestamp!!, senderPublicKey, ciphertext,isBnsHolder)
             // Send the result
             if (destination is Destination.Contact && message is VisibleMessage && !isSelfSend) {
                 MnodeModule.shared.broadcaster.broadcast("calculatingPoW", message.sentTimestamp!!)

@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import com.beldex.libbchat.R
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.CALL_NOTIFICATIONS_ENABLED
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_BNS_HOLDER
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_LOCAL_PROFILE
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_MUTE_VIDEO
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.LAST_VACUUM_TIME
@@ -260,6 +261,8 @@ interface TextSecurePreferences {
     fun setPromotionDialogClicked()
     fun setIsLocalProfile(status : Boolean)
     fun getIsLocalProfile(): Boolean
+    fun setIsBNSHolder(status : String?)
+    fun getIsBNSHolder(): String?
 
 
     companion object {
@@ -377,6 +380,7 @@ interface TextSecurePreferences {
         const val PREF_DIALOG_CLICKED = "promotion_dialog_clicked"
         const val PREF_DIALOG_IGNORED_COUNT = "promotion_dialog_ignored_count"
         const val IS_LOCAL_PROFILE = "is_local_profile"
+        const val IS_BNS_HOLDER = "is_bns_holder"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -793,7 +797,7 @@ interface TextSecurePreferences {
 
         @JvmStatic
         fun isScreenSecurityEnabled(context: Context): Boolean {
-            return getBooleanPreference(context, SCREEN_SECURITY_PREF, false)
+            return getBooleanPreference(context, SCREEN_SECURITY_PREF, true)
         }
 
         @JvmStatic
@@ -1401,6 +1405,16 @@ interface TextSecurePreferences {
             return getBooleanPreference(context, IS_LOCAL_PROFILE, true)
         }
 
+        @JvmStatic
+        fun setIsBNSHolder(context: Context,bnsName: String?) {
+            setStringPreference(context, IS_BNS_HOLDER, bnsName)
+        }
+
+        @JvmStatic
+        fun getIsBNSHolder(context: Context):String? {
+            return getStringPreference(context, IS_BNS_HOLDER, null)
+        }
+
     }
 }
 
@@ -1768,7 +1782,7 @@ class AppTextSecurePreferences @Inject constructor(
     }
 
     override fun isScreenSecurityEnabled(): Boolean {
-        return getBooleanPreference(TextSecurePreferences.SCREEN_SECURITY_PREF, false)
+        return getBooleanPreference(TextSecurePreferences.SCREEN_SECURITY_PREF, true)
     }
 
     override fun setScreenSecurityPreference(status:Boolean) {
@@ -2288,5 +2302,13 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun getIsLocalProfile() : Boolean {
         return getBooleanPreference(IS_LOCAL_PROFILE,true)
+    }
+
+    override fun setIsBNSHolder(bnsName : String?) {
+        setStringPreference(IS_BNS_HOLDER,bnsName)
+    }
+
+    override fun getIsBNSHolder() : String? {
+        return getStringPreference(IS_BNS_HOLDER,null)
     }
 }

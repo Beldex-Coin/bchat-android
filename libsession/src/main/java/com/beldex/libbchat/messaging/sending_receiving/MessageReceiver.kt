@@ -59,6 +59,7 @@ object MessageReceiver {
                     plaintext = decryptionResult.first
                     sender = decryptionResult.second
                     address = decryptionResult.third
+                    MessagingModuleConfiguration.shared.storage.setIsBnsHolder(sender,envelope.isBnsHolder)
 
                     //-Log.d("beldex", "receiver add 1 $address")
                 }

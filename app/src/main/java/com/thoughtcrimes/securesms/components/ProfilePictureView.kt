@@ -46,6 +46,11 @@ class ProfilePictureView @JvmOverloads constructor(
             return contact?.displayName(Contact.ContactContext.REGULAR) ?: publicKey
         }
 
+        fun getUserIsBNSHolderStatus(publicKey: String): Boolean? {
+            val contact = DatabaseComponent.get(context).bchatContactDatabase().getContactWithBchatID(publicKey)
+            return contact?.isBnsHolder
+        }
+
         fun isOpenGroupWithProfilePicture(recipient: Recipient): Boolean {
             return recipient.isOpenGroupRecipient && recipient.groupAvatarId != null
         }

@@ -56,10 +56,9 @@ enum class SettingItem(val title: Int) {
 fun SettingsScreen(
     navigate: (SettingItem) -> Unit,
 ) {
-    val scrollState = rememberScrollState()
+
     Column(
-        modifier = Modifier
-            .verticalScroll(scrollState)
+        modifier = Modifier.fillMaxWidth()
     ) {
         Spacer(modifier = Modifier.height(24.dp))
 

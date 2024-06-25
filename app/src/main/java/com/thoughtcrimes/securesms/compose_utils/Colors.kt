@@ -119,7 +119,8 @@ class Colors(
     val textSelectionColor: Color,
     val disabledNextButtonColor : Color,
     val disableWalletButtonColor : Color,
-    val disableWalletButtonContentColor : Color
+    val disableWalletButtonContentColor : Color,
+    val listItemBackground : Color
 )
 
 val lightColors = Colors(
@@ -223,7 +224,8 @@ val lightColors = Colors(
     textSelectionColor= Color(0xFF008D06),
     disabledNextButtonColor = Color(0xFFA7A7BA),
     disableWalletButtonColor = Color(0xFFE0E0E0),
-    disableWalletButtonContentColor = Color(0xFF000000)
+    disableWalletButtonContentColor = Color(0xFF000000),
+    listItemBackground = Color(0xFFF8F8F8)
 )
 
 val darkColors = Colors(
@@ -327,7 +329,8 @@ val darkColors = Colors(
     textSelectionColor= Color(0xFF008D06),
     disabledNextButtonColor = Color(0xFF6C6C78),
     disableWalletButtonColor = Color(0xFF333343),
-    disableWalletButtonContentColor = Color(0xFF000000)
+    disableWalletButtonContentColor = Color(0xFF000000),
+    listItemBackground = Color(0xFF1C1C26)
 )
 
 

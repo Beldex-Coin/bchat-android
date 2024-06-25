@@ -9,7 +9,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,8 +20,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -36,11 +41,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
@@ -55,6 +63,10 @@ import com.beldex.libsignal.crypto.MnemonicCodec
 import com.beldex.libsignal.utilities.hexEncodedPrivateKey
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
 import com.thoughtcrimes.securesms.compose_utils.BChatTheme
+import com.thoughtcrimes.securesms.compose_utils.BChatTypography
+import com.thoughtcrimes.securesms.compose_utils.PrimaryButton
+import com.thoughtcrimes.securesms.compose_utils.ProfilePictureComponent
+import com.thoughtcrimes.securesms.compose_utils.ProfilePictureMode
 import com.thoughtcrimes.securesms.compose_utils.appColors
 import com.thoughtcrimes.securesms.contacts.blocked.BlockedContactsViewModel
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
@@ -67,6 +79,7 @@ import com.thoughtcrimes.securesms.onboarding.ui.PinCodeAction
 import com.thoughtcrimes.securesms.preferences.ChatSettingsActivity
 import com.thoughtcrimes.securesms.util.UiMode
 import com.thoughtcrimes.securesms.util.UiModeUtilities
+import com.thoughtcrimes.securesms.util.copyToClipBoard
 import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.StatWalletInfo
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
@@ -150,6 +163,8 @@ fun MyAccountNavHost(
                     (context as ComponentActivity).finish()
                 }
             ) {
+                val state by viewModel.uiState.collectAsState()
+                val scrollState = rememberScrollState()
                 var showClearDataDialog by remember {
                     mutableStateOf(false)
                 }
@@ -158,62 +173,176 @@ fun MyAccountNavHost(
                         showClearDataDialog = false
                     }
                 }
-                SettingsScreen(
-                    navigate = {
-                        when (it) {
-                            SettingItem.Hops -> {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp).verticalScroll(scrollState),
+                ) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth()
+                    ){
+                        Card(
+                            shape = RoundedCornerShape(16.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.appColors.listItemBackground
+                            ),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 50.dp, bottom = 10.dp),
+                        ) {
+
+                            ProfileCard(
+                                uiState =  state,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(
+                                        top = 40.dp
+                                    ),
+                            )
+                        }
+                        ProfilePictureComponent(
+                            publicKey = state.publicKey,
+                            displayName = state.profileName?:state.publicKey,
+                            containerSize = ProfilePictureMode.LargePicture.size,
+                            pictureMode = ProfilePictureMode.LargePicture,
+                            modifier = Modifier.align(alignment = Alignment.TopCenter)
+                        )
+                    }
+
+                    PrimaryButton(
+                        onClick = {
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 10.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        disabledContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(8.dp)
+                        ){
+                            Icon(painterResource(id = R.drawable.bns_transaction), contentDescription = "")
+                            Text(
+                                text = stringResource(R.string.link_your_bns),
+                                style = BChatTypography.titleSmall.copy(
+                                    color = Color.White,
+                                    fontWeight = FontWeight(600),
+                                ),
+                                modifier = Modifier
+                                    .padding(start = 5.dp)
+                            )
+                        }
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 10.dp)
+                            .clickable(
+                                onClick = {
+
+                                }
+                            ),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ){
+                        Text(
+                            text = stringResource(R.string.read_more_about_bns),
+                            style = BChatTypography.titleSmall.copy(
+                                color = MaterialTheme.appColors.secondaryTextColor,
+                                fontWeight = FontWeight(400),
+                                fontSize = 12.sp
+                            ),
+                            modifier = Modifier
+                                .padding(end = 5.dp)
+                        )
+                        Icon(painterResource(id = R.drawable.ic_info_outline_dark), contentDescription = "Read more about BNS", tint = MaterialTheme.appColors.secondaryTextColor, modifier = Modifier.size(12.dp))
+                    }
+
+
+                    Card(
+                        shape = RoundedCornerShape(16.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.appColors.listItemBackground
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        SettingsScreen(
+                            navigate = {
+                                when (it) {
+                                    SettingItem.Hops -> {
 //                                Intent(context, PathActivity::class.java).also { intent ->
 //                                    startActivity(intent)
 //                                }
-                                viewModel.getPathNodes()
-                                navController.navigate(MyAccountScreens.HopsScreen.route)
-                            }
-                            SettingItem.AppLock -> {
+                                        viewModel.getPathNodes()
+                                        navController.navigate(MyAccountScreens.HopsScreen.route)
+                                    }
+
+                                    SettingItem.AppLock -> {
 //                                Intent(context, AppLockDetailsActivity::class.java).also { intent ->
 //                                    startActivity(intent)
 //                                }
-                                navController.navigate(MyAccountScreens.AppLockScreen.route)
-                            }
-                            SettingItem.ChatSettings -> {
-                                Intent(context, ChatSettingsActivity::class.java).also { intent ->
-                                    startActivity(intent)
-                                }
+                                        navController.navigate(MyAccountScreens.AppLockScreen.route)
+                                    }
+
+                                    SettingItem.ChatSettings -> {
+                                        Intent(
+                                            context,
+                                            ChatSettingsActivity::class.java
+                                        ).also { intent ->
+                                            startActivity(intent)
+                                        }
 //                                navController.navigate(MyAccountScreens.ChatSettingsScreen.route)
-                            }
-                            SettingItem.BlockedContacts -> {
+                                    }
+
+                                    SettingItem.BlockedContacts -> {
 //                                Intent(context, BlockedContactsActivity::class.java).also { intent ->
 //                                    startActivity(intent)
 //                                }
-                                navController.navigate(MyAccountScreens.BlockedContactScreen.route)
-                            }
-                            SettingItem.ClearData -> {
-                                showClearDataDialog = true
-                            }
-                            SettingItem.Feedback -> {
-                                val intent = Intent(Intent.ACTION_SENDTO)
-                                intent.data = Uri.parse("mailto:") // only email apps should handle this
-                                intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("feedback@beldex.io"))
-                                intent.putExtra(Intent.EXTRA_SUBJECT, "")
-                                startActivity(intent)
-                            }
-                            SettingItem.FAQ -> {
-                                try {
-                                    val url = "https://bchat.beldex.io/faq"
-                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                                    startActivity(intent)
-                                } catch (e: Exception) {
-                                    Toast.makeText(context, "Can't open URL", Toast.LENGTH_LONG).show()
-                                }
-                            }
-                            SettingItem.ChangeLog -> {
+                                        navController.navigate(MyAccountScreens.BlockedContactScreen.route)
+                                    }
+
+                                    SettingItem.ClearData -> {
+                                        showClearDataDialog = true
+                                    }
+
+                                    SettingItem.Feedback -> {
+                                        val intent = Intent(Intent.ACTION_SENDTO)
+                                        intent.data =
+                                            Uri.parse("mailto:") // only email apps should handle this
+                                        intent.putExtra(
+                                            Intent.EXTRA_EMAIL,
+                                            arrayOf("feedback@beldex.io")
+                                        )
+                                        intent.putExtra(Intent.EXTRA_SUBJECT, "")
+                                        startActivity(intent)
+                                    }
+
+                                    SettingItem.FAQ -> {
+                                        try {
+                                            val url = "https://bchat.beldex.io/faq"
+                                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                            startActivity(intent)
+                                        } catch (e: Exception) {
+                                            Toast.makeText(
+                                                context,
+                                                "Can't open URL",
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        }
+                                    }
+
+                                    SettingItem.ChangeLog -> {
 //                                Intent(context, ChangeLogActivity::class.java).also { intent ->
 //                                    startActivity(intent)
 //                                }
-                                navController.navigate(MyAccountScreens.ChangeLogScreen.route)
+                                        navController.navigate(MyAccountScreens.ChangeLogScreen.route)
+                                    }
+                                }
                             }
-                        }
+                        )
                     }
-                )
+                }
             }
         }
 
@@ -468,6 +597,132 @@ fun MyAccountNavHost(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(16.dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun ProfileCard(
+    uiState: MyAccountViewModel.UIState,
+    modifier: Modifier = Modifier
+) {
+    val context = LocalContext.current
+    val beldexAddress by remember {
+        mutableStateOf(
+            IdentityKeyUtil.retrieve(
+                context,
+                IdentityKeyUtil.IDENTITY_W_ADDRESS_PREF
+            ))
+    }
+    val copyToClipBoard: (String, String) -> Unit = { label, content ->
+        context.copyToClipBoard(label, content)
+    }
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Text(
+            text = uiState.profileName ?: "",
+            style = MaterialTheme.typography.titleMedium.copy(
+                color = MaterialTheme.appColors.titleTextColor,
+                fontWeight = FontWeight(700),
+                fontSize = 18.sp
+            ),
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.CenterHorizontally)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ){
+            ProfileCardKeyContainer(
+                title = stringResource(id = R.string.beldex_address),
+                image = R.drawable.ic_beldex_logo,
+                onCopy = {
+                    copyToClipBoard("Beldex Address", beldexAddress)
+                },
+                isBeldex = true
+            )
+
+            Spacer(modifier = Modifier.padding(start = 5.dp))
+
+            ProfileCardKeyContainer(
+                title = stringResource(id = R.string.chatid),
+                image = R.drawable.ic_bchat_logo,
+                onCopy = {
+                    copyToClipBoard("BChat ID", uiState.publicKey)
+                }
+            )
+            Spacer(modifier = Modifier.padding(start = 5.dp))
+
+            ProfileCardKeyContainer(
+                title = stringResource(id = R.string.show_qr),
+                image = R.drawable.ic_show_qr,
+                onCopy = {
+                },
+                showCopyIcon = false
+            )
+        }
+    }
+}
+
+@Composable
+fun ProfileCardKeyContainer(
+    title: String,
+    image: Int,
+    onCopy: () -> Unit,
+    showCopyIcon: Boolean = true,
+    isBeldex: Boolean = false,
+) {
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.appColors.backgroundColor
+        ),
+    ) {
+        Box(
+            modifier = Modifier.padding(5.dp)
+        ){
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.padding(vertical = 15.dp, horizontal = if(isBeldex) 5.dp else 15.dp)
+            ) {
+                Image(painter = painterResource(id = image), contentDescription = "",
+                    modifier = Modifier
+                        .size(25.dp),
+                    colorFilter = if(!showCopyIcon) ColorFilter.tint(MaterialTheme.appColors.editTextColor) else null)
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        fontSize = 11.sp,
+                        color = MaterialTheme.appColors.editTextColor,
+                        fontWeight = FontWeight.SemiBold
+                    ),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+            }
+            if(showCopyIcon) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_copy),
+                    contentDescription = "",
+                    tint = MaterialTheme.appColors.editTextHint,
+                    modifier = Modifier
+                        .size(16.dp)
+                        .align(alignment = Alignment.TopEnd)
+                        .clickable {
+                            onCopy()
+                        }
                 )
             }
         }

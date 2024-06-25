@@ -287,4 +287,5 @@
     <color name="incoming_reply_message_icon_background">#1C1C26</color>
     <color name="outgoing_reply_message_icon">#EBEBEB</color>
     <color name="incoming_reply_message_icon">#A7A7BA</color>
+    <color name="show_qr_icon">#EBEBEB</color>
 </resources>

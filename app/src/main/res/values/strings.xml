@@ -1392,7 +1392,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="activity_settings_profile_picture" translatable="false">Profile Picture</string>
     <string name="activity_settings_upload" translatable="false">Upload</string>
     <string name="activity_settings_remove" translatable="false">Remove Picture</string>
-    <string name="activity_restore_from_height_missing_error" translatable="false">Please enter a restore height</string>
+    <string name="activity_restore_from_height_missing_error" translatable="false">Please enter a restore height or Select a restore date</string>
     <string name="activity_restore_from_date_missing_error" translatable="false">Please pick a restore date</string>
     <string name="restored_via_seed" translatable="false">You restored via Seed!</string>
     <string name="display_name_validation" translatable="false">Please enter a valid name</string>
@@ -1510,7 +1510,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="delete_item" translatable="false">Delete Item?</string>
     <string name="delete_item_description" translatable="false">Are you sure you want to delete the media from device?</string>
     <string name="all_media" translatable="false">All Media</string>
-    <string name="verify_bns" translatable="false">BNS Name verifying...</string>
+    <string name="verify_bns" translatable="false">Verifying...</string>
     <string name="no_contacts" translatable="false">No Contacts</string>
     <string name="sync_option" translatable="false">Syncing Option</string>
     <string name="sync_reconnect" translatable="false">Reconnect</string>

@@ -2689,8 +2689,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                         binding.searchUp.visibility = View.GONE
                         binding.searchDown.visibility = View.GONE
                         binding.searchProgress.visibility = View.GONE
-                        binding.closeSearch.visibility = View.GONE
-                        binding.search.visibility = View.VISIBLE
+                        binding.closeSearch.visibility = View.VISIBLE
+                        binding.search.visibility = View.GONE
                         binding.noMatchesFoundTextview.visibility = View.VISIBLE
                     }
 //                binding.searchBottomBar.setData(result.position, result.getResults().size)

@@ -111,7 +111,7 @@ fun CreatePrivateChatScreen() {
                 bnsLoader = false
                 var message = context.resources.getString(R.string.fragment_enter_public_key_error_message)
                 exception.localizedMessage?.let {
-                    message = context.resources.getString(R.string.bns_name_warning_message)
+                    message = context.resources.getString(R.string.fragment_enter_public_key_error_message)
                     Log.d("Beldex","BNS exception $it")
                 }
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()

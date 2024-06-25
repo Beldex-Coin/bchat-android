@@ -46,10 +46,12 @@ class PinCodeViewModel @Inject constructor(
     val successContent = _successContent.asSharedFlow()
 
     private var savedPassword: String? = null
+    private var walletSavedPassword: String? = null
     private var action: Int = -1
 
     init {
         savedPassword = sharedPreferenceUtil.getSavedPassword()
+        walletSavedPassword= sharedPreferenceUtil.getWalletSavePassword()
         action = savedStateHandle.get<Int>(EXTRA_PIN_CODE_ACTION) ?: PinCodeAction.VerifyPinCode.action
         _state.update {
             when (action) {
@@ -167,6 +169,7 @@ class PinCodeViewModel @Inject constructor(
                             }
                         }
                         PinCodeSteps.EnterPin -> {
+                            println("called wallet pin changed 1")
                             if (action == PinCodeAction.ChangePinCode.action && newPin == savedPassword) {
                                 _state.update {
                                     it.copy(
@@ -261,11 +264,23 @@ class PinCodeViewModel @Inject constructor(
                     }
                 }
                 PinCodeSteps.EnterPin -> {
-                    _state.update {
-                        it.copy(
-                            step = PinCodeSteps.ReEnterPin,
-                            stepTitle = resourceProvider.getString(R.string.re_enter_your_pin)
-                        )
+                    println("called wallet pin changed $action and $newPin and $walletSavedPassword")
+                    if (action == PinCodeAction.ChangeWalletPin.action && newPin == walletSavedPassword) {
+                        _state.update {
+                            it.copy(
+                                    newPin = ""
+                            )
+                        }
+                        viewModelScope.launch {
+                            _errorMessage.emit(resourceProvider.getString(R.string.old_new_password_same))
+                        }
+                    } else {
+                        _state.update {
+                            it.copy(
+                                    step = PinCodeSteps.ReEnterPin,
+                                    stepTitle = resourceProvider.getString(R.string.re_enter_your_pin)
+                            )
+                        }
                     }
                 }
                 PinCodeSteps.ReEnterPin -> Unit

@@ -41,21 +41,18 @@ object AvatarPlaceholderGenerator {
         // Draw background/frame
         val paint = Paint(Paint.ANTI_ALIAS_FLAG)
         paint.color = colorPrimary
-       canvas.drawCircle(pixelSize.toFloat() / 2, pixelSize.toFloat() / 2, pixelSize.toFloat(), paint)
-
+        val radius = pixelSize.toFloat() / 2
+        canvas.drawCircle(radius, radius, radius, paint)
         // Draw text
         val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
         textPaint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
         textPaint.textSize = pixelSize * 0.5f
         textPaint.color = Color.WHITE
-        val areaRect = Rect(0, 0, pixelSize, pixelSize)
-        val textBounds = RectF(areaRect)
-        textBounds.right = textPaint.measureText(labelText)
-        textBounds.bottom = textPaint.descent() - textPaint.ascent()
-        textBounds.left += (areaRect.width() - textBounds.right) * 0.5f
-        textBounds.top += (areaRect.height() - textBounds.bottom) * 0.5f
-        canvas.drawText(labelText, textBounds.left, textBounds.top - textPaint.ascent(), textPaint)
-
+        val textBounds = Rect()
+        textPaint.getTextBounds(labelText, 0, labelText.length, textBounds)
+        val textX = (canvas.width - textBounds.width()) / 2.0f
+        val textY = (canvas.height + textBounds.height()) / 2.0f
+        canvas.drawText(labelText, textX, textY, textPaint)
         return BitmapDrawable(context.resources, bitmap)
     }
 

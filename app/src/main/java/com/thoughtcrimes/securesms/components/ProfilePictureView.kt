@@ -1,6 +1,7 @@
 package com.thoughtcrimes.securesms.components
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
@@ -9,18 +10,19 @@ import android.widget.RelativeLayout
 import androidx.annotation.DimenRes
 import com.beldex.libbchat.avatars.ContactColors
 import com.beldex.libbchat.avatars.PlaceholderAvatarPhoto
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.bitmap.CenterInside
-import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ViewProfilePictureBinding
 import com.beldex.libbchat.avatars.ProfileContactPhoto
 import com.beldex.libbchat.avatars.ResourceContactPhoto
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.CenterInside
+import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.mms.GlideRequests
+import com.thoughtcrimes.securesms.util.AvatarPlaceholderGenerator.generate
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ViewProfilePictureBinding
 
 class ProfilePictureView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
@@ -103,11 +105,16 @@ class ProfilePictureView @JvmOverloads constructor(
             binding.largeSingleModeImageView.visibility = View.INVISIBLE
         }
     }
+    private fun setupDefaultProfileView(): Drawable {
+        return generate(context,128, publicKey!!, displayName)
+    }
 
     private fun setProfilePictureIfNeeded(imageView: ImageView, publicKey: String, displayName: String?, @DimenRes sizeResId: Int) {
         if (publicKey.isNotEmpty()) {
             val recipient = Recipient.from(context, Address.fromSerialized(publicKey), false)
-            if (profilePicturesCache.containsKey(publicKey) && profilePicturesCache[publicKey] == recipient.profileAvatar) return
+            if (profilePicturesCache.containsKey(publicKey) && profilePicturesCache[publicKey] == recipient.profileAvatar) {
+                return
+            }
             val signalProfilePicture = recipient.contactPhoto
             val avatar = (signalProfilePicture as? ProfileContactPhoto)?.avatarObject
 
@@ -119,7 +126,7 @@ class ProfilePictureView @JvmOverloads constructor(
                     GranularRoundedCorners(20f, 20f, 20f, 20f)).into(imageView)*/
                 glide.load(signalProfilePicture)
                     .placeholder(unknownRecipientDrawable)
-                    .error(unknownRecipientDrawable)
+                    .error(setupDefaultProfileView())
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .transform(CenterInside(),
                         GranularRoundedCorners(20f, 20f, 20f, 20f))

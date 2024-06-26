@@ -13,6 +13,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -45,6 +46,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
@@ -62,6 +65,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import app.cash.copper.flow.observeQuery
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.crypto.MnemonicCodec
 import com.beldex.libsignal.utilities.hexEncodedPrivateKey
@@ -78,7 +82,10 @@ import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
 import com.thoughtcrimes.securesms.crypto.MnemonicUtilities
 import com.thoughtcrimes.securesms.database.DatabaseContentProviders
 import com.thoughtcrimes.securesms.messagerequests.MessageRequestsViewModel
+import com.thoughtcrimes.securesms.my_account.ui.dialogs.BNSNameVerifySuccessDialog
 import com.thoughtcrimes.securesms.my_account.ui.dialogs.ClearDataDialog
+import com.thoughtcrimes.securesms.my_account.ui.dialogs.CopyContentDialog
+import com.thoughtcrimes.securesms.my_account.ui.dialogs.LinkYourBNSDialog
 import com.thoughtcrimes.securesms.onboarding.ui.PinCodeAction
 import com.thoughtcrimes.securesms.preferences.ChatSettingsActivity
 import com.thoughtcrimes.securesms.util.FileProviderUtil
@@ -86,7 +93,6 @@ import com.thoughtcrimes.securesms.util.QRCodeUtilities
 import com.thoughtcrimes.securesms.util.UiMode
 import com.thoughtcrimes.securesms.util.UiModeUtilities
 import com.thoughtcrimes.securesms.util.copyToClipBoard
-import com.thoughtcrimes.securesms.util.isValidString
 import com.thoughtcrimes.securesms.util.toPx
 import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.StatWalletInfo
 import dagger.hilt.android.AndroidEntryPoint
@@ -199,11 +205,17 @@ fun MyAccountNavHost(
                 var showBChatIdDialog by remember {
                     mutableStateOf(false)
                 }
-                var bitMap: Bitmap? by remember {
-                    mutableStateOf(null)
-                }
                 var shareButtonLastClickTime by remember {
                     mutableLongStateOf(0)
+                }
+                var showLinkYourBnsDialog by remember {
+                    mutableStateOf(false)
+                }
+                var isBnsHolder by remember {
+                    mutableStateOf(TextSecurePreferences.getIsBNSHolder(context))
+                }
+                var showBnsNameVerifySuccessDialog by remember{
+                    mutableStateOf(false)
                 }
 
                 if (showClearDataDialog) {
@@ -237,21 +249,11 @@ fun MyAccountNavHost(
                             showBChatIdDialog = false
                         })
                 }
-                if (state.publicKey.isValidString()) {
-                    val resources = LocalContext.current.resources
-                    val size = toPx(280, resources)
-                    bitMap = QRCodeUtilities.encode(
-                        state.publicKey,
-                        size,
-                        isInverted = false,
-                        hasTransparentBackground = false
-                    )
-                }
 
                 if (showQRDialog) {
                     ShowQRDialog(
                         title = stringResource(id = R.string.scan_qr_code),
-                        bitMap = bitMap!!,
+                        uiState = state,
                         onShare = {
                             showQRDialog = false
                             if (SystemClock.elapsedRealtime() - shareButtonLastClickTime >= 1000) {
@@ -293,6 +295,22 @@ fun MyAccountNavHost(
                     )
                 }
 
+                if(showLinkYourBnsDialog){
+                    LinkYourBNSDialog(state, onDismissRequest = {
+                        showLinkYourBnsDialog = false
+                        if(it){
+                            isBnsHolder = TextSecurePreferences.getIsBNSHolder(context)
+                            showBnsNameVerifySuccessDialog = true
+                        }
+                    })
+                }
+
+                if(showBnsNameVerifySuccessDialog){
+                    BNSNameVerifySuccessDialog {
+                        showBnsNameVerifySuccessDialog = false
+                    }
+                }
+
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -302,16 +320,27 @@ fun MyAccountNavHost(
                     Box(
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Card(
-                            shape = RoundedCornerShape(16.dp),
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.appColors.listItemBackground
-                            ),
+                        Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 50.dp, bottom = 10.dp),
+                                .padding(top = 50.dp, bottom = 10.dp).background(brush = if(!isBnsHolder.isNullOrEmpty()) Brush.linearGradient(
+                                    colors = listOf(
+                                       MaterialTheme.appColors.color1,
+                                        MaterialTheme.appColors.color2,
+                                        MaterialTheme.appColors.color3,
+                                        MaterialTheme.appColors.color4
+                                    ),
+                                    end = Offset(0.0f, Float.POSITIVE_INFINITY),
+                                    start = Offset(Float.POSITIVE_INFINITY, 0.0f)
+                                ) else Brush.linearGradient(
+                                    colors = listOf(
+                                        MaterialTheme.appColors.listItemBackground,
+                                        MaterialTheme.appColors.listItemBackground
+                                    )
+                                ),shape = RoundedCornerShape(16.dp)),
                         ) {
                             ProfileCard(
+                                isBnsHolder = isBnsHolder,
                                 uiState = state,
                                 beldexAddress = beldexAddress,
                                 modifier = Modifier
@@ -342,65 +371,66 @@ fun MyAccountNavHost(
                         )
                     }
 
-                    PrimaryButton(
-                        onClick = {
-
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 10.dp),
-                        shape = RoundedCornerShape(16.dp),
-                        disabledContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(8.dp)
+                    if(isBnsHolder.isNullOrEmpty()) {
+                        PrimaryButton(
+                            onClick = {
+                                showLinkYourBnsDialog = true
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 10.dp),
+                            shape = RoundedCornerShape(16.dp),
+                            disabledContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
                         ) {
-                            Icon(
-                                painterResource(id = R.drawable.bns_transaction),
-                                contentDescription = ""
-                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.padding(8.dp)
+                            ) {
+                                Icon(
+                                    painterResource(id = R.drawable.bns_transaction),
+                                    contentDescription = ""
+                                )
+                                Text(
+                                    text = stringResource(R.string.link_your_bns),
+                                    style = BChatTypography.titleSmall.copy(
+                                        color = Color.White,
+                                        fontWeight = FontWeight(600),
+                                    ),
+                                    modifier = Modifier
+                                        .padding(start = 5.dp)
+                                )
+                            }
+                        }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 10.dp)
+                                .clickable(
+                                    onClick = {
+                                        navController.navigate(MyAccountScreens.AboutBNSScreen.route)
+                                    }
+                                ),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
                             Text(
-                                text = stringResource(R.string.link_your_bns),
+                                text = stringResource(R.string.read_more_about_bns),
                                 style = BChatTypography.titleSmall.copy(
-                                    color = Color.White,
-                                    fontWeight = FontWeight(600),
+                                    color = MaterialTheme.appColors.secondaryTextColor,
+                                    fontWeight = FontWeight(400),
+                                    fontSize = 12.sp
                                 ),
                                 modifier = Modifier
-                                    .padding(start = 5.dp)
+                                    .padding(end = 5.dp)
+                            )
+                            Icon(
+                                painterResource(id = R.drawable.ic_info_outline_dark),
+                                contentDescription = "Read more about BNS",
+                                tint = MaterialTheme.appColors.secondaryTextColor,
+                                modifier = Modifier.size(12.dp)
                             )
                         }
                     }
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 10.dp)
-                            .clickable(
-                                onClick = {
-                                    navController.navigate(MyAccountScreens.AboutBNSScreen.route)
-                                }
-                            ),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = stringResource(R.string.read_more_about_bns),
-                            style = BChatTypography.titleSmall.copy(
-                                color = MaterialTheme.appColors.secondaryTextColor,
-                                fontWeight = FontWeight(400),
-                                fontSize = 12.sp
-                            ),
-                            modifier = Modifier
-                                .padding(end = 5.dp)
-                        )
-                        Icon(
-                            painterResource(id = R.drawable.ic_info_outline_dark),
-                            contentDescription = "Read more about BNS",
-                            tint = MaterialTheme.appColors.secondaryTextColor,
-                            modifier = Modifier.size(12.dp)
-                        )
-                    }
-
 
                     Card(
                         shape = RoundedCornerShape(16.dp),
@@ -777,6 +807,7 @@ fun MyAccountNavHost(
 
 @Composable
 fun ProfileCard(
+    isBnsHolder : String?,
     uiState: MyAccountViewModel.UIState,
     beldexAddress: String,
     modifier: Modifier = Modifier,
@@ -805,7 +836,29 @@ fun ProfileCard(
                 .fillMaxWidth()
                 .align(Alignment.CenterHorizontally)
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        if(!isBnsHolder.isNullOrEmpty()){
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 5.dp, bottom = 15.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "BNS Verified",
+                    style = MaterialTheme.typography.titleSmall.copy(
+                        color = MaterialTheme.appColors.primaryButtonColor,
+                        fontWeight = FontWeight(700),
+                        fontSize = 14.sp
+                    ),
+                    modifier = Modifier.padding(end = 5.dp)
+                )
+                Image(painter = painterResource(id = R.drawable.ic_bns_verified), contentDescription = "Bns verified", modifier = Modifier.size(14.dp))
+            }
+        }else {
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+        
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween

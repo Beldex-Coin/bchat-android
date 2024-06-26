@@ -1,4 +1,4 @@
-package com.thoughtcrimes.securesms.my_account.ui
+package com.thoughtcrimes.securesms.my_account.ui.dialogs
 
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable

@@ -121,7 +121,14 @@ class Colors(
     val disableWalletButtonColor : Color,
     val disableWalletButtonContentColor : Color,
     val listItemBackground : Color,
-    val bnsDialogBackground: Color
+    val bnsDialogBackground: Color,
+    val linkBnsCancelButtonContent: Color,
+    val linkBnsDisabledButtonContent: Color,
+    val linkBnsAddressBackground: Color,
+    val color1: Color,
+    val color2: Color,
+    val color3: Color,
+    val color4: Color,
 )
 
 val lightColors = Colors(
@@ -227,7 +234,14 @@ val lightColors = Colors(
     disableWalletButtonColor = Color(0xFFE0E0E0),
     disableWalletButtonContentColor = Color(0xFF000000),
     listItemBackground = Color(0xFFF8F8F8),
-    bnsDialogBackground = Color(0xFFEBEBEB)
+    bnsDialogBackground = Color(0xFFEBEBEB),
+    linkBnsCancelButtonContent = Color(0xFF6C6C78),
+    linkBnsDisabledButtonContent = Color(0xFFACACAC),
+    linkBnsAddressBackground = Color(0xFFECECEC),
+    color1 = Color(0x80FFFFFF),
+    color2 = Color(0x808AFFB2),
+    color3 = Color(0x80FFFFFF),
+    color4 = Color(0x808AFFB2)
 )
 
 val darkColors = Colors(
@@ -333,7 +347,14 @@ val darkColors = Colors(
     disableWalletButtonColor = Color(0xFF333343),
     disableWalletButtonContentColor = Color(0xFF000000),
     listItemBackground = Color(0xFF1C1C26),
-    bnsDialogBackground = Color(0xFF282836)
+    bnsDialogBackground = Color(0xFF282836),
+    linkBnsCancelButtonContent = Color(0xFFACACAC),
+    linkBnsDisabledButtonContent = Color(0xFF6C6C78),
+    linkBnsAddressBackground = Color(0xFF282836),
+    color1 = Color(0x801C1C26),
+    color2 = Color(0x80003412),
+    color3 = Color(0x8000BD40),
+    color4 = Color(0x801C1C26)
 )
 
 

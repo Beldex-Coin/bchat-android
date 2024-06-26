@@ -1531,4 +1531,10 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="about_bns_description_4">&#8226; Unified Identity: Connect your BChat ID, Beldex Wallet Address, and BelNet ID to a single BNS name. This simplifies your interactions across the Beldex ecosystem.</string>
     <string name="about_bns_description_5">&#8226; Ease of Use: Say goodbye to complicated alphanumeric strings. With your BNS name, messaging and transactions become straightforward and user-friendly.</string>
     <string name="about_bns_description_6">&#8226; Badge of Trust: Link your BChat ID to your BNS name and complete the verification process to earn a BNS badge. This badge adds a layer of trust and recognition within the community.</string>
+    <string name="bns_textfield_hint">Enter BNS name</string>
+    <string name="verify">Verify</string>
+    <string name="verified">Verified</string>
+    <string name="link">Link</string>
+    <string name="invalid_bns_warning_message">Your BNS name and ID does not match.Try again</string>
+    <string name="bns_linked_successfully">BNS Linked Successfully!</string>
 </resources>

@@ -1,6 +1,5 @@
 package com.thoughtcrimes.securesms.my_account.ui
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -31,12 +31,15 @@ import androidx.compose.ui.unit.sp
 import com.thoughtcrimes.securesms.compose_utils.BChatTypography
 import com.thoughtcrimes.securesms.compose_utils.DialogContainer
 import com.thoughtcrimes.securesms.compose_utils.appColors
+import com.thoughtcrimes.securesms.util.QRCodeUtilities
+import com.thoughtcrimes.securesms.util.isValidString
+import com.thoughtcrimes.securesms.util.toPx
 import io.beldex.bchat.R
 
 @Composable
 fun ShowQRDialog(
     title: String,
-    bitMap: Bitmap,
+    uiState: MyAccountViewModel.UIState,
     onShare: () -> Unit,
     onDismissRequest: () -> Unit
 ) {
@@ -48,6 +51,7 @@ fun ShowQRDialog(
         },
         containerColor = MaterialTheme.appColors.bnsDialogBackground
     ) {
+        val context = LocalContext.current
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -70,7 +74,14 @@ fun ShowQRDialog(
                     containerColor = Color.White
                 )
             ) {
-                if (bitMap!=null) {
+                if (uiState.publicKey.isValidString()) {
+                    val size = toPx(280, context.resources)
+                    val bitMap = QRCodeUtilities.encode(
+                        uiState.publicKey,
+                        size,
+                        isInverted = false,
+                        hasTransparentBackground = false
+                    )
                     Image(
                         bitmap = bitMap.asImageBitmap(),
                         contentDescription = "",

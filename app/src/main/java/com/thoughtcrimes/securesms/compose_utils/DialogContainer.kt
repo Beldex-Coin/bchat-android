@@ -8,6 +8,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -17,6 +18,7 @@ fun DialogContainer(
     dismissOnBackPress : Boolean = false,
     dismissOnClickOutside : Boolean = false,
     onDismissRequest: () -> Unit,
+    containerColor: Color = MaterialTheme.appColors.dialogBackground,
     content: @Composable () -> Unit
 ) {
     Dialog(
@@ -30,7 +32,7 @@ fun DialogContainer(
         Card(
             shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.appColors.dialogBackground
+                containerColor = containerColor
             ),
             border = BorderStroke(
                 width = 1.dp,

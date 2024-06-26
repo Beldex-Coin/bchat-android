@@ -2,8 +2,11 @@ package com.thoughtcrimes.securesms.my_account.ui
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.os.SystemClock
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -36,6 +39,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -77,9 +81,13 @@ import com.thoughtcrimes.securesms.messagerequests.MessageRequestsViewModel
 import com.thoughtcrimes.securesms.my_account.ui.dialogs.ClearDataDialog
 import com.thoughtcrimes.securesms.onboarding.ui.PinCodeAction
 import com.thoughtcrimes.securesms.preferences.ChatSettingsActivity
+import com.thoughtcrimes.securesms.util.FileProviderUtil
+import com.thoughtcrimes.securesms.util.QRCodeUtilities
 import com.thoughtcrimes.securesms.util.UiMode
 import com.thoughtcrimes.securesms.util.UiModeUtilities
 import com.thoughtcrimes.securesms.util.copyToClipBoard
+import com.thoughtcrimes.securesms.util.isValidString
+import com.thoughtcrimes.securesms.util.toPx
 import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.StatWalletInfo
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
@@ -87,15 +95,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
 
 @AndroidEntryPoint
-class MyAccountActivity: ComponentActivity() {
+class MyAccountActivity : ComponentActivity() {
 
     private var destination = MyAccountScreens.SettingsScreen.route
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        destination = intent?.getStringExtra(extraStartDestination) ?: MyAccountScreens.SettingsScreen.route
+        destination =
+            intent?.getStringExtra(extraStartDestination) ?: MyAccountScreens.SettingsScreen.route
         setContent {
             BChatTheme(
                 darkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
@@ -165,22 +176,132 @@ fun MyAccountNavHost(
             ) {
                 val state by viewModel.uiState.collectAsState()
                 val scrollState = rememberScrollState()
+                val beldexAddress by remember {
+                    mutableStateOf(
+                        IdentityKeyUtil.retrieve(
+                            context,
+                            IdentityKeyUtil.IDENTITY_W_ADDRESS_PREF
+                        )
+                    )
+                }
+                val copyToClipBoard: (String, String) -> Unit = { label, content ->
+                    context.copyToClipBoard(label, content)
+                }
                 var showClearDataDialog by remember {
                     mutableStateOf(false)
                 }
+                var showBeldexAddressDialog by remember {
+                    mutableStateOf(false)
+                }
+                var showQRDialog by remember {
+                    mutableStateOf(false)
+                }
+                var showBChatIdDialog by remember {
+                    mutableStateOf(false)
+                }
+                var bitMap: Bitmap? by remember {
+                    mutableStateOf(null)
+                }
+                var shareButtonLastClickTime by remember {
+                    mutableLongStateOf(0)
+                }
+
                 if (showClearDataDialog) {
                     ClearDataDialog {
                         showClearDataDialog = false
                     }
                 }
+
+                if (showBeldexAddressDialog) {
+                    CopyContentDialog(
+                        title = stringResource(id = R.string.beldex_address),
+                        data = beldexAddress,
+                        onCopy = {
+                            copyToClipBoard("Beldex Address", beldexAddress)
+                            showBeldexAddressDialog = false
+                        },
+                        onDismissRequest = {
+                            showBeldexAddressDialog = false
+                        })
+                }
+
+                if (showBChatIdDialog) {
+                    CopyContentDialog(
+                        title = stringResource(id = R.string.chatid),
+                        data = state.publicKey,
+                        onCopy = {
+                            copyToClipBoard("BChat ID", state.publicKey)
+                            showBChatIdDialog = false
+                        },
+                        onDismissRequest = {
+                            showBChatIdDialog = false
+                        })
+                }
+                if (state.publicKey.isValidString()) {
+                    val resources = LocalContext.current.resources
+                    val size = toPx(280, resources)
+                    bitMap = QRCodeUtilities.encode(
+                        state.publicKey,
+                        size,
+                        isInverted = false,
+                        hasTransparentBackground = false
+                    )
+                }
+
+                if (showQRDialog) {
+                    ShowQRDialog(
+                        title = stringResource(id = R.string.scan_qr_code),
+                        bitMap = bitMap!!,
+                        onShare = {
+                            showQRDialog = false
+                            if (SystemClock.elapsedRealtime() - shareButtonLastClickTime >= 1000) {
+                                shareButtonLastClickTime = SystemClock.elapsedRealtime()
+                                val directory =
+                                    context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                                val fileName = "${state.publicKey}.png"
+                                val file = File(directory, fileName)
+                                file.createNewFile()
+                                val fos = FileOutputStream(file)
+                                val size = toPx(280, context.resources)
+                                val qrCode = QRCodeUtilities.encode(
+                                    state.publicKey,
+                                    size,
+                                    isInverted = false,
+                                    hasTransparentBackground = false
+                                )
+                                qrCode.compress(Bitmap.CompressFormat.PNG, 100, fos)
+                                fos.flush()
+                                fos.close()
+                                val intent = Intent(Intent.ACTION_SEND)
+                                intent.putExtra(
+                                    Intent.EXTRA_STREAM,
+                                    FileProviderUtil.getUriFor(context, file)
+                                )
+                                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                intent.type = "image/png"
+                                startActivity(
+                                    Intent.createChooser(
+                                        intent,
+                                        context.resources.getString(R.string.fragment_view_my_qr_code_share_title)
+                                    )
+                                )
+                            }
+                        },
+                        onDismissRequest = {
+                            showQRDialog = false
+                        }
+                    )
+                }
+
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp).verticalScroll(scrollState),
+                        .padding(16.dp)
+                        .verticalScroll(scrollState),
                 ) {
                     Box(
                         modifier = Modifier.fillMaxWidth()
-                    ){
+                    ) {
                         Card(
                             shape = RoundedCornerShape(16.dp),
                             colors = CardDefaults.cardColors(
@@ -190,19 +311,31 @@ fun MyAccountNavHost(
                                 .fillMaxWidth()
                                 .padding(top = 50.dp, bottom = 10.dp),
                         ) {
-
                             ProfileCard(
-                                uiState =  state,
+                                uiState = state,
+                                beldexAddress = beldexAddress,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(
                                         top = 40.dp
                                     ),
+                                onShowDialog = {
+                                    when (it) {
+                                        0 ->
+                                            showBeldexAddressDialog = true
+
+                                        1 ->
+                                            showBChatIdDialog = true
+
+                                        else ->
+                                            showQRDialog = true
+                                    }
+                                }
                             )
                         }
                         ProfilePictureComponent(
                             publicKey = state.publicKey,
-                            displayName = state.profileName?:state.publicKey,
+                            displayName = state.profileName ?: state.publicKey,
                             containerSize = ProfilePictureMode.LargePicture.size,
                             pictureMode = ProfilePictureMode.LargePicture,
                             modifier = Modifier.align(alignment = Alignment.TopCenter)
@@ -211,6 +344,7 @@ fun MyAccountNavHost(
 
                     PrimaryButton(
                         onClick = {
+
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -221,8 +355,11 @@ fun MyAccountNavHost(
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(8.dp)
-                        ){
-                            Icon(painterResource(id = R.drawable.bns_transaction), contentDescription = "")
+                        ) {
+                            Icon(
+                                painterResource(id = R.drawable.bns_transaction),
+                                contentDescription = ""
+                            )
                             Text(
                                 text = stringResource(R.string.link_your_bns),
                                 style = BChatTypography.titleSmall.copy(
@@ -240,12 +377,12 @@ fun MyAccountNavHost(
                             .padding(bottom = 10.dp)
                             .clickable(
                                 onClick = {
-
+                                    navController.navigate(MyAccountScreens.AboutBNSScreen.route)
                                 }
                             ),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
-                    ){
+                    ) {
                         Text(
                             text = stringResource(R.string.read_more_about_bns),
                             style = BChatTypography.titleSmall.copy(
@@ -256,7 +393,12 @@ fun MyAccountNavHost(
                             modifier = Modifier
                                 .padding(end = 5.dp)
                         )
-                        Icon(painterResource(id = R.drawable.ic_info_outline_dark), contentDescription = "Read more about BNS", tint = MaterialTheme.appColors.secondaryTextColor, modifier = Modifier.size(12.dp))
+                        Icon(
+                            painterResource(id = R.drawable.ic_info_outline_dark),
+                            contentDescription = "Read more about BNS",
+                            tint = MaterialTheme.appColors.secondaryTextColor,
+                            modifier = Modifier.size(12.dp)
+                        )
                     }
 
 
@@ -468,7 +610,12 @@ fun MyAccountNavHost(
                             contactViewModel.onEvent(BlockedContactEvents.UnblockMultipleContact)
                         },
                         addRemoveContactToList = { contact, add ->
-                            contactViewModel.onEvent(BlockedContactEvents.AddContactToUnBlockList(contact, add))
+                            contactViewModel.onEvent(
+                                BlockedContactEvents.AddContactToUnBlockList(
+                                    contact,
+                                    add
+                                )
+                            )
                         },
                         modifier = Modifier
                             .fillMaxSize()
@@ -501,26 +648,32 @@ fun MyAccountNavHost(
         composable(
             route = MyAccountScreens.RecoverySeedScreen.route
         ) {
-            var markedAsSafe by  remember {
+            var markedAsSafe by remember {
                 mutableStateOf(false)
             }
-            val resultLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
-                if (it.resultCode == Activity.RESULT_OK) {
-                    markedAsSafe = true
-                } else {
-                    markedAsSafe = false
-                    Toast.makeText(context, "Failed to authenticate", Toast.LENGTH_SHORT).show()
+            val resultLauncher =
+                rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
+                    if (it.resultCode == Activity.RESULT_OK) {
+                        markedAsSafe = true
+                    } else {
+                        markedAsSafe = false
+                        Toast.makeText(context, "Failed to authenticate", Toast.LENGTH_SHORT).show()
+                    }
                 }
-            }
-            val verifyPin: () -> Unit  = {
-                val intent = Intent(Intent.ACTION_VIEW, "onboarding://manage_pin?finish=true&action=${PinCodeAction.VerifyPinCode.action}".toUri())
+            val verifyPin: () -> Unit = {
+                val intent = Intent(
+                    Intent.ACTION_VIEW,
+                    "onboarding://manage_pin?finish=true&action=${PinCodeAction.VerifyPinCode.action}".toUri()
+                )
                 resultLauncher.launch(intent)
             }
             val seed by lazy {
                 try {
-                    var hexEncodedSeed = IdentityKeyUtil.retrieve(context, IdentityKeyUtil.BELDEX_SEED)
+                    var hexEncodedSeed =
+                        IdentityKeyUtil.retrieve(context, IdentityKeyUtil.BELDEX_SEED)
                     if (hexEncodedSeed == null) {
-                        hexEncodedSeed = IdentityKeyUtil.getIdentityKeyPair(context).hexEncodedPrivateKey // Legacy account
+                        hexEncodedSeed =
+                            IdentityKeyUtil.getIdentityKeyPair(context).hexEncodedPrivateKey // Legacy account
                     }
                     val loadFileContents: (String) -> String = { fileName ->
                         MnemonicUtilities.loadFileContents(context, fileName)
@@ -555,9 +708,11 @@ fun MyAccountNavHost(
             MyAccountScreenContainer(title = stringResource(id = R.string.wallets), onBackClick = {
                 (context as ComponentActivity).finish()
             }) {
-                StatWalletInfo(modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp))
+                StatWalletInfo(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                )
 
             }
 
@@ -588,12 +743,29 @@ fun MyAccountNavHost(
                     onEvent = requestViewModel::onEvent,
                     onRequestClick = {
                         val returnIntent = Intent()
-                        returnIntent.putExtra(ConversationFragmentV2.THREAD_ID,it.threadId)
+                        returnIntent.putExtra(ConversationFragmentV2.THREAD_ID, it.threadId)
                         (context as Activity).run {
                             setResult(PassphraseRequiredActionBarActivity.RESULT_OK, returnIntent)
                             finish()
                         }
                     },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                )
+            }
+        }
+
+        composable(
+            route = MyAccountScreens.AboutBNSScreen.route
+        ) {
+            MyAccountScreenContainer(
+                title = stringResource(R.string.about_bns),
+                onBackClick = {
+                    navController.navigateUp()
+                }
+            ) {
+                AboutBNSScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(16.dp)
@@ -606,16 +778,11 @@ fun MyAccountNavHost(
 @Composable
 fun ProfileCard(
     uiState: MyAccountViewModel.UIState,
-    modifier: Modifier = Modifier
+    beldexAddress: String,
+    modifier: Modifier = Modifier,
+    onShowDialog: (status: Int) -> Unit
 ) {
     val context = LocalContext.current
-    val beldexAddress by remember {
-        mutableStateOf(
-            IdentityKeyUtil.retrieve(
-                context,
-                IdentityKeyUtil.IDENTITY_W_ADDRESS_PREF
-            ))
-    }
     val copyToClipBoard: (String, String) -> Unit = { label, content ->
         context.copyToClipBoard(label, content)
     }
@@ -642,33 +809,42 @@ fun ProfileCard(
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
-        ){
+        ) {
             ProfileCardKeyContainer(
                 title = stringResource(id = R.string.beldex_address),
                 image = R.drawable.ic_beldex_logo,
                 onCopy = {
                     copyToClipBoard("Beldex Address", beldexAddress)
                 },
-                isBeldex = true
+                isBeldex = true,
+                onShowDialog = {
+                    onShowDialog(0)
+                }
             )
 
-            Spacer(modifier = Modifier.padding(start = 5.dp))
+            Spacer(modifier = Modifier.padding(start = 3.dp))
 
             ProfileCardKeyContainer(
                 title = stringResource(id = R.string.chatid),
                 image = R.drawable.ic_bchat_logo,
                 onCopy = {
                     copyToClipBoard("BChat ID", uiState.publicKey)
+                },
+                onShowDialog = {
+                    onShowDialog(1)
                 }
             )
-            Spacer(modifier = Modifier.padding(start = 5.dp))
+            Spacer(modifier = Modifier.padding(start = 3.dp))
 
             ProfileCardKeyContainer(
                 title = stringResource(id = R.string.show_qr),
                 image = R.drawable.ic_show_qr,
                 onCopy = {
                 },
-                showCopyIcon = false
+                showCopyIcon = false,
+                onShowDialog = {
+                    onShowDialog(2)
+                }
             )
         }
     }
@@ -681,6 +857,7 @@ fun ProfileCardKeyContainer(
     onCopy: () -> Unit,
     showCopyIcon: Boolean = true,
     isBeldex: Boolean = false,
+    onShowDialog: () -> Unit
 ) {
     Card(
         colors = CardDefaults.cardColors(
@@ -688,23 +865,32 @@ fun ProfileCardKeyContainer(
         ),
     ) {
         Box(
-            modifier = Modifier.padding(5.dp)
-        ){
+            modifier = Modifier
+                .padding(5.dp)
+                .clickable {
+                    onShowDialog()
+                }
+        ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
-                modifier = Modifier.padding(vertical = 15.dp, horizontal = if(isBeldex) 5.dp else 15.dp)
+                modifier = Modifier.padding(
+                    vertical = 15.dp,
+                    horizontal = if (isBeldex) 5.dp else 15.dp
+                )
             ) {
-                Image(painter = painterResource(id = image), contentDescription = "",
+                Image(
+                    painter = painterResource(id = image), contentDescription = "",
                     modifier = Modifier
                         .size(25.dp),
-                    colorFilter = if(!showCopyIcon) ColorFilter.tint(MaterialTheme.appColors.editTextColor) else null)
+                    colorFilter = if (!showCopyIcon) ColorFilter.tint(MaterialTheme.appColors.editTextColor) else null
+                )
                 Text(
                     text = title,
                     style = MaterialTheme.typography.bodySmall.copy(
                         fontSize = 11.sp,
                         color = MaterialTheme.appColors.editTextColor,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.Medium
                     ),
                     textAlign = TextAlign.Center,
                     modifier = Modifier
@@ -712,7 +898,7 @@ fun ProfileCardKeyContainer(
                         .align(Alignment.CenterHorizontally)
                 )
             }
-            if(showCopyIcon) {
+            if (showCopyIcon) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_copy),
                     contentDescription = "",

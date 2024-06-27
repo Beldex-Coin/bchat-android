@@ -129,6 +129,7 @@ class Colors(
     val color2: Color,
     val color3: Color,
     val color4: Color,
+    val profileAddressCardBackground: Color
 )
 
 val lightColors = Colors(
@@ -241,7 +242,8 @@ val lightColors = Colors(
     color1 = Color(0x80FFFFFF),
     color2 = Color(0x808AFFB2),
     color3 = Color(0x80FFFFFF),
-    color4 = Color(0x808AFFB2)
+    color4 = Color(0x808AFFB2),
+    profileAddressCardBackground = Color(0xFFFFFFFF)
 )
 
 val darkColors = Colors(
@@ -354,7 +356,8 @@ val darkColors = Colors(
     color1 = Color(0x801C1C26),
     color2 = Color(0x80003412),
     color3 = Color(0x8000BD40),
-    color4 = Color(0x801C1C26)
+    color4 = Color(0x801C1C26),
+    profileAddressCardBackground = Color(0xFF11111A)
 )
 
 

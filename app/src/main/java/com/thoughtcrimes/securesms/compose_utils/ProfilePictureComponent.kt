@@ -1,7 +1,6 @@
 package com.thoughtcrimes.securesms.compose_utils
 
 import android.graphics.drawable.Drawable
-import android.util.Log
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.compose.foundation.Image
@@ -99,7 +98,6 @@ fun ProfilePictureComponent(
                 }
             }
             ProfilePictureMode.SmallPicture -> {
-                Log.d("Public-key-> ","$publicKey - ${getUserIsBNSHolderStatus(publicKey)}")
                 ProfilePicture(
                     containerSize = containerSize,
                     publicKey = publicKey,
@@ -109,7 +107,6 @@ fun ProfilePictureComponent(
                 )
             }
             ProfilePictureMode.LargePicture -> {
-                Log.d("Public-key-> ","$publicKey - ${getUserIsBNSHolderStatus(publicKey)}")
                 var pictureType = 0
                 if(isRefresh){
                     pictureType = -1

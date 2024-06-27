@@ -63,7 +63,7 @@ fun ShowQRDialog(
                 text = title,
                 style = BChatTypography.titleMedium.copy(
                     color = MaterialTheme.appColors.primaryButtonColor,
-                    fontSize = 12.sp,
+                    fontSize = 14.sp,
                     fontWeight = FontWeight(700),
                 ),
                 textAlign = TextAlign.Center

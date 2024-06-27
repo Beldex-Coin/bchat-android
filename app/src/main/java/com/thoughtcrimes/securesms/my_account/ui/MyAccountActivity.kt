@@ -3,6 +3,9 @@ package com.thoughtcrimes.securesms.my_account.ui
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BlurMaskFilter
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -13,7 +16,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,16 +48,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
@@ -182,6 +190,7 @@ fun MyAccountNavHost(
             ) {
                 val state by viewModel.uiState.collectAsState()
                 val scrollState = rememberScrollState()
+                val isDarkMode = UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
                 val beldexAddress by remember {
                     mutableStateOf(
                         IdentityKeyUtil.retrieve(
@@ -315,6 +324,74 @@ fun MyAccountNavHost(
                     }
                 }
 
+                fun Modifier.innerShadow(
+                    color: Color = Color.Black,
+                    cornersRadius: Dp = 0.dp,
+                    spread: Dp = 0.dp,
+                    blur: Dp = 0.dp,
+                    offsetY: Dp = 0.dp,
+                    offsetX: Dp = 0.dp
+                ) = drawWithContent {
+
+                    drawContent()
+
+                    val rect = Rect(Offset.Zero, size)
+                    val paint = Paint()
+
+                    drawIntoCanvas {
+
+                        paint.color = color
+                        paint.isAntiAlias = true
+                        it.saveLayer(rect, paint)
+                        it.drawRoundRect(
+                            left = rect.left,
+                            top = rect.top,
+                            right = rect.right,
+                            bottom = rect.bottom,
+                            cornersRadius.toPx(),
+                            cornersRadius.toPx(),
+                            paint
+                        )
+                        val frameworkPaint = paint.asFrameworkPaint()
+                        frameworkPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
+                        if (blur.toPx() > 0) {
+                            frameworkPaint.maskFilter = BlurMaskFilter(blur.toPx(), BlurMaskFilter.Blur.NORMAL)
+                        }
+                        val left = if (offsetX > 0.dp) {
+                            rect.left + offsetX.toPx()
+                        } else {
+                            rect.left
+                        }
+                        val top = if (offsetY > 0.dp) {
+                            rect.top + offsetY.toPx()
+                        } else {
+                            rect.top
+                        }
+                        val right = if (offsetX < 0.dp) {
+                            rect.right + offsetX.toPx()
+                        } else {
+                            rect.right
+                        }
+                        val bottom = if (offsetY < 0.dp) {
+                            rect.bottom + offsetY.toPx()
+                        } else {
+                            rect.bottom
+                        }
+                        paint.color = Color.Black
+                        it.drawRoundRect(
+                            left = left + spread.toPx() / 2,
+                            top = top + spread.toPx() / 2,
+                            right = right - spread.toPx() / 2,
+                            bottom = bottom - spread.toPx() / 2,
+                            cornersRadius.toPx(),
+                            cornersRadius.toPx(),
+                            paint
+                        )
+                        frameworkPaint.xfermode = null
+                        frameworkPaint.maskFilter = null
+                    }
+                }
+
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -325,23 +402,22 @@ fun MyAccountNavHost(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Box(
-                            modifier = Modifier
+                            modifier = if(!isBnsHolder.isNullOrEmpty()) Modifier
                                 .fillMaxWidth()
-                                .padding(top = 50.dp, bottom = 10.dp).background(brush = if(!isBnsHolder.isNullOrEmpty()) Brush.linearGradient(
-                                    colors = listOf(
-                                       MaterialTheme.appColors.color1,
-                                        MaterialTheme.appColors.color2,
-                                        MaterialTheme.appColors.color3,
-                                        MaterialTheme.appColors.color4
+                                .padding(top = 50.dp, bottom = 10.dp)
+                                .paint(
+                                    painterResource(id = if (isDarkMode) R.drawable.ic_bns_card_dark else R.drawable.ic_bns_card_light),
+                                    contentScale = ContentScale.FillBounds
+                                )
+                                .innerShadow(
+                                    color = if (isDarkMode) MaterialTheme.appColors.primaryButtonColor else Color(
+                                        0x8000BD40
                                     ),
-                                    end = Offset(0.0f, Float.POSITIVE_INFINITY),
-                                    start = Offset(Float.POSITIVE_INFINITY, 0.0f)
-                                ) else Brush.linearGradient(
-                                    colors = listOf(
-                                        MaterialTheme.appColors.listItemBackground,
-                                        MaterialTheme.appColors.listItemBackground
-                                    )
-                                ),shape = RoundedCornerShape(16.dp)),
+                                    blur = if (isDarkMode) 20.dp else 10.dp,
+                                    cornersRadius = 16.dp
+                                ) else Modifier
+                                .fillMaxWidth()
+                                .padding(top = 50.dp, bottom = 10.dp)
                         ) {
                             ProfileCard(
                                 isBnsHolder = isBnsHolder,
@@ -870,6 +946,7 @@ fun ProfileCard(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             ProfileCardKeyContainer(
+                isBnsHolder = isBnsHolder,
                 title = stringResource(id = R.string.beldex_address),
                 image = R.drawable.ic_beldex_logo,
                 onCopy = {
@@ -884,6 +961,7 @@ fun ProfileCard(
             Spacer(modifier = Modifier.padding(start = 3.dp))
 
             ProfileCardKeyContainer(
+                isBnsHolder = isBnsHolder,
                 title = stringResource(id = R.string.chatid),
                 image = R.drawable.ic_bchat_logo,
                 onCopy = {
@@ -896,6 +974,7 @@ fun ProfileCard(
             Spacer(modifier = Modifier.padding(start = 3.dp))
 
             ProfileCardKeyContainer(
+                isBnsHolder = isBnsHolder,
                 title = stringResource(id = R.string.show_qr),
                 image = R.drawable.ic_show_qr,
                 onCopy = {
@@ -911,6 +990,7 @@ fun ProfileCard(
 
 @Composable
 fun ProfileCardKeyContainer(
+    isBnsHolder:String?,
     title: String,
     image: Int,
     onCopy: () -> Unit,
@@ -919,8 +999,11 @@ fun ProfileCardKeyContainer(
     onShowDialog: () -> Unit
 ) {
     Card(
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = if(!isBnsHolder.isNullOrEmpty()) 2.dp else 0.dp
+        ),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.appColors.backgroundColor
+            containerColor = if(!isBnsHolder.isNullOrEmpty()) MaterialTheme.appColors.profileAddressCardBackground else MaterialTheme.appColors.backgroundColor
         ),
     ) {
         Box(
@@ -934,8 +1017,10 @@ fun ProfileCardKeyContainer(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier.padding(
-                    vertical = 15.dp,
-                    horizontal = if (isBeldex) 5.dp else 15.dp
+                    top = 13.dp,
+                    bottom = 5.dp,
+                    start = if (isBeldex) 5.dp else 15.dp,
+                    end = if (isBeldex) 5.dp else 15.dp
                 )
             ) {
                 Image(
@@ -953,7 +1038,7 @@ fun ProfileCardKeyContainer(
                     ),
                     textAlign = TextAlign.Center,
                     modifier = Modifier
-                        .padding(top = 10.dp)
+                        .padding(top = 8.dp)
                         .align(Alignment.CenterHorizontally)
                 )
             }

@@ -46,11 +46,6 @@ class ProfilePictureView @JvmOverloads constructor(
             return contact?.displayName(Contact.ContactContext.REGULAR) ?: publicKey
         }
 
-        fun getUserIsBNSHolderStatus(publicKey: String): Boolean? {
-            val contact = DatabaseComponent.get(context).bchatContactDatabase().getContactWithBchatID(publicKey)
-            return contact?.isBnsHolder
-        }
-
         fun isOpenGroupWithProfilePicture(recipient: Recipient): Boolean {
             return recipient.isOpenGroupRecipient && recipient.groupAvatarId != null
         }
@@ -75,9 +70,15 @@ class ProfilePictureView @JvmOverloads constructor(
         update(displayName)
     }
 
+    fun getUserIsBNSHolderStatus(publicKey: String): Boolean? {
+        val contact = DatabaseComponent.get(context).bchatContactDatabase().getContactWithBchatID(publicKey)
+        return contact?.isBnsHolder
+    }
+
     fun update(displayName: String? = publicKey) {
         val publicKey = publicKey ?: return
         val additionalPublicKey = additionalPublicKey
+        val isBnsHolder = getUserIsBNSHolderStatus(publicKey)?:false
         if (additionalPublicKey != null) {
             Log.d("beldex","if 1")
             setProfilePictureIfNeeded(binding.doubleModeImageView1, publicKey, displayName, R.dimen.small_profile_picture_size)
@@ -91,21 +92,49 @@ class ProfilePictureView @JvmOverloads constructor(
         }
         if (additionalPublicKey == null && !isLarge) {
             Log.d("beldex","if 2")
-            setProfilePictureIfNeeded(binding.singleModeImageView, publicKey, displayName, R.dimen.medium_profile_picture_size)
-            binding.singleModeImageView.visibility = View.VISIBLE
+            if(isBnsHolder){
+                setProfilePictureIfNeeded(binding.singleModeWithTagImageView, publicKey, displayName, R.dimen.medium_profile_picture_size)
+                binding.singleModeBnsVerifiedTagImageView.visibility = View.VISIBLE
+                binding.singleModeWithTagContainer.visibility = View.VISIBLE
+                glide.clear(binding.singleModeImageView)
+                binding.singleModeImageView.visibility = View.INVISIBLE
+            }else{
+                setProfilePictureIfNeeded(binding.singleModeImageView, publicKey, displayName, R.dimen.medium_profile_picture_size)
+                binding.singleModeImageView.visibility = View.VISIBLE
+                glide.clear(binding.singleModeWithTagImageView)
+                binding.singleModeBnsVerifiedTagImageView.visibility = View.INVISIBLE
+                binding.singleModeWithTagContainer.visibility = View.INVISIBLE
+            }
         } else {
             Log.d("beldex","else 2")
             glide.clear(binding.singleModeImageView)
             binding.singleModeImageView.visibility = View.INVISIBLE
+            glide.clear(binding.singleModeWithTagImageView)
+            binding.singleModeBnsVerifiedTagImageView.visibility = View.INVISIBLE
+            binding.singleModeWithTagContainer.visibility = View.INVISIBLE
         }
         if (additionalPublicKey == null && isLarge) {
             Log.d("beldex","if 3")
-            setProfilePictureIfNeeded(binding.largeSingleModeImageView, publicKey, displayName, R.dimen.large_profile_picture_size)
-            binding.largeSingleModeImageView.visibility = View.VISIBLE
+            if(isBnsHolder) {
+                setProfilePictureIfNeeded(binding.largeSingleModeWithTagImageView, publicKey, displayName, R.dimen.large_profile_picture_size)
+                binding.largeSingleModeBnsVerifiedTagImageView.visibility = View.VISIBLE
+                binding.largeSingleModeWithTagContainer.visibility = View.VISIBLE
+                glide.clear(binding.largeSingleModeImageView)
+                binding.largeSingleModeImageView.visibility = View.INVISIBLE
+            }else{
+                setProfilePictureIfNeeded(binding.largeSingleModeImageView, publicKey, displayName, R.dimen.large_profile_picture_size)
+                binding.largeSingleModeImageView.visibility = View.VISIBLE
+                glide.clear(binding.largeSingleModeWithTagImageView)
+                binding.largeSingleModeBnsVerifiedTagImageView.visibility = View.INVISIBLE
+                binding.largeSingleModeWithTagContainer.visibility = View.INVISIBLE
+            }
         } else {
             Log.d("beldex","else 3")
             glide.clear(binding.largeSingleModeImageView)
             binding.largeSingleModeImageView.visibility = View.INVISIBLE
+            glide.clear(binding.largeSingleModeWithTagImageView)
+            binding.largeSingleModeBnsVerifiedTagImageView.visibility = View.INVISIBLE
+            binding.largeSingleModeWithTagContainer.visibility = View.INVISIBLE
         }
     }
 

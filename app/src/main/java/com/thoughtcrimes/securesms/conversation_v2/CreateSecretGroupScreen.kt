@@ -349,7 +349,7 @@ private fun GroupContact(
                     publicKey = recipient.address.toString(),
                     displayName = recipient.name.toString(),
                     containerSize = 36.dp,
-                    pictureMode = ProfilePictureMode.LargePicture
+                    pictureMode = ProfilePictureMode.SmallPicture
                 )
             }
 

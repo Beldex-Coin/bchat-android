@@ -217,6 +217,9 @@ fun MyAccountNavHost(
                 var showBnsNameVerifySuccessDialog by remember{
                     mutableStateOf(false)
                 }
+                var isRefreshProfile by remember {
+                    mutableStateOf(false)
+                }
 
                 if (showClearDataDialog) {
                     ClearDataDialog {
@@ -300,6 +303,7 @@ fun MyAccountNavHost(
                         showLinkYourBnsDialog = false
                         if(it){
                             isBnsHolder = TextSecurePreferences.getIsBNSHolder(context)
+                            isRefreshProfile = true
                             showBnsNameVerifySuccessDialog = true
                         }
                     })
@@ -367,7 +371,8 @@ fun MyAccountNavHost(
                             displayName = state.profileName ?: state.publicKey,
                             containerSize = ProfilePictureMode.LargePicture.size,
                             pictureMode = ProfilePictureMode.LargePicture,
-                            modifier = Modifier.align(alignment = Alignment.TopCenter)
+                            modifier = Modifier.align(alignment = Alignment.TopCenter),
+                            isRefresh = isRefreshProfile
                         )
                     }
 
@@ -829,7 +834,8 @@ fun ProfileCard(
             style = MaterialTheme.typography.titleMedium.copy(
                 color = MaterialTheme.appColors.titleTextColor,
                 fontWeight = FontWeight(700),
-                fontSize = 18.sp
+                fontSize = 18.sp,
+                lineHeight = 24.51.sp
             ),
             textAlign = TextAlign.Center,
             modifier = Modifier

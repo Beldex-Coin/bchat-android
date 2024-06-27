@@ -52,6 +52,7 @@ import io.beldex.bchat.R
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.compose_utils.PrimaryButton
@@ -280,6 +281,7 @@ fun LinkYourBNSDialog(
                 onClick = {
                     if(isVerified) {
                         TextSecurePreferences.setIsBNSHolder(context, bnsName)
+                        MessagingModuleConfiguration.shared.storage.setIsBnsHolder(state.publicKey,true)
                         onDismissRequest(true)
                     }
                 },

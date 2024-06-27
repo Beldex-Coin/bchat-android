@@ -1537,4 +1537,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="link">Link</string>
     <string name="invalid_bns_warning_message">Your BNS name and ID does not match.Try again</string>
     <string name="bns_linked_successfully">BNS Linked Successfully!</string>
+    <string name="bns_verified_tag">BNS verified tag</string>
 </resources>

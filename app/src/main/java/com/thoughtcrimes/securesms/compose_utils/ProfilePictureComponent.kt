@@ -1,12 +1,15 @@
 package com.thoughtcrimes.securesms.compose_utils
 
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -35,6 +39,7 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.hilt.GlideProvider
 import dagger.hilt.android.EntryPointAccessors.fromApplication
 import io.beldex.bchat.R
@@ -55,7 +60,14 @@ fun ProfilePictureComponent(
     additionalPublicKey: String? = null,
     additionalDisplayName: String? = null,
     pictureMode: ProfilePictureMode = ProfilePictureMode.SmallPicture,
+    isRefresh: Boolean = false,
 ) {
+    val context = LocalContext.current
+    fun getUserIsBNSHolderStatus(publicKey: String): Boolean? {
+        val contact = DatabaseComponent.get(context).bchatContactDatabase().getContactWithBchatID(publicKey)
+        return contact?.isBnsHolder
+    }
+
     Box(
         modifier = modifier,
         contentAlignment = Alignment.Center
@@ -86,12 +98,28 @@ fun ProfilePictureComponent(
                     }
                 }
             }
-            ProfilePictureMode.SmallPicture,
-            ProfilePictureMode.LargePicture -> {
+            ProfilePictureMode.SmallPicture -> {
+                Log.d("Public-key-> ","$publicKey - ${getUserIsBNSHolderStatus(publicKey)}")
                 ProfilePicture(
                     containerSize = containerSize,
                     publicKey = publicKey,
-                    displayName = displayName
+                    displayName = displayName,
+                    isBnsTag = getUserIsBNSHolderStatus(publicKey)?:false,
+                    pictureType = 1,
+                )
+            }
+            ProfilePictureMode.LargePicture -> {
+                Log.d("Public-key-> ","$publicKey - ${getUserIsBNSHolderStatus(publicKey)}")
+                var pictureType = 0
+                if(isRefresh){
+                    pictureType = -1
+                }
+                ProfilePicture(
+                    containerSize = containerSize,
+                    publicKey = publicKey,
+                    displayName = displayName,
+                    isBnsTag = getUserIsBNSHolderStatus(publicKey)?:false,
+                    pictureType = pictureType
                 )
             }
         }
@@ -103,7 +131,9 @@ fun ProfilePicture(
     containerSize: Dp,
     publicKey: String,
     displayName: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isBnsTag: Boolean = false,
+    pictureType: Int = 0,
 ) {
     val context = LocalContext.current
     val glide = remember {
@@ -146,23 +176,55 @@ fun ProfilePicture(
         val sizePx = with(LocalDensity.current) {
             containerSize.toPx()
         }.toInt()
-        AndroidView(
-            factory = { ctx ->
-                val imageView = ImageView(ctx).apply {
-                    layoutParams = ViewGroup.LayoutParams(sizePx, sizePx)
-                    contentDescription = displayName
-                }
-                glide.load(signalProfilePicture)
-                    .placeholder(unknownRecipientDrawable)
-                    .error(unknownRecipientDrawable)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .transform(CenterInside(),
-                        CircleCrop())
-                    .into(imageView)
-                imageView
-            },
-            modifier = modifier
-        )
+        if(isBnsTag) {
+            Box() {
+                AndroidView(
+                    factory = { ctx ->
+                        val imageView = ImageView(ctx).apply {
+                            layoutParams = ViewGroup.LayoutParams(sizePx, sizePx)
+                            contentDescription = displayName
+                        }
+                        glide.load(signalProfilePicture)
+                            .placeholder(unknownRecipientDrawable)
+                            .error(unknownRecipientDrawable)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .transform(
+                                CenterInside(),
+                                CircleCrop()
+                            )
+                            .into(imageView)
+                        imageView
+                    },
+                    modifier = modifier
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.ic_bns_verified_tag),
+                    contentDescription = null,
+                    modifier = Modifier.align(Alignment.BottomEnd)
+                        .size(if (pictureType == 1) 15.dp else 30.dp)
+                )
+            }
+        }else{
+            AndroidView(
+                factory = { ctx ->
+                    val imageView = ImageView(ctx).apply {
+                        layoutParams = ViewGroup.LayoutParams(sizePx, sizePx)
+                        contentDescription = displayName
+                    }
+                    glide.load(signalProfilePicture)
+                        .placeholder(unknownRecipientDrawable)
+                        .error(unknownRecipientDrawable)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .transform(
+                            CenterInside(),
+                            CircleCrop()
+                        )
+                        .into(imageView)
+                    imageView
+                },
+                modifier = modifier
+            )
+        }
     } else if (recipient.isOpenGroupRecipient && recipient.groupAvatarId == null) {
         val sizePx = with(LocalDensity.current) {
             containerSize.toPx()
@@ -210,14 +272,38 @@ fun ProfilePicture(
                 })
         }
         image?.let {
-            Image(
-                painter = rememberAsyncImagePainter(it),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = modifier
-                    .size(containerSize)
-                    .clip(CircleShape)
-            )
+            if(isBnsTag) {
+                Box() {
+                    Image(
+                        painter = rememberAsyncImagePainter(it),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = modifier
+                            .size(containerSize)
+                            .clip(CircleShape)
+                            .border(
+                                width = if (pictureType == 1) 2.dp else 4.dp,
+                                color = MaterialTheme.appColors.primaryButtonColor,
+                                shape = CircleShape
+                            )
+                    )
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_bns_verified_tag),
+                        contentDescription = null,
+                        modifier = Modifier.align(Alignment.BottomEnd)
+                            .size(if (pictureType == 1) 15.dp else 30.dp)
+                    )
+                }
+            }else {
+                Image(
+                    painter = rememberAsyncImagePainter(it),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = modifier
+                        .size(containerSize)
+                        .clip(CircleShape)
+                )
+            }
         }
     }
 }

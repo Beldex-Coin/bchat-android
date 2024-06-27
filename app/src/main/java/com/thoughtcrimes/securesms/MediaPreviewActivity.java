@@ -92,6 +92,7 @@ import java.util.Objects;
 import java.util.WeakHashMap;
 
 import io.beldex.bchat.R;
+import kotlin.Unit;
 
 /**
  * Activity for displaying media attachments in-app
@@ -455,7 +456,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
     MediaItem mediaItem = getCurrentMediaItem();
     if (mediaItem == null) return;
 
-    SaveAttachmentTask.showWarningDialog(this, (dialogInterface, i) -> {
+    SaveAttachmentTask.showWarningDialog(this, 1, () -> {
       Permissions.with(this)
               .request(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
               .maxSdkVersion(Build.VERSION_CODES.P)
@@ -472,6 +473,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity im
                 }
               })
               .execute();
+      return Unit.INSTANCE;
     });
   }
 

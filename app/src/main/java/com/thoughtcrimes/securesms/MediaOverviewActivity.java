@@ -84,6 +84,7 @@ import java.util.List;
 import java.util.Locale;
 
 import io.beldex.bchat.R;
+import kotlin.Unit;
 
 /**
  * Activity for displaying media attachments in-app
@@ -346,9 +347,9 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
     @SuppressWarnings("CodeBlock2Expr")
     @SuppressLint({"InlinedApi", "StaticFieldLeak"})
     private void handleSaveMedia(@NonNull Collection<MediaDatabase.MediaRecord> mediaRecords) {
-      final Context context = getContext();
+      final Context context = requireContext();
 
-      SaveAttachmentTask.showWarningDialog(context, (dialogInterface, which) -> {
+      SaveAttachmentTask.showWarningDialog(context, mediaRecords.size(), () -> {
         Permissions.with(this)
                 .request(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .maxSdkVersion(Build.VERSION_CODES.P)
@@ -390,7 +391,8 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
                   }.execute();
                 })
                 .execute();
-      }, mediaRecords.size());
+        return Unit.INSTANCE;
+      });
     }
 
     private void sendMediaSavedNotificationIfNeeded() {

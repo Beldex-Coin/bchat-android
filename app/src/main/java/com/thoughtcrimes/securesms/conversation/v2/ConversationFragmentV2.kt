@@ -1787,55 +1787,41 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     override fun saveAttachment(messages: Set<MessageRecord>) {
         val message = messages.first() as MmsMessageRecord
-        SaveAttachmentTask.showWarningDialog(requireActivity(), { _, _ ->
+        // Do not allow the user to download a file attachment before it has finished downloading
+        if (message.isMediaPending) {
+            Toast.makeText(requireActivity(), resources.getString(R.string.conversation_activity__wait_until_attachment_has_finished_downloading), Toast.LENGTH_LONG).show()
+            return
+        }
+
+        SaveAttachmentTask.showWarningDialog(requireActivity()) {
             Permissions.with(this)
-                .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .maxSdkVersion(Build.VERSION_CODES.P)
-                .withPermanentDenialDialog(getString(R.string.MediaPreviewActivity_signal_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied))
-                .onAnyDenied {
-                    endActionMode()
-                    Toast.makeText(
-                        requireActivity(),
-                        R.string.MediaPreviewActivity_unable_to_write_to_external_storage_without_permission,
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-                .onAllGranted {
-                    endActionMode()
-                    val attachments: List<SaveAttachmentTask.Attachment?> =
-                        Stream.of(message.slideDeck.slides)
-                            .filter { s: Slide -> s.uri != null && (s.hasImage() || s.hasVideo() || s.hasAudio() || s.hasDocument()) }
-                            .map { s: Slide ->
-                                SaveAttachmentTask.Attachment(
-                                    s.uri!!,
-                                    s.contentType,
-                                    message.dateReceived,
-                                    s.fileName.orNull()
-                                )
-                            }
-                            .toList()
-                    if (attachments.isNotEmpty()) {
-                        val saveTask = SaveAttachmentTask(requireActivity())
-                        saveTask.executeOnExecutor(
-                            AsyncTask.THREAD_POOL_EXECUTOR,
-                            *attachments.toTypedArray()
-                        )
-                        if (!message.isOutgoing) {
-                            sendMediaSavedNotification()
-                        }
-                        return@onAllGranted
+                    .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    .maxSdkVersion(Build.VERSION_CODES.P)
+                    .withPermanentDenialDialog(getString(R.string.MediaPreviewActivity_signal_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied))
+                    .onAnyDenied {
+                        endActionMode()
+                        Toast.makeText(requireActivity(), R.string.MediaPreviewActivity_unable_to_write_to_external_storage_without_permission, Toast.LENGTH_LONG).show()
                     }
-                    Toast.makeText(
-                        requireActivity(),
-                        resources.getQuantityString(
-                            R.plurals.ConversationFragment_error_while_saving_attachments_to_sd_card,
-                            1
-                        ),
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-                .execute()
-        })
+                    .onAllGranted {
+                        endActionMode()
+                        val attachments: List<SaveAttachmentTask.Attachment?> = Stream.of(message.slideDeck.slides)
+                                .filter { s: Slide -> s.uri != null && (s.hasImage() || s.hasVideo() || s.hasAudio() || s.hasDocument()) }
+                                .map { s: Slide -> SaveAttachmentTask.Attachment(s.uri!!, s.contentType, message.dateReceived, s.fileName.orNull()) }
+                                .toList()
+                        if (attachments.isNotEmpty()) {
+                            val saveTask = SaveAttachmentTask(requireActivity())
+                            saveTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, *attachments.toTypedArray())
+                            if (!message.isOutgoing) {
+                                sendMediaSavedNotification()
+                            }
+                            return@onAllGranted
+                        }
+                        Toast.makeText(requireActivity(),
+                                resources.getQuantityString(R.plurals.ConversationFragment_error_while_saving_attachments_to_sd_card, 1),
+                                Toast.LENGTH_LONG).show()
+                    }
+                    .execute()
+        }
     }
 
     override fun reply(messages: Set<MessageRecord>) {

@@ -48,7 +48,7 @@ class SaveAttachmentTask : ProgressDialogAsyncTask<SaveAttachmentTask.Attachment
 
         @JvmStatic
         @JvmOverloads
-        fun showWarningDialog(context: Context, onAcceptListener: OnClickListener, count: Int = 1) {
+        fun showWarningDialog(context: Context, count: Int = 1, onAcceptListener: () -> Unit = {}) {
             val factory = LayoutInflater.from(context)
             val saveToStorageDialogView: View = factory.inflate(R.layout.save_storage_dialog_box, null)
             val saveToStorageDialog = AlertDialog.Builder(context).create()
@@ -62,7 +62,7 @@ class SaveAttachmentTask : ProgressDialogAsyncTask<SaveAttachmentTask.Attachment
                 saveToStorageDialog.dismiss()
             }
             saveToStorageDialogView.findViewById<Button>(R.id.positiveButton).setOnClickListener{
-                onAcceptListener
+                onAcceptListener()
                 saveToStorageDialog.dismiss()
             }
             saveToStorageDialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)

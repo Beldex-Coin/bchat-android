@@ -315,6 +315,7 @@
     <string name="MediaPreviewActivity_draft" translatable="false">Draft</string>
     <string name="MediaPreviewActivity_signal_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied" translatable="false">BChat needs storage access in order to save to external storage, but it has been permanently denied. Please continue to app settings, select \"Permissions\", and enable \"Storage\".</string>
     <string name="MediaPreviewActivity_unable_to_write_to_external_storage_without_permission" translatable="false">Unable to save to external storage without permissions</string>
+    <string name="conversation_activity__wait_until_attachment_has_finished_downloading">Please wait until attachment has finished downloading</string>
     <string name="MediaPreviewActivity_media_delete_confirmation_title" translatable="false">Delete message?</string>
     <string name="MediaPreviewActivity_media_delete_confirmation_message" translatable="false">This will permanently delete this message.</string>
 

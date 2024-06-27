@@ -32,7 +32,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
+import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.jobs.JobQueue
+import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.ProfilePictureModifiedEvent
 import com.beldex.libbchat.utilities.TextSecurePreferences
@@ -72,8 +74,6 @@ import com.thoughtcrimes.securesms.model.PendingTransaction
 import com.thoughtcrimes.securesms.model.TransactionInfo
 import com.thoughtcrimes.securesms.model.Wallet
 import com.thoughtcrimes.securesms.model.WalletManager
-import com.thoughtcrimes.securesms.my_account.ui.MyAccountActivity
-import com.thoughtcrimes.securesms.my_account.ui.MyAccountScreens
 import com.thoughtcrimes.securesms.onboarding.SeedActivity
 import com.thoughtcrimes.securesms.onboarding.SeedReminderViewDelegate
 import com.thoughtcrimes.securesms.util.ActivityDispatcher
@@ -100,8 +100,8 @@ import com.thoughtcrimes.securesms.wallet.scanner.ScannerFragment
 import com.thoughtcrimes.securesms.wallet.scanner.WalletScannerFragment
 import com.thoughtcrimes.securesms.wallet.send.SendFragment
 import com.thoughtcrimes.securesms.wallet.service.WalletService
-import com.thoughtcrimes.securesms.wallet.settings.WalletSettings
 import com.thoughtcrimes.securesms.wallet.utils.LegacyStorageHelper
+import com.thoughtcrimes.securesms.webrtc.NetworkChangeReceiver
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
@@ -112,14 +112,14 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import nl.komponents.kovenant.ui.failUi
+import nl.komponents.kovenant.ui.successUi
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import java.io.File
-import java.text.SimpleDateFormat
 import java.util.Collections
-import java.util.Date
 import java.util.Random
 import javax.inject.Inject
 
@@ -177,6 +177,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     lateinit var remoteConfig: FirebaseRemoteConfigUtil
     private var favouriteNodes: Set<NodeInfo> = setOf()
     val list: MutableList<TransactionInfo> = ArrayList()
+    private var networkChangedReceiver: NetworkChangeReceiver? = null
 
     // region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?, isReady: Boolean) {
@@ -187,6 +188,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
         //-Wallet
         LegacyStorageHelper.migrateWallets(this)
+
+        networkChangedReceiver = NetworkChangeReceiver(::networkChange)
+        networkChangedReceiver!!.register(this)
 
         if(intent.getBooleanExtra(SHORTCUT_LAUNCHER,false)){
            //Shortcut launcher
@@ -264,6 +268,50 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             TextSecurePreferences.setAirdropAnimationStatus(this,false)
             launchSuccessLottieDialog()
         }*/
+    }
+
+    private fun networkChange(networkAvailable: Boolean) {
+        if (networkAvailable) {
+            checkIsBnsHolder()
+        }
+    }
+
+    private fun checkIsBnsHolder(){
+        val isBnsHolder = TextSecurePreferences.getIsBNSHolder(this)
+        val publicKey = TextSecurePreferences.getLocalNumber(this)
+        if(!isBnsHolder.isNullOrEmpty() && !publicKey.isNullOrEmpty()){
+            verifyBNS(isBnsHolder,publicKey,this) {
+                if (!it) {
+                    TextSecurePreferences.setIsBNSHolder(this, null)
+                    MessagingModuleConfiguration.shared.storage.setIsBnsHolder(publicKey, false)
+                    val currentFragment = getCurrentFragment()
+                    if(currentFragment is HomeFragment) {
+                        currentFragment.updateProfileButton()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun verifyBNS(bnsName: String, publicKey: String?, context: Context, result: (status: Boolean) -> Unit) {
+        // This could be an BNS name
+        MnodeAPI.getBchatID(bnsName).successUi { hexEncodedPublicKey ->
+            if(hexEncodedPublicKey == publicKey){
+                result(true)
+            }else{
+                result(false)
+                Toast.makeText(context, context.resources.getString(R.string.invalid_bns_warning_message), Toast.LENGTH_SHORT).show()
+            }
+        }.failUi { exception ->
+            var message =
+                context.resources.getString(R.string.bns_name_changed_warning_message)
+            exception.localizedMessage?.let {
+                message = context.resources.getString(R.string.bns_name_changed_warning_message)
+                Log.d("Beldex", "BNS exception $it")
+            }
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            result(false)
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -622,6 +670,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             }
             stopWalletService()
         }
+        networkChangedReceiver?.unregister(this)
+        networkChangedReceiver = null
         super.onDestroy()
     }
 

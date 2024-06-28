@@ -235,7 +235,7 @@ private fun BlockedContactItem(
                         publicKey=contact.address.toString(),
                         displayName=contact.name.toString(),
                         containerSize=36.dp,
-                        pictureMode=ProfilePictureMode.LargePicture)
+                        pictureMode=ProfilePictureMode.SmallPicture)
             }
             Text(
                 text = contact.name ?: "",

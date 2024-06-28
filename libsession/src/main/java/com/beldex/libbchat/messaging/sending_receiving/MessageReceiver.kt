@@ -48,6 +48,7 @@ object MessageReceiver {
         var sender: String? = null
         var groupPublicKey: String? = null
         var address:String =""
+        val userIsBnsHolder = storage.getIsBnsHolder()
         if (isOpenGroupMessage) {
             plaintext = envelope.content.toByteArray()
             sender = envelope.source
@@ -59,7 +60,11 @@ object MessageReceiver {
                     plaintext = decryptionResult.first
                     sender = decryptionResult.second
                     address = decryptionResult.third
-                    MessagingModuleConfiguration.shared.storage.setIsBnsHolder(sender,envelope.isBnsHolder)
+                    if(sender==userPublicKey && userIsBnsHolder.isNullOrEmpty()){
+                        MessagingModuleConfiguration.shared.storage.setIsBnsHolder(sender,false)
+                    }else{
+                        MessagingModuleConfiguration.shared.storage.setIsBnsHolder(sender,envelope.isBnsHolder)
+                    }
 
                     //-Log.d("beldex", "receiver add 1 $address")
                 }

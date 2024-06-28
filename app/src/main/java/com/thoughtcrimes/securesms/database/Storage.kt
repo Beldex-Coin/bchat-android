@@ -112,9 +112,14 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
 
     override fun setIsBnsHolder(senderPublicKey: String, isBnsHolder: Boolean) {
         val contactDB   = DatabaseComponent.get(context).bchatContactDatabase()
-        val contact = contactDB.getContactWithBchatID(senderPublicKey)
+        var contact = contactDB.getContactWithBchatID(senderPublicKey)
         if (contact != null) {
             contactDB.setIsBnsHolder(contact, isBnsHolder,1)
+        }else{
+            contact = Contact(senderPublicKey)
+            contact.threadID = DatabaseComponent.get(context).storage().getThreadId(senderPublicKey)
+            contact.isBnsHolder = isBnsHolder
+            contactDB.setContact(contact)
         }
     }
 

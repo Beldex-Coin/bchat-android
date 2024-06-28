@@ -70,7 +70,7 @@ class ProfilePictureView @JvmOverloads constructor(
         update(displayName)
     }
 
-    fun getUserIsBNSHolderStatus(publicKey: String): Boolean? {
+    private fun getUserIsBNSHolderStatus(publicKey: String): Boolean? {
         val contact = DatabaseComponent.get(context).bchatContactDatabase().getContactWithBchatID(publicKey)
         return contact?.isBnsHolder
     }

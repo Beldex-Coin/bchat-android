@@ -40,7 +40,7 @@ class ProfilePictureView @JvmOverloads constructor(
         .asDrawable(context, ContactColors.UNKNOWN_COLOR.toConversationColor(context), false)
 
     // region Updating
-    fun update(recipient: Recipient) {
+    fun update(recipient: Recipient,groupImage: Boolean = false) {
         fun getUserDisplayName(publicKey: String): String {
             val contact = DatabaseComponent.get(context).bchatContactDatabase().getContactWithBchatID(publicKey)
             return contact?.displayName(Contact.ContactContext.REGULAR) ?: publicKey
@@ -67,7 +67,7 @@ class ProfilePictureView @JvmOverloads constructor(
             displayName = getUserDisplayName(publicKey)
             additionalPublicKey = null
         }
-        update(displayName)
+        update(displayName,groupImage)
     }
 
     private fun getUserIsBNSHolderStatus(publicKey: String): Boolean? {
@@ -75,7 +75,7 @@ class ProfilePictureView @JvmOverloads constructor(
         return contact?.isBnsHolder
     }
 
-    fun update(displayName: String? = publicKey) {
+    fun update(displayName: String? = publicKey,groupImage:Boolean = false) {
         val publicKey = publicKey ?: return
         val additionalPublicKey = additionalPublicKey
         val isBnsHolder = getUserIsBNSHolderStatus(publicKey)?:false
@@ -94,7 +94,13 @@ class ProfilePictureView @JvmOverloads constructor(
             Log.d("beldex","if 2")
             if(isBnsHolder){
                 setProfilePictureIfNeeded(binding.singleModeWithTagImageView, publicKey, displayName, R.dimen.medium_profile_picture_size)
-                binding.singleModeBnsVerifiedTagImageView.visibility = View.VISIBLE
+                if(groupImage){
+                    binding.singleModeBnsVerifiedTagGroupImageView.visibility = View.VISIBLE
+                    binding.singleModeBnsVerifiedTagImageView.visibility = View.INVISIBLE
+                }else{
+                    binding.singleModeBnsVerifiedTagImageView.visibility = View.VISIBLE
+                    binding.singleModeBnsVerifiedTagGroupImageView.visibility = View.INVISIBLE
+                }
                 binding.singleModeWithTagContainer.visibility = View.VISIBLE
                 glide.clear(binding.singleModeImageView)
                 binding.singleModeImageView.visibility = View.INVISIBLE
@@ -102,6 +108,7 @@ class ProfilePictureView @JvmOverloads constructor(
                 setProfilePictureIfNeeded(binding.singleModeImageView, publicKey, displayName, R.dimen.medium_profile_picture_size)
                 binding.singleModeImageView.visibility = View.VISIBLE
                 glide.clear(binding.singleModeWithTagImageView)
+                binding.singleModeBnsVerifiedTagGroupImageView.visibility = View.INVISIBLE
                 binding.singleModeBnsVerifiedTagImageView.visibility = View.INVISIBLE
                 binding.singleModeWithTagContainer.visibility = View.INVISIBLE
             }

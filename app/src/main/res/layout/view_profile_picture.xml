@@ -61,6 +61,15 @@
             android:background="@drawable/ic_bns_tag_background"
             android:padding="2dp"/>
         <ImageView
+            android:id="@+id/singleModeBnsVerifiedTagGroupImageView"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:visibility="invisible"
+            android:src="@drawable/ic_bns_verified_tag"
+            android:contentDescription="@string/bns_verified_tag" />
+        <ImageView
             android:id="@+id/singleModeBnsVerifiedTagImageView"
             android:layout_width="15dp"
             android:layout_height="15dp"

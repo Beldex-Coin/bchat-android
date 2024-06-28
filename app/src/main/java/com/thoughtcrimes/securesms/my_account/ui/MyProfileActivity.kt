@@ -18,11 +18,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.collectAsState
@@ -30,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -51,7 +49,6 @@ import com.thoughtcrimes.securesms.mms.GlideApp
 import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.permissions.Permissions
 import com.thoughtcrimes.securesms.profiles.ProfileMediaConstraints
-import com.thoughtcrimes.securesms.util.AvatarPlaceholderGenerator
 import com.thoughtcrimes.securesms.util.BitmapDecodingException
 import com.thoughtcrimes.securesms.util.BitmapUtil
 import com.thoughtcrimes.securesms.util.ConfigurationMessageUtilities
@@ -92,6 +89,7 @@ class MyProfileActivity: AppCompatActivity() {
     private var shareButtonLastClickTime: Long = 0
 
     var profileEditable:Boolean = false
+    private fun isBnsHolder():String? = TextSecurePreferences.getIsBNSHolder(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,7 +107,8 @@ class MyProfileActivity: AppCompatActivity() {
                 shareQRCode()
             }
         }
-        binding.cameraView.isVisible = profileEditable
+        binding.cameraView.isVisible = profileEditable && isBnsHolder().isNullOrEmpty()
+        binding.isBnsHolderCameraView.isVisible = profileEditable && !isBnsHolder().isNullOrEmpty()
         binding.cameraView.apply {
             setOnClickListener {
                 showEditProfilePictureUI()
@@ -122,11 +121,37 @@ class MyProfileActivity: AppCompatActivity() {
                             .size(32.dp)
                             .clip(CircleShape)
                             .background(
-                                color = MaterialTheme.appColors.backgroundColor
+                                color = MaterialTheme.appColors.profileCameraIconBackground
                             )
                     ) {
                         Icon(
-                            Icons.Outlined.CameraAlt,
+                            painterResource(id = R.drawable.ic_camera_edit),
+                            contentDescription = "",
+                            tint = MaterialTheme.appColors.editTextColor,
+                            modifier = Modifier
+                                .size(20.dp)
+                        )
+                    }
+                }
+            }
+        }
+        binding.isBnsHolderCameraView.apply {
+            setOnClickListener {
+                showEditProfilePictureUI()
+            }
+            setContent {
+                BChatTheme {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clip(CircleShape)
+                            .background(
+                                color = MaterialTheme.appColors.profileCameraIconBackgroundWithBnsTag
+                            )
+                    ) {
+                        Icon(
+                            painterResource(id = R.drawable.ic_camera_edit),
                             contentDescription = "",
                             tint = MaterialTheme.appColors.editTextColor,
                             modifier = Modifier
@@ -145,10 +170,7 @@ class MyProfileActivity: AppCompatActivity() {
                         saveDisplayName(it)
                     },
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            top = 48.dp
-                        ),
+                        .fillMaxWidth(),
                     profileEditable
                 )
             }

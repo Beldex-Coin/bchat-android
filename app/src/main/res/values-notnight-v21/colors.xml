@@ -137,7 +137,7 @@
     <color name="screen_background">#F0F0F0</color>
     <color name="new_card_background">#EBEBEB</color>
     <color name="setting_icon_tint">#333333</color>
-    <color name="profile_background">#F0F0F0</color>
+    <color name="profile_background">#F8F8F8</color>
     <color name="menu_background">#ECECEC</color>
     <color name="outlined_button_stroke">#A7A7BA</color>
     <color name="outlined_button_tint">#EFEFEF</color>

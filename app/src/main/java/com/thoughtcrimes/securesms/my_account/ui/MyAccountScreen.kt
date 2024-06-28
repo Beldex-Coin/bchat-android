@@ -25,7 +25,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -230,10 +229,10 @@ fun MyAccountScreen(
                                     .align(Alignment.BottomEnd)
                     ) {
                         Icon(
-                                Icons.Outlined.CameraAlt,
-                                contentDescription="",
-                                tint=MaterialTheme.appColors.editTextColor,
-                                modifier=Modifier
+                            painterResource(id = R.drawable.ic_camera_edit),
+                            contentDescription="",
+                            tint=MaterialTheme.appColors.editTextColor,
+                            modifier=Modifier
                                         .size(20.dp)
                         )
                     }
@@ -303,12 +302,13 @@ fun AccountHeader(
                     text = uiState.profileName ?: "",
                     style = MaterialTheme.typography.titleMedium.copy(
                         color = MaterialTheme.appColors.titleTextColor,
-                        fontWeight = if(!profileEditable) FontWeight.SemiBold else null
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp
                     ),
                     modifier = Modifier
                 )
                 if(profileEditable) {
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(5.dp))
 
                     Icon(
                         painter = painterResource(id = R.drawable.ic_edit_name),
@@ -326,6 +326,7 @@ fun AccountHeader(
                 mutableStateOf(
                     TextFieldValue(
                         text = uiState.profileName ?: "",
+
                         selection = TextRange((uiState.profileName ?: "").length)
                     )
                 )

@@ -16,6 +16,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -417,7 +418,7 @@ fun MyAccountNavHost(
                                     cornersRadius = 16.dp
                                 ) else Modifier
                                 .fillMaxWidth()
-                                .padding(top = 50.dp, bottom = 10.dp)
+                                .padding(top = 50.dp, bottom = 10.dp).background(color = MaterialTheme.appColors.listItemBackground, shape = RoundedCornerShape(16.dp))
                         ) {
                             ProfileCard(
                                 isBnsHolder = isBnsHolder,

@@ -205,7 +205,7 @@ fun LinkYourBNSDialog(
                         MaterialTheme.appColors.textSelectionColor,
                         MaterialTheme.appColors.textSelectionColor
                     ),
-                    cursorColor = colorResource(id = R.color.edit_text_title)
+                    cursorColor = MaterialTheme.appColors.secondaryContentColor
                 )
             )
             Row(

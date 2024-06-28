@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,7 +38,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -83,6 +83,9 @@ fun LinkYourBNSDialog(
         var isVerified by remember {
             mutableStateOf(false)
         }
+        var showErrorMessage by remember {
+            mutableStateOf(false)
+        }
 
         if(bnsLoader) {
             BnsNameVerifyingLoader(onDismiss = {
@@ -112,6 +115,10 @@ fun LinkYourBNSDialog(
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                 result(false)
             }
+        }
+
+        fun verifyBNSName(bnsName:String):Boolean{
+            return bnsName.isNotEmpty() && bnsName.length > 4 && bnsName.substring(bnsName.length-4) == ".bdx"
         }
 
         Column(
@@ -185,13 +192,16 @@ fun LinkYourBNSDialog(
                 onValueChange = {
                     bnsName = it.trim().lowercase(Locale.US)
                     isVerified = false
+                    showErrorMessage = false
                 },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done
                 ),
-                modifier = Modifier
+                modifier = if(showErrorMessage) Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 15.dp).border(1.dp, color = Color.Red, shape = RoundedCornerShape(16.dp)) else Modifier
                     .fillMaxWidth()
                     .padding(bottom = 15.dp),
                 shape = RoundedCornerShape(16.dp),
@@ -243,10 +253,13 @@ fun LinkYourBNSDialog(
                 Spacer(modifier = Modifier.width(5.dp))
                 OutlinedButton(
                     onClick = {
-                        if (bnsName.isNotEmpty() && state.publicKey.isNotEmpty()) {
-                            verifyBNS(bnsName,state.publicKey,context, result = {
-                                isVerified = it
-                            })
+                        if(!isVerified) {
+                            if (verifyBNSName(bnsName) && state.publicKey.isNotEmpty()) {
+                                verifyBNS(bnsName, state.publicKey, context, result = {
+                                    isVerified = it
+                                    showErrorMessage = !it
+                                })
+                            }
                         }
                     },
                     colors = ButtonDefaults.buttonColors(
@@ -254,7 +267,7 @@ fun LinkYourBNSDialog(
                     ),
                     border = BorderStroke(
                         width = 1.dp,
-                        color = if (bnsName.isNotEmpty()) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.contactCardBackground
+                        color = if (verifyBNSName(bnsName)) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.contactCardBackground
                     ),
                     contentPadding = PaddingValues(
                         vertical = 16.dp
@@ -264,7 +277,7 @@ fun LinkYourBNSDialog(
                     Text(
                         text = if(isVerified) stringResource(id = R.string.verified) else stringResource(R.string.verify),
                         style = MaterialTheme.typography.titleMedium.copy(
-                            color = if (bnsName.isNotEmpty()) if(isVerified) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.secondaryContentColor else MaterialTheme.appColors.linkBnsDisabledButtonContent,
+                            color = if (verifyBNSName(bnsName)) if(isVerified) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.secondaryContentColor else MaterialTheme.appColors.linkBnsDisabledButtonContent,
                             fontWeight = FontWeight(700)
                         ),
                         modifier = Modifier
@@ -273,7 +286,10 @@ fun LinkYourBNSDialog(
                             )
                     )
                     if(isVerified){
-                        Image(painter = painterResource(id = R.drawable.ic_message_sent), contentDescription = "Bns verified", modifier = Modifier.size(20.dp).align(Alignment.CenterVertically).padding(start = 5.dp))
+                        Image(painter = painterResource(id = R.drawable.ic_message_sent), contentDescription = "Bns verified", modifier = Modifier
+                            .size(20.dp)
+                            .align(Alignment.CenterVertically)
+                            .padding(start = 5.dp))
                     }
                 }
             }
@@ -318,14 +334,17 @@ fun BnsNameVerifyingLoader(onDismiss: () -> Unit) {
     ) {
 
         OutlinedCard(colors = CardDefaults.cardColors(containerColor = MaterialTheme.appColors.dialogBackground), elevation = CardDefaults.cardElevation(defaultElevation = 4.dp), modifier = Modifier.fillMaxWidth()) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier =Modifier
+            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier = Modifier
                 .fillMaxWidth()
                 .padding(15.dp)) {
                 Box(
                     contentAlignment= Alignment.Center,
-                    modifier =Modifier
+                    modifier = Modifier
                         .size(55.dp)
-                        .background(color=MaterialTheme.appColors.circularProgressBarBackground, shape=CircleShape),
+                        .background(
+                            color = MaterialTheme.appColors.circularProgressBarBackground,
+                            shape = CircleShape
+                        ),
                 ){
                     CircularProgressIndicator(
                         modifier = Modifier.padding(12.dp),

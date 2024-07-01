@@ -76,4 +76,8 @@ class SharedPreferenceUtil(
         TextSecurePreferences.setMyPassword(context, pinCode)
     }
 
+    fun getWalletSavePassword():String? {
+        return TextSecurePreferences.getWalletEntryPassword(context)
+    }
+
 }

@@ -40,6 +40,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.hilt.GlideProvider
+import com.thoughtcrimes.securesms.util.AvatarPlaceholderGenerator
 import dagger.hilt.android.EntryPointAccessors.fromApplication
 import io.beldex.bchat.R
 
@@ -149,6 +150,10 @@ fun ProfilePicture(
     val unknownDrawable = ResourceContactPhoto(R.drawable.ic_notification_)
         .asDrawable(context, ContactColors.UNKNOWN_COLOR.toConversationColor(context), false)
 
+     fun setupDefaultProfileView(): Drawable {
+        return AvatarPlaceholderGenerator.generate(context, 128, publicKey, displayName)
+    }
+
     if (signalProfilePicture != null && avatar != "0" && avatar != "") {
 //        val updatedUrl = rememberUpdatedState(signalProfilePicture.getUri(context))
 //        val imageLoader = LocalContext.current.imageLoader.newBuilder()
@@ -183,7 +188,7 @@ fun ProfilePicture(
                         }
                         glide.load(signalProfilePicture)
                             .placeholder(unknownRecipientDrawable)
-                            .error(unknownRecipientDrawable)
+                            .error(setupDefaultProfileView())
                             .diskCacheStrategy(DiskCacheStrategy.NONE)
                             .transform(
                                 CenterInside(),
@@ -210,7 +215,7 @@ fun ProfilePicture(
                     }
                     glide.load(signalProfilePicture)
                         .placeholder(unknownRecipientDrawable)
-                        .error(unknownRecipientDrawable)
+                        .error(setupDefaultProfileView())
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
                         .transform(
                             CenterInside(),

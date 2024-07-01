@@ -79,6 +79,28 @@
             android:src="@drawable/ic_bns_verified_tag"
             android:contentDescription="@string/bns_verified_tag" />
     </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/editGroupdoubleModeImageViewContainer"
+        android:layout_width="@dimen/large_profile_picture_size"
+        android:layout_height="@dimen/large_profile_picture_size">
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/editGroupdoubleModeImageView1"
+            android:layout_width="76dp"
+            android:layout_height="76dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            app:riv_corner_radius="200dp"/>
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/editGroupdoubleModeImageView2"
+            android:layout_width="76dp"
+            android:layout_height="76dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            app:riv_corner_radius="200dp"/>
+
+    </RelativeLayout>
 
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/singleModeImageView"

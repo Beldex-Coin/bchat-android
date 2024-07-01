@@ -318,6 +318,20 @@
         <item name="android:maxLines">1</item>
     </style>
 
+    <style name="BchatSearchEditText">
+        <item name="android:fontFamily">@font/open_sans_medium</item>
+        <item name="android:background">@drawable/search_edit_text_background</item>
+        <item name="android:paddingLeft">@dimen/medium_spacing</item>
+        <item name="android:paddingTop">@dimen/medium_spacing</item>
+        <item name="android:paddingRight">@dimen/medium_spacing</item>
+        <item name="android:paddingBottom">@dimen/medium_spacing</item>
+        <item name="android:textSize">@dimen/small_font_size</item>
+        <item name="android:textColor">@color/text</item>
+        <item name="android:textCursorDrawable">@drawable/bchat_edit_text_cursor</item>
+        <item name="android:textAlignment">viewStart</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
     <style name="AddNodeBchatEditText">
         <item name="android:fontFamily">@font/open_sans_medium</item>
         <item name="android:background">@drawable/add_node_edit_text_background</item>

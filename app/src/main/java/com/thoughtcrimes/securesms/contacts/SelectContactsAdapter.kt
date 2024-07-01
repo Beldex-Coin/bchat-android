@@ -66,6 +66,10 @@ class SelectContactsAdapter(private val context: Context, private val glide: Gli
         val index = members.indexOf(member)
         notifyItemChanged(index, Payload.MEMBER_CLICKED)
     }
+    fun updateList(list: List<String>) {
+        members = list
+        notifyDataSetChanged()
+    }
 
     // define below the different events used to notify the adapter
     enum class Payload {

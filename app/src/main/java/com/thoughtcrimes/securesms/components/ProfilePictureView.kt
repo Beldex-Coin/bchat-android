@@ -1,6 +1,7 @@
 package com.thoughtcrimes.securesms.components
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
@@ -9,18 +10,19 @@ import android.widget.RelativeLayout
 import androidx.annotation.DimenRes
 import com.beldex.libbchat.avatars.ContactColors
 import com.beldex.libbchat.avatars.PlaceholderAvatarPhoto
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.bitmap.CenterInside
-import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ViewProfilePictureBinding
 import com.beldex.libbchat.avatars.ProfileContactPhoto
 import com.beldex.libbchat.avatars.ResourceContactPhoto
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.CenterInside
+import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.mms.GlideRequests
+import com.thoughtcrimes.securesms.util.AvatarPlaceholderGenerator.generate
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ViewProfilePictureBinding
 
 class ProfilePictureView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
@@ -32,6 +34,7 @@ class ProfilePictureView @JvmOverloads constructor(
     var additionalPublicKey: String? = null
     var additionalDisplayName: String? = null
     var isLarge = false
+    private var isEditGroup = false
 
     private val profilePicturesCache = mutableMapOf<String, String?>()
     private val unknownRecipientDrawable = ResourceContactPhoto(R.drawable.ic_profile_default)
@@ -40,7 +43,8 @@ class ProfilePictureView @JvmOverloads constructor(
         .asDrawable(context, ContactColors.UNKNOWN_COLOR.toConversationColor(context), false)
 
     // region Updating
-    fun update(recipient: Recipient,groupImage: Boolean = false) {
+    
+    fun update(recipient: Recipient,groupImage: Boolean = false, fromEditGroup : Boolean= false) {
         fun getUserDisplayName(publicKey: String): String {
             val contact = DatabaseComponent.get(context).bchatContactDatabase().getContactWithBchatID(publicKey)
             return contact?.displayName(Contact.ContactContext.REGULAR) ?: publicKey
@@ -61,6 +65,7 @@ class ProfilePictureView @JvmOverloads constructor(
             val apk = members.getOrNull(1)?.serialize() ?: ""
             additionalPublicKey = apk
             additionalDisplayName = getUserDisplayName(apk)
+            isEditGroup = fromEditGroup
         } else {
             val publicKey = recipient.address.toString()
             this.publicKey = publicKey
@@ -79,6 +84,17 @@ class ProfilePictureView @JvmOverloads constructor(
         val publicKey = publicKey ?: return
         val additionalPublicKey = additionalPublicKey
         val isBnsHolder = getUserIsBNSHolderStatus(publicKey)?:false
+        if(isEditGroup){
+            setProfilePictureIfNeeded(binding.editGroupdoubleModeImageView1, publicKey, displayName, R.dimen.small_profile_picture_size)
+            if (additionalPublicKey != null) {
+                setProfilePictureIfNeeded(binding.editGroupdoubleModeImageView2, additionalPublicKey, additionalDisplayName, R.dimen.small_profile_picture_size)
+            }
+            binding.editGroupdoubleModeImageViewContainer.visibility = View.VISIBLE
+        }else{
+            glide.clear(binding.editGroupdoubleModeImageView1)
+            glide.clear(binding.editGroupdoubleModeImageView2)
+            binding.editGroupdoubleModeImageViewContainer.visibility = View.INVISIBLE
+        }
         if (additionalPublicKey != null) {
             Log.d("beldex","if 1")
             setProfilePictureIfNeeded(binding.doubleModeImageView1, publicKey, displayName, R.dimen.small_profile_picture_size)
@@ -144,11 +160,16 @@ class ProfilePictureView @JvmOverloads constructor(
             binding.largeSingleModeWithTagContainer.visibility = View.INVISIBLE
         }
     }
+    private fun setupDefaultProfileView(): Drawable {
+        return generate(context,128, publicKey!!, displayName)
+    }
 
     private fun setProfilePictureIfNeeded(imageView: ImageView, publicKey: String, displayName: String?, @DimenRes sizeResId: Int) {
         if (publicKey.isNotEmpty()) {
             val recipient = Recipient.from(context, Address.fromSerialized(publicKey), false)
-            if (profilePicturesCache.containsKey(publicKey) && profilePicturesCache[publicKey] == recipient.profileAvatar) return
+            if (profilePicturesCache.containsKey(publicKey) && profilePicturesCache[publicKey] == recipient.profileAvatar) {
+                return
+            }
             val signalProfilePicture = recipient.contactPhoto
             val avatar = (signalProfilePicture as? ProfileContactPhoto)?.avatarObject
 
@@ -160,7 +181,7 @@ class ProfilePictureView @JvmOverloads constructor(
                     GranularRoundedCorners(20f, 20f, 20f, 20f)).into(imageView)*/
                 glide.load(signalProfilePicture)
                     .placeholder(unknownRecipientDrawable)
-                    .error(unknownRecipientDrawable)
+                    .error(setupDefaultProfileView())
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .transform(CenterInside(),
                         GranularRoundedCorners(20f, 20f, 20f, 20f))

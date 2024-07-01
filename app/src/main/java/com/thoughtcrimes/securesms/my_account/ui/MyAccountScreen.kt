@@ -470,7 +470,7 @@ fun AccountHeader(
                             .aspectRatio(1f)
                             .padding(
                                     16.dp
-                            )
+                            ).clip(RoundedCornerShape(8.dp))
                 )
             } else {
                 Box(

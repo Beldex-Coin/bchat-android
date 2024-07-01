@@ -315,6 +315,7 @@
     <string name="MediaPreviewActivity_draft" translatable="false">Draft</string>
     <string name="MediaPreviewActivity_signal_needs_the_storage_permission_in_order_to_write_to_external_storage_but_it_has_been_permanently_denied" translatable="false">BChat needs storage access in order to save to external storage, but it has been permanently denied. Please continue to app settings, select \"Permissions\", and enable \"Storage\".</string>
     <string name="MediaPreviewActivity_unable_to_write_to_external_storage_without_permission" translatable="false">Unable to save to external storage without permissions</string>
+    <string name="conversation_activity__wait_until_attachment_has_finished_downloading">Please wait until attachment has finished downloading</string>
     <string name="MediaPreviewActivity_media_delete_confirmation_title" translatable="false">Delete message?</string>
     <string name="MediaPreviewActivity_media_delete_confirmation_message" translatable="false">This will permanently delete this message.</string>
 
@@ -489,9 +490,9 @@
     <string name="arrays__enabled" translatable="false">Enabled</string>
     <string name="arrays__disabled" translatable="false">Disabled</string>
 
-    <string name="arrays__name_and_message" translatable="false">Name and message</string>
+    <string name="arrays__name_and_message" translatable="false">Name and content</string>
     <string name="arrays__name_only" translatable="false">Name only</string>
-    <string name="arrays__no_name_or_message" translatable="false">No name or message</string>
+    <string name="arrays__no_name_or_message" translatable="false">No name or content</string>
 
     <string name="arrays__images" translatable="false">Images</string>
     <string name="arrays__audio" translatable="false">Audio</string>
@@ -1392,7 +1393,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="activity_settings_profile_picture" translatable="false">Profile Picture</string>
     <string name="activity_settings_upload" translatable="false">Upload</string>
     <string name="activity_settings_remove" translatable="false">Remove Picture</string>
-    <string name="activity_restore_from_height_missing_error" translatable="false">Please enter a restore height</string>
+    <string name="activity_restore_from_height_missing_error" translatable="false">Please enter a restore height or Select a restore date</string>
     <string name="activity_restore_from_date_missing_error" translatable="false">Please pick a restore date</string>
     <string name="restored_via_seed" translatable="false">You restored via Seed!</string>
     <string name="display_name_validation" translatable="false">Please enter a valid name</string>
@@ -1510,7 +1511,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="delete_item" translatable="false">Delete Item?</string>
     <string name="delete_item_description" translatable="false">Are you sure you want to delete the media from device?</string>
     <string name="all_media" translatable="false">All Media</string>
-    <string name="verify_bns" translatable="false">BNS Name verifying...</string>
+    <string name="verify_bns" translatable="false">Verifying...</string>
     <string name="no_contacts" translatable="false">No Contacts</string>
     <string name="sync_option" translatable="false">Syncing Option</string>
     <string name="sync_reconnect" translatable="false">Reconnect</string>
@@ -1539,4 +1540,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="bns_linked_successfully">BNS Linked Successfully!</string>
     <string name="bns_verified_tag">BNS verified tag</string>
     <string name="bns_name_changed_warning_message"><b>BNS name changed!</b>>\nRe-verify your BNS name to proceed.</string>
+    <string name="apply_changes" translatable="false">Apply Changes</string>
 </resources>

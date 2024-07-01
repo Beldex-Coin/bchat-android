@@ -288,4 +288,9 @@
     <color name="outgoing_reply_message_icon">#EBEBEB</color>
     <color name="incoming_reply_message_icon">#A7A7BA</color>
     <color name="show_qr_icon">#EBEBEB</color>
+    <color name="remove_member_background">#2C2C3B</color>
+    <color name="edit_group_background">#111119</color>
+    <color name="contact_list_border">#353544</color>
+    <color name="user_view_background">#1C1C26</color>
+    <color name="divider_line">#E1E1E1</color>
 </resources>

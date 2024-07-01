@@ -42,6 +42,7 @@ import com.thoughtcrimes.securesms.util.push
 import com.thoughtcrimes.securesms.util.setUpActionBarBchatLogo
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityRegisterBinding
+import java.util.Locale
 import java.util.concurrent.Executor
 
 class RegisterActivity : BaseActionBarActivity() {
@@ -116,7 +117,8 @@ class RegisterActivity : BaseActionBarActivity() {
         walletPath = intent.extras?.getString(REQUEST_PATH)
         localPassword = intent.extras?.getString(REQUEST_PASSWORD)
         displayName =intent.extras?.getString(REQUEST_NAME)
-        binding.titleContentTextView?.text = "Hey $displayName, welcome to BChat!"
+        val displayedName : String=displayName?.substring(0, 1)?.uppercase(Locale.ROOT) + displayName?.substring(1)?.lowercase(Locale.ROOT)
+        binding.titleContentTextView.text= "Hey $displayedName, welcome to BChat!"
 
         Log.d("--> wallet path ", walletPath!!)
         Log.d("--> wallet localPassword ", localPassword!!)

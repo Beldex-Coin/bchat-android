@@ -13,6 +13,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import com.thoughtcrimes.securesms.util.DateUtils
@@ -80,6 +81,8 @@ class InputBarRecordingView : RelativeLayout {
         animation.addUpdateListener { animator ->
             alpha = animator.animatedValue as Float
         }
+        binding.pulseView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.destructive)
+        binding.recordButtonOverlay.backgroundTintList = ContextCompat.getColorStateList(context, R.color.destructive)
         animation.start()
         animateDotView()
         pulse()
@@ -174,7 +177,9 @@ class InputBarRecordingView : RelativeLayout {
             binding.inputBarCancelButton.alpha = animator.animatedValue as Float
         }*/
         fadeInAnimation.start()
-        binding.recordButtonOverlayImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_arrow_up, context.theme))
+        binding.recordButtonOverlayImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.send, context.theme))
+        binding.pulseView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.button_green)
+        binding.recordButtonOverlay.backgroundTintList = ContextCompat.getColorStateList(context, R.color.button_green)
         binding.recordButtonOverlay.setOnClickListener { delegate?.sendVoiceMessage() }
 //        binding.pulseGroup.visibility = View.GONE
         binding.microphoneOrSendButtonContainer.isVisible = true

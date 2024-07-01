@@ -80,15 +80,25 @@ fun SettingsScreen(
                     SettingItem.Hops -> true
                     else -> false
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        vertical = 16.dp,
-                        horizontal = 24.dp
-                    )
-                    .clickable {
-                        navigate(item)
-                    }
+                    expendArrow=when (item) {
+                        SettingItem.Hops -> true
+                        SettingItem.AppLock -> true
+                        SettingItem.ChatSettings -> true
+                        SettingItem.BlockedContacts -> true
+                        SettingItem.ClearData -> false
+                        SettingItem.Feedback -> false
+                        SettingItem.ChangeLog -> true
+                        SettingItem.FAQ -> false
+                    },
+                modifier =Modifier
+                        .fillMaxWidth()
+                        .padding(
+                                vertical=16.dp,
+                                horizontal=24.dp
+                        )
+                        .clickable {
+                            navigate(item)
+                        }
             )
         }
     }
@@ -99,6 +109,7 @@ private fun MyAccountItem(
     title: String,
     icon: Painter,
     drawDot: Boolean,
+    expendArrow:Boolean,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -106,39 +117,40 @@ private fun MyAccountItem(
         modifier = modifier
     ) {
         Icon(
-            painter = icon,
-            contentDescription = "",
-            tint = MaterialTheme.appColors.editTextColor
+                painter=icon,
+                contentDescription="",
+                tint=MaterialTheme.appColors.editTextColor
         )
 
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier=Modifier.width(16.dp))
 
         Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .weight(0.7f)
+                verticalAlignment=Alignment.CenterVertically,
+                modifier=Modifier
+                        .weight(0.7f)
         ) {
             Text(
-                text = title,
-                style = BChatTypography.titleMedium.copy(
-                    color = MaterialTheme.appColors.editTextColor
-                )
+                    text=title,
+                    style=BChatTypography.titleMedium.copy(
+                            color=MaterialTheme.appColors.editTextColor
+                    )
             )
             if (drawDot) {
-                Spacer(modifier = Modifier.width(8.dp))
-                
-                AndroidView(modifier = Modifier
-                    .size(8.dp), factory = {
-                    PathStatusView(context = context)
+                Spacer(modifier=Modifier.width(8.dp))
+
+                AndroidView(modifier=Modifier
+                        .size(8.dp), factory={
+                    PathStatusView(context=context)
                 })
             }
         }
-
-        Icon(
-            Icons.Default.KeyboardArrowRight,
-            contentDescription = "",
-            tint = MaterialTheme.appColors.editTextColor
-        )
+        if (expendArrow) {
+            Icon(
+                    Icons.Default.KeyboardArrowRight,
+                    contentDescription="",
+                    tint=MaterialTheme.appColors.editTextColor
+            )
+        }
     }
 }
 

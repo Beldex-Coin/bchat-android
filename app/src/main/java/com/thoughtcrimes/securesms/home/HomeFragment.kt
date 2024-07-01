@@ -22,6 +22,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -32,6 +33,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
@@ -53,15 +55,12 @@ import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.ThreadUtils
 import com.beldex.libsignal.utilities.toHexString
-import com.jakewharton.rxbinding3.view.visibility
 import com.thoughtcrimes.securesms.ApplicationContext
-import com.thoughtcrimes.securesms.MuteDialog
 import com.thoughtcrimes.securesms.components.ProfilePictureView
 import com.thoughtcrimes.securesms.compose_utils.BChatTheme
 import com.thoughtcrimes.securesms.compose_utils.ComposeDialogContainer
 import com.thoughtcrimes.securesms.compose_utils.DialogType
 import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
-import com.thoughtcrimes.securesms.conversation.v2.utilities.NotificationUtils
 import com.thoughtcrimes.securesms.conversation_v2.NewConversationActivity
 import com.thoughtcrimes.securesms.conversation_v2.NewConversationType
 import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
@@ -77,6 +76,7 @@ import com.thoughtcrimes.securesms.groups.CreateClosedGroupActivity
 import com.thoughtcrimes.securesms.groups.OpenGroupManager
 import com.thoughtcrimes.securesms.home.search.GlobalSearchAdapter
 import com.thoughtcrimes.securesms.home.search.GlobalSearchInputLayout
+import com.thoughtcrimes.securesms.home.search.RecyclerViewDivider
 import com.thoughtcrimes.securesms.mms.GlideApp
 import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.model.AsyncTaskCoroutine
@@ -97,7 +97,6 @@ import com.thoughtcrimes.securesms.wallet.info.WalletInfoActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
 import com.thoughtcrimes.securesms.webrtc.CallViewModel
-import com.thoughtcrimes.securesms.webrtc.NetworkChangeReceiver
 import com.thoughtcrimes.securesms.webrtc.WebRTCComposeActivity
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.BuildConfig
@@ -475,8 +474,11 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         homeAdapter.glide = glide
         binding.recyclerView.adapter = homeAdapter
         swipeHelper.attachToRecyclerView(binding.recyclerView)
-        val itemDecorator = DividerItemDecoration(requireContext(),
-                DividerItemDecoration.VERTICAL)
+        val itemDecorator = RecyclerViewDivider(requireContext(),
+                R.drawable.ic_divider
+                ,200,
+                0
+                )
         binding.recyclerView.addItemDecoration(itemDecorator)
 //        val itemTouchHelper = ItemTouchHelper(swipeController)
 //        itemTouchHelper.attachToRecyclerView(binding.recyclerView)

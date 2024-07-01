@@ -63,7 +63,7 @@
                             android:id="@+id/main_container"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            app:cardCornerRadius="8dp"
+                            app:cardCornerRadius="16dp"
                             app:cardBackgroundColor="@color/profile_background"
                             android:layout_marginHorizontal="16dp">
 

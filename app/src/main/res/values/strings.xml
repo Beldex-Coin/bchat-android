@@ -490,9 +490,9 @@
     <string name="arrays__enabled" translatable="false">Enabled</string>
     <string name="arrays__disabled" translatable="false">Disabled</string>
 
-    <string name="arrays__name_and_message" translatable="false">Name and message</string>
+    <string name="arrays__name_and_message" translatable="false">Name and content</string>
     <string name="arrays__name_only" translatable="false">Name only</string>
-    <string name="arrays__no_name_or_message" translatable="false">No name or message</string>
+    <string name="arrays__no_name_or_message" translatable="false">No name or content</string>
 
     <string name="arrays__images" translatable="false">Images</string>
     <string name="arrays__audio" translatable="false">Audio</string>

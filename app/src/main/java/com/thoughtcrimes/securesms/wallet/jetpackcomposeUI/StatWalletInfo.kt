@@ -88,12 +88,7 @@ fun StatWalletInfo(modifier: Modifier) {
                 .padding(10.dp)
                 .clip(shape=RoundedCornerShape(10.dp))
                 .background(color=MaterialTheme.appColors.walletInfoBackground)
-                .border(
-                        border=BorderStroke(
-                                width=1.dp,
-                                MaterialTheme.appColors.walletInfoBackgroundBorder
-                        ), shape=RoundedCornerShape(10.dp)
-                )
+                .border(border=BorderStroke(width=1.dp, MaterialTheme.appColors.walletInfoBackgroundBorder), shape=RoundedCornerShape(10.dp))
                 .verticalScroll(rememberScrollState())
 
         ) {
@@ -159,7 +154,9 @@ fun StatWalletInfo(modifier: Modifier) {
                 )
             }
 
-            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth().padding(top = 15.dp, start = 20.dp, end = 20.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(horizontalArrangement = Arrangement.Center, modifier =Modifier
+                    .fillMaxWidth()
+                    .padding(top=15.dp, start=20.dp, end=20.dp), verticalAlignment = Alignment.CenterVertically) {
 
                 Text(text = "Yes, I Understand", style = MaterialTheme.typography.labelMedium, fontSize = 15.sp, fontWeight = FontWeight(400), textAlign = TextAlign.Center)
 
@@ -175,10 +172,14 @@ fun StatWalletInfo(modifier: Modifier) {
                     showLoader = false
                     restartHome(context, activity)
                 }, 2000)
-            }, modifier =Modifier
+            }, modifier=Modifier
                     .fillMaxWidth()
-                    .padding(start=16.dp, end=16.dp, bottom=24.dp), shape = RoundedCornerShape(16.dp), enabled = isChecked) {
-                Text(text = context.getString(R.string.enable_wallet), style = BChatTypography.bodyLarge.copy(color = Color.White), modifier = Modifier.padding(8.dp))
+                    .padding(start=16.dp, end=16.dp, bottom=24.dp),
+                    shape=RoundedCornerShape(16.dp), enabled=isChecked) {
+                Text(
+                        text=context.getString(R.string.enable_wallet),
+                        style= if(isChecked)BChatTypography.bodyLarge.copy(color=Color.White) else BChatTypography.bodyLarge.copy(color=MaterialTheme.appColors.disabledNextButtonColor),
+                        modifier=Modifier.padding(8.dp))
             }
 
         }

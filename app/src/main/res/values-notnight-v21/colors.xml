@@ -207,5 +207,9 @@
     <color name="incoming_reply_message_icon_background">#E0E0E0</color>
     <color name="outgoing_reply_message_icon">#EBEBEB</color>
     <color name="incoming_reply_message_icon">#A7A7BA</color>
-
+    <color name="remove_member_background">#FFFFFF</color>
+    <color name="edit_group_background">#EDEDED</color>
+    <color name="contact_list_border">#A7A7BA</color>
+    <color name="user_view_background">#F8F8F8</color>
+    <color name="divider_line">#1C1C26</color>
 </resources>

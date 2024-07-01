@@ -1524,4 +1524,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="activity_public_chat_success_message" translatable="false">Joined %1$s Social Group Successfully</string>
     <string name="open_url_icon_description" translatable="false">open url</string>
     <string name="message_payment_status">Message Payment Status</string>
+    <string name="apply_changes" translatable="false">Apply Changes</string>
 </resources>

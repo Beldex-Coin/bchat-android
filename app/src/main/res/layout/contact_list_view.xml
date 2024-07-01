@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/userView_Layout"
-    android:background="@drawable/user_view_background"
-    android:layout_marginStart="8dp"
-    android:layout_marginEnd="8dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bchat_dialog_button_shape"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
     android:layout_marginTop="8dp"
     android:orientation="vertical">
 
@@ -37,12 +37,9 @@
             android:layout_weight="1"
             tools:text="User Name" />
 
-        <ImageView
-            android:id="@+id/actionIndicatorImageView"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginStart="@dimen/medium_spacing"
-            android:src="@drawable/ic_person_remove_from_group"/>
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 

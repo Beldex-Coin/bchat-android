@@ -34,6 +34,7 @@ class ProfilePictureView @JvmOverloads constructor(
     var additionalPublicKey: String? = null
     var additionalDisplayName: String? = null
     var isLarge = false
+    private var isEditGroup = false
 
     private val profilePicturesCache = mutableMapOf<String, String?>()
     private val unknownRecipientDrawable = ResourceContactPhoto(R.drawable.ic_profile_default)
@@ -42,7 +43,7 @@ class ProfilePictureView @JvmOverloads constructor(
         .asDrawable(context, ContactColors.UNKNOWN_COLOR.toConversationColor(context), false)
 
     // region Updating
-    fun update(recipient: Recipient) {
+    fun update(recipient: Recipient,fromEditGroup : Boolean= false) {
         fun getUserDisplayName(publicKey: String): String {
             val contact = DatabaseComponent.get(context).bchatContactDatabase().getContactWithBchatID(publicKey)
             return contact?.displayName(Contact.ContactContext.REGULAR) ?: publicKey
@@ -63,6 +64,7 @@ class ProfilePictureView @JvmOverloads constructor(
             val apk = members.getOrNull(1)?.serialize() ?: ""
             additionalPublicKey = apk
             additionalDisplayName = getUserDisplayName(apk)
+            isEditGroup = fromEditGroup
         } else {
             val publicKey = recipient.address.toString()
             this.publicKey = publicKey
@@ -75,6 +77,17 @@ class ProfilePictureView @JvmOverloads constructor(
     fun update(displayName: String? = publicKey) {
         val publicKey = publicKey ?: return
         val additionalPublicKey = additionalPublicKey
+        if(isEditGroup){
+            setProfilePictureIfNeeded(binding.editGroupdoubleModeImageView1, publicKey, displayName, R.dimen.small_profile_picture_size)
+            if (additionalPublicKey != null) {
+                setProfilePictureIfNeeded(binding.editGroupdoubleModeImageView2, additionalPublicKey, additionalDisplayName, R.dimen.small_profile_picture_size)
+            }
+            binding.editGroupdoubleModeImageViewContainer.visibility = View.VISIBLE
+        }else{
+            glide.clear(binding.editGroupdoubleModeImageView1)
+            glide.clear(binding.editGroupdoubleModeImageView2)
+            binding.editGroupdoubleModeImageViewContainer.visibility = View.INVISIBLE
+        }
         if (additionalPublicKey != null) {
             Log.d("beldex","if 1")
             setProfilePictureIfNeeded(binding.doubleModeImageView1, publicKey, displayName, R.dimen.small_profile_picture_size)

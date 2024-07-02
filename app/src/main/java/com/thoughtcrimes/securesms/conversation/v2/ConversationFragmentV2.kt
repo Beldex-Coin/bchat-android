@@ -45,6 +45,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
@@ -2005,6 +2006,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         adapter.onSearchQueryUpdated(null)
         binding.searchQuery.clearFocus()
         this.activity?.invalidateOptionsMenu()
+        hideKeyboard()
     }
 
     fun onSearchQueryUpdated(query: String) {
@@ -3801,6 +3803,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
             }
         })
+    }
+
+    fun hideKeyboard() {
+        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 }
 //endregion

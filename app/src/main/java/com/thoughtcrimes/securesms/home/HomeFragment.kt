@@ -476,7 +476,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         swipeHelper.attachToRecyclerView(binding.recyclerView)
         val itemDecorator = RecyclerViewDivider(requireContext(),
                 R.drawable.ic_divider
-                ,200,
+                ,0,
                 0
                 )
         binding.recyclerView.addItemDecoration(itemDecorator)

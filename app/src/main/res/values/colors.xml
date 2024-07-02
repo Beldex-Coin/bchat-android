@@ -292,5 +292,5 @@
     <color name="edit_group_background">#111119</color>
     <color name="contact_list_border">#353544</color>
     <color name="user_view_background">#1C1C26</color>
-    <color name="divider_line">#E1E1E1</color>
+    <color name="divider_line">#1C1C26</color>
 </resources>

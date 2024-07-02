@@ -953,8 +953,14 @@ fun SendScreen(
                         .fillMaxWidth()
                         .padding(10.dp),
                     shape = RoundedCornerShape(16.dp),
+                    enabled = beldexAddress.value.isNotEmpty() && beldexAmount.value.isNotEmpty(),
+                    disabledContainerColor = MaterialTheme.appColors.contactCardBackground
                 ) {
-                    Text(text = stringResource(id = R.string.send), style = BChatTypography.bodyLarge.copy(color = Color.White), modifier = Modifier.padding(8.dp))
+                    Text(text = stringResource(id = R.string.send), style = BChatTypography.bodyLarge.copy(color = if (beldexAddress.value.isNotEmpty() && beldexAmount.value.isNotEmpty()) {
+                        Color.White
+                    } else {
+                        MaterialTheme.appColors.linkBnsDisabledButtonContent
+                    }), modifier = Modifier.padding(8.dp))
                 }
             }
         }

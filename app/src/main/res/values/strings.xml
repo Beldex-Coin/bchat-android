@@ -1113,8 +1113,8 @@
     <string name="pin_code_fingerprint_not_recognized">Fingerprint not recognized. Try again</string>
 
     <string name="tx_item_transition_name" translatable="false">tx_transition_%1$s</string>
-    <string name="tx_list_amount_negative" translatable="false">- %1$s</string>
-    <string name="tx_list_amount_positive" translatable="false">+ %1$s</string>
+    <string name="tx_list_amount_negative" translatable="false">%1$s</string>
+    <string name="tx_list_amount_positive" translatable="false">%1$s</string>
     <string name="tx_list_fee" translatable="false">- Fee %1$s</string>
     <string name="tx_list_amount_failed" translatable="false">(%1$s)</string>
     <string name="tx_list_failed_text" translatable="false">failed</string>

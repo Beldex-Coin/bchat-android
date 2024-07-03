@@ -59,8 +59,10 @@ class RecoveryPhraseRestoreActivity : BaseActionBarActivity() {
                 var numberOfInputWords = 0
 
                 if(s.toString().isNotEmpty()){
+                    binding.restoreButton.isEnabled = true
                     binding.pasteText.visibility = View.GONE
                 }else{
+                    binding.restoreButton.isEnabled = false
                     binding.pasteText.visibility = View.VISIBLE
                 }
                 if(s.toString().isNotEmpty())

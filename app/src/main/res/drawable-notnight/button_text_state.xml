@@ -2,11 +2,11 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:state_enabled="false"
-        android:drawable="@drawable/button_disable" />
+        android:color="@color/disable_button_text_color" />
     <item
         android:state_pressed="true"
-        android:drawable="@drawable/prominent_filled_button_medium_background" />
+        android:color="@color/white" />
     <item
         android:state_enabled="true"
-        android:drawable="@drawable/prominent_filled_button_medium_background" />
+        android:color="@color/white" />
 </selector>

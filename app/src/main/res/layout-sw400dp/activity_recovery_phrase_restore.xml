@@ -114,13 +114,15 @@
 
             <Button
                 android:id="@+id/restoreButton"
-                style="@style/Widget.Bchat.Button.Common.ProminentFilled"
+                style="@style/Widget.Bchat.Button.Common.ProminentFilledState"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/medium_button_height"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="10dp"
                 android:text="@string/continue_2"
+                android:enabled="false"
+                android:textAllCaps="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />

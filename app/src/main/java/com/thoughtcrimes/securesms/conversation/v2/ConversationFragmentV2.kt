@@ -3796,6 +3796,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     binding.search.visibility = View.VISIBLE
                     binding.searchUp.visibility = View.GONE
                     binding.searchDown.visibility = View.GONE
+                    adapter.onSearchQueryUpdated(p0.toString())
                 }
             }
 

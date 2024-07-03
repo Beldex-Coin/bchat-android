@@ -296,7 +296,7 @@ fun ProfilePicture(
                         painter = painterResource(id = R.drawable.ic_bns_verified_tag),
                         contentDescription = null,
                         modifier = Modifier.align(Alignment.BottomEnd)
-                            .size(if (pictureType == 1) 15.dp else 30.dp)
+                            .size(if (pictureType == 1) 15.dp else if(containerSize == 132.dp) 45.dp else 30.dp)
                     )
                 }
             }else {

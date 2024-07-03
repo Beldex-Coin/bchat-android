@@ -293,4 +293,5 @@
     <color name="contact_list_border">#353544</color>
     <color name="user_view_background">#1C1C26</color>
     <color name="divider_line">#1C1C26</color>
+    <color name="calendar_icon">#EBEBEB</color>
 </resources>

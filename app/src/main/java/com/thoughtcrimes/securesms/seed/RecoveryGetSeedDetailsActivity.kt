@@ -188,6 +188,24 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
             }
 
             restoreSeedWalletName.imeOptions = restoreSeedWalletName.imeOptions or 16777216 // Always use incognito keyboard
+            restoreSeedWalletName.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable) {
+                    restoreSeedRestoreButton.isEnabled =
+                        (s.isNotEmpty() && restoreSeedWalletRestoreHeight.text.trim().isNotEmpty()) || (s.isNotEmpty() && restoreSeedWalletRestoreDate.text.trim().isNotEmpty())
+                }
+
+                override fun beforeTextChanged(
+                    s: CharSequence, start: Int,
+                    count: Int, after: Int
+                ) {
+                }
+
+                override fun onTextChanged(
+                    s: CharSequence, start: Int,
+                    before: Int, count: Int
+                ) {
+                }
+            })
             restoreSeedWalletName.setOnEditorActionListener(
                 TextView.OnEditorActionListener { _, actionID, _ ->
                     if (actionID == EditorInfo.IME_ACTION_SEARCH ||
@@ -207,6 +225,8 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
                             Toast.LENGTH_SHORT
                         ).show()
                     }
+                    restoreSeedRestoreButton.isEnabled =
+                        (s.isNotEmpty() && restoreSeedWalletName.text.trim().isNotEmpty()) || (restoreSeedWalletName.text.trim().isNotEmpty() && restoreSeedWalletRestoreDate.text.trim().isNotEmpty())
                 }
 
                 override fun beforeTextChanged(
@@ -240,6 +260,7 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
             binding.restoreSeedWalletRestoreHeightCard.visibility = View.GONE
             binding.restoreFromHeightButton.visibility = View.VISIBLE
             binding.restoreFromDateButton.visibility = View.GONE
+            binding.restoreSeedWalletRestoreHeight.text.clear()
         }
         binding.restoreFromHeightButton.setOnClickListener {
             binding.restoreFromSeedBlockHeightTitle.text = getString(R.string.restore_from_height_title)
@@ -247,6 +268,8 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
             binding.restoreSeedWalletRestoreHeightCard.visibility = View.VISIBLE
             binding.restoreFromHeightButton.visibility = View.GONE
             binding.restoreFromDateButton.visibility = View.VISIBLE
+            binding.restoreSeedWalletRestoreDate.text=""
+            binding.restoreSeedRestoreButton.isEnabled = false
         }
 
 
@@ -257,6 +280,8 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
     }
     private fun updateDateInView() {
         binding.restoreSeedWalletRestoreDate.text = sdf.format(cal.time)
+        binding.restoreSeedRestoreButton.isEnabled =
+            (binding.restoreSeedWalletName.text.trim().isNotEmpty() && binding.restoreSeedWalletRestoreHeight.text.trim().isNotEmpty()) || (binding.restoreSeedWalletName.text.trim().isNotEmpty() && binding.restoreSeedWalletRestoreDate.text.trim().isNotEmpty())
         if (cal.time != null) {
             restoreFromDateHeight = RestoreHeight.getInstance().getHeight(sdf.format(cal.time)).toInt()
         }

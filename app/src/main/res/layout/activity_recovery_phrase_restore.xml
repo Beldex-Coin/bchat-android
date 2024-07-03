@@ -15,7 +15,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="0.9" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -25,10 +25,11 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="10dp"
-                app:cardBackgroundColor="@color/card_color"
+                app:cardBackgroundColor="@color/input_bar_background"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="5dp">
 
@@ -39,7 +40,7 @@
 
                     <EditText
                         android:id="@+id/mnemonicEditText"
-                        style="@style/SmallBChatEditText"
+                        style="@style/SeedBchatEditText"
                         android:layout_width="0dp"
                         android:layout_height="140dp"
                         android:gravity="start"

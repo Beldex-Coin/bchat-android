@@ -6,8 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/page_background"
     tools:context="com.thoughtcrimes.securesms.seed.RecoveryGetSeedDetailsActivity"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:padding="16dp">
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <TextView
         android:id="@+id/restoreFromSeedWalletNameTitle"
@@ -17,7 +16,10 @@
         android:textColor="@color/edit_text_title"
         android:text="@string/display_name"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"/>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/restoreSeedWalletNameCard"
@@ -28,11 +30,13 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/restoreFromSeedWalletNameTitle"
-        android:layout_marginTop="8dp">
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
 
         <EditText
             android:id="@+id/restoreSeedWalletName"
-            style="@style/SmallBchatEditText"
+            style="@style/SeedBchatEditText"
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:gravity="center_vertical"
@@ -55,7 +59,9 @@
         android:text="@string/restore_from_height_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/restoreSeedWalletNameCard"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"/>
 
     <RelativeLayout
         android:id="@+id/RestoreFromButtonLayout1"
@@ -66,7 +72,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/restoreFromSeedBlockHeightTitle"
-        android:layout_marginTop="8dp">
+        android:layout_marginTop="3dp">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/restoreSeedWalletRestoreHeightCard"
@@ -75,11 +81,15 @@
             app:cardBackgroundColor="@color/card_color"
             app:cardCornerRadius="10dp"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent">
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp">
 
             <EditText
                 android:id="@+id/restoreSeedWalletRestoreHeight"
-                style="@style/SmallBchatEditText"
+                style="@style/SeedBchatEditText"
                 android:layout_width="match_parent"
                 android:layout_height="64dp"
                 android:gravity="center_vertical"
@@ -101,11 +111,15 @@
             app:cardBackgroundColor="@color/card_color"
             app:cardCornerRadius="10dp"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent">
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp">
 
             <TextView
                 android:id="@+id/restoreSeedWalletRestoreDate"
-                style="@style/SmallBchatEditText"
+                style="@style/SeedBchatEditText"
                 android:layout_width="match_parent"
                 android:layout_height="64dp"
                 android:gravity="center_vertical"
@@ -127,7 +141,9 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/RestoreFromButtonLayout1"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="11dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
 
         <Button
             android:id="@+id/restoreFromDateButton"
@@ -170,18 +186,25 @@
         android:layout_marginTop="15dp"
         app:layout_constraintBottom_toTopOf="@id/restoreSeedRestoreButton"
         app:layout_constraintTop_toBottomOf="@id/RestoreFromButtonLayout"
-        app:layout_constraintVertical_weight="1" />
+        app:layout_constraintVertical_weight="1"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"/>
 
-    <com.google.android.material.button.MaterialButton
+    <Button
         android:id="@+id/restoreSeedRestoreButton"
-        style="@style/PrimaryContainedButton"
+        style="@style/Widget.Bchat.Button.Common.ProminentFilledState"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/restore"
         app:cornerRadius="8dp"
+        android:enabled="false"
+        android:textAllCaps="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/restoreSeedView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

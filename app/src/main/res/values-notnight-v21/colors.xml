@@ -130,7 +130,7 @@
     <color name="in_chat_payment_field">#EBEBEB</color>
     <color name="in_chat_payment_dialog_background">#FFFFFF</color>
     <color name="in_chat_amount_divider">#A7A7BA</color>
-    <color name="edit_text_title">#EBEBEB</color>
+    <color name="edit_text_title">#333333</color>
     <color name="recovery_seed_content">#ECAB0F</color>
     <color name="your_bchat_id_bg">#F8F8F8</color>
     <color name="divider_color">#A7A7BA</color>
@@ -213,4 +213,5 @@
     <color name="contact_list_border">#A7A7BA</color>
     <color name="user_view_background">#F8F8F8</color>
     <color name="divider_line">#E1E1E1</color>
+    <color name="calendar_icon">#A7A7BA</color>
 </resources>

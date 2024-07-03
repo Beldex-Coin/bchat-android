@@ -23,9 +23,6 @@ import io.beldex.bchat.R;
 
 import static android.app.Activity.RESULT_OK;
 
-import com.thoughtcrimes.securesms.ApplicationContext;
-import com.thoughtcrimes.securesms.components.SwitchPreferenceCompat;
-
 public class NotificationsPreferenceFragment extends ListSummaryPreferenceFragment {
 
   @SuppressWarnings("unused")
@@ -94,6 +91,18 @@ public class NotificationsPreferenceFragment extends ListSummaryPreferenceFragme
 
     initializeListSummary((ListPreference) findPreference(TextSecurePreferences.LED_COLOR_PREF));
     initializeListSummary((ListPreference) findPreference(TextSecurePreferences.REPEAT_ALERTS_PREF));
+    this.findPreference(TextSecurePreferences.NOTIFICATION_PRIVACY_PREF)
+            .setOnPreferenceClickListener(preference -> {
+              ListPreference listPreference = (ListPreference) preference;
+              listPreference.setDialogMessage(R.string.preferences_notifications__show);
+              ListPreferenceDialog list = new ListPreferenceDialog(listPreference, () -> {
+                initializeListSummary((ListPreference) findPreference(TextSecurePreferences.NOTIFICATION_PRIVACY_PREF));
+                return null;
+              });
+              list.show(getChildFragmentManager(), "ListPreferenceDialog");
+              list.setCancelable(false);
+              return true;
+            });
     initializeListSummary((ListPreference) findPreference(TextSecurePreferences.NOTIFICATION_PRIVACY_PREF));
 
     if (NotificationChannels.supported()) {

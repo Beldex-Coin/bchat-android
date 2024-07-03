@@ -7,7 +7,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:gravity="center_horizontal"
-    android:background="@color/page_background"
+    android:background="@null"
     android:paddingLeft="@dimen/large_spacing"
     android:paddingRight="@dimen/large_spacing"
     android:paddingBottom="@dimen/large_spacing"
@@ -30,9 +30,9 @@
             android:id="@+id/nameTextViewContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:gravity="center"
             android:orientation="horizontal"
-            android:layout_centerInParent="true"
             android:visibility="visible">
 
             <View
@@ -42,8 +42,7 @@
             <TextView
                 android:fontFamily="@font/open_sans_medium"
                 android:id="@+id/nameTextView"
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginStart="@dimen/small_spacing"
@@ -57,6 +56,7 @@
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="22dp"
+                android:layout_marginEnd="20dp"
                 android:src="@drawable/ic_baseline_edit_24" />
 
         </LinearLayout>
@@ -69,11 +69,6 @@
             android:orientation="horizontal"
             android:visibility="invisible">
 
-            <ImageView
-                android:id="@+id/cancelNicknameEditingButton"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_baseline_clear_24" />
 
             <EditText
                 android:id="@+id/nicknameEditText"
@@ -82,6 +77,7 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:gravity="center_horizontal"
                 android:layout_marginStart="@dimen/small_spacing"
                 android:layout_marginEnd="@dimen/small_spacing"
                 android:textAlignment="center"
@@ -94,10 +90,20 @@
                 android:hint="@string/fragment_user_details_bottom_sheet_edit_text_hint" />
 
             <ImageView
+                android:id="@+id/cancelNicknameEditingButton"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="end|center"
+                android:layout_marginEnd="@dimen/small_spacing"
+                android:src="@drawable/ic_close_circle" />
+
+            <ImageView
                 android:id="@+id/saveNicknameButton"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_baseline_done_24" />
+                android:layout_gravity="end|center"
+                android:layout_marginStart="@dimen/small_spacing"
+                android:src="@drawable/ic_done_circle" />
 
         </LinearLayout>
 
@@ -110,25 +116,31 @@
         app:cardBackgroundColor="@color/card_color"
         app:cardCornerRadius="10dp">
 
-        <LinearLayout
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            app:cardBackgroundColor="@color/your_bchat_id_bg"
+            app:cardElevation="0dp"
+            android:elevation="0dp"
+            >
     <TextView
         style="@style/BchatIDTextView"
         android:id="@+id/publicKeyTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/medium_font_size"
+        android:textSize="@dimen/very_small_font_size"
         android:textIsSelectable="true"
+        android:padding="16dp"
         tools:text="@string/dummy_bchat_id" />
 
-        </LinearLayout>
+        </androidx.cardview.widget.CardView>
     </androidx.cardview.widget.CardView>
 
     <Button
         style="@style/Widget.Bchat.Button.Common.ProminentFilled"
         android:id="@+id/messageButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/medium_button_height"
         android:layout_marginTop="@dimen/medium_spacing"
         android:paddingLeft="@dimen/large_spacing"

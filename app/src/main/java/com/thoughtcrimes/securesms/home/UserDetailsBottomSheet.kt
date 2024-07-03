@@ -56,6 +56,7 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentUserDetailsBottomSheetBinding.inflate(inflater, container, false)
+        setStyle(STYLE_NORMAL, R.style.Theme_Bchat_BottomSheet)
         return binding.root
     }
 

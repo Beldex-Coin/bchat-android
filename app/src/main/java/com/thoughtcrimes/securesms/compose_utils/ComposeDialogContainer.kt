@@ -9,8 +9,11 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.DialogFragment
 import com.beldex.libbchat.utilities.ExpirationUtil
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.conversation.v2.dialogs.ClearChatDialog
+import com.thoughtcrimes.securesms.conversation.v2.dialogs.LeaveGroupDialog
 import com.thoughtcrimes.securesms.conversation.v2.dialogs.UnblockUserDialog
+import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.home.NotificationSettingDialog
 import com.thoughtcrimes.securesms.my_account.ui.dialogs.DeleteChatConfirmationDialog
 import com.thoughtcrimes.securesms.my_account.ui.dialogs.IgnoreRequestDialog
@@ -38,7 +41,8 @@ enum class DialogType {
     WalletSyncing,
     DeleteChat,
     AcceptRequest,
-    DeclineRequest
+    DeclineRequest,
+    LeaveGroup
 }
 
 class ComposeDialogContainer(
@@ -355,6 +359,35 @@ class ComposeDialogContainer(
                                     message = stringResource(id = R.string.message_requests_decline_message),
                                     positiveButtonTitle = stringResource(id = R.string.decline),
                                     onAccept = {
+                                        dismiss()
+                                        onConfirm()
+                                    },
+                                    onCancel = {
+                                        dismiss()
+                                        onCancel()
+                                    }
+                            )
+                        }
+                    }
+                    DialogType.LeaveGroup -> {
+                        val address = argument1?:""
+                        val group = DatabaseComponent.get(context).groupDatabase().getGroup(address).orNull()
+                        val admins = group.admins
+                        val bchatID = TextSecurePreferences.getLocalNumber(context)
+                        val isCurrentUserAdmin = admins.any { it.toString() == bchatID }
+                        val message = if (isCurrentUserAdmin) {
+                            "Because you are the creator of this group it will be deleted for everyone. This cannot be undone."
+                        } else {
+                            context.resources.getString(R.string.ConversationActivity_are_you_sure_you_want_to_leave_this_group)
+                        }
+                        BChatTheme(
+                                darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
+                        ) {
+                            LeaveGroupDialog(
+                                    title = stringResource(id = R.string.ConversationActivity_leave_group),
+                                    message = message,
+                                    positiveButtonTitle = stringResource(id = R.string.leave),
+                                    onLeave = {
                                         dismiss()
                                         onConfirm()
                                     },

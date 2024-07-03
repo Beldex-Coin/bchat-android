@@ -175,7 +175,7 @@ object ConversationMenuHelper {
             R.id.menu_block -> { block(fragmentV2, thread,deleteThread = false) }
             R.id.menu_copy_bchat_id -> { copyBchatID(fragmentV2, thread) }
             R.id.menu_edit_group -> { editClosedGroup(context, thread) }
-            R.id.menu_leave_group -> { leaveClosedGroup(context, thread,fragmentV2) }
+            R.id.menu_leave_group -> { leaveClosedGroup(context, thread,fragmentV2,childFragmentManager) }
             R.id.menu_invite_to_open_group -> { inviteContacts(context, thread) }
             R.id.menu_unmute_notifications -> { unmute(context, thread) }
             R.id.menu_mute_notifications -> { mute(fragmentV2, thread) }
@@ -413,52 +413,46 @@ object ConversationMenuHelper {
     }
 
     private fun leaveClosedGroup(
-        context: Context,
-        thread: Recipient,
-        fragmentV2: ConversationFragmentV2
-    ) {
-        if (!thread.isClosedGroupRecipient) { return }
-        val group = DatabaseComponent.get(context).groupDatabase().getGroup(thread.address.toGroupString()).orNull()
-        val admins = group.admins
-        val bchatID = TextSecurePreferences.getLocalNumber(context)
-        val isCurrentUserAdmin = admins.any { it.toString() == bchatID }
-        val message = if (isCurrentUserAdmin) {
-            "Because you are the creator of this group it will be deleted for everyone. This cannot be undone."
-        } else {
-            context.resources.getString(R.string.ConversationActivity_are_you_sure_you_want_to_leave_this_group)
-        }
-        val builder = AlertDialog.Builder(context,R.style.BChatAlertDialog_Clear_All)
-        .setTitle(context.resources.getString(R.string.ConversationActivity_leave_group))
-        .setCancelable(true)
-        .setMessage(message)
-        .setPositiveButton(R.string.leave) { _, _ ->
-            var groupPublicKey: String?
-            var isClosedGroup: Boolean
-            try {
-                groupPublicKey = doubleDecodeGroupID(thread.address.toString()).toHexString()
-                isClosedGroup = DatabaseComponent.get(context).beldexAPIDatabase().isClosedGroup(groupPublicKey)
-            } catch (e: IOException) {
-                groupPublicKey = null
-                isClosedGroup = false
-            }
-            try {
-                if (isClosedGroup) {
-                    MessageSender.leave(groupPublicKey!!, true)
-                    fragmentV2.backToHome()
-                } else {
-                    Toast.makeText(context, R.string.ConversationActivity_error_leaving_group, Toast.LENGTH_LONG).show()
-                }
-            } catch (e: Exception) {
-                Toast.makeText(context, R.string.ConversationActivity_error_leaving_group, Toast.LENGTH_LONG).show()
-            }
-        }
-        .setNegativeButton(R.string.no, null)
-        .show()
+            context : Context,
+            thread : Recipient,
+            fragmentV2 : ConversationFragmentV2,
+            childFragmentManager : FragmentManager,
 
-        //New Line
-        val textView: TextView? = builder.findViewById(android.R.id.message)
-        val face: Typeface = Typeface.createFromAsset(context.assets,"fonts/open_sans_medium.ttf")
-        textView!!.typeface = face
+            ) {
+        if (!thread.isClosedGroupRecipient) { return }
+
+        val dialog = ComposeDialogContainer(
+                dialogType = DialogType.LeaveGroup,
+                onConfirm = {
+                    var groupPublicKey: String?
+                    var isClosedGroup: Boolean
+                    try {
+                        groupPublicKey = doubleDecodeGroupID(thread.address.toString()).toHexString()
+                        isClosedGroup = DatabaseComponent.get(context).beldexAPIDatabase().isClosedGroup(groupPublicKey)
+                    } catch (e: IOException) {
+                        groupPublicKey = null
+                        isClosedGroup = false
+                    }
+                    try {
+                        if (isClosedGroup) {
+                            MessageSender.leave(groupPublicKey!!, true)
+                            fragmentV2.backToHome()
+                        } else {
+                            Toast.makeText(context, R.string.ConversationActivity_error_leaving_group, Toast.LENGTH_LONG).show()
+                        }
+                    } catch (e: Exception) {
+                        Toast.makeText(context, R.string.ConversationActivity_error_leaving_group, Toast.LENGTH_LONG).show()
+                    }
+                },
+                onCancel = {},
+                onConfirmWithData = { index -> }
+        )
+        dialog.apply {
+            arguments = Bundle().apply {
+                putString(ComposeDialogContainer.EXTRA_ARGUMENT_1,thread.address.toGroupString())
+            }
+        }
+        dialog.show(childFragmentManager, ComposeDialogContainer.TAG)
     }
 
     private fun inviteContacts(context: Context, thread: Recipient) {

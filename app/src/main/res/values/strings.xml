@@ -1420,7 +1420,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="dialog_clear_all_data_clear_device_and_network_subtitle" translatable="false">Delete account from Network</string>
     <string name="back">Back</string>
     <string name="restore_from_block_height_hint" translatable="false">Enter Block height to Restore</string>
-    <string name="restore_from_date_hint" translatable="false">Enter Date</string>
+    <string name="restore_from_date_hint" translatable="false">Select Date</string>
     <string name="restore_from_height_title" translatable="false">Pick a restore height</string>
     <string name="restore_from_date_title" translatable="false">Pick a Date</string>
     <string name="display_name" translatable="false">Display Name</string>

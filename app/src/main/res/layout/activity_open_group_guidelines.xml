@@ -1,40 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:background="@color/screen_background"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/page_background"
-        android:orientation="vertical">
+        android:padding="16dp">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:srcCompat="@drawable/ic_back_arrow" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:fontFamily="@font/open_sans_medium"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/large_spacing"
-            android:layout_marginTop="@dimen/large_spacing"
-            android:layout_marginRight="@dimen/large_spacing"
-            android:textSize="@dimen/large_font_size"
-            android:textStyle="bold"
-            android:textColor="@color/text"
-            android:text="@string/ConversationActivity_open_group_guidelines" />
-
-        <TextView
-            android:fontFamily="@font/open_sans_regular"
-            android:id="@+id/communityGuidelinesTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/large_spacing"
-            android:layout_marginTop="@dimen/medium_spacing"
-            android:layout_marginRight="@dimen/large_spacing"
-            android:layout_marginBottom="@dimen/large_spacing"
-            android:textSize="@dimen/small_font_size"
-            android:justificationMode="inter_word"
-            android:textColor="@color/text" />
+            android:textSize="18sp"
+            tools:text="Settings" />
 
     </LinearLayout>
 
-</ScrollView>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true">
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/CustomCardViewStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            app:cardBackgroundColor="@color/new_card_background">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/page_background"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/large_spacing"
+                    android:layout_marginTop="@dimen/large_spacing"
+                    android:layout_marginRight="@dimen/large_spacing"
+                    android:fontFamily="@font/open_sans_medium"
+                    android:text="@string/ConversationActivity_social_group_welcome"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/medium_font_size"
+                    android:textStyle="bold"
+                    />
+
+                <TextView
+                    android:id="@+id/communityGuidelinesTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/large_spacing"
+                    android:layout_marginTop="@dimen/medium_spacing"
+                    android:layout_marginRight="@dimen/large_spacing"
+                    android:layout_marginBottom="@dimen/large_spacing"
+                    android:fontFamily="@font/open_sans_regular"
+                    android:justificationMode="inter_word"
+                    android:textColor="@color/text"
+                    android:textSize="@dimen/small_font_size" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+    </ScrollView>
+
+</LinearLayout>

@@ -954,6 +954,27 @@
         <item name="android:shadowColor">@color/black</item>
     </style>
 
+    <style name="Widget.Bchat.Button.Dialog.Accept">
+        <item name="android:fontFamily">@font/open_sans_semi_bold</item>
+        <item name="android:background">@drawable/accept_button_background_shape</item>
+        <item name="text_color">@color/white</item>
+        <item name="text_size">16sp</item>
+        <item name="android:shadowColor">@color/black</item>
+    </style>
+
+    <style name="Widget.Bchat.Button.Dialog.Decline">
+        <item name="android:fontFamily">@font/open_sans_semi_bold</item>
+        <item name="android:background">@drawable/decline_button_background_shape</item>
+        <item name="text_color">@color/red</item>
+        <item name="text_size">16sp</item>
+    </style>
+
+    <style name="Widget.Bchat.Button.Dialog.Cancel">
+        <item name="android:fontFamily">@font/open_sans_semi_bold</item>
+        <item name="android:background">@drawable/cancel_button_background_shape</item>
+        <item name="android:shadowColor">@color/black</item>
+    </style>
+
     <style name="Widget.Bchat.Button.Dialog.Enable">
         <item name="android:fontFamily">@font/open_sans_semi_bold</item>
         <item name="android:background">@drawable/bchat_dialog_positive_button_shape</item>

@@ -78,6 +78,7 @@
     <string name="ConversationActivity_muted_forever" translatable="false">Muted</string>
     <string name="ConversationActivity_member_count" translatable="false">%1$d members</string>
     <string name="ConversationActivity_open_group_guidelines" translatable="false">Community Guidelines</string>
+    <string name="ConversationActivity_social_group_welcome" translatable="false">Welcome to BChat</string>
 
     <string name="ConversationActivity_invalid_recipient" translatable="false">Invalid recipient!</string>
     <string name="ConversationActivity_added_to_home_screen" translatable="false">Added to home screen</string>

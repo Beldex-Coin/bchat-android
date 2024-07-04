@@ -253,6 +253,7 @@
             android:name="com.thoughtcrimes.securesms.seed.RecoveryGetSeedDetailsActivity"
             android:exported="false"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
             android:name="com.thoughtcrimes.securesms.seedorkeysrestore.SeedOrKeysRestoreActivity"

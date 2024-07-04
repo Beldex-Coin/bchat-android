@@ -298,4 +298,5 @@
     <color name="notification_content_border">#4B4B64</color>
     <color name="selected_notification_content_background">#1C1C26</color>
     <color name="notification_content_cancel_button_background">#282836</color>
+    <color name="incoming_message_search_query">#4B4B64</color>
 </resources>

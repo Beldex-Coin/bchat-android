@@ -3,7 +3,6 @@ package com.thoughtcrimes.securesms.conversation.v2.messages
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.text.Spannable
@@ -19,7 +18,6 @@ import android.text.util.Linkify
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorInt
@@ -55,7 +53,6 @@ import com.thoughtcrimes.securesms.util.DateUtils
 import com.thoughtcrimes.securesms.util.SearchUtil
 import com.thoughtcrimes.securesms.util.UiModeUtilities
 import com.thoughtcrimes.securesms.util.getColorWithID
-import com.thoughtcrimes.securesms.util.toPx
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewVisibleMessageContentBinding
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
@@ -441,7 +438,6 @@ class VisibleMessageContentView : MaterialCardView {
 
     // region Convenience
     companion object {
-
         fun getBodySpans(
             context: Context,
             message: MessageRecord,
@@ -456,10 +452,10 @@ class VisibleMessageContentView : MaterialCardView {
                 context
             )
             body = SearchUtil.getHighlightedSpan(Locale.getDefault(),
-                { BackgroundColorSpan(Color.WHITE) }, body, searchQuery
+                { BackgroundColorSpan(if(message.isOutgoing) context.getColor(R.color.black) else context.getColor(R.color.incoming_message_search_query)) }, body, searchQuery
             )
             body = SearchUtil.getHighlightedSpan(Locale.getDefault(),
-                { ForegroundColorSpan(Color.BLACK) }, body, searchQuery
+                { ForegroundColorSpan(if(message.isOutgoing) context.getColor(R.color.white) else context.getColor(R.color.received_message_text_color)) }, body, searchQuery
             )
 
             Linkify.addLinks(body, Linkify.WEB_URLS)

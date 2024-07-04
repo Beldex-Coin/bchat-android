@@ -1627,7 +1627,26 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
             bottomSheet.show(requireActivity().supportFragmentManager, bottomSheet.tag)
         } else {
-            val messageCount = messages.size
+
+            val selectedMessageDialog = ComposeDialogContainer(
+                    dialogType = DialogType.SelectedMessageDelete,
+                    onConfirm = {
+                        for (message in messages) {
+                            viewModel.deleteLocally(message)
+                        }
+                        //endActionMode()
+                    },
+                    onCancel = {
+                    },
+            )
+            selectedMessageDialog.apply {
+                arguments = Bundle().apply {
+                    putInt(ComposeDialogContainer.EXTRA_ARGUMENT_1,messages.size)
+                }
+            }
+            selectedMessageDialog.show(childFragmentManager, ComposeDialogContainer.TAG)
+
+         /* val messageCount = messages.size
             val builder = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog)
             builder.setTitle(
                 resources.getQuantityString(
@@ -1654,7 +1673,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 dialog.dismiss()
                 endActionMode()
             }
-            builder.show()
+            builder.show()*/
         }
     }
 

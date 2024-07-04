@@ -12,6 +12,7 @@ import com.beldex.libbchat.utilities.ExpirationUtil
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.conversation.v2.dialogs.ClearChatDialog
 import com.thoughtcrimes.securesms.conversation.v2.dialogs.LeaveGroupDialog
+import com.thoughtcrimes.securesms.conversation.v2.dialogs.SelectedDeleteMessage
 import com.thoughtcrimes.securesms.conversation.v2.dialogs.UnblockUserDialog
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.home.NotificationSettingDialog
@@ -42,7 +43,8 @@ enum class DialogType {
     DeleteChat,
     AcceptRequest,
     DeclineRequest,
-    LeaveGroup
+    LeaveGroup,
+    SelectedMessageDelete
 }
 
 class ComposeDialogContainer(
@@ -388,6 +390,36 @@ class ComposeDialogContainer(
                                     message = message,
                                     positiveButtonTitle = stringResource(id = R.string.leave),
                                     onLeave = {
+                                        dismiss()
+                                        onConfirm()
+                                    },
+                                    onCancel = {
+                                        dismiss()
+                                        onCancel()
+                                    }
+                            )
+                        }
+                    }
+                    DialogType.SelectedMessageDelete -> {
+                        BChatTheme(
+                                darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
+                        ) {
+                            val messageCount = data ?:0
+                            val title = resources.getQuantityString(
+                                    R.plurals.ConversationFragment_delete_selected_messages,
+                                    messageCount,
+                                    messageCount
+                            )
+                            val message = resources.getQuantityString(
+                                    R.plurals.ConversationFragment_this_will_permanently_delete_all_n_selected_messages,
+                                    messageCount,
+                                    messageCount
+                            )
+                            SelectedDeleteMessage(
+                                    title = title,
+                                    message = message,
+                                    positiveButtonTitle = stringResource(id = R.string.delete),
+                                    onAccept = {
                                         dismiss()
                                         onConfirm()
                                     },

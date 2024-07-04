@@ -11,9 +11,12 @@ class OpenGroupGuidelinesActivity : BaseActionBarActivity() {
         super.onCreate(savedInstanceState)
         val binding = ActivityOpenGroupGuidelinesBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        supportActionBar?.hide()
+        with(binding) {
+            back.setOnClickListener { finish() }
+            title.text = getString(R.string.ConversationActivity_open_group_guidelines)
+        }
         binding.communityGuidelinesTextView.text = """
-        Welcome to BChat.
-
 BChat is a decentralized messaging platform that protects your privacy. When you're using BChat, you own your conversations and data. It does not collect or store any of your personal information. BChat is where you chat with freedom.
 
 BChat is also more than a messaging application. You can send and receive BDX right from your chat box. 

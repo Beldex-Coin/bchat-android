@@ -694,7 +694,7 @@
 
             </LinearLayout>
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/messageRequestBarCardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -703,9 +703,11 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginEnd="15dp"
                 android:layout_marginBottom="70dp"
-                app:cardBackgroundColor="@color/card_color"
-                app:cardCornerRadius="5dp"
+                app:cardBackgroundColor="@color/missed_call_dialog_background"
+                app:cardCornerRadius="20dp"
                 app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/message_request_view_border"
                 tools:visibility="gone">
 
                 <LinearLayout
@@ -722,6 +724,19 @@
                     android:visibility="gone"
                     tools:ignore="NotSibling"
                     tools:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/messageRequestTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/small_spacing"
+                        android:fontFamily="@font/open_sans_bold"
+                        android:paddingHorizontal="@dimen/massive_spacing"
+                        android:text="@string/message_request"
+                        android:textColor="@color/text"
+                        android:textSize="18sp"
+                        android:visibility="visible" />
 
                     <TextView
                         android:id="@+id/messageRequestBlock"
@@ -755,28 +770,32 @@
 
                         <Button
                             android:id="@+id/declineMessageRequestButton"
-                            style="@style/Widget.Bchat.Button.Common.ProminentFilled_ClearData_WhiteText"
+                            style="@style/Widget.Bchat.Button.Dialog.Decline"
                             android:layout_width="0dp"
                             android:layout_height="@dimen/medium_button_height"
                             android:layout_weight="1"
-                            android:fontFamily="@font/open_sans_medium"
+                            android:fontFamily="@font/open_sans_bold"
+                            android:textSize="16sp"
+                            android:textColor="@color/red"
                             android:text="@string/decline" />
 
                         <Button
                             android:id="@+id/acceptMessageRequestButton"
-                            style="@style/Widget.Bchat.Button.Common.ProminentFilled"
+                            style="@style/Widget.Bchat.Button.Dialog.Accept"
                             android:layout_width="0dp"
                             android:layout_height="@dimen/medium_button_height"
                             android:layout_marginStart="@dimen/medium_spacing"
                             android:layout_weight="1"
-                            android:fontFamily="@font/open_sans_medium"
+                            android:fontFamily="@font/open_sans_bold"
+                            android:textSize="16sp"
+                            android:textColor="@color/white"
                             android:text="@string/accept" />
 
                     </LinearLayout>
 
                 </LinearLayout>
 
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <com.thoughtcrimes.securesms.util.slidetoact.SlideToActView
                 android:id="@+id/slideToPayButton"

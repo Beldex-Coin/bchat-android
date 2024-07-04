@@ -37,6 +37,7 @@ class ProfilePictureView @JvmOverloads constructor(
     private var isEditGroup = false
 
     private val profilePicturesCache = mutableMapOf<String, String?>()
+    private val profilePicturesCacheWithBnsTag = mutableMapOf<String, String?>()
     private val unknownRecipientDrawable = ResourceContactPhoto(R.drawable.ic_profile_default)
         .asDrawable(context, ContactColors.UNKNOWN_COLOR.toConversationColor(context), false)
     private val unknownOpenGroupDrawable = ResourceContactPhoto(R.drawable.ic_notification_)
@@ -109,7 +110,7 @@ class ProfilePictureView @JvmOverloads constructor(
         if (additionalPublicKey == null && !isLarge) {
             Log.d("beldex","if 2")
             if(isBnsHolder){
-                setProfilePictureIfNeeded(binding.singleModeWithTagImageView, publicKey, displayName, R.dimen.medium_profile_picture_size)
+                setProfilePictureIfNeeded(binding.singleModeWithTagImageView, publicKey, displayName, R.dimen.medium_profile_picture_size,true)
                 if(groupImage){
                     binding.singleModeBnsVerifiedTagGroupImageView.visibility = View.VISIBLE
                     binding.singleModeBnsVerifiedTagImageView.visibility = View.INVISIBLE
@@ -164,11 +165,17 @@ class ProfilePictureView @JvmOverloads constructor(
         return generate(context,128, publicKey!!, displayName)
     }
 
-    private fun setProfilePictureIfNeeded(imageView: ImageView, publicKey: String, displayName: String?, @DimenRes sizeResId: Int) {
+    private fun setProfilePictureIfNeeded(imageView: ImageView, publicKey: String, displayName: String?, @DimenRes sizeResId: Int, isBnsTag:Boolean = false) {
         if (publicKey.isNotEmpty()) {
             val recipient = Recipient.from(context, Address.fromSerialized(publicKey), false)
-            if (profilePicturesCache.containsKey(publicKey) && profilePicturesCache[publicKey] == recipient.profileAvatar) {
-                return
+            if(isBnsTag) {
+                if (profilePicturesCacheWithBnsTag.containsKey(publicKey) && profilePicturesCacheWithBnsTag[publicKey] == recipient.profileAvatar) {
+                    return
+                }
+            }else {
+                if (profilePicturesCache.containsKey(publicKey) && profilePicturesCache[publicKey] == recipient.profileAvatar) {
+                    return
+                }
             }
             val signalProfilePicture = recipient.contactPhoto
             val avatar = (signalProfilePicture as? ProfileContactPhoto)?.avatarObject
@@ -205,7 +212,11 @@ class ProfilePictureView @JvmOverloads constructor(
                         GranularRoundedCorners(20f, 20f, 20f, 20f)
                     ).into(imageView)
             }
-            profilePicturesCache[publicKey] = recipient.profileAvatar
+            if(isBnsTag){
+                profilePicturesCacheWithBnsTag[publicKey] = recipient.profileAvatar
+            }else {
+                profilePicturesCache[publicKey] = recipient.profileAvatar
+            }
         } else {
             imageView.setImageDrawable(null)
         }

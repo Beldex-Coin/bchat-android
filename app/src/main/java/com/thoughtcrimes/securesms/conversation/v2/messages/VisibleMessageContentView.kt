@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
+import android.os.SystemClock
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.Spanned
@@ -65,6 +66,7 @@ class VisibleMessageContentView : MaterialCardView {
     var onContentDoubleTap: (() -> Unit)? = null
     var delegate: VisibleMessageContentViewDelegate? = null
     var indexInAdapter: Int = -1
+    private var linkLastClickTime: Long = 0
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
@@ -216,7 +218,12 @@ class VisibleMessageContentView : MaterialCardView {
                     isStartOfMessageCluster,
                     isEndOfMessageCluster
                 )
-                onContentClick.add { event -> binding.linkPreviewView.root.calculateHit(event) }
+                onContentClick.add { event ->
+                    if (SystemClock.elapsedRealtime() - linkLastClickTime >= 1000) {
+                        linkLastClickTime = SystemClock.elapsedRealtime()
+                        binding.linkPreviewView.root.calculateHit(event)
+                    }
+                }
                 // Body text view is inside the link preview for layout convenience
             }
             message is MmsMessageRecord && message.slideDeck.audioSlide != null -> {

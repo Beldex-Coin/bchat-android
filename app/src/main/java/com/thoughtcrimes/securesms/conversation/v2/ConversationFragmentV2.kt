@@ -1875,6 +1875,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 if (deleteThread) {
                     viewModel.deleteThread()
                 }
+                cancelVoiceMessage()
             },
             onCancel = {},
         )

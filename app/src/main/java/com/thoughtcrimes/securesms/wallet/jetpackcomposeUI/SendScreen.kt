@@ -171,7 +171,7 @@ fun SendScreen(
     }
     // Create a list of priority
     val options = listOf("Flash", "Slow")
-    var selectedOptionText by remember { mutableStateOf(options[0]) }
+    var selectedOptionText by remember { mutableStateOf(options[TextSecurePreferences.getFeePriority(context)]) }
 
     viewModels.walletBalance.observe(lifecycleOwner) { balance ->
         totalBalance = balance
@@ -190,7 +190,6 @@ fun SendScreen(
 
     }
 
-    println("selected option text value $selectedOptionText")
 
 
     ComposeBroadcastReceiver(systemAction = "io.beldex.WALLET_ACTION") {
@@ -301,6 +300,7 @@ fun SendScreen(
         mutableIntStateOf(TextSecurePreferences.getFeePriority(context))
     }
 
+    var expanded by remember { mutableStateOf(false) }
     val CLEAN_FORMAT = "%." + Helper.BDX_DECIMALS.toString() + "f"
     val possibleCryptos: MutableSet<Crypto> = HashSet()
     var selectedCrypto: Crypto? = null
@@ -593,6 +593,7 @@ fun SendScreen(
                 beldexAddress.value = ""
                 currencyValue = "0.0000"
                 selectedFeePriority= TextSecurePreferences.getFeePriority(context)
+                viewModels.updateSelectedOption(options[TextSecurePreferences.getFeePriority(context)])
 
                 //Important
                 val lockManager: LockManager<CustomPinActivity> = LockManager.getInstance() as LockManager<CustomPinActivity>
@@ -656,9 +657,9 @@ fun SendScreen(
                         )
                     }
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = MaterialTheme.appColors.cardBackground),
+                modifier =Modifier
+                        .fillMaxWidth()
+                        .background(color=MaterialTheme.appColors.cardBackground),
                 actions = {
                     IconButton(enabled = false,onClick = {
                     }) {
@@ -668,11 +669,11 @@ fun SendScreen(
             )
         },
         content = { it ->
-            Column(modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(scrollState)
-                .background(color = MaterialTheme.appColors.cardBackground)
-                .padding(it)) {
+            Column(modifier =Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+                    .background(color=MaterialTheme.appColors.cardBackground)
+                    .padding(it)) {
 
                 if (showTransactionLoading) {
                     TransactionLoadingPopUp(onDismiss = {
@@ -700,42 +701,42 @@ fun SendScreen(
                         errorString = transactionSentFailedError)
                 }
 
-                Box(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp, 10.dp)
-                    .border(
-                        width = 0.8.dp,
-                        color = MaterialTheme.appColors.primaryButtonColor.copy(alpha = 0.5f),
-                        shape = RoundedCornerShape(16.dp)
-                    )) {
+                Box(modifier =Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp, 10.dp)
+                        .border(
+                                width=0.8.dp,
+                                color=MaterialTheme.appColors.primaryButtonColor.copy(alpha=0.5f),
+                                shape=RoundedCornerShape(16.dp)
+                        )) {
                     Column(verticalArrangement = Arrangement.Center, modifier = Modifier.padding(10.dp)) {
-                        Text(text = "Total Balance", style = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.appColors.totalBalanceColor, fontSize = 14.sp, fontWeight = FontWeight(700)), modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 10.dp, top = 10.dp, end = 10.dp))
+                        Text(text = "Total Balance", style = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.appColors.totalBalanceColor, fontSize = 14.sp, fontWeight = FontWeight(700)), modifier =Modifier
+                                .fillMaxWidth()
+                                .padding(start=10.dp, top=10.dp, end=10.dp))
                         Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(start = 10.dp, end = 10.dp)
                         ) {
                             Image(painter = painterResource(id = R.drawable.ic_beldex), contentDescription = "beldex logo", modifier = Modifier)
-                            Text(text = totalBalance, style = MaterialTheme.typography.titleLarge.copy(color = MaterialTheme.appColors.textColor, fontSize = 24.sp, fontWeight = FontWeight(700)), modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(10.dp), fontSize = 24.sp)
+                            Text(text = totalBalance, style = MaterialTheme.typography.titleLarge.copy(color = MaterialTheme.appColors.textColor, fontSize = 24.sp, fontWeight = FontWeight(700)), modifier =Modifier
+                                    .fillMaxWidth()
+                                    .padding(10.dp), fontSize = 24.sp)
                         }
                     }
                 }
-                Column(modifier = Modifier
-                    .padding(10.dp)
-                    .background(
-                        color = MaterialTheme.appColors.receiveCardBackground,
-                        shape = RoundedCornerShape(18.dp)
-                    )
+                Column(modifier =Modifier
+                        .padding(10.dp)
+                        .background(
+                                color=MaterialTheme.appColors.receiveCardBackground,
+                                shape=RoundedCornerShape(18.dp)
+                        )
 
                 ) {
                     Column(modifier = Modifier.padding(10.dp)
 
                     ) {
 
-                        Text(text = context.getString(R.string.enter_bdx_amount), modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 10.dp, bottom = 5.dp, start = 10.dp), style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp, fontWeight = FontWeight(600), color = MaterialTheme.appColors.textColor))
+                        Text(text = context.getString(R.string.enter_bdx_amount), modifier =Modifier
+                                .fillMaxWidth()
+                                .padding(top=10.dp, bottom=5.dp, start=10.dp), style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp, fontWeight = FontWeight(600), color = MaterialTheme.appColors.textColor))
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
 
                             BChatOutlinedTextField(
@@ -794,10 +795,10 @@ fun SendScreen(
                                 focusedContainerColor = MaterialTheme.appColors.beldexAddressBackground,
                                 unFocusedContainerColor = MaterialTheme.appColors.beldexAddressBackground,
                                 maxLen = 16,
-                                modifier = Modifier
-                                    .padding(10.dp)
-                                    .fillMaxWidth()
-                                    .weight(1f),
+                                modifier =Modifier
+                                        .padding(10.dp)
+                                        .fillMaxWidth()
+                                        .weight(1f),
                                 shape = RoundedCornerShape(8.dp),
                             )
                            /* Box(
@@ -819,19 +820,19 @@ fun SendScreen(
                         Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically
 
                         ) {
-                            Text(text = context.getString(R.string.beldex_address), style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.textColor, fontSize = 16.sp, fontWeight = FontWeight(700)), modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f)
-                                .padding(10.dp))
+                            Text(text = context.getString(R.string.beldex_address), style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.textColor, fontSize = 16.sp, fontWeight = FontWeight(700)), modifier =Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f)
+                                    .padding(10.dp))
 
                             Box(
-                                modifier = Modifier
-                                    .width(32.dp)
-                                    .height(32.dp)
-                                    .background(
-                                        colorResource(id = R.color.your_bchat_id_bg),
-                                        shape = RoundedCornerShape(10.dp)
-                                    ),
+                                modifier =Modifier
+                                        .width(32.dp)
+                                        .height(32.dp)
+                                        .background(
+                                                colorResource(id=R.color.your_bchat_id_bg),
+                                                shape=RoundedCornerShape(10.dp)
+                                        ),
                                 contentAlignment = Alignment.Center
                             ) {
 
@@ -846,16 +847,16 @@ fun SendScreen(
                             }
                             Spacer(modifier = Modifier.width(10.dp))
 
-                            Box(modifier = Modifier
-                                .width(32.dp)
-                                .height(32.dp)
-                                .background(
-                                    colorResource(id = R.color.wallet_receive_background),
-                                    shape = RoundedCornerShape(10.dp)
-                                )
-                                .clickable {
-                                    openAddressBookActivity()
-                                }, contentAlignment = Alignment.Center) {
+                            Box(modifier =Modifier
+                                    .width(32.dp)
+                                    .height(32.dp)
+                                    .background(
+                                            colorResource(id=R.color.wallet_receive_background),
+                                            shape=RoundedCornerShape(10.dp)
+                                    )
+                                    .clickable {
+                                        openAddressBookActivity()
+                                    }, contentAlignment = Alignment.Center) {
 
                                 Image(painter = painterResource(id = R.drawable.address_book), contentDescription = "")
                             }
@@ -889,10 +890,10 @@ fun SendScreen(
                                 Timber.d("other")
                                 setMode(Mode.BDX)
                             }
-                        }, modifier = Modifier
-                            .fillMaxWidth()
-                            .height(120.dp)
-                            .padding(10.dp),
+                        }, modifier =Modifier
+                                .fillMaxWidth()
+                                .height(120.dp)
+                                .padding(10.dp),
                                 shape = RoundedCornerShape(12.dp),
                                 colors = TextFieldDefaults.colors(
                                         unfocusedContainerColor = MaterialTheme.appColors.beldexAddressBackground,
@@ -923,20 +924,65 @@ fun SendScreen(
 
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center, modifier = Modifier) {
                             Text(text = "Transaction Priority", style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.textColor, fontSize = 16.sp, fontWeight = FontWeight(700)), modifier = Modifier.padding(10.dp))
-                            PriorityDropDown(feePriorityOnClick,TextSecurePreferences.getFeePriority(context),selectedFeePriority={
-                                selectedFeePriority = it
-                            })
+                            ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = !expanded }) {
+                                TextField(
+                                        modifier = Modifier.menuAnchor(),
+                                        shape = RoundedCornerShape(12.dp),
+                                        readOnly = true,
+                                        value = selectedOptionText,
+                                        onValueChange = {},
+                                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                                        colors = ExposedDropdownMenuDefaults.textFieldColors(
+                                                focusedTextColor = colorResource(id = R.color.button_green),
+                                                unfocusedContainerColor = MaterialTheme.appColors.cardBackground,
+                                                focusedContainerColor = MaterialTheme.appColors.cardBackground,
+                                                focusedIndicatorColor = Color.Transparent,
+                                                unfocusedIndicatorColor = Color.Transparent,
+                                                disabledIndicatorColor = Color.Transparent,
+                                        ),
+
+                                        textStyle = TextStyle(color = MaterialTheme.appColors.textColor, fontSize = 14.sp, fontWeight = FontWeight.Bold),
+                                )
+                                ExposedDropdownMenu(
+                                        expanded = expanded,
+                                        onDismissRequest = { expanded = false },
+                                        modifier = Modifier.background(color = MaterialTheme.appColors.cardBackground)
+                                ) {
+                                    options.forEach { selectionOption ->
+                                        DropdownMenuItem(
+                                                text = { Text(selectionOption, style = MaterialTheme.typography.bodyMedium.copy(
+                                                        color = MaterialTheme.appColors.textColor, fontSize = 14.sp, fontWeight = FontWeight.Bold
+                                                ), color = MaterialTheme.appColors.textColor ) },
+                                                modifier =
+                                                Modifier.padding(vertical = 10.dp, horizontal = 10.dp),
+                                                onClick = {
+                                                    selectedOptionText = selectionOption
+                                                    expanded = false
+                                                    if (selectionOption == options[0]) {
+                                                        feePriorityOnClick(5)//Flash value
+                                                        viewModels.updateSelectedOption(options[0])//Flash position
+                                                        selectedFeePriority = 0
+                                                    } else {
+                                                        feePriorityOnClick(1)//Slow value
+                                                        viewModels.updateSelectedOption(options[1])//Slow position
+                                                        selectedFeePriority = 1
+                                                    }
+                                                },
+                                        )
+                                    }
+                                }
+                            }
                         }
 
 
-                        Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically, modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(20.dp)
-                            .border(
-                                width = 0.8.dp,
-                                color = colorResource(id = R.color.divider_color).copy(alpha = 0.5f),
-                                shape = RoundedCornerShape(8.dp)
-                            )) {
+                        Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically, modifier =Modifier
+                                .fillMaxWidth()
+                                .padding(20.dp)
+                                .border(
+                                        width=0.8.dp,
+                                        color=colorResource(id=R.color.divider_color).copy(alpha=0.5f),
+                                        shape=RoundedCornerShape(8.dp)
+                                )) {
                             Text(text = "Estimated Fee : ", style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.textHint, fontSize = 14.sp, fontWeight = FontWeight.Bold), modifier = Modifier.padding(top = 20.dp, bottom = 20.dp, start = 20.dp))
                             Text(text = "$estimatedFee BDX", style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.textColor, fontSize = 14.sp, fontWeight = FontWeight.ExtraBold), modifier = Modifier.padding(top = 20.dp, bottom = 20.dp, end = 20.dp))
                         }
@@ -949,9 +995,9 @@ fun SendScreen(
                         createTransactionIfPossible()
                         // context.startActivity(Intent(context, OnBoardingActivity::class.java))
                     },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp),
+                    modifier =Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp),
                     shape = RoundedCornerShape(16.dp),
                     enabled = beldexAddress.value.isNotEmpty() && beldexAmount.value.isNotEmpty(),
                     disabledContainerColor = MaterialTheme.appColors.contactCardBackground
@@ -968,60 +1014,6 @@ fun SendScreen(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun PriorityDropDown(feePriorityOnClick: (selectedFeePriority: Int) -> Unit, feePriority: Int,selectedFeePriority: (selectedFeePriority: Int) -> Unit) {
-    val options = listOf("Flash", "Slow")
-    var expanded by remember { mutableStateOf(false) }
-    var selectedOptionText by remember { mutableStateOf(options[feePriority]) }
-
-    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = !expanded }) {
-        TextField(
-                modifier = Modifier.menuAnchor(),
-                shape = RoundedCornerShape(12.dp),
-                readOnly = true,
-                value = selectedOptionText,
-                onValueChange = {},
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                colors = ExposedDropdownMenuDefaults.textFieldColors(
-                        focusedTextColor = colorResource(id = R.color.button_green),
-                        unfocusedContainerColor = MaterialTheme.appColors.cardBackground,
-                        focusedContainerColor = MaterialTheme.appColors.cardBackground,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                ),
-
-                textStyle = TextStyle(color = MaterialTheme.appColors.textColor, fontSize = 14.sp, fontWeight = FontWeight.Bold),
-        )
-        ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
-                modifier = Modifier.background(color = MaterialTheme.appColors.cardBackground)
-        ) {
-            options.forEach { selectionOption ->
-                DropdownMenuItem(
-                        text = { Text(selectionOption, style = MaterialTheme.typography.bodyMedium.copy(
-                            color = MaterialTheme.appColors.textColor, fontSize = 14.sp, fontWeight = FontWeight.Bold
-                        ), color = MaterialTheme.appColors.textColor ) },
-                        modifier =
-                        Modifier.padding(vertical = 10.dp, horizontal = 10.dp),
-                        onClick = {
-                            selectedOptionText = selectionOption
-                            expanded = false
-                            if (selectionOption == options[0]) {
-                                feePriorityOnClick(5)//Flash value
-                                selectedFeePriority(0)//Flash position
-                            } else {
-                                feePriorityOnClick(1)//Slow value
-                                selectedFeePriority(1)//Slow position
-                            }
-                        },
-                )
-            }
-        }
-    }
-}
 
 
 enum class Mode {

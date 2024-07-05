@@ -31,6 +31,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -77,11 +78,16 @@ import com.thoughtcrimes.securesms.util.StickyHeaderDecoration;
 import com.beldex.libbchat.utilities.Util;
 import com.beldex.libbchat.utilities.ViewUtil;
 import com.beldex.libbchat.utilities.task.ProgressDialogAsyncTask;
+import com.thoughtcrimes.securesms.util.UiMode;
+import com.thoughtcrimes.securesms.util.UiModeUtilities;
+
+import org.w3c.dom.Text;
 
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import io.beldex.bchat.R;
 import kotlin.Unit;
@@ -413,32 +419,53 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
                                                     recordCount);
 
       AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-      builder.setIconAttribute(R.attr.dialog_alert_icon);
-      builder.setTitle(confirmTitle);
-      builder.setMessage(confirmMessage);
-      builder.setCancelable(true);
+      LayoutInflater inflater = getLayoutInflater();
+      View dialogView = inflater.inflate(R.layout.delete_media_dialog, null);
 
-      builder.setPositiveButton(R.string.delete, (dialogInterface, i) -> {
-        new ProgressDialogAsyncTask<MediaDatabase.MediaRecord, Void, Void>(getContext(),
-                                                                           R.string.MediaOverviewActivity_Media_delete_progress_title,
-                                                                           R.string.MediaOverviewActivity_Media_delete_progress_message)
-        {
-          @Override
-          protected Void doInBackground(MediaDatabase.MediaRecord... records) {
-            if (records == null || records.length == 0) {
+      builder.setView(dialogView);
+
+      Button cancelButton = dialogView.findViewById(R.id.cancelButton);
+      Button deleteButton = dialogView.findViewById(R.id.deleteButton);
+      TextView title = dialogView.findViewById(R.id.titleTextView);
+      TextView contentMessage = dialogView.findViewById(R.id.deleteMessageContent);
+      title.setText(confirmTitle);
+      contentMessage.setText(confirmMessage);
+      AlertDialog alert = builder.create();
+      Objects.requireNonNull(alert.getWindow()).setBackgroundDrawableResource(R.color.transparent);
+      alert.setCanceledOnTouchOutside(true);
+      alert.show();
+
+
+      deleteButton.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+          new ProgressDialogAsyncTask<MediaDatabase.MediaRecord, Void, Void>(getContext(),
+                  R.string.MediaOverviewActivity_Media_delete_progress_title,
+                  R.string.MediaOverviewActivity_Media_delete_progress_message)
+          {
+            @Override
+            protected Void doInBackground(MediaDatabase.MediaRecord... records) {
+              if (records == null || records.length == 0) {
+                return null;
+              }
+
+              for (MediaDatabase.MediaRecord record : records) {
+                AttachmentUtil.deleteAttachment(getContext(), record.getAttachment());
+              }
               return null;
             }
 
-            for (MediaDatabase.MediaRecord record : records) {
-              AttachmentUtil.deleteAttachment(getContext(), record.getAttachment());
-            }
-            return null;
-          }
-
-        }.execute(mediaRecords.toArray(new MediaDatabase.MediaRecord[mediaRecords.size()]));
+          }.execute(mediaRecords.toArray(new MediaDatabase.MediaRecord[mediaRecords.size()]));
+          alert.dismiss();
+        }
       });
-      builder.setNegativeButton(android.R.string.cancel, null);
-      builder.show();
+
+      cancelButton.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+          alert.dismiss();
+        }
+      });
     }
 
     private void handleSelectAllMedia() {

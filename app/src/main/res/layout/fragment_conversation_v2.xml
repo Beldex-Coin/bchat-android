@@ -115,6 +115,15 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center">
+                <ImageView
+                    android:id="@+id/search"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:padding="4dp"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_baseline_search_24"
+                    android:tint="#A7A7BA"
+                    tools:ignore="UseAppTint" />
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/search_query"
@@ -166,12 +175,12 @@
                     tools:ignore="UseAppTint" />
 
                 <ImageView
-                    android:id="@+id/search"
+                    android:id="@+id/searchClose"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:padding="4dp"
                     android:background="?selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_baseline_search_24"
+                    android:src="@drawable/ic_search_close_circle"
                     android:tint="#A7A7BA"
                     tools:ignore="UseAppTint" />
 
@@ -671,6 +680,7 @@
                         android:layout_marginEnd="8dp"
                         android:textColor="@color/clear_red_color"
                         app:icon="@drawable/ic_clear_conversation"
+                        android:gravity="center"
                         app:iconGravity="textStart"
                         app:iconTint="@color/clear_red_color"/>
 
@@ -688,6 +698,7 @@
                         android:layout_marginStart="8dp"
                         android:textColor="@color/white"
                         app:icon="@drawable/ic_unblock_user"
+                        android:gravity="center"
                         app:iconGravity="textStart"
                         app:iconTint="@color/white"/>
 

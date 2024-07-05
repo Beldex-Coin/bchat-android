@@ -28,10 +28,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,6 +48,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -131,9 +135,9 @@ fun JoinSocialGroupScreen(
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
+        modifier =Modifier
+                .fillMaxSize()
+                .padding(16.dp)
     ) {
         Text(
             text = stringResource(R.string.activity_join_public_chat_title),
@@ -152,13 +156,17 @@ fun JoinSocialGroupScreen(
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            BChatOutlinedTextField(
-                value = uiState.groupUrl,
-                placeHolder = stringResource(id = R.string.fragment_enter_chat_url_edit_text_hint),
+            TextField(
+                    value=uiState.groupUrl,
+                    placeholder={
+                        Text(text=stringResource(R.string.fragment_enter_chat_url_edit_text_hint),
+                                style=MaterialTheme.typography.bodyMedium
+                        )
+                    },
                 onValueChange = { url ->
                     onEvent(OpenGroupEvents.GroupUrlChanged(url))
                 },
-                shape = RoundedCornerShape(8.dp),
+                shape = RoundedCornerShape(16.dp),
                 trailingIcon = {
                     Image(
                         painter = painterResource(id = R.drawable.ic_qr_code),
@@ -174,9 +182,18 @@ fun JoinSocialGroupScreen(
                             joinPublicChatScanQRCodeActivityResultLauncher.launch(intent)
                         })
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
+                modifier =Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                        colors = TextFieldDefaults.colors(
+                        unfocusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
+                    focusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
+                    cursorColor = colorResource(id = R.color.button_green)
+            )
             )
 
             PrimaryButton(
@@ -186,13 +203,13 @@ fun JoinSocialGroupScreen(
                 shape = RoundedCornerShape(16.dp),
                 enabled = uiState.groupUrl.isNotEmpty(),
                 disabledContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        start = 16.dp,
-                        end = 16.dp,
-                        bottom = 16.dp
-                    )
+                modifier =Modifier
+                        .fillMaxWidth()
+                        .padding(
+                                start=16.dp,
+                                end=16.dp,
+                                bottom=16.dp
+                        )
             ) {
                 Text(
                     text = stringResource(id = R.string.next),
@@ -228,9 +245,9 @@ fun JoinSocialGroupScreen(
             LottieAnimation(
                 composition,
                 progress,
-                modifier = Modifier
-                    .size(70.dp)
-                    .align(Alignment.CenterHorizontally)
+                modifier =Modifier
+                        .size(70.dp)
+                        .align(Alignment.CenterHorizontally)
             )
         } else {
             LazyVerticalGrid(
@@ -243,20 +260,20 @@ fun JoinSocialGroupScreen(
                 content = {
                     items(groups.size) { i ->
                         Column(
-                            modifier = Modifier
-                                .background(
-                                    color = MaterialTheme.appColors.disabledButtonContainerColor,
-                                    shape = RoundedCornerShape(8.dp)
-                                )
-                                .padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 14.dp)
-                                .clickable {
-                                    showLoader = true
-                                    joinPublicChatIfPossible(
-                                        groups[i].joinURL,
-                                        lifecycleOwner,
-                                        context
+                            modifier =Modifier
+                                    .background(
+                                            color=MaterialTheme.appColors.disabledButtonContainerColor,
+                                            shape=RoundedCornerShape(8.dp)
                                     )
-                                },
+                                    .padding(start=16.dp, end=16.dp, top=14.dp, bottom=14.dp)
+                                    .clickable {
+                                        showLoader=true
+                                        joinPublicChatIfPossible(
+                                                groups[i].joinURL,
+                                                lifecycleOwner,
+                                                context
+                                        )
+                                    },
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally,
                             ) {
@@ -266,10 +283,10 @@ fun JoinSocialGroupScreen(
                                 Image(
                                     bitmap = bitmap,
                                     contentDescription = "",
-                                    modifier = Modifier
-                                        .width(52.dp)
-                                        .height(52.dp)
-                                        .clip(shape = RoundedCornerShape(6.dp)),
+                                    modifier =Modifier
+                                            .width(52.dp)
+                                            .height(52.dp)
+                                            .clip(shape=RoundedCornerShape(6.dp)),
                                     alignment = Alignment.Center
                                 )
                             }

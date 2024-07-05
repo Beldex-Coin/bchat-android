@@ -938,7 +938,7 @@
 
     <string name="hello_first_fragment" translatable="false">Hello first fragment</string>
     <string name="hello_second_fragment" translatable="false">Hello second fragment. Arg: %1$s</string>
-    <string name="activity_register_content" translatable="false">Hey User, welcome to BChat!</string>
+    <string name="activity_register_content" translatable="false">Hey User, Welcome to BChat!</string>
     <string name="chatid" translatable="false">BChat ID</string>
     <string name="next_button" translatable="false">Next</string>
     <string name="enable_app_lock" translatable="false">Enable App Lock</string>

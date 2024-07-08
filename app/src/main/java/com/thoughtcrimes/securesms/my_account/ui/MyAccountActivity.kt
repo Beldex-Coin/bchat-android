@@ -393,6 +393,10 @@ fun MyAccountNavHost(
                     }
                 }
 
+                fun callAboutBns(){
+                    navController.navigate(MyAccountScreens.AboutBNSScreen.route)
+                }
+
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -486,12 +490,7 @@ fun MyAccountNavHost(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(bottom = 10.dp)
-                                .clickable(
-                                    onClick = {
-                                        navController.navigate(MyAccountScreens.AboutBNSScreen.route)
-                                    }
-                                ),
+                                .padding(bottom = 10.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Center
                         ) {
@@ -503,13 +502,21 @@ fun MyAccountNavHost(
                                     fontSize = 12.sp
                                 ),
                                 modifier = Modifier
-                                    .padding(end = 5.dp)
+                                    .padding(end = 5.dp).clickable(
+                                        onClick = {
+                                            callAboutBns()
+                                        }
+                                    )
                             )
                             Icon(
                                 painterResource(id = R.drawable.ic_info_outline_dark),
                                 contentDescription = "Read more about BNS",
                                 tint = MaterialTheme.appColors.secondaryTextColor,
-                                modifier = Modifier.size(12.dp)
+                                modifier = Modifier.size(12.dp).clickable(
+                                    onClick = {
+                                        callAboutBns()
+                                    }
+                                )
                             )
                         }
                     }

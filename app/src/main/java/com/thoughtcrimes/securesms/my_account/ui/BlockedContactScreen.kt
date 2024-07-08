@@ -262,7 +262,7 @@ private fun BlockedContactItem(
                     style = MaterialTheme.typography.labelMedium,
                     modifier = Modifier
                         .background(
-                            color = MaterialTheme.appColors.cardBackground,
+                            color = MaterialTheme.appColors.popUpAddressBackground,
                             shape = RoundedCornerShape(15)
                         )
                         .padding(

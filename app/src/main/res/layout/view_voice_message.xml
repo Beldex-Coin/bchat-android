@@ -69,11 +69,15 @@
 
                 <ProgressBar
                     android:id="@+id/voiceMessageViewLoader"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="23dp"
+                    android:layout_height="23dp"
                     android:layout_centerInParent="true"
                     android:indeterminate="true"
-                    android:indeterminateTint="@color/text" />
+                    android:indeterminateTint="@color/text"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"/>
 
             </RelativeLayout>
 

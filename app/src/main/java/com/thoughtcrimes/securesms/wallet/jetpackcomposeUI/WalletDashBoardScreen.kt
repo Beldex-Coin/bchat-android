@@ -330,7 +330,7 @@ fun WalletDashBoardScreen(
                             fontWeight = FontWeight.ExtraBold,
                             fontSize = 22.sp,
                         ),
-                        textAlign = TextAlign.Center,
+                        textAlign = TextAlign.Start,
                         modifier = Modifier.fillMaxWidth()
                     )
                 },

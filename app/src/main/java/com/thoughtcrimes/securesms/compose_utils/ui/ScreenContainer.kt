@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -35,7 +36,8 @@ fun ScreenContainer(
     Column(
         modifier = modifier
     ) {
-        Box(
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
@@ -59,8 +61,7 @@ fun ScreenContainer(
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
                 ),
-                modifier = Modifier
-                    .align(Alignment.Center)
+                modifier = Modifier.weight(1f)
             )
 
             actionItems()

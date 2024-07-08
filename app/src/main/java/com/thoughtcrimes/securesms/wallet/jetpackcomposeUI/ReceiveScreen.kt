@@ -228,7 +228,7 @@ fun ReceiveScreen(listenerCallback: ReceiveFragment.Listener?, modifier: Modifie
                             color = MaterialTheme.appColors.editTextColor,
                             fontWeight = FontWeight.ExtraBold,
                             fontSize = 22.sp,
-                        ), textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth()
+                        ), textAlign = TextAlign.Start, modifier = Modifier.fillMaxWidth()
                     )
                 },
                 navigationIcon = {

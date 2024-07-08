@@ -25,7 +25,8 @@
             tools:text="Settings"
             android:layout_marginStart="16dp"
             android:fontFamily="@font/open_sans_medium"
-            android:textSize="18sp"/>
+            android:textSize="18sp"
+            android:textStyle="bold"/>
 
     </LinearLayout>
 

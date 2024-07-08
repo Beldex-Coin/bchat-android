@@ -8,8 +8,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -320,7 +320,8 @@ private fun ScreenContainer(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Box(
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
             modifier =Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
@@ -330,11 +331,12 @@ private fun ScreenContainer(
                 contentDescription = stringResource(R.string.back),
                 tint = MaterialTheme.appColors.editTextColor,
                 modifier =Modifier
-                        .align(Alignment.TopStart)
                         .clickable {
                             onBackClick()
                         }
             )
+
+            Spacer(modifier = Modifier.width(16.dp))
 
             Text(
                 text = title,
@@ -343,8 +345,7 @@ private fun ScreenContainer(
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
                 ),
-                modifier = Modifier
-                    .align(Alignment.Center)
+                modifier = Modifier.weight(1f)
             )
         }
 

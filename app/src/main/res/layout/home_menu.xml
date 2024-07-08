@@ -44,7 +44,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
-            android:clickable="false"
             app:cardBackgroundColor="@color/drawer_card_color"
             app:cardCornerRadius="8dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -54,7 +53,6 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clickable="false"
                 android:orientation="horizontal"
                 android:padding="5dp">
 
@@ -64,18 +62,15 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_marginStart="5dp"
-                    android:clickable="true"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:focusable="true" />
+                    app:layout_constraintTop_toTopOf="parent"/>
 
                 <LinearLayout
                     android:id="@+id/drawer_profile_name_layout"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="15dp"
-                    android:clickable="true"
                     android:orientation="vertical"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toRightOf="@id/drawer_profile_icon"
@@ -87,7 +82,6 @@
                         android:id="@+id/drawer_profile_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:clickable="false"
                         android:fontFamily="@font/open_sans_bold"
                         android:gravity="center_vertical"
                         android:textColor="@color/text"
@@ -100,7 +94,6 @@
                         android:id="@+id/drawer_profile_id"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:clickable="false"
                         android:ellipsize="end"
                         android:fontFamily="@font/open_sans_medium"
                         android:gravity="center_vertical"

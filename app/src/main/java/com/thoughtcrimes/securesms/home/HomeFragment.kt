@@ -448,11 +448,11 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         binding.navigationMenu.drawerAppearanceToggleButton.setOnTouchListener { _, event ->
             event.actionMasked == MotionEvent.ACTION_MOVE
         }
-        binding.navigationMenu.drawerQrcodeImg.setOnClickListener {
-            showQRCode()
-            Handler(Looper.getMainLooper()).postDelayed({
-                binding.drawerLayout.closeDrawer(GravityCompat.END)
-            }, 200)
+        binding.navigationMenu.profileContainer.setOnClickListener{
+            callShowQrCode()
+        }
+        binding.navigationMenu.drawerProfileIcon.root.setOnClickListener {
+            callShowQrCode()
         }
         binding.navigationMenu.drawerProfileIcon.root.glide = glide
         binding.navigationMenu.drawerProfileIcon.root.isClickable = true
@@ -594,6 +594,13 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         binding.navigationMenu.version.text = resources.getString(R.string.version_name).format(BuildConfig.VERSION_NAME)
         // binding.navigationMenu.uiMode.text = "Dark Mode"
 
+    }
+
+    private fun callShowQrCode(){
+        showQRCode()
+        Handler(Looper.getMainLooper()).postDelayed({
+            binding.drawerLayout.closeDrawer(GravityCompat.END)
+        }, 200)
     }
     private fun registerObservers() {
         val buildingPathsReceiver: BroadcastReceiver = object : BroadcastReceiver() {

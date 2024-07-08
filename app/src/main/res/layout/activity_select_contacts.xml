@@ -19,21 +19,32 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/search_background"
+            android:orientation="horizontal"
+            android:background="@drawable/search_edit_text_background"
             >
 
             <EditText
                 android:id="@+id/searchContact"
                 style="@style/BchatSearchEditText"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="54dp"
                 android:gravity="center_vertical"
                 android:hint="@string/search_contact"
                 android:imeOptions="actionDone"
                 android:inputType="text"
                 android:maxLines="1"
-                android:drawableEnd="@drawable/ic_baseline_search_24"
+                android:background="@color/transparent"
                 android:singleLine="true" />
+
+            <ImageView
+                android:id="@+id/searchAndClearImageview"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:src="@drawable/ic_baseline_search_24"
+                android:layout_marginEnd="15dp"
+                android:contentDescription="@string/search_contact" />
 
         </LinearLayout>
 

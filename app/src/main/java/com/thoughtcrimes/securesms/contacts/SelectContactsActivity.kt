@@ -69,8 +69,20 @@ class SelectContactsActivity : PassphraseRequiredActionBarActivity(), LoaderMana
             override fun onTextChanged(
                     s : CharSequence, start : Int,
                     before : Int, count : Int
-            ) {}
+            ) {
+                if(s.toString().isNotEmpty()){
+                    binding.searchAndClearImageview.setImageResource(R.drawable.ic_close)
+                }else{
+                    binding.searchAndClearImageview.setImageResource(R.drawable.ic_baseline_search_24)
+                }
+            }
         })
+
+        binding.searchAndClearImageview.setOnClickListener {
+            if(binding.searchContact.text.isNotEmpty()){
+                binding.searchContact.text.clear()
+            }
+        }
     }
     fun filter(text: String?, arrayList: ArrayList<String>) {
         val temp: MutableList<String> = ArrayList()

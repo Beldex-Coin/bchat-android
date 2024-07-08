@@ -341,7 +341,6 @@
 
     <style name="BchatSearchEditText">
         <item name="android:fontFamily">@font/open_sans_medium</item>
-        <item name="android:background">@drawable/search_edit_text_background</item>
         <item name="android:paddingLeft">@dimen/medium_spacing</item>
         <item name="android:paddingTop">@dimen/medium_spacing</item>
         <item name="android:paddingRight">@dimen/medium_spacing</item>

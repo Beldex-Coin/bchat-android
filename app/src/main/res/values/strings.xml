@@ -1542,4 +1542,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="bns_verified_tag">BNS verified tag</string>
     <string name="bns_name_changed_warning_message"><b>BNS name changed!</b>>\nRe-verify your BNS name to proceed.</string>
     <string name="apply_changes" translatable="false">Apply Changes</string>
+    <string name="activity_edit_closed_group_group_name_same_name_error">Please enter a different name</string>
 </resources>

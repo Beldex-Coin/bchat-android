@@ -8,17 +8,11 @@ import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.messaging.sending_receiving.groupSizeLimit
 import com.beldex.libbchat.messaging.sending_receiving.notifications.PushNotificationAPI.context
@@ -29,9 +23,7 @@ import com.beldex.libbchat.utilities.ThemeUtil
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.toHexString
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
-import com.thoughtcrimes.securesms.components.ProfilePictureView
 import com.thoughtcrimes.securesms.contacts.SelectContactsActivity
-import com.thoughtcrimes.securesms.database.DatabaseContentProviders
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.mms.GlideApp
 import com.thoughtcrimes.securesms.util.Helper
@@ -39,13 +31,11 @@ import com.thoughtcrimes.securesms.util.fadeIn
 import com.thoughtcrimes.securesms.util.fadeOut
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityEditClosedGroupBinding
-import io.beldex.bchat.databinding.ActivityWebRtcCallBinding
 import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.task
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
 import java.io.IOException
-import kotlin.math.roundToInt
 
 class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
     private val originalMembers = HashSet<String>()
@@ -289,6 +279,9 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
         }
         if (name.length >= 64) {
             return Toast.makeText(this, R.string.activity_edit_closed_group_group_name_too_long_error, Toast.LENGTH_SHORT).show()
+        }
+        if(name == originalName){
+            return Toast.makeText(this, R.string.activity_edit_closed_group_group_name_same_name_error,Toast.LENGTH_SHORT).show()
         }
         this.name = name
         binding.lblGroupNameDisplay.text = name

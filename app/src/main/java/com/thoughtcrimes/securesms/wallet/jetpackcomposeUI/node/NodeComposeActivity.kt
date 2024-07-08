@@ -1119,8 +1119,8 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                     Button(
                             onClick={ onDismiss() },
                             colors=ButtonDefaults.buttonColors(
-                                containerColor=MaterialTheme.appColors.secondaryButtonColor,
-                                contentColor = MaterialTheme.appColors.restoreDescColor
+                                containerColor=MaterialTheme.appColors.cancelButtonContainer,
+                                contentColor = MaterialTheme.appColors.cancelButtonContent
                             ),
                             modifier=Modifier
                                     .weight(1f)
@@ -1129,7 +1129,7 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                                 text=stringResource(id=R.string.cancel),
                                 style=MaterialTheme.typography.bodyMedium.copy(
                                     fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.appColors.restoreDescColor
+                                    color = MaterialTheme.appColors.cancelButtonContent
                                 ),
                                 modifier=Modifier.padding(10.dp)
                         )
@@ -1145,7 +1145,7 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                             colors=ButtonDefaults.buttonColors(
                                 containerColor=MaterialTheme.appColors.primaryButtonColor,
                                 disabledContainerColor = MaterialTheme.colorScheme.primary,
-                                disabledContentColor = MaterialTheme.appColors.disablePrimaryButtonContent
+                                disabledContentColor = MaterialTheme.appColors.disableAddButtonContainer
                             ),
                             modifier=Modifier
                                     .weight(1f)
@@ -1153,7 +1153,7 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                         Text(
                                 text= stringResource(id = R.string.add),
                                 style=MaterialTheme.typography.bodyMedium.copy(
-                                    color=if(nodeStatusSuccessAction)Color.White else MaterialTheme.appColors.disablePrimaryButtonContent,
+                                    color=if(nodeStatusSuccessAction)Color.White else MaterialTheme.appColors.disableAddButtonContent,
                                     fontWeight = FontWeight.Bold
                                 ),
                                 modifier=Modifier.padding(10.dp)

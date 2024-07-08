@@ -122,7 +122,11 @@ class Colors(
     val linkBnsAddressBackground: Color,
     val profileAddressCardBackground: Color,
     val profileCameraIconBackgroundWithBnsTag: Color,
-    val profileCameraIconBackground: Color
+    val profileCameraIconBackground: Color,
+    val disableAddButtonContainer: Color,
+    val disableAddButtonContent: Color,
+    val cancelButtonContainer: Color,
+    val cancelButtonContent: Color
 )
 
 val lightColors = Colors(
@@ -229,7 +233,11 @@ val lightColors = Colors(
     linkBnsAddressBackground = Color(0xFFECECEC),
     profileAddressCardBackground = Color(0xFFFFFFFF),
     profileCameraIconBackgroundWithBnsTag = Color(0xFFEBEBEB),
-    profileCameraIconBackground = Color(0xFFF8F8F8)
+    profileCameraIconBackground = Color(0xFFF8F8F8),
+    disableAddButtonContainer = Color(0xFFECECEC),
+    disableAddButtonContent = Color(0xFFA7A7BA),
+    cancelButtonContainer = Color(0xFFECECEC),
+    cancelButtonContent = Color(0xFF6C6C78)
 )
 
 val darkColors = Colors(
@@ -336,7 +344,11 @@ val darkColors = Colors(
     linkBnsAddressBackground = Color(0xFF282836),
     profileAddressCardBackground = Color(0xFF11111A),
     profileCameraIconBackgroundWithBnsTag = Color(0xFF11111A),
-    profileCameraIconBackground = Color(0xFF111119)
+    profileCameraIconBackground = Color(0xFF111119),
+    disableAddButtonContainer = Color(0xFF1C1C26),
+    disableAddButtonContent = Color(0xFF6C6C78),
+    cancelButtonContainer = Color(0xFF1C1C26),
+    cancelButtonContent = Color(0xFFACACAC)
 )
 
 

@@ -956,6 +956,7 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                                 1.dp, MaterialTheme.appColors.textFiledBorderColor,
                                 shape=RoundedCornerShape(12.dp)
                         ),
+                        singleLine = true,
                         colors=TextFieldDefaults.colors(
                                 unfocusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
                                 focusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
@@ -985,6 +986,7 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                                 1.dp, MaterialTheme.appColors.textFiledBorderColor,
                                 shape=RoundedCornerShape(12.dp)
                         ),
+                        singleLine = true,
                         colors=TextFieldDefaults.colors(
                                 unfocusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
                                 focusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
@@ -1014,6 +1016,7 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                                 1.dp, MaterialTheme.appColors.textFiledBorderColor,
                                 shape=RoundedCornerShape(12.dp)
                         ),
+                        singleLine = true,
                         colors=TextFieldDefaults.colors(
                                 unfocusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
                                 focusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,

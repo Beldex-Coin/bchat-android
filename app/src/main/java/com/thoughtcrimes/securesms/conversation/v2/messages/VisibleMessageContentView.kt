@@ -66,7 +66,6 @@ class VisibleMessageContentView : MaterialCardView {
     var onContentDoubleTap: (() -> Unit)? = null
     var delegate: VisibleMessageContentViewDelegate? = null
     var indexInAdapter: Int = -1
-    private var linkLastClickTime: Long = 0
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
@@ -219,10 +218,7 @@ class VisibleMessageContentView : MaterialCardView {
                     isEndOfMessageCluster
                 )
                 onContentClick.add { event ->
-                    if (SystemClock.elapsedRealtime() - linkLastClickTime >= 1000) {
-                        linkLastClickTime = SystemClock.elapsedRealtime()
-                        binding.linkPreviewView.root.calculateHit(event)
-                    }
+                    binding.linkPreviewView.root.calculateHit(event)
                 }
                 // Body text view is inside the link preview for layout convenience
             }
@@ -451,6 +447,7 @@ class VisibleMessageContentView : MaterialCardView {
             searchQuery: String?
         ): Spannable {
             var body = message.body.toSpannable()
+            var linkLastClickTime: Long = 0
 
             body = MentionUtilities.highlightMentions(
                 body,
@@ -471,7 +468,10 @@ class VisibleMessageContentView : MaterialCardView {
             body.getSpans<URLSpan>(0, body.length).toList().forEach { urlSpan ->
                 val updatedUrl = urlSpan.url.let { it.toHttpUrlOrNull().toString() }
                 val replacementSpan = ModalURLSpan(updatedUrl) { url ->
-                    ActivityDispatcher.get(context)?.showBottomSheetDialog(ModalUrlBottomSheet(url),"Open URL Dialog")
+                    if (SystemClock.elapsedRealtime() - linkLastClickTime >= 1000) {
+                        linkLastClickTime = SystemClock.elapsedRealtime()
+                        ActivityDispatcher.get(context)?.showBottomSheetDialog(ModalUrlBottomSheet(url),"Open URL Dialog")
+                    }
                 }
                 val start = body.getSpanStart(urlSpan)
                 val end = body.getSpanEnd(urlSpan)

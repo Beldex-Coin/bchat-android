@@ -1,41 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:layout_marginStart="@dimen/medium_spacing"
-    android:layout_marginEnd="@dimen/medium_spacing"
-    android:background="@drawable/bchat_dialog_background_shape"
-    android:orientation="vertical"
-    android:paddingLeft="20dp"
-    android:paddingTop="10dp"
-    android:paddingRight="20dp"
-    android:paddingBottom="10dp">
+    android:background="@drawable/default_dialog_background_inset">
 
     <TextView
+        android:id="@+id/titleTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
-        android:fontFamily="@font/open_sans_medium"
-        android:gravity="center"
-        android:text="@string/ApplicationPreferencesActivity_delete_all_old_messages_now"
-        android:textSize="20sp"
-
-        android:textStyle="bold" />
+        android:layout_margin="@dimen/medium_spacing"
+        android:drawablePadding="@dimen/large_spacing"
+        android:fontFamily="@font/open_sans_bold"
+        android:gravity="center_horizontal|center_vertical"
+        android:paddingHorizontal="@dimen/large_spacing"
+        android:textColor="@color/text"
+        android:textSize="@dimen/medium_font_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/delete" />
 
     <TextView
-        android:id="@+id/delete_all_old_messages_dialog_message_textView"
+        android:id="@+id/deleteMessageContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
+        android:layout_margin="@dimen/medium_spacing"
+        android:drawablePadding="@dimen/large_spacing"
         android:fontFamily="@font/open_sans_regular"
-        android:gravity="center"
-        android:text=""
-        android:textSize="16sp"
-        android:textStyle="normal" />
+        android:gravity="center_horizontal|center_vertical"
+        android:paddingHorizontal="@dimen/large_spacing"
+        android:textColor="@color/text"
+        android:textSize="@dimen/small_font_size"
+        app:layout_constraintTop_toBottomOf="@id/titleTextView"
+        tools:text="@string/delete" />
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -44,10 +44,11 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/lengthTextField">
+        app:layout_constraintTop_toBottomOf="@id/deleteMessageContent"
+        tools:ignore="MissingConstraints">
 
         <Button
-            android:id="@+id/delete_all_old_messages_dialog_cancel"
+            android:id="@+id/cancelButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/large_spacing"
@@ -68,7 +69,7 @@
             app:layout_constraintEnd_toEndOf="parent" />
 
         <Button
-            android:id="@+id/delete_all_old_messages_dialog_delete"
+            android:id="@+id/deleteButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/small_spacing"
@@ -88,4 +89,5 @@
             app:layout_constraintStart_toStartOf="parent" />
 
     </LinearLayout>
-</LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -3800,6 +3800,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         binding.closeSearch.setOnClickListener {
             onSearchClosed()
         }
+        binding.searchClose.setOnClickListener{
+            onSearchClosed()
+        }
         binding.searchQuery.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
@@ -3811,11 +3814,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     binding.searchProgress.visibility = View.VISIBLE
                     binding.closeSearch.visibility = View.VISIBLE
                     binding.search.visibility = View.GONE
+                    binding.searchClose.visibility = View.GONE
                 }else{
                     binding.closeSearch.visibility = View.GONE
                     binding.search.visibility = View.VISIBLE
                     binding.searchUp.visibility = View.GONE
                     binding.searchDown.visibility = View.GONE
+                    binding.searchClose.visibility = View.VISIBLE
                     adapter.onSearchQueryUpdated(p0.toString())
                 }
             }

@@ -92,7 +92,7 @@ public class ChatsPreferenceFragment extends ListSummaryPreferenceFragment {
 
       builder.setNegativeButton(android.R.string.cancel, null);
       builder.show();*/
-      AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),R.style.BChatAlertDialog);
+      AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
       View dialogView = View.inflate(getActivity(),R.layout.delete_all_old_messages_dialog, null);
 
       builder.setView(dialogView);

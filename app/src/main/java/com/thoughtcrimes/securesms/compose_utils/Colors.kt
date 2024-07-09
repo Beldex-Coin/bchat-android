@@ -126,7 +126,8 @@ class Colors(
     val disableAddButtonContainer: Color,
     val disableAddButtonContent: Color,
     val cancelButtonContainer: Color,
-    val cancelButtonContent: Color
+    val cancelButtonContent: Color,
+    val disabledCreateButtonContainer: Color
 )
 
 val lightColors = Colors(
@@ -237,7 +238,8 @@ val lightColors = Colors(
     disableAddButtonContainer = Color(0xFFECECEC),
     disableAddButtonContent = Color(0xFFA7A7BA),
     cancelButtonContainer = Color(0xFFECECEC),
-    cancelButtonContent = Color(0xFF6C6C78)
+    cancelButtonContent = Color(0xFF6C6C78),
+    disabledCreateButtonContainer = Color(0xFFECECEC)
 )
 
 val darkColors = Colors(
@@ -348,7 +350,8 @@ val darkColors = Colors(
     disableAddButtonContainer = Color(0xFF1C1C26),
     disableAddButtonContent = Color(0xFF6C6C78),
     cancelButtonContainer = Color(0xFF1C1C26),
-    cancelButtonContent = Color(0xFFACACAC)
+    cancelButtonContent = Color(0xFFACACAC),
+    disabledCreateButtonContainer = Color(0xFF282836)
 )
 
 

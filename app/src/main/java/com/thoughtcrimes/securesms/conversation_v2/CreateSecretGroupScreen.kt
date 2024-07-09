@@ -280,7 +280,7 @@ fun CreateSecretGroup(
                         .padding(16.dp),
                     shape = RoundedCornerShape(16.dp),
                     enabled = groupName.isNotEmpty(),
-                    disabledContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
+                    disabledContainerColor = MaterialTheme.appColors.disabledCreateButtonContainer,
                 ) {
                     Text(
                         text = stringResource(id = R.string.create),
@@ -289,7 +289,8 @@ fun CreateSecretGroup(
                                 Color.White
                             } else {
                                 MaterialTheme.appColors.disabledButtonContent
-                            }
+                            },
+                            fontWeight = FontWeight(600)
                         ),
                         modifier = Modifier
                             .padding(8.dp)

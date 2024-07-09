@@ -107,8 +107,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:drawableEnd="@drawable/ic_baseline_edit_group_name"
-                    android:drawablePadding="@dimen/small_spacing"
                     android:paddingStart="24dp"
                     android:paddingEnd="0dp"
                     android:textAlignment="center"
@@ -116,6 +114,14 @@
                     android:textSize="@dimen/medium_font_size"
                     android:textStyle="bold"
                     tools:text="SomeGroupName" />
+
+                <ImageView
+                    android:id="@+id/lblGroupNameEditImageview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:src="@drawable/ic_baseline_edit_group_name"
+                    android:contentDescription="@string/edit_group_name" />
 
             </LinearLayout>
 

@@ -114,7 +114,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
 
 
         binding.lblGroupNameDisplay.text = originalName
-        binding.cntGroupNameDisplay.setOnClickListener { isEditingName = true }
+        binding.lblGroupNameEditImageview.setOnClickListener { isEditingName = true }
         binding.btnCancelGroupNameEdit.setOnClickListener{
             isEditingName = false
         }

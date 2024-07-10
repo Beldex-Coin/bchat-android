@@ -643,7 +643,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
 
         //Node Connection
         fun getFavouriteNodes(): MutableSet<NodeInfo>
-        fun getOrPopulateFavourites(): MutableSet<NodeInfo>
+        fun getOrPopulateFavourites(context: Context): MutableSet<NodeInfo>
         fun getNode(): NodeInfo?
         fun setNode(node: NodeInfo?)
 

@@ -93,7 +93,7 @@
             app:layout="@layout/preference_layout"
             app:icon="@drawable/ic_delete_old"/>
 
-        <EditTextPreference
+        <Preference
             android:defaultValue="500"
             android:key="pref_trim_length"
             android:title="@string/preferences__conversation_length_limit"

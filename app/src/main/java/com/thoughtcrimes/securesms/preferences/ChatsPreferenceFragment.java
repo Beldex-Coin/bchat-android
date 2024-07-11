@@ -45,13 +45,28 @@ public class ChatsPreferenceFragment extends ListSummaryPreferenceFragment {
 
     findPreference(TextSecurePreferences.THREAD_TRIM_NOW)
         .setOnPreferenceClickListener(new TrimNowClickListener());
-    findPreference(TextSecurePreferences.THREAD_TRIM_LENGTH)
-            .setOnPreferenceChangeListener(new TrimLengthValidationListener());
+    findPreference(TextSecurePreferences.THREAD_TRIM_LENGTH).
+            setSummary(getResources().getQuantityString(R.plurals.ApplicationPreferencesActivity_messages_per_conversation,
+                    TextSecurePreferences.getThreadTrimLength(requireContext()),
+                    TextSecurePreferences.getThreadTrimLength(requireContext())));
+
     findPreference(TextSecurePreferences.CHAT_FONT_SIZE)
             .setOnPreferenceChangeListener(new ChangeFontSizeListener());
     initializeListSummary((ListPreference) findPreference(TextSecurePreferences.CHAT_FONT_SIZE));
 
 
+  }
+
+  @Override
+  public boolean onPreferenceTreeClick(@NonNull Preference preference) {
+    if(preference.getKey().equals("pref_trim_length"))
+    {
+      EditTextPreferenceDialog editTextPreferenceDialog = new EditTextPreferenceDialog(preference);
+      assert getFragmentManager() != null;
+      editTextPreferenceDialog.show(getFragmentManager(),"EditTextPreferenceDialog");
+      return true;
+    }
+    return false;
   }
 
   @Override

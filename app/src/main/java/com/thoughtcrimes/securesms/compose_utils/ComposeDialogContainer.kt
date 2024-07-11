@@ -4,24 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.DialogFragment
-import com.beldex.libbchat.utilities.ExpirationUtil
 import com.beldex.libbchat.utilities.TextSecurePreferences
-import com.thoughtcrimes.securesms.conversation.v2.dialogs.ClearChatDialog
 import com.thoughtcrimes.securesms.conversation.v2.dialogs.LeaveGroupDialog
-import com.thoughtcrimes.securesms.conversation.v2.dialogs.SelectedDeleteMessage
-import com.thoughtcrimes.securesms.conversation.v2.dialogs.UnblockUserDialog
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.home.NotificationSettingDialog
 import com.thoughtcrimes.securesms.my_account.ui.dialogs.DeleteChatConfirmationDialog
-import com.thoughtcrimes.securesms.my_account.ui.dialogs.IgnoreRequestDialog
-import com.thoughtcrimes.securesms.my_account.ui.dialogs.LockOptionsDialog
 import com.thoughtcrimes.securesms.my_account.ui.dialogs.PermissionSettingDialog
 import com.thoughtcrimes.securesms.my_account.ui.dialogs.ProfilePicturePopup
-import com.thoughtcrimes.securesms.my_account.ui.dialogs.RequestBlockConfirmationDialog
 import com.thoughtcrimes.securesms.my_account.ui.dialogs.WalletSyncingDialog
 import com.thoughtcrimes.securesms.util.UiMode
 import com.thoughtcrimes.securesms.util.UiModeUtilities
@@ -30,21 +22,10 @@ import io.beldex.bchat.R
 enum class DialogType {
     PermissionDialog,
     UploadProfile,
-    IgnoreRequest,
-    DeleteRequest,
-    BlockRequest,
-    ClearChat,
-    UnblockUser,
-    DisappearingTimer,
-    MuteChat,
-    BlockUser,
-    NotificationSettings,
     WalletSyncing,
     DeleteChat,
-    AcceptRequest,
-    DeclineRequest,
     LeaveGroup,
-    SelectedMessageDelete
+    NotificationSettings
 }
 
 class ComposeDialogContainer(
@@ -123,184 +104,6 @@ class ComposeDialogContainer(
                             )
                         }
                     }
-                    DialogType.IgnoreRequest -> {
-                        BChatTheme(
-                            darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
-                        ) {
-                            IgnoreRequestDialog(
-                                onBlock = {
-                                    dismiss()
-                                    onConfirm()
-                                },
-                                onDelete = {
-                                    dismiss()
-                                    onCancel()
-                                },
-                                onDismissRequest = {
-                                    dismiss()
-                                }
-                            )
-                        }
-                    }
-                    DialogType.DeleteRequest -> {
-                        BChatTheme(
-                            darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
-                        ) {
-                            RequestBlockConfirmationDialog(
-                                message = stringResource(id = R.string.message_requests_block_message),
-                                actionTitle = stringResource(id = R.string.yes),
-                                onConfirmation = {
-                                    dismiss()
-                                    onConfirm()
-                                },
-                                onDismissRequest = {
-                                    dismiss()
-                                    onCancel()
-                                }
-                            )
-                        }
-                    }
-                    DialogType.BlockRequest -> {
-                        BChatTheme(
-                            darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
-                        ) {
-                            RequestBlockConfirmationDialog(
-                                message = stringResource(id = R.string.message_requests_decline_messages),
-                                actionTitle = stringResource(id = R.string.yes),
-                                onConfirmation = {
-                                    dismiss()
-                                    onConfirm()
-                                },
-                                onDismissRequest = {
-                                    dismiss()
-                                    onCancel()
-                                }
-                            )
-                        }
-                    }
-                    DialogType.ClearChat -> {
-                        BChatTheme(
-                            darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
-                        ) {
-                            ClearChatDialog(
-                                onAccept = {
-                                    dismiss()
-                                    onConfirm()
-                                },
-                                onCancel = {
-                                    dismiss()
-                                    onCancel()
-                                }
-                            )
-                        }
-                    }
-                    DialogType.UnblockUser -> {
-                        BChatTheme(
-                            darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
-                        ) {
-                            UnblockUserDialog(
-                                title = stringResource(id = R.string.unblock_contact),
-                                message = stringResource(id = R.string.unblock_user_confirmation),
-                                positiveButtonTitle = stringResource(id = R.string.unblock),
-                                onAccept = {
-                                    dismiss()
-                                    onConfirm()
-                                },
-                                onCancel = {
-                                    dismiss()
-                                    onCancel()
-                                }
-                            )
-                        }
-                    }
-                    DialogType.DisappearingTimer -> {
-                        BChatTheme(
-                            darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
-                        ) {
-                            val timesOption = context.resources.getIntArray(R.array.expiration_times)
-                            val options = remember {
-                                timesOption.map {
-                                    ExpirationUtil.getExpirationDisplayValue(
-                                        context,
-                                        it
-                                    )
-                                }
-                            }
-                            LockOptionsDialog(
-                                title = stringResource(R.string.conversation_expiring_off__disappearing_messages),
-                                options = options,
-                                currentValue = options[timesOption.indexOf(argument1?.toInt() ?: 0)],
-                                onDismiss = {
-                                    dismiss()
-                                },
-                                onValueChanged = { _, index ->
-                                    dismiss()
-                                    onConfirmWithData(timesOption[index])
-                                }
-                            )
-                        }
-                    }
-                    DialogType.MuteChat -> {
-                        BChatTheme(
-                            darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
-                        ) {
-                            val timesOption = context.resources.getStringArray(R.array.mute_durations)
-                            LockOptionsDialog(
-                                title = stringResource(R.string.conversation_unmuted__mute_notifications),
-                                options = timesOption.toList(),
-                                currentValue = timesOption[argument1?.toInt() ?: 0],
-                                onDismiss = {
-                                    dismiss()
-                                },
-                                onValueChanged = { _, index ->
-                                    onConfirmWithData(index)
-                                    dismiss()
-                                }
-                            )
-                        }
-                    }
-                    DialogType.BlockUser -> {
-                        BChatTheme(
-                            darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
-                        ) {
-                            UnblockUserDialog(
-                                title = stringResource(id = R.string.block_contact),
-                                message = stringResource(id = R.string.block_user_confirmation),
-                                positiveButtonTitle = stringResource(id = R.string.yes),
-                                onAccept = {
-                                    dismiss()
-                                    onConfirm()
-                                },
-                                onCancel = {
-                                    dismiss()
-                                    onCancel()
-                                }
-                            )
-                        }
-                    }
-                    DialogType.NotificationSettings -> {
-                        BChatTheme(
-                                darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
-                        ) {
-                            val option  = context.resources.getStringArray(R.array.notify_types)
-                            NotificationSettingDialog(
-                                   onDismiss = {
-                                        dismiss()
-                                        onConfirm()
-                                    },
-                                    onClick = {
-                                        dismiss()
-                                        onCancel()
-                                    },
-                                    options = option.toList(),
-                                    currentValue = option[data ?: 0],
-                                    onValueChanged = { _, index ->
-                                        onConfirmWithData(index)
-                                        dismiss()
-                                    }
-                            )
-                        }
-                    }
                     DialogType.WalletSyncing -> {
                         BChatTheme(
                                 darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
@@ -333,44 +136,6 @@ class ComposeDialogContainer(
                             )
                         }
                     }
-                    DialogType.AcceptRequest -> {
-                        BChatTheme(
-                                darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
-                        ) {
-                            UnblockUserDialog(
-                                    title = stringResource(id = R.string.accept_request),
-                                    message = stringResource(id = R.string.message_requests_accept_message),
-                                    positiveButtonTitle = stringResource(id = R.string.accept),
-                                    onAccept = {
-                                        dismiss()
-                                        onConfirm()
-                                    },
-                                    onCancel = {
-                                        dismiss()
-                                        onCancel()
-                                    }
-                            )
-                        }
-                    }
-                    DialogType.DeclineRequest -> {
-                        BChatTheme(
-                                darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
-                        ) {
-                            UnblockUserDialog(
-                                    title = stringResource(id = R.string.decline_request),
-                                    message = stringResource(id = R.string.message_requests_decline_message),
-                                    positiveButtonTitle = stringResource(id = R.string.decline),
-                                    onAccept = {
-                                        dismiss()
-                                        onConfirm()
-                                    },
-                                    onCancel = {
-                                        dismiss()
-                                        onCancel()
-                                    }
-                            )
-                        }
-                    }
                     DialogType.LeaveGroup -> {
                         val address = argument1?:""
                         val group = DatabaseComponent.get(context).groupDatabase().getGroup(address).orNull()
@@ -400,33 +165,26 @@ class ComposeDialogContainer(
                             )
                         }
                     }
-                    DialogType.SelectedMessageDelete -> {
+                    DialogType.NotificationSettings -> {
                         BChatTheme(
-                                darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
+                            darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
                         ) {
-                            val messageCount = data ?:0
-                            val title = resources.getQuantityString(
-                                    R.plurals.ConversationFragment_delete_selected_messages,
-                                    messageCount,
-                                    messageCount
-                            )
-                            val message = resources.getQuantityString(
-                                    R.plurals.ConversationFragment_this_will_permanently_delete_all_n_selected_messages,
-                                    messageCount,
-                                    messageCount
-                            )
-                            SelectedDeleteMessage(
-                                    title = title,
-                                    message = message,
-                                    positiveButtonTitle = stringResource(id = R.string.delete),
-                                    onAccept = {
-                                        dismiss()
-                                        onConfirm()
-                                    },
-                                    onCancel = {
-                                        dismiss()
-                                        onCancel()
-                                    }
+                            val option  = context.resources.getStringArray(R.array.notify_types)
+                            NotificationSettingDialog(
+                                onDismiss = {
+                                    dismiss()
+                                    onConfirm()
+                                },
+                                onClick = {
+                                    dismiss()
+                                    onCancel()
+                                },
+                                options = option.toList(),
+                                currentValue = option[data ?: 0],
+                                onValueChanged = { _, index ->
+                                    onConfirmWithData(index)
+                                    dismiss()
+                                }
                             )
                         }
                     }

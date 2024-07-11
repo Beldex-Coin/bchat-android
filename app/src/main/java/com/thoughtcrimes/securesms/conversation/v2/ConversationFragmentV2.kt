@@ -100,8 +100,6 @@ import com.beldex.libsignal.utilities.guava.Optional
 import com.beldex.libsignal.utilities.hexEncodedPrivateKey
 import com.thoughtcrimes.securesms.ApplicationContext
 import com.thoughtcrimes.securesms.audio.AudioRecorder
-import com.thoughtcrimes.securesms.compose_utils.ComposeDialogContainer
-import com.thoughtcrimes.securesms.compose_utils.DialogType
 import com.thoughtcrimes.securesms.contacts.SelectContactsActivity
 import com.thoughtcrimes.securesms.contactshare.SimpleTextWatcher
 import com.thoughtcrimes.securesms.conversation.v2.dialogs.LinkPreviewDialog
@@ -135,7 +133,9 @@ import com.thoughtcrimes.securesms.delegates.WalletDelegates
 import com.thoughtcrimes.securesms.delegates.WalletDelegatesImpl
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.giph.ui.GiphyActivity
+import com.thoughtcrimes.securesms.home.ConversationActionDialog
 import com.thoughtcrimes.securesms.home.HomeActivity
+import com.thoughtcrimes.securesms.home.HomeDialogType
 import com.thoughtcrimes.securesms.home.HomeFragment
 import com.thoughtcrimes.securesms.linkpreview.LinkPreviewRepository
 import com.thoughtcrimes.securesms.linkpreview.LinkPreviewUtil
@@ -220,7 +220,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     ConversationActionModeCallbackDelegate, VisibleMessageContentViewDelegate,
     RecipientModifiedListener,
     SearchBottomBar.EventListener, LoaderManager.LoaderCallbacks<Cursor>,
-    ConversationMenuHelper.ConversationMenuListener, OnBackPressedListener,SendConfirm, WalletDelegates by WalletDelegatesImpl() {
+    ConversationMenuHelper.ConversationMenuListener, OnBackPressedListener,SendConfirm, ConversationActionDialog.ConversationActionDialogListener,
+    WalletDelegates by WalletDelegatesImpl() {
 
     private var param2: String? = null
 
@@ -1627,24 +1628,16 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             }
             bottomSheet.show(requireActivity().supportFragmentManager, bottomSheet.tag)
         } else {
-
-            val selectedMessageDialog = ComposeDialogContainer(
-                    dialogType = DialogType.SelectedMessageDelete,
-                    onConfirm = {
-                        for (message in messages) {
-                            viewModel.deleteLocally(message)
-                        }
-                        //endActionMode()
-                    },
-                    onCancel = {
-                    },
-            )
+            viewModel.setMessagesToDelete(messages)
+            val selectedMessageDialog = ConversationActionDialog()
             selectedMessageDialog.apply {
                 arguments = Bundle().apply {
-                    putInt(ComposeDialogContainer.EXTRA_ARGUMENT_1,messages.size)
+                    putInt(ConversationActionDialog.EXTRA_ARGUMENT_1,messages.size)
+                    putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.SelectedMessageDelete)
                 }
+                setListener(this@ConversationFragmentV2)
             }
-            selectedMessageDialog.show(childFragmentManager, ComposeDialogContainer.TAG)
+            selectedMessageDialog.show(childFragmentManager, ConversationActionDialog.TAG)
 
          /* val messageCount = messages.size
             val builder = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog)
@@ -1884,21 +1877,15 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 //            Typeface.createFromAsset(requireActivity().assets, "fonts/open_sans_medium.ttf")
 //        textView!!.typeface = face
 
-        val blockDialog = ComposeDialogContainer(
-            dialogType = DialogType.BlockUser,
-            onConfirm = {
-                viewModel.block()
-                viewModel.recipient.value?.let { thread ->
-                    showBlockProgressBar(thread)
-                }
-                if (deleteThread) {
-                    viewModel.deleteThread()
-                }
-                cancelVoiceMessage()
-            },
-            onCancel = {},
-        )
-        blockDialog.show(childFragmentManager, ComposeDialogContainer.TAG)
+        val blockDialog = ConversationActionDialog()
+        blockDialog.apply {
+            arguments = Bundle().apply {
+                putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.BlockUser)
+                putInt(ConversationActionDialog.EXTRA_ARGUMENT_1, if (deleteThread) 1 else 0)
+            }
+            setListener(this@ConversationFragmentV2)
+        }
+        blockDialog.show(childFragmentManager, ConversationActionDialog.TAG)
     }
 
     override fun unblock() {
@@ -1922,17 +1909,14 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 //            Typeface.createFromAsset(requireActivity().assets, "fonts/open_sans_medium.ttf")
 //        textView!!.typeface = face
 
-        val blockDialog = ComposeDialogContainer(
-            dialogType = DialogType.UnblockUser,
-            onConfirm = {
-                viewModel.unblock()
-                viewModel.recipient.value?.let { thread ->
-                    showBlockProgressBar(thread)
-                }
-            },
-            onCancel = {},
-        )
-        blockDialog.show(childFragmentManager, ComposeDialogContainer.TAG)
+        val blockDialog = ConversationActionDialog()
+        blockDialog.apply {
+            arguments = Bundle().apply {
+                putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.UnblockUser)
+            }
+            setListener(this@ConversationFragmentV2)
+        }
+        blockDialog.show(childFragmentManager, ConversationActionDialog.TAG)
     }
 
     fun getSystemService(name: String): Any? {
@@ -1956,27 +1940,15 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 return
             }
         }
-        val dialog = ComposeDialogContainer(
-            dialogType = DialogType.DisappearingTimer,
-            onConfirm = {
-
-            },
-            onCancel = {},
-            onConfirmWithData = { time ->
-                val expirationTime = time as Int
-                viewModel.setExpireMessages(thread, expirationTime)
-                val message = ExpirationTimerUpdate(expirationTime)
-                message.recipient = thread.address.serialize()
-                message.sentTimestamp = MnodeAPI.nowWithOffset
-                val expiringMessageManager =
-                    ApplicationContext.getInstance(requireActivity()).expiringMessageManager
-                expiringMessageManager.setExpirationTimer(message)
-                MessageSender.send(message, thread.address)
-                this.activity?.invalidateOptionsMenu()
+        val dialog = ConversationActionDialog()
+        dialog.apply {
+            arguments = Bundle().apply {
+                putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.DisappearingTimer)
+                putInt(ConversationActionDialog.EXTRA_ARGUMENT_1, thread.expireMessages)
             }
-        )
-        dialog.arguments = bundleOf(ComposeDialogContainer.EXTRA_ARGUMENT_1 to thread.expireMessages)
-        dialog.show(childFragmentManager, ComposeDialogContainer.TAG)
+            setListener(this@ConversationFragmentV2)
+        }
+        dialog.show(childFragmentManager, ConversationActionDialog.TAG)
 
 //        ExpirationDialog.show(requireActivity(), thread.expireMessages) { expirationTime: Int ->
 //            viewModel.setExpireMessages(thread, expirationTime)
@@ -2627,14 +2599,14 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun clearChatDialog() {
-        val dialog=ComposeDialogContainer(
-                dialogType=DialogType.ClearChat,
-                onConfirm={
-                    deleteBlockedConversation()
-                },
-                onCancel={},
-        )
-        dialog.show(childFragmentManager, ComposeDialogContainer.TAG)
+        val dialog = ConversationActionDialog()
+        dialog.apply {
+            arguments = Bundle().apply {
+                putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.ClearChat)
+            }
+            setListener(this@ConversationFragmentV2)
+        }
+        dialog.show(childFragmentManager, ConversationActionDialog.TAG)
     }
 
     private fun deleteBlockedConversation() {
@@ -2660,17 +2632,14 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
 
     private fun unblockContactDialog() {
-        val dialog = ComposeDialogContainer(
-            dialogType = DialogType.UnblockUser,
-            onConfirm = {
-                viewModel.unblock()
-                viewModel.recipient.value?.let { thread ->
-                    showBlockProgressBar(thread)
-                }
-            },
-            onCancel = {}
-        )
-        dialog.show(childFragmentManager, ComposeDialogContainer.TAG)
+        val dialog = ConversationActionDialog()
+        dialog.apply {
+            arguments = Bundle().apply {
+                putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.UnblockUser)
+            }
+            setListener(this@ConversationFragmentV2)
+        }
+        dialog.show(childFragmentManager, ConversationActionDialog.TAG)
     }
 
     // region Search
@@ -3207,32 +3176,25 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
     /*Hales63*/
     private fun acceptAlertDialog() {
-        val acceptRequest = ComposeDialogContainer(
-                dialogType = DialogType.AcceptRequest,
-                onConfirm = {
-                    acceptMessageRequest()
-                    viewModel.recipient.value?.let {
-                        showBlockProgressBar(it)
-                    }
-                },
-                onCancel = {},
-        )
-        acceptRequest.show(childFragmentManager, ComposeDialogContainer.TAG)
+        val acceptRequest = ConversationActionDialog()
+        acceptRequest.apply {
+            arguments = Bundle().apply {
+                putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.AcceptRequest)
+            }
+            setListener(this@ConversationFragmentV2)
+        }
+        acceptRequest.show(childFragmentManager, ConversationActionDialog.TAG)
     }
 
     private fun declineAlertDialog() {
-        val declineRequest = ComposeDialogContainer(
-                dialogType = DialogType.DeclineRequest,
-                onConfirm = {
-                    viewModel.declineMessageRequest()
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(requireActivity())
-                    }
-                    backToHome()
-                },
-                onCancel = {},
-        )
-        declineRequest.show(childFragmentManager, ComposeDialogContainer.TAG)
+        val declineRequest = ConversationActionDialog()
+        declineRequest.apply {
+            arguments = Bundle().apply {
+                putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.DeclineRequest)
+            }
+            setListener(this@ConversationFragmentV2)
+        }
+        declineRequest.show(childFragmentManager, ConversationActionDialog.TAG)
     }
 
     private fun handleMentionSelected(mention: Mention) {
@@ -3767,23 +3729,15 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun showMuteOptionDialog(thread: Recipient) {
-        val dialog = ComposeDialogContainer(
-            dialogType = DialogType.MuteChat,
-            onConfirm = {},
-            onCancel = {},
-            onConfirmWithData = { index ->
-                val muteUntil = when (index as Int) {
-                    1 -> System.currentTimeMillis() + TimeUnit.HOURS.toMillis(2)
-                    2 -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1)
-                    3 -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(7)
-                    4 -> Long.MAX_VALUE
-                    else -> System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1)
-                }
-                DatabaseComponent.get(requireContext()).recipientDatabase().setMuted(thread, muteUntil)
+        val dialog = ConversationActionDialog()
+        dialog.apply {
+            arguments = Bundle().apply {
+                putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.MuteChat)
+                putSerializable(ConversationActionDialog.EXTRA_ARGUMENT_1, thread.mutedUntil)
             }
-        )
-        dialog.arguments = bundleOf(ComposeDialogContainer.EXTRA_ARGUMENT_1 to thread.mutedUntil)
-        dialog.show(childFragmentManager, ComposeDialogContainer.TAG)
+            setListener(this@ConversationFragmentV2)
+        }
+        dialog.show(childFragmentManager, ConversationActionDialog.TAG)
     }
 
     override fun openSearch() {
@@ -3829,6 +3783,91 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 
             }
         })
+    }
+
+    override fun onConfirm(dialogType: HomeDialogType, threadRecord: ThreadRecord?) {
+        when (dialogType) {
+            HomeDialogType.UnblockUser -> {
+                viewModel.unblock()
+                viewModel.recipient.value?.let { thread ->
+                    showBlockProgressBar(thread)
+                }
+            }
+            HomeDialogType.ClearChat -> {
+                deleteBlockedConversation()
+            }
+            HomeDialogType.AcceptRequest -> {
+                acceptMessageRequest()
+                viewModel.recipient.value?.let {
+                    showBlockProgressBar(it)
+                }
+            }
+            HomeDialogType.DeclineRequest -> {
+                viewModel.declineMessageRequest()
+                lifecycleScope.launch(Dispatchers.IO) {
+                    ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(requireActivity())
+                }
+                backToHome()
+            }
+            HomeDialogType.SelectedMessageDelete -> {
+                for (message in viewModel.deleteMessages ?: setOf()) {
+                    viewModel.deleteLocally(message)
+                }
+                viewModel.setMessagesToDelete(null)
+            }
+            else -> Unit
+        }
+    }
+
+    override fun onCancel(dialogType: HomeDialogType, threadRecord: ThreadRecord?) {
+
+    }
+
+    override fun onConfirmationWithData(
+        dialogType: HomeDialogType,
+        data: Any?,
+        threadRecord: ThreadRecord?
+    ) {
+        when (dialogType) {
+            HomeDialogType.MuteChat -> {
+                val muteUntil = when (data as Int) {
+                    1 -> System.currentTimeMillis() + TimeUnit.HOURS.toMillis(2)
+                    2 -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1)
+                    3 -> System.currentTimeMillis() + TimeUnit.DAYS.toMillis(7)
+                    4 -> Long.MAX_VALUE
+                    else -> System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1)
+                }
+                viewModel.recipient.value?.let {
+                    DatabaseComponent.get(requireContext()).recipientDatabase().setMuted(it, muteUntil)
+                }
+            }
+            HomeDialogType.BlockUser -> {
+                val deleteThread = (data as Int) == 1
+                viewModel.block()
+                viewModel.recipient.value?.let { thread ->
+                    showBlockProgressBar(thread)
+                }
+                if (deleteThread) {
+                    viewModel.deleteThread()
+                }
+                cancelVoiceMessage()
+            }
+            HomeDialogType.DisappearingTimer -> {
+                val expirationTime = data as Int
+                viewModel.recipient.value?.let { thread ->
+                    viewModel.setExpireMessages(thread, expirationTime)
+                    val message = ExpirationTimerUpdate(expirationTime)
+                    message.recipient = thread.address.serialize()
+                    message.sentTimestamp = MnodeAPI.nowWithOffset
+                    val expiringMessageManager =
+                        ApplicationContext.getInstance(requireActivity()).expiringMessageManager
+                    expiringMessageManager.setExpirationTimer(message)
+                    MessageSender.send(message, thread.address)
+                    this.activity?.invalidateOptionsMenu()
+                }
+            }
+            else -> Unit
+        }
     }
 
     fun hideKeyboard() {

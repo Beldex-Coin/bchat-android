@@ -35,6 +35,8 @@ import com.beldex.libbchat.utilities.ExpirationUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+
 import io.beldex.bchat.R;
 
 /**
@@ -43,7 +45,7 @@ import io.beldex.bchat.R;
  * @author Moxie Marlinspike
  *
  */
-public class ThreadRecord extends DisplayRecord {
+public class ThreadRecord extends DisplayRecord implements Serializable {
 
   private @Nullable final Uri     snippetUri;
   private           final long    count;

@@ -128,6 +128,7 @@ interface TextSecurePreferences {
     fun getNotificationLedPatternCustom(): String?
     fun isThreadLengthTrimmingEnabled(): Boolean
     fun getThreadTrimLength(): Int
+    fun setThreadTrimLength(length : String?)
     fun isSystemEmojiPreferred(): Boolean
     fun getMobileMediaDownloadAllowed(): Set<String>?
     fun getWifiMediaDownloadAllowed(): Set<String>?
@@ -902,6 +903,11 @@ interface TextSecurePreferences {
         @JvmStatic
         fun getThreadTrimLength(context: Context): Int {
             return getStringPreference(context, THREAD_TRIM_LENGTH, "500")!!.toInt()
+        }
+
+        @JvmStatic
+        fun setThreadTrimLength(context: Context, length: String?) {
+            setStringPreference(context, THREAD_TRIM_LENGTH, length)
         }
 
         @JvmStatic
@@ -1870,6 +1876,10 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun getThreadTrimLength(): Int {
         return getStringPreference(TextSecurePreferences.THREAD_TRIM_LENGTH, "500")!!.toInt()
+    }
+
+    override fun setThreadTrimLength(length : String?) {
+        return setStringPreference(TextSecurePreferences.THREAD_TRIM_LENGTH, length)
     }
 
     override fun isSystemEmojiPreferred(): Boolean {

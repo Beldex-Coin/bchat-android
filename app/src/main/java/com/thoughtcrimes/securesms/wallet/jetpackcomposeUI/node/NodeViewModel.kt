@@ -98,10 +98,10 @@ class NodeViewModel @Inject constructor(
         _favouritesNodes.value = nodes.toHashSet()
     }
 
-    fun getOrPopulateFavourites(): MutableSet<NodeInfo> {
+    fun getOrPopulateFavourites(context: Context): MutableSet<NodeInfo> {
         val newSet = favouritesNodes.value ?: mutableSetOf()
         if (newSet.isEmpty()) {
-            for (node in NetworkNodes.getNodes()) {
+            for (node in NetworkNodes.getNodes(context)) {
                 val nodeInfo = NodeInfo.fromString(node)
                 if (nodeInfo != null) {
                     nodeInfo.isFavourite = true
@@ -180,7 +180,7 @@ class NodeViewModel @Inject constructor(
     fun asyncFindBestNode(context: Context,vararg params: Int?): LiveData<NodeInfo?> {
         return liveData {
 
-            val favourites: Set<NodeInfo> =  getOrPopulateFavourites()
+            val favourites: Set<NodeInfo> =  getOrPopulateFavourites(context)
             var selectedNode: NodeInfo?
             if (params[0] == findbest) {
                 selectedNode = autoSelect(favourites)

@@ -18,6 +18,8 @@ import com.thoughtcrimes.securesms.crypto.IdentityKeyUtil
 import com.thoughtcrimes.securesms.permissions.Permissions
 import com.thoughtcrimes.securesms.service.KeyCachingService
 import com.thoughtcrimes.securesms.util.UiModeUtilities
+import com.thoughtcrimes.securesms.util.nodelistasync.DownloadNodeListFileAsyncTask
+import com.thoughtcrimes.securesms.util.nodelistasync.NodeListConstants
 import com.thoughtcrimes.securesms.util.push
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityLandingBinding
@@ -51,6 +53,9 @@ class LandingActivity : AppCompatActivity() {
         ) {
             notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
+
+        val async = DownloadNodeListFileAsyncTask(this)
+        async.execute<String>(NodeListConstants.downloadNodeListUrl)
     }
 
     private val notificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {

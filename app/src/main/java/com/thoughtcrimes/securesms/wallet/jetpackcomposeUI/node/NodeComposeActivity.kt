@@ -6,8 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -21,11 +19,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -37,8 +33,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -78,7 +72,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.recyclerview.widget.DiffUtil
-import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.changeDaemon
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getNodeIsMainnet
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getNodeIsTested
@@ -88,9 +81,7 @@ import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
 import com.thoughtcrimes.securesms.compose_utils.BChatTheme
 import com.thoughtcrimes.securesms.compose_utils.BChatTypography
 import com.thoughtcrimes.securesms.compose_utils.DialogContainer
-import com.thoughtcrimes.securesms.compose_utils.PrimaryButton
 import com.thoughtcrimes.securesms.compose_utils.appColors
-import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.data.NetworkNodes.getNodes
 import com.thoughtcrimes.securesms.data.Node
 import com.thoughtcrimes.securesms.data.NodeInfo
@@ -101,10 +92,10 @@ import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.NodePinger
 import com.thoughtcrimes.securesms.util.UiMode
 import com.thoughtcrimes.securesms.util.UiModeUtilities
-import com.thoughtcrimes.securesms.wallet.jetpackcomposeUI.settings.WalletSettingViewModel
 import com.thoughtcrimes.securesms.wallet.node.DiffCallback
 import com.thoughtcrimes.securesms.wallet.node.Dispatcher
 import com.thoughtcrimes.securesms.wallet.node.NodeInfoAdapter
+import com.thoughtcrimes.securesms.wallet.node.activity.NodeActivity
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
 import kotlinx.coroutines.delay
@@ -114,6 +105,7 @@ import java.net.InetSocketAddress
 import java.net.UnknownHostException
 import java.util.Collections
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class NodeComposeActivity : ComponentActivity() {
@@ -166,7 +158,7 @@ class NodeComposeActivity : ComponentActivity() {
 fun NodeScreen(test:Boolean = false) {
 
     val nodeViewModel: NodeViewModel=hiltViewModel()
-    val context=LocalContext.current
+    var context=LocalContext.current
     val lifecycleOwner=LocalLifecycleOwner.current
 
     var nodesValue by remember {
@@ -275,7 +267,7 @@ fun NodeScreen(test:Boolean = false) {
         override fun doInBackground(vararg params: Int?): Boolean? {
             if (params[0] == restoreDefault) {
                 // true = restore defaults
-                for (node in getNodes()) {
+                for (node in getNodes(context)) {
                     val nodeInfo=NodeInfo.fromString(node)
                     if (nodeInfo != null) {
                         nodeInfo.isFavourite=true
@@ -414,14 +406,14 @@ fun NodeScreen(test:Boolean = false) {
         })
     }
 
-        Column(modifier=Modifier
-                .fillMaxSize()
-                .padding(vertical=10.dp)) {
+        Column(modifier= Modifier
+            .fillMaxSize()
+            .padding(vertical = 10.dp)) {
 
 
-            Column(modifier =Modifier
-                    .fillMaxWidth()
-                    .weight(1f)) {
+            Column(modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)) {
 
 
             AnimatedContent(targetState=isVisible, label="NodeList",
@@ -432,22 +424,22 @@ fun NodeScreen(test:Boolean = false) {
 
                     ) {
                         itemsIndexed(data.toMutableList()) { index, item ->
-                            Card(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.editTextBackground), border=BorderStroke(width=2.dp, color=if (item.isSelected) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.editTextBackground), shape=RoundedCornerShape(16.dp), elevation=CardDefaults.cardElevation(defaultElevation=0.dp), modifier=Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal=16.dp)
-                                    .combinedClickable(
-                                            onClick={
-                                                selectedItemIndex=index
-                                                showChangeNodePopup=true
+                            Card(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.editTextBackground), border=BorderStroke(width=2.dp, color=if (item.isSelected) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.editTextBackground), shape=RoundedCornerShape(16.dp), elevation=CardDefaults.cardElevation(defaultElevation=0.dp), modifier= Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                                .combinedClickable(
+                                    onClick = {
+                                        selectedItemIndex = index
+                                        showChangeNodePopup = true
 
-                                            },
-                                            onLongClick={
-                                                selectedItemIndex=index
-                                                showAddNodeEdit=true
-                                                showAddNode=true
+                                    },
+                                    onLongClick = {
+                                        selectedItemIndex = index
+                                        showAddNodeEdit = true
+                                        showAddNode = true
 
-                                            },
-                                    )) {
+                                    },
+                                )) {
                                 nodeName=item.name
                                 nodeAddress=item.address
 
@@ -456,9 +448,9 @@ fun NodeScreen(test:Boolean = false) {
 
                                     )
 
-                                    Column(horizontalAlignment=Alignment.Start, verticalArrangement=Arrangement.Center, modifier=Modifier
-                                            .padding(vertical=10.dp, horizontal=20.dp)
-                                            .weight(0.7f)) {
+                                    Column(horizontalAlignment=Alignment.Start, verticalArrangement=Arrangement.Center, modifier= Modifier
+                                        .padding(vertical = 10.dp, horizontal = 20.dp)
+                                        .weight(0.7f)) {
                                         if (item.isTested) {
                                             if (item.isValid) {
                                                 errorAction=false
@@ -493,9 +485,9 @@ fun NodeScreen(test:Boolean = false) {
 
                 verticalArrangement=Arrangement.Bottom, horizontalAlignment=Alignment.CenterHorizontally, modifier=Modifier.fillMaxWidth()) {
 
-                Row(modifier=Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)) {
+                Row(modifier= Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)) {
                     Button(onClick={
                         showRefreshNodePopup=true
                     }, colors=ButtonDefaults.buttonColors(containerColor=MaterialTheme.appColors.searchBackground), modifier=Modifier.weight(1f)) {
@@ -525,9 +517,9 @@ fun RefreshNodePopup(onDismiss: () -> Unit,onCallRefresh: () -> Unit) {
     ) {
 
         OutlinedCard(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.dialogBackground), elevation=CardDefaults.cardElevation(defaultElevation=4.dp), modifier=Modifier.fillMaxWidth()) {
-            Column(horizontalAlignment=Alignment.CenterHorizontally, verticalArrangement=Arrangement.Center, modifier=Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)) {
+            Column(horizontalAlignment=Alignment.CenterHorizontally, verticalArrangement=Arrangement.Center, modifier= Modifier
+                .fillMaxWidth()
+                .padding(10.dp)) {
 
                 Text(
                     text=stringResource(id=R.string.refresh_node_alert),
@@ -539,9 +531,9 @@ fun RefreshNodePopup(onDismiss: () -> Unit,onCallRefresh: () -> Unit) {
                     modifier=Modifier.padding(vertical=20.dp, horizontal=40.dp))
 
                 Row(
-                    modifier=Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
+                    modifier= Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
                 ) {
                     Button(
                         onClick={ onDismiss() },
@@ -825,13 +817,13 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
         OutlinedCard(
                 colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.dialogBackground),
                 elevation=CardDefaults.cardElevation(defaultElevation=4.dp)) {
-            Column(verticalArrangement=Arrangement.Center, modifier=Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)) {
+            Column(verticalArrangement=Arrangement.Center, modifier= Modifier
+                .fillMaxWidth()
+                .padding(10.dp)) {
 
-                Text(text= stringResource(id = R.string.node_fab_add), modifier=Modifier
-                        .fillMaxWidth()
-                        .padding(top=10.dp, bottom=5.dp, start=10.dp),
+                Text(text= stringResource(id = R.string.node_fab_add), modifier= Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp, bottom = 5.dp, start = 10.dp),
                         style=MaterialTheme.typography.bodyLarge.copy(
                                 fontSize=18.sp,
                                 fontWeight=FontWeight(700),
@@ -866,14 +858,14 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                                 color=MaterialTheme.appColors.textColor,
                                 fontSize=13.sp,
                                 fontWeight=FontWeight(400)),
-                        modifier=Modifier
-                                .fillMaxWidth()
-                                .padding(10.dp)
-                                .border(
-                                        1.dp,
-                                        MaterialTheme.appColors.textFiledBorderColor,
-                                        shape=RoundedCornerShape(12.dp)
-                                )
+                        modifier= Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp)
+                            .border(
+                                1.dp,
+                                MaterialTheme.appColors.textFiledBorderColor,
+                                shape = RoundedCornerShape(12.dp)
+                            )
                 )
                 if (nodeAddressErrorAction) {
                     Text(
@@ -918,14 +910,14 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                                 color=MaterialTheme.appColors.textColor,
                                 fontSize=13.sp,
                                 fontWeight=FontWeight(400)),
-                        modifier=Modifier
-                                .fillMaxWidth()
-                                .padding(10.dp)
-                                .border(
-                                        1.dp,
-                                        MaterialTheme.appColors.textFiledBorderColor,
-                                        shape=RoundedCornerShape(12.dp)
-                                ),
+                        modifier= Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp)
+                            .border(
+                                1.dp,
+                                MaterialTheme.appColors.textFiledBorderColor,
+                                shape = RoundedCornerShape(12.dp)
+                            ),
                 )
                 if (nodePortErrorAction) {
                     Text(
@@ -949,13 +941,13 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                 }, onValueChange={
                     nodeName=it
 
-                }, modifier=Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
-                        .border(
-                                1.dp, MaterialTheme.appColors.textFiledBorderColor,
-                                shape=RoundedCornerShape(12.dp)
-                        ),
+                }, modifier= Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
+                    .border(
+                        1.dp, MaterialTheme.appColors.textFiledBorderColor,
+                        shape = RoundedCornerShape(12.dp)
+                    ),
                         singleLine = true,
                         colors=TextFieldDefaults.colors(
                                 unfocusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
@@ -979,13 +971,13 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                 }, onValueChange={
                     nodeUserName=it
 
-                }, modifier=Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
-                        .border(
-                                1.dp, MaterialTheme.appColors.textFiledBorderColor,
-                                shape=RoundedCornerShape(12.dp)
-                        ),
+                }, modifier= Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
+                    .border(
+                        1.dp, MaterialTheme.appColors.textFiledBorderColor,
+                        shape = RoundedCornerShape(12.dp)
+                    ),
                         singleLine = true,
                         colors=TextFieldDefaults.colors(
                                 unfocusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
@@ -1009,13 +1001,13 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                 }, onValueChange={
                     nodePassword=it
 
-                }, modifier=Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
-                        .border(
-                                1.dp, MaterialTheme.appColors.textFiledBorderColor,
-                                shape=RoundedCornerShape(12.dp)
-                        ),
+                }, modifier= Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
+                    .border(
+                        1.dp, MaterialTheme.appColors.textFiledBorderColor,
+                        shape = RoundedCornerShape(12.dp)
+                    ),
                         singleLine = true,
                         colors=TextFieldDefaults.colors(
                                 unfocusedContainerColor=MaterialTheme.appColors.beldexAddressBackground,
@@ -1069,9 +1061,9 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                     }
                     if(testProgressAction) {
                         CircularProgressIndicator(
-                                modifier=Modifier
-                                        .height(16.dp)
-                                        .width(16.dp),
+                                modifier= Modifier
+                                    .height(16.dp)
+                                    .width(16.dp),
                                 color=MaterialTheme.appColors.primaryButtonColor,
                                 strokeWidth=2.dp
                         )
@@ -1112,9 +1104,9 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                 }
 
                 Row(
-                        modifier=Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp)
+                        modifier= Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
                 ) {
                     Button(
                             onClick={ onDismiss() },
@@ -1178,9 +1170,9 @@ fun SwitchNodePopUp(onDismiss: () -> Unit, nodeViewModel: NodeViewModel, nodeInf
     ) {
 
         OutlinedCard(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.dialogBackground), elevation=CardDefaults.cardElevation(defaultElevation=4.dp), modifier=Modifier.fillMaxWidth()) {
-            Column(horizontalAlignment=Alignment.CenterHorizontally, verticalArrangement=Arrangement.Center, modifier=Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)) {
+            Column(horizontalAlignment=Alignment.CenterHorizontally, verticalArrangement=Arrangement.Center, modifier= Modifier
+                .fillMaxWidth()
+                .padding(10.dp)) {
 
                 Text(
                         text=stringResource(id=R.string.switch_node_alert),
@@ -1192,9 +1184,9 @@ fun SwitchNodePopUp(onDismiss: () -> Unit, nodeViewModel: NodeViewModel, nodeInf
                         modifier=Modifier.padding(vertical=20.dp, horizontal=40.dp))
 
                 Row(
-                        modifier=Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp)
+                        modifier= Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
                 ) {
                     Button(
                             onClick={ onDismiss() },
@@ -1281,9 +1273,9 @@ private fun NodeScreenContainer(
     ) {
         Row(
                 verticalAlignment=Alignment.CenterVertically,
-                modifier=Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
+                modifier= Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
         ) {
             Icon(
                     painterResource(id = R.drawable.ic_back_arrow),
@@ -1315,9 +1307,9 @@ private fun NodeScreenContainer(
 
         if (wrapInCard) {
             CardContainer(
-                    modifier=Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
+                    modifier= Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
             ) {
                 content()
             }

@@ -888,8 +888,12 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         return favouriteNodes.toHashSet()
     }
 
-    override fun getOrPopulateFavourites(): MutableSet<NodeInfo> {
-        return viewModel.getOrPopulateFavourites()
+    override fun getOrPopulateFavourites(context: Context): MutableSet<NodeInfo> {
+        return viewModel.getOrPopulateFavourites(context)
+    }
+
+    override fun getOrPopulateFavouritesRemoteNodeList(context: Context): MutableSet<NodeInfo> {
+        return viewModel.getOrPopulateFavouritesRemoteNodeList(context)
     }
 
     override fun setFavouriteNodes(nodes: MutableCollection<NodeInfo>?) {
@@ -1594,7 +1598,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }
 
         override fun doInBackground(vararg params: Int?): NodeInfo? {
-            val favourites: Set<NodeInfo?> = orPopulateFavourites
+            val favourites: Set<NodeInfo?> = getOrPopulateFavourites(this@HomeActivity)
             var selectedNode: NodeInfo?
             if (params[0] == FIND_BEST) {
                 selectedNode = autoselect(favourites)

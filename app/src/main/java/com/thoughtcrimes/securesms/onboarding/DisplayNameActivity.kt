@@ -1,5 +1,6 @@
 package com.thoughtcrimes.securesms.onboarding
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -173,9 +174,9 @@ class DisplayNameActivity : BaseActionBarActivity() {
         }
     }
 
-    fun getOrPopulateFavourites(): Set<NodeInfo?> {
+    fun getOrPopulateFavourites(context: Context): Set<NodeInfo?> {
         if (favouriteNodes.isEmpty()) {
-            for (node in NetworkNodes.getNodes()) {
+            for (node in NetworkNodes.getNodes(context)) {
                 val nodeInfo = NodeInfo.fromString(node)
                 if (nodeInfo != null) {
                     nodeInfo.isFavourite = true
@@ -253,7 +254,7 @@ class DisplayNameActivity : BaseActionBarActivity() {
         }
 
         override fun doInBackground(vararg params: Int?): NodeInfo? {
-            val favourites: Set<NodeInfo?> = displayNameActivity.getOrPopulateFavourites()
+            val favourites: Set<NodeInfo?> = displayNameActivity.getOrPopulateFavourites(displayNameActivity)
 
             var selectedNode: NodeInfo?
             if (params[0] == FIND_BEST) {

@@ -1192,8 +1192,10 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         val deleteConversation = ConversationActionDialog()
         deleteConversation.apply {
             arguments = Bundle().apply {
+                putSerializable(ConversationActionDialog.EXTRA_THREAD_RECORD, thread)
                 putString(ConversationActionDialog.EXTRA_ARGUMENT_1, message)
             }
+            setListener(this@HomeFragment)
         }
         deleteConversation.show(childFragmentManager, ConversationActionDialog.TAG)
     }
@@ -1755,6 +1757,27 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                     val index = data as Int
                     DatabaseComponent.get(requireActivity()).recipientDatabase().setNotifyType(it.recipient, index.toString().toInt())
                     binding.recyclerView.adapter?.notifyDataSetChanged()
+                }
+            }
+            HomeDialogType.BlockUser -> {
+                threadRecord?.let {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        recipientDatabase.setBlocked(it.recipient, true)
+                        withContext(Dispatchers.Main) {
+                            binding.recyclerView.adapter!!.notifyDataSetChanged()
+                        }
+                    }
+                }
+
+            }
+            HomeDialogType.UnblockUser -> {
+                threadRecord?.let {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        recipientDatabase.setBlocked(it.recipient, false)
+                        withContext(Dispatchers.Main) {
+                            binding.recyclerView.adapter!!.notifyDataSetChanged()
+                        }
+                    }
                 }
             }
             else -> Unit

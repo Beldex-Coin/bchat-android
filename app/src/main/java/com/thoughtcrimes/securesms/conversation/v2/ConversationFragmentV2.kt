@@ -2662,7 +2662,19 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                         binding.closeSearch.visibility = View.VISIBLE
                         binding.search.visibility = View.GONE
                         binding.noMatchesFoundTextview.visibility = View.GONE
+                        if(binding.searchQuery.text?.isEmpty() == true){
+                            binding.noMatchesFoundTextview.visibility = View.GONE
+                            binding.closeSearch.visibility = View.GONE
+                            binding.searchDown.visibility = View.GONE
+                            binding.searchUp.visibility = View.GONE
+                            binding.searchClose.visibility = View.VISIBLE
+                        }
                     } else {
+                        if(binding.searchQuery.text?.isEmpty() == true){
+                            binding.noMatchesFoundTextview.visibility = View.GONE
+                            binding.closeSearch.visibility = View.GONE
+                            binding.searchClose.visibility = View.VISIBLE
+                        }
                         binding.searchUp.visibility = View.GONE
                         binding.searchDown.visibility = View.GONE
                         binding.searchProgress.visibility = View.GONE
@@ -3775,6 +3787,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     binding.searchUp.visibility = View.GONE
                     binding.searchDown.visibility = View.GONE
                     binding.searchClose.visibility = View.VISIBLE
+                    binding.noMatchesFoundTextview.visibility = View.GONE
                     adapter.onSearchQueryUpdated(p0.toString())
                 }
             }

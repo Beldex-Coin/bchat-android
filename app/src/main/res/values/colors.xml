@@ -301,4 +301,5 @@
     <color name="cancel_background">#282836</color>
     <color name="message_request_view_border">#4B4B64</color>
     <color name="incoming_message_search_query">#4B4B64</color>
+    <color name="community_guidelines_background">#11111A</color>
 </resources>

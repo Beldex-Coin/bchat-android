@@ -1,53 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/cell_background"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="@dimen/medium_spacing"
+    app:cardBackgroundColor="@color/community_guidelines_background"
+    app:cardCornerRadius="36dp"
+    app:strokeColor="@color/search_background_border"
+    android:layout_marginStart="@dimen/small_spacing"
+    android:layout_marginTop="@dimen/small_spacing"
+    android:layout_marginEnd="@dimen/small_spacing"
+    android:layout_marginBottom="@dimen/small_spacing"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
+        android:orientation="horizontal"
         android:paddingLeft="12dp"
         android:paddingTop="@dimen/small_spacing"
-        android:paddingBottom="@dimen/small_spacing"
-        android:orientation="horizontal">
+        android:paddingBottom="@dimen/small_spacing">
 
-        <View
-            android:layout_width="2dp"
-            android:layout_height="match_parent"
-            android:layout_marginRight="@dimen/small_spacing"
-            android:background="@color/accent" />
-
-        <LinearLayout
+        <ImageView
+            android:id="@+id/pin_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:src="@drawable/ic_pinned_dark" />
 
-            <TextView
-                android:id="@+id/titleTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/text"
-                android:textSize="15dp"
-                android:textStyle="bold"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:text="@string/open_group_guidelines_pinned_message" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/medium_spacing"
+            android:ellipsize="end"
+            android:fontFamily="@font/open_sans_regular"
+            android:maxWidth="260dp"
+            android:maxLines="1"
+            android:text="@string/open_group_guidelines_community_guidelines"
+            android:textColor="@color/text"
+            android:textSize="14sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:maxWidth="260dp"
-                android:layout_height="wrap_content"
-                android:textColor="@color/text"
-                android:textSize="15dp"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:text="@string/open_group_guidelines_community_guidelines" />
-
-        </LinearLayout>
 
         <View
             android:layout_width="0dp"
@@ -56,20 +49,16 @@
             android:minWidth="@dimen/small_spacing" />
 
         <Button
-            style="@style/Widget.Bchat.Button.Common.ProminentOutline"
             android:id="@+id/readButton"
+            style="@style/Widget.Bchat.Button.Common.ProminentFilled_AnswerCall"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/small_button_height"
             android:layout_marginRight="12dp"
+            android:text="@string/open_group_guidelines_read"
             android:textSize="15dp"
-            android:textStyle="normal"
-            android:text="@string/open_group_guidelines_read" />
+            android:textStyle="normal" />
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="?android:dividerHorizontal" />
 
-</LinearLayout>
+</com.google.android.material.card.MaterialCardView>

@@ -57,6 +57,7 @@ import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.thoughtcrimes.securesms.compose_utils.PrimaryButton
 import com.thoughtcrimes.securesms.my_account.ui.MyAccountViewModel
+import com.thoughtcrimes.securesms.wallet.CheckOnline
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
 import java.util.Locale
@@ -122,9 +123,9 @@ fun LinkYourBNSDialog(
         }
 
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+            modifier =Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
         ) {
             Text(
                 text = "Link BNS",
@@ -134,9 +135,9 @@ fun LinkYourBNSDialog(
                     fontWeight = FontWeight(700),
                     textAlign = TextAlign.Center
                 ),
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(bottom = 15.dp)
+                modifier =Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(bottom=15.dp)
             )
             Text(
                 text = "Your BChat ID",
@@ -146,17 +147,17 @@ fun LinkYourBNSDialog(
                     fontWeight = FontWeight(600),
                     textAlign = TextAlign.Start
                 ),
-                modifier = Modifier
-                    .align(Alignment.Start)
-                    .padding(start = 5.dp, bottom = 5.dp)
+                modifier =Modifier
+                        .align(Alignment.Start)
+                        .padding(start=5.dp, bottom=5.dp)
             )
             Card(
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.appColors.linkBnsAddressBackground
                 ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 10.dp)
+                modifier =Modifier
+                        .fillMaxWidth()
+                        .padding(bottom=10.dp)
             ) {
                 Text(
                     text = state.publicKey ?: "",
@@ -175,9 +176,9 @@ fun LinkYourBNSDialog(
                     fontWeight = FontWeight(600),
                     textAlign = TextAlign.Start
                 ),
-                modifier = Modifier
-                    .align(Alignment.Start)
-                    .padding(start = 5.dp, bottom = 5.dp)
+                modifier =Modifier
+                        .align(Alignment.Start)
+                        .padding(start=5.dp, bottom=5.dp)
             )
             TextField(
                 value = bnsName,
@@ -200,10 +201,11 @@ fun LinkYourBNSDialog(
                     imeAction = ImeAction.Done
                 ),
                 modifier = if(showErrorMessage) Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 15.dp).border(1.dp, color = Color.Red, shape = RoundedCornerShape(16.dp)) else Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 15.dp),
+                        .fillMaxWidth()
+                        .padding(bottom=15.dp)
+                        .border(1.dp, color=Color.Red, shape=RoundedCornerShape(16.dp)) else Modifier
+                        .fillMaxWidth()
+                        .padding(bottom=15.dp),
                 shape = RoundedCornerShape(16.dp),
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = MaterialTheme.appColors.contactCardBackground,
@@ -219,9 +221,9 @@ fun LinkYourBNSDialog(
                 )
             )
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 10.dp),
+                modifier =Modifier
+                        .fillMaxWidth()
+                        .padding(bottom=10.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 OutlinedButton(
@@ -253,13 +255,17 @@ fun LinkYourBNSDialog(
                 Spacer(modifier = Modifier.width(5.dp))
                 OutlinedButton(
                     onClick = {
-                        if(!isVerified) {
-                            if (verifyBNSName(bnsName) && state.publicKey.isNotEmpty()) {
-                                verifyBNS(bnsName, state.publicKey, context, result = {
-                                    isVerified = it
-                                    showErrorMessage = !it
-                                })
+                        if (CheckOnline.isOnline(context)) {
+                            if (!isVerified) {
+                                if (verifyBNSName(bnsName) && state.publicKey.isNotEmpty()) {
+                                    verifyBNS(bnsName, state.publicKey, context, result={
+                                        isVerified=it
+                                        showErrorMessage=!it
+                                    })
+                                }
                             }
+                        } else {
+                            Toast.makeText(context, context.getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
                         }
                     },
                     colors = ButtonDefaults.buttonColors(
@@ -286,10 +292,10 @@ fun LinkYourBNSDialog(
                             )
                     )
                     if(isVerified){
-                        Image(painter = painterResource(id = R.drawable.ic_message_sent), contentDescription = "Bns verified", modifier = Modifier
-                            .size(20.dp)
-                            .align(Alignment.CenterVertically)
-                            .padding(start = 5.dp))
+                        Image(painter = painterResource(id = R.drawable.ic_message_sent), contentDescription = "Bns verified", modifier =Modifier
+                                .size(20.dp)
+                                .align(Alignment.CenterVertically)
+                                .padding(start=5.dp))
                     }
                 }
             }
@@ -334,17 +340,14 @@ fun BnsNameVerifyingLoader(onDismiss: () -> Unit) {
     ) {
 
         OutlinedCard(colors = CardDefaults.cardColors(containerColor = MaterialTheme.appColors.dialogBackground), elevation = CardDefaults.cardElevation(defaultElevation = 4.dp), modifier = Modifier.fillMaxWidth()) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier = Modifier
-                .fillMaxWidth()
-                .padding(15.dp)) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier =Modifier
+                    .fillMaxWidth()
+                    .padding(15.dp)) {
                 Box(
                     contentAlignment= Alignment.Center,
-                    modifier = Modifier
-                        .size(55.dp)
-                        .background(
-                            color = MaterialTheme.appColors.circularProgressBarBackground,
-                            shape = CircleShape
-                        ),
+                    modifier =Modifier
+                            .size(55.dp)
+                            .background(color=MaterialTheme.appColors.circularProgressBarBackground, shape=CircleShape),
                 ){
                     CircularProgressIndicator(
                         modifier = Modifier.padding(12.dp),

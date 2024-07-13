@@ -1116,7 +1116,7 @@
     <string name="tx_item_transition_name" translatable="false">tx_transition_%1$s</string>
     <string name="tx_list_amount_negative" translatable="false">%1$s</string>
     <string name="tx_list_amount_positive" translatable="false">%1$s</string>
-    <string name="tx_list_fee" translatable="false">- Fee %1$s</string>
+    <string name="tx_list_fee" translatable="false">%1$s</string>
     <string name="tx_list_amount_failed" translatable="false">(%1$s)</string>
     <string name="tx_list_failed_text" translatable="false">failed</string>
     <string name="tx_details_notes" translatable="false">&lt;span style=\"background-color: #%1$s; color: #%2$s;\"&gt;&nbsp;%3$s&nbsp;&lt;/span&gt;%4$s</string>

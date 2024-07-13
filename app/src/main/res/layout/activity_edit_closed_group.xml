@@ -210,6 +210,8 @@
         android:layout_height="match_parent"
         android:background="#A4000000"
         android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true"
         android:alpha="0">
 
         <!--<com.github.ybq.android.spinkit.SpinKitView

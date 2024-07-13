@@ -3,6 +3,7 @@ package com.thoughtcrimes.securesms.groups
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -29,6 +30,7 @@ import com.thoughtcrimes.securesms.mms.GlideApp
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.fadeIn
 import com.thoughtcrimes.securesms.util.fadeOut
+import com.thoughtcrimes.securesms.wallet.CheckOnline
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityEditClosedGroupBinding
 import nl.komponents.kovenant.Promise
@@ -79,6 +81,7 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
         val addUsersRequestCode = 124
         val legacyGroupSizeLimit = 10
     }
+    var applyChangesButtonLastClickTime: Long = 0
 
     // region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?, isReady: Boolean) {
@@ -114,22 +117,35 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
 
 
         binding.lblGroupNameDisplay.text = originalName
-        binding.lblGroupNameEditImageview.setOnClickListener { isEditingName = true }
+        binding.lblGroupNameEditImageview.setOnClickListener {
+            if (checkIsOnline()) {
+                isEditingName = true
+            }
+        }
         binding.btnCancelGroupNameEdit.setOnClickListener{
             isEditingName = false
         }
         binding.btnSaveGroupNameEdit.setOnClickListener{
-            saveName()
+            if (checkIsOnline()) {
+                saveName()
+            }
         }
         binding.applyChangesBtn.setOnClickListener {
-            commitChanges()
+            if (checkIsOnline()) {
+                if (SystemClock.elapsedRealtime() - applyChangesButtonLastClickTime >= 1000) {
+                    applyChangesButtonLastClickTime = SystemClock.elapsedRealtime()
+                    commitChanges()
+                }
+            }
         }
 
         binding.edtGroupName.setImeActionLabel(getString(R.string.save), EditorInfo.IME_ACTION_DONE)
         binding.edtGroupName.setOnEditorActionListener { _, actionId, _ ->
             when (actionId) {
                 EditorInfo.IME_ACTION_DONE -> {
-                    saveName()
+                    if (checkIsOnline()) {
+                        saveName()
+                    }
                     return@setOnEditorActionListener true
                 }
                 else -> return@setOnEditorActionListener false
@@ -160,6 +176,19 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
                 updateMembers()
             }
         })
+    }
+
+    private fun checkIsOnline():Boolean{
+        return if(CheckOnline.isOnline(this)){
+            true
+        }else{
+            Toast.makeText(
+                this,
+                R.string.please_check_your_internet_connection,
+                Toast.LENGTH_SHORT
+            ).show()
+            false
+        }
     }
 
     override fun onPause() {
@@ -243,10 +272,12 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
 //            }.show()
         val bottomSheet = ClosedGroupEditingOptionsBottomSheet()
         bottomSheet.onRemoveTapped = {
-            if (zombies.contains(member)) zombies.remove(member)
-            else members.remove(member)
-            updateMembers()
-            bottomSheet.dismiss()
+            if (checkIsOnline()) {
+                if (zombies.contains(member)) zombies.remove(member)
+                else members.remove(member)
+                updateMembers()
+                bottomSheet.dismiss()
+            }
         }
         bottomSheet.show(supportFragmentManager, "GroupEditingOptionsBottomSheet")
     }

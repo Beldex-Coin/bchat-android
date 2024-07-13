@@ -72,7 +72,7 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
             profilePictureView.root.isLarge = true
             profilePictureView.root.update(recipient)
             nameTextViewContainer.visibility = View.VISIBLE
-            nameTextViewContainer.setOnClickListener {
+            nameEditIcon.setOnClickListener {
                 nameTextViewContainer.visibility = View.INVISIBLE
                 nameEditTextContainer.visibility = View.VISIBLE
                 nicknameEditText.text = null

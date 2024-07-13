@@ -67,6 +67,7 @@ import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.dms.PrivateChatScanQRCodeActivity
 import com.thoughtcrimes.securesms.my_account.ui.MyProfileActivity
+import com.thoughtcrimes.securesms.wallet.CheckOnline
 import io.beldex.bchat.R
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
@@ -212,15 +213,19 @@ fun CreatePrivateChatScreen() {
 
             PrimaryButton(
                 onClick = {
-                    if (bChatId.isEmpty()) {
-                        Toast.makeText(
-                            context,
-                            "Please enter BChat ID",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                    if (CheckOnline.isOnline(context)) {
+                        if (bChatId.isEmpty()) {
+                            Toast.makeText(
+                                    context,
+                                    "Please enter BChat ID",
+                                    Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            createPrivateChatIfPossible(bChatId, context)
+                            keyboardController?.hide()
+                        }
                     } else {
-                        createPrivateChatIfPossible(bChatId, context)
-                        keyboardController?.hide()
+                        Toast.makeText(context, context.getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
                     }
                 },
                 modifier =Modifier

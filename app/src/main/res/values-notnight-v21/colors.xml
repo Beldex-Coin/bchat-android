@@ -221,4 +221,5 @@
     <color name="cancel_background">#ECECEC</color>
     <color name="message_request_view_border">#A7A7BA</color>
     <color name="incoming_message_search_query">#EBEBEB</color>
+    <color name="community_guidelines_background">#EBEBEB</color>
 </resources>

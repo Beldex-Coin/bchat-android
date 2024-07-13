@@ -1233,7 +1233,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         AsyncTaskCoroutine<Int?, NodeInfo?>() {
 
         override fun doInBackground(vararg params: Int?): NodeInfo? {
-            val favourites: Set<NodeInfo?> = activityCallback!!.getOrPopulateFavouritesRemoteNodeList(requireActivity().applicationContext)
+            val favourites: Set<NodeInfo?> = activityCallback!!.getOrPopulateFavouritesRemoteNodeList(requireActivity())
             var selectedNode: NodeInfo?
             if (params[0] == findBest) {
                 selectedNode = autoselect(favourites)

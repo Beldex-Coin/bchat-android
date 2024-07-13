@@ -167,6 +167,7 @@ fun JoinSocialGroupScreen(
                     onEvent(OpenGroupEvents.GroupUrlChanged(url))
                 },
                 shape = RoundedCornerShape(16.dp),
+                singleLine = true,
                 trailingIcon = {
                     Image(
                         painter = painterResource(id = R.drawable.ic_qr_code),

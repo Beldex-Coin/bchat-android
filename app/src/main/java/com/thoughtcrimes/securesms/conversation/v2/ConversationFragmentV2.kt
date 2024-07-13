@@ -3055,8 +3055,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun endActionMode() {
-        actionMode?.finish()
-        actionMode = null
+        this.actionMode?.finish()
+        this.actionMode = null
     }
 
     private fun jumpToMessage(author: Address, timestamp: Long, onMessageNotFound: Runnable?) {
@@ -3827,13 +3827,19 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     viewModel.deleteLocally(message)
                 }
                 viewModel.setMessagesToDelete(null)
+                endActionMode()
             }
             else -> Unit
         }
     }
 
     override fun onCancel(dialogType: HomeDialogType, threadRecord: ThreadRecord?) {
-
+        when (dialogType) {
+            HomeDialogType.SelectedMessageDelete -> {
+                endActionMode()
+            }
+            else -> Unit
+        }
     }
 
     override fun onConfirmationWithData(

@@ -929,7 +929,7 @@ fun SendScreen(
                                         modifier = Modifier.menuAnchor(),
                                         shape = RoundedCornerShape(12.dp),
                                         readOnly = true,
-                                        value = selectedOptionText,
+                                        value = options[selectedFeePriority],
                                         onValueChange = {},
                                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                                         colors = ExposedDropdownMenuDefaults.textFieldColors(

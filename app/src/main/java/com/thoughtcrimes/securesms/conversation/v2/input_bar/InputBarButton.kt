@@ -49,12 +49,12 @@ class InputBarButton : RelativeLayout {
         if (hasOpaqueBackground) {
             R.color.input_bar_button_background_opaque
         } else if (isSendButton) {
-            R.color.accent
+            R.color.button_green
         } else if (isMessageBox){
             R.color.input_bar_background
         }
         else {
-            R.color.accent
+            R.color.button_green
             //R.color.input_bar_button_background
         }
     }
@@ -131,13 +131,13 @@ class InputBarButton : RelativeLayout {
     fun getIconID() = iconID
 
     fun expand() {
-        GlowViewUtilities.animateColorChange(context, imageViewContainer, colorID, R.color.accent)
+        GlowViewUtilities.animateColorChange(context, imageViewContainer, colorID, R.color.button_green)
         imageViewContainer.animateSizeChange(R.dimen.input_bar_button_collapsed_size, R.dimen.input_bar_button_expanded_size, animationDuration)
         animateImageViewContainerPositionChange(collapsedImageViewPosition, expandedImageViewPosition)
     }
 
     fun collapse() {
-        GlowViewUtilities.animateColorChange(context, imageViewContainer, R.color.accent, colorID)
+        GlowViewUtilities.animateColorChange(context, imageViewContainer, R.color.button_green, colorID)
         imageViewContainer.animateSizeChange(R.dimen.input_bar_button_expanded_size, R.dimen.input_bar_button_collapsed_size, animationDuration)
         animateImageViewContainerPositionChange(expandedImageViewPosition, collapsedImageViewPosition)
     }

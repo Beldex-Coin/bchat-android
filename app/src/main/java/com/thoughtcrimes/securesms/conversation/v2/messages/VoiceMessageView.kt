@@ -8,6 +8,8 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.widget.RelativeLayout
+import android.widget.SeekBar
+import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.core.view.isVisible
 import com.beldex.libbchat.messaging.sending_receiving.attachments.DatabaseAttachment
 import com.beldex.libbchat.utilities.TextSecurePreferences
@@ -117,6 +119,26 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
                 }
             }
         }
+
+        binding.seekbarAudio.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+            override fun onProgressChanged(
+                seekBar: SeekBar, progress: Int,
+                fromUser: Boolean
+            ) {}
+
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                val progressValue = if(seekBar.progress in 1..99){
+                    "0.${seekBar.progress}"
+                }else if(seekBar.progress >99){
+                    "1.0"
+                }else{
+                    "0.0"
+                }
+                player.seekTo(progressValue.toDouble())
+            }
+        })
     }
 
     override fun onPlayerStart(player: AudioSlidePlayer) {

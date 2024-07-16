@@ -839,8 +839,12 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         super.onResume()
         setupCallActionBar()
         if(TextSecurePreferences.isWalletActive(requireContext())) {
-            val async = DownloadNodeListFileInHomeScreenAsyncTask(requireActivity().applicationContext)
-            async.execute<String>(NodeListConstants.downloadNodeListUrl)
+            if(TextSecurePreferences.getRefreshDynamicNodesStatus(requireContext())) {
+                val async = DownloadNodeListFileInHomeScreenAsyncTask(requireActivity().applicationContext)
+                async.execute<String>(NodeListConstants.downloadNodeListUrl)
+            }else{
+                pingSelectedNode()
+            }
         }
         ApplicationContext.getInstance(requireActivity().applicationContext).messageNotifier.setHomeScreenVisible(false)
         if (TextSecurePreferences.getLocalNumber(requireActivity().applicationContext) == null) {
@@ -1331,6 +1335,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
 
         override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
+            TextSecurePreferences.setRefreshDynamicNodesStatus(requireContext(), false)
             pingSelectedNode()
         }
     }

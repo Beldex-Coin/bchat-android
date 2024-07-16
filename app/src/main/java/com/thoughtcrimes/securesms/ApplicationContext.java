@@ -237,6 +237,7 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
 
     @Override
     public void onStart(@NonNull LifecycleOwner owner) {
+        TextSecurePreferences.setRefreshDynamicNodesStatus(this, true);
         isAppVisible = true;
         Log.i(TAG, "App is now visible.");
         KeyCachingService.onAppForegrounded(this);

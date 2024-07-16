@@ -19,6 +19,7 @@ import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.IS_MUTE_VID
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.LAST_VACUUM_TIME
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.PREF_DIALOG_CLICKED
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.PREF_DIALOG_IGNORED_COUNT
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.REFRESH_DYNAMIC_NODES
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.SHOWN_CALL_NOTIFICATION
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.SHOWN_CALL_WARNING
 import com.beldex.libsignal.utilities.Log
@@ -264,6 +265,8 @@ interface TextSecurePreferences {
     fun getIsLocalProfile(): Boolean
     fun setIsBNSHolder(status : String?)
     fun getIsBNSHolder(): String?
+    fun setRefreshDynamicNodesStatus(refresh : Boolean)
+    fun getRefreshDynamicNodesStatus():Boolean
 
 
     companion object {
@@ -382,6 +385,7 @@ interface TextSecurePreferences {
         const val PREF_DIALOG_IGNORED_COUNT = "promotion_dialog_ignored_count"
         const val IS_LOCAL_PROFILE = "is_local_profile"
         const val IS_BNS_HOLDER = "is_bns_holder"
+        const val REFRESH_DYNAMIC_NODES = "refresh_dynamic_nodes"
 
         @JvmStatic
         fun getLastConfigurationSyncTime(context: Context): Long {
@@ -1421,6 +1425,16 @@ interface TextSecurePreferences {
             return getStringPreference(context, IS_BNS_HOLDER, null)
         }
 
+        @JvmStatic
+        fun setRefreshDynamicNodesStatus(context: Context,refresh: Boolean) {
+            setBooleanPreference(context, REFRESH_DYNAMIC_NODES, refresh)
+        }
+        
+        @JvmStatic
+        fun getRefreshDynamicNodesStatus(context: Context):Boolean {
+            return getBooleanPreference(context, REFRESH_DYNAMIC_NODES, false)
+        }
+
     }
 }
 
@@ -2320,5 +2334,13 @@ class AppTextSecurePreferences @Inject constructor(
 
     override fun getIsBNSHolder() : String? {
         return getStringPreference(IS_BNS_HOLDER,null)
+    }
+
+    override fun setRefreshDynamicNodesStatus(refresh: Boolean) {
+        setBooleanPreference(REFRESH_DYNAMIC_NODES, refresh)
+    }
+
+    override fun getRefreshDynamicNodesStatus(): Boolean {
+        return getBooleanPreference(REFRESH_DYNAMIC_NODES, false)
     }
 }

@@ -2408,34 +2408,38 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            hideAttachmentContainer()
-            return false
-        } else if (item.itemId == R.id.menu_call) {
-            hideAttachmentContainer()
-            val recipient = viewModel.recipient.value ?: return false
-            if (recipient.isContactRecipient && recipient.isBlocked) {
-                unblock()
-            } else {
-                if (Helper.getPhoneStatePermission(requireActivity())) {
-                    if(Helper.getBlueToothStatePermission(requireActivity())) {
-                        isMenuCall()
-                    }
+        if(!binding.inputBarRecordingView.isTimerRunning) {
+            if (item.itemId == android.R.id.home) {
+                hideAttachmentContainer()
+                return false
+            } else if (item.itemId == R.id.menu_call) {
+                hideAttachmentContainer()
+                val recipient = viewModel.recipient.value ?: return false
+                if (recipient.isContactRecipient && recipient.isBlocked) {
+                    unblock()
                 } else {
-                    Timber.tag("Beldex").d("Permission not granted")
+                    if (Helper.getPhoneStatePermission(requireActivity())) {
+                        if (Helper.getBlueToothStatePermission(requireActivity())) {
+                            isMenuCall()
+                        }
+                    } else {
+                        Timber.tag("Beldex").d("Permission not granted")
+                    }
                 }
             }
+            return viewModel.recipient.value?.let { recipient ->
+                ConversationMenuHelper.onOptionItemSelected(
+                    requireActivity(),
+                    this,
+                    item,
+                    recipient,
+                    listenerCallback,
+                    childFragmentManager
+                )
+            } ?: false
+        }else{
+            return false
         }
-        return viewModel.recipient.value?.let { recipient ->
-            ConversationMenuHelper.onOptionItemSelected(
-                requireActivity(),
-                this,
-                item,
-                recipient,
-                listenerCallback,
-                childFragmentManager
-            )
-        } ?: false
     }
 
     private fun isMenuCall() {
@@ -2719,7 +2723,9 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             viewModel.threadId,
             requireActivity().applicationContext,
             this
-        ) { onOptionsItemSelected(it) }
+        ) {
+            onOptionsItemSelected(it)
+        }
     }
 
     private fun showOrHideInputIfNeeded() {

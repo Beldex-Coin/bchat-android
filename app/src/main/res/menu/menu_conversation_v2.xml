@@ -26,7 +26,7 @@
     <item
         android:title="@string/RecipientPreferenceActivity_unblock"
         android:id="@+id/menu_unblock"
-        android:icon="@drawable/ic_block"/>
+        android:icon="@drawable/ic_unblock"/>
 
     <item
         android:title="@string/MuteDialog_mute_notifications"

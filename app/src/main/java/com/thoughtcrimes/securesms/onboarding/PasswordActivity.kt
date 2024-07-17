@@ -82,7 +82,7 @@ class PasswordActivity : BaseActionBarActivity() {
                             }
                         }
                         ScreenContainer(
-                            title = stringResource(R.string.verify_pin),
+                            title = stringResource(R.string.verify_password),
                             onBackClick = {
                                 onBackPressed()
                             },

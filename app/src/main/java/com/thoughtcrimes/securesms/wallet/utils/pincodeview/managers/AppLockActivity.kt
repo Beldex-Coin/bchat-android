@@ -122,7 +122,18 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
                             }
                         }
                         ScreenContainer(
-                            title = stringResource(R.string.activity_wallet_password_page_title),
+                            title = when (state.step) {
+                                PinCodeSteps.EnterPin -> {
+                                    stringResource(R.string.create_pin)
+                                }
+                                PinCodeSteps.OldPin,
+                                PinCodeSteps.VerifyPin -> {
+                                    stringResource(R.string.verify_pin)
+                                }
+                                PinCodeSteps.ReEnterPin -> {
+                                    stringResource(R.string.create_pin)
+                                }
+                            },
                             onBackClick = {
                                 onBackPressed()
                             },
@@ -157,7 +168,7 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
                                                             }
                                                             finish()
                                                         } else {
-                                                            handleError(context.resources.getString(R.string.incorrect_password))
+                                                            handleError(context.resources.getString(R.string.incorrect_pin))
                                                         }
                                                     }
                                                 }
@@ -197,7 +208,7 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
                             mLockManager!!.appLock.setPasscode(state.newPin)
                             onPinCodeSuccess(3, this)
                         } else {
-                            onPinCodeError(getString(R.string.password_mismatch))
+                            onPinCodeError(getString(R.string.pin_mismatch))
                         }
                     }
                     else -> Unit
@@ -213,7 +224,7 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
                             handlePinCodeInput()
                             onPinCodeSuccess(2, this)
                         } else {
-                            onPinCodeError(getString(R.string.incorrect_password))
+                            onPinCodeError(getString(R.string.incorrect_pin))
                         }
                     }
                     PinCodeSteps.ReEnterPin -> {
@@ -223,7 +234,7 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
                             mLockManager!!.appLock.setPasscode(state.newPin)
                             onPinCodeSuccess(7, this)
                         } else {
-                            onPinCodeError(getString(R.string.password_mismatch))
+                            onPinCodeError(getString(R.string.pin_mismatch))
                         }
                     }
                     else -> Unit

@@ -1545,4 +1545,9 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="activity_edit_closed_group_group_name_same_name_error">Please enter a different name</string>
     <string name="edit_group_name">Edit Group Name</string>
     <string name="forward" translatable="false">Forward</string>
+    <string name="verify_password">Verify Password</string>
+    <string name="incorrect_pin">Incorrect PIN.</string>
+    <string name="pin_mismatch">Both PINs should be same.</string>
+    <string name="create_pin">Create PIN</string>
+    <string name="old_new_pin_same">New PIN should not be same as old PIN.</string>
 </resources>

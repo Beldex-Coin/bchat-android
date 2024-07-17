@@ -272,7 +272,7 @@ class PinCodeViewModel @Inject constructor(
                             )
                         }
                         viewModelScope.launch {
-                            _errorMessage.emit(resourceProvider.getString(R.string.old_new_password_same))
+                            _errorMessage.emit(resourceProvider.getString(R.string.old_new_pin_same))
                         }
                     } else {
                         _state.update {

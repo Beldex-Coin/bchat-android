@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.database.Cursor
+import android.util.Log
 import android.util.SparseArray
 import android.util.SparseBooleanArray
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.annotation.WorkerThread
+import androidx.compose.ui.text.toLowerCase
 import androidx.core.util.getOrDefault
 import androidx.core.util.set
 import androidx.lifecycle.LifecycleCoroutineScope
@@ -32,6 +34,7 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class ConversationAdapter(context: Context, cursor: Cursor, private val onItemPress: (MessageRecord, Int, VisibleMessageView, MotionEvent) -> Unit,
                           private val onItemSwipeToReply: (MessageRecord, Int) -> Unit, private val onItemLongPress: (MessageRecord, Int) -> Unit,
@@ -229,6 +232,17 @@ class ConversationAdapter(context: Context, cursor: Cursor, private val onItemPr
 
     fun onSearchQueryUpdated(query: String?) {
         this.searchQuery = query
-        notifyDataSetChanged()
+        val cursor = this.cursor
+        if(!query.isNullOrEmpty() && cursor !=null && isActiveCursor) {
+            for (i in 0 until itemCount) {
+                cursor.moveToPosition(i)
+                val message = messageDB.readerFor(cursor).current
+                if (message.body.lowercase(Locale.US).contains(searchQuery.toString().lowercase(Locale.US))) {
+                    notifyItemChanged(i)
+                }
+            }
+        }else{
+            notifyDataSetChanged()
+        }
     }
 }

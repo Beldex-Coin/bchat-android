@@ -154,9 +154,9 @@ fun CreateSecretGroup(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Done
                     ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
+                    modifier =Modifier
+                            .fillMaxWidth()
+                            .padding(vertical=8.dp),
                     shape = RoundedCornerShape(16.dp),
                     colors = TextFieldDefaults.colors(
                         unfocusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
@@ -190,14 +190,14 @@ fun CreateSecretGroup(
                     imeAction = ImeAction.Done
                 ),
                 onValueChange = { onEvent(SecretGroupEvents.SearchQueryChanged(it)) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .border(
-                        width = 1.dp,
-                        color = MaterialTheme.appColors.textFiledBorderColor,
-                        shape = RoundedCornerShape(36.dp)
-                    ),
+                modifier =Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .border(
+                                width=1.dp,
+                                color=MaterialTheme.appColors.textFiledBorderColor,
+                                shape=RoundedCornerShape(36.dp)
+                        ),
                 shape = RoundedCornerShape(36.dp),
                 trailingIcon = {
                     Icon(
@@ -223,12 +223,12 @@ fun CreateSecretGroup(
             )
             LazyColumn(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        horizontal = 16.dp
-                    )
-                    .weight(1f)
+                modifier =Modifier
+                        .fillMaxWidth()
+                        .padding(
+                                horizontal=16.dp
+                        )
+                        .weight(1f)
             ) {
                 items(contacts) {
                     GroupContact(
@@ -248,12 +248,12 @@ fun CreateSecretGroup(
                 }
             }
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp)
-                    .background(
-                        color = MaterialTheme.appColors.createButtonBackground
-                    ),
+                modifier =Modifier
+                        .fillMaxWidth()
+                        .padding(top=8.dp)
+                        .background(
+                                color=MaterialTheme.appColors.createButtonBackground
+                        ),
                 contentAlignment = Alignment.Center,
             ) {
                 PrimaryButton(
@@ -275,9 +275,9 @@ fun CreateSecretGroup(
 
 
                     },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
+                    modifier =Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
                     shape = RoundedCornerShape(16.dp),
                     enabled = groupName.isNotEmpty(),
                     disabledContainerColor = MaterialTheme.appColors.disabledCreateButtonContainer,
@@ -300,14 +300,15 @@ fun CreateSecretGroup(
         }
         if (showLoader) {
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(color = MaterialTheme.appColors.loaderBackground.copy(alpha = 0.5f)).clickable(
-                        enabled = true,
-                        onClick = {
+                modifier =Modifier
+                        .fillMaxSize()
+                        .background(color=MaterialTheme.appColors.loaderBackground.copy(alpha=0.5f))
+                        .clickable(
+                                enabled=true,
+                                onClick={
 
-                        }
-                    ),
+                                }
+                        ),
                 contentAlignment = Alignment.Center
             ) {
                 LottieAnimation(
@@ -336,7 +337,11 @@ private fun GroupContact(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.appColors.contactCardBackground
         ),
-        modifier = modifier.padding(bottom = 10.dp)
+            modifier=modifier
+                    .padding(bottom=10.dp)
+                    .clickable {
+                        onSelectionChanged(recipient, !isSelected)
+                    }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,

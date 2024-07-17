@@ -266,7 +266,6 @@ fun NodeScreen(test:Boolean = false) {
             if (params[0] == restoreDefault) {
                 // true = restore defaults
                 nodeViewModel.favouritesNodes.value?.clear()
-                val selectedNode = nodeViewModel.getSelectedNodeId(context)
                 for (node in getNodes(context)) {
                     val nodeInfo=NodeInfo.fromString(node)
                     if (nodeInfo != null) {
@@ -274,12 +273,10 @@ fun NodeScreen(test:Boolean = false) {
                         nodeViewModel.favouritesNodes.value?.add(nodeInfo)
                     }
                 }
-                nodeViewModel.favouritesNodes.value?.toMutableList()?.get(0)?.isFavourite=true
-                execute {
-                    nodeViewModel.setNode(nodeViewModel.favouritesNodes.value?.toMutableList()?.get(0), true, context)
-                    nodeViewModel.favouritesNodes.value?.toMutableList()?.get(0)?.isSelecting=true
-                    changeDaemon(context, true)
-                }
+                nodeViewModel.favouritesNodes.value?.toMutableList()?.random()?.isFavourite=true
+                nodeViewModel.setNode(nodeViewModel.favouritesNodes.value?.toMutableList()?.random(), true, context)
+                nodeViewModel.favouritesNodes.value?.toMutableList()?.random()?.isSelecting=true
+                changeDaemon(context, true)
                 nodeViewModel.saveNodes(nodeViewModel.favouritesNodes.value!!)
                 NodePinger.execute(nodeViewModel.favouritesNodes.value, this)
                 return true

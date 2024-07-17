@@ -1,25 +1,15 @@
 package com.thoughtcrimes.securesms.home
 
 import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import app.cash.copper.flow.observeQuery
 import com.thoughtcrimes.securesms.data.NetworkNodes
 import com.thoughtcrimes.securesms.data.NodeInfo
-import com.thoughtcrimes.securesms.database.DatabaseContentProviders
 import com.thoughtcrimes.securesms.database.ThreadDatabase
-import com.thoughtcrimes.securesms.database.model.ThreadRecord
 import com.thoughtcrimes.securesms.util.Helper
 import com.thoughtcrimes.securesms.util.SharedPreferenceUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -87,7 +77,7 @@ class HomeViewModel @Inject constructor(
         return newSet
     }
 
-    fun getOrPopulateFavouritesRemoteNodeList(context: Context): MutableSet<NodeInfo> {
+    fun getOrPopulateFavouritesRemoteNodeList(context : Context, storeNodes : Boolean): MutableSet<NodeInfo> {
         val newSet = favouritesNodes.value ?: hashSetOf()
         newSet.clear()
         if (newSet.isEmpty()) {
@@ -98,7 +88,9 @@ class HomeViewModel @Inject constructor(
                     newSet.add(nodeInfo)
                 }
             }
-            sharedPreferenceUtil.saveFavourites(newSet)
+            if(storeNodes){
+                sharedPreferenceUtil.saveFavourites(newSet)
+            }
             _favouritesNodes.value = newSet
         }
         return newSet

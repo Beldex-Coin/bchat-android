@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.ComponentName
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.IntentSender
 import android.content.ServiceConnection
@@ -892,8 +891,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         return viewModel.getOrPopulateFavourites(context)
     }
 
-    override fun getOrPopulateFavouritesRemoteNodeList(context: Context): MutableSet<NodeInfo> {
-        return viewModel.getOrPopulateFavouritesRemoteNodeList(context)
+    override fun getOrPopulateFavouritesRemoteNodeList(context: Context, storeNodes: Boolean): MutableSet<NodeInfo> {
+        return viewModel.getOrPopulateFavouritesRemoteNodeList(context, storeNodes)
     }
 
     override fun setFavouriteNodes(nodes: MutableCollection<NodeInfo>?) {

@@ -843,7 +843,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                 val async = DownloadNodeListFileInHomeScreenAsyncTask(requireActivity().applicationContext)
                 async.execute<String>(NodeListConstants.downloadNodeListUrl)
             }else{
-                pingSelectedNode()
+                pingSelectedNode(false)
             }
         }
         ApplicationContext.getInstance(requireActivity().applicationContext).messageNotifier.setHomeScreenVisible(false)
@@ -1217,7 +1217,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         fun sendMessageToSupport()
         //Node Connection
         fun getFavouriteNodes(): MutableSet<NodeInfo>
-        fun getOrPopulateFavouritesRemoteNodeList(context: Context): MutableSet<NodeInfo>
+        fun getOrPopulateFavouritesRemoteNodeList(context: Context, storeNodes : Boolean): MutableSet<NodeInfo>
         fun getNode(): NodeInfo?
         fun setNode(node: NodeInfo?)
 
@@ -1229,17 +1229,17 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     fun dispatchTouchEvent() {
     }
 
-    private fun pingSelectedNode() {
+    private fun pingSelectedNode(storeNodes : Boolean) {
         val pingSelected = 0
         val findBest = 1
-        AsyncFindBestNode(pingSelected, findBest).execute<Int>(pingSelected)
+        AsyncFindBestNode(pingSelected, findBest,storeNodes).execute<Int>(pingSelected)
     }
 
-    inner class AsyncFindBestNode(private val pingSelected: Int, private val findBest: Int) :
+    inner class AsyncFindBestNode(private val pingSelected : Int, private val findBest : Int, private val storeNodes : Boolean) :
         AsyncTaskCoroutine<Int?, NodeInfo?>() {
 
         override fun doInBackground(vararg params: Int?): NodeInfo? {
-            val favourites: Set<NodeInfo?> = activityCallback!!.getOrPopulateFavouritesRemoteNodeList(requireActivity())
+            val favourites: Set<NodeInfo?> = activityCallback!!.getOrPopulateFavouritesRemoteNodeList(requireActivity(),storeNodes)
             var selectedNode: NodeInfo?
             if (params[0] == findBest) {
                 selectedNode = autoselect(favourites)
@@ -1336,7 +1336,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
             TextSecurePreferences.setRefreshDynamicNodesStatus(requireContext(), false)
-            pingSelectedNode()
+            pingSelectedNode(true)
         }
     }
 

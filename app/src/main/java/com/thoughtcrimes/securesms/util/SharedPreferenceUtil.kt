@@ -17,7 +17,7 @@ class SharedPreferenceUtil(
         const val PREF_DAEMON_MAINNET = "daemon_mainnet"
     }
 
-    private fun getPreference(prefKey: String, mode: Int): SharedPreferences {
+    fun getPreference(prefKey: String, mode: Int): SharedPreferences {
         return context.getSharedPreferences(prefKey, mode)
     }
 

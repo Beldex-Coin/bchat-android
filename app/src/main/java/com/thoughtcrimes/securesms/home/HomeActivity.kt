@@ -903,7 +903,16 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         return if(TextSecurePreferences.getDaemon(this)){
             TextSecurePreferences.changeDaemon(this,false)
             val selectedNodeId = sharedPreferenceUtil.getSelectedNodeId()
-            val nodeInfo = NodeInfo.fromString(selectedNodeId)
+            var nodeInfo = node
+            val storedNodes=sharedPreferenceUtil.getStoredNodes().all
+            for (nodeEntry in storedNodes.entries) {
+                if (nodeEntry != null) { // just in case, ignore possible future errors
+                    val nodeId=nodeEntry.value as String
+                    if (nodeId == selectedNodeId) {
+                        nodeInfo = NodeInfo.fromString(selectedNodeId)
+                    }
+                }
+            }
             nodeInfo
         }else {
             node

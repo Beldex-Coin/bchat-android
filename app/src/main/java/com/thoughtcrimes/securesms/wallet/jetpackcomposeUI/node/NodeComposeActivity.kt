@@ -155,7 +155,7 @@ class NodeComposeActivity : ComponentActivity() {
 fun NodeScreen(test:Boolean = false) {
 
     val nodeViewModel: NodeViewModel=hiltViewModel()
-    var context=LocalContext.current
+    val context=LocalContext.current
     val lifecycleOwner=LocalLifecycleOwner.current
 
     var nodesValue by remember {

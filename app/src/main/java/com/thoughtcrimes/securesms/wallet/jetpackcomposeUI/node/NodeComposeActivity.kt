@@ -56,6 +56,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
@@ -220,6 +221,14 @@ fun NodeScreen(test:Boolean = false) {
 
     var selectedItemIndex by remember {
         mutableIntStateOf(-1)
+    }
+
+    val configuration=LocalConfiguration.current
+    val screenWidth=configuration.screenWidthDp
+
+    val fontSize=when {
+        screenWidth < 360 -> 14.sp
+        else -> 16.sp
     }
 
     val scan=0
@@ -475,7 +484,7 @@ fun NodeScreen(test:Boolean = false) {
                                             nodeAddress=context.resources.getString(R.string.node_testing, item.hostAddress)
                                         }
 
-                                        Text(text=nodeName, style=BChatTypography.titleMedium.copy(color=if (item.isSelected) MaterialTheme.appColors.textColor else if (errorAction) MaterialTheme.appColors.errorMessageColor else MaterialTheme.appColors.primaryButtonColor, fontSize=16.sp, fontWeight=FontWeight(700)))
+                                        Text(text=nodeName, style=BChatTypography.titleMedium.copy(color=if (item.isSelected) MaterialTheme.appColors.textColor else if (errorAction) MaterialTheme.appColors.errorMessageColor else MaterialTheme.appColors.primaryButtonColor, fontSize=fontSize, fontWeight=FontWeight(700)))
                                         Text(text=nodeAddress, style=BChatTypography.titleSmall.copy(color=MaterialTheme.appColors.editTextColor, fontSize=12.sp, fontWeight=FontWeight(400)), modifier=Modifier.padding(vertical=5.dp))
                                     }
                                 }

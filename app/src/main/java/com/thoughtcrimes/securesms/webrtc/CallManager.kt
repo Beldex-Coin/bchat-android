@@ -2,9 +2,6 @@ package com.thoughtcrimes.securesms.webrtc
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Build
-import android.telephony.PhoneStateListener
-import android.telephony.TelephonyCallback
 import android.telephony.TelephonyManager
 import androidx.core.content.ContextCompat
 import com.beldex.libbchat.database.StorageProtocol
@@ -35,7 +32,6 @@ import java.nio.ByteBuffer
 import java.util.*
 import com.thoughtcrimes.securesms.webrtc.data.State as CallState
 import com.beldex.libsignal.protos.SignalServiceProtos.CallMessage.Type.ICE_CANDIDATES
-import com.thoughtcrimes.securesms.ApplicationContext
 import com.thoughtcrimes.securesms.service.WebRtcCallService
 import nl.komponents.kovenant.functional.bind
 
@@ -314,12 +310,12 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
 
                 MessageSender.sendNonDurably(
                     CallMessage(
-                    ICE_CANDIDATES,
-                    sdps = sdps,
-                    sdpMLineIndexes = sdpMLineIndexes,
-                    sdpMids = sdpMids,
-                    currentCallId
-                ), currentRecipient.address)
+                        ICE_CANDIDATES,
+                        sdps = sdps,
+                        sdpMLineIndexes = sdpMLineIndexes,
+                        sdpMids = sdpMids,
+                        currentCallId
+                    ), currentRecipient.address)
             }
         }
     }
@@ -736,7 +732,7 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
                 val intent = WebRtcCallService.cameraEnabled(context, true)
                 context.startService(intent)
             }
-         }
+        }
     }
 
     fun handleResponseMessage(recipient: Recipient, callId: UUID, answer: SessionDescription) {
@@ -815,42 +811,6 @@ class CallManager(context: Context, audioManager: AudioManagerCompat, private va
             MessageSender.sendNonDurably(CallMessage.offer(offer.description, callId), recipient.address)
         }
     }
-private fun isCallIdle(context: Context): Int {
-    var isCall = -1
-    val tm = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-    if (ContextCompat.checkSelfPermission(
-            context,
-            android.Manifest.permission.READ_PHONE_STATE
-        ) == PackageManager.PERMISSION_GRANTED
-    ) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            tm.registerTelephonyCallback(
-                context.mainExecutor,
-                object : TelephonyCallback(), TelephonyCallback.CallStateListener {
-                    override fun onCallStateChanged(state: Int) {
-                        when (state) {
-                            TelephonyManager.CALL_STATE_IDLE -> {
-                                isCall = 0
-                            }
-                        }
-                    }
-                })
-
-        } else {
-            tm.listen(object : PhoneStateListener() {
-                override fun onCallStateChanged(state: Int, phoneNumber: String?) {
-                    super.onCallStateChanged(state, phoneNumber)
-                    if (state == TelephonyManager.CALL_STATE_IDLE) {
-                        isCall = 0
-                    }
-                }
-            }, PhoneStateListener.LISTEN_CALL_STATE)
-        }
-    } else {
-        isCall = 0
-    }
-    return isCall
-}
 
     fun isInitiator(): Boolean = peerConnection?.isInitiator() == true
 

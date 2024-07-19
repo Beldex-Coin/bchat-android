@@ -25,8 +25,8 @@ dependencies {
 configurations.all {
     exclude module: "commons-logging"
 }
-def canonicalVersionCode = 44
-def canonicalVersionName = "2.5.0"
+def canonicalVersionCode = 46
+def canonicalVersionName = "2.5.1"
 
 //First Release Date 17-06-2022
 //Version Code 15 Version Name 1.0.0
@@ -117,6 +117,12 @@ def canonicalVersionName = "2.5.0"
 
 //30th  Release Data 22-03-2024
 //Version code 44 Version Name 2.5.0
+
+//31th Internal Test Release Data 22-03-2024
+//Version code 45 Version Name 2.5.0
+
+//32 Internal Test Release Data 27-05-2024
+//Version code 46 Version Name 2.5.1
 
 def postFixSize = 10
 def abiPostFix = ['armeabi-v7a' : 1,

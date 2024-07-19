@@ -2488,7 +2488,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                             })
 
                     } else {
-                        tm.listen(object : PhoneStateListener() {
+                        /*tm.listen(object : PhoneStateListener() {
                             override fun onCallStateChanged(state: Int, phoneNumber: String?) {
                                 super. onCallStateChanged(state, phoneNumber)
                                 when (state) {
@@ -2516,7 +2516,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                                     }
                                 }
                             }
-                        }, PhoneStateListener.LISTEN_CALL_STATE)
+                        }, PhoneStateListener.LISTEN_CALL_STATE)*/
+                        viewModel.recipient.value?.let { recipient ->
+                            call(requireActivity(), recipient)
+                        }
                     }
                 } else {
                     viewModel.recipient.value?.let { recipient ->

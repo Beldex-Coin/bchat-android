@@ -11,10 +11,7 @@ import android.media.AudioManager
 import android.os.Build
 import android.os.IBinder
 import android.os.ResultReceiver
-import android.telephony.PhoneStateListener
 import android.telephony.TelephonyManager
-import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.beldex.libbchat.messaging.calls.CallMessageType
@@ -30,7 +27,6 @@ import com.thoughtcrimes.securesms.util.CallNotificationBuilder.Companion.TYPE_I
 import com.thoughtcrimes.securesms.util.CallNotificationBuilder.Companion.TYPE_INCOMING_PRE_OFFER
 import com.thoughtcrimes.securesms.util.CallNotificationBuilder.Companion.TYPE_INCOMING_RINGING
 import com.thoughtcrimes.securesms.util.CallNotificationBuilder.Companion.TYPE_OUTGOING_RINGING
-import com.thoughtcrimes.securesms.util.CallNotificationBuilder.Companion.TYPE_SCREEN_ON
 import com.thoughtcrimes.securesms.webrtc.*
 import com.thoughtcrimes.securesms.webrtc.audio.OutgoingRinger
 import com.thoughtcrimes.securesms.webrtc.data.Event
@@ -198,12 +194,12 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
             this.startService(hangupIntent(this))
         }*//*
         this.startService(hangupIntent(this))
-    }*/
+    }
     private val hangupOnCallAnswered by lazy {
         HangUpRtcOnPstnCallAnsweredListener {
             ContextCompat.startForegroundService(this, hangupIntent(this))
         }
-    }
+    }*/
     private val hangupTelephonyCallback by lazy {
         HangUpRtcTelephonyCallback {
             this.startService(hangupIntent(this))
@@ -302,10 +298,15 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
         registerWiredHeadsetStateReceiver()
         registerWantsToAnswerReceiver()
         if (checkSelfPermission(android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            /*if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
                 getSystemService(TelephonyManager::class.java)
                     .listen(hangupOnCallAnswered, PhoneStateListener.LISTEN_CALL_STATE)
             } else {
+                Log.d("hangupTelephonyCallback","register")
+                getSystemService(TelephonyManager::class.java)
+                    .registerTelephonyCallback(serviceExecutor, hangupTelephonyCallback)
+            }*/
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 Log.d("hangupTelephonyCallback","register")
                 getSystemService(TelephonyManager::class.java)
                     .registerTelephonyCallback(serviceExecutor, hangupTelephonyCallback)
@@ -443,7 +444,6 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
             callManager.initializeAudioForCall()
             callManager.startOutgoingRinger(OutgoingRinger.Type.RINGING)
             setCallInProgressNotification(TYPE_OUTGOING_RINGING, callManager.recipient)
-            println("call message insert called 2 ")
             callManager.insertCallMessage(recipient.address.serialize(), CallMessageType.CALL_OUTGOING)
             scheduledTimeout = timeoutExecutor.schedule(TimeoutRunnable(callId, this), TIMEOUT_SECONDS, TimeUnit.SECONDS)
             callManager.setAudioEnabled(true)
@@ -691,7 +691,6 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
         catch(e: ForegroundServiceStartNotAllowedException) {
             Log.e(TAG, "Failed to setCallInProgressNotification as a foreground service for type: ${type}, trying to update instead")
         }
-
         if (!CallNotificationBuilder.areNotificationsEnabled(this) && type == TYPE_INCOMING_PRE_OFFER) {
             // start an intent for the fullscreen
             val foregroundIntent = Intent(this, WebRTCComposeActivity::class.java)
@@ -752,9 +751,13 @@ class WebRtcCallService: Service(), CallManager.WebRtcListener {
         if (checkSelfPermission(android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
             val telephonyManager = getSystemService(TelephonyManager::class.java)
             with(telephonyManager) {
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+                /*if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
                     this.listen(hangupOnCallAnswered, PhoneStateListener.LISTEN_NONE)
                 } else {
+                    Log.d("hangupTelephonyCallback","unregister")
+                    this.unregisterTelephonyCallback(hangupTelephonyCallback)
+                }*/
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     Log.d("hangupTelephonyCallback","unregister")
                     this.unregisterTelephonyCallback(hangupTelephonyCallback)
                 }

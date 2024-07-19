@@ -10,17 +10,13 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.AsyncTask
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorInt
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
@@ -30,13 +26,11 @@ import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.messaging.sending_receiving.leave
 import com.beldex.libbchat.utilities.ExpirationUtil
 import com.beldex.libbchat.utilities.GroupUtil.doubleDecodeGroupID
-import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.guava.Optional
 import com.beldex.libsignal.utilities.toHexString
 import com.thoughtcrimes.securesms.ShortcutLauncherActivity
-import com.thoughtcrimes.securesms.calls.WebRtcCallActivity
 import com.thoughtcrimes.securesms.compose_utils.ComposeDialogContainer
 import com.thoughtcrimes.securesms.compose_utils.DialogType
 import com.thoughtcrimes.securesms.contacts.SelectContactsActivity
@@ -44,8 +38,6 @@ import com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
 import com.thoughtcrimes.securesms.groups.EditClosedGroupActivity
 import com.thoughtcrimes.securesms.groups.EditClosedGroupActivity.Companion.groupIDKey
-import com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity
-import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.util.BitmapUtil
 import com.thoughtcrimes.securesms.util.getColorWithID
 import io.beldex.bchat.R
@@ -179,90 +171,6 @@ object ConversationMenuHelper {
             R.id.menu_unmute_notifications -> { unmute(context, thread) }
             R.id.menu_mute_notifications -> { mute(fragmentV2, thread) }
             R.id.menu_notification_settings -> { setNotifyType(context, thread, childFragmentManager) }
-          /*  R.id.menu_call -> {
-                *//*Hales63*//*
-                if (isOnline(context)) {
-                    Log.d("Beldex","Call state issue called")
-                    val tm = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-                    if (ContextCompat.checkSelfPermission(
-                            context,
-                            Manifest.permission.READ_PHONE_STATE
-                        ) == PackageManager.PERMISSION_GRANTED
-                    ) {
-                        Log.d("Beldex","Call state issue called 1")
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                            Log.d("Beldex","Call state issue called 2")
-                            tm.registerTelephonyCallback(
-                                context.mainExecutor,
-                                object : TelephonyCallback(), TelephonyCallback.CallStateListener {
-                                    override fun onCallStateChanged(state: Int) {
-                                        when (state) {
-                                            TelephonyManager.CALL_STATE_RINGING -> {
-                                                Log.d("Beldex","Call state issue called 3")
-                                                Toast.makeText(
-                                                    context,
-                                                    "BChat call won't allow ,Because your phone call ringing",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-                                            TelephonyManager.CALL_STATE_OFFHOOK -> {
-                                                Log.d("Beldex","Call state issue called 4")
-                                                Toast.makeText(
-                                                    context,
-                                                    "BChat call won't allow ,Because your phone call is on going",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-
-                                            }
-                                            TelephonyManager.CALL_STATE_IDLE -> {
-                                                Log.d("Beldex","Call state issue called 5")
-                                                call(context, thread)
-                                            }
-                                        }
-                                    }
-                                })
-
-                        } else {
-                            Log.d("Beldex","Call state issue called 6")
-                            tm.listen(object : PhoneStateListener() {
-                                override fun onCallStateChanged(state: Int, phoneNumber: String?) {
-                                    super.onCallStateChanged(state, phoneNumber)
-                                    when (state) {
-                                        TelephonyManager.CALL_STATE_RINGING -> {
-                                            Log.d("Beldex","Call state issue called 7")
-                                            Toast.makeText(
-                                                context,
-                                                "BChat call won't allow ,Because your phone call ringing",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                        }
-                                        TelephonyManager.CALL_STATE_OFFHOOK -> {
-                                            Log.d("Beldex","Call state issue called 8")
-                                            Toast.makeText(
-                                                context,
-                                                "BChat call won't allow ,Because your phone call is on going",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-
-                                        }
-                                        TelephonyManager.CALL_STATE_IDLE -> {
-                                            Log.d("Beldex","Call state issue called 9" )
-                                            call(context, thread)
-                                        }
-                                    }
-                                }
-                            }, PhoneStateListener.LISTEN_CALL_STATE)
-                        }
-                    }
-                    else{
-
-                        Log.d("Beldex","Call state issue called else")
-                    }
-
-                } else {
-                    Toast.makeText(context, "Check your Internet", Toast.LENGTH_SHORT).show()
-                }
-            }*/
         }
         return true
     }
@@ -298,48 +206,6 @@ object ConversationMenuHelper {
 //        searchViewModel!!.onSearchOpened()
         val listener = context as? ConversationMenuListener ?: return
         listener.openSearch()
-    }
-
-    //New Line
-    private fun call(context: Context, thread: Recipient) {
-
-        if (!TextSecurePreferences.isCallNotificationsEnabled(context)) {
-           /* AlertDialog.Builder(context)
-                .setTitle(R.string.ConversationActivity_call_title)
-                .setMessage(R.string.ConversationActivity_call_prompt)
-                .setPositiveButton(R.string.activity_settings_title) { _, _ ->
-                    val intent = Intent(context, PrivacySettingsActivity::class.java)
-                    context.startActivity(intent)
-                }
-                .setNeutralButton(R.string.cancel) { d, _ ->
-                    d.dismiss()
-                }.show()*/
-            //SteveJosephh22
-            val factory = LayoutInflater.from(context)
-            val callPermissionDialogView: View = factory.inflate(R.layout.call_permissions_dialog_box, null)
-            val callPermissionDialog = AlertDialog.Builder(context).create()
-            callPermissionDialog.setView(callPermissionDialogView)
-            callPermissionDialogView.findViewById<Button>(R.id.settingsDialogBoxButton).setOnClickListener{
-                val intent = Intent(context, PrivacySettingsActivity::class.java)
-                context.startActivity(intent)
-                callPermissionDialog.dismiss()
-            }
-            callPermissionDialogView.findViewById<Button>(R.id.cancelDialogBoxButton).setOnClickListener{
-                    callPermissionDialog.dismiss()
-            }
-            callPermissionDialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
-            callPermissionDialog.show()
-            return
-        }
-
-        val service = WebRtcCallService.createCall(context, thread)
-        context.startService(service)
-
-        val activity = Intent(context, WebRtcCallActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        }
-        context.startActivity(activity)
-
     }
 
     @SuppressLint("StaticFieldLeak")

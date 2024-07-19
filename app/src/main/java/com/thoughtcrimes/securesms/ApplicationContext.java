@@ -203,7 +203,6 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
                 ()-> KeyPairUtilities.INSTANCE.getUserED25519KeyPair(this));
         callMessageProcessor = new CallMessageProcessor(this, textSecurePreferences, ProcessLifecycleOwner.get().getLifecycle(), storage);
         Log.i(TAG, "onCreate()");
-        TextSecurePreferences.setRefreshDynamicNodesStatus(this, true);
         startKovenant();
         initializeSecurityProvider();
         initializeLogging();
@@ -238,6 +237,7 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
 
     @Override
     public void onStart(@NonNull LifecycleOwner owner) {
+        TextSecurePreferences.setRefreshDynamicNodesStatus(this, true);
         isAppVisible = true;
         Log.i(TAG, "App is now visible.");
         KeyCachingService.onAppForegrounded(this);

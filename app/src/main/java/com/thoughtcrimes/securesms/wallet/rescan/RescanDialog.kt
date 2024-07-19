@@ -120,6 +120,10 @@ class RescanDialog(val contextHomeActivity: HomeActivity, private val daemonBloc
         dates["2024-01"] = 2894560
         dates["2024-02"] = 2986700
         dates["2024-03"] = 3049909
+        dates["2024-04"] = 3130730
+        dates["2024-05"] = 3187670
+        dates["2024-06"] = 3317020
+        dates["2024-07"] = 3429750
 
         return ComposeView(requireContext()).apply {
             setContent {

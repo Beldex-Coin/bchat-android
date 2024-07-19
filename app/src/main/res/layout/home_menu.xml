@@ -149,7 +149,7 @@
             android:clickable="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            tools:text="BChat V2.2.2"
+            tools:text="BChat V2.6.0"
             android:padding="8dp"
             android:focusable="true" />
 

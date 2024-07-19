@@ -25,8 +25,8 @@ dependencies {
 configurations.all {
     exclude module: "commons-logging"
 }
-def canonicalVersionCode = 46
-def canonicalVersionName = "2.5.1"
+def canonicalVersionCode = 48
+def canonicalVersionName = "2.6.0"
 
 //First Release Date 17-06-2022
 //Version Code 15 Version Name 1.0.0
@@ -82,7 +82,7 @@ def canonicalVersionName = "2.5.1"
 //Eighteenth Release Date 31-03-2023
 //Version Code 32 Version Name 2.0.4
 
-//Nineteenth Release Data 06-07-2023
+//Nineteenth Release Date 06-07-2023
 //Version Code 33 Version Name 2.1.0
 
 //Twentieth Release Date 29-08-2023
@@ -91,38 +91,41 @@ def canonicalVersionName = "2.5.1"
 //Twenty-first Release Date 15-11-2023
 //Version Code 35 Version Name 2.2.0
 
-//Twenty-second Release Data 21-12-2023
+//Twenty-second Release Date 21-12-2023
 //Version code 36 Version Name 2.2.1
 
-//Twenty-third Release Data 03-01-2024
+//Twenty-third Release Date 03-01-2024
 //Version code 37 Version Name 2.2.2
 
-//Twenty-fourth Internal Test Release Data 29-01-2024
+//Twenty-fourth Internal Test Release Date 29-01-2024
 //Version code 38 Version Name 2.2.3
 
-//Twenty-fifth Release Data 30-01-2024 (Rejected)
+//Twenty-fifth Release Date 30-01-2024 (Rejected)
 //Version code 39 Version Name 2.3.0
 
-//Twenty-sixth Release Data 31-01-2024
+//Twenty-sixth Release Date 31-01-2024
 //Version code 40 Version Name 2.3.0
 
-//Twenty-seventh Release Data 22-02-2024
+//Twenty-seventh Release Date 22-02-2024
 //Version code 41 Version Name 2.4.0
 
-//Twenty-eight Internal Test Release Data 05-03-2024
+//Twenty-eight Internal Test Release Date 05-03-2024
 //Version code 42 Version Name 2.4.1
 
-//Twenty-ninth Test Release Data 22-03-2024
+//Twenty-ninth Test Release Date 22-03-2024
 //Version code 43 Version Name 2.5.0
 
-//30th  Release Data 22-03-2024
+//30th  Release Date 22-03-2024
 //Version code 44 Version Name 2.5.0
 
-//31th Internal Test Release Data 22-03-2024
+//31th Internal Test Release Date 22-03-2024
 //Version code 45 Version Name 2.5.0
 
-//32 Internal Test Release Data 27-05-2024
-//Version code 46 Version Name 2.5.1
+//32 Internal Test Release Date 27-05-2024
+//Version code 46,47 Version Name 2.5.1
+
+//33 Release Date 19-07-2024
+//Version code 48 Version Name 2.6.0
 
 def postFixSize = 10
 def abiPostFix = ['armeabi-v7a' : 1,

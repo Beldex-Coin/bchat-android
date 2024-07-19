@@ -368,7 +368,36 @@
       "title": "2.5.1",
       "descriptions": [
         {
-          "description":"- Updated call functionalities to adhere with google play's developer guidelines"
+          "description":"Updated call functionalities to adhere with google play's developer guidelines"
+        }
+      ]
+    },
+    {
+      "title": "2.6.0",
+      "descriptions": [
+        {
+          "description":"Revamped User experience"
+        },
+        {
+          "description":"User can link their BNS name and get verified badge"
+        },
+        {
+          "description":"Improved node connectivity for better synchronization"
+        },
+        {
+          "description":"Improved overall performance of the app"
+        },
+        {
+          "description":"Improved search functionality in home screen"
+        },
+        {
+          "description":"User can block a user on message request"
+        },
+        {
+          "description":"Fixed minor issues in social group"
+        },
+        {
+          "description":"Minor bug fixes"
         }
       ]
     }

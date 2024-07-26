@@ -10,7 +10,10 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import android.view.LayoutInflater
+import android.view.View
 import android.view.WindowManager
+import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.DialogFragment
 import androidx.preference.Preference
@@ -73,6 +76,11 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
 
     //New Line
     private fun setCall(isEnabled: Boolean): Void? {
+        if(isEnabled) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                fullScreenIntentPopup()
+            }
+        }
         (findPreference<Preference>(TextSecurePreferences.CALL_NOTIFICATIONS_ENABLED) as SwitchPreferenceCompat?)!!.isChecked =
             isEnabled
         if (isEnabled && !areNotificationsEnabled(requireActivity())) {
@@ -111,6 +119,24 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
         }
         return null
     }
+    private fun fullScreenIntentPopup() {
+        val factory=LayoutInflater.from(context)
+        val fullScreenIntentDialogView : View=factory.inflate(R.layout.full_screen_intent_dialog, null)
+        val fullScreenIntentDialog=AlertDialog.Builder(context).create()
+        fullScreenIntentDialog.window?.setBackgroundDrawableResource(R.color.transparent)
+        fullScreenIntentDialog.setView(fullScreenIntentDialogView)
+        val enableButton=fullScreenIntentDialogView.findViewById<Button>(R.id.fullScreenIntentEnableButton)
+        val cancelButton=fullScreenIntentDialogView.findViewById<Button>(R.id.fullScreenIntentCancelButton)
+        enableButton.setOnClickListener {
+            actionFullScreenIntent()
+            fullScreenIntentDialog.dismiss()
+        }
+        cancelButton.setOnClickListener {
+            fullScreenIntentDialog.dismiss()
+        }
+        fullScreenIntentDialog.show()
+    }
+
 
     //Hales63
     override fun onRequestPermissionsResult(
@@ -311,6 +337,23 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
                     Log.e("Beldex", "IllegalStateException $ex")
                 }
             }
+        }
+    }
+    private fun actionFullScreenIntent(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            if (!Settings.canDrawOverlays(context)) {
+                val intent = Intent(
+                        Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT,
+                        Uri.parse("package:${BuildConfig.APPLICATION_ID}")
+                )
+                startActivityForResult(intent, 123)
+            }
+        }
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 123) {
+            println("permission result code is $resultCode ")
         }
     }
 }

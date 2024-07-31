@@ -6,7 +6,7 @@
     android:background="@color/page_background"
     android:layout_height="match_parent">
 
-    <com.thoughtcrimes.securesms.components.camera.CameraView
+    <io.beldex.bchat.components.camera.CameraView
         android:id="@+id/cameraView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -19,7 +19,7 @@
         android:orientation="vertical"
         android:weightSum="3">
 
-        <com.thoughtcrimes.securesms.components.ShapeScrim
+        <io.beldex.bchat.components.ShapeScrim
             android:layout_weight="3"
             android:layout_width="match_parent"
             android:layout_height="0dp" />

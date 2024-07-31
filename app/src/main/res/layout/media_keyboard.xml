@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:parentTag="com.thoughtcrimes.securesms.components.emoji.MediaKeyboard">
+    tools:parentTag="io.beldex.bchat.components.emoji.MediaKeyboard">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -37,7 +37,7 @@
             app:layout_constraintStart_toEndOf="@id/media_keyboard_search"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.thoughtcrimes.securesms.components.RepeatableImageKey
+        <io.beldex.bchat.components.RepeatableImageKey
             android:id="@+id/media_keyboard_backspace"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
             app:layout_constraintBottom_toBottomOf="@id/media_keyboard_provider_tabs"
             tools:visibility="visible"/>
 
-        <com.thoughtcrimes.securesms.components.ControllableViewPager
+        <io.beldex.bchat.components.ControllableViewPager
             android:id="@+id/media_keyboard_pager"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -75,7 +75,7 @@
             app:layout_constraintEnd_toStartOf="@id/media_keyboard_add"
             tools:layout_height="40dp"/>
 
-        <com.thoughtcrimes.securesms.components.RepeatableImageKey
+        <io.beldex.bchat.components.RepeatableImageKey
             android:id="@+id/media_keyboard_backspace_backup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

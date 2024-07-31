@@ -5,7 +5,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        tools:context="com.thoughtcrimes.securesms.MediaOverviewActivity"
+        tools:context="io.beldex.bchat.MediaOverviewActivity"
         android:theme="@style/Theme.Bchat.DayNight.NoActionBar">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -34,7 +34,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <com.thoughtcrimes.securesms.components.ControllableTabLayout
+            <io.beldex.bchat.components.ControllableTabLayout
                 android:id="@+id/tab_layout"
                 style="@style/Widget.Bchat.TabLayout"
                 android:layout_width="match_parent"
@@ -42,7 +42,7 @@
                 android:layout_gravity="top"
                 app:tabIndicatorFullWidth="true"/>
 
-            <com.thoughtcrimes.securesms.components.ControllableViewPager
+            <io.beldex.bchat.components.ControllableViewPager
                 android:id="@+id/pager"
                 android:layout_width="match_parent"
                 android:background="@color/page_background"

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:background="@color/page_background"
-    tools:context="com.thoughtcrimes.securesms.wallet.TransactionDetails">
+    tools:context="io.beldex.bchat.wallet.TransactionDetails">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

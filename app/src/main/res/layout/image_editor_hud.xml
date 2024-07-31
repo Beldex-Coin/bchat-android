@@ -91,7 +91,7 @@
 
         </LinearLayout>
 
-        <com.thoughtcrimes.securesms.scribbles.widget.VerticalSlideColorPicker
+        <io.beldex.bchat.scribbles.widget.VerticalSlideColorPicker
             android:id="@+id/scribble_color_picker"
             android:layout_width="32dp"
             android:layout_height="250dp"

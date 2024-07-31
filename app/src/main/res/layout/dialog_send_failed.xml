@@ -7,7 +7,7 @@
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:elevation="4dp"
-    tools:context="com.thoughtcrimes.securesms.wallet.send.SendFailedDialog">
+    tools:context="io.beldex.bchat.wallet.send.SendFailedDialog">
 
     <TextView
         android:fontFamily="@font/open_sans_bold"

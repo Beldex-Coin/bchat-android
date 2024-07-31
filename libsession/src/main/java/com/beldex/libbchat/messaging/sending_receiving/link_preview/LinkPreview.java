@@ -3,13 +3,13 @@ package com.beldex.libbchat.messaging.sending_receiving.link_preview;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment;
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentId;
 import com.beldex.libbchat.messaging.sending_receiving.attachments.DatabaseAttachment;
 import com.beldex.libsignal.utilities.JsonUtil;
 import com.beldex.libsignal.utilities.guava.Optional;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.IOException;
 import java.util.Objects;

@@ -81,13 +81,13 @@
 
     <fragment
         android:id="@+id/contact_selection_list_fragment"
-        android:name="com.thoughtcrimes.securesms.contacts.ContactSelectionListFragment"
+        android:name="io.beldex.bchat.contacts.ContactSelectionListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/searchCardView" />
 
 
-    <com.thoughtcrimes.securesms.components.SearchToolbar
+    <io.beldex.bchat.components.SearchToolbar
         android:id="@+id/search_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

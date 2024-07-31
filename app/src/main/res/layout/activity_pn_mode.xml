@@ -31,7 +31,7 @@
             android:textColor="@color/text"
             android:text="@string/activity_pn_mode_explanation" />
 
-        <com.thoughtcrimes.securesms.util.PNModeView
+        <io.beldex.bchat.util.PNModeView
             android:id="@+id/fcmOptionView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -67,9 +67,9 @@
                 android:textStyle="bold"
                 android:text="@string/activity_pn_mode_recommended_option_tag" />
 
-        </com.thoughtcrimes.securesms.util.PNModeView>
+        </io.beldex.bchat.util.PNModeView>
 
-        <com.thoughtcrimes.securesms.util.PNModeView
+        <io.beldex.bchat.util.PNModeView
             android:id="@+id/backgroundPollingOptionView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -96,7 +96,7 @@
                 android:textColor="@color/text"
                 android:text="@string/activity_pn_mode_slow_mode_explanation" />
 
-        </com.thoughtcrimes.securesms.util.PNModeView>
+        </io.beldex.bchat.util.PNModeView>
 
         <Button
             style="@style/Widget.Bchat.Button.Common.ProminentFilled"

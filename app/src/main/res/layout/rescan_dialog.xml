@@ -11,9 +11,9 @@
     android:layout_height="0dp"
     android:background="@color/page_background"
     android:orientation="vertical"
-    tools:context="com.thoughtcrimes.securesms.wallet.rescan.RescanDialog">
+    tools:context="io.beldex.bchat.wallet.rescan.RescanDialog">
 
-    <com.thoughtcrimes.securesms.wallet.widget.Toolbar
+    <io.beldex.bchat.wallet.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"

@@ -6,19 +6,18 @@ import android.os.Parcelable;
 import androidx.annotation.Nullable;
 
 import com.beldex.libbchat.messaging.calls.CallMessageType;
+import com.beldex.libbchat.messaging.messages.visible.OpenGroupInvitation;
 import com.beldex.libbchat.messaging.messages.visible.Payment;
+import com.beldex.libbchat.messaging.messages.visible.VisibleMessage;
+import com.beldex.libbchat.messaging.utilities.UpdateMessageData;
+import com.beldex.libbchat.utilities.Address;
+import com.beldex.libbchat.utilities.GroupUtil;
 import com.beldex.libsignal.messages.SignalServiceGroup;
 import com.beldex.libsignal.utilities.guava.Optional;
 
-import com.beldex.libbchat.messaging.messages.visible.OpenGroupInvitation;
-import com.beldex.libbchat.messaging.messages.visible.VisibleMessage;
-import com.beldex.libbchat.utilities.Address;
-import com.beldex.libbchat.messaging.utilities.UpdateMessageData;
-import com.beldex.libbchat.utilities.GroupUtil;
-
 public class IncomingTextMessage implements Parcelable {
 
-  public static final Parcelable.Creator<IncomingTextMessage> CREATOR = new Parcelable.Creator<IncomingTextMessage>() {
+  public static final Creator<IncomingTextMessage> CREATOR = new Creator<IncomingTextMessage>() {
     @Override
     public IncomingTextMessage createFromParcel(Parcel in) {
       return new IncomingTextMessage(in);

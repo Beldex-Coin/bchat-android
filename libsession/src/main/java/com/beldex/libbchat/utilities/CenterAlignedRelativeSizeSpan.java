@@ -1,8 +1,9 @@
 package com.beldex.libbchat.utilities;
 
-import androidx.annotation.NonNull;
 import android.text.TextPaint;
 import android.text.style.MetricAffectingSpan;
+
+import androidx.annotation.NonNull;
 
 public class CenterAlignedRelativeSizeSpan extends MetricAffectingSpan {
   private final float relativeSize;

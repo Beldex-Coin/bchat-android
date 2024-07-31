@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:background="?attachment_type_selector_background">
 
-        <com.thoughtcrimes.securesms.components.RecentPhotoViewRail
+        <io.beldex.bchat.components.RecentPhotoViewRail
             android:id="@+id/recent_photos"
             android:layout_width="match_parent"
             android:layout_height="72dp"
@@ -45,7 +45,7 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <com.thoughtcrimes.securesms.components.CircleColorImageView
+                <io.beldex.bchat.components.CircleColorImageView
                     android:id="@+id/gallery_button"
                     android:layout_width="42dp"
                     android:layout_height="42dp"
@@ -69,7 +69,7 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <com.thoughtcrimes.securesms.components.CircleColorImageView
+                <io.beldex.bchat.components.CircleColorImageView
                     android:id="@+id/camera_button"
                     android:layout_width="42dp"
                     android:layout_height="42dp"
@@ -96,7 +96,7 @@
                 android:orientation="vertical"
                 android:visibility="gone">
 
-                <com.thoughtcrimes.securesms.components.CircleColorImageView
+                <io.beldex.bchat.components.CircleColorImageView
                     android:id="@+id/audio_button"
                     android:layout_width="42dp"
                     android:layout_height="42dp"
@@ -121,7 +121,7 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <com.thoughtcrimes.securesms.components.CircleColorImageView
+                <io.beldex.bchat.components.CircleColorImageView
                     android:id="@+id/document_button"
                     android:layout_width="42dp"
                     android:layout_height="42dp"
@@ -147,7 +147,7 @@
                 android:layout_weight="1"
                 android:visibility="gone">
 
-                <com.thoughtcrimes.securesms.components.CircleColorImageView
+                <io.beldex.bchat.components.CircleColorImageView
                     android:id="@+id/contact_button"
                     android:layout_width="42dp"
                     android:layout_height="42dp"
@@ -186,7 +186,7 @@
                 android:orientation="vertical"
                 android:visibility="invisible">
 
-                <com.thoughtcrimes.securesms.components.CircleColorImageView
+                <io.beldex.bchat.components.CircleColorImageView
                     android:id="@+id/location_button"
                     android:layout_width="42dp"
                     android:layout_height="42dp"
@@ -211,7 +211,7 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <com.thoughtcrimes.securesms.components.CircleColorImageView
+                <io.beldex.bchat.components.CircleColorImageView
                     android:id="@+id/giphy_button"
                     android:layout_width="42dp"
                     android:layout_height="42dp"
@@ -236,7 +236,7 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <com.thoughtcrimes.securesms.components.CircleColorImageView
+                <io.beldex.bchat.components.CircleColorImageView
                     android:id="@+id/close_button"
                     android:layout_width="42dp"
                     android:layout_height="42dp"

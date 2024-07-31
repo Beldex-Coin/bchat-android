@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/page_background"
-    tools:context="com.thoughtcrimes.securesms.applock.AppLockDetailsActivity">
+    tools:context="io.beldex.bchat.applock.AppLockDetailsActivity">
     <androidx.cardview.widget.CardView
         android:id="@+id/appLockDetailsChangePasswordCard"
         android:layout_width="match_parent"

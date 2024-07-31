@@ -3,8 +3,8 @@ package com.beldex.libbchat.messaging.messages.signal;
 import com.beldex.libbchat.messaging.messages.visible.OpenGroupInvitation;
 import com.beldex.libbchat.messaging.messages.visible.Payment;
 import com.beldex.libbchat.messaging.messages.visible.VisibleMessage;
-import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libbchat.messaging.utilities.UpdateMessageData;
+import com.beldex.libbchat.utilities.recipients.Recipient;
 
 public class OutgoingTextMessage {
   private final Recipient recipient;

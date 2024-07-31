@@ -13,9 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.StyleRes;
 import androidx.appcompat.view.ContextThemeWrapper;
 
-import com.beldex.libsignal.utilities.Log;
-
 import com.beldex.libbchat.R;
+import com.beldex.libsignal.utilities.Log;
 
 public class ThemeUtil {
   private static final String TAG = ThemeUtil.class.getSimpleName();

@@ -3,11 +3,11 @@ package com.beldex.libbchat.messaging.messages.signal;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.beldex.libbchat.utilities.DistributionTypes;
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment;
-import com.beldex.libbchat.utilities.Contact;
 import com.beldex.libbchat.messaging.sending_receiving.link_preview.LinkPreview;
 import com.beldex.libbchat.messaging.sending_receiving.quotes.QuoteModel;
+import com.beldex.libbchat.utilities.Contact;
+import com.beldex.libbchat.utilities.DistributionTypes;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 
 import java.util.LinkedList;

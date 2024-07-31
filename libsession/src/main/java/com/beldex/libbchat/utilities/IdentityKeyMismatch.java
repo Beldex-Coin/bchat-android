@@ -1,7 +1,9 @@
 package com.beldex.libbchat.utilities;
 
+import com.beldex.libsignal.crypto.IdentityKey;
+import com.beldex.libsignal.exceptions.InvalidKeyException;
+import com.beldex.libsignal.utilities.Base64;
 import com.beldex.libsignal.utilities.Log;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -12,11 +14,6 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.beldex.libsignal.crypto.IdentityKey;
-import com.beldex.libsignal.exceptions.InvalidKeyException;
-import com.beldex.libsignal.utilities.Base64;
-
-import com.beldex.libbchat.utilities.Address;
 
 import java.io.IOException;
 

@@ -8,16 +8,14 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment;
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentId;
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentTransferProgress;
 import com.beldex.libbchat.messaging.sending_receiving.attachments.UriAttachment;
 import com.beldex.libsignal.utilities.JsonUtil;
-
-import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentTransferProgress;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.IOException;
 import java.util.Collections;

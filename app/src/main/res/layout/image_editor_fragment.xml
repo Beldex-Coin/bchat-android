@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.thoughtcrimes.securesms.imageeditor.ImageEditorView
+    <io.beldex.bchat.imageeditor.ImageEditorView
         android:id="@+id/image_editor_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center" />
 
-    <com.thoughtcrimes.securesms.scribbles.ImageEditorHud
+    <io.beldex.bchat.scribbles.ImageEditorHud
         android:id="@+id/scribble_hud"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

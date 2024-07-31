@@ -5,4 +5,4 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/nodeList_frame"
-    tools:context="com.thoughtcrimes.securesms.wallet.node.activity.NodeActivity"/>
+    tools:context="io.beldex.bchat.wallet.node.activity.NodeActivity"/>

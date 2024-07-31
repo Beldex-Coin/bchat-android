@@ -3,8 +3,6 @@ package com.beldex.libbchat.utilities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import com.beldex.libbchat.utilities.Address;
-
 public class NetworkFailure {
 
   @JsonProperty(value = "a")

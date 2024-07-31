@@ -1,18 +1,17 @@
 package com.beldex.libbchat.messaging.messages.signal;
 
-import com.beldex.libsignal.messages.SignalServiceAttachment;
-import com.beldex.libsignal.messages.SignalServiceGroup;
-import com.beldex.libsignal.utilities.guava.Optional;
-
 import com.beldex.libbchat.messaging.messages.visible.VisibleMessage;
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment;
 import com.beldex.libbchat.messaging.sending_receiving.attachments.PointerAttachment;
 import com.beldex.libbchat.messaging.sending_receiving.data_extraction.DataExtractionNotificationInfoMessage;
-import com.beldex.libbchat.utilities.Contact;
-import com.beldex.libbchat.utilities.Address;
 import com.beldex.libbchat.messaging.sending_receiving.link_preview.LinkPreview;
 import com.beldex.libbchat.messaging.sending_receiving.quotes.QuoteModel;
+import com.beldex.libbchat.utilities.Address;
+import com.beldex.libbchat.utilities.Contact;
 import com.beldex.libbchat.utilities.GroupUtil;
+import com.beldex.libsignal.messages.SignalServiceAttachment;
+import com.beldex.libsignal.messages.SignalServiceGroup;
+import com.beldex.libsignal.utilities.guava.Optional;
 
 import java.util.Collections;
 import java.util.LinkedList;

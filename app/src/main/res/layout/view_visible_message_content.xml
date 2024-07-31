@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.thoughtcrimes.securesms.conversation.v2.messages.VisibleMessageContentView xmlns:android="http://schemas.android.com/apk/res/android"
+<io.beldex.bchat.conversation.v2.messages.VisibleMessageContentView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainContainerConstraint"
@@ -72,7 +72,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.thoughtcrimes.securesms.conversation.v2.messages.PaymentCardView
+            <io.beldex.bchat.conversation.v2.messages.PaymentCardView
                 android:id="@+id/paymentCardView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -163,7 +163,7 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <com.thoughtcrimes.securesms.components.emoji.EmojiTextView
+            <io.beldex.bchat.components.emoji.EmojiTextView
                 android:id="@+id/bodyTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -195,4 +195,4 @@
 
     </LinearLayout>
 
-</com.thoughtcrimes.securesms.conversation.v2.messages.VisibleMessageContentView>
+</io.beldex.bchat.conversation.v2.messages.VisibleMessageContentView>

@@ -43,12 +43,11 @@ import com.beldex.libbchat.utilities.MaterialColor;
 import com.beldex.libbchat.utilities.ProfilePictureModifiedEvent;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.beldex.libbchat.utilities.Util;
+import com.beldex.libbchat.utilities.recipients.RecipientProvider.RecipientDetails;
 import com.beldex.libsignal.utilities.Log;
 import com.beldex.libsignal.utilities.guava.Optional;
 
 import org.greenrobot.eventbus.EventBus;
-
-import com.beldex.libbchat.utilities.recipients.RecipientProvider.RecipientDetails;
 
 import java.util.Collections;
 import java.util.HashSet;

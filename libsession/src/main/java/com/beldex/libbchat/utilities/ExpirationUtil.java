@@ -2,9 +2,9 @@ package com.beldex.libbchat.utilities;
 
 import android.content.Context;
 
-import java.util.concurrent.TimeUnit;
-
 import com.beldex.libbchat.R;
+
+import java.util.concurrent.TimeUnit;
 
 public class ExpirationUtil {
 

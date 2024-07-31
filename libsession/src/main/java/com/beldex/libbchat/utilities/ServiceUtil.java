@@ -9,13 +9,14 @@ import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.PowerManager;
 import android.os.Vibrator;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 public class ServiceUtil {
   public static InputMethodManager getInputMethodManager(Context context) {

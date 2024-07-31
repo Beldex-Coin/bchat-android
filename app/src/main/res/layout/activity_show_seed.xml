@@ -10,7 +10,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/page_background"
-    tools:context="com.thoughtcrimes.securesms.seed.ShowSeedActivity">
+    tools:context="io.beldex.bchat.seed.ShowSeedActivity">
 
 
         <TextView

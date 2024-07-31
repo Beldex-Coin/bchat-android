@@ -36,9 +36,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.utilities.guava.Optional
-import com.thoughtcrimes.securesms.conversation.v2.input_bar.InputBar
-import com.thoughtcrimes.securesms.home.HomeActivity
-import com.thoughtcrimes.securesms.mms.GlideApp
+import io.beldex.bchat.conversation.v2.input_bar.InputBar
+import io.beldex.bchat.home.HomeActivity
+import io.beldex.bchat.mms.GlideApp
 
 
 @RunWith(AndroidJUnit4::class)

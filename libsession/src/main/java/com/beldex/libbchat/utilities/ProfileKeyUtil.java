@@ -1,13 +1,11 @@
 package com.beldex.libbchat.utilities;
 
 import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.beldex.libsignal.utilities.Base64;
-
-import com.beldex.libbchat.utilities.TextSecurePreferences;
-import com.beldex.libbchat.utilities.Util;
 
 import java.io.IOException;
 

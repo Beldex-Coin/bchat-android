@@ -74,7 +74,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.thoughtcrimes.securesms.components.camera.CameraView
+        <io.beldex.bchat.components.camera.CameraView
             android:id="@+id/cameraView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

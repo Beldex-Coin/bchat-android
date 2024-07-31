@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context="com.thoughtcrimes.securesms.wallet.startwallet.StartWalletInfo">
+        tools:context="io.beldex.bchat.wallet.startwallet.StartWalletInfo">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"

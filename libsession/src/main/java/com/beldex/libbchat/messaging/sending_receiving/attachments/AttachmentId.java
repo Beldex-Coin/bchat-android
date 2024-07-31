@@ -5,9 +5,8 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import com.beldex.libbchat.utilities.Util;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AttachmentId implements Parcelable {
 

@@ -6,8 +6,6 @@ import androidx.annotation.Nullable;
 
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration;
 
-import com.beldex.libbchat.messaging.MessagingModuleConfiguration;
-
 public class DatabaseAttachment extends Attachment {
 
   private final AttachmentId attachmentId;

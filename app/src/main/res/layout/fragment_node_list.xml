@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:id="@+id/nodeListFragment"
     android:layout_height="match_parent"
-    tools:context="com.thoughtcrimes.securesms.wallet.node.activity.NodeListFragment">
+    tools:context="io.beldex.bchat.wallet.node.activity.NodeListFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView

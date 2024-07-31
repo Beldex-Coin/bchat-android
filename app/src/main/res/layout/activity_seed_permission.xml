@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/page_background"
     android:fillViewport="true"
-    tools:context="com.thoughtcrimes.securesms.seed.SeedPermissionActivity">
+    tools:context="io.beldex.bchat.seed.SeedPermissionActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

@@ -2,9 +2,11 @@ package com.beldex.libbchat.utilities.task;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
-import androidx.annotation.Nullable;
-import com.google.android.material.snackbar.Snackbar;
 import android.view.View;
+
+import androidx.annotation.Nullable;
+
+import com.google.android.material.snackbar.Snackbar;
 
 public abstract class SnackbarAsyncTask<Params>
     extends AsyncTask<Params, Void, Void>

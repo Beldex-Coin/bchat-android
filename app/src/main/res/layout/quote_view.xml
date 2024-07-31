@@ -38,7 +38,7 @@
                 android:orientation="vertical"
                 android:layout_weight="1">
 
-                <com.thoughtcrimes.securesms.components.emoji.EmojiTextView
+                <io.beldex.bchat.components.emoji.EmojiTextView
                     android:id="@+id/quote_author"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -93,7 +93,7 @@
                     tools:text="Photo"
                     tools:visibility="visible" />
 
-                <com.thoughtcrimes.securesms.components.emoji.EmojiTextView
+                <io.beldex.bchat.components.emoji.EmojiTextView
                     android:id="@+id/quote_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -5,9 +5,8 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import com.beldex.libbchat.utilities.ParcelableUtil;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +26,7 @@ public class Data {
     @JsonProperty private final Map<String, boolean[]> booleanArrays;
     @JsonProperty private final Map<String, byte[]>    byteArrays;
 
-    public static final Data EMPTY = new Data.Builder().build();
+    public static final Data EMPTY = new Builder().build();
 
     public Data(
             @JsonProperty("strings")       @NonNull Map<String, String>    strings,

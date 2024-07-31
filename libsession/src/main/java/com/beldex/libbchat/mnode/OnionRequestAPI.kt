@@ -1,24 +1,21 @@
 package com.beldex.libbchat.mnode
 
+import com.beldex.libbchat.messaging.file_server.FileServerAPIV2
+import com.beldex.libbchat.mnode.utilities.getBodyForOnionRequest
+import com.beldex.libbchat.mnode.utilities.getHeadersForOnionRequest
+import com.beldex.libbchat.utilities.AESGCM
+import com.beldex.libbchat.utilities.AESGCM.EncryptionResult
+import com.beldex.libsignal.crypto.getRandomElement
+import com.beldex.libsignal.crypto.getRandomElementOrNull
+import com.beldex.libsignal.database.BeldexAPIDatabaseProtocol
+import com.beldex.libsignal.utilities.*
+import com.beldex.libsignal.utilities.Base64
 import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.all
 import nl.komponents.kovenant.deferred
 import nl.komponents.kovenant.functional.bind
 import nl.komponents.kovenant.functional.map
 import okhttp3.Request
-import com.beldex.libbchat.messaging.file_server.FileServerAPIV2
-import com.beldex.libbchat.utilities.AESGCM
-import com.beldex.libsignal.utilities.*
-import com.beldex.libsignal.utilities.Mnode
-import com.beldex.libbchat.utilities.AESGCM.EncryptionResult
-import com.beldex.libbchat.mnode.utilities.getBodyForOnionRequest
-import com.beldex.libbchat.mnode.utilities.getHeadersForOnionRequest
-import com.beldex.libsignal.crypto.getRandomElement
-import com.beldex.libsignal.crypto.getRandomElementOrNull
-import com.beldex.libsignal.utilities.Broadcaster
-import com.beldex.libsignal.utilities.HTTP
-import com.beldex.libsignal.database.BeldexAPIDatabaseProtocol
-import com.beldex.libsignal.utilities.Base64
 import java.util.*
 
 private typealias Path = List<Mnode>
@@ -76,9 +73,9 @@ object OnionRequestAPI {
     class InsufficientMnodesException : Exception("Couldn't find enough mnodes to build a path.")
 
     private data class OnionBuildingResult(
-        val guardMnode: Mnode,
-        val finalEncryptionResult: EncryptionResult,
-        val destinationSymmetricKey: ByteArray
+            val guardMnode: Mnode,
+            val finalEncryptionResult: EncryptionResult,
+            val destinationSymmetricKey: ByteArray
     )
 
     internal sealed class Destination(val description: String) {
@@ -129,7 +126,7 @@ object OnionRequestAPI {
                 if (unusedMnodes.count() < (targetGuardMnodeCount - reusableGuardMnodeCount)) { throw InsufficientMnodesException() }
                 fun getGuardMnode(): Promise<Mnode, Exception> {
                     val candidate = unusedMnodes.getRandomElementOrNull()
-                        ?: return Promise.ofFail(InsufficientMnodesException())
+                            ?: return Promise.ofFail(InsufficientMnodesException())
                     unusedMnodes = unusedMnodes.minus(candidate)
                     //-Log.d("Beldex", "Testing guard mnode: $candidate.")
                     // Loop until a reliable guard mnode is found
@@ -343,7 +340,7 @@ object OnionRequestAPI {
                 //-Log.d("Beldex", "Approaching request size limit: ~${onion.count()} bytes.")
             }
             @Suppress("NAME_SHADOWING") val parameters = mapOf(
-                "ephemeral_key" to finalEncryptionResult.ephemeralPublicKey.toHexString()
+                    "ephemeral_key" to finalEncryptionResult.ephemeralPublicKey.toHexString()
             )
             val body: ByteArray
             try {
@@ -357,12 +354,16 @@ object OnionRequestAPI {
             ThreadUtils.queue {
                 try {
                     Log.d("Beldex","am try in Onion req")
+                    println("send message data called urllll ${String(body)}")
+                    println("send message data called url $url and payload $payload and body ${body.toHexString()}")
                     val response = HTTP.execute(HTTP.Verb.POST, url, body)
                     val json = try {
                         JsonUtil.fromJson(response, Map::class.java)
                     } catch (exception: Exception) {
                         mapOf( "result" to response.decodeToString())
                     }
+                    println("send message data called 1 response $response and json $json")
+
                     //-Log.d("Beldex","json Onion request $json")
                     val base64EncodedIVAndCiphertext = json["result"] as? String ?: return@queue deferred.reject(Exception("Invalid JSON"))
                     val ivAndCiphertext = Base64.decode(base64EncodedIVAndCiphertext)
@@ -437,8 +438,8 @@ object OnionRequestAPI {
             if (exception is HTTP.HTTPRequestFailedException && MnodeModule.isInitialized) {
                 val checkedGuardMnode = guardMnode
                 val path =
-                    if (checkedGuardMnode == null) null
-                    else paths.firstOrNull { it.contains(checkedGuardMnode) }
+                        if (checkedGuardMnode == null) null
+                        else paths.firstOrNull { it.contains(checkedGuardMnode) }
                 fun handleUnspecificError() {
                     if (path == null) { return }
                     var pathFailureCount = OnionRequestAPI.pathFailureCount[path] ?: 0
@@ -533,10 +534,10 @@ object OnionRequestAPI {
         val body = request.getBodyForOnionRequest() ?: "null"
         //-Log.d("Beldex","sendOnionRequest for social group body  $body")
         val payload = mapOf(
-            "body" to body,
-            "endpoint" to endpoint,
-            "method" to request.method(),
-            "headers" to headers
+                "body" to body,
+                "endpoint" to endpoint,
+                "method" to request.method(),
+                "headers" to headers
         )
         //-Log.d("Beldex","sendOnionRequest for social group payload $payload")
         val destination = Destination.Server(host, target, x25519PublicKey, url.scheme(), url.port())

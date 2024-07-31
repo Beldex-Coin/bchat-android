@@ -16,7 +16,7 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/colorPrimary">
 
-            <com.thoughtcrimes.securesms.giph.ui.GiphyActivityToolbar
+            <io.beldex.bchat.giph.ui.GiphyActivityToolbar
                     android:id="@+id/giphy_toolbar"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"

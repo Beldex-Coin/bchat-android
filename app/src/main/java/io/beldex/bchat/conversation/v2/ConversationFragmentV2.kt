@@ -23,7 +23,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.telephony.PhoneStateListener
 import android.telephony.TelephonyCallback
 import android.telephony.TelephonyManager
 import android.text.Editable
@@ -57,7 +56,6 @@ import androidx.annotation.DimenRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -98,7 +96,9 @@ import com.beldex.libsignal.crypto.MnemonicCodec
 import com.beldex.libsignal.utilities.ListenableFuture
 import com.beldex.libsignal.utilities.guava.Optional
 import com.beldex.libsignal.utilities.hexEncodedPrivateKey
+import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.ApplicationContext
+import io.beldex.bchat.R
 import io.beldex.bchat.audio.AudioRecorder
 import io.beldex.bchat.contacts.SelectContactsActivity
 import io.beldex.bchat.contactshare.SimpleTextWatcher
@@ -129,6 +129,8 @@ import io.beldex.bchat.database.ThreadDatabase
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.database.model.MmsMessageRecord
 import io.beldex.bchat.database.model.ThreadRecord
+import io.beldex.bchat.databinding.FragmentConversationV2Binding
+import io.beldex.bchat.databinding.ViewVisibleMessageBinding
 import io.beldex.bchat.delegates.WalletDelegates
 import io.beldex.bchat.delegates.WalletDelegatesImpl
 import io.beldex.bchat.dependencies.DatabaseComponent
@@ -180,10 +182,6 @@ import io.beldex.bchat.wallet.utils.pincodeview.managers.LockManager
 import io.beldex.bchat.webrtc.CallViewModel
 import io.beldex.bchat.webrtc.NetworkChangeReceiver
 import io.beldex.bchat.webrtc.WebRTCComposeActivity
-import dagger.hilt.android.AndroidEntryPoint
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.FragmentConversationV2Binding
-import io.beldex.bchat.databinding.ViewVisibleMessageBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -2418,12 +2416,14 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 if (recipient.isContactRecipient && recipient.isBlocked) {
                     unblock()
                 } else {
-                    if (Helper.getPhoneStatePermission(requireActivity())) {
-                        if (Helper.getBlueToothStatePermission(requireActivity())) {
-                            isMenuCall()
+                    if (Helper.getBlueToothStatePermission(requireActivity())) {
+                        viewModel.recipient.value?.let { recipients ->
+                            call(requireActivity(), recipients)
                         }
                     } else {
-                        Timber.tag("Beldex").d("Permission not granted")
+                        viewModel.recipient.value?.let { recipients ->
+                            call(requireActivity(), recipients)
+                        }
                     }
                 }
             }
@@ -2439,103 +2439,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             } ?: false
         }else{
             return false
-        }
-    }
-
-    private fun isMenuCall() {
-        if (CheckOnline.isOnline(requireActivity().applicationContext)) {
-            val tm = this.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-            if (ContextCompat.checkSelfPermission(
-                    requireActivity().applicationContext,
-                    Manifest.permission.READ_PHONE_STATE
-                ) == PackageManager.PERMISSION_GRANTED
-            ) {
-                val simState: Int = tm.simState
-                if (simState == TelephonyManager.SIM_STATE_READY) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        tm.registerTelephonyCallback(
-                            requireActivity().applicationContext.mainExecutor,
-                            object : TelephonyCallback(), TelephonyCallback.CallStateListener {
-                                override fun onCallStateChanged(state: Int) {
-                                    when (state) {
-                                        TelephonyManager.CALL_STATE_RINGING -> {
-                                            Toast.makeText(
-                                                requireActivity().applicationContext,
-                                                getString(R.string.call_alert),
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                        }
-
-                                        TelephonyManager.CALL_STATE_OFFHOOK -> {
-                                            Toast.makeText(
-                                                requireActivity().applicationContext,
-                                                getString(R.string.call_alert),
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-
-                                        }
-
-                                        TelephonyManager.CALL_STATE_IDLE -> {
-                                            viewModel.recipient.value?.let { recipient ->
-                                                call(
-                                                    requireActivity().applicationContext,
-                                                    recipient
-                                                )
-                                            }
-                                        }
-                                    }
-                                }
-                            })
-
-                    } else {
-                        /*tm.listen(object : PhoneStateListener() {
-                            override fun onCallStateChanged(state: Int, phoneNumber: String?) {
-                                super. onCallStateChanged(state, phoneNumber)
-                                when (state) {
-                                    TelephonyManager.CALL_STATE_RINGING -> {
-                                        Toast.makeText(
-                                            requireActivity().applicationContext,
-                                            getString(R.string.call_alert),
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-
-                                    TelephonyManager.CALL_STATE_OFFHOOK -> {
-                                        Toast.makeText(
-                                            requireActivity().applicationContext,
-                                            getString(R.string.call_alert),
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-
-                                    }
-
-                                    TelephonyManager.CALL_STATE_IDLE -> {
-                                        viewModel.recipient.value?.let { recipient ->
-                                            call(requireActivity(), recipient)
-                                        }
-                                    }
-                                }
-                            }
-                        }, PhoneStateListener.LISTEN_CALL_STATE)*/
-                        viewModel.recipient.value?.let { recipient ->
-                            call(requireActivity(), recipient)
-                        }
-                    }
-                } else {
-                    viewModel.recipient.value?.let { recipient ->
-                        call(requireActivity(), recipient)
-                    }
-                }
-            } else {
-                Timber.tag("Beldex").d("Call state issue called else")
-            }
-
-        } else {
-            Toast.makeText(
-                requireActivity().applicationContext,
-                getString(R.string.please_check_your_internet_connection),
-                Toast.LENGTH_SHORT
-            ).show()
         }
     }
 

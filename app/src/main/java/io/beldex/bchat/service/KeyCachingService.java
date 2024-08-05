@@ -62,10 +62,10 @@ public class KeyCachingService extends Service {
   public static final int SERVICE_RUNNING_ID = 4141;
 
   public  static final String KEY_PERMISSION           = "io.beldex.bchat.ACCESS_BCHAT_SECRETS";
-  public  static final String CLEAR_KEY_EVENT          = "com.thoughtcrimes.securesms.service.action.CLEAR_KEY_EVENT";
-  public  static final String LOCK_TOGGLED_EVENT       = "com.thoughtcrimes.securesms.service.action.LOCK_ENABLED_EVENT";
-  private static final String PASSPHRASE_EXPIRED_EVENT = "com.thoughtcrimes.securesms.service.action.PASSPHRASE_EXPIRED_EVENT";
-  public  static final String CLEAR_KEY_ACTION         = "com.thoughtcrimes.securesms.service.action.CLEAR_KEY";
+  public  static final String CLEAR_KEY_EVENT          = "io.beldex.bchat.service.action.CLEAR_KEY_EVENT";
+  public  static final String LOCK_TOGGLED_EVENT       = "io.beldex.bchat.service.action.LOCK_ENABLED_EVENT";
+  private static final String PASSPHRASE_EXPIRED_EVENT = "io.beldex.bchat.service.action.PASSPHRASE_EXPIRED_EVENT";
+  public  static final String CLEAR_KEY_ACTION         = "io.beldex.bchat.service.action.CLEAR_KEY";
 
   private final IBinder binder  = new KeySetBinder();
 

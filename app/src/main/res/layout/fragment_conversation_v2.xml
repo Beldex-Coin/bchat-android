@@ -353,7 +353,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <!--            <com.thoughtcrimes.securesms.conversation.ChatWallpaperImageView-->
+            <!--            <io.beldex.bchat.conversation.ChatWallpaperImageView-->
             <!--                android:id="@+id/contentImageView"-->
             <!--                android:layout_width="match_parent"-->
             <!--                android:layout_height="match_parent"-->
@@ -426,7 +426,7 @@
 <!--                android:layout_marginEnd="8dp"-->
 <!--                android:layout_marginBottom="8dp">-->
 
-<!--                <com.thoughtcrimes.securesms.conversation.v2.input_bar.InputBar-->
+<!--                <io.beldex.bchat.conversation.v2.input_bar.InputBar-->
 <!--                    android:id="@+id/inputBar"-->
 <!--                    android:layout_width="0dp"-->
 <!--                    android:layout_height="wrap_content"-->

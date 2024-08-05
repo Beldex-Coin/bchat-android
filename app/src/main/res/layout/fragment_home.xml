@@ -336,7 +336,7 @@
                         android:textStyle="bold"
                         android:visibility="gone" />
 
-    <!--                <com.thoughtcrimes.securesms.home.NewConversationButtonSetView-->
+    <!--                <io.beldex.bchat.home.NewConversationButtonSetView-->
     <!--                    android:id="@+id/newConversationButtonSet"-->
     <!--                    android:layout_width="190dp"-->
     <!--                    android:layout_height="236dp"-->

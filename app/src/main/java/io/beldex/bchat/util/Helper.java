@@ -588,6 +588,9 @@ public class Helper {
     }
 
     static public boolean runWithNetwork(Action action) {
+        if(action == null){
+            return false;
+        }
         StrictMode.ThreadPolicy currentPolicy = StrictMode.getThreadPolicy();
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitNetwork().build();
         StrictMode.setThreadPolicy(policy);

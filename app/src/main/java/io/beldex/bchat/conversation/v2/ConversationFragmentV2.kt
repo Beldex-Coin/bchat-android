@@ -2580,17 +2580,17 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                             binding.searchClose.visibility = View.VISIBLE
                         }
                     } else {
-                        if(binding.searchQuery.text?.isEmpty() == true){
-                            binding.noMatchesFoundTextview.visibility = View.GONE
-                            binding.closeSearch.visibility = View.GONE
-                            binding.searchClose.visibility = View.VISIBLE
-                        }
                         binding.searchUp.visibility = View.GONE
                         binding.searchDown.visibility = View.GONE
                         binding.searchProgress.visibility = View.GONE
                         binding.closeSearch.visibility = View.VISIBLE
                         binding.search.visibility = View.GONE
                         binding.noMatchesFoundTextview.visibility = View.VISIBLE
+                        if(binding.searchQuery.text?.isEmpty() == true){
+                            binding.noMatchesFoundTextview.visibility = View.GONE
+                            binding.closeSearch.visibility = View.GONE
+                            binding.searchClose.visibility = View.VISIBLE
+                        }
                     }
 //                binding.searchBottomBar.setData(result.position, result.getResults().size)
                 })

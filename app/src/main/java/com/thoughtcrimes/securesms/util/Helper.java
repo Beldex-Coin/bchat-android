@@ -112,22 +112,6 @@ public class Helper {
         }
     }
 
-    static public boolean getPhoneStatePermission(Activity context) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            if (context.checkSelfPermission(Manifest.permission.READ_PHONE_STATE)
-                    == PackageManager.PERMISSION_DENIED) {
-                Timber.w("Permission denied for Phone - requesting it");
-                String[] permissions = {Manifest.permission.READ_PHONE_STATE};
-                context.requestPermissions(permissions, PERMISSION_REQUEST_PHONE_STATE);
-                return false;
-            } else {
-                return true;
-            }
-        } else {
-            return true;
-        }
-    }
-
     static public File getWalletFile(Context context, String aWalletName) {
         File walletDir = getWalletRoot(context);
         File f = new File(walletDir, aWalletName);

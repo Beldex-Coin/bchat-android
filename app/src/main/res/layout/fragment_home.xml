@@ -566,7 +566,7 @@
                 android:fontFamily="@font/open_sans_medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="BChat V2.5.1"
+                android:text="BChat V2.5.2"
                 android:textAlignment="viewEnd"
                 android:textColor="@color/bchat_version"
                 android:textStyle="normal" />

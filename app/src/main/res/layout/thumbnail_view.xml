@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.thoughtcrimes.securesms.conversation.v2.utilities.ThumbnailView
+<io.beldex.bchat.conversation.v2.utilities.ThumbnailView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -63,4 +63,4 @@
         android:layout="@layout/transfer_controls_stub"
         android:visibility="gone" />
 
-</com.thoughtcrimes.securesms.conversation.v2.utilities.ThumbnailView>
+</io.beldex.bchat.conversation.v2.utilities.ThumbnailView>

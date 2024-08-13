@@ -1,7 +1,7 @@
 -dontoptimize
 -keepattributes SourceFile,LineNumberTable
 -keep class org.whispersystems.** { *; }
--keep class com.thoughtcrimes.securesms.** { *; }
+-keep class io.beldex.bchat.** { *; }
 -keep class com.beldex.** { *; }
 -keepclassmembers class ** {
     public void onEvent*(**);

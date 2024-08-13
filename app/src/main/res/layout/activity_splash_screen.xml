@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/page_background"
-    tools:context="com.thoughtcrimes.securesms.onboarding.SplashScreenActivity">
+    tools:context="io.beldex.bchat.onboarding.SplashScreenActivity">
    <!-- <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/img"
         android:layout_width="match_parent"

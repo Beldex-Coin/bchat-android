@@ -19,30 +19,30 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        maven {
-            url "https://raw.github.com/signalapp/maven/master/photoview/releases/"
-            content {
-                includeGroupByRegex "com\\.github\\.chrisbanes.*"
-            }
-        }
-        maven {
-            url "https://raw.github.com/signalapp/maven/master/shortcutbadger/releases/"
-            content {
-                includeGroupByRegex "me\\.leolin.*"
-            }
-        }
-        maven {
-            url "https://raw.github.com/signalapp/maven/master/circular-progress-button/releases/"
-            content {
-                includeGroupByRegex "com\\.github\\.dmytrodanylyk\\.circular-progress-button\\.*"
-            }
-        }
-        maven {
-            url "https://raw.github.com/signalapp/maven/master/sqlcipher/release/"
-            content {
-                includeGroupByRegex "org\\.signal.*"
-            }
-        }
+//        maven {
+//            url "https://raw.github.com/signalapp/maven/master/photoview/releases/"
+//            content {
+//                includeGroupByRegex "com\\.github\\.chrisbanes.*"
+//            }
+//        }
+//        maven {
+//            url "https://raw.github.com/signalapp/maven/master/shortcutbadger/releases/"
+//            content {
+//                includeGroupByRegex "me\\.leolin.*"
+//            }
+//        }
+//        maven {
+//            url "https://raw.github.com/signalapp/maven/master/circular-progress-button/releases/"
+//            content {
+//                includeGroupByRegex "com\\.github\\.dmytrodanylyk\\.circular-progress-button\\.*"
+//            }
+//        }
+//        maven {
+//            url "https://raw.github.com/signalapp/maven/master/sqlcipher/release/"
+//            content {
+//                includeGroupByRegex "org\\.signal.*"
+//            }
+//        }
         maven {
             url "https://repo1.maven.org/maven2/com/goterl/lazysodium-android"
             content {

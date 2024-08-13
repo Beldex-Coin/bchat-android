@@ -8,7 +8,7 @@
         app:layout="@layout/preference_layout_header"
         >
 
-        <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
+        <io.beldex.bchat.components.SwitchPreferenceCompat
             android:key="pref_android_screen_lock"
             android:defaultValue="false"
             app:isPreferenceVisible="false"
@@ -22,7 +22,7 @@
             android:dependency="pref_android_screen_lock"
             app:isPreferenceVisible="false"/>
 
-<!--        <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat-->
+<!--        <io.beldex.bchat.components.SwitchPreferenceCompat-->
 <!--            android:key="pref_enable_passphrase_temporary"-->
 <!--            android:defaultValue="true"-->
 <!--            android:title="@string/preferences__enable_passphrase"-->
@@ -34,7 +34,7 @@
 <!--            android:summary="@string/preferences__change_your_passphrase"-->
 <!--            android:dependency="pref_enable_passphrase_temporary" />-->
 
-<!--        <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat-->
+<!--        <io.beldex.bchat.components.SwitchPreferenceCompat-->
 <!--            android:defaultValue="false"-->
 <!--            android:key="pref_timeout_passphrase"-->
 <!--            android:title="@string/preferences__inactivity_timeout_passphrase"-->
@@ -46,7 +46,7 @@
 <!--            android:key="pref_timeout_interval"-->
 <!--            android:dependency="pref_timeout_passphrase" />-->
 
-        <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
+        <io.beldex.bchat.components.SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="pref_screen_security"
             app:iconSpaceReserved="false"
@@ -55,7 +55,7 @@
             android:summary="@string/preferences__disable_screen_security_to_allow_screen_shots"
             app:layout="@layout/preference_layout"/>
 
-        <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
+        <io.beldex.bchat.components.SwitchPreferenceCompat
             android:defaultValue="true"
             app:iconSpaceReserved="false"
             android:key="pref_incognito_keyboard"
@@ -69,7 +69,7 @@
         app:iconSpaceReserved="false"
         app:layout="@layout/preference_layout_header">
 
-        <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
+        <io.beldex.bchat.components.SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="pref_is_wallet_active"
             app:iconSpaceReserved="false"
@@ -77,7 +77,7 @@
             android:summary="@string/preferences_start_wallet_subtitle"
             app:layout="@layout/preference_layout"/>
 
-        <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
+        <io.beldex.bchat.components.SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="pref_pay_as_you_chat"
             app:iconSpaceReserved="false"
@@ -93,13 +93,13 @@
         app:iconSpaceReserved="false"
         app:layout="@layout/preference_layout_header">
 
-        <!-- <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
+        <!-- <io.beldex.bchat.components.SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="pref_turn_only"
             android:title="@string/preferences_advanced__always_relay_calls"
             android:summary="@string/preferences_advanced__relay_all_calls_through_the_signal_server_to_avoid_revealing_your_ip_address"/> -->
 
-        <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
+        <io.beldex.bchat.components.SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="pref_read_receipts"
             app:iconSpaceReserved="false"
@@ -107,7 +107,7 @@
             android:summary="@string/preferences__if_read_receipts_are_disabled_you_wont_be_able_to_see_read_receipts"
             app:layout="@layout/preference_layout"/>
 
-        <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
+        <io.beldex.bchat.components.SwitchPreferenceCompat
             android:defaultValue="false"
             app:iconSpaceReserved="false"
             android:key="pref_typing_indicators"
@@ -115,7 +115,7 @@
             android:summary="@string/preferences__if_typing_indicators_are_disabled_you_wont_be_able_to_see_typing_indicators"
             app:layout="@layout/preference_layout"/>
 
-        <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
+        <io.beldex.bchat.components.SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="pref_link_previews"
             app:iconSpaceReserved="false"
@@ -126,7 +126,7 @@
         <!-- <Preference android:key="preference_category_blocked"
                     android:title="@string/preferences_app_protection__blocked_contacts" /> -->
 
-        <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
+        <io.beldex.bchat.components.SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="pref_call_notifications_enabled"
             android:title="@string/preferences__voice_video_calls"
@@ -138,13 +138,13 @@
 
     <PreferenceCategory android:title="@string/preferences_communication__category_sealed_sender">
 
-        <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
+        <io.beldex.bchat.components.SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="pref_show_unidentifed_delivery_indicators"
             android:title="@string/preferences_communication__sealed_sender_display_indicators"
             android:summary="@string/preferences_communication__sealed_sender_display_indicators_description"/>
 
-        <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
+        <io.beldex.bchat.components.SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="pref_universal_unidentified_access"
             android:title="@string/preferences_communication__sealed_sender_allow_from_anyone"
@@ -160,7 +160,7 @@
 
     <PreferenceCategory android:title="@string/preferences_app_protection__registration_lock">
 
-        <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
+        <io.beldex.bchat.components.SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="pref_registration_lock"
             android:title="@string/preferences_app_protection__registration_lock_pin"

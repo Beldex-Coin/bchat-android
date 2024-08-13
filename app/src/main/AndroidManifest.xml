@@ -55,11 +55,9 @@
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.RAISED_THREAD_PRIORITY" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission
         android:name="android.permission.CHANGE_NETWORK_STATE"
         tools:node="remove" />
-    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
@@ -71,7 +69,7 @@
     </queries>
 
     <application
-        android:name="com.thoughtcrimes.securesms.ApplicationContext"
+        android:name="io.beldex.bchat.ApplicationContext"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -81,171 +79,171 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
         <activity
-            android:name="com.thoughtcrimes.securesms.contacts.blocked.BlockedContactsActivity"
+            android:name="io.beldex.bchat.contacts.blocked.BlockedContactsActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
         <activity
-            android:name="com.thoughtcrimes.securesms.wallet.TransactionDetails"
+            android:name="io.beldex.bchat.wallet.TransactionDetails"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thoughtcrimes.securesms.wallet.info.WalletInfoSeedActivity"
+            android:name="io.beldex.bchat.wallet.info.WalletInfoSeedActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thoughtcrimes.securesms.wallet.info.WalletInfoActivity"
+            android:name="io.beldex.bchat.wallet.info.WalletInfoActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
-            android:name="com.thoughtcrimes.securesms.wallet.node.activity.NodeActivity"
+            android:name="io.beldex.bchat.wallet.node.activity.NodeActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLockActivity"
+            android:name="io.beldex.bchat.wallet.utils.pincodeview.managers.AppLockActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
-            android:name="com.thoughtcrimes.securesms.wallet.settings.WalletSettings"
+            android:name="io.beldex.bchat.wallet.settings.WalletSettings"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thoughtcrimes.securesms.wallet.utils.pincodeview.CustomPinActivity"
+            android:name="io.beldex.bchat.wallet.utils.pincodeview.CustomPinActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
-            android:name="com.thoughtcrimes.securesms.wallet.password.CreateWalletPassword"
+            android:name="io.beldex.bchat.wallet.password.CreateWalletPassword"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
-            android:name="com.thoughtcrimes.securesms.wallet.addressbook.AddressBookActivity"
+            android:name="io.beldex.bchat.wallet.addressbook.AddressBookActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thoughtcrimes.securesms.contacts.BlockedContactActivity"
+            android:name="io.beldex.bchat.contacts.BlockedContactActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thoughtcrimes.securesms.calls.WebRtcCallActivity"
+            android:name="io.beldex.bchat.calls.WebRtcCallActivity"
             android:exported="false"
             android:launchMode="singleTop"
-            android:parentActivityName="com.thoughtcrimes.securesms.home.HomeActivity"
+            android:parentActivityName="io.beldex.bchat.home.HomeActivity"
             android:screenOrientation="portrait"
             android:showForAllUsers="true"
             android:theme="@style/Theme.Bchat.CallActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.thoughtcrimes.securesms.home.HomeActivity" />
+                android:value="io.beldex.bchat.home.HomeActivity" />
         </activity>
         <activity
-            android:name="com.thoughtcrimes.securesms.onboarding.AboutActivity"
+            android:name="io.beldex.bchat.onboarding.AboutActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
-            android:name="com.thoughtcrimes.securesms.changelog.ChangeLogActivity"
+            android:name="io.beldex.bchat.changelog.ChangeLogActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
-            android:name="com.thoughtcrimes.securesms.onboarding.CheckPasswordActivity"
+            android:name="io.beldex.bchat.onboarding.CheckPasswordActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name="com.thoughtcrimes.securesms.groups.JoinPublicChatScanQRCodeActivity"
+            android:name="io.beldex.bchat.groups.JoinPublicChatScanQRCodeActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="com.thoughtcrimes.securesms.groups.JoinPublicChatNewActivity"
+            android:name="io.beldex.bchat.groups.JoinPublicChatNewActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="com.thoughtcrimes.securesms.dms.PrivateChatScanQRCodeActivity"
+            android:name="io.beldex.bchat.dms.PrivateChatScanQRCodeActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="com.thoughtcrimes.securesms.dms.CreateNewPrivateChatActivity"
+            android:name="io.beldex.bchat.dms.CreateNewPrivateChatActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="com.thoughtcrimes.securesms.preferences.ScanQRCodeActivity"
+            android:name="io.beldex.bchat.preferences.ScanQRCodeActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="com.thoughtcrimes.securesms.preferences.ShowQRCodeWithScanQRCodeActivity"
+            android:name="io.beldex.bchat.preferences.ShowQRCodeWithScanQRCodeActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="com.thoughtcrimes.securesms.applock.ChangePasswordActivity"
+            android:name="io.beldex.bchat.applock.ChangePasswordActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name="com.thoughtcrimes.securesms.onboarding.SplashScreenHomeActivtity"
+            android:name="io.beldex.bchat.onboarding.SplashScreenHomeActivtity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thoughtcrimes.securesms.onboarding.SplashScreenActivity"
+            android:name="io.beldex.bchat.onboarding.SplashScreenActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
-            android:name="com.thoughtcrimes.securesms.onboarding.PasswordActivity"
+            android:name="io.beldex.bchat.onboarding.PasswordActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name="com.thoughtcrimes.securesms.applock.AppLockDetailsActivity"
+            android:name="io.beldex.bchat.applock.AppLockDetailsActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
-            android:name="com.thoughtcrimes.securesms.seed.ShowSeedActivity"
+            android:name="io.beldex.bchat.seed.ShowSeedActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
-            android:name="com.thoughtcrimes.securesms.seed.SeedPermissionActivity"
+            android:name="io.beldex.bchat.seed.SeedPermissionActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
-            android:name="com.thoughtcrimes.securesms.keys.RecoveryGetKeysDetailsActivity"
+            android:name="io.beldex.bchat.keys.RecoveryGetKeysDetailsActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
-            android:name="com.thoughtcrimes.securesms.seed.RecoveryGetSeedDetailsActivity"
+            android:name="io.beldex.bchat.seed.RecoveryGetSeedDetailsActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
-            android:name="com.thoughtcrimes.securesms.seedorkeysrestore.SeedOrKeysRestoreActivity"
+            android:name="io.beldex.bchat.seedorkeysrestore.SeedOrKeysRestoreActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" /> <!-- Disable all analytics -->
         <activity
-            android:name="com.thoughtcrimes.securesms.wallet.startwallet.StartWalletInfo"
+            android:name="io.beldex.bchat.wallet.startwallet.StartWalletInfo"
             android:screenOrientation="portrait"
             android:exported="false" />
         <meta-data
@@ -265,56 +263,56 @@
             android:value="false" />
 
         <activity
-            android:name="com.thoughtcrimes.securesms.onboarding.LandingActivity"
+            android:name="io.beldex.bchat.onboarding.LandingActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
-            android:name="com.thoughtcrimes.securesms.onboarding.RegisterActivity"
+            android:name="io.beldex.bchat.onboarding.RegisterActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
-            android:name="com.thoughtcrimes.securesms.onboarding.RecoveryPhraseRestoreActivity"
+            android:name="io.beldex.bchat.onboarding.RecoveryPhraseRestoreActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="com.thoughtcrimes.securesms.onboarding.LinkDeviceActivity"
+            android:name="io.beldex.bchat.onboarding.LinkDeviceActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="com.thoughtcrimes.securesms.onboarding.DisplayNameActivity"
+            android:name="io.beldex.bchat.onboarding.DisplayNameActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="com.thoughtcrimes.securesms.onboarding.PNModeActivity"
+            android:name="io.beldex.bchat.onboarding.PNModeActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
-            android:name="com.thoughtcrimes.securesms.onboarding.AppLockActivity"
+            android:name="io.beldex.bchat.onboarding.AppLockActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
-            android:name="com.thoughtcrimes.securesms.onboarding.CreatePasswordActivity"
+            android:name="io.beldex.bchat.onboarding.CreatePasswordActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.thoughtcrimes.securesms.onboarding.RecoveryPhraseActivity"
+            android:name="io.beldex.bchat.onboarding.RecoveryPhraseActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
-            android:name="com.thoughtcrimes.securesms.home.HomeActivity"
+            android:name="io.beldex.bchat.home.HomeActivity"
             android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
@@ -324,7 +322,7 @@
         <activity-alias
             android:name=".RoutingActivity"
             android:exported="true"
-            android:targetActivity="com.thoughtcrimes.securesms.home.HomeActivity">
+            android:targetActivity="io.beldex.bchat.home.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -341,67 +339,67 @@
         </activity-alias>
 
         <activity
-            android:name="com.thoughtcrimes.securesms.messagerequests.MessageRequestsActivity"
+            android:name="io.beldex.bchat.messagerequests.MessageRequestsActivity"
             android:exported="false"
             android:label="@string/activity_message_requests_title"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thoughtcrimes.securesms.preferences.SettingsActivity"
+            android:name="io.beldex.bchat.preferences.SettingsActivity"
             android:exported="false"
             android:label="@string/activity_settings_title"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thoughtcrimes.securesms.home.PathActivity"
+            android:name="io.beldex.bchat.home.PathActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thoughtcrimes.securesms.preferences.QRCodeActivity"
+            android:name="io.beldex.bchat.preferences.QRCodeActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
         <activity
-            android:name="com.thoughtcrimes.securesms.dms.CreatePrivateChatActivity"
+            android:name="io.beldex.bchat.dms.CreatePrivateChatActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="com.thoughtcrimes.securesms.groups.CreateClosedGroupActivity"
+            android:name="io.beldex.bchat.groups.CreateClosedGroupActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thoughtcrimes.securesms.groups.EditClosedGroupActivity"
+            android:name="io.beldex.bchat.groups.EditClosedGroupActivity"
             android:exported="false"
             android:label="@string/activity_edit_closed_group_title"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thoughtcrimes.securesms.groups.JoinPublicChatActivity"
+            android:name="io.beldex.bchat.groups.JoinPublicChatActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="com.thoughtcrimes.securesms.onboarding.SeedActivity"
+            android:name="io.beldex.bchat.onboarding.SeedActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thoughtcrimes.securesms.contacts.SelectContactsActivity"
+            android:name="io.beldex.bchat.contacts.SelectContactsActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thoughtcrimes.securesms.preferences.PrivacySettingsActivity"
+            android:name="io.beldex.bchat.preferences.PrivacySettingsActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thoughtcrimes.securesms.preferences.NotificationSettingsActivity"
+            android:name="io.beldex.bchat.preferences.NotificationSettingsActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thoughtcrimes.securesms.preferences.ChatSettingsActivity"
+            android:name="io.beldex.bchat.preferences.ChatSettingsActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.thoughtcrimes.securesms.ShareActivity"
+            android:name="io.beldex.bchat.ShareActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:excludeFromRecents="true"
             android:exported="true"
@@ -430,48 +428,48 @@
                 android:value=".service.DirectShareService" />
         </activity>
         <activity
-            android:name="com.thoughtcrimes.securesms.conversation.v2.MessageDetailActivity"
+            android:name="io.beldex.bchat.conversation.v2.MessageDetailActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.TextSecure.DayNight" />
         <activity
-            android:name="com.thoughtcrimes.securesms.groups.OpenGroupGuidelinesActivity"
+            android:name="io.beldex.bchat.groups.OpenGroupGuidelinesActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.TextSecure.DayNight" />
         <activity
-            android:name="com.thoughtcrimes.securesms.longmessage.LongMessageActivity"
+            android:name="io.beldex.bchat.longmessage.LongMessageActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.TextSecure.DayNight" />
         <activity
-            android:name="com.thoughtcrimes.securesms.DatabaseUpgradeActivity"
+            android:name="io.beldex.bchat.DatabaseUpgradeActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="false"
             android:launchMode="singleTask"
             android:theme="@style/NoAnimation.Theme.AppCompat.Light.DarkActionBar" />
         <activity
-            android:name="com.thoughtcrimes.securesms.PassphrasePromptActivity"
+            android:name="io.beldex.bchat.PassphrasePromptActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="false"
             android:launchMode="singleTask"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
         <activity
-            android:name="com.thoughtcrimes.securesms.giph.ui.GiphyActivity"
+            android:name="io.beldex.bchat.giph.ui.GiphyActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.TextSecure.DayNight.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name="com.thoughtcrimes.securesms.mediasend.MediaSendActivity"
+            android:name="io.beldex.bchat.mediasend.MediaSendActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.TextSecure.DayNight.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name="com.thoughtcrimes.securesms.MediaPreviewActivity"
+            android:name="io.beldex.bchat.MediaPreviewActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="false"
             android:label="@string/AndroidManifest__media_preview"
@@ -480,7 +478,7 @@
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name="com.thoughtcrimes.securesms.MediaOverviewActivity"
+            android:name="io.beldex.bchat.MediaOverviewActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="false"
             android:launchMode="singleTask"
@@ -488,7 +486,7 @@
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name="com.thoughtcrimes.securesms.DummyActivity"
+            android:name="io.beldex.bchat.DummyActivity"
             android:allowTaskReparenting="true"
             android:alwaysRetainTaskState="false"
             android:clearTaskOnLaunch="true"
@@ -500,7 +498,7 @@
             android:stateNotNeeded="true"
             android:theme="@android:style/Theme.NoDisplay" />
         <activity
-            android:name="com.thoughtcrimes.securesms.scribbles.StickerSelectActivity"
+            android:name="io.beldex.bchat.scribbles.StickerSelectActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="false"
             android:theme="@style/Theme.Bchat.ForceDark" />
@@ -510,13 +508,13 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat" />
         <activity
-            android:name="com.thoughtcrimes.securesms.ShortcutLauncherActivity"
+            android:name="io.beldex.bchat.ShortcutLauncherActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="true"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
 
         <service
-            android:name="com.thoughtcrimes.securesms.notifications.PushNotificationService"
+            android:name="io.beldex.bchat.notifications.PushNotificationService"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
@@ -524,17 +522,17 @@
             </intent-filter>
         </service>
         <service
-            android:name="com.thoughtcrimes.securesms.service.WebRtcCallService"
+            android:name="io.beldex.bchat.service.WebRtcCallService"
             android:foregroundServiceType="microphone"
             android:enabled="true"
             android:exported="false" />
         <service
-            android:name="com.thoughtcrimes.securesms.service.KeyCachingService"
+            android:name="io.beldex.bchat.service.KeyCachingService"
             android:enabled="true"
             android:exported="false" android:foregroundServiceType="specialUse">
         </service>
         <service
-            android:name="com.thoughtcrimes.securesms.service.DirectShareService"
+            android:name="io.beldex.bchat.service.DirectShareService"
             android:exported="true"
             android:permission="android.permission.BIND_CHOOSER_TARGET_SERVICE">
             <intent-filter>
@@ -542,19 +540,19 @@
             </intent-filter>
         </service>
         <service
-            android:name="com.thoughtcrimes.securesms.service.GenericForegroundService"
+            android:name="io.beldex.bchat.service.GenericForegroundService"
             android:exported="false" />
 
         <receiver
-            android:name="com.thoughtcrimes.securesms.notifications.MarkReadReceiver"
+            android:name="io.beldex.bchat.notifications.MarkReadReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
-                <action android:name="io.beldex.securesms.notifications.CLEAR" />
+                <action android:name="io. beldex.securesms.notifications.CLEAR" />
             </intent-filter>
         </receiver>
         <receiver
-            android:name="com.thoughtcrimes.securesms.notifications.RemoteReplyReceiver"
+            android:name="io.beldex.bchat.notifications.RemoteReplyReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
@@ -562,25 +560,25 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name="com.thoughtcrimes.securesms.notifications.AndroidAutoHeardReceiver"
+            android:name="io.beldex.bchat.notifications.AndroidAutoHeardReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="io.beldex.securesms.notifications.ANDROID_AUTO_HEARD" />
             </intent-filter>
         </receiver>
         <receiver
-            android:name="com.thoughtcrimes.securesms.notifications.AndroidAutoReplyReceiver"
+            android:name="io.beldex.bchat.notifications.AndroidAutoReplyReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="io.beldex.securesms.notifications.ANDROID_AUTO_REPLY" />
             </intent-filter>
         </receiver>
         <receiver
-            android:name="com.thoughtcrimes.securesms.service.ExpirationListener"
+            android:name="io.beldex.bchat.service.ExpirationListener"
             android:exported="false" />
 
         <provider
-            android:name="com.thoughtcrimes.securesms.providers.PartProvider"
+            android:name="io.beldex.bchat.providers.PartProvider"
             android:authorities="io.beldex.provider.securesms"
             android:exported="false"
             android:grantUriPermissions="true" />
@@ -594,32 +592,32 @@
                 android:resource="@xml/file_provider_paths" />
         </provider>
         <provider
-            android:name="com.thoughtcrimes.securesms.database.DatabaseContentProviders$Conversation"
+            android:name="io.beldex.bchat.database.DatabaseContentProviders$Conversation"
             android:authorities="io.beldex.securesms.database.conversation"
             android:exported="false" />
         <provider
-            android:name="com.thoughtcrimes.securesms.database.DatabaseContentProviders$ConversationList"
+            android:name="io.beldex.bchat.database.DatabaseContentProviders$ConversationList"
             android:authorities="io.beldex.securesms.database.conversationlist"
             android:exported="false" />
         <provider
-            android:name="com.thoughtcrimes.securesms.database.DatabaseContentProviders$Attachment"
+            android:name="io.beldex.bchat.database.DatabaseContentProviders$Attachment"
             android:authorities="io.beldex.securesms.database.attachment"
             android:exported="false" />
         <provider
-            android:name="com.thoughtcrimes.securesms.database.DatabaseContentProviders$Sticker"
+            android:name="io.beldex.bchat.database.DatabaseContentProviders$Sticker"
             android:authorities="io.beldex.securesms.database.sticker"
             android:exported="false" />
         <provider
-            android:name="com.thoughtcrimes.securesms.database.DatabaseContentProviders$StickerPack"
+            android:name="io.beldex.bchat.database.DatabaseContentProviders$StickerPack"
             android:authorities="io.beldex.securesms.database.stickerpack"
             android:exported="false" />
         <provider
-            android:name="com.thoughtcrimes.securesms.database.DatabaseContentProviders$Recipient"
+            android:name="io.beldex.bchat.database.DatabaseContentProviders$Recipient"
             android:authorities="io.beldex.securesms.database.recipient"
             android:exported="false" />
 
         <receiver
-            android:name="com.thoughtcrimes.securesms.service.BootReceiver"
+            android:name="io.beldex.bchat.service.BootReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -627,42 +625,42 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name="com.thoughtcrimes.securesms.service.LocalBackupListener"
+            android:name="io.beldex.bchat.service.LocalBackupListener"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
         <receiver
-            android:name="com.thoughtcrimes.securesms.service.PersistentConnectionBootListener"
+            android:name="io.beldex.bchat.service.PersistentConnectionBootListener"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
         <receiver
-            android:name="com.thoughtcrimes.securesms.notifications.LocaleChangedReceiver"
+            android:name="io.beldex.bchat.notifications.LocaleChangedReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.LOCALE_CHANGED" />
             </intent-filter>
         </receiver>
         <receiver
-            android:name="com.thoughtcrimes.securesms.notifications.DeleteNotificationReceiver"
+            android:name="io.beldex.bchat.notifications.DeleteNotificationReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="io.beldex.securesms.DELETE_NOTIFICATION" />
             </intent-filter>
         </receiver>
         <receiver
-            android:name="com.thoughtcrimes.securesms.service.PanicResponderListener"
+            android:name="io.beldex.bchat.service.PanicResponderListener"
             android:exported="false">
             <intent-filter>
                 <action android:name="info.guardianproject.panic.action.TRIGGER" />
             </intent-filter>
         </receiver>
         <receiver
-            android:name="com.thoughtcrimes.securesms.notifications.BackgroundPollWorker$BootBroadcastReceiver"
+            android:name="io.beldex.bchat.notifications.BackgroundPollWorker$BootBroadcastReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -671,19 +669,19 @@
         </receiver>
 
         <service
-            android:name="com.thoughtcrimes.securesms.jobmanager.JobSchedulerScheduler$SystemService"
+            android:name="io.beldex.bchat.jobmanager.JobSchedulerScheduler$SystemService"
             android:enabled="@bool/enable_job_service"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE"
             tools:targetApi="26" />
 
         <service
-            android:name="com.thoughtcrimes.securesms.jobmanager.KeepAliveService"
+            android:name="io.beldex.bchat.jobmanager.KeepAliveService"
             android:enabled="@bool/enable_alarm_manager"
             android:exported="false" />
 
         <receiver
-            android:name="com.thoughtcrimes.securesms.jobmanager.AlarmManagerScheduler$RetryReceiver"
+            android:name="io.beldex.bchat.jobmanager.AlarmManagerScheduler$RetryReceiver"
             android:enabled="@bool/enable_alarm_manager"
             android:exported="false" /> <!-- Probably don't need this one -->
 
@@ -708,7 +706,7 @@
             android:value="598.0dip" />
 
         <service
-            android:name="com.thoughtcrimes.securesms.wallet.service.WalletService"
+            android:name="io.beldex.bchat.wallet.service.WalletService"
             android:description="@string/service_description"
             android:exported="false"
             android:foregroundServiceType="specialUse"

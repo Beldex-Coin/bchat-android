@@ -8,7 +8,7 @@
         app:layout="@layout/preference_layout_header"
         />
 
-        <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
+        <io.beldex.bchat.components.SwitchPreferenceCompat
             android:key="pref_key_enable_notifications"
             android:title="@string/preferences__notifications"
             app:iconSpaceReserved="false"
@@ -16,7 +16,7 @@
             app:layout="@layout/preference_layout"
             />
 
-        <com.thoughtcrimes.securesms.preferences.widgets.SignalListPreference
+        <io.beldex.bchat.preferences.widgets.SignalListPreference
             android:key="pref_notification_priority"
             android:title="@string/preferences_notifications__priority"
             app:iconSpaceReserved="false"
@@ -33,7 +33,7 @@
         app:iconSpaceReserved="false"
         app:layout="@layout/preference_layout_header">
 
-        <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
+        <io.beldex.bchat.components.SwitchPreferenceCompat
             android:dependency="pref_key_enable_notifications"
             android:key="pref_key_use_fcm"
             app:iconSpaceReserved="false"
@@ -49,7 +49,7 @@
         app:iconSpaceReserved="false"
         app:layout="@layout/preference_layout_header">
 
-        <com.thoughtcrimes.securesms.preferences.widgets.SignalPreference
+        <io.beldex.bchat.preferences.widgets.SignalPreference
             android:dependency="pref_key_enable_notifications"
             android:key="pref_key_ringtone"
             app:iconSpaceReserved="false"
@@ -58,7 +58,7 @@
             android:defaultValue="content://settings/system/notification_sound"
             app:layout="@layout/preference_layout"/>
 
-        <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
+        <io.beldex.bchat.components.SwitchPreferenceCompat
             android:dependency="pref_key_enable_notifications"
             android:key="pref_key_vibrate"
             app:iconSpaceReserved="false"
@@ -66,7 +66,7 @@
             android:title="@string/preferences__vibrate"
             app:layout="@layout/preference_layout"/>
 
-        <com.thoughtcrimes.securesms.preferences.widgets.LEDColorListPreference
+        <io.beldex.bchat.preferences.widgets.LEDColorListPreference
             android:key="pref_led_color"
             android:defaultValue="blue"
             android:title="@string/preferences__led_color"
@@ -77,7 +77,7 @@
             app:isPreferenceVisible="false"
             app:layout="@layout/preference_layout"/>
 
-        <com.thoughtcrimes.securesms.preferences.widgets.SignalListPreference
+        <io.beldex.bchat.preferences.widgets.SignalListPreference
             android:key="pref_led_blink"
             android:defaultValue="500,2000"
             android:title="@string/preferences__pref_led_blink_title"
@@ -88,7 +88,7 @@
             android:entryValues="@array/pref_led_blink_pattern_values"
             app:layout="@layout/preference_layout"/>
 
-        <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
+        <io.beldex.bchat.components.SwitchPreferenceCompat
             android:key="pref_key_inthread_notifications"
             android:title="@string/preferences_notifications__in_chat_sounds"
             app:iconSpaceReserved="false"
@@ -96,7 +96,7 @@
             android:defaultValue="true"
             app:layout="@layout/preference_layout"/>
 
-        <com.thoughtcrimes.securesms.preferences.widgets.SignalListPreference
+        <io.beldex.bchat.preferences.widgets.SignalListPreference
             android:key="pref_repeat_alerts"
             android:defaultValue="0"
             android:title="@string/preferences__repeat_alerts"
@@ -115,7 +115,7 @@
         app:iconSpaceReserved="false"
         app:layout="@layout/preference_layout_header">
 
-        <com.thoughtcrimes.securesms.preferences.widgets.SignalListPreference
+        <io.beldex.bchat.preferences.widgets.SignalListPreference
             android:key="pref_notification_privacy"
             android:title="@string/preferences_notifications__show"
             app:iconSpaceReserved="false"

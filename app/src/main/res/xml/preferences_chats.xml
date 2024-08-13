@@ -51,21 +51,21 @@
             android:title="@string/preferences_chats__show_invitation_prompts"
             android:summary="@string/preferences_chats__display_invitation_prompts_for_contacts_without_signal" /> -->
 
-        <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
+        <io.beldex.bchat.components.SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="pref_system_emoji"
             app:isPreferenceVisible="false"
             android:title="@string/preferences_advanced__use_system_emoji"
             app:layout="@layout/preference_layout"/>
 
-        <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
+        <io.beldex.bchat.components.SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="pref_enter_sends"
             app:iconSpaceReserved="false"
             android:title="@string/preferences__pref_enter_sends_title"
             app:layout="@layout/preference_layout"/>
 
-        <com.thoughtcrimes.securesms.preferences.widgets.SignalListPreference
+        <io.beldex.bchat.preferences.widgets.SignalListPreference
             android:key="chat_font_size"
             android:title="@string/preferences_chats__font_size"
             app:iconSpaceReserved="false"
@@ -82,7 +82,7 @@
         app:iconSpaceReserved="false"
         app:layout="@layout/preference_layout_header">
 
-        <com.thoughtcrimes.securesms.components.SwitchPreferenceCompat
+        <io.beldex.bchat.components.SwitchPreferenceCompat
             android:defaultValue="false"
             app:iconSpaceReserved="false"
             android:key="pref_trim_threads"

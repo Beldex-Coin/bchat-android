@@ -11,7 +11,7 @@
         android:layout_height="0dp"
         android:layout_gravity="center"
         android:background="@color/page_background"
-        tools:context="com.thoughtcrimes.securesms.seed.SeedPermissionActivity">
+        tools:context="io.beldex.bchat.seed.SeedPermissionActivity">
 
         <ImageView
             android:id="@+id/wallet_info_important_image"

@@ -6,7 +6,7 @@
               android:layout_height="wrap_content"
               android:padding="16dp">
 
-    <com.thoughtcrimes.securesms.components.DocumentView
+    <io.beldex.bchat.components.DocumentView
             xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"

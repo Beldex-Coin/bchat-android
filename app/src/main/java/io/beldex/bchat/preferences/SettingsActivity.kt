@@ -52,7 +52,13 @@ import io.beldex.bchat.permissions.Permissions
 import io.beldex.bchat.profiles.ProfileMediaConstraints
 import io.beldex.bchat.showCustomDialog
 import io.beldex.bchat.wallet.CheckOnline
+import kotlinx.coroutines.Dispatchers
 import java.util.regex.Pattern
+import com.canhub.cropper.CropImage
+import com.canhub.cropper.CropImageContract
+import com.beldex.libsignal.utilities.Log
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 
 class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.AnimationListener {
     private lateinit var binding: ActivitySettingsBinding
@@ -67,6 +73,49 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
         get() {
             return TextSecurePreferences.getLocalNumber(this)!!
         }
+    private val TAG = "SettingsActivity"
+
+    private val onAvatarCropped = registerForActivityResult(CropImageContract()) { result ->
+        when {
+            result.isSuccessful -> {
+                Log.i(TAG, result.getUriFilePath(this).toString())
+
+                lifecycleScope.launch(Dispatchers.IO) {
+                    try {
+                        val profilePictureToBeUploaded =
+                            BitmapUtil.createScaledBytes(
+                                this@SettingsActivity,
+                                result.getUriFilePath(this@SettingsActivity).toString(),
+                                ProfileMediaConstraints()
+                            ).bitmap
+                        launch(Dispatchers.Main) {
+                            updateProfile(true,profilePictureToBeUploaded)
+                        }
+                    } catch (e: BitmapDecodingException) {
+                        Log.e(TAG, e)
+                    }
+                }
+            }
+            result is CropImage.CancelledResult -> {
+                Log.i(TAG, "Cropping image was cancelled by the user")
+            }
+            else -> {
+                Log.e(TAG, "Cropping image failed")
+            }
+        }
+    }
+
+    private val onPickImage = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ){ result ->
+        if (result.resultCode != Activity.RESULT_OK) return@registerForActivityResult
+
+        val outputFile = Uri.fromFile(File(cacheDir, "cropped"))
+        val inputFile: Uri? = result.data?.data ?: tempFile?.let(Uri::fromFile)
+        cropImage(inputFile, outputFile)
+    }
+
+    private val avatarSelection = AvatarSelection(this, onAvatarCropped, onPickImage)
 
     companion object {
         const val updatedProfileResultCode = 1234
@@ -262,47 +311,6 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            AvatarSelection.REQUEST_CODE_AVATAR -> {
-                if (resultCode != Activity.RESULT_OK) {
-                    return
-                }
-                val outputFile = Uri.fromFile(File(cacheDir, "cropped"))
-                var inputFile: Uri? = data?.data
-                if (inputFile == null && tempFile != null) {
-                    inputFile = Uri.fromFile(tempFile)
-                }
-                AvatarSelection.circularCropImage(
-                    this,
-                    inputFile,
-                    outputFile,
-                    R.string.CropImageActivity_profile_avatar
-                )
-            }
-            AvatarSelection.REQUEST_CODE_CROP_IMAGE -> {
-                if (resultCode != Activity.RESULT_OK) {
-                    return
-                }
-                AsyncTask.execute {
-                    try {
-                        val profilePictureToBeUploaded = BitmapUtil.createScaledBytes(
-                            this@SettingsActivity,
-                            AvatarSelection.getResultUri(data),
-                            ProfileMediaConstraints()
-                        ).bitmap
-                        Handler(Looper.getMainLooper()).post {
-                            updateProfile(true,profilePictureToBeUploaded)
-                        }
-                    } catch (e: BitmapDecodingException) {
-                        e.printStackTrace()
-                    }
-                }
-            }
-        }
-    }
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -464,7 +472,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             Permissions.with(this)
                     .request(Manifest.permission.CAMERA)
                     .onAnyResult {
-                        tempFile = AvatarSelection.startAvatarSelection(this, false, true)
+                        tempFile = avatarSelection.startAvatarSelection(false, true)
                     }
                     .execute()
         } else {
@@ -474,6 +482,13 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
                     Toast.LENGTH_SHORT
             ).show()
         }
+    }
+
+    private fun cropImage(inputFile: Uri?, outputFile: Uri?){
+        avatarSelection.circularCropImage(
+            inputFile = inputFile,
+            outputFile = outputFile,
+        )
     }
 
     private fun copyPublicKey() {

@@ -4,13 +4,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.OptIn;
 import androidx.fragment.app.Fragment;
+import androidx.media3.common.util.UnstableApi;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import io.beldex.bchat.mms.VideoSlide;
-import io.beldex.bchat.video.VideoPlayer;
 import io.beldex.bchat.mms.VideoSlide;
 import io.beldex.bchat.video.VideoPlayer;
 
@@ -19,6 +19,7 @@ import com.beldex.libsignal.utilities.Log;
 
 import java.io.IOException;
 
+@OptIn(markerClass = UnstableApi.class)
 public class MediaSendVideoFragment extends Fragment implements MediaSendPageFragment {
 
   private static final String TAG = MediaSendVideoFragment.class.getSimpleName();

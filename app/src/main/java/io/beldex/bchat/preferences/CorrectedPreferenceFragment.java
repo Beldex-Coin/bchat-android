@@ -15,13 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import io.beldex.bchat.preferences.widgets.ColorPickerPreference;
-import io.beldex.bchat.preferences.widgets.ColorPickerPreferenceDialogFragmentCompat;
 import io.beldex.bchat.components.CustomDefaultPreference;
 
 import io.beldex.bchat.R;
-import io.beldex.bchat.preferences.widgets.ColorPickerPreference;
-import io.beldex.bchat.preferences.widgets.ColorPickerPreferenceDialogFragmentCompat;
 
 public abstract class CorrectedPreferenceFragment extends PreferenceFragmentCompat {
 
@@ -42,9 +38,7 @@ public abstract class CorrectedPreferenceFragment extends PreferenceFragmentComp
   public void onDisplayPreferenceDialog(Preference preference) {
     DialogFragment dialogFragment = null;
 
-    if (preference instanceof ColorPickerPreference) {
-      dialogFragment = ColorPickerPreferenceDialogFragmentCompat.newInstance(preference.getKey());
-    } else if (preference instanceof CustomDefaultPreference) {
+    if (preference instanceof CustomDefaultPreference) {
       dialogFragment = CustomDefaultPreference.CustomDefaultPreferenceDialogFragmentCompat.newInstance(preference.getKey());
     }
 

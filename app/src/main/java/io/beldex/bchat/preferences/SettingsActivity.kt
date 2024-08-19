@@ -129,7 +129,6 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             privacyButton.setOnClickListener { showPrivacySettings() }
             notificationsButton.setOnClickListener { showNotificationSettings() }
             chatsButton.setOnClickListener { showChatSettings() }
-            sendInvitationButton.setOnClickListener { sendInvitation() }
             faqButton.setOnClickListener { showFAQ() }
             surveyButton.setOnClickListener { showSurvey() }
             seedButton.setOnClickListener { showSeed() }
@@ -522,18 +521,6 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
     private fun showChatSettings() {
         val intent = Intent(this, ChatSettingsActivity::class.java)
         push(intent)
-    }
-
-    private fun sendInvitation() {
-        val intent = Intent()
-        intent.action = Intent.ACTION_SEND
-        val invitation =
-            "Hey, I've been using BChat to chat with complete privacy and security. Come join me! Download it at https://www.beldex.io/. My BChat ID is $hexEncodedPublicKey !"
-        intent.putExtra(Intent.EXTRA_TEXT, invitation)
-        intent.type = "text/plain"
-        val chooser =
-            Intent.createChooser(intent, getString(R.string.activity_settings_invite_button_title))
-        startActivity(chooser)
     }
 
     private fun showFAQ() {

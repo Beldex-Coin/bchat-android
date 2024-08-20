@@ -4,13 +4,13 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.widget.ImageView;
 
 import androidx.annotation.DrawableRes;
-import androidx.core.content.ContextCompat;
+import androidx.appcompat.content.res.AppCompatResources;
 
-import com.amulyakhare.textdrawable.TextDrawable;
 import com.makeramen.roundedimageview.RoundedDrawable;
 
 
@@ -26,24 +26,39 @@ public class ResourceContactPhoto implements FallbackContactPhoto {
   }
 
   @Override
-  public Drawable asDrawable(Context context, int color) {
-    return asDrawable(context, color, false);
+  public Drawable asDrawable(Context context, int color, boolean inverted) {
+    return asDrawable(context, 0, false, 0f);
   }
 
   @Override
-  public Drawable asDrawable(Context context, int color, boolean inverted) {
-    Drawable        background = TextDrawable.builder().buildRound(" ", inverted ? Color.WHITE :color);
-    RoundedDrawable foreground = (RoundedDrawable) RoundedDrawable.fromDrawable(ContextCompat.getDrawable(context,resourceId));
+  public Drawable asDrawable(Context context, int color, boolean inverted, Float padding) {
+    // rounded colored background
+    GradientDrawable background = new GradientDrawable();
+    background.setShape(GradientDrawable.OVAL);
+    background.setColor(inverted ? Color.WHITE : color);
 
-    assert foreground != null;
-    foreground.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+    // resource image in the foreground
+    RoundedDrawable foreground = (RoundedDrawable) RoundedDrawable.fromDrawable(AppCompatResources.getDrawable(context, resourceId));
 
-    if (inverted) {
-      foreground.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+    if (foreground != null) {
+      if(padding == 0f){
+        foreground.setScaleType(ImageView.ScaleType.CENTER_CROP);
+      } else {
+        // apply padding via a transparent border oterhwise things get misaligned
+        foreground.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        foreground.setBorderColor(Color.TRANSPARENT);
+        foreground.setBorderWidth(padding);
+      }
+
+      if (inverted) {
+        foreground.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+      }
     }
 
-    Drawable gradient = ContextCompat.getDrawable(context,ThemeUtil.isDarkTheme(context) ? R.drawable.avatar_gradient_dark
-            : R.drawable.avatar_gradient_light);
+    Drawable gradient = AppCompatResources.getDrawable(
+            context,
+            ThemeUtil.isDarkTheme(context) ? R.drawable.avatar_gradient_dark : R.drawable.avatar_gradient_light
+    );
 
     return new ExpandingLayerDrawable(new Drawable[] {background, foreground, gradient});
   }

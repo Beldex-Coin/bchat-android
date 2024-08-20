@@ -463,37 +463,37 @@
                 android:background="@color/page_background"
                 android:orientation="vertical">
 
-                <com.google.android.flexbox.FlexboxLayout
+                <RelativeLayout
                     android:id="@+id/pathButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/setting_button_height"
                     android:background="@drawable/setting_button_background"
                     android:orientation="horizontal"
-                    app:alignItems="center"
-                    app:justifyContent="center">
-
-                    <TextView
-                        android:fontFamily="@font/open_sans_medium"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:text="@string/activity_path_title"
-                        android:textColor="@color/text"
-                        android:textSize="@dimen/medium_font_size"
-                        android:textStyle="bold" />
-
+                    android:layout_width="match_parent"
+                    android:gravity="center"
+                    android:paddingHorizontal="@dimen/large_spacing"
+                    android:layout_height="@dimen/setting_button_height">
                     <FrameLayout
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
                         android:id="@+id/pathContainer"
                         android:layout_width="@dimen/small_profile_picture_size"
                         android:layout_height="@dimen/small_profile_picture_size">
-
                         <io.beldex.bchat.home.PathStatusView
+                            android:layout_gravity="center"
                             android:layout_width="@dimen/path_status_view_size"
-                            android:layout_height="@dimen/path_status_view_size"
-                            android:layout_gravity="center" />
+                            android:layout_height="@dimen/path_status_view_size"/>
                     </FrameLayout>
-                </com.google.android.flexbox.FlexboxLayout>
+                    <TextView
+                        android:id="@+id/pathText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:textColor="@color/text"
+                        android:textSize="@dimen/medium_font_size"
+                        android:layout_marginHorizontal="@dimen/medium_spacing"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:layout_toEndOf="@+id/pathContainer"
+                        android:text="@string/activity_path_title" />
+                </RelativeLayout>
 
                 <View
                     android:layout_width="match_parent"

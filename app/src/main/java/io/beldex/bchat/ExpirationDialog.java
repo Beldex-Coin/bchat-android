@@ -9,11 +9,11 @@ import android.graphics.Typeface;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import com.beldex.libbchat.utilities.ExpirationUtil;
 
-import cn.carbswang.android.numberpickerview.library.NumberPickerView;
 import io.beldex.bchat.R;
 
 public class ExpirationDialog extends AlertDialog {
@@ -42,7 +42,7 @@ public class ExpirationDialog extends AlertDialog {
     builder.setView(Gravity.CENTER);
     builder.setView(view);
     builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
-      int selected = ((NumberPickerView)view.findViewById(R.id.expiration_number_picker)).getValue();
+      int selected = ((android.widget.NumberPicker)view.findViewById(R.id.expiration_number_picker)).getValue();
       listener.onClick(context.getResources().getIntArray(R.array.expiration_times)[selected]);
     });
     builder.setNegativeButton(android.R.string.cancel, null);
@@ -52,7 +52,7 @@ public class ExpirationDialog extends AlertDialog {
   private static View createNumberPickerView(final Context context, final int currentExpiration) {
     final LayoutInflater   inflater                = LayoutInflater.from(context);
     final View             view                    = inflater.inflate(R.layout.expiration_dialog, null);
-    final NumberPickerView numberPickerView        = view.findViewById(R.id.expiration_number_picker);
+    final NumberPicker numberPickerView        = view.findViewById(R.id.expiration_number_picker);
     final TextView         textView                = view.findViewById(R.id.expiration_details);
     final int[]            expirationTimes         = context.getResources().getIntArray(R.array.expiration_times);
     final String[]         expirationDisplayValues = new String[expirationTimes.length];
@@ -72,7 +72,7 @@ public class ExpirationDialog extends AlertDialog {
     numberPickerView.setMinValue(0);
     numberPickerView.setMaxValue(expirationTimes.length-1);
 
-    NumberPickerView.OnValueChangeListener listener = (picker, oldVal, newVal) -> {
+    NumberPicker.OnValueChangeListener listener = (picker, oldVal, newVal) -> {
       if (newVal == 0) {
         textView.setText(R.string.ExpirationDialog_your_messages_will_not_expire);
       } else {

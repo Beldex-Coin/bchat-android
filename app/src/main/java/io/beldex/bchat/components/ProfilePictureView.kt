@@ -36,11 +36,17 @@ class ProfilePictureView @JvmOverloads constructor(
     var isLarge = false
 
     private val profilePicturesCache = mutableMapOf<String, String?>()
-    private val unknownRecipientDrawable = ResourceContactPhoto(R.drawable.ic_profile_default)
-        .asDrawable(context, ContactColors.UNKNOWN_COLOR.toConversationColor(context), false)
-    private val unknownOpenGroupDrawable = ResourceContactPhoto(R.drawable.ic_notification_)
-        .asDrawable(context, ContactColors.UNKNOWN_COLOR.toConversationColor(context), false)
-
+    private val resourcePadding by lazy {
+        context.resources.getDimensionPixelSize(R.dimen.normal_padding).toFloat()
+    }
+    private val unknownRecipientDrawable by lazy {
+        ResourceContactPhoto(R.drawable.ic_profile_default)
+                .asDrawable(context, ContactColors.UNKNOWN_COLOR.toConversationColor(context), false, resourcePadding)
+    }
+    private val unknownOpenGroupDrawable by lazy {
+        ResourceContactPhoto(R.drawable.ic_notification_)
+                .asDrawable(context, ContactColors.UNKNOWN_COLOR.toConversationColor(context), false, resourcePadding)
+    }
     // region Updating
     fun update(recipient: Recipient) {
         fun getUserDisplayName(publicKey: String): String {

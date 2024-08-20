@@ -27,7 +27,7 @@
             android:layout_marginTop="5dp"
             android:padding="10dp"
             android:src="@drawable/ic_message_request"
-            app:circleColor="@color/blue" />
+            app:circleColor="@color/blue_500" />
         <RelativeLayout
             android:id="@+id/unreadCountIndicator"
             android:layout_width="wrap_content"

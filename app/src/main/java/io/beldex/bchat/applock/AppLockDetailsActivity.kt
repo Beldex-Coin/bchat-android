@@ -8,9 +8,9 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.view.View
+import android.widget.NumberPicker
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import cn.carbswang.android.numberpickerview.library.NumberPickerView
 import com.beldex.libbchat.utilities.ExpirationUtil
 import io.beldex.bchat.R
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.setScreenLockEnabled
@@ -86,7 +86,7 @@ class AppLockDetailsActivity : io.beldex.bchat.PassphraseRequiredActionBarActivi
         val dialogView: View = inflater.inflate(R.layout.number_picker_dialog, null)
 
         d.setView(dialogView)
-        val numberPicker = dialogView.findViewById<NumberPickerView>(R.id.dialog_number_picker)
+        val numberPicker = dialogView.findViewById<NumberPicker>(R.id.dialog_number_picker)
         val numberPickerCancel = dialogView.findViewById<TextView>(R.id.number_picker_dialog_cancel)
         val numberPickerOk = dialogView.findViewById<TextView>(R.id.number_picker_dialog_ok)
         val screenTimeOutArray: Array<out String> =
@@ -110,7 +110,7 @@ class AppLockDetailsActivity : io.beldex.bchat.PassphraseRequiredActionBarActivi
         numberPicker.maxValue = screenTimeOutArray.size - 1
         numberPicker.wrapSelectorWheel = true
         val listener =
-            NumberPickerView.OnValueChangeListener { picker: NumberPickerView, oldVal: Int, newVal: Int ->
+            NumberPicker.OnValueChangeListener { picker: NumberPicker, oldVal: Int, newVal: Int ->
                 if (newVal == 0) {
                     //textView.setText(R.string.ExpirationDialog_your_messages_will_not_expire)
                 } else {

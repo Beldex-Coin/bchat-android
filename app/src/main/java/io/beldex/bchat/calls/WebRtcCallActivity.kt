@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Color.green
 import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
@@ -23,20 +22,20 @@ import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.utilities.Log
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ActivityWebRtcCallBinding
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.mms.GlideApp
 import io.beldex.bchat.permissions.Permissions
+import io.beldex.bchat.service.WebRtcCallService
 import io.beldex.bchat.util.AvatarPlaceholderGenerator
 import io.beldex.bchat.webrtc.AudioManagerCommand
 import io.beldex.bchat.webrtc.CallViewModel
 import io.beldex.bchat.webrtc.CallViewModel.State.*
 import io.beldex.bchat.webrtc.audio.SignalAudioManager.AudioDevice.EARPIECE
 import io.beldex.bchat.webrtc.audio.SignalAudioManager.AudioDevice.SPEAKER_PHONE
-import dagger.hilt.android.AndroidEntryPoint
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityWebRtcCallBinding
-import io.beldex.bchat.service.WebRtcCallService
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -45,7 +44,7 @@ import org.apache.commons.lang3.time.DurationFormatUtils
 
 
 @AndroidEntryPoint
-class WebRtcCallActivity : io.beldex.bchat.PassphraseRequiredActionBarActivity() {
+class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
 
         companion object {
             const val ACTION_PRE_OFFER = "pre-offer"
@@ -59,8 +58,7 @@ class WebRtcCallActivity : io.beldex.bchat.PassphraseRequiredActionBarActivity()
         }
 
         private val viewModel by viewModels<CallViewModel>()
-        private val glide by lazy { io.beldex.bchat.mms.GlideApp.with(this) }
-        private val glide1 by lazy { io.beldex.bchat.mms.GlideApp.with(this) }
+        private val glide by lazy { GlideApp.with(this) }
         private lateinit var binding: ActivityWebRtcCallBinding
         private var uiJob: Job? = null
         private var wantsToAnswer = false

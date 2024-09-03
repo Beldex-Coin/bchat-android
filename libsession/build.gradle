@@ -29,7 +29,7 @@ android {
             buildConfigField "String", "SERVER", "\"http://fs1.rpcnode.stream\""
             buildConfigField "String", "DEFAULT_SERVER_KEY", "\"0cfdbcc8bba5989a6787019c6635c08415c103174609360f9c3e4e764ef48073\""
             buildConfigField "String", "DEFAULT_SERVER", "\"http://social.beldex.io\""
-            buildConfigField "String", "REPORT_ISSUE_ID", "\"bdb890a974a25ef50c64cc4e3270c4c49c7096c433b8eecaf011c1ad000e426813\""
+            buildConfigField "String", "REPORT_ISSUE_ID", "\"bd27b58b7cfc65df45d1632c37609cdf3414040e2330b1814ec8fff2087d863952\""
         }
         devNet {
             dimension "targetNet"
@@ -39,7 +39,7 @@ android {
             buildConfigField "String", "SERVER", "\"http://fileserver.rpcnode.stream\""
             buildConfigField "String", "DEFAULT_SERVER_KEY", "\"7c4dc4a0d6eddcdbbed85487f6ccc3425284ad03bbcd33de2c4ce8cbb303a946\""
             buildConfigField "String", "DEFAULT_SERVER", "\"http://social.rpcnode.stream:8080\""
-            buildConfigField "String", "REPORT_ISSUE_ID", "\"bd21c8c3179975fa082f221323ae47d44bf38b8f6e39f530c2d07ce7ad4892682d\""
+            buildConfigField "String", "REPORT_ISSUE_ID", "\"bd27b58b7cfc65df45d1632c37609cdf3414040e2330b1814ec8fff2087d863952\""
 
         }
     }

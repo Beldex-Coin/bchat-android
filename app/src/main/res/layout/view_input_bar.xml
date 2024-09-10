@@ -49,6 +49,7 @@
             android:layout_height="@dimen/input_bar_button_expanded_size"
             android:layout_toStartOf="@id/microphoneOrSendButtonContainer"
             android:gravity="center"
+            android:visibility="gone"
             android:layout_centerVertical="true">
 
             <ImageView
@@ -76,21 +77,25 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentStart="true"
                 android:max="100"/>
+
             <ProgressBar
                 android:id="@+id/failedBlockProgressBar"
                 style="?android:attr/progressBarStyleHorizontal"
-                android:progressDrawable="@drawable/red_circular_progress_bar"
-                android:background="@drawable/circle_shape"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:indeterminate="false"
-                android:visibility="gone"
-                android:layout_margin="5dp"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
-                android:layout_alignParentStart="true"
-                android:max="100"/>
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/circle_shape"
+                android:indeterminate="false"
+                android:max="100"
+                android:progressDrawable="@drawable/red_circular_progress_bar"
+                android:visibility="gone" />
         </RelativeLayout>
 
         <RelativeLayout

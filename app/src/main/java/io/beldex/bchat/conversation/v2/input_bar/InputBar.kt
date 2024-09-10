@@ -112,14 +112,14 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         binding.inChatBDX.setOnClickListener {
             if (SystemClock.elapsedRealtime() - inChatBDXButtonLastClickTime >= 500){
                 inChatBDXButtonLastClickTime = SystemClock.elapsedRealtime()
-                delegate?.walletDetailsUI()
+                //delegate?.walletDetailsUI()
             }
         }
 
         binding.inChatBDX.setOnLongClickListener {
             if (SystemClock.elapsedRealtime() - inChatBDXButtonLastLongClickTime >= 500){
                 inChatBDXButtonLastLongClickTime = SystemClock.elapsedRealtime()
-                delegate?.inChatBDXOptions()
+                //delegate?.inChatBDXOptions()
             }
             true
         }
@@ -349,8 +349,5 @@ interface InputBarDelegate {
     fun onMicrophoneButtonCancel(event: MotionEvent)
     fun onMicrophoneButtonUp(event: MotionEvent)
     fun sendMessage()
-    fun sendBDX()   //Payment Tag
     fun commitInputContent(contentUri: Uri)
-    fun inChatBDXOptions()
-    fun walletDetailsUI()
 }

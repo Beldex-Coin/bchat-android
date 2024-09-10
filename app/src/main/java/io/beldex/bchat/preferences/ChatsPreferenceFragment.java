@@ -29,11 +29,6 @@ import io.beldex.bchat.util.Trimmer;
 
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.beldex.libsignal.utilities.Log;
-import io.beldex.bchat.wallet.WalletSetupLoadingBar;
-import io.beldex.bchat.wallet.info.WalletInfoActivity;
-import io.beldex.bchat.wallet.utils.pincodeview.CustomPinActivity;
-import io.beldex.bchat.wallet.utils.pincodeview.managers.AppLock;
-import io.beldex.bchat.wallet.utils.pincodeview.managers.LockManager;
 
 import io.beldex.bchat.R;
 

@@ -29,8 +29,6 @@ import io.beldex.bchat.BaseActionBarActivity
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.crypto.KeyPairUtilities
 import io.beldex.bchat.model.AsyncTaskCoroutine
-import io.beldex.bchat.model.Wallet
-import io.beldex.bchat.model.WalletManager
 import io.beldex.bchat.util.BChatThreadPoolExecutor
 import io.beldex.bchat.util.push
 import io.beldex.bchat.util.setUpActionBarBchatLogo
@@ -75,12 +73,12 @@ class RegisterActivity : BaseActionBarActivity() {
         binding.registerButton.setOnClickListener { register() }
         binding.copyButton.setOnClickListener { copyPublicKey() }
         val termsExplanation =
-            SpannableStringBuilder("By using this service, you agree to our Terms of Service and Privacy Policy")
+                SpannableStringBuilder("By using this service, you agree to our Terms of Service and Privacy Policy")
         termsExplanation.setSpan(
-            StyleSpan(Typeface.BOLD),
-            40,
-            56,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                StyleSpan(Typeface.BOLD),
+                40,
+                56,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         termsExplanation.setSpan(object : ClickableSpan() {
 
@@ -89,10 +87,10 @@ class RegisterActivity : BaseActionBarActivity() {
             }
         }, 40, 56, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         termsExplanation.setSpan(
-            StyleSpan(Typeface.BOLD),
-            61,
-            75,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                StyleSpan(Typeface.BOLD),
+                61,
+                75,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         termsExplanation.setSpan(object : ClickableSpan() {
 
@@ -110,13 +108,11 @@ class RegisterActivity : BaseActionBarActivity() {
         displayName =intent.extras?.getString(REQUEST_NAME)
         binding.titleContentTextView?.text = "Hey $displayName, welcome to BChat!"
 
-        Log.d("--> wallet path ", walletPath!!)
-        Log.d("--> wallet localPassword ", localPassword!!)
-        showDetails()
+        //showDetails()
 
 
         //Important
-        //updateKeyPair()
+        updateKeyPair()
     }
     // endregion
 
@@ -130,18 +126,18 @@ class RegisterActivity : BaseActionBarActivity() {
             MnemonicUtilities.loadFileContents(this, fileName)
         }
         MnemonicCodec(loadFileContents).encode(
-            hexEncodedSeed!!,
-            MnemonicCodec.Language.Configuration.english
+                hexEncodedSeed!!,
+                MnemonicCodec.Language.Configuration.english
         )
     }
 
-    fun showDetails() {
+/*    fun showDetails() {
         AsyncShow(this, walletPath)
-            .execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
+                .execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
     }
 
     private class AsyncShow(val registerActivity: RegisterActivity, val walletPathVal: String?) :
-        AsyncTaskCoroutine<Executor?, Boolean>() {
+            AsyncTaskCoroutine<Executor?, Boolean>() {
         var name: String? = null
         var address: String? = null
         var height: Long = 0
@@ -153,52 +149,18 @@ class RegisterActivity : BaseActionBarActivity() {
         var dialogOpened = false
         override fun onPreExecute() {
             super.onPreExecute()
-            //showProgress()
-            //registerActivity.showProgressDialog(R.string.please_wait, 250)
-            registerActivity.binding.beldexAddressAnimation!!.visibility=View.VISIBLE
-            registerActivity.binding.beldexAddressTextView.visibility=View.GONE
             registerActivity.binding.registerButton.isEnabled=false
             registerActivity.binding.registerButton.setTextColor(ContextCompat.getColor(registerActivity, R.color.disable_button_text_color))
             if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
                 registerActivity.binding.registerButton.setBackgroundDrawable(ContextCompat.getDrawable(registerActivity, R.drawable.prominent_filled_button_medium_background_disable) );
             } else {
                 registerActivity.binding.registerButton.background =
-                    ContextCompat.getDrawable(registerActivity, R.drawable.prominent_filled_button_medium_background_disable);
+                        ContextCompat.getDrawable(registerActivity, R.drawable.prominent_filled_button_medium_background_disable);
             }
-            /*if (walletPathVal != null
-                && (WalletManager.getInstance()
-                    .queryWalletDevice("$walletPathVal.keys", registerActivity.localPassword)
-                        === Wallet.Device.Device_Ledger)
-            //&& progressCallback != null
-            ) {
-                Log.d("onPreExecute--> ","ok")
-                //progressCallback.showLedgerProgressDialog(LedgerProgressDialog.TYPE_RESTORE)
-                dialogOpened = true
-            }*/
         }
 
         override fun doInBackground(vararg params: Executor?): Boolean {
-            //Important refer this line what purpose of this below code
-            /*if (walletPathVal?.length != 1) {
-                Log.d("doInBackground wallet path length", walletPathVal?.length.toString())
-                return false
-            }
-            val walletPath = walletPathVal[0]!!*/
 
-
-            /*val wallet: Wallet
-              val closeWallet: Boolean
-              if (registerActivity.type == registerActivity.VIEW_TYPE_WALLET) {
-                    wallet = registerActivity.walletCallback.getWallet()
-                    closeWallet = false
-              } else {
-                    wallet = WalletManager.getInstance().openWallet(walletPathVal, registerActivity.localPassword)
-                    closeWallet = true
-              }*/
-
-            val wallet = WalletManager.getInstance()
-                .openWallet(walletPathVal, registerActivity.localPassword)
-            val closeWallet = true
             name = wallet.name
             walletStatus = wallet.status
             if (!walletStatus!!.isOk) {
@@ -208,41 +170,41 @@ class RegisterActivity : BaseActionBarActivity() {
             }
             address = wallet.address
             height = wallet.restoreHeight
-            seed = wallet.seed
+            seed = KeyPairUtilities.se
             viewKey = wallet.secretViewKey
-/* viewKey = when (wallet.getDeviceType()) {
-     Device_Ledger -> Ledger.Key()
-     Device_Software -> wallet.getSecretViewKey()
-     else -> throw IllegalStateException("Hardware backing not supported. At all!")
- }*/
+            *//* viewKey = when (wallet.getDeviceType()) {
+                 Device_Ledger -> Ledger.Key()
+                 Device_Software -> wallet.getSecretViewKey()
+                 else -> throw IllegalStateException("Hardware backing not supported. At all!")
+             }*//*
             spendKey = wallet.secretSpendKey
-/*spendKey = if (isWatchOnly) getActivity().getString(R.string.label_watchonly) else wallet.getSecretSpendKey()*/
+            *//*spendKey = if (isWatchOnly) getActivity().getString(R.string.label_watchonly) else wallet.getSecretSpendKey()*//*
             isWatchOnly = wallet.isWatchOnly
 
             IdentityKeyUtil.save(
-                registerActivity,
-                IdentityKeyUtil.IDENTITY_W_PUBLIC_KEY_PREF,
-                wallet.publicViewKey
+                    registerActivity,
+                    IdentityKeyUtil.IDENTITY_W_PUBLIC_KEY_PREF,
+                    wallet.publicViewKey
             )
             IdentityKeyUtil.save(
-                registerActivity,
-                IdentityKeyUtil.IDENTITY_W_PUBLIC_TWO_KEY_PREF,
-                wallet.secretViewKey
+                    registerActivity,
+                    IdentityKeyUtil.IDENTITY_W_PUBLIC_TWO_KEY_PREF,
+                    wallet.secretViewKey
             )
             IdentityKeyUtil.save(
-                registerActivity,
-                IdentityKeyUtil.IDENTITY_W_PUBLIC_THREE_KEY_PREF,
-                wallet.publicSpendKey
+                    registerActivity,
+                    IdentityKeyUtil.IDENTITY_W_PUBLIC_THREE_KEY_PREF,
+                    wallet.publicSpendKey
             )
             IdentityKeyUtil.save(
-                registerActivity,
-                IdentityKeyUtil.IDENTITY_W_PUBLIC_FOUR_KEY_PREF,
-                wallet.secretSpendKey
+                    registerActivity,
+                    IdentityKeyUtil.IDENTITY_W_PUBLIC_FOUR_KEY_PREF,
+                    wallet.secretSpendKey
             )
             IdentityKeyUtil.save(
-                registerActivity,
-                IdentityKeyUtil.IDENTITY_W_ADDRESS_PREF,
-                wallet.address
+                    registerActivity,
+                    IdentityKeyUtil.IDENTITY_W_ADDRESS_PREF,
+                    wallet.address
             )
             TextSecurePreferences.setSenderAddress(registerActivity,wallet.address)
             if (closeWallet) wallet.close()
@@ -251,41 +213,36 @@ class RegisterActivity : BaseActionBarActivity() {
 
         override fun onPostExecute(result: Boolean?) {
             super.onPostExecute(result)
-            //if (dialogOpened) registerActivity.dismissProgressDialog()
-            //if (!isAdded()) return  // never mind
-            //registerActivity.dismissProgressDialog()
-            registerActivity.binding.beldexAddressAnimation!!.visibility=View.GONE
-            registerActivity.binding.beldexAddressTextView.visibility=View.VISIBLE
             registerActivity.binding.registerButton.isEnabled=true
             registerActivity.binding.registerButton.setTextColor(ContextCompat.getColor(registerActivity, R.color.white))
             if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
                 registerActivity.binding.registerButton.setBackgroundDrawable(ContextCompat.getDrawable(registerActivity, R.drawable.prominent_filled_button_medium_background) );
             } else {
                 registerActivity.binding.registerButton.background =
-                    ContextCompat.getDrawable(registerActivity, R.drawable.prominent_filled_button_medium_background);
+                        ContextCompat.getDrawable(registerActivity, R.drawable.prominent_filled_button_medium_background);
             }
             registerActivity.walletName = name
             Log.d("onPostExecute--> ", result.toString())
             if (result == true) {
                 if (registerActivity.type == registerActivity.VIEW_TYPE_ACCEPT) {
-                    /*bAccept.setVisibility(View.VISIBLE)
-                    bAccept.setEnabled(true)*/
+                    *//*bAccept.setVisibility(View.VISIBLE)
+                    bAccept.setEnabled(true)*//*
                 }
 
-                /*tvWalletAddress.setText(address)
-                tvWalletHeight.setText(NumberFormat.getInstance().format(height))*/
+                *//*tvWalletAddress.setText(address)
+                tvWalletHeight.setText(NumberFormat.getInstance().format(height))*//*
                 if (!seed!!.isEmpty()) {
-                    /*bCopyAddressMnemonicSeed.setEnabled(true)
+                    *//*bCopyAddressMnemonicSeed.setEnabled(true)
                     llMnemonic.setVisibility(View.VISIBLE)
-                    tvWalletMnemonic.setText(seed)*/
+                    tvWalletMnemonic.setText(seed)*//*
                     val loadFileContents: (String) -> String = { fileName ->
                         MnemonicUtilities.loadFileContents(registerActivity, fileName)
                     }
                     val hexEncodedSeed = MnemonicCodec(loadFileContents).decode(seed!!)
                     val seedByteArray = Hex.fromStringCondensed(hexEncodedSeed)
-                    registerActivity.updateKeyPair(seedByteArray, address)
+                    registerActivity.updateKeyPair(seedByteArray)
                 }
-                /*var showAdvanced = false
+                *//*var showAdvanced = false
                 if (isKeyValid(viewKey)) {
                     llViewKey.setVisibility(View.VISIBLE)
                     tvWalletViewKey.setText(viewKey)
@@ -295,47 +252,49 @@ class RegisterActivity : BaseActionBarActivity() {
                     llSpendKey.setVisibility(View.VISIBLE)
                     tvWalletSpendKey.setText(spendKey)
                     showAdvanced = true
-                }*/
+                }*//*
 
-                /* if (showAdvanced) llAdvancedInfo.setVisibility(View.VISIBLE)
+                *//* if (showAdvanced) llAdvancedInfo.setVisibility(View.VISIBLE)
                  bCopyAddress.setEnabled(true)
                  activityCallback.setTitle(name + " " + getString(R.string.details_title), "")
                  activityCallback.setToolbarButton(
                      if (VIEW_TYPE_ACCEPT == type) Toolbar.BUTTON_NONE else Toolbar.BUTTON_BACK
-                 )*/
+                 )*//*
             } else {
-                /*tvWalletAddress.setText(walletStatus.toString())
+                *//*tvWalletAddress.setText(walletStatus.toString())
                 tvWalletHeight.setText(walletStatus.toString())
                 tvWalletMnemonic.setText(walletStatus.toString())
                 tvWalletViewKey.setText(walletStatus.toString())
-                tvWalletSpendKey.setText(walletStatus.toString())*/
+                tvWalletSpendKey.setText(walletStatus.toString())*//*
             }
             //hideProgress()
         }
-    }
-
-    // region Updating
-    /*private fun updateKeyPair() {
-        val keyPairGenerationResult = KeyPairUtilities.generate()
-        seed = keyPairGenerationResult.seed
-        ed25519KeyPair = keyPairGenerationResult.ed25519KeyPair
-        x25519KeyPair = keyPairGenerationResult.x25519KeyPair
     }*/
 
+    // region Updating
+    private fun updateKeyPair() {
+        println("update key pair value called 1")
+        val keyPairGenerationResult = KeyPairUtilities.generate()
+        seed = keyPairGenerationResult.seed
+        println("update key pair value called 2 $seed")
+        ed25519KeyPair = keyPairGenerationResult.ed25519KeyPair
+        x25519KeyPair = keyPairGenerationResult.x25519KeyPair
+        println("update key pair value called 3 $ed25519KeyPair and $x25519KeyPair")
+    }
+
     //New Line
-    private fun updateKeyPair(seedByteArray: ByteArray, address: String?) {
-        binding.beldexAddressTextView?.text = address
+/*    private fun updateKeyPair(seedByteArray: ByteArray) {
         val keyPairGenerationResult = KeyPairUtilities.generate(seedByteArray)
         seed = keyPairGenerationResult.seed
         ed25519KeyPair = keyPairGenerationResult.ed25519KeyPair
         x25519KeyPair = keyPairGenerationResult.x25519KeyPair
         KeyPairUtilities.store(
-            this,
-            seed!!,
-            keyPairGenerationResult.ed25519KeyPair,
-            x25519KeyPair!!
+                this,
+                seed!!,
+                keyPairGenerationResult.ed25519KeyPair,
+                x25519KeyPair!!
         )
-    }
+    }*/
 
     //Main
     /*private fun updatePublicKeyTextView() {
@@ -397,7 +356,6 @@ class RegisterActivity : BaseActionBarActivity() {
         val intent = Intent(this, CreatePasswordActivity::class.java)
         intent.putExtra("callPage", 1)
         push(intent)
-        //       finish()
     }
 
     private fun copyPublicKey() {

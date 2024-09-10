@@ -84,46 +84,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
         <activity
-            android:name="io.beldex.bchat.wallet.TransactionDetails"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="io.beldex.bchat.wallet.info.WalletInfoSeedActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="io.beldex.bchat.wallet.info.WalletInfoActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
-        <activity
-            android:name="io.beldex.bchat.wallet.node.activity.NodeActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="io.beldex.bchat.wallet.utils.pincodeview.managers.AppLockActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
-        <activity
-            android:name="io.beldex.bchat.wallet.settings.WalletSettings"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="io.beldex.bchat.wallet.utils.pincodeview.CustomPinActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
-        <activity
-            android:name="io.beldex.bchat.wallet.password.CreateWalletPassword"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" />
-        <activity
-            android:name="io.beldex.bchat.wallet.addressbook.AddressBookActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="io.beldex.bchat.contacts.BlockedContactActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
@@ -242,10 +202,6 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Bchat.DayNight.FlatActionBar" /> <!-- Disable all analytics -->
-        <activity
-            android:name="io.beldex.bchat.wallet.startwallet.StartWalletInfo"
-            android:screenOrientation="portrait"
-            android:exported="false" />
         <meta-data
             android:name="firebase_analytics_collection_deactivated"
             android:value="true" />
@@ -502,11 +458,11 @@
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="false"
             android:theme="@style/Theme.Bchat.ForceDark" />
-        <activity
+       <!-- <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat" />
+            android:theme="@style/Theme.AppCompat" />-->
         <activity
             android:name="io.beldex.bchat.ShortcutLauncherActivity"
             android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
@@ -704,13 +660,6 @@
         <meta-data
             android:name="com.sec.android.multiwindow.MINIMUM_SIZE_H"
             android:value="598.0dip" />
-
-        <service
-            android:name="io.beldex.bchat.wallet.service.WalletService"
-            android:description="@string/service_description"
-            android:exported="false"
-            android:foregroundServiceType="specialUse"
-            android:label="BChat Wallet Service" />
     </application>
 
 </manifest>

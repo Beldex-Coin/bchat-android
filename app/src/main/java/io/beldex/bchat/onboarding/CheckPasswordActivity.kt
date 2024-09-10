@@ -20,7 +20,6 @@ import io.beldex.bchat.keyboard.CustomKeyboardView
 import io.beldex.bchat.seed.ShowSeedActivity
 import io.beldex.bchat.util.push
 import io.beldex.bchat.util.setUpActionBarBchatLogo
-import io.beldex.bchat.wallet.info.WalletInfoSeedActivity
 
 class CheckPasswordActivity : BaseActionBarActivity() {
 
@@ -136,9 +135,9 @@ class CheckPasswordActivity : BaseActionBarActivity() {
                 finish()
             }
             2 -> {
-                val intent = Intent(this, WalletInfoSeedActivity::class.java)
+                /*val intent = Intent(this, WalletInfoSeedActivity::class.java)
                 push(intent)
-                finish()
+                finish()*/
             }
             else -> {
             }

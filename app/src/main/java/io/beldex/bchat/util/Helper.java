@@ -14,32 +14,19 @@ import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
-import android.hardware.fingerprint.FingerprintManager;
 import android.os.AsyncTask;
-import android.os.Build;
-import android.os.CancellationSignal;
 import android.os.StrictMode;
 import android.system.ErrnoException;
 import android.system.Os;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
-
-import io.beldex.bchat.model.WalletManager;
-import com.google.android.material.textfield.TextInputLayout;
-import io.beldex.bchat.data.Crypto;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,7 +38,6 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -62,22 +48,11 @@ import timber.log.Timber;
 public class Helper {
     static public final String NOCRAZYPASS_FLAGFILE = ".nocrazypass";
 
-    //Important
-    static public final String BASE_CRYPTO = Crypto.BDX.getSymbol();
-    static public final int BDX_DECIMALS = 9;
-    static public final long ONE_BDX = Math.round(Math.pow(10, Helper.BDX_DECIMALS));
-
     static public final boolean SHOW_EXCHANGERATES = true;
     static public final boolean ALLOW_SHIFT = true;
 
-    static private final String WALLET_DIR = "wallets";
-    static private final String MONERO_DIR = "monero";
-
     static public int DISPLAY_DIGITS_INFO = 5;
 
-    static public File getWalletRoot(Context context) {
-        return getStorage(context, WALLET_DIR);
-    }
 
     static public File getStorage(Context context, String folderName) {
         File dir = new File(context.getFilesDir(), folderName);
@@ -112,13 +87,6 @@ public class Helper {
         }
     }
 
-    static public File getWalletFile(Context context, String aWalletName) {
-        File walletDir = getWalletRoot(context);
-        File f = new File(walletDir, aWalletName);
-        Timber.d("wallet=%s size= %d", f.getAbsolutePath(), f.length());
-        return f;
-    }
-
     static public void showKeyboard(Activity act) {
         InputMethodManager imm = (InputMethodManager) act.getSystemService(Context.INPUT_METHOD_SERVICE);
         final View focus = act.getCurrentFocus();
@@ -143,50 +111,6 @@ public class Helper {
 
     static public void hideKeyboardAlways(Activity act) {
         act.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-    }
-
-    static public BigDecimal getDecimalAmount(long amount) {
-        return new BigDecimal(amount).scaleByPowerOfTen(-BDX_DECIMALS);
-    }
-
-    static public String getDisplayAmount(long amount) {
-        return getDisplayAmount(amount, BDX_DECIMALS);
-    }
-
-    static public String getDisplayAmount(long amount, int maxDecimals) {
-        // a Java bug does not strip zeros properly if the value is 0
-        if (amount == 0) return "0.00";
-        BigDecimal d = getDecimalAmount(amount)
-                .setScale(maxDecimals, BigDecimal.ROUND_HALF_UP)
-                .stripTrailingZeros();
-        if (d.scale() < 2)
-            d = d.setScale(2, BigDecimal.ROUND_UNNECESSARY);
-        return d.toPlainString();
-    }
-
-    static public String getFormattedAmount(double amount, boolean isCrypto) {
-        // at this point selection is BDX in case of error
-        String displayB;
-        if (isCrypto) {
-            if ((amount >= 0) || (amount == 0)) {
-                displayB = String.format(Locale.US, "%,.4f", amount);
-            } else {
-                displayB = null;
-            }
-        } else { // not crypto
-            displayB = String.format(Locale.US, "%,.4f", amount);
-        }
-        return displayB;
-    }
-
-    static public String getDisplayAmount(double amount) {
-        // a Java bug does not strip zeros properly if the value is 0
-        BigDecimal d = new BigDecimal(amount)
-                .setScale(BDX_DECIMALS, BigDecimal.ROUND_HALF_UP)
-                .stripTrailingZeros();
-        if (d.scale() < 1)
-            d = d.setScale(1, BigDecimal.ROUND_UNNECESSARY);
-        return d.toPlainString();
     }
 
     static public Bitmap getBitmap(Context context, int drawableId) {
@@ -293,75 +217,6 @@ public class Helper {
                     + Character.digit(hex.charAt(i + 1), 16));
         }
         return data;
-    }
-
-    static public void setMoneroHome(Context context) {
-        try {
-            String home = getStorage(context, MONERO_DIR).getAbsolutePath();
-            Os.setenv("HOME", home, true);
-        } catch (ErrnoException ex) {
-            throw new IllegalStateException(ex);
-        }
-    }
-
-    static public void initLogger(Context context) {
-        if (BuildConfig.DEBUG) {
-            initLogger(context, WalletManager.LOGLEVEL_DEBUG);
-        }
-        // no logger if not debug
-    }
-
-    // TODO make the log levels refer to the  WalletManagerFactory::LogLevel enum ?
-    static public void initLogger(Context context, int level) {
-        String home = getStorage(context, MONERO_DIR).getAbsolutePath();
-        WalletManager.initLogger(home + "/monerujo", "monerujo.log");
-        if (level >= WalletManager.LOGLEVEL_SILENT)
-            WalletManager.setLogLevel(level);
-    }
-
-    static public boolean useCrazyPass(Context context) {
-        File flagFile = new File(getWalletRoot(context), NOCRAZYPASS_FLAGFILE);
-        return !flagFile.exists();
-    }
-
-    // try to figure out what the real wallet password is given the user password
-    // which could be the actual wallet password or a (maybe malformed) CrAzYpass
-    // or the password used to derive the CrAzYpass for the wallet
-    static public String getWalletPassword(Context context, String walletName, String password) {
-        String walletPath = new File(getWalletRoot(context), walletName + ".keys").getAbsolutePath();
-
-        // try with entered password (which could be a legacy password or a CrAzYpass)
-        if (WalletManager.getInstance().verifyWalletPasswordOnly(walletPath, password)) {
-            return password;
-        }
-
-        // maybe this is a malformed CrAzYpass?
-        String possibleCrazyPass = CrazyPassEncoder.reformat(password);
-        if (possibleCrazyPass != null) { // looks like a CrAzYpass
-            if (WalletManager.getInstance().verifyWalletPasswordOnly(walletPath, possibleCrazyPass)) {
-                return possibleCrazyPass;
-            }
-        }
-
-        // generate & try with CrAzYpass
-        String crazyPass = KeyStoreHelper.getCrazyPass(context, password);
-        if (WalletManager.getInstance().verifyWalletPasswordOnly(walletPath, crazyPass)) {
-            return crazyPass;
-        }
-
-        // or maybe it is a broken CrAzYpass? (of which we have two variants)
-        String brokenCrazyPass2 = KeyStoreHelper.getBrokenCrazyPass(context, password, 2);
-        if ((brokenCrazyPass2 != null)
-                && WalletManager.getInstance().verifyWalletPasswordOnly(walletPath, brokenCrazyPass2)) {
-            return brokenCrazyPass2;
-        }
-        String brokenCrazyPass1 = KeyStoreHelper.getBrokenCrazyPass(context, password, 1);
-        if ((brokenCrazyPass1 != null)
-                && WalletManager.getInstance().verifyWalletPasswordOnly(walletPath, brokenCrazyPass1)) {
-            return brokenCrazyPass1;
-        }
-
-        return null;
     }
 
     static AlertDialog openDialog = null; // for preventing opening of multiple dialogs
@@ -565,17 +420,6 @@ public class Helper {
         void fail(String walletName);
     }
 
-    static private boolean processPasswordEntry(Context context, String walletName, String pass, boolean fingerprintUsed, PasswordAction action) {
-        String walletPassword = Helper.getWalletPassword(context, walletName, pass);
-        if (walletPassword != null) {
-            action.act(walletName, walletPassword, fingerprintUsed);
-            return true;
-        } else {
-            action.fail(walletName);
-            return false;
-        }
-    }
-
     public interface Action {
         boolean run();
     }
@@ -593,32 +437,5 @@ public class Helper {
 
     static public boolean preventScreenshot() {
         return !(BuildConfig.DEBUG || BuildConfig.FLAVOR.equals("alpha"));
-    }
-
-    static public final int STALE_NODE_HOURS = 2;
-
-    //Important
-    static public void showTimeDifference(TextView view, long timeInSeconds) {
-        final Context ctx = view.getContext();
-        final long now = Calendar.getInstance().getTimeInMillis() / 1000;
-        final long secs = (now - timeInSeconds);
-        final long mins = secs / 60; // in minutes
-        final long hours = mins / 60;
-        final long days = hours / 24;
-        String msg;
-        if (mins < 2) {
-            msg = ctx.getString(R.string.node_updated_now, secs);
-        } else if (hours < 2) {
-            msg = ctx.getString(R.string.node_updated_mins, mins);
-        } else if (days < 2) {
-            msg = ctx.getString(R.string.node_updated_hours, hours);
-        } else {
-            msg = ctx.getString(R.string.node_updated_days, days);
-        }
-        view.setText(msg);
-        if (hours >= STALE_NODE_HOURS)
-            view.setTextColor(ThemeHelper.getThemedColor(view.getContext(), R.attr.colorError));
-        else
-            view.setTextColor(ThemeHelper.getThemedColor(view.getContext(), android.R.attr.textColorPrimary));
     }
 }

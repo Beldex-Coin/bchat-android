@@ -51,7 +51,7 @@ import io.beldex.bchat.mms.GlideRequests
 import io.beldex.bchat.permissions.Permissions
 import io.beldex.bchat.profiles.ProfileMediaConstraints
 import io.beldex.bchat.showCustomDialog
-import io.beldex.bchat.wallet.CheckOnline
+import io.beldex.bchat.model.CheckOnline
 import kotlinx.coroutines.Dispatchers
 import java.util.regex.Pattern
 import com.canhub.cropper.CropImage

@@ -2,8 +2,6 @@ package io.beldex.bchat.util
 
 import android.content.Context
 import android.content.SharedPreferences
-import io.beldex.bchat.PassphraseRequiredActionBarActivity
-import io.beldex.bchat.data.NodeInfo
 
 class SharedPreferenceUtil(
     private val context: Context
@@ -28,36 +26,4 @@ class SharedPreferenceUtil(
     fun getSelectedNodeId(): String? {
         return context.getSharedPreferences(SELECTED_NODE_PREFS_NAME, Context.MODE_PRIVATE).getString("0", null)
     }
-
-    fun saveFavourites(favouriteNodes: HashSet<NodeInfo>) {
-        val editor = context.getSharedPreferences(NODES_PREFS_NAME, Context.MODE_PRIVATE).edit()
-        editor.clear()
-        var i = 1
-        for (info in favouriteNodes) {
-            val nodeString = info.toNodeString()
-            editor.putString(i.toString(), nodeString)
-            i++
-        }
-        editor.apply()
-    }
-
-    fun saveSelectedNode(nodeInfo: NodeInfo?) { // save only if changed
-        val selectedNodeId = getSelectedNodeId()
-        if (nodeInfo != null) {
-            if (!nodeInfo.toNodeString().equals(selectedNodeId)) saveNode(nodeInfo)
-        } else {
-            if (selectedNodeId != null) saveNode(null)
-        }
-    }
-
-    private fun saveNode(nodeInfo: NodeInfo?) {
-        val editor = context.getSharedPreferences(SELECTED_NODE_PREFS_NAME, Context.MODE_PRIVATE).edit()
-        if (nodeInfo == null) {
-            editor.clear()
-        } else {
-            editor.putString("0", nodeInfo.toNodeString())
-        }
-        editor.apply()
-    }
-
 }

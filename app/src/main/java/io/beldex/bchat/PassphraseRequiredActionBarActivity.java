@@ -12,16 +12,13 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import io.beldex.bchat.data.BarcodeData;
 import com.beldex.libsignal.utilities.Log;
-import io.beldex.bchat.data.BarcodeData;
+
 import io.beldex.bchat.home.HomeActivity;
 import io.beldex.bchat.onboarding.SplashScreenActivity;
 import io.beldex.bchat.service.KeyCachingService;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import io.beldex.bchat.webrtc.PowerButtonReceiver;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
@@ -247,7 +244,5 @@ public abstract class PassphraseRequiredActionBarActivity extends BaseActionBarA
     }
   }
 
-  public void onUriScanned(BarcodeData barcodeData) {
 
-  }
 }

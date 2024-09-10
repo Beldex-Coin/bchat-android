@@ -65,30 +65,6 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/preferences_wallet_title"
-        app:iconSpaceReserved="false"
-        app:layout="@layout/preference_layout_header">
-
-        <io.beldex.bchat.components.SwitchPreferenceCompat
-            android:defaultValue="false"
-            android:key="pref_is_wallet_active"
-            app:iconSpaceReserved="false"
-            android:title="Start Wallet"
-            android:summary="@string/preferences_start_wallet_subtitle"
-            app:layout="@layout/preference_layout"/>
-
-        <io.beldex.bchat.components.SwitchPreferenceCompat
-            android:defaultValue="false"
-            android:key="pref_pay_as_you_chat"
-            app:iconSpaceReserved="false"
-            android:title="@string/preferences_chat_pay_as_you_chat_title"
-            android:dependency="pref_is_wallet_active"
-            android:summary="@string/preferences_pay_as_you_chat_subTitle"
-            app:layout="@layout/preference_layout"/>
-
-    </PreferenceCategory>
-
-
     <PreferenceCategory android:title="@string/preferences_app_protection__communication"
         app:iconSpaceReserved="false"
         app:layout="@layout/preference_layout_header">

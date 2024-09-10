@@ -67,13 +67,6 @@ public class KeyStoreHelper {
         }
     }
 
-    public static String getCrazyPass(Context context, String password) {
-        if (Helper.useCrazyPass(context))
-            return getCrazyPass(context, password, 0);
-        else
-            return password;
-    }
-
     public static String getBrokenCrazyPass(Context context, String password, int brokenVariant) {
         // due to a link bug in the initial implementation, some crazypasses were built with
         // prehash & variant == 1

@@ -1,4 +1,4 @@
-package io.beldex.bchat.wallet
+package io.beldex.bchat.model
 
 import android.content.Context
 import android.net.ConnectivityManager

@@ -41,7 +41,6 @@ import io.beldex.bchat.components.ProfilePictureView
 import io.beldex.bchat.conversation.v2.ConversationFragmentV2
 import io.beldex.bchat.conversation.v2.utilities.NotificationUtils
 import io.beldex.bchat.crypto.IdentityKeyUtil
-import io.beldex.bchat.data.NodeInfo
 import io.beldex.bchat.database.*
 import io.beldex.bchat.database.model.ThreadRecord
 import io.beldex.bchat.dependencies.DatabaseComponent
@@ -58,8 +57,6 @@ import io.beldex.bchat.home.search.GlobalSearchInputLayout
 import io.beldex.bchat.messagerequests.MessageRequestsActivity
 import io.beldex.bchat.mms.GlideApp
 import io.beldex.bchat.mms.GlideRequests
-import io.beldex.bchat.model.AsyncTaskCoroutine
-import io.beldex.bchat.model.Wallet
 import io.beldex.bchat.onboarding.AboutActivity
 import io.beldex.bchat.preferences.NotificationSettingsActivity
 import io.beldex.bchat.preferences.PrivacySettingsActivity
@@ -68,19 +65,11 @@ import io.beldex.bchat.preferences.ShowQRCodeWithScanQRCodeActivity
 import io.beldex.bchat.seed.SeedPermissionActivity
 import io.beldex.bchat.service.WebRtcCallService
 import io.beldex.bchat.util.*
-import io.beldex.bchat.wallet.CheckOnline
-import io.beldex.bchat.wallet.WalletFragment
-import io.beldex.bchat.wallet.info.WalletInfoActivity
-import io.beldex.bchat.wallet.startwallet.StartWalletInfo
-import io.beldex.bchat.wallet.utils.pincodeview.CustomPinActivity
-import io.beldex.bchat.wallet.utils.pincodeview.managers.AppLock
-import io.beldex.bchat.wallet.utils.pincodeview.managers.LockManager
 import io.beldex.bchat.webrtc.CallViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.FragmentHomeBinding
-import io.beldex.bchat.databinding.ViewMessageRequestBannerBinding
 import kotlinx.coroutines.*
 import org.apache.commons.lang3.time.DurationFormatUtils
 import timber.log.Timber
@@ -193,7 +182,6 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         NavigationItemModel(R.drawable.ic_message_requests, "Message Requests",0),
         NavigationItemModel(R.drawable.ic_app_permissions, "App Permissions",0),
         NavigationItemModel(R.drawable.ic_recovery_seed, "Recovery Seed",0),
-        NavigationItemModel(R.drawable.ic_wallet, "Wallet",R.drawable.ic_beta),
         NavigationItemModel(R.drawable.ic_report_issue,"Report Issue",0),
         NavigationItemModel(R.drawable.ic_help, "Help",0),
         NavigationItemModel(R.drawable.ic_invite, "Invite",0),
@@ -279,30 +267,18 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                         showSeed()
                     }
                     6 -> {
-                        // # My Wallet Activity
-                        if (CheckOnline.isOnline(requireActivity().applicationContext)) {
-                            if (TextSecurePreferences.isWalletActive(requireContext())) {
-                                openMyWallet()
-                            } else {
-                                openStartWalletInfo()
-                            }
-                        } else {
-                            Toast.makeText(requireActivity().applicationContext, getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                    7 -> {
                         // # Support
                         activityCallback?.sendMessageToSupport()
                     }
-                    8 -> {
+                    7 -> {
                         // # Help Activity
                         help()
                     }
-                    9 -> {
+                    8 -> {
                         // # Invite Activity
                         sendInvitation(hexEncodedPublicKey)
                     }
-                    10 -> {
+                    9 -> {
                         // # About Activity
                         showAbout()
                     }
@@ -553,9 +529,6 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     override fun onResume() {
         super.onResume()
         setupCallActionBar()
-        if(TextSecurePreferences.isWalletActive(requireContext())) {
-            pingSelectedNode()
-        }
         ApplicationContext.getInstance(requireActivity().applicationContext).messageNotifier.setHomeScreenVisible(false)
         if (TextSecurePreferences.getLocalNumber(requireActivity().applicationContext) == null) {
             return; } // This can be the case after a secondary device is auto-cleared
@@ -896,78 +869,12 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                 drawerProfileIcon: ProfilePictureView
         )
         fun sendMessageToSupport()
-        //Node Connection
-        fun getFavouriteNodes(): MutableSet<NodeInfo>
-        fun getOrPopulateFavourites(): MutableSet<NodeInfo>
-        fun getNode(): NodeInfo?
-        fun setNode(node: NodeInfo?)
-
-        //Wallet
-        fun hasBoundService(): Boolean
-        val connectionStatus: Wallet.ConnectionStatus?
     }
 
     fun dispatchTouchEvent() {
         if (binding.newConversationButtonSet.isExpanded) {
             binding.newConversationButtonSet.collapse()
         }
-    }
-
-    private fun pingSelectedNode() {
-        val pingSelected = 0
-        val findBest = 1
-        AsyncFindBestNode(pingSelected, findBest).execute<Int>(pingSelected)
-    }
-
-    inner class AsyncFindBestNode(private val pingSelected: Int, private val findBest: Int) :
-        AsyncTaskCoroutine<Int?, NodeInfo?>() {
-
-        override fun doInBackground(vararg params: Int?): NodeInfo? {
-            val favourites: Set<NodeInfo?> = activityCallback!!.getOrPopulateFavourites()
-            var selectedNode: NodeInfo?
-            if (params[0] == findBest) {
-                selectedNode = autoselect(favourites)
-            } else if (params[0] == pingSelected) {
-                selectedNode = activityCallback!!.getNode()
-                if (selectedNode == null) {
-                    for (node in favourites) {
-                        if (node!!.isSelected) {
-                            selectedNode = node
-                            break
-                        }
-                    }
-                }
-                if (selectedNode == null) { // autoselect
-                    selectedNode = autoselect(favourites)
-                } else {
-                    //Steve Josephh21
-                    if(selectedNode!=null) {
-                        selectedNode!!.testRpcService()
-                    }
-                }
-            } else throw IllegalStateException()
-            return if (selectedNode != null && selectedNode.isValid) {
-                activityCallback!!.setNode(selectedNode)
-                selectedNode
-            } else {
-                activityCallback!!.setNode(null)
-                null
-            }
-        }
-
-        override fun onPostExecute(result: NodeInfo?) {
-            Log.d("Beldex", "daemon connected to  ${result?.host}")
-        }
-        
-    }
-
-    fun autoselect(nodes: Set<NodeInfo?>): NodeInfo? {
-        if (nodes.isEmpty()) return null
-        NodePinger.execute(nodes, null)
-        val nodeList: ArrayList<NodeInfo?> = ArrayList<NodeInfo?>(nodes)
-        Collections.sort(nodeList, NodeInfo.BestNodeComparator)
-        val rnd = Random().nextInt(nodeList.size)
-        return nodeList[rnd]
     }
 
     private fun showAbout() {
@@ -1046,45 +953,6 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
             replaceFragment(ConversationFragmentV2(), null, extras)
         }else {
             homeAdapter.notifyDataSetChanged()
-        }
-    }
-
-    private fun openMyWallet() {
-        val walletName = TextSecurePreferences.getWalletName(requireContext())
-        val walletPassword = TextSecurePreferences.getWalletPassword(requireContext())
-        if (walletName != null && walletPassword !=null) {
-            //startWallet(walletName, walletPassword, fingerprintUsed = false, streetmode = false)
-            val lockManager: LockManager<CustomPinActivity> = LockManager.getInstance() as LockManager<CustomPinActivity>
-            lockManager.enableAppLock(requireContext(), CustomPinActivity::class.java)
-            Intent(requireContext(), CustomPinActivity::class.java).also {
-                if(TextSecurePreferences.getWalletEntryPassword(requireContext())!=null) {
-                    it.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN)
-                    it.putExtra("change_pin",false)
-                    it.putExtra("send_authentication",false)
-                    customPinActivityResultLauncher.launch(it)
-                } else{
-                    it.putExtra(AppLock.EXTRA_TYPE, AppLock.ENABLE_PINLOCK)
-                    it.putExtra("change_pin",false)
-                    it.putExtra("send_authentication",false)
-                    customPinActivityResultLauncher.launch(it)
-                }
-            }
-        }else{
-            Intent(requireContext(), WalletInfoActivity::class.java).also {
-                push(it)
-            }
-        }
-    }
-
-    private fun openStartWalletInfo(){
-        Intent(requireContext(), StartWalletInfo::class.java).also {
-            push(it)
-        }
-    }
-
-    private var customPinActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            replaceFragment(WalletFragment(), WalletFragment::class.java.name, null)
         }
     }
 

@@ -379,13 +379,13 @@
           "description":"- Updated call functionalities to adhere with google play's developer guidelines"
         },
         {
+          "description":"- Removed non compliant version of SDKs"
+        },
+        {
           "description":"- Targeted latest android version"
         },
         {
           "description":"- Updated google play core libraries"
-        },
-        {
-          "description":"- Updated non compliant version of SDKs"
         }
       ]
     }

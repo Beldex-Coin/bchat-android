@@ -20,8 +20,14 @@ import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.BaseActionBarActivity
 import io.beldex.bchat.home.HomeActivity
 import io.beldex.bchat.util.*
+import dagger.hilt.android.AndroidEntryPoint
+import io.beldex.bchat.notifications.PushManager
+import io.beldex.bchat.notifications.PushRegistry
+import javax.inject.Inject
 
 class PNModeActivity : BaseActionBarActivity() {
+
+    @Inject lateinit var pushRegistry: PushRegistry
     private lateinit var binding: ActivityPnModeBinding
     private var selectedOptionView: PNModeView? = null
 
@@ -150,10 +156,10 @@ class PNModeActivity : BaseActionBarActivity() {
             dialog.create().show()
             return
         }
-        TextSecurePreferences.setIsUsingFCM(this, (selectedOptionView == binding.fcmOptionView))
+        TextSecurePreferences.setPushEnabled(this, (selectedOptionView == binding.fcmOptionView))
         val application =ApplicationContext.getInstance(this)
         application.startPollingIfNeeded()
-        application.registerForFCMIfNeeded(true)
+        pushRegistry.refresh(true)
         val intent = Intent(this, HomeActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         show(intent)

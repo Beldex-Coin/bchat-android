@@ -3,7 +3,8 @@ package io.beldex.bchat.preferences
 import android.os.Bundle
 import io.beldex.bchat.R
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
-
+import dagger.hilt.android.AndroidEntryPoint
+@AndroidEntryPoint
 class NotificationSettingsActivity : PassphraseRequiredActionBarActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?, isReady: Boolean) {

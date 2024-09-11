@@ -548,3 +548,18 @@ object OnionRequestAPI {
     }
     // endregion
 }
+
+enum class Version(val value: String) {
+    V2("/beldex/v2/lsrpc"),
+    V3("/beldex/v3/lsrpc"),
+    V4("/beldex/v4/lsrpc");
+}
+
+
+data class OnionResponse(
+    val info: Map<*, *>,
+    val body: ByteArray? = null
+) {
+    val code: Int? get() = info["code"] as? Int
+    val message: String? get() = info["message"] as? String
+}

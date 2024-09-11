@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment as SignalAttachment
 import com.beldex.libbchat.messaging.sending_receiving.link_preview.LinkPreview as SignalLinkPreview
 import com.beldex.libbchat.messaging.sending_receiving.quotes.QuoteModel as SignalQuote
+import com.beldex.libbchat.utilities.Device
 
 object MessageSender {
 
@@ -350,8 +351,8 @@ object MessageSender {
     }
 
     // Secret groups
-    fun createClosedGroup(name: String, members: Collection<String>): Promise<String, Exception> {
-        return create(name, members)
+    fun createClosedGroup(device: Device, name: String, members: Collection<String>): Promise<String, Exception> {
+        return create(device, name, members)
     }
 
     fun explicitNameChange(groupPublicKey: String, newName: String) {

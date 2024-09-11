@@ -12,6 +12,7 @@ import com.beldex.libbchat.messaging.sending_receiving.notifications.Server
 import com.beldex.libbchat.messaging.utilities.Data
 import com.beldex.libbchat.mnode.MnodeMessage
 import com.beldex.libbchat.mnode.OnionRequestAPI
+import com.beldex.libbchat.mnode.Version
 import com.beldex.libsignal.utilities.JsonUtil
 import com.beldex.libsignal.utilities.Log
 
@@ -37,7 +38,7 @@ class NotifyPNServerJob(val message: MnodeMessage) : Job {
         val body = RequestBody.create(MediaType.get("application/json"), JsonUtil.toJson(parameters))
         val request = Request.Builder().url(url).post(body).build()
         retryIfNeeded(4) {
-            OnionRequestAPI.sendOnionRequest(request, server.url, server.publicKey,"/beldex/v2/lsrpc") success { response ->
+            OnionRequestAPI.sendOnionRequest(request, server.url, server.publicKey, Version.V2) success { response ->
                 when (response.code) {
                                      null, 0 -> Log.d("NotifyPNServerJob", "Couldn't notify PN server due to error: ${response.message}.")
                 }

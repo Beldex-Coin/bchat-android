@@ -2,6 +2,7 @@ package com.beldex.libbchat.messaging.sending_receiving.notifications
 
 import com.goterl.lazysodium.utils.Key
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * N.B. all of these variable names will be named the same as the actual JSON utf-8 request/responses expected from the server.

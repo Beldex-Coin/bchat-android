@@ -8,6 +8,7 @@ import okhttp3.RequestBody
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.mnode.OnionRequestAPI
 import com.beldex.libbchat.mnode.OnionResponse
+import com.beldex.libbchat.mnode.Version
 import com.beldex.libbchat.utilities.Device
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.utilities.JsonUtil
@@ -135,6 +136,6 @@ object PushRegistryV1 {
         request,
         server.url,
         server.publicKey,
-        "/beldex/v2/lsrpc"
+        Version.V2
     )
 }

@@ -320,8 +320,8 @@ object OnionRequestAPI {
     /**
      * Sends an onion request to `destination`. Builds new paths as needed.
      */
-    private fun sendOnionRequest(destination: Destination, payload: Map<*, *>): Promise<Map<*, *>, Exception> {
-        val deferred = deferred<Map<*, *>, Exception>()
+    private fun sendOnionRequest(destination: Destination, payload: Map<*, *>): Promise<OnionResponse, Exception> {
+        val deferred = deferred<OnionResponse, Exception>()
         var guardMnode: Mnode? = null
         Log.d("Beldex --> payload onion req uest ","$payload")
         Log.d("Beldex --> destination onion request ","$destination")
@@ -410,13 +410,13 @@ object OnionRequestAPI {
                                     val exception = HTTPRequestFailedAtDestinationException(statusCode, body, destination.description)
                                     return@queue deferred.reject(exception)
                                 }
-                                deferred.resolve(body)
+                                deferred.resolve(OnionResponse(body, JsonUtil.toJson(body).toByteArray()))
                             } else {
                                 if (statusCode != 200) {
                                     val exception = HTTPRequestFailedAtDestinationException(statusCode, json, destination.description)
                                     return@queue deferred.reject(exception)
                                 }
-                                deferred.resolve(json)
+                                deferred.resolve(OnionResponse(json, JsonUtil.toJson(json).toByteArray()))
                             }
                         } catch (exception: Exception) {
                             deferred.reject(Exception("Invalid JSON: ${plaintext.toString(Charsets.UTF_8)}."))
@@ -483,6 +483,8 @@ object OnionRequestAPI {
                     Log.d("Beldex","Destination server returned ${exception.statusCode}")
                 } else if (message == "Beldex Server error") {
                     Log.d("Beldex", "message was $message")
+                } else if (exception.statusCode == 404) {
+                    // 404 is probably file server missing a file, don't rebuild path or mark a mnode as bad here
                 } else { // Only drop mnode/path if not receiving above two exception cases
                     handleUnspecificError()
                 }
@@ -496,7 +498,7 @@ object OnionRequestAPI {
     /**
      * Sends an onion request to `mnode`. Builds new paths as needed.
      */
-    internal fun sendOnionRequest(method: Mnode.Method, parameters: Map<*, *>, mnode: Mnode, publicKey: String? = null): Promise<Map<*, *>, Exception> {
+    internal fun sendOnionRequest(method: Mnode.Method, parameters: Map<*, *>, mnode: Mnode, publicKey: String? = null): Promise<OnionResponse, Exception> {
         val payload = mapOf( "method" to method.rawValue, "params" to parameters )
         //-Log.d("Beldex","payload in sendOnionRequest $payload ")
         //-Log.d("Beldex","parameters in sendOnionRequest $parameters ")
@@ -516,7 +518,7 @@ object OnionRequestAPI {
      *
      * `publicKey` is the hex encoded public key of the user the call is associated with. This is needed for swarm cache maintenance.
      */
-    fun sendOnionRequest(request: Request, server: String, x25519PublicKey: String, target: String = "/beldex/v3/lsrpc"): Promise<Map<*, *>, Exception> {
+    fun sendOnionRequest(request: Request, server: String, x25519PublicKey: String, target: Version = Version.V4): Promise<OnionResponse, Exception> {
         val headers = request.getHeadersForOnionRequest()
         Log.d("Beldex","sendOnionRequest for social group header $headers")
         val url = request.url()
@@ -539,7 +541,7 @@ object OnionRequestAPI {
             "headers" to headers
         )
         //-Log.d("Beldex","sendOnionRequest for social group payload $payload")
-        val destination = Destination.Server(host, target, x25519PublicKey, url.scheme(), url.port())
+        val destination = Destination.Server(host, target.value, x25519PublicKey, url.scheme(), url.port())
         Log.d("Beldex","sendOnionRequest for social group destination $destination")
         return sendOnionRequest(destination, payload).recover { exception ->
             Log.d("Beldex", "Couldn't reach server: $urlAsString due to error: $exception.")

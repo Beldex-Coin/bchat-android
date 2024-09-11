@@ -9,6 +9,8 @@ import okhttp3.MediaType
 import okhttp3.RequestBody
 import com.beldex.libbchat.messaging.open_groups.OpenGroupAPIV2
 import com.beldex.libbchat.mnode.OnionRequestAPI
+import com.beldex.libbchat.mnode.OnionResponse
+import com.beldex.libbchat.mnode.Version
 import com.beldex.libsignal.utilities.Base64
 import com.beldex.libsignal.utilities.HTTP
 import com.beldex.libsignal.utilities.JsonUtil
@@ -58,7 +60,7 @@ object FileServerAPIV2 {
         return RequestBody.create(MediaType.get("application/json"), parametersAsJSON)
     }
 
-    private fun send(request: Request): Promise<Map<*, *>, Exception> {
+    private fun send(request: Request): Promise<OnionResponse, Exception> {
         val url = HttpUrl.parse(server) ?: return Promise.ofFail(OpenGroupAPIV2.Error.InvalidURL)
         //-Log.d("Beldex"," file server send URL $url")
         val urlBuilder = HttpUrl.Builder()
@@ -83,7 +85,7 @@ object FileServerAPIV2 {
         }
         if (request.useOnionRouting) {
             //-Log.d("Beldex","request for fileserver ${request.useOnionRouting}")
-            return OnionRequestAPI.sendOnionRequest(requestBuilder.build(), server, serverPublicKey).fail { e ->
+            return OnionRequestAPI.sendOnionRequest(requestBuilder.build(), server, serverPublicKey, Version.V3).fail { e ->
                 //Log.e("Beldex", "File server request failed.", e)
                 when (e) {
                     // No need for the stack trace for HTTP errors
@@ -100,15 +102,15 @@ object FileServerAPIV2 {
         val base64EncodedFile = Base64.encodeBytes(file)
         val parameters = mapOf( "file" to base64EncodedFile )
         val request = Request(verb = HTTP.Verb.POST, endpoint = "files", parameters = parameters)
-        return send(request).map { json ->
-            json["result"] as? Long ?: throw OpenGroupAPIV2.Error.ParsingFailed
+        return send(request).map { response ->
+            response.info["result"] as? Long ?: throw OpenGroupAPIV2.Error.ParsingFailed
         }
     }
 
     fun download(file: Long): Promise<ByteArray, Exception> {
         val request = Request(verb = HTTP.Verb.GET, endpoint = "files/$file")
-        return send(request).map { json ->
-            val base64EncodedFile = json["result"] as? String ?: throw Error.ParsingFailed
+        return send(request).map { response ->
+            val base64EncodedFile = response.info["result"] as? String ?: throw Error.ParsingFailed
             Base64.decode(base64EncodedFile) ?: throw Error.ParsingFailed
         }
     }

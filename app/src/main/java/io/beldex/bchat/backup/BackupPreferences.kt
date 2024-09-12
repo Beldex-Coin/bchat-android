@@ -27,7 +27,7 @@ object BackupPreferences {
         addBackupEntryString(prefList, preferences, prefsFileName, TextSecurePreferences.PROFILE_AVATAR_URL_PREF)
         addBackupEntryInt(prefList, preferences, prefsFileName, TextSecurePreferences.PROFILE_AVATAR_ID_PREF)
         addBackupEntryString(prefList, preferences, prefsFileName, TextSecurePreferences.PROFILE_KEY_PREF)
-        addBackupEntryBoolean(prefList, preferences, prefsFileName, TextSecurePreferences.IS_USING_FCM)
+        addBackupEntryBoolean(prefList, preferences, prefsFileName, TextSecurePreferences.IS_PUSH_ENABLED)
         return prefList
     }
 

@@ -397,7 +397,7 @@ interface TextSecurePreferences {
 
         @JvmStatic
         fun isPushEnabled(context: Context): Boolean {
-            return getBooleanPreference(context, IS_PUSH_ENABLED, false)
+            return getBooleanPreference(context, IS_PUSH_ENABLED, true)
         }
 
         @JvmStatic
@@ -789,7 +789,7 @@ interface TextSecurePreferences {
 
         @JvmStatic
         fun isScreenSecurityEnabled(context: Context): Boolean {
-            return getBooleanPreference(context, SCREEN_SECURITY_PREF, false)
+            return getBooleanPreference(context, SCREEN_SECURITY_PREF, true)
         }
 
         @JvmStatic
@@ -1412,7 +1412,7 @@ class AppTextSecurePreferences @Inject constructor(
     }
 
     override fun isPushEnabled(): Boolean {
-        return getBooleanPreference(TextSecurePreferences.IS_PUSH_ENABLED, false)
+        return getBooleanPreference(TextSecurePreferences.IS_PUSH_ENABLED, true)
     }
 
     override fun setPushEnabled(value: Boolean) {
@@ -1754,7 +1754,7 @@ class AppTextSecurePreferences @Inject constructor(
     }
 
     override fun isScreenSecurityEnabled(): Boolean {
-        return getBooleanPreference(TextSecurePreferences.SCREEN_SECURITY_PREF, false)
+        return getBooleanPreference(TextSecurePreferences.SCREEN_SECURITY_PREF, true)
     }
 
     override fun setScreenSecurityPreference(status:Boolean) {

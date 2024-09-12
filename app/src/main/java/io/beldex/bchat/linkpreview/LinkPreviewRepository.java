@@ -1,5 +1,6 @@
 package io.beldex.bchat.linkpreview;
 
+import static com.beldex.libbchat.utilities.Util.readFully;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,7 +13,6 @@ import io.beldex.bchat.net.CallRequestController;
 import io.beldex.bchat.net.CompositeRequestController;
 import io.beldex.bchat.net.ContentProxySafetyInterceptor;
 import io.beldex.bchat.net.RequestController;
-import com.beldex.libbchat.utilities.Util.readFully;
 import io.beldex.bchat.net.CallRequestController;
 import io.beldex.bchat.net.CompositeRequestController;
 import io.beldex.bchat.net.ContentProxySafetyInterceptor;

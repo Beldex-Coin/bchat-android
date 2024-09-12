@@ -244,20 +244,6 @@ class EditClosedGroupActivity : PassphraseRequiredActionBarActivity() {
         bottomSheet.show(supportFragmentManager, "GroupEditingOptionsBottomSheet")
     }
 
-    private fun remove(member: String) {
-        val title = R.string.remove_this_contact
-        val message = R.string.remove_message
-        AlertDialog.Builder(context,R.style.BChatAlertDialog)
-            .setTitle(title)
-            .setMessage(message)
-            .setNegativeButton(android.R.string.no, null)
-            .setPositiveButton(R.string.RecipientPreferenceActivity_block) { _, _ ->
-                if (zombies.contains(member)) zombies.remove(member)
-                else members.remove(member)
-                updateMembers()
-            }.show()
-    }
-
     private fun onAddMembersClick() {
         val intent = Intent(this@EditClosedGroupActivity, SelectContactsActivity::class.java)
         intent.putExtra(SelectContactsActivity.usersToExcludeKey, allMembers.toTypedArray())

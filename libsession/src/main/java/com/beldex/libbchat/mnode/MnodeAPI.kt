@@ -449,8 +449,8 @@ object MnodeAPI {
 
     // Parsing
     private fun parseMnodes(rawResponse: Any): List<Mnode> {
-        val json = rawResponse as? Map<*, *>
-        val rawMnodes = json?.get("mnodes") as? List<*>
+        val json = rawResponse as? OnionResponse
+        val rawMnodes = json?.info?.get("mnodes") as? List<*>
         if (rawMnodes != null) {
             return rawMnodes.mapNotNull { rawMnode ->
                 val rawMnodeAsJSON = rawMnode as? Map<*, *>
@@ -621,7 +621,7 @@ object MnodeAPI {
                         dropMnodeFromSwarmIfNeeded(mnode, publicKey)
                     }
                     if (json != null) {
-                        val mnodes = parseMnodes(json)
+                        val mnodes = parseMnodes(OnionResponse(json, JsonUtil.toJson(json).toByteArray()))
                         if (mnodes.isNotEmpty()) {
                             database.setSwarm(publicKey, mnodes.toSet())
                         } else {

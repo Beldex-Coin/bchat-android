@@ -47,7 +47,7 @@
 <!--            android:dependency="pref_timeout_passphrase" />-->
 
         <io.beldex.bchat.components.SwitchPreferenceCompat
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="pref_screen_security"
             app:iconSpaceReserved="false"
             android:title="@string/preferences__screen_security"

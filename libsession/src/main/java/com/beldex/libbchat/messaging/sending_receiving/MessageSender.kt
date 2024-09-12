@@ -172,13 +172,13 @@ object MessageSender {
                 val promiseCount = promises.size
                 var errorCount =  AtomicInteger(0)
                 promises.forEach { promise: RawResponsePromise ->
-                    promise.success {
+                    promise.success { response ->
                         if (isSuccess) { return@success } // Succeed as soon as the first promise succeeds
                         isSuccess = true
                         if (destination is Destination.Contact && message is VisibleMessage && !isSelfSend) {
                             MnodeModule.shared.broadcaster.broadcast("messageSent", message.sentTimestamp!!)
                         }
-                        val hash = it["hash"] as? String
+                        val hash = response.info["hash"] as? String
                         message.serverHash = hash
                         handleSuccessfulMessageSend(message, destination, isSyncMessage)
                         val shouldNotify = ((message is VisibleMessage || message is UnsendRequest || message is CallMessage) && !isSyncMessage)

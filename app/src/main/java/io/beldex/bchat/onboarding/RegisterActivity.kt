@@ -30,6 +30,7 @@ import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.crypto.KeyPairUtilities
 import io.beldex.bchat.model.AsyncTaskCoroutine
 import io.beldex.bchat.util.BChatThreadPoolExecutor
+import io.beldex.bchat.util.RandomAddressGenerate
 import io.beldex.bchat.util.push
 import io.beldex.bchat.util.setUpActionBarBchatLogo
 import java.util.concurrent.Executor
@@ -101,6 +102,11 @@ class RegisterActivity : BaseActionBarActivity() {
 
         //Important
         updateKeyPair()
+
+        //Random Address
+        val walletAddress = RandomAddressGenerate().randomAddress()
+        IdentityKeyUtil.save(this, IdentityKeyUtil.IDENTITY_W_ADDRESS_PREF, walletAddress)
+        TextSecurePreferences.setSenderAddress(this,walletAddress)
     }
     // endregion
 

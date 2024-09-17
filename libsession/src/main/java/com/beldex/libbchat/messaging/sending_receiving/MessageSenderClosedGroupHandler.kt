@@ -307,7 +307,7 @@ fun MessageSender.sendEncryptionKeyPair(groupPublicKey: String, newKeyPair: ECKe
     val storage = MessagingModuleConfiguration.shared.storage
 
     val wrappers = targetMembers.map { publicKey ->
-        val ciphertext = MessageEncrypter.encrypt(plaintext, publicKey, senderBeldexAddress = "bxd4gJsQv684R8mcfjnDChHoJbtW6Mwvu3S1mgKJZxYTaG5yn8dpM6oGtw8LVq37rp3cE6cPiivP5dXJTRoZonvN2enTxxabc")
+        val ciphertext = MessageEncrypter.encrypt(plaintext, publicKey, storage.getSenderBeldexAddress()!!)
         ClosedGroupControlMessage.KeyPairWrapper(publicKey, ByteString.copyFrom(ciphertext))
     }
     val kind = ClosedGroupControlMessage.Kind.EncryptionKeyPair(ByteString.copyFrom(
@@ -343,7 +343,7 @@ fun MessageSender.sendLatestEncryptionKeyPair(publicKey: String, groupPublicKey:
     proto.publicKey = ByteString.copyFrom(encryptionKeyPair.publicKey.serialize().removingbdPrefixIfNeeded())
     proto.privateKey = ByteString.copyFrom(encryptionKeyPair.privateKey.serialize())
     val plaintext = proto.build().toByteArray()
-    val ciphertext = MessageEncrypter.encrypt(plaintext, publicKey, senderBeldexAddress = "bxd4gJsQv684R8mcfjnDChHoJbtW6Mwvu3S1mgKJZxYTaG5yn8dpM6oGtw8LVq37rp3cE6cPiivP5dXJTRoZonvN2enTxxabc")
+    val ciphertext = MessageEncrypter.encrypt(plaintext, publicKey, storage.getSenderBeldexAddress()!!)
     val wrapper = ClosedGroupControlMessage.KeyPairWrapper(publicKey, ByteString.copyFrom(ciphertext))
     val kind = ClosedGroupControlMessage.Kind.EncryptionKeyPair(ByteString.copyFrom(
         Hex.fromStringCondensed(groupPublicKey)), listOf(wrapper))

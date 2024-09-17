@@ -12,7 +12,9 @@ import io.beldex.bchat.onboarding.CreatePasswordActivity
 import io.beldex.bchat.util.push
 import io.beldex.bchat.util.setUpActionBarBchatLogo
 import io.beldex.bchat.R
+import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.databinding.ActivityRecoveryGetSeedDetailsBinding
+import io.beldex.bchat.util.RandomAddressGenerate
 import java.util.regex.Pattern
 
 class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
@@ -46,6 +48,10 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
                 register()
             }
         }
+        //Random Address
+        val walletAddress = RandomAddressGenerate().randomAddress()
+        IdentityKeyUtil.save(this, IdentityKeyUtil.IDENTITY_W_ADDRESS_PREF, walletAddress)
+        TextSecurePreferences.setSenderAddress(this,walletAddress)
     }
 
     private fun register() {

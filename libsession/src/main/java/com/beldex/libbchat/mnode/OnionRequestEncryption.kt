@@ -10,6 +10,7 @@ import com.beldex.libsignal.utilities.ThreadUtils
 import java.nio.Buffer
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import com.beldex.libbchat.mnode.OnionRequestAPI.Destination
 
 object OnionRequestEncryption {
 
@@ -31,32 +32,25 @@ object OnionRequestEncryption {
     /**
      * Encrypts `payload` for `destination` and returns the result. Use this to build the core of an onion request.
      */
-    internal fun encryptPayloadForDestination(payload: Map<*, *>, destination: OnionRequestAPI.Destination): Promise<EncryptionResult, Exception> {
+    internal fun encryptPayloadForDestination(payload: ByteArray, destination: Destination, version: Version): Promise<EncryptionResult, Exception> {
         val deferred = deferred<EncryptionResult, Exception>()
         ThreadUtils.queue {
             try {
-                // Wrapping isn't needed for file server or social group onion requests
-                when (destination) {
-                    is OnionRequestAPI.Destination.Mnode -> {
-                        val mnodeX25519PublicKey = destination.mnode.publicKeySet!!.x25519Key
-                        //-Log.d("Beldex","Mnode x25519 public key $mnodeX25519PublicKey")
-                        //-Log.d("Beldex","payload in Encryption fun $payload")
-                        val payloadAsData = JsonUtil.toJson(payload).toByteArray()
-                        //-Log.d("Beldex","Pay load Data $payloadAsData")
-                        val plaintext = encode(payloadAsData, mapOf( "headers" to "" ))
-                        //-Log.d("Beldex","Plain text $plaintext")
-                        val result = AESGCM.encrypt(plaintext, mnodeX25519PublicKey)
-                        //-Log.d("Beldex","AEGCM encryption result $result")
-                        deferred.resolve(result)
-                    }
-                    is OnionRequestAPI.Destination.Server -> {
-                        val plaintext = JsonUtil.toJson(payload).toByteArray()
-                        //-Log.d("Beldex","Plain text $plaintext")
-                        val result = AESGCM.encrypt(plaintext, destination.x25519PublicKey)
-                        //-Log.d("Beldex","AEGCM encryption result $result")
-                        deferred.resolve(result)
+                val plaintext = if (version == Version.V4) {
+                    payload
+                } else {
+                    // Wrapping isn't needed for file server or open group onion requests
+                    when (destination) {
+                        is Destination.Mnode -> encode(payload, mapOf("headers" to ""))
+                        is Destination.Server -> payload
                     }
                 }
+                val x25519PublicKey = when (destination) {
+                    is Destination.Mnode -> destination.mnode.publicKeySet!!.x25519Key
+                    is Destination.Server -> destination.x25519PublicKey
+                }
+                val result = AESGCM.encrypt(plaintext, x25519PublicKey)
+                deferred.resolve(result)
             } catch (exception: Exception) {
                 deferred.reject(exception)
             }
@@ -67,17 +61,16 @@ object OnionRequestEncryption {
     /**
      * Encrypts the previous encryption result (i.e. that of the hop after this one) for this hop. Use this to build the layers of an onion request.
      */
-    internal fun encryptHop(lhs: OnionRequestAPI.Destination, rhs: OnionRequestAPI.Destination, previousEncryptionResult: EncryptionResult): Promise<EncryptionResult, Exception> {
+    internal fun encryptHop(lhs: Destination, rhs: Destination, previousEncryptionResult: EncryptionResult): Promise<EncryptionResult, Exception> {
         val deferred = deferred<EncryptionResult, Exception>()
         ThreadUtils.queue {
             try {
-                val payload: MutableMap<String, Any>
-                when (rhs) {
-                    is OnionRequestAPI.Destination.Mnode -> {
-                        payload = mutableMapOf( "destination" to rhs.mnode.publicKeySet!!.ed25519Key )
+                val payload: MutableMap<String, Any> = when (rhs) {
+                    is Destination.Mnode -> {
+                        mutableMapOf( "destination" to rhs.mnode.publicKeySet!!.ed25519Key )
                     }
-                    is OnionRequestAPI.Destination.Server -> {
-                        payload = mutableMapOf(
+                    is Destination.Server -> {
+                        mutableMapOf(
                             "host" to rhs.host,
                             "target" to rhs.target,
                             "method" to "POST",
@@ -87,13 +80,12 @@ object OnionRequestEncryption {
                     }
                 }
                 payload["ephemeral_key"] = previousEncryptionResult.ephemeralPublicKey.toHexString()
-                val x25519PublicKey: String
-                when (lhs) {
-                    is OnionRequestAPI.Destination.Mnode -> {
-                        x25519PublicKey = lhs.mnode.publicKeySet!!.x25519Key
+                val x25519PublicKey = when (lhs) {
+                    is Destination.Mnode -> {
+                        lhs.mnode.publicKeySet!!.x25519Key
                     }
-                    is OnionRequestAPI.Destination.Server -> {
-                        x25519PublicKey = lhs.x25519PublicKey
+                    is Destination.Server -> {
+                        lhs.x25519PublicKey
                     }
                 }
                 val plaintext = encode(previousEncryptionResult.ciphertext, payload)

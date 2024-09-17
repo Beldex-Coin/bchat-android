@@ -90,8 +90,10 @@ object MnodeAPI {
     }
 
     // Internal API
-    internal fun invoke(method: Mnode.Method, mnode: Mnode, publicKey: String? = null, parameters: Map<String, Any>): RawResponsePromise {
+    internal fun invoke(method: Mnode.Method, mnode: Mnode, publicKey: String? = null, parameters: Map<String, Any>, version: Version = Version.V3): RawResponsePromise {
         val url = "${mnode.address}:${mnode.port}/storage_rpc/v1"
+        val deferred = deferred<OnionResponse, Exception>()
+        //val deferred = deferred<Map<*,*>, Exception>()
         if (useOnionRequests) {
             //-Log.d("Beldex","new payload in invoke fun Send url $url")
             //-Log.d("Beldex","new payload in invoke fun Send method $method")
@@ -99,15 +101,20 @@ object MnodeAPI {
             //-Log.d("Beldex","new payload in invoke fun Send mnode $mnode")
             //-Log.d("Beldex","new payload in invoke fun Send publickey $publicKey")
 
-            return OnionRequestAPI.sendOnionRequest(method, parameters, mnode, publicKey)
+            OnionRequestAPI.sendOnionRequest(method, parameters, mnode, publicKey, version).map {
+                val body = it.body ?: throw Error.Generic
+                //deferred.resolve(JsonUtil.fromJson(body, Map::class.java))
+                val json = JsonUtil.fromJson(body, Map::class.java)
+                deferred.resolve(OnionResponse(json, JsonUtil.toJson(json).toByteArray()))
+            }.fail { deferred.reject(it) }
         } else {
-            val deferred = deferred<OnionResponse, Exception>()
             ThreadUtils.queue {
                 val payload = mapOf( "method" to method.rawValue, "params" to parameters )
                 try {
                     val response = HTTP.execute(HTTP.Verb.POST, url, payload).toString()
                     val json = JsonUtil.fromJson(response, Map::class.java)
                     deferred.resolve(OnionResponse(json, JsonUtil.toJson(json).toByteArray()))
+                    //deferred.resolve(json)
                 } catch (exception: Exception) {
                     val httpRequestFailedException = exception as? HTTP.HTTPRequestFailedException
                     if (httpRequestFailedException != null) {
@@ -118,8 +125,8 @@ object MnodeAPI {
                     deferred.reject(exception)
                 }
             }
-            return deferred.promise
         }
+        return deferred.promise
     }
 
     internal fun getRandomMnode(): Promise<Mnode, Exception> {
@@ -290,13 +297,13 @@ object MnodeAPI {
 
     fun getSwarm(publicKey: String): Promise<Set<Mnode>, Exception> {
         val cachedSwarm = database.getSwarm(publicKey)
-        if (cachedSwarm != null && cachedSwarm.size >= minimumSwarmMnodeCount) {
+        return if (cachedSwarm != null && cachedSwarm.size >= minimumSwarmMnodeCount) {
             val cachedSwarmCopy = mutableSetOf<Mnode>() // Workaround for a Kotlin compiler issue
             cachedSwarmCopy.addAll(cachedSwarm)
-            return task { cachedSwarmCopy }
+            task { cachedSwarmCopy }
         } else {
             val parameters = mapOf( "pubKey" to publicKey )
-            return getRandomMnode().bind {
+            getRandomMnode().bind {
                 Log.d("Beldex", "invoke MnodeAPI.kt 2")
                 invoke(Mnode.Method.GetSwarm, it, publicKey, parameters)
             }.map {
@@ -609,7 +616,7 @@ object MnodeAPI {
                 handleBadMnode()
             }
             406 -> {
-                Log.d("Beldex", "The user's clock is out of sync with the service node network.")
+                Log.d("Beldex", "The user's clock is out of sync with the master node network.")
                 broadcaster.broadcast("clockOutOfSync")
                 return Error.ClockOutOfSync
             }

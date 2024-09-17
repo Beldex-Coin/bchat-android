@@ -103,7 +103,7 @@ class NotificationsPreferenceFragment : ListSummaryPreferenceFragment() {
         initializeListSummary(findPreference<Preference>(TextSecurePreferences.LED_COLOR_PREF) as ListPreference?)
         initializeListSummary(findPreference<Preference>(TextSecurePreferences.REPEAT_ALERTS_PREF) as ListPreference?)
 
-        findPreference<Preference>(TextSecurePreferences.NOTIFICATION_PRIVACY_PREF)!!.onPreferenceClickListener =
+        /*findPreference<Preference>(TextSecurePreferences.NOTIFICATION_PRIVACY_PREF)!!.onPreferenceClickListener =
             Preference.OnPreferenceClickListener { preference: Preference ->
                 val listPreference = preference as ListPreference
                 listPreference.setDialogMessage(R.string.preferences_notifications__content_message)
@@ -111,7 +111,7 @@ class NotificationsPreferenceFragment : ListSummaryPreferenceFragment() {
                     initializeListSummary(findPreference(TextSecurePreferences.NOTIFICATION_PRIVACY_PREF))
                 }
                 true
-            }
+            }*/
 
         initializeListSummary(findPreference<Preference>(TextSecurePreferences.NOTIFICATION_PRIVACY_PREF) as ListPreference?)
         if (NotificationChannels.supported()) {

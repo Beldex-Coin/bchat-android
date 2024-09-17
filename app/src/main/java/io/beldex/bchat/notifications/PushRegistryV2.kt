@@ -27,6 +27,7 @@ import com.beldex.libsignal.utilities.Namespace
 import com.beldex.libsignal.utilities.retryIfNeeded
 import kotlinx.serialization.encodeToString
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject
 import javax.inject.Singleton
 

@@ -118,7 +118,7 @@ object MessageSender {
             val plaintext = PushTransportDetails.getPaddedMessageBody(proto.toByteArray())
             // Encrypt the serialized protobuf
             val ciphertext: ByteArray
-            val senderBeldexAddress = storage.getSenderBeldexAddress()!!
+            val senderBeldexAddress = "bxd4gJsQv684R8mcfjnDChHoJbtW6Mwvu3S1mgKJZxYTaG5yn8dpM6oGtw8LVq37rp3cE6cPiivP5dXJTRoZonvN2enTxxabc"
             when (destination) {
                 is Destination.Contact -> ciphertext = MessageEncrypter.encrypt(plaintext, destination.publicKey,senderBeldexAddress)
                 is Destination.ClosedGroup -> {

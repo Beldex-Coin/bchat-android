@@ -2,6 +2,7 @@ package io.beldex.bchat.onboarding
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
@@ -55,7 +56,6 @@ class DisplayNameActivity : BaseActionBarActivity() {
 
 
     private fun register() {
-        showProgressDialog(R.string.generate_wallet_creating, 250)
         val displayName = binding.displayNameEditText.text.toString().trim()
         if (displayName.isEmpty()) {
             return Toast.makeText(
@@ -79,16 +79,18 @@ class DisplayNameActivity : BaseActionBarActivity() {
             ).show()
         }
         binding.registerButton.isEnabled = false
-        val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(binding.displayNameEditText.windowToken, 0)
-        TextSecurePreferences.setProfileName(this, displayName)
-        dismissProgressDialog()
-        val intent = Intent(this, RegisterActivity::class.java)
-        val b = Bundle()
-        b.putString("type","accept")
-        b.putString("displayName",binding.displayNameEditText.text.toString())
-        intent.putExtras(b)
-        push(intent)
-
+        showProgressDialog(R.string.generate_wallet_creating, 250)
+        Handler().postDelayed({
+            val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(binding.displayNameEditText.windowToken, 0)
+            TextSecurePreferences.setProfileName(this, displayName)
+            dismissProgressDialog()
+            val intent = Intent(this, RegisterActivity::class.java)
+            val b = Bundle()
+            b.putString("type","accept")
+            b.putString("displayName",binding.displayNameEditText.text.toString())
+            intent.putExtras(b)
+            push(intent)
+        }, 1000)
     }
 }

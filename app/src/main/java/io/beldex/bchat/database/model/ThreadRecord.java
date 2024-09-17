@@ -88,24 +88,6 @@ public class ThreadRecord extends DisplayRecord {
       return emphasisAdded(context.getString(R.string.ThreadRecord_group_updated));
     } else if (isOpenGroupInvitation()) {
       return emphasisAdded(context.getString(R.string.ThreadRecord_open_group_invitation));
-    } else if (isPayment()) { //Payment Tag
-      String amount = "";
-      String direction = "";
-      try {
-        JSONObject mainObject = new JSONObject(getBody());
-        JSONObject uniObject = mainObject.getJSONObject("kind");
-        amount = uniObject.getString("amount");
-      } catch (JSONException e) {
-        e.printStackTrace();
-      }
-      Boolean isOutGoing = MmsSmsColumns.Types.isOutgoingMessageType(type);
-      if (isOutGoing) {
-        direction = context.getString(R.string.send);
-      } else {
-        direction = context.getString(R.string.message_details_header__received);
-        ;
-      }
-      return emphasisAdded(context.getString(R.string.ThreadRecord_payment ,amount,direction));
     } else if (SmsDatabase.Types.isFailedDecryptType(type)) {
       return emphasisAdded(context.getString(R.string.MessageDisplayHelper_bad_encrypted_message));
     } else if (SmsDatabase.Types.isNoRemoteBchatType(type)) {

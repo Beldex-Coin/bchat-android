@@ -187,7 +187,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         val attachments = (message as? MmsMessageRecord)?.slideDeck
         val sender = if (message.isOutgoing) TextSecurePreferences.getLocalNumber(context)!! else message.individualRecipient.address.serialize()
         quoteView.bind(sender, message.body, attachments,
-            thread, true, message.isOpenGroupInvitation, message.isPayment,message.isOutgoing,message.threadId, false, glide)
+            thread, true, message.isOpenGroupInvitation,message.isOutgoing,message.threadId, false, glide)
         requestLayout()
     }
 
@@ -252,8 +252,6 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
     fun setSelection(index: Int) {
         binding.inputBarEditText.setSelection(index)
     }
-
-    //Payment Tag
 
     fun setTextColor(thread: Recipient?, reportIssueId: String, status: Boolean) {
         if (!thread?.isGroupRecipient!! && thread.hasApprovedMe() && !thread.isBlocked && reportIssueId != thread.address.toString() && !thread.isLocalNumber) {

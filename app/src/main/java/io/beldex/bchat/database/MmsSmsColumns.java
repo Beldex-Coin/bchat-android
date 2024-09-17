@@ -85,9 +85,6 @@ public interface MmsSmsColumns {
     // Social Group Invitation
     protected static final long OPEN_GROUP_INVITATION_BIT  = 0x04000;
 
-    //Payment Tag
-    protected static final long PAYMENT_BIT = 0x0500000;
-
     // Encrypted Storage Information XXX
     public    static final long ENCRYPTION_MASK                  = 0xFF000000;
     // public    static final long ENCRYPTION_SYMMETRIC_BIT         = 0x80000000; Deprecated
@@ -232,11 +229,6 @@ public interface MmsSmsColumns {
 
     public static boolean isOpenGroupInvitation(long type) {
       return (type & OPEN_GROUP_INVITATION_BIT) != 0;
-    }
-
-    //Payment Tag
-    public static boolean isPayment(long type) {
-      return (type & PAYMENT_BIT) != 0;
     }
 
     public static boolean isIncomingCall(long type) {

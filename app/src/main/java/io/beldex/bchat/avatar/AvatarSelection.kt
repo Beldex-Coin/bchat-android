@@ -121,7 +121,7 @@ class AvatarSelection(
         }
 
         if (includeClear) {
-            extraIntents.add(Intent("network.loki.securesms.action.CLEAR_PROFILE_PHOTO"))
+            extraIntents.add(Intent("io.beldex.securesms.action.CLEAR_PROFILE_PHOTO"))
         }
 
         val chooserIntent = Intent.createChooser(

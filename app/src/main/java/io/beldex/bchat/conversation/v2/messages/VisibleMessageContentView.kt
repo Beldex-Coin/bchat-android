@@ -78,18 +78,9 @@ class VisibleMessageContentView : ConstraintLayout {
         // Background
         val background = getBackground(message.isOutgoing, isStartOfMessageCluster, isEndOfMessageCluster)
         val colorID = if (message.isOutgoing) {
-            /*if (message.isFailed && !message.isPayment) {
-                R.attr.message_sent_background_transparent_color
-            } else {
-                R.attr.message_sent_background_color
-            }*/
             R.attr.message_sent_background_color
         } else {
-            if(message.isPayment){
-                R.attr.payment_message_received_background_color
-            }else {
                 R.attr.message_received_background_color
-            }
         }
         val color = ThemeUtil.getThemedColor(context, colorID)
         val filter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
@@ -150,8 +141,6 @@ class VisibleMessageContentView : ConstraintLayout {
             contactIsTrusted && message is MmsMessageRecord && message.slideDeck.documentSlide != null
         binding.albumThumbnailView.root.isVisible = mediaThumbnailMessage
         binding.openGroupInvitationView.root.isVisible = message.isOpenGroupInvitation
-        //Payment Tag
-        binding.paymentCardView.isVisible = message.isPayment
 
         var hideBody = false
 
@@ -165,7 +154,7 @@ class VisibleMessageContentView : ConstraintLayout {
             }
             binding.quoteView.root.bind(
                 quote.author.toString(), quoteText, quote.attachment, thread,
-                message.isOutgoing, message.isOpenGroupInvitation, message.isPayment,
+                message.isOutgoing, message.isOpenGroupInvitation,
                 message.isOutgoing, message.threadId, quote.isOriginalMissing, glide
             )
             onContentClick.add { event ->
@@ -314,14 +303,6 @@ class VisibleMessageContentView : ConstraintLayout {
                 )
                 onContentClick.add { binding.openGroupInvitationView.root.joinOpenGroup() }
             }
-            message.isPayment -> { //Payment Tag
-                hideBody = true
-                binding.paymentCardView.bind(
-                    message,
-                    VisibleMessageContentView.getTextColor(context, message)
-                )
-                //onContentClick.add { binding.openGroupInvitationView.joinOpenGroup() }
-            }
         }
 
         binding.bodyTextView.isVisible = message.body.isNotEmpty() && !hideBody
@@ -411,7 +392,6 @@ class VisibleMessageContentView : ConstraintLayout {
             binding.untrustedView.root,
             binding.voiceMessageView.root,
             binding.openGroupInvitationView.root,
-            binding.paymentCardView, //Payment Tag
             binding.documentView.root,
             binding.quoteView.root,
             binding.linkPreviewView.root,

@@ -121,10 +121,6 @@ public abstract class DisplayRecord {
   /*Hales63*/
   public boolean isMessageRequestResponse() { return  MmsSmsColumns.Types.isMessageRequestResponse(type); }
 
-  //Payment Tag
-  public boolean isPayment() { return MmsSmsColumns.Types.isPayment(type); }
-
-
   //New Line
   public boolean isFirstMissedCall() {
     return SmsDatabase.Types.isFirstMissedCall(type);

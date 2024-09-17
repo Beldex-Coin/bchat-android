@@ -22,7 +22,6 @@ class UpdateMessageData () {
             JsonSubTypes.Type(Kind.GroupMemberRemoved::class, name = "GroupMemberRemoved"),
             JsonSubTypes.Type(Kind.GroupMemberLeft::class, name = "GroupMemberLeft"),
             JsonSubTypes.Type(Kind.OpenGroupInvitation::class, name = "OpenGroupInvitation"),
-            JsonSubTypes.Type(Kind.Payment::class,name = "Payment")
     )
     sealed class Kind() {
         class GroupCreation(): Kind()
@@ -38,11 +37,6 @@ class UpdateMessageData () {
         class GroupMemberLeft(): Kind()
         class OpenGroupInvitation(val groupUrl: String, val groupName: String): Kind() {
             constructor(): this("", "")
-        }
-
-        //Payment Tag
-        class Payment(val amount: String, val txnId: String):Kind() {
-            constructor(): this("","")
         }
     }
 
@@ -66,10 +60,6 @@ class UpdateMessageData () {
 
         fun buildOpenGroupInvitation(url: String, name: String): UpdateMessageData {
             return UpdateMessageData(Kind.OpenGroupInvitation(url, name))
-        }
-
-        fun buildPayment(amount: String, txnId: String): UpdateMessageData {
-            return UpdateMessageData(Kind.Payment(amount,txnId))
         }
 
         fun fromJSON(json: String): UpdateMessageData? {

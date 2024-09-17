@@ -387,6 +387,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         fun getConversationViewModel(): ConversationViewModel.AssistedFactory
         fun gettextSecurePreferences(): TextSecurePreferences
         fun passSharedMessageToConversationScreen(thread: Recipient)
+        fun onScreenBackPressed()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -1192,24 +1193,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     viewModel.threadId,
                     requireActivity()
             )
-            if (message.isPayment) {
-                //Payment Tag
-                var amount = ""
-                var direction = ""
-                try {
-                    val mainObject = JSONObject(message.body)
-                    val uniObject = mainObject.getJSONObject("kind")
-                    amount = uniObject.getString("amount")
-                } catch (e: JSONException) {
-                    e.printStackTrace()
-                }
-                direction = if (message.isOutgoing) {
-                    resources.getString(R.string.payment_sent)
-                } else {
-                    resources.getString(R.string.payment_received)
-                }
-                body = resources.getString(R.string.reply_payment_card_message, direction, amount)
-            } else if (message.isOpenGroupInvitation) {
+            if (message.isOpenGroupInvitation) {
                 body = resources.getString(R.string.ThreadRecord_open_group_invitation)
             }
 
@@ -1561,7 +1545,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             ConversationMenuHelper.showAllMedia(recipient, listenerCallback)
         }
         binding.backToHomeBtn.setOnClickListener {
-            //Need to check it
+            listenerCallback?.onScreenBackPressed()
         }
 
     }
@@ -2128,26 +2112,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     if (it.isOutgoing) Address.fromSerialized(
                             listenerCallback!!.gettextSecurePreferences().getLocalNumber()!!
                     ) else it.individualRecipient.address
-            //Payment Tag
             var quoteBody = it.body
-            if (it.isPayment) {
-                //Payment Tag
-                var amount = ""
-                try {
-                    val mainObject = JSONObject(it.body)
-                    val uniObject = mainObject.getJSONObject("kind")
-                    amount = uniObject.getString("amount")
-                } catch (e: JSONException) {
-                    e.printStackTrace()
-                }
-                val direction: String = if (it.isOutgoing) {
-                    resources.getString(R.string.payment_sent)
-                } else {
-                    resources.getString(R.string.payment_received)
-                }
-                quoteBody =
-                        resources.getString(R.string.reply_payment_card_message, direction, amount)
-            } else if (it.isOpenGroupInvitation) {
+            if (it.isOpenGroupInvitation) {
                 quoteBody = resources.getString(R.string.ThreadRecord_open_group_invitation)
             }
             QuoteModel(it.dateSent, sender, quoteBody, false, quotedAttachments)
@@ -2216,6 +2182,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         message.id = viewModel.insertMessageOutBoxSMS(outgoingTextMessage, message.sentTimestamp)
 
         // Send it
+        println("send message issue called 1 in conversationfragment")
         MessageSender.send(message, recipient.address)
         // Send a typing stopped message
         ApplicationContext.getInstance(requireActivity()).typingStatusSender.onTypingStopped(

@@ -149,11 +149,6 @@ class ConversationViewModel (
         repository.inviteContacts(threadId, contacts)
     }
 
-    //Payment Tag
-    fun sentPayment(amount: String, txnId: String?, recipient: Recipient?){
-        repository.sentPayment(threadId,amount,txnId,recipient)
-    }
-
     fun block() {
         val recipient = recipient.value ?: return Log.w("Beldex", "Recipient was null for block action")
         if (recipient.isContactRecipient) {

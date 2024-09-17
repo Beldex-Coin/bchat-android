@@ -543,6 +543,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         intent.putExtra(MediaOverviewActivity.ADDRESS_EXTRA, thread.address)
         passSharedMessageToConversationScreen.launch(intent)
     }
+    override fun onScreenBackPressed() {
+       super.onBackPressed()
+    }
 
     private val passSharedMessageToConversationScreen = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {

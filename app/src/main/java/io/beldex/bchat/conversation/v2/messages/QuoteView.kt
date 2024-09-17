@@ -77,7 +77,7 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     // region Updating
     fun bind(
             authorPublicKey: String, body: String?, attachments: SlideDeck?, thread: Recipient,
-            isOutgoingMessage: Boolean, isOpenGroupInvitation: Boolean, isPayment: Boolean,
+            isOutgoingMessage: Boolean, isOpenGroupInvitation: Boolean,
             outgoing: Boolean, threadID: Long, isOriginalMissing: Boolean, glide: GlideRequests
     ) {
         // Author
@@ -89,24 +89,6 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         binding.quoteViewBodyTextView.text = when {
             isOpenGroupInvitation -> {
                 resources.getString(R.string.open_group_invitation_view__open_group_invitation)
-            }
-            isPayment -> {
-                //Payment Tag
-                var amount = ""
-                var direction = ""
-                try {
-                    val mainObject: JSONObject = JSONObject(body)
-                    val uniObject = mainObject.getJSONObject("kind")
-                    amount = uniObject.getString("amount")
-                } catch (e: JSONException) {
-                    e.printStackTrace()
-                }
-                direction = if (outgoing) {
-                    context.getString(R.string.payment_sent)
-                } else {
-                    context.getString(R.string.payment_received)
-                }
-                resources.getString(R.string.reply_payment_card_message,direction,amount)
             }
             else -> {
                 var bodyText=""
@@ -122,24 +104,6 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
                     when (type) {
                         "OpenGroupInvitation" -> {
                             bodyText = resources.getString(R.string.open_group_invitation_view__open_group_invitation)
-                        }
-                        "Payment" -> {
-                            //Payment Tag
-                            var amount = ""
-                            var direction = ""
-                            try {
-                                val mainObject: JSONObject = JSONObject(body)
-                                val uniObject = mainObject.getJSONObject("kind")
-                                amount = uniObject.getString("amount")
-                            } catch (e: JSONException) {
-                                e.printStackTrace()
-                            }
-                            direction = if (outgoing) {
-                                context.getString(R.string.payment_sent)
-                            } else {
-                                context.getString(R.string.payment_received)
-                            }
-                            bodyText = resources.getString(R.string.reply_payment_card_message,direction,amount)
                         }
                         else -> {
                             bodyText = MentionUtilities.highlightMentions((body ?: "").toSpannable(), threadID, context)

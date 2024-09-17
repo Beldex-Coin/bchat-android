@@ -1,7 +1,6 @@
 package com.beldex.libbchat.messaging.messages.signal;
 
 import com.beldex.libbchat.messaging.messages.visible.OpenGroupInvitation;
-import com.beldex.libbchat.messaging.messages.visible.Payment;
 import com.beldex.libbchat.messaging.messages.visible.VisibleMessage;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libbchat.messaging.utilities.UpdateMessageData;
@@ -13,8 +12,6 @@ public class OutgoingTextMessage {
   private final long      expiresIn;
   private final long      sentTimestampMillis;
   private boolean         isOpenGroupInvitation = false;
-  //Payment Tag
-  private boolean         isPayment = false;
 
   public OutgoingTextMessage(Recipient recipient, String message, long expiresIn, int subscriptionId, long sentTimestampMillis) {
     this.recipient      = recipient;
@@ -36,18 +33,6 @@ public class OutgoingTextMessage {
     String body = UpdateMessageData.Companion.buildOpenGroupInvitation(url, name).toJSON();
     OutgoingTextMessage outgoingTextMessage = new OutgoingTextMessage(recipient, body, recipient.getExpireMessages() * 1000, -1, sentTimestamp);
     outgoingTextMessage.isOpenGroupInvitation = true;
-    return outgoingTextMessage;
-  }
-
-  //Payment Tag
-  public static OutgoingTextMessage fromPayment(Payment payment, Recipient recipient, Long sentTimestamp) {
-    String amount = payment.getAmount();
-    String txnId = payment.getTxnId();
-    if (amount == null || txnId == null) { return null; }
-    // FIXME: Doing toJSON() to get the body here is weird
-    String body = UpdateMessageData.Companion.buildPayment(amount, txnId).toJSON();
-    OutgoingTextMessage outgoingTextMessage = new OutgoingTextMessage(recipient, body, recipient.getExpireMessages() * 1000, -1, sentTimestamp);
-    outgoingTextMessage.isPayment = true;
     return outgoingTextMessage;
   }
 
@@ -76,6 +61,4 @@ public class OutgoingTextMessage {
   }
 
   public boolean isOpenGroupInvitation() { return isOpenGroupInvitation; }
-
-  public boolean isPayment() { return isPayment; }
 }

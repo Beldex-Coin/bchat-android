@@ -569,23 +569,6 @@ public class DefaultMessageNotifier implements MessageNotifier {
         body = SpanUtil.italic(message, italicLength);
       } else if (record.isOpenGroupInvitation()) {
         body = SpanUtil.italic(context.getString(R.string.ThreadRecord_open_group_invitation));
-      } else if (record.isPayment()) {
-        //Payment Tag
-        String amount = "";
-        String direction = "";
-        try {
-          JSONObject mainObject = new JSONObject(record.getBody());
-          JSONObject uniObject = mainObject.getJSONObject("kind");
-          amount = uniObject.getString("amount");
-        } catch (JSONException e) {
-          e.printStackTrace();
-        }
-        if (record.isOutgoing()) {
-          direction = context.getString(R.string.send);
-        } else {
-          direction = context.getString(R.string.message_details_header__received);
-        }
-        body = SpanUtil.italic(context.getString(R.string.ThreadRecord_payment, amount, direction));
       }
 
       if (threadRecipients == null || !threadRecipients.isMuted()) {

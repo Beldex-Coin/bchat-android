@@ -44,18 +44,10 @@ class RegisterActivity : BaseActionBarActivity() {
         }
 
     //New Line
-    private var walletPath: String? = null
-    private var localPassword: String? = null
     private var displayName: String? = null
-    val REQUEST_PATH = "path"
-    val REQUEST_PASSWORD = "password"
-    val VIEW_TYPE_DETAILS = "details"
-    val VIEW_TYPE_ACCEPT = "accept"
-    val VIEW_TYPE_WALLET = "wallet"
     val REQUEST_NAME = "displayName"
     var type: String? = null
     val REQUEST_TYPE = "type"
-    private var walletName: String? = null
 
     // region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -103,12 +95,8 @@ class RegisterActivity : BaseActionBarActivity() {
 
         //New Line
         type = intent.extras?.getString(REQUEST_TYPE)
-        walletPath = intent.extras?.getString(REQUEST_PATH)
-        localPassword = intent.extras?.getString(REQUEST_PASSWORD)
         displayName =intent.extras?.getString(REQUEST_NAME)
         binding.titleContentTextView?.text = "Hey $displayName, welcome to BChat!"
-
-        //showDetails()
 
 
         //Important
@@ -131,48 +119,48 @@ class RegisterActivity : BaseActionBarActivity() {
         )
     }
 
-/*    fun showDetails() {
-        AsyncShow(this, walletPath)
-                .execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
-    }
-
-    private class AsyncShow(val registerActivity: RegisterActivity, val walletPathVal: String?) :
-            AsyncTaskCoroutine<Executor?, Boolean>() {
-        var name: String? = null
-        var address: String? = null
-        var height: Long = 0
-        var seed: String? = null
-        var viewKey: String? = null
-        var spendKey: String? = null
-        var isWatchOnly = false
-        var walletStatus: Wallet.Status? = null
-        var dialogOpened = false
-        override fun onPreExecute() {
-            super.onPreExecute()
-            registerActivity.binding.registerButton.isEnabled=false
-            registerActivity.binding.registerButton.setTextColor(ContextCompat.getColor(registerActivity, R.color.disable_button_text_color))
-            if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                registerActivity.binding.registerButton.setBackgroundDrawable(ContextCompat.getDrawable(registerActivity, R.drawable.prominent_filled_button_medium_background_disable) );
-            } else {
-                registerActivity.binding.registerButton.background =
-                        ContextCompat.getDrawable(registerActivity, R.drawable.prominent_filled_button_medium_background_disable);
-            }
+    /*    fun showDetails() {
+            AsyncShow(this, walletPath)
+                    .execute<Executor>(BChatThreadPoolExecutor.MONERO_THREAD_POOL_EXECUTOR)
         }
 
-        override fun doInBackground(vararg params: Executor?): Boolean {
-
-            name = wallet.name
-            walletStatus = wallet.status
-            if (!walletStatus!!.isOk) {
-                Log.e("", walletStatus!!.errorString)
-                if (closeWallet) wallet.close()
-                return false
+        private class AsyncShow(val registerActivity: RegisterActivity, val walletPathVal: String?) :
+                AsyncTaskCoroutine<Executor?, Boolean>() {
+            var name: String? = null
+            var address: String? = null
+            var height: Long = 0
+            var seed: String? = null
+            var viewKey: String? = null
+            var spendKey: String? = null
+            var isWatchOnly = false
+            var walletStatus: Wallet.Status? = null
+            var dialogOpened = false
+            override fun onPreExecute() {
+                super.onPreExecute()
+                registerActivity.binding.registerButton.isEnabled=false
+                registerActivity.binding.registerButton.setTextColor(ContextCompat.getColor(registerActivity, R.color.disable_button_text_color))
+                if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                    registerActivity.binding.registerButton.setBackgroundDrawable(ContextCompat.getDrawable(registerActivity, R.drawable.prominent_filled_button_medium_background_disable) );
+                } else {
+                    registerActivity.binding.registerButton.background =
+                            ContextCompat.getDrawable(registerActivity, R.drawable.prominent_filled_button_medium_background_disable);
+                }
             }
-            address = wallet.address
-            height = wallet.restoreHeight
-            seed = KeyPairUtilities.se
-            viewKey = wallet.secretViewKey
-            *//* viewKey = when (wallet.getDeviceType()) {
+
+            override fun doInBackground(vararg params: Executor?): Boolean {
+
+                name = wallet.name
+                walletStatus = wallet.status
+                if (!walletStatus!!.isOk) {
+                    Log.e("", walletStatus!!.errorString)
+                    if (closeWallet) wallet.close()
+                    return false
+                }
+                address = wallet.address
+                height = wallet.restoreHeight
+                seed = KeyPairUtilities.se
+                viewKey = wallet.secretViewKey
+                *//* viewKey = when (wallet.getDeviceType()) {
                  Device_Ledger -> Ledger.Key()
                  Device_Software -> wallet.getSecretViewKey()
                  else -> throw IllegalStateException("Hardware backing not supported. At all!")
@@ -273,18 +261,7 @@ class RegisterActivity : BaseActionBarActivity() {
 
     // region Updating
     private fun updateKeyPair() {
-        println("update key pair value called 1")
         val keyPairGenerationResult = KeyPairUtilities.generate()
-        seed = keyPairGenerationResult.seed
-        println("update key pair value called 2 $seed")
-        ed25519KeyPair = keyPairGenerationResult.ed25519KeyPair
-        x25519KeyPair = keyPairGenerationResult.x25519KeyPair
-        println("update key pair value called 3 $ed25519KeyPair and $x25519KeyPair")
-    }
-
-    //New Line
-/*    private fun updateKeyPair(seedByteArray: ByteArray) {
-        val keyPairGenerationResult = KeyPairUtilities.generate(seedByteArray)
         seed = keyPairGenerationResult.seed
         ed25519KeyPair = keyPairGenerationResult.ed25519KeyPair
         x25519KeyPair = keyPairGenerationResult.x25519KeyPair
@@ -294,7 +271,21 @@ class RegisterActivity : BaseActionBarActivity() {
                 keyPairGenerationResult.ed25519KeyPair,
                 x25519KeyPair!!
         )
-    }*/
+    }
+
+    //New Line
+    /*    private fun updateKeyPair(seedByteArray: ByteArray) {
+            val keyPairGenerationResult = KeyPairUtilities.generate(seedByteArray)
+            seed = keyPairGenerationResult.seed
+            ed25519KeyPair = keyPairGenerationResult.ed25519KeyPair
+            x25519KeyPair = keyPairGenerationResult.x25519KeyPair
+            KeyPairUtilities.store(
+                    this,
+                    seed!!,
+                    keyPairGenerationResult.ed25519KeyPair,
+                    x25519KeyPair!!
+            )
+        }*/
 
     //Main
     /*private fun updatePublicKeyTextView() {
@@ -334,11 +325,12 @@ class RegisterActivity : BaseActionBarActivity() {
     }*/
 
     private fun updatePublicKeyTextView() {
+        binding.publicKeyAnimation.visibility=View.VISIBLE
         Handler().postDelayed({
-            binding.publicKeyAnimation!!.visibility=View.GONE
+            binding.publicKeyAnimation.visibility=View.GONE
             binding.publicKeyTextView.visibility=View.VISIBLE
             binding.publicKeyTextView.text = x25519KeyPair!!.hexEncodedPublicKey
-        }, 32)
+        }, 1000)
     }
 // endregion
 

@@ -388,6 +388,26 @@
           "description":"- Updated non compliant version of SDKs"
         }
       ]
+    },
+    {
+      "title": "2.5.3",
+      "descriptions": [
+        {
+          "description":"- Removed non compliant version of SDKs"
+        },
+        {
+          "description":"- Removed wallet feature"
+        },
+        {
+          "description":"- Updated call functionalities to adhere with google play's developer guidelines"
+        },
+        {
+          "description":"- Targeted latest android version"
+        },
+        {
+          "description":"- Updated google play core libraries"
+        }
+      ]
     }
   ]
 }

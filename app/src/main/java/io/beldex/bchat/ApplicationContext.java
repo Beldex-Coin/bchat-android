@@ -22,7 +22,6 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 
@@ -60,20 +59,14 @@ import io.beldex.bchat.crypto.KeyPairUtilities;
 import io.beldex.bchat.database.BeldexAPIDatabase;
 import io.beldex.bchat.database.JobDatabase;
 import io.beldex.bchat.database.Storage;
-import io.beldex.bchat.database.helpers.SQLCipherOpenHelper;
 import io.beldex.bchat.dependencies.DatabaseComponent;
 import io.beldex.bchat.dependencies.DatabaseModule;
 import io.beldex.bchat.groups.OpenGroupManager;
 import io.beldex.bchat.home.HomeActivity;
 import io.beldex.bchat.jobmanager.JobManager;
-import io.beldex.bchat.jobmanager.impl.JsonDataSerializer;
-import io.beldex.bchat.jobmanager.impl.NetworkConstraint;
-import io.beldex.bchat.jobs.FastJobStorage;
-import io.beldex.bchat.jobs.JobManagerFactories;
 import io.beldex.bchat.logging.AndroidLogger;
 import io.beldex.bchat.logging.PersistentLogger;
 import io.beldex.bchat.logging.UncaughtExceptionLogger;
-import io.beldex.bchat.model.NetworkType;
 import io.beldex.bchat.notifications.BackgroundPollWorker;
 import io.beldex.bchat.notifications.BeldexPushNotificationManager;
 import io.beldex.bchat.notifications.DefaultMessageNotifier;
@@ -83,7 +76,6 @@ import io.beldex.bchat.notifications.OptimizedMessageNotifier;
 import io.beldex.bchat.providers.BlobProvider;
 import io.beldex.bchat.service.ExpiringMessageManager;
 import io.beldex.bchat.service.KeyCachingService;
-import io.beldex.bchat.service.UpdateApkRefreshListener;
 import io.beldex.bchat.sskenvironment.ProfileManager;
 import io.beldex.bchat.sskenvironment.ReadReceiptManager;
 import io.beldex.bchat.sskenvironment.TypingStatusRepository;
@@ -107,7 +99,6 @@ import javax.inject.Inject;
 
 import dagger.hilt.EntryPoints;
 import dagger.hilt.android.HiltAndroidApp;
-import io.beldex.bchat.BuildConfig;
 import kotlin.Unit;
 import kotlinx.coroutines.Job;
 
@@ -378,7 +369,7 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
         BackgroundPollWorker.schedulePeriodic(this);
 
         if (BuildConfig.PLAY_STORE_DISABLED) {
-            UpdateApkRefreshListener.schedule(this);
+            // possibly add update apk job
         }
     }
 

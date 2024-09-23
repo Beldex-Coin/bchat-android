@@ -51,6 +51,7 @@ class PeerConnectionWrapper(private val context: Context,
         val configuration = PeerConnection.RTCConfiguration(iceServers).apply {
             bundlePolicy = PeerConnection.BundlePolicy.MAXBUNDLE
             rtcpMuxPolicy = PeerConnection.RtcpMuxPolicy.REQUIRE
+            sdpSemantics = PeerConnection.SdpSemantics.PLAN_B
             if (relay) {
                 iceTransportsType = PeerConnection.IceTransportsType.RELAY
             }

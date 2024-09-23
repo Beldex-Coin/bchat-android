@@ -90,16 +90,11 @@ import com.thoughtcrimes.securesms.webrtc.CallMessageProcessor;
 import org.conscrypt.Conscrypt;
 import org.signal.aesgcmprovider.AesGcmProvider;
 import org.webrtc.PeerConnectionFactory;
-import org.webrtc.PeerConnectionFactory.InitializationOptions;
-import org.webrtc.voiceengine.WebRtcAudioManager;
-import org.webrtc.voiceengine.WebRtcAudioUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.security.Security;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Timer;
 
 import javax.inject.Inject;
@@ -383,34 +378,7 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
 
     private void initializeWebRtc() {
         try {
-            Set<String> HARDWARE_AEC_BLACKLIST = new HashSet<String>() {{
-                add("Pixel");
-                add("Pixel XL");
-                add("Moto G5");
-                add("Moto G (5S) Plus");
-                add("Moto G4");
-                add("TA-1053");
-                add("Mi A1");
-                add("E5823"); // Sony z5 compact
-                add("Redmi Note 5");
-                add("FP2"); // Fairphone FP2
-                add("MI 5");
-            }};
-
-            Set<String> OPEN_SL_ES_WHITELIST = new HashSet<String>() {{
-                add("Pixel");
-                add("Pixel XL");
-            }};
-
-            if (HARDWARE_AEC_BLACKLIST.contains(Build.MODEL)) {
-                WebRtcAudioUtils.setWebRtcBasedAcousticEchoCanceler(true);
-            }
-
-            if (!OPEN_SL_ES_WHITELIST.contains(Build.MODEL)) {
-                WebRtcAudioManager.setBlacklistDeviceForOpenSLESUsage(true);
-            }
-
-            PeerConnectionFactory.initialize(InitializationOptions.builder(this).createInitializationOptions());
+            PeerConnectionFactory.initialize(PeerConnectionFactory.InitializationOptions.builder(this).createInitializationOptions());
         } catch (UnsatisfiedLinkError e) {
             Log.w(TAG, e);
         }

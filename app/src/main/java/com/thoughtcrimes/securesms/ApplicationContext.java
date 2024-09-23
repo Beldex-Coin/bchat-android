@@ -22,7 +22,6 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 
@@ -77,7 +76,6 @@ import com.thoughtcrimes.securesms.notifications.OptimizedMessageNotifier;
 import com.thoughtcrimes.securesms.providers.BlobProvider;
 import com.thoughtcrimes.securesms.service.ExpiringMessageManager;
 import com.thoughtcrimes.securesms.service.KeyCachingService;
-import com.thoughtcrimes.securesms.service.UpdateApkRefreshListener;
 import com.thoughtcrimes.securesms.sskenvironment.ProfileManager;
 import com.thoughtcrimes.securesms.sskenvironment.ReadReceiptManager;
 import com.thoughtcrimes.securesms.sskenvironment.TypingStatusRepository;
@@ -372,7 +370,7 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
         BackgroundPollWorker.schedulePeriodic(this);
 
         if (BuildConfig.PLAY_STORE_DISABLED) {
-            UpdateApkRefreshListener.schedule(this);
+            // possibly add update apk job
         }
     }
 

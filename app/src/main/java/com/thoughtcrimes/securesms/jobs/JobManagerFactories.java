@@ -32,7 +32,6 @@ public final class JobManagerFactories {
             put(LocalBackupJob.KEY,                        new LocalBackupJob.Factory());
             put(RetrieveProfileAvatarJob.KEY,              new RetrieveProfileAvatarJob.Factory(application));
             put(TrimThreadJob.KEY,                         new TrimThreadJob.Factory());
-            put(UpdateApkJob.KEY,                          new UpdateApkJob.Factory());
             put(PrepareAttachmentAudioExtrasJob.KEY,       new PrepareAttachmentAudioExtrasJob.Factory());
         }};
         factoryKeys.addAll(factoryHashMap.keySet());

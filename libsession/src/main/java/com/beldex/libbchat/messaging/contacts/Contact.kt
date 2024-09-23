@@ -50,9 +50,11 @@ class Contact(val bchatID: String) {
      * The name to display in the UI. For local use only.
      */
     fun displayName(context: ContactContext): String? {
-        if (bchatID == reportIssueBChatID) {
-            name = "Report Issue"
-            return name
+        if(context != ContactContext.OPEN_GROUP) {
+            if (bchatID == reportIssueBChatID) {
+                name = "Report Issue"
+                return name
+            }
         }
         nickname?.let { return it }
         return when (context) {

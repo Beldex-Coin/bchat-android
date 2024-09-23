@@ -61,7 +61,7 @@ dependencies {
         exclude group: 'com.squareup.okhttp', module: 'okhttp-urlconnection'
     }
     implementation 'com.annimon:stream:1.1.8'
-    implementation 'com.codewaves.stickyheadergrid:stickyheadergrid:0.9.4'
+    implementation project(':stickyheader')
     implementation 'com.github.dmytrodanylyk:android-morphing-button:1.0'
     implementation 'androidx.sqlite:sqlite-ktx:2.3.1'
     implementation 'net.zetetic:sqlcipher-android:4.5.4@aar'

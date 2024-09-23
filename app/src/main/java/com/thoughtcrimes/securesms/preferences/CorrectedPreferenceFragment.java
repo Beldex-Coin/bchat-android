@@ -18,8 +18,6 @@ import android.view.ViewGroup;
 import com.thoughtcrimes.securesms.components.CustomDefaultPreference;
 
 import io.beldex.bchat.R;
-import com.thoughtcrimes.securesms.preferences.widgets.ColorPickerPreference;
-import com.thoughtcrimes.securesms.preferences.widgets.ColorPickerPreferenceDialogFragmentCompat;
 
 public abstract class CorrectedPreferenceFragment extends PreferenceFragmentCompat {
 
@@ -40,9 +38,7 @@ public abstract class CorrectedPreferenceFragment extends PreferenceFragmentComp
   public void onDisplayPreferenceDialog(Preference preference) {
     DialogFragment dialogFragment = null;
 
-    if (preference instanceof ColorPickerPreference) {
-      dialogFragment = ColorPickerPreferenceDialogFragmentCompat.newInstance(preference.getKey());
-    } else if (preference instanceof CustomDefaultPreference) {
+    if (preference instanceof CustomDefaultPreference) {
       dialogFragment = CustomDefaultPreference.CustomDefaultPreferenceDialogFragmentCompat.newInstance(preference.getKey());
     }
 

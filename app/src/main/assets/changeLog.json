@@ -373,6 +373,20 @@
       ]
     },
     {
+      "title": "2.5.2",
+      "descriptions": [
+        {
+          "description": "- Updated call functionalities to adhere with google play's developer guidelines"
+        },
+        {
+          "description": "- Targeted latest android version"
+        },
+        {
+          "description": "- Updated google play core libraries"
+        }
+      ]
+    },
+    {
       "title": "2.6.0",
       "descriptions": [
         {

@@ -2418,12 +2418,8 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 if (recipient.isContactRecipient && recipient.isBlocked) {
                     unblock()
                 } else {
-                    if (Helper.getPhoneStatePermission(requireActivity())) {
-                        if (Helper.getBlueToothStatePermission(requireActivity())) {
-                            isMenuCall()
-                        }
-                    } else {
-                        Timber.tag("Beldex").d("Permission not granted")
+                    viewModel.recipient.value?.let { recipients ->
+                        call(requireActivity(), recipients)
                     }
                 }
             }
@@ -2439,103 +2435,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             } ?: false
         }else{
             return false
-        }
-    }
-
-    private fun isMenuCall() {
-        if (CheckOnline.isOnline(requireActivity().applicationContext)) {
-            val tm = this.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-            if (ContextCompat.checkSelfPermission(
-                    requireActivity().applicationContext,
-                    Manifest.permission.READ_PHONE_STATE
-                ) == PackageManager.PERMISSION_GRANTED
-            ) {
-                val simState: Int = tm.simState
-                if (simState == TelephonyManager.SIM_STATE_READY) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        tm.registerTelephonyCallback(
-                            requireActivity().applicationContext.mainExecutor,
-                            object : TelephonyCallback(), TelephonyCallback.CallStateListener {
-                                override fun onCallStateChanged(state: Int) {
-                                    when (state) {
-                                        TelephonyManager.CALL_STATE_RINGING -> {
-                                            Toast.makeText(
-                                                requireActivity().applicationContext,
-                                                getString(R.string.call_alert),
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                        }
-
-                                        TelephonyManager.CALL_STATE_OFFHOOK -> {
-                                            Toast.makeText(
-                                                requireActivity().applicationContext,
-                                                getString(R.string.call_alert),
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-
-                                        }
-
-                                        TelephonyManager.CALL_STATE_IDLE -> {
-                                            viewModel.recipient.value?.let { recipient ->
-                                                call(
-                                                    requireActivity().applicationContext,
-                                                    recipient
-                                                )
-                                            }
-                                        }
-                                    }
-                                }
-                            })
-
-                    } else {
-                        /*tm.listen(object : PhoneStateListener() {
-                            override fun onCallStateChanged(state: Int, phoneNumber: String?) {
-                                super. onCallStateChanged(state, phoneNumber)
-                                when (state) {
-                                    TelephonyManager.CALL_STATE_RINGING -> {
-                                        Toast.makeText(
-                                            requireActivity().applicationContext,
-                                            getString(R.string.call_alert),
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-
-                                    TelephonyManager.CALL_STATE_OFFHOOK -> {
-                                        Toast.makeText(
-                                            requireActivity().applicationContext,
-                                            getString(R.string.call_alert),
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-
-                                    }
-
-                                    TelephonyManager.CALL_STATE_IDLE -> {
-                                        viewModel.recipient.value?.let { recipient ->
-                                            call(requireActivity(), recipient)
-                                        }
-                                    }
-                                }
-                            }
-                        }, PhoneStateListener.LISTEN_CALL_STATE)*/
-                        viewModel.recipient.value?.let { recipient ->
-                            call(requireActivity(), recipient)
-                        }
-                    }
-                } else {
-                    viewModel.recipient.value?.let { recipient ->
-                        call(requireActivity(), recipient)
-                    }
-                }
-            } else {
-                Timber.tag("Beldex").d("Call state issue called else")
-            }
-
-        } else {
-            Toast.makeText(
-                requireActivity().applicationContext,
-                getString(R.string.please_check_your_internet_connection),
-                Toast.LENGTH_SHORT
-            ).show()
         }
     }
 

@@ -18,7 +18,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        maven {
+        /*maven {
             url "https://raw.github.com/signalapp/maven/master/photoview/releases/"
             content {
                 includeGroupByRegex "com\\.github\\.chrisbanes.*"
@@ -41,7 +41,7 @@ allprojects {
             content {
                 includeGroupByRegex "org\\.signal.*"
             }
-        }
+        }*/
         maven {
             url "https://repo1.maven.org/maven2/com/goterl/lazysodium-android"
             content {

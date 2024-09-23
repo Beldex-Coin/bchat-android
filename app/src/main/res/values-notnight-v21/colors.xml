@@ -222,4 +222,5 @@
     <color name="message_request_view_border">#A7A7BA</color>
     <color name="incoming_message_search_query">#EBEBEB</color>
     <color name="community_guidelines_background">#EBEBEB</color>
+    <color name="grey">#FF808080 </color>
 </resources>

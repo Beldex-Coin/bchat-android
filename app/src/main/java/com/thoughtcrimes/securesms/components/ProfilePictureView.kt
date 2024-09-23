@@ -19,10 +19,10 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterInside
 import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
-import com.thoughtcrimes.securesms.mms.GlideRequests
 import com.thoughtcrimes.securesms.util.AvatarPlaceholderGenerator.generate
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewProfilePictureBinding
+import io.beldex.bchat.mms.GlideRequests
 
 class ProfilePictureView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
@@ -38,10 +38,17 @@ class ProfilePictureView @JvmOverloads constructor(
 
     private val profilePicturesCache = mutableMapOf<String, String?>()
     private val profilePicturesCacheWithBnsTag = mutableMapOf<String, String?>()
-    private val unknownRecipientDrawable = ResourceContactPhoto(R.drawable.ic_profile_default)
-        .asDrawable(context, ContactColors.UNKNOWN_COLOR.toConversationColor(context), false)
-    private val unknownOpenGroupDrawable = ResourceContactPhoto(R.drawable.ic_notification_)
-        .asDrawable(context, ContactColors.UNKNOWN_COLOR.toConversationColor(context), false)
+    private val resourcePadding by lazy {
+        context.resources.getDimensionPixelSize(R.dimen.normal_padding).toFloat()
+    }
+    private val unknownRecipientDrawable by lazy {
+        ResourceContactPhoto(R.drawable.ic_profile_default)
+            .asDrawable(context, ContactColors.UNKNOWN_COLOR.toConversationColor(context), false, resourcePadding)
+    }
+    private val unknownOpenGroupDrawable by lazy {
+        ResourceContactPhoto(R.drawable.ic_notification_)
+            .asDrawable(context, ContactColors.UNKNOWN_COLOR.toConversationColor(context), false, resourcePadding)
+    }
 
     // region Updating
     

@@ -45,8 +45,6 @@ import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.AppLock
 import com.thoughtcrimes.securesms.wallet.utils.pincodeview.managers.LockManager
 import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
-import mobi.upod.timedurationpicker.TimeDurationPicker
-import mobi.upod.timedurationpicker.TimeDurationPickerDialog
 import java.util.concurrent.TimeUnit
 
 class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
@@ -218,7 +216,7 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
 
     private inner class ScreenLockTimeoutListener : Preference.OnPreferenceClickListener {
         override fun onPreferenceClick(preference: Preference): Boolean {
-            TimeDurationPickerDialog(context, { view: TimeDurationPicker?, duration: Long ->
+           /* TimeDurationPickerDialog(context, { view: TimeDurationPicker?, duration: Long ->
                 if (duration == 0L) {
                     setScreenLockTimeout(context!!, 0)
                 } else {
@@ -227,7 +225,7 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
                     setScreenLockTimeout(context!!, timeoutSeconds)
                 }
                 initializeScreenLockTimeoutSummary()
-            }, 0).show()
+            }, 0).show()*/
             return true
         }
     }

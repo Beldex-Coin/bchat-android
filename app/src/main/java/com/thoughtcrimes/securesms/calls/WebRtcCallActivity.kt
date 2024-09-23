@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Color.green
 import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
@@ -23,9 +22,9 @@ import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.utilities.Log
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import dagger.hilt.android.AndroidEntryPoint
 import com.thoughtcrimes.securesms.PassphraseRequiredActionBarActivity
 import com.thoughtcrimes.securesms.dependencies.DatabaseComponent
-import com.thoughtcrimes.securesms.mms.GlideApp
 import com.thoughtcrimes.securesms.permissions.Permissions
 import com.thoughtcrimes.securesms.service.WebRtcCallService
 import com.thoughtcrimes.securesms.util.AvatarPlaceholderGenerator
@@ -34,9 +33,9 @@ import com.thoughtcrimes.securesms.webrtc.CallViewModel
 import com.thoughtcrimes.securesms.webrtc.CallViewModel.State.*
 import com.thoughtcrimes.securesms.webrtc.audio.SignalAudioManager.AudioDevice.EARPIECE
 import com.thoughtcrimes.securesms.webrtc.audio.SignalAudioManager.AudioDevice.SPEAKER_PHONE
-import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityWebRtcCallBinding
+import io.beldex.bchat.mms.GlideApp
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -60,7 +59,6 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
 
         private val viewModel by viewModels<CallViewModel>()
         private val glide by lazy { GlideApp.with(this) }
-        private val glide1 by lazy { GlideApp.with(this) }
         private lateinit var binding: ActivityWebRtcCallBinding
         private var uiJob: Job? = null
         private var wantsToAnswer = false

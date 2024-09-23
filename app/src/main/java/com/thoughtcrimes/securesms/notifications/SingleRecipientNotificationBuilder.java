@@ -34,7 +34,7 @@ import com.thoughtcrimes.securesms.util.BitmapUtil;
 
 import com.beldex.libbchat.avatars.ContactColors;
 import com.beldex.libbchat.avatars.ContactPhoto;
-import com.beldex.libbchat.avatars.GeneratedContactPhoto;
+import com.beldex.libbchat.avatars.ResourceContactPhoto;
 import com.beldex.libbchat.messaging.contacts.Contact;
 import com.beldex.libbchat.utilities.NotificationPrivacyPreference;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
@@ -63,6 +63,8 @@ public class SingleRecipientNotificationBuilder extends AbstractNotificationBuil
   private SlideDeck slideDeck;
   private CharSequence contentTitle;
   private CharSequence contentText;
+
+  private static final Integer ICON_SIZE = 128;
 
   public SingleRecipientNotificationBuilder(@NonNull Context context, @NonNull NotificationPrivacyPreference privacy)
   {
@@ -113,7 +115,7 @@ public class SingleRecipientNotificationBuilder extends AbstractNotificationBuil
 
     } else {
       setContentTitle(context.getString(R.string.SingleRecipientNotificationBuilder_signal));
-      setLargeIcon(new GeneratedContactPhoto("Unknown", R.drawable.ic_profile_default).asDrawable(context, ContactColors.UNKNOWN_COLOR.toConversationColor(context)));
+      setLargeIcon(AvatarPlaceholderGenerator.generate(context, ICON_SIZE, "", "Unknown"));
     }
   }
 
@@ -335,7 +337,7 @@ public class SingleRecipientNotificationBuilder extends AbstractNotificationBuil
   private static Drawable getPlaceholderDrawable(Context context, Recipient recipient) {
     String publicKey = recipient.getAddress().serialize();
     String displayName = recipient.getName();
-    return AvatarPlaceholderGenerator.generate(context, 128, publicKey, displayName);
+    return AvatarPlaceholderGenerator.generate(context, ICON_SIZE, publicKey, displayName);
   }
 
   /**

@@ -133,4 +133,5 @@
     <color name="in_chat_payment_dialog_background">#FFFFFF</color>
     <color name="in_chat_amount_divider">#C9C9C9</color>
     <color name="bchat_id_text_color">#00DB09</color>
+    <color name="grey">#FF808080 </color>
 </resources>

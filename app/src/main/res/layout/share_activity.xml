@@ -47,9 +47,9 @@
               android:layout_below="@id/toolbar"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:name="com.thoughtcrimes.securesms.contacts.ContactSelectionListFragment" />
+              android:name="io.beldex.bchat.contacts.ContactSelectionListFragment" />
 
-    <com.thoughtcrimes.securesms.components.SearchToolbar
+    <io.beldex.bchat.components.SearchToolbar
             android:id="@+id/search_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

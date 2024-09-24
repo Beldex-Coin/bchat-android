@@ -23,7 +23,7 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.thoughtcrimes.securesms.components.SafeViewPager
+    <io.beldex.bchat.components.SafeViewPager
         android:id="@+id/media_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -40,7 +40,7 @@
         android:visibility="gone"
         android:animateLayoutChanges="true">
 
-        <com.thoughtcrimes.securesms.components.MaxHeightScrollView
+        <io.beldex.bchat.components.MaxHeightScrollView
             android:id="@+id/media_preview_caption_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
             android:animateLayoutChanges="true"
             app:scrollView_maxHeight="120dp">
 
-            <com.thoughtcrimes.securesms.components.emoji.EmojiTextView
+            <io.beldex.bchat.components.emoji.EmojiTextView
                 android:id="@+id/media_preview_caption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
                 android:gravity="bottom"
                 tools:text="With great power comes great responsibility." />
 
-        </com.thoughtcrimes.securesms.components.MaxHeightScrollView>
+        </io.beldex.bchat.components.MaxHeightScrollView>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/media_preview_album_rail"

@@ -4,8 +4,8 @@ import android.view.View
 import androidx.annotation.DrawableRes
 import org.hamcrest.Description
 import org.hamcrest.TypeSafeMatcher
-import com.thoughtcrimes.securesms.conversation.v2.input_bar.InputBarButton
-import com.thoughtcrimes.securesms.home.NewConversationButtonSetView
+import io.beldex.bchat.conversation.v2.input_bar.InputBarButton
+import io.beldex.bchat.home.NewConversationButtonSetView
 
 class NewConversationButtonDrawableMatcher(@DrawableRes private val expectedId: Int): TypeSafeMatcher<View>() {
 

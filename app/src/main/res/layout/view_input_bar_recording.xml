@@ -96,7 +96,7 @@
 
             </LinearLayout>
 
-            <com.thoughtcrimes.securesms.conversation.v2.input_bar.WaveFormView
+            <io.beldex.bchat.conversation.v2.input_bar.WaveFormView
                 android:id="@+id/audioWaveForm"
                 android:layout_width="0dp"
                 android:layout_height="32dp"

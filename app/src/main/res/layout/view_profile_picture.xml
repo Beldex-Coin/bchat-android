@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.thoughtcrimes.securesms.components.ProfilePictureView xmlns:android="http://schemas.android.com/apk/res/android"
+<io.beldex.bchat.components.ProfilePictureView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -114,4 +114,4 @@
         android:layout_height="@dimen/large_profile_picture_size"
         app:riv_corner_radius="200dp"/>
 
-</com.thoughtcrimes.securesms.components.ProfilePictureView>
+</io.beldex.bchat.components.ProfilePictureView>

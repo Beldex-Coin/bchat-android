@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/action_bar_background"
-    tools:context="com.thoughtcrimes.securesms.preferences.SettingsActivity"
+    tools:context="io.beldex.bchat.preferences.SettingsActivity"
     tools:menu="@menu/settings_general"
     tools:theme="@style/Theme.Bchat.DayNight.NoActionBar">
 
@@ -478,7 +478,7 @@
                         android:layout_width="@dimen/small_profile_picture_size"
                         android:layout_height="@dimen/small_profile_picture_size">
 
-                        <com.thoughtcrimes.securesms.home.PathStatusView
+                        <io.beldex.bchat.home.PathStatusView
                             android:layout_gravity="center"
                             android:layout_width="@dimen/path_status_view_size"
                             android:layout_height="@dimen/path_status_view_size"/>

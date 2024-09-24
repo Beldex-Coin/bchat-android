@@ -16,7 +16,7 @@
         android:background="@color/remote_parent_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-        <com.thoughtcrimes.securesms.conversation.ChatWallpaperImageView
+        <io.beldex.bchat.conversation.ChatWallpaperImageView
             android:id="@+id/contentImageView"
             android:layout_width="match_parent"
             android:src="@drawable/chat_wallpaper"

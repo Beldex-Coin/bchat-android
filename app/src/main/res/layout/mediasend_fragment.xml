@@ -7,9 +7,9 @@
     android:layout_height="match_parent"
     android:background="@color/core_black"
     android:theme="@style/Theme.Bchat.ForceDark"
-    tools:context="com.thoughtcrimes.securesms.mediasend.MediaSendActivity">
+    tools:context="io.beldex.bchat.mediasend.MediaSendActivity">
 
-    <com.thoughtcrimes.securesms.components.ControllableViewPager
+    <io.beldex.bchat.components.ControllableViewPager
         android:id="@+id/mediasend_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
@@ -21,7 +21,7 @@
         android:animateLayoutChanges="true"
         android:layout_gravity="top"/>
 
-    <com.thoughtcrimes.securesms.components.InputAwareLayout
+    <io.beldex.bchat.components.InputAwareLayout
         android:id="@+id/mediasend_hud"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -34,7 +34,7 @@
             android:orientation="vertical"
             android:background="@color/transparent_black_70">
 
-            <com.thoughtcrimes.securesms.components.emoji.EmojiEditText
+            <io.beldex.bchat.components.emoji.EmojiEditText
                 android:id="@+id/mediasend_caption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -80,7 +80,7 @@
                     android:orientation="horizontal"
                     android:background="@drawable/compose_background_camera">
 
-                    <com.thoughtcrimes.securesms.components.emoji.EmojiToggle
+                    <io.beldex.bchat.components.emoji.EmojiToggle
                         android:id="@+id/mediasend_emoji_toggle"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/conversation_compose_height"
@@ -94,7 +94,7 @@
                         android:layout_width="0dp"
                         android:layout_height="@dimen/conversation_compose_height" />
 
-                    <com.thoughtcrimes.securesms.components.ComposeText
+                    <io.beldex.bchat.components.ComposeText
                         style="@style/Widget.Bchat.EditText.Compose"
                         android:id="@+id/mediasend_compose_text"
                         android:layout_width="0dp"
@@ -105,7 +105,7 @@
                         android:nextFocusRight="@+id/send_button"
                         tools:hint="Send TextSecure message" >
                         <requestFocus />
-                    </com.thoughtcrimes.securesms.components.ComposeText>
+                    </io.beldex.bchat.components.ComposeText>
 
                 </LinearLayout>
 
@@ -149,7 +149,7 @@
 
         </LinearLayout>
 
-    </com.thoughtcrimes.securesms.components.InputAwareLayout>
+    </io.beldex.bchat.components.InputAwareLayout>
 
     <FrameLayout
         android:id="@+id/mediasend_close_button"

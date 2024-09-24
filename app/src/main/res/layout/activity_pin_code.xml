@@ -36,7 +36,7 @@
             android:layout_marginTop="20dp"
             android:textSize="@dimen/pin_code_step_text_size"/>
 
-        <com.thoughtcrimes.securesms.wallet.utils.pincodeview.PinCodeRoundView
+        <io.beldex.bchat.wallet.utils.pincodeview.PinCodeRoundView
             android:id="@+id/pin_code_round_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -68,7 +68,7 @@
             android:background="@color/light_gray_bar"
             android:orientation="horizontal" />
 
-        <com.thoughtcrimes.securesms.wallet.utils.keyboardview.KeyboardView
+        <io.beldex.bchat.wallet.utils.keyboardview.KeyboardView
             android:id="@+id/pin_code_keyboard_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

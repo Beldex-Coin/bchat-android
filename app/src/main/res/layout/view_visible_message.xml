@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.thoughtcrimes.securesms.conversation.v2.messages.VisibleMessageView xmlns:android="http://schemas.android.com/apk/res/android"
+<io.beldex.bchat.conversation.v2.messages.VisibleMessageView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/visibleMessageView"
@@ -103,7 +103,7 @@
                 android:layout_height="wrap_content"
                 android:padding="0dp" />
 
-            <com.thoughtcrimes.securesms.conversation.v2.components.ExpirationTimerView
+            <io.beldex.bchat.conversation.v2.components.ExpirationTimerView
                 android:id="@+id/expirationTimerView"
                 android:layout_width="12dp"
                 android:layout_height="12dp"
@@ -124,4 +124,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</com.thoughtcrimes.securesms.conversation.v2.messages.VisibleMessageView>
+</io.beldex.bchat.conversation.v2.messages.VisibleMessageView>

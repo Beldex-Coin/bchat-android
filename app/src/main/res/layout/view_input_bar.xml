@@ -43,7 +43,7 @@
                     android:background="@color/input_bar_background"
                     android:layout_marginStart="@dimen/small_spacing" />
 
-                <com.thoughtcrimes.securesms.conversation.v2.input_bar.InputBarEditText
+                <io.beldex.bchat.conversation.v2.input_bar.InputBarEditText
                     android:id="@+id/inputBarEditText"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"

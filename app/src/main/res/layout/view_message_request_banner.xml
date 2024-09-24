@@ -20,7 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" >
 
-        <com.thoughtcrimes.securesms.components.CircleColorImageView
+        <io.beldex.bchat.components.CircleColorImageView
             android:id="@+id/profilePictureView"
             android:layout_width="@dimen/medium_profile_picture_size"
             android:layout_height="@dimen/medium_profile_picture_size"

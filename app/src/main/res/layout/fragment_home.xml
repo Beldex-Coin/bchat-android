@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="end"
-    tools:context="com.thoughtcrimes.securesms.home.HomeFragment"
+    tools:context="io.beldex.bchat.home.HomeFragment"
     tools:openDrawer="right">
 
     <FrameLayout
@@ -108,7 +108,7 @@
                             android:layout_height="@dimen/small_profile_picture_size"
                             android:layout_alignParentStart="true"
                             android:layout_centerVertical="true" />
-                        <com.thoughtcrimes.securesms.home.PathStatusView
+                        <io.beldex.bchat.home.PathStatusView
                             android:id="@+id/pathStatusView"
                             android:layout_width="@dimen/path_status_view_size_new"
                             android:layout_height="@dimen/path_status_view_size_new"
@@ -183,7 +183,7 @@
                         android:layout_marginHorizontal="@dimen/medium_spacing"
                         android:visibility="gone">
 
-                        <com.thoughtcrimes.securesms.home.search.GlobalSearchInputLayout
+                        <io.beldex.bchat.home.search.GlobalSearchInputLayout
                             android:id="@+id/globalSearchInputLayout1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -223,7 +223,7 @@
     <!--                    android:background="?android:dividerHorizontal"-->
     <!--                    android:elevation="1dp" />-->
 
-                    <com.thoughtcrimes.securesms.onboarding.SeedReminderView
+                    <io.beldex.bchat.onboarding.SeedReminderView
                         android:id="@+id/seedReminderView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -336,7 +336,7 @@
                         android:textStyle="bold"
                         android:visibility="gone" />
 
-    <!--                <com.thoughtcrimes.securesms.home.NewConversationButtonSetView-->
+    <!--                <io.beldex.bchat.home.NewConversationButtonSetView-->
     <!--                    android:id="@+id/newConversationButtonSet"-->
     <!--                    android:layout_width="190dp"-->
     <!--                    android:layout_height="236dp"-->

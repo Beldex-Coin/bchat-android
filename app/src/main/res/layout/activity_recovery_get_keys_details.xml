@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/page_background"
-        tools:context="com.thoughtcrimes.securesms.keys.RecoveryGetKeysDetailsActivity">
+        tools:context="io.beldex.bchat.keys.RecoveryGetKeysDetailsActivity">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/restoreKeysWalletNameCard"

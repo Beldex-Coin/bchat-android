@@ -23,7 +23,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerInParent="true">
 
-            <com.thoughtcrimes.securesms.components.CircleColorImageView
+            <io.beldex.bchat.components.CircleColorImageView
                 android:id="@+id/nodeStatusView_connect"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
                 app:circleColor="@color/node_status"
                 android:textAlignment="center"
                  />
-            <com.thoughtcrimes.securesms.components.CircleColorImageView
+            <io.beldex.bchat.components.CircleColorImageView
                 android:id="@+id/nodeStatusView_error"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

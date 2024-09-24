@@ -8,6 +8,11 @@ import androidx.annotation.WorkerThread;
 
 import com.annimon.stream.Stream;
 
+import io.beldex.bchat.jobmanager.persistence.ConstraintSpec;
+import io.beldex.bchat.jobmanager.persistence.DependencySpec;
+import io.beldex.bchat.jobmanager.persistence.FullSpec;
+import io.beldex.bchat.jobmanager.persistence.JobSpec;
+import io.beldex.bchat.jobmanager.persistence.JobStorage;
 import com.beldex.libbchat.messaging.utilities.Data;
 import com.beldex.libbchat.utilities.Debouncer;
 import com.beldex.libsignal.utilities.Log;

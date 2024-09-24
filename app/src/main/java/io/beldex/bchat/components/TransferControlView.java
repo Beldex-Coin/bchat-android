@@ -11,6 +11,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.annimon.stream.Stream;
+import io.beldex.bchat.events.PartProgressEvent;
+import io.beldex.bchat.mms.Slide;
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentTransferProgress;
 import com.pnikosis.materialishprogress.ProgressWheel;
 import io.beldex.bchat.events.PartProgressEvent;

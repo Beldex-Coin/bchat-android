@@ -39,6 +39,16 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import io.beldex.bchat.ApplicationContext;
+import io.beldex.bchat.conversation.v2.ConversationFragmentV2;
+import io.beldex.bchat.database.model.MediaMmsMessageRecord;
+import io.beldex.bchat.database.model.MessageRecord;
+import io.beldex.bchat.database.model.MmsMessageRecord;
+import io.beldex.bchat.database.model.Quote;
+import io.beldex.bchat.home.HomeActivity;
+import io.beldex.bchat.mms.SlideDeck;
+import io.beldex.bchat.util.BchatMetaProtocol;
+import io.beldex.bchat.util.SpanUtil;
 import com.beldex.libbchat.mnode.MnodeAPI;
 import io.beldex.bchat.ApplicationContext;
 import io.beldex.bchat.contactshare.ContactUtil;

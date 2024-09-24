@@ -9,6 +9,14 @@ import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 
 
+import io.beldex.bchat.components.subsampling.AttachmentBitmapDecoder;
+import io.beldex.bchat.components.subsampling.AttachmentRegionDecoder;
+import io.beldex.bchat.mms.DecryptableStreamUriLoader;
+import io.beldex.bchat.mms.GlideRequests;
+import io.beldex.bchat.mms.PartAuthority;
+import io.beldex.bchat.util.BitmapDecodingException;
+import io.beldex.bchat.util.BitmapUtil;
+import io.beldex.bchat.util.MediaUtil;
 import com.beldex.libsignal.utilities.Log;
 import android.util.Pair;
 import android.view.View;

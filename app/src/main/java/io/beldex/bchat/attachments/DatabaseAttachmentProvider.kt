@@ -28,7 +28,7 @@ import io.beldex.bchat.util.MediaUtil
 import java.io.IOException
 import java.io.InputStream
 
-class DatabaseAttachmentProvider(context: Context, helper: SQLCipherOpenHelper) : Database(context, helper), MessageDataProvider {
+class DatabaseAttachmentProvider(context: Context, helper: io.beldex.bchat.database.helpers.SQLCipherOpenHelper) : io.beldex.bchat.database.Database(context, helper), MessageDataProvider {
 
     override fun getAttachmentStream(attachmentId: Long): BchatServiceAttachmentStream? {
         val attachmentDatabase = DatabaseComponent.get(context).attachmentDatabase()
@@ -71,7 +71,7 @@ class DatabaseAttachmentProvider(context: Context, helper: SQLCipherOpenHelper) 
                 0
             )
         ) ?: return null
-        val mediaConstraints = MediaConstraints.getPushMediaConstraints()
+        val mediaConstraints = io.beldex.bchat.mms.MediaConstraints.getPushMediaConstraints()
         val scaledAttachment = scaleAndStripExif(database, mediaConstraints, databaseAttachment) ?: return null
         return getAttachmentFor(scaledAttachment)
     }
@@ -210,7 +210,7 @@ class DatabaseAttachmentProvider(context: Context, helper: SQLCipherOpenHelper) 
     }
 
     override fun deleteMessage(messageID: Long, isSms: Boolean) {
-        val messagingDatabase: MessagingDatabase = if (isSms)  DatabaseComponent.get(context).smsDatabase()
+        val messagingDatabase: MessagingDatabase= if (isSms)  DatabaseComponent.get(context).smsDatabase()
                                                    else DatabaseComponent.get(context).mmsDatabase()
         messagingDatabase.deleteMessage(messageID)
         DatabaseComponent.get(context).beldexMessageDatabase().deleteMessage(messageID, isSms)
@@ -218,7 +218,7 @@ class DatabaseAttachmentProvider(context: Context, helper: SQLCipherOpenHelper) 
     }
 
     override fun deleteMessages(messageIDs: List<Long>, threadId: Long, isSms: Boolean) {
-        val messagingDatabase: MessagingDatabase = if (isSms)  DatabaseComponent.get(context).smsDatabase()
+        val messagingDatabase: MessagingDatabase= if (isSms)  DatabaseComponent.get(context).smsDatabase()
         else DatabaseComponent.get(context).mmsDatabase()
 
         messagingDatabase.deleteMessages(messageIDs.toLongArray(), threadId)
@@ -230,7 +230,7 @@ class DatabaseAttachmentProvider(context: Context, helper: SQLCipherOpenHelper) 
         val database = DatabaseComponent.get(context).mmsSmsDatabase()
         val address = Address.fromSerialized(author)
         val message = database.getMessageFor(timestamp, address) ?: return
-        val messagingDatabase: MessagingDatabase = if (message.isMms)  DatabaseComponent.get(context).mmsDatabase()
+        val messagingDatabase: MessagingDatabase= if (message.isMms)  DatabaseComponent.get(context).mmsDatabase()
                                                    else DatabaseComponent.get(context).smsDatabase()
         messagingDatabase.markAsDeleted(message.id, message.isRead)
         if (message.isOutgoing) {
@@ -253,10 +253,10 @@ class DatabaseAttachmentProvider(context: Context, helper: SQLCipherOpenHelper) 
         )
     }
 
-    private fun scaleAndStripExif(attachmentDatabase: AttachmentDatabase, constraints: MediaConstraints, attachment: Attachment): Attachment? {
+    private fun scaleAndStripExif(attachmentDatabase: io.beldex.bchat.database.AttachmentDatabase, constraints: io.beldex.bchat.mms.MediaConstraints, attachment: Attachment): Attachment? {
         return try {
             if (constraints.isSatisfied(context, attachment)) {
-                if (MediaUtil.isJpeg(attachment)) {
+                if (io.beldex.bchat.util.MediaUtil.isJpeg(attachment)) {
                     val stripped = constraints.getResizedMedia(context, attachment)
                     attachmentDatabase.updateAttachmentData(attachment, stripped)
                 } else {
@@ -276,7 +276,7 @@ class DatabaseAttachmentProvider(context: Context, helper: SQLCipherOpenHelper) 
     private fun getAttachmentFor(attachment: Attachment): SignalServiceAttachmentStream? {
         try {
             if (attachment.dataUri == null || attachment.size == 0L) throw IOException("Assertion failed, outgoing attachment has no data!")
-            val `is` = PartAuthority.getAttachmentStream(context, attachment.dataUri!!)
+            val `is` = io.beldex.bchat.mms.PartAuthority.getAttachmentStream(context, attachment.dataUri!!)
             return SignalServiceAttachment.newStreamBuilder()
                     .withStream(`is`)
                     .withContentType(attachment.contentType)
@@ -287,11 +287,11 @@ class DatabaseAttachmentProvider(context: Context, helper: SQLCipherOpenHelper) 
                     .withHeight(attachment.height)
                     .withCaption(attachment.caption)
                     .withListener { total: Long, progress: Long -> EventBus.getDefault().postSticky(
-                        PartProgressEvent(
-                            attachment,
-                            total,
-                            progress
-                        )
+                            io.beldex.bchat.events.PartProgressEvent(
+                                    attachment,
+                                    total,
+                                    progress
+                            )
                     ) }
                     .build()
         } catch (ioe: IOException) {
@@ -324,21 +324,21 @@ fun BchatServiceAttachmentPointer.toSignalPointer(): SignalServiceAttachmentPoin
 }
 
 fun DatabaseAttachment.toAttachmentStream(context: Context): BchatServiceAttachmentStream {
-    val stream = PartAuthority.getAttachmentStream(context, this.dataUri!!)
+    val stream = io.beldex.bchat.mms.PartAuthority.getAttachmentStream(context, this.dataUri!!)
     val listener = SignalServiceAttachment.ProgressListener { total: Long, progress: Long -> EventBus.getDefault().postSticky(
-        PartProgressEvent(
-            this,
-            total,
-            progress
-        )
+            io.beldex.bchat.events.PartProgressEvent(
+                    this,
+                    total,
+                    progress
+            )
     )}
 
     var attachmentStream = BchatServiceAttachmentStream(stream, this.contentType, this.size, Optional.fromNullable(this.fileName), this.isVoiceNote, Optional.absent(), this.width, this.height, Optional.fromNullable(this.caption), listener)
     attachmentStream.attachmentId = this.attachmentId.rowId
-    attachmentStream.isAudio = MediaUtil.isAudio(this)
-    attachmentStream.isGif = MediaUtil.isGif(this)
-    attachmentStream.isVideo = MediaUtil.isVideo(this)
-    attachmentStream.isImage = MediaUtil.isImage(this)
+    attachmentStream.isAudio = io.beldex.bchat.util.MediaUtil.isAudio(this)
+    attachmentStream.isGif = io.beldex.bchat.util.MediaUtil.isGif(this)
+    attachmentStream.isVideo = io.beldex.bchat.util.MediaUtil.isVideo(this)
+    attachmentStream.isImage = io.beldex.bchat.util.MediaUtil.isImage(this)
 
     attachmentStream.key = ByteString.copyFrom(this.key?.toByteArray())
     attachmentStream.digest = Optional.fromNullable(this.digest)
@@ -378,13 +378,13 @@ fun DatabaseAttachment.toSignalAttachmentPointer(): SignalServiceAttachmentPoint
 }
 
 fun DatabaseAttachment.toSignalAttachmentStream(context: Context): SignalServiceAttachmentStream {
-    val stream = PartAuthority.getAttachmentStream(context, this.dataUri!!)
+    val stream = io.beldex.bchat.mms.PartAuthority.getAttachmentStream(context, this.dataUri!!)
     val listener = SignalServiceAttachment.ProgressListener { total: Long, progress: Long -> EventBus.getDefault().postSticky(
-        PartProgressEvent(
-            this,
-            total,
-            progress
-        )
+            io.beldex.bchat.events.PartProgressEvent(
+                    this,
+                    total,
+                    progress
+            )
     )}
 
     return SignalServiceAttachmentStream(
@@ -402,5 +402,5 @@ fun DatabaseAttachment.toSignalAttachmentStream(context: Context): SignalService
 }
 
 fun DatabaseAttachment.shouldHaveImageSize(): Boolean {
-    return (MediaUtil.isVideo(this) || MediaUtil.isImage(this) || MediaUtil.isGif(this));
+    return (io.beldex.bchat.util.MediaUtil.isVideo(this) || io.beldex.bchat.util.MediaUtil.isImage(this) || io.beldex.bchat.util.MediaUtil.isGif(this));
 }

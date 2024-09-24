@@ -13,6 +13,10 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 
 import com.annimon.stream.Stream;
+import io.beldex.bchat.jobs.AvatarDownloadJob;
+import io.beldex.bchat.jobs.FastJobStorage;
+import io.beldex.bchat.jobs.JobManagerFactories;
+import io.beldex.bchat.jobs.RetrieveProfileAvatarJob;
 import com.beldex.libbchat.messaging.jobs.RetrieveProfileAvatarJob;
 import io.beldex.bchat.jobmanager.impl.JsonDataSerializer;
 

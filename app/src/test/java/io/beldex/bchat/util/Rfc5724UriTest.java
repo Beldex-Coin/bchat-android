@@ -25,6 +25,8 @@ import java.net.URISyntaxException;
 
 import static org.junit.Assert.assertTrue;
 
+import io.beldex.bchat.util.Rfc5724Uri;
+
 public class Rfc5724UriTest {
 
   @Test public void testInvalidPath() throws Exception {

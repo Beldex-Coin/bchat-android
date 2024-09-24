@@ -13,7 +13,7 @@ import io.beldex.bchat.components.emoji.EmojiPageViewGridAdapter.VariationSelect
 
 import io.beldex.bchat.R;
 
-public class EmojiPageView extends FrameLayout implements VariationSelectorListener {
+public class EmojiPageView extends FrameLayout implements EmojiPageViewGridAdapter.VariationSelectorListener {
   private static final String TAG = EmojiPageView.class.getSimpleName();
 
   private EmojiPageModel                   model;
@@ -21,12 +21,12 @@ public class EmojiPageView extends FrameLayout implements VariationSelectorListe
   private RecyclerView                     recyclerView;
   private GridLayoutManager                layoutManager;
   private RecyclerView.OnItemTouchListener scrollDisabler;
-  private VariationSelectorListener        variationSelectorListener;
+  private EmojiPageViewGridAdapter.VariationSelectorListener variationSelectorListener;
   private EmojiVariationSelectorPopup      popup;
 
   public EmojiPageView(@NonNull Context context,
                        @NonNull EmojiKeyboardProvider.EmojiEventListener emojiSelectionListener,
-                       @NonNull VariationSelectorListener variationSelectorListener)
+                       @NonNull EmojiPageViewGridAdapter.VariationSelectorListener variationSelectorListener)
   {
     super(context);
     final View view = LayoutInflater.from(getContext()).inflate(R.layout.emoji_grid_layout, this, true);

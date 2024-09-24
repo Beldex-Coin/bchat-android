@@ -10,9 +10,9 @@ import io.beldex.bchat.R
 import io.beldex.bchat.databinding.DialogSendConfirmBinding
 
 class SendConfirmDialog(
-    private val pendingTransaction: PendingTransaction,
-    private val txData: TxData?,
-    private val context: SendFragment
+        private val pendingTransaction: PendingTransaction,
+        private val txData: TxData?,
+        private val context: SendFragment
 ) : BaseDialog() {
     private lateinit var binding:DialogSendConfirmBinding
 

@@ -17,6 +17,10 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.widget.TextView;
 
+import io.beldex.bchat.components.emoji.parsing.EmojiDrawInfo;
+import io.beldex.bchat.components.emoji.parsing.EmojiPageBitmap;
+import io.beldex.bchat.components.emoji.parsing.EmojiParser;
+import io.beldex.bchat.components.emoji.parsing.EmojiTree;
 import com.beldex.libbchat.utilities.Util;
 import io.beldex.bchat.components.emoji.parsing.EmojiDrawInfo;
 import io.beldex.bchat.components.emoji.parsing.EmojiParser;

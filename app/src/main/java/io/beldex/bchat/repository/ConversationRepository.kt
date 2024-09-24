@@ -79,17 +79,17 @@ interface ConversationRepository {
 }
 
 class DefaultConversationRepository @Inject constructor(
-    private val textSecurePreferences: TextSecurePreferences,
-    private val messageDataProvider: MessageDataProvider,
-    private val threadDb: ThreadDatabase,
-    private val draftDb: DraftDatabase,
-    private val beldexThreadDb: BeldexThreadDatabase,
-    private val smsDb: SmsDatabase,
-    private val mmsDb: MmsDatabase,
-    private val mmsSmsDb: MmsSmsDatabase,
-    private val recipientDb: RecipientDatabase,
-    private val beldexMessageDb: BeldexMessageDatabase,
-    private val bchatjobdatabase: BchatJobDatabase
+        private val textSecurePreferences: TextSecurePreferences,
+        private val messageDataProvider: MessageDataProvider,
+        private val threadDb: ThreadDatabase,
+        private val draftDb: DraftDatabase,
+        private val beldexThreadDb: BeldexThreadDatabase,
+        private val smsDb: SmsDatabase,
+        private val mmsDb: MmsDatabase,
+        private val mmsSmsDb: MmsSmsDatabase,
+        private val recipientDb: RecipientDatabase,
+        private val beldexMessageDb: BeldexMessageDatabase,
+        private val bchatjobdatabase: BchatJobDatabase
 ) : ConversationRepository {
 
     override fun isBeldexHostedOpenGroup(threadId: Long): Boolean {

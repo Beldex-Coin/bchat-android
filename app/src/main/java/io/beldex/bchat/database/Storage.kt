@@ -60,14 +60,14 @@ class Storage(context: Context, helper: SQLCipherOpenHelper) : Database(context,
         }
         TextSecurePreferences.setProfilePictureURL(context, newProfilePicture)
         RetrieveProfileAvatarJob(
-            ourRecipient,
-            newProfilePicture
-        )
-        ApplicationContext.getInstance(context).jobManager.add(
-            RetrieveProfileAvatarJob(
                 ourRecipient,
                 newProfilePicture
-            )
+        )
+        ApplicationContext.getInstance(context).jobManager.add(
+                RetrieveProfileAvatarJob(
+                        ourRecipient,
+                        newProfilePicture
+                )
         )
     }
 

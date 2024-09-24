@@ -31,6 +31,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import io.beldex.bchat.mms.GlideApp;
+import io.beldex.bchat.mms.GlideRequests;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 

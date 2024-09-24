@@ -6,6 +6,9 @@ import android.os.Build;
 
 import androidx.annotation.NonNull;
 
+import io.beldex.bchat.jobmanager.impl.DefaultExecutorFactory;
+import io.beldex.bchat.jobmanager.impl.JsonDataSerializer;
+import io.beldex.bchat.jobmanager.persistence.JobStorage;
 import com.beldex.libbchat.messaging.utilities.Data;
 import com.beldex.libbchat.utilities.Debouncer;
 import com.beldex.libsignal.utilities.Log;
@@ -202,7 +205,7 @@ public class JobManager implements ConstraintObserver.Notifier {
         private final ConstraintInstantiator   constraintInstantiator;
         private final List<ConstraintObserver> constraintObservers;
         private final Data.Serializer          dataSerializer;
-        private final JobStorage               jobStorage;
+        private final JobStorage jobStorage;
 
         private Configuration(int jobThreadCount,
                               @NonNull ExecutorFactory executorFactory,

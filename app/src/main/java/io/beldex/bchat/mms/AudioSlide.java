@@ -24,6 +24,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import io.beldex.bchat.R;
+
+import io.beldex.bchat.util.ResUtil;
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment;
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentTransferProgress;
 import com.beldex.libbchat.messaging.sending_receiving.attachments.UriAttachment;

@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import io.beldex.bchat.data.BarcodeData;
 import com.beldex.libsignal.utilities.Log;
 import io.beldex.bchat.data.BarcodeData;
 import io.beldex.bchat.home.HomeActivity;

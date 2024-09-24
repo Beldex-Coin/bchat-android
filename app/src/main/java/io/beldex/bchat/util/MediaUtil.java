@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.util.Pair;
 import android.webkit.MimeTypeMap;
 
+import io.beldex.bchat.mms.GlideApp;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
 import io.beldex.bchat.mms.AudioSlide;

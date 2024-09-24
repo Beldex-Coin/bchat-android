@@ -6,6 +6,7 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import io.beldex.bchat.util.Rfc5724Uri;
 import com.beldex.libbchat.mnode.MnodeAPI;
 import io.beldex.bchat.util.Rfc5724Uri;
 

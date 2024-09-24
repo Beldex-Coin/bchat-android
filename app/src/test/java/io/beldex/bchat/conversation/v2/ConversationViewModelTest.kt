@@ -1,5 +1,6 @@
 package io.beldex.bchat.conversation.v2
 
+import io.beldex.bchat.conversation.v2.ConversationViewModel
 import com.beldex.libbchat.utilities.recipients.Recipient
 import kotlinx.coroutines.flow.first
 import org.hamcrest.CoreMatchers.endsWith

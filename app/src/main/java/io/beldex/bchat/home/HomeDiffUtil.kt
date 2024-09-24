@@ -5,10 +5,10 @@ import androidx.recyclerview.widget.DiffUtil
 import io.beldex.bchat.database.model.ThreadRecord
 
 class HomeDiffUtil(
-    private val old: List<ThreadRecord>,
-    private val new: List<ThreadRecord>,
-    private val context: Context,
-    private val hiddenRequestCounts: Boolean
+        private val old: List<ThreadRecord>,
+        private val new: List<ThreadRecord>,
+        private val context: Context,
+        private val hiddenRequestCounts: Boolean
 ): DiffUtil.Callback() {
 
     override fun getOldListSize(): Int = old.size

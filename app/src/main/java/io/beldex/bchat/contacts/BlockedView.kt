@@ -18,9 +18,9 @@ class BlockedView : LinearLayout {
 
     private lateinit var binding: ActivityBlockedViewBinding
 
-    var recipientDatabase: RecipientDatabase? = null
+    var recipientDatabase: io.beldex.bchat.database.RecipientDatabase? = null
 
-    var thread: ThreadRecord? = null
+    var thread: io.beldex.bchat.database.model.ThreadRecord? = null
 
     // region Lifecycle
     constructor(context: Context) : super(context) {
@@ -44,7 +44,7 @@ class BlockedView : LinearLayout {
     }
 
     // region Updating
-    fun bind(recipient: Recipient, glide: GlideRequests) {
+    fun bind(recipient: Recipient, glide: io.beldex.bchat.mms.GlideRequests) {
         fun getUserDisplayName(publicKey: String): String {
             val contact = DatabaseComponent.get(context).bchatContactDatabase()
                 .getContactWithBchatID(publicKey)

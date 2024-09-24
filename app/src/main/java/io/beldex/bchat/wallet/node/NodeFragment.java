@@ -32,6 +32,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import io.beldex.bchat.wallet.utils.dialog.ProgressDialog;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.google.android.material.textfield.TextInputLayout;
 import io.beldex.bchat.data.DefaultNodes;

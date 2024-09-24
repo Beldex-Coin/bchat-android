@@ -61,6 +61,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import io.beldex.bchat.database.loaders.PagingMediaLoader;
+import io.beldex.bchat.database.model.MmsMessageRecord;
+import io.beldex.bchat.mms.GlideApp;
+import io.beldex.bchat.mms.GlideRequests;
+import io.beldex.bchat.mms.Slide;
+import io.beldex.bchat.util.AttachmentUtil;
+import io.beldex.bchat.util.DateUtils;
 import com.beldex.libbchat.messaging.messages.control.DataExtractionNotification;
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender;
 import com.beldex.libbchat.messaging.sending_receiving.attachments.DatabaseAttachment;

@@ -1,6 +1,8 @@
 package io.beldex.bchat.util;
 
 import org.junit.Test;
+
+import io.beldex.bchat.util.SearchUtil;
 import com.beldex.libsignal.utilities.Pair;
 
 import java.util.Arrays;

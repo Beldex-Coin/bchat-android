@@ -3,6 +3,7 @@ package io.beldex.bchat.glide;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import io.beldex.bchat.giph.model.ChunkedImageUrl;
 import com.bumptech.glide.load.Options;
 import com.bumptech.glide.load.model.ModelLoader;
 import com.bumptech.glide.load.model.ModelLoaderFactory;

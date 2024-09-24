@@ -8,6 +8,10 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import io.beldex.bchat.net.CallRequestController;
+import io.beldex.bchat.net.CompositeRequestController;
+import io.beldex.bchat.net.ContentProxySafetyInterceptor;
+import io.beldex.bchat.net.RequestController;
 import com.google.android.gms.common.util.IOUtils;
 import io.beldex.bchat.net.CallRequestController;
 import io.beldex.bchat.net.CompositeRequestController;
@@ -111,7 +115,7 @@ public class LinkPreviewRepository {
         }
 
         String            body     = response.body().string();
-        OpenGraph        openGraph   = LinkPreviewUtil.parseOpenGraphFields(body);
+        LinkPreviewUtil.OpenGraph openGraph   = LinkPreviewUtil.parseOpenGraphFields(body);
         Optional<String> title       = openGraph.getTitle();
         Optional<String> imageUrl    = openGraph.getImageUrl();
 

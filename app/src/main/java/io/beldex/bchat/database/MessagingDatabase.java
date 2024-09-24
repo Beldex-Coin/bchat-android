@@ -7,6 +7,7 @@ import android.text.TextUtils;
 
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
+import io.beldex.bchat.database.helpers.SQLCipherOpenHelper;
 import com.beldex.libbchat.utilities.Document;
 import com.beldex.libbchat.utilities.IdentityKeyMismatch;
 import com.beldex.libbchat.utilities.IdentityKeyMismatchList;

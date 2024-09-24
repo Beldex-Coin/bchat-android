@@ -2,6 +2,9 @@ package io.beldex.bchat.data;
 
 import android.os.NetworkOnMainThreadException;
 
+import io.beldex.bchat.util.NodePinger;
+import io.beldex.bchat.util.OkHttpHelper;
+import io.beldex.bchat.wallet.node.LevinPeer;
 import com.burgstaller.okhttp.AuthenticationCacheInterceptor;
 import com.burgstaller.okhttp.CachingAuthenticatorDecorator;
 import com.burgstaller.okhttp.digest.CachingAuthenticator;

@@ -7,7 +7,7 @@ import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libsignal.utilities.Log
 import io.beldex.bchat.database.helpers.SQLCipherOpenHelper
 
-class BchatRecipientAddressDatabase(context:Context,helper:SQLCipherOpenHelper):Database(context,helper) {
+class BchatRecipientAddressDatabase(context:Context,helper: SQLCipherOpenHelper): Database(context,helper) {
     companion object{
         private const val bchatRecipientAddressTable = "bchat_recipient_address_database"
         const val transactionId = "transaction_id"

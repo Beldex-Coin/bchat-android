@@ -18,7 +18,7 @@ public class MediaKeyboardBottomTabAdapter extends RecyclerView.Adapter<MediaKey
   private final GlideRequests glideRequests;
   private final EventListener eventListener;
 
-  private TabIconProvider tabIconProvider;
+  private MediaKeyboardProvider.TabIconProvider tabIconProvider;
   private int             activePosition;
   private int             count;
 
@@ -47,7 +47,7 @@ public class MediaKeyboardBottomTabAdapter extends RecyclerView.Adapter<MediaKey
     return count;
   }
 
-  public void setTabIconProvider(@NonNull TabIconProvider iconProvider, int count) {
+  public void setTabIconProvider(@NonNull MediaKeyboardProvider.TabIconProvider iconProvider, int count) {
     this.tabIconProvider = iconProvider;
     this.count           = count;
 
@@ -73,7 +73,7 @@ public class MediaKeyboardBottomTabAdapter extends RecyclerView.Adapter<MediaKey
 
     void bind(@NonNull GlideRequests glideRequests,
               @NonNull EventListener eventListener,
-              @NonNull TabIconProvider tabIconProvider,
+              @NonNull MediaKeyboardProvider.TabIconProvider tabIconProvider,
               int index,
               boolean selected)
     {

@@ -63,8 +63,8 @@ class TransactionInfoAdapter(context: Context?)  :
     }
 
     private class TransactionInfoDiff(
-        oldList: List<TransactionInfo>,
-        newList: List<TransactionInfo>
+            oldList: List<TransactionInfo>,
+            newList: List<TransactionInfo>
     ) :
         DiffCallback<TransactionInfo>(oldList, newList) {
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
@@ -72,8 +72,8 @@ class TransactionInfoAdapter(context: Context?)  :
         }
 
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            val oldItem: TransactionInfo = mOldList[oldItemPosition]
-            val newItem: TransactionInfo = mNewList[newItemPosition]
+            val oldItem: TransactionInfo= mOldList[oldItemPosition]
+            val newItem: TransactionInfo= mNewList[newItemPosition]
             return (oldItem.direction === newItem.direction
                     && oldItem.isPending === newItem.isPending
                     && oldItem.isFailed === newItem.isFailed

@@ -18,7 +18,7 @@ import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityBlockedContactsBinding
 
 @AndroidEntryPoint
-class BlockedContactsActivity: PassphraseRequiredActionBarActivity(), View.OnClickListener {
+class BlockedContactsActivity: io.beldex.bchat.PassphraseRequiredActionBarActivity(), View.OnClickListener {
 
     lateinit var binding: ActivityBlockedContactsBinding
 

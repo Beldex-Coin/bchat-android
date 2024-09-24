@@ -11,6 +11,7 @@ import com.annimon.stream.Stream;
 
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
+import io.beldex.bchat.database.helpers.SQLCipherOpenHelper;
 import com.beldex.libbchat.messaging.sending_receiving.MessageDecrypter;
 import com.beldex.libbchat.utilities.Address;
 import com.beldex.libbchat.utilities.MaterialColor;

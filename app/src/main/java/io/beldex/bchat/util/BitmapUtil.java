@@ -16,6 +16,7 @@ import androidx.annotation.WorkerThread;
 import androidx.exifinterface.media.ExifInterface;
 import android.util.Pair;
 
+import io.beldex.bchat.mms.GlideApp;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import io.beldex.bchat.mms.MediaConstraints;
 

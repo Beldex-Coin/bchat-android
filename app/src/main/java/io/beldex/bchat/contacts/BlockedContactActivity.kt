@@ -12,7 +12,7 @@ import io.beldex.bchat.mms.GlideApp
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityBlockedContactBinding
 
-class BlockedContactActivity : PassphraseRequiredActionBarActivity(), BlockedContactClickListener,
+class BlockedContactActivity : io.beldex.bchat.PassphraseRequiredActionBarActivity(), BlockedContactClickListener,
     LoaderManager.LoaderCallbacks<List<String>> {
     private lateinit var binding: ActivityBlockedContactBinding
     private var members = listOf<String>()
@@ -22,7 +22,7 @@ class BlockedContactActivity : PassphraseRequiredActionBarActivity(), BlockedCon
     private lateinit var usersToExclude: Set<String>
 
     private val blockedcontactadapter by lazy {
-        BlockedContactAdapter(this, GlideApp.with(this), this)
+        BlockedContactAdapter(this, io.beldex.bchat.mms.GlideApp.with(this), this)
     }
 
     companion object {

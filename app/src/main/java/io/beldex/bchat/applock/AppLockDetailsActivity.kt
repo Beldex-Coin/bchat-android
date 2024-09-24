@@ -24,7 +24,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 
-class AppLockDetailsActivity : PassphraseRequiredActionBarActivity() {
+class AppLockDetailsActivity : io.beldex.bchat.PassphraseRequiredActionBarActivity() {
     private lateinit var binding: ActivityAppLockDetailsBinding
     override fun onCreate(savedInstanceState: Bundle?, isReady: Boolean) {
         super.onCreate(savedInstanceState, isReady)
@@ -32,29 +32,29 @@ class AppLockDetailsActivity : PassphraseRequiredActionBarActivity() {
         setContentView(binding.root)
         setUpActionBarBchatLogo("App Lock")
         with(binding) {
-            appLockDetailsScreenLockInActivityTimeOut.text = IdentityKeyUtil.retrieve(
+            appLockDetailsScreenLockInActivityTimeOut.text = io.beldex.bchat.crypto.IdentityKeyUtil.retrieve(
                 this@AppLockDetailsActivity,
-                IdentityKeyUtil.SCREEN_TIMEOUT_VALUES_KEY
+                io.beldex.bchat.crypto.IdentityKeyUtil.SCREEN_TIMEOUT_VALUES_KEY
             ) ?: "None"
             appLockDetailsChangePasswordCard.setOnClickListener {
 
             }
             appLockDetailsScreenLockInActivityTimeOutCard.setOnClickListener {
-                if (IdentityKeyUtil.retrieve(
+                if (io.beldex.bchat.crypto.IdentityKeyUtil.retrieve(
                         this@AppLockDetailsActivity,
-                        IdentityKeyUtil.SCREEN_TIMEOUT_KEY
+                        io.beldex.bchat.crypto.IdentityKeyUtil.SCREEN_TIMEOUT_KEY
                     ) != null
                 ) {
                     numberPickerDialog()
                 } else {
-                    IdentityKeyUtil.save(
+                    io.beldex.bchat.crypto.IdentityKeyUtil.save(
                         this@AppLockDetailsActivity,
-                        IdentityKeyUtil.SCREEN_TIMEOUT_KEY,
+                        io.beldex.bchat.crypto.IdentityKeyUtil.SCREEN_TIMEOUT_KEY,
                         "0"
                     )
-                    IdentityKeyUtil.save(
+                    io.beldex.bchat.crypto.IdentityKeyUtil.save(
                         this@AppLockDetailsActivity,
-                        IdentityKeyUtil.SCREEN_TIMEOUT_VALUES_KEY,
+                        io.beldex.bchat.crypto.IdentityKeyUtil.SCREEN_TIMEOUT_VALUES_KEY,
                         "None"
                     )
                     numberPickerDialog()
@@ -93,7 +93,7 @@ class AppLockDetailsActivity : PassphraseRequiredActionBarActivity() {
             this.resources.getStringArray(R.array.screen_lock_timeout)
         val screenTimeOutValues = arrayOfNulls<String>(screenTimeOutArray.size)
         val currentIndex: Int =
-           IdentityKeyUtil.retrieve(this, IdentityKeyUtil.SCREEN_TIMEOUT_KEY).toInt()
+           io.beldex.bchat.crypto.IdentityKeyUtil.retrieve(this, io.beldex.bchat.crypto.IdentityKeyUtil.SCREEN_TIMEOUT_KEY).toInt()
         var selectedIndex: Int = currentIndex
         Log.d("selected Index", "$selectedIndex")
         Log.d("ScreenTimeOut", screenTimeOutArray[currentIndex])
@@ -158,14 +158,14 @@ class AppLockDetailsActivity : PassphraseRequiredActionBarActivity() {
             alertDialog.cancel()
         }
         numberPickerOk.setOnClickListener {
-            IdentityKeyUtil.save(
+            io.beldex.bchat.crypto.IdentityKeyUtil.save(
                 this,
-                IdentityKeyUtil.SCREEN_TIMEOUT_KEY,
+                io.beldex.bchat.crypto.IdentityKeyUtil.SCREEN_TIMEOUT_KEY,
                 numberPicker.value.toString()
             )
-            IdentityKeyUtil.save(
+            io.beldex.bchat.crypto.IdentityKeyUtil.save(
                 this,
-                IdentityKeyUtil.SCREEN_TIMEOUT_VALUES_KEY,
+                io.beldex.bchat.crypto.IdentityKeyUtil.SCREEN_TIMEOUT_VALUES_KEY,
                 screenTimeOutArray[numberPicker.value]
             )
             Log.d("TAG", "onClick: " + numberPicker.value)
@@ -177,8 +177,8 @@ class AppLockDetailsActivity : PassphraseRequiredActionBarActivity() {
 
             setScreenLockEnabled(this, enabled)
 
-            val intent = Intent(this, KeyCachingService::class.java)
-            intent.action = KeyCachingService.LOCK_TOGGLED_EVENT
+            val intent = Intent(this, io.beldex.bchat.service.KeyCachingService::class.java)
+            intent.action = io.beldex.bchat.service.KeyCachingService.LOCK_TOGGLED_EVENT
             this.startService(intent)
             Log.d("numberPicker Value 0 ", numberPicker.value.toString())
             if(screenTimeOutArray[numberPicker.value] == "None") {

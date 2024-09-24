@@ -30,7 +30,7 @@ import java.io.InputStream
 
 class ScanQRCodeFragment : Fragment() {
     private lateinit var binding: FragmentScanQrCodeBinding
-    private val scanningThread = ScanningThread()
+    private val scanningThread =ScanningThread()
     var scanListener: ScanListener? = null
         set(value) { field = value; scanningThread.setScanListener(scanListener) }
     var message: CharSequence = ""

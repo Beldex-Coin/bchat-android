@@ -1,6 +1,8 @@
 package io.beldex.bchat.jobmanager.impl;
 
 import org.junit.Test;
+
+import io.beldex.bchat.jobmanager.impl.JsonDataSerializer;
 import com.beldex.libbchat.messaging.utilities.Data;
 import com.beldex.libbchat.utilities.Util;
 

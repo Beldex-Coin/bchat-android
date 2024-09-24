@@ -23,6 +23,8 @@ import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 
+import io.beldex.bchat.ApplicationContext;
+import io.beldex.bchat.database.helpers.SQLCipherOpenHelper;
 import com.beldex.libbchat.messaging.utilities.WindowDebouncer;
 import io.beldex.bchat.ApplicationContext;
 import com.beldex.libbchat.utilities.Debouncer;
@@ -35,7 +37,7 @@ public abstract class Database {
   protected static final String ID_WHERE = "_id = ?";
   protected static final String ID_IN = "_id IN (?)";
 
-  protected       SQLCipherOpenHelper databaseHelper;
+  protected SQLCipherOpenHelper databaseHelper;
   protected final Context             context;
   private   final WindowDebouncer conversationListNotificationDebouncer;
   private   final Runnable            conversationListUpdater;

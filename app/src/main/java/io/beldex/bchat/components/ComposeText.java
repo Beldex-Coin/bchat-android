@@ -22,6 +22,7 @@ import androidx.core.view.inputmethod.EditorInfoCompat;
 import androidx.core.view.inputmethod.InputConnectionCompat;
 import androidx.core.view.inputmethod.InputContentInfoCompat;
 
+import io.beldex.bchat.components.emoji.EmojiEditText;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import io.beldex.bchat.components.emoji.EmojiEditText;
 import com.beldex.libsignal.utilities.Log;

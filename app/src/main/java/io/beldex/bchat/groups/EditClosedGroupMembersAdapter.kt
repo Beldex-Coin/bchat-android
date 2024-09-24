@@ -10,10 +10,10 @@ import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.mms.GlideRequests
 
 class EditClosedGroupMembersAdapter(
-    private val context: Context,
-    private val glide: GlideRequests,
-    private val admin: Boolean,
-    private val memberClickListener: ((String) -> Unit)? = null
+        private val context: Context,
+        private val glide: GlideRequests,
+        private val admin: Boolean,
+        private val memberClickListener: ((String) -> Unit)? = null
 ) : RecyclerView.Adapter<EditClosedGroupMembersAdapter.ViewHolder>() {
 
     private val members = ArrayList<String>()

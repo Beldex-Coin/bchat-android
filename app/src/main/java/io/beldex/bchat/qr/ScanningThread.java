@@ -4,6 +4,7 @@ import android.content.res.Configuration;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import io.beldex.bchat.components.camera.CameraView;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.ChecksumException;
 import com.google.zxing.DecodeHintType;
@@ -32,7 +33,7 @@ public class ScanningThread extends Thread implements CameraView.PreviewCallback
   private final Map<DecodeHintType, String>   hints        = new HashMap<>();
 
   private boolean scanning = true;
-  private PreviewFrame previewFrame;
+  private CameraView.PreviewFrame previewFrame;
 
   public void setCharacterSet(String characterSet) {
     hints.put(DecodeHintType.CHARACTER_SET, characterSet);
@@ -43,7 +44,7 @@ public class ScanningThread extends Thread implements CameraView.PreviewCallback
   }
 
   @Override
-  public void onPreviewFrame(@NonNull PreviewFrame previewFrame) {
+  public void onPreviewFrame(@NonNull CameraView.PreviewFrame previewFrame) {
     try {
       synchronized (this) {
         this.previewFrame = previewFrame;
@@ -58,7 +59,7 @@ public class ScanningThread extends Thread implements CameraView.PreviewCallback
   @Override
   public void run() {
     while (true) {
-      PreviewFrame ourFrame;
+      CameraView.PreviewFrame ourFrame;
 
       synchronized (this) {
         while (scanning && previewFrame == null) {

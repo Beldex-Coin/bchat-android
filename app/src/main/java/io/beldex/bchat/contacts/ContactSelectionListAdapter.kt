@@ -9,7 +9,7 @@ import io.beldex.bchat.mms.GlideRequests
 import io.beldex.bchat.databinding.ContactSelectionListDividerBinding
 
 class ContactSelectionListAdapter(private val context: Context, private val multiSelect: Boolean) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    lateinit var glide: GlideRequests
+    lateinit var glide: io.beldex.bchat.mms.GlideRequests
     val selectedContacts = mutableSetOf<Recipient>()
     var items = listOf<ContactSelectionListItem>()
         set(value) { field = value; notifyDataSetChanged() }

@@ -61,7 +61,7 @@ class BlockedContactsAdapter(private val context: BlockedContactsActivity) : Lis
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
-        val glide = GlideApp.with(itemView)
+        val glide = io.beldex.bchat.mms.GlideApp.with(itemView)
         val binding = BlockedContactLayoutBinding.bind(itemView)
 
         fun bind(recipient: Recipient, isSelected: Boolean, context: BlockedContactsActivity,toggleSelection: () -> Unit) {

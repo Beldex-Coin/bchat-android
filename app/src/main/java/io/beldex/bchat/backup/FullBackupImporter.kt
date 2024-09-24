@@ -45,7 +45,7 @@ object FullBackupImporter {
     @WorkerThread
     @Throws(IOException::class)
     fun importFromUri(context: Context,
-                      attachmentSecret: AttachmentSecret,
+                      attachmentSecret: io.beldex.bchat.crypto.AttachmentSecret,
                       db: SQLiteDatabase,
                       fileUri: Uri,
                       passphrase: String) {
@@ -114,7 +114,7 @@ object FullBackupImporter {
     }
 
     @Throws(IOException::class)
-    private fun processAttachment(context: Context, attachmentSecret: AttachmentSecret,
+    private fun processAttachment(context: Context, attachmentSecret: io.beldex.bchat.crypto.AttachmentSecret,
                                   db: SQLiteDatabase, attachment: Attachment,
                                   inputStream: BackupRecordInputStream) {
         val partsDirectory = context.getDir(AttachmentDatabase.DIRECTORY, Context.MODE_PRIVATE)
@@ -126,7 +126,7 @@ object FullBackupImporter {
         contentValues.put(AttachmentDatabase.THUMBNAIL, null as String?)
         contentValues.put(AttachmentDatabase.DATA_RANDOM, output.first)
         db.update(AttachmentDatabase.TABLE_NAME, contentValues,
-            "${AttachmentDatabase.ROW_ID} = ? AND ${AttachmentDatabase.UNIQUE_ID} = ?",
+            "${AttachmentDatabase.ROW_ID} = ? AND ${io.beldex.bchat.database.AttachmentDatabase.UNIQUE_ID} = ?",
             arrayOf(attachment.rowId.toString(), attachment.attachmentId.toString()))
     }
 
@@ -172,10 +172,10 @@ object FullBackupImporter {
     }
 
     private fun trimEntriesForExpiredMessages(context: Context, db: SQLiteDatabase) {
-        val trimmedCondition = " NOT IN (SELECT ${MmsSmsColumns.ID} FROM ${MmsDatabase.TABLE_NAME})"
-        db.delete(GroupReceiptDatabase.TABLE_NAME, GroupReceiptDatabase.MMS_ID + trimmedCondition, null)
-        val columns = arrayOf(AttachmentDatabase.ROW_ID, AttachmentDatabase.UNIQUE_ID)
-        val where = AttachmentDatabase.MMS_ID + trimmedCondition
+        val trimmedCondition = " NOT IN (SELECT ${io.beldex.bchat.database.MmsSmsColumns.ID} FROM ${MmsDatabase.TABLE_NAME})"
+        db.delete(io.beldex.bchat.database.GroupReceiptDatabase.TABLE_NAME, io.beldex.bchat.database.GroupReceiptDatabase.MMS_ID + trimmedCondition, null)
+        val columns = arrayOf(AttachmentDatabase.ROW_ID, io.beldex.bchat.database.AttachmentDatabase.UNIQUE_ID)
+        val where = io.beldex.bchat.database.AttachmentDatabase.MMS_ID + trimmedCondition
         db.query(AttachmentDatabase.TABLE_NAME, columns, where, null, null, null, null).use { cursor ->
             while (cursor != null && cursor.moveToNext()) {
                 DatabaseComponent.get(context).attachmentDatabase()

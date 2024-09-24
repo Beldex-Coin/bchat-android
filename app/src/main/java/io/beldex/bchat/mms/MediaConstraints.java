@@ -5,6 +5,9 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import io.beldex.bchat.util.BitmapDecodingException;
+import io.beldex.bchat.util.BitmapUtil;
+import io.beldex.bchat.util.MediaUtil;
 import com.beldex.libbchat.utilities.MediaTypes;
 import com.beldex.libsignal.utilities.Log;
 import android.util.Pair;
@@ -72,7 +75,7 @@ public abstract class MediaConstraints {
 
     try {
       // XXX - This is loading everything into memory! We want the send path to be stream-like.
-      BitmapUtil.ScaleResult scaleResult = BitmapUtil.createScaledBytes(context, new DecryptableUri(attachment.getDataUri()), this);
+      BitmapUtil.ScaleResult scaleResult = BitmapUtil.createScaledBytes(context, new DecryptableStreamUriLoader.DecryptableUri(attachment.getDataUri()), this);
       return new MediaStream(new ByteArrayInputStream(scaleResult.getBitmap()), MediaTypes.IMAGE_JPEG, scaleResult.getWidth(), scaleResult.getHeight());
     } catch (BitmapDecodingException e) {
       throw new IOException(e);

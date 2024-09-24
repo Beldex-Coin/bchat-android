@@ -12,6 +12,7 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import io.beldex.bchat.R;
 
+import io.beldex.bchat.components.emoji.parsing.EmojiParser;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 import com.beldex.libbchat.utilities.Util;
 import io.beldex.bchat.components.emoji.EmojiProvider.EmojiDrawable;
@@ -174,7 +175,7 @@ public class EmojiTextView extends AppCompatTextView {
 
   @Override
   public void invalidateDrawable(@NonNull Drawable drawable) {
-    if (drawable instanceof EmojiDrawable) {
+    if (drawable instanceof EmojiProvider.EmojiDrawable) {
       invalidate();
     } else {
       super.invalidateDrawable(drawable);

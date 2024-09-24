@@ -28,6 +28,8 @@ import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageButton;
 
+import io.beldex.bchat.mms.GlideApp;
+import io.beldex.bchat.util.Stopwatch;
 import com.bumptech.glide.load.MultiTransformation;
 import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;

@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
+import io.beldex.bchat.jobmanager.impl.NetworkConstraint;
 import com.beldex.libbchat.avatars.AvatarHelper;
 import com.beldex.libbchat.messaging.utilities.Data;
 import com.beldex.libbchat.utilities.Address;

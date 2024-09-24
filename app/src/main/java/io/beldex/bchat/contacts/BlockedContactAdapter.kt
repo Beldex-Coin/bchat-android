@@ -14,9 +14,9 @@ import io.beldex.bchat.mms.GlideRequests
 import javax.inject.Inject
 
 class BlockedContactAdapter(
-    private val context: Context,
-    private val glide: GlideRequests,
-    val listener: BlockedContactActivity
+        private val context: Context,
+        private val glide: io.beldex.bchat.mms.GlideRequests,
+        val listener: BlockedContactActivity
 ) : RecyclerView.Adapter<BlockedContactAdapter.ViewHolder>() {
     var members = listOf<String>()
         set(value) {
@@ -28,7 +28,7 @@ class BlockedContactAdapter(
     class ViewHolder(val view: BlockedView) : RecyclerView.ViewHolder(view)
 
     @Inject
-    lateinit var recipientDatabase: RecipientDatabase
+    lateinit var recipientDatabase: io.beldex.bchat.database.RecipientDatabase
 
     override fun getItemCount(): Int {
         return members.size

@@ -20,7 +20,7 @@ import io.beldex.bchat.qr.ScanListener
 import io.beldex.bchat.util.*
 
 class ScanQRCodeActivity : PassphraseRequiredActionBarActivity(), ScanQRCodePlaceholderFragmentDelegate,
-    ScanListener {
+        ScanListener {
     companion object {
         const val FRAGMENT_TAG = "ScanQRCodeActivity_ACTIVITY_TAG"
     }

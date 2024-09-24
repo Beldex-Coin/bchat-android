@@ -28,7 +28,7 @@ import io.beldex.bchat.R;
 public class EmojiKeyboardProvider implements MediaKeyboardProvider,
                                               MediaKeyboardProvider.TabIconProvider,
                                               MediaKeyboardProvider.BackspaceObserver,
-                                              VariationSelectorListener
+        EmojiPageViewGridAdapter.VariationSelectorListener
 {
   private static final KeyEvent DELETE_KEY_EVENT = new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL);
 
@@ -115,12 +115,12 @@ public class EmojiKeyboardProvider implements MediaKeyboardProvider,
     private Context                   context;
     private List<EmojiPageModel>      pages;
     private EmojiEventListener emojiSelectionListener;
-    private VariationSelectorListener variationSelectorListener;
+    private EmojiPageViewGridAdapter.VariationSelectorListener variationSelectorListener;
 
     public EmojiPagerAdapter(@NonNull Context context,
                              @NonNull List<EmojiPageModel> pages,
                              @NonNull EmojiEventListener emojiSelectionListener,
-                             @NonNull VariationSelectorListener variationSelectorListener)
+                             @NonNull EmojiPageViewGridAdapter.VariationSelectorListener variationSelectorListener)
     {
       super();
       this.context                   = context;

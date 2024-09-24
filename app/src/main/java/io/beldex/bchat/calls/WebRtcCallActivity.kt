@@ -24,7 +24,10 @@ import com.beldex.libsignal.utilities.Log
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ActivityWebRtcCallBinding
 import io.beldex.bchat.dependencies.DatabaseComponent
+import io.beldex.bchat.mms.GlideApp
 import io.beldex.bchat.permissions.Permissions
 import io.beldex.bchat.service.WebRtcCallService
 import io.beldex.bchat.util.AvatarPlaceholderGenerator
@@ -33,9 +36,6 @@ import io.beldex.bchat.webrtc.CallViewModel
 import io.beldex.bchat.webrtc.CallViewModel.State.*
 import io.beldex.bchat.webrtc.audio.SignalAudioManager.AudioDevice.EARPIECE
 import io.beldex.bchat.webrtc.audio.SignalAudioManager.AudioDevice.SPEAKER_PHONE
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityWebRtcCallBinding
-import io.beldex.bchat.mms.GlideApp
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -196,7 +196,7 @@ class WebRtcCallActivity : PassphraseRequiredActionBarActivity() {
                 .registerReceiver(hangupReceiver!!, IntentFilter(ACTION_END))
 
             binding.enableCameraButton.setOnClickListener {
-                Permissions.with(this)
+               Permissions.with(this)
                     .request(Manifest.permission.CAMERA)
                     .onAllGranted {
                         val intent = WebRtcCallService.cameraEnabled(this, !viewModel.videoEnabled)

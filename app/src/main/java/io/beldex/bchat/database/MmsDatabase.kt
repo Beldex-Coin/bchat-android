@@ -55,8 +55,8 @@ import java.security.SecureRandom
 import java.util.LinkedList
 
 class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : MessagingDatabase(context, databaseHelper) {
-    private val earlyDeliveryReceiptCache = EarlyReceiptCache()
-    private val earlyReadReceiptCache = EarlyReceiptCache()
+    private val earlyDeliveryReceiptCache =EarlyReceiptCache()
+    private val earlyReadReceiptCache =EarlyReceiptCache()
     override fun getTableName() = TABLE_NAME
 
     fun getMessageCountForThread(threadId: Long): Int {
@@ -1166,26 +1166,26 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
         private val id = SecureRandom().nextLong()
         val current: MessageRecord
             get() {
-                val slideDeck = SlideDeck(context, message!!.attachments)
+                val slideDeck =SlideDeck(context, message!!.attachments)
                 return MediaMmsMessageRecord(
-                    id, message.recipient, message.recipient,
-                    1, MnodeAPI.nowWithOffset, MnodeAPI.nowWithOffset,
-                    0, threadId, message.body,
-                    slideDeck, slideDeck.slides.size,
-                    if (message.isSecure) MmsSmsColumns.Types.getOutgoingEncryptedMessageType() else MmsSmsColumns.Types.getOutgoingSmsMessageType(),
-                    LinkedList(),
-                    LinkedList(),
-                    message.subscriptionId,
-                    message.expiresIn,
-                    MnodeAPI.nowWithOffset, 0,
-                    if (message.outgoingQuote != null) Quote(
-                        message.outgoingQuote!!.id,
-                        message.outgoingQuote!!.author,
-                        message.outgoingQuote!!.text,
-                        message.outgoingQuote!!.missing,
-                        SlideDeck(context, message.outgoingQuote!!.attachments!!)
-                    ) else null,
-                    message.sharedContacts, message.linkPreviews, false
+                        id, message.recipient, message.recipient,
+                        1, MnodeAPI.nowWithOffset, MnodeAPI.nowWithOffset,
+                        0, threadId, message.body,
+                        slideDeck, slideDeck.slides.size,
+                        if (message.isSecure) MmsSmsColumns.Types.getOutgoingEncryptedMessageType() else MmsSmsColumns.Types.getOutgoingSmsMessageType(),
+                        LinkedList(),
+                        LinkedList(),
+                        message.subscriptionId,
+                        message.expiresIn,
+                        MnodeAPI.nowWithOffset, 0,
+                        if (message.outgoingQuote != null) Quote(
+                                message.outgoingQuote!!.id,
+                                message.outgoingQuote!!.author,
+                                message.outgoingQuote!!.text,
+                                message.outgoingQuote!!.missing,
+                                SlideDeck(context, message.outgoingQuote!!.attachments!!)
+                        ) else null,
+                        message.sharedContacts, message.linkPreviews, false
                 )
             }
 
@@ -1240,13 +1240,13 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
             if (!transactionId.isNullOrEmpty()) transactionIdBytes = toIsoBytes(
                 transactionId
             )
-            val slideDeck = SlideDeck(context, MmsNotificationAttachment(status, messageSize))
+            val slideDeck =SlideDeck(context, MmsNotificationAttachment(status, messageSize))
             return NotificationMmsMessageRecord(
-                id, recipient, recipient,
-                dateSent, dateReceived, deliveryReceiptCount, threadId,
-                contentLocationBytes, messageSize, expiry, status,
-                transactionIdBytes, mailbox, slideDeck,
-                readReceiptCount
+                    id, recipient, recipient,
+                    dateSent, dateReceived, deliveryReceiptCount, threadId,
+                    contentLocationBytes, messageSize, expiry, status,
+                    transactionIdBytes, mailbox, slideDeck,
+                    readReceiptCount
             )
         }
 
@@ -1302,11 +1302,11 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
             )
             val quote = getQuote(cursor)
             return MediaMmsMessageRecord(
-                id, recipient, recipient,
-                addressDeviceId, dateSent, dateReceived, deliveryReceiptCount,
-                threadId, body, slideDeck!!, partCount, box, mismatches,
-                networkFailures, subscriptionId, expiresIn, expireStarted,
-                readReceiptCount, quote, contacts, previews, unidentified
+                    id, recipient, recipient,
+                    addressDeviceId, dateSent, dateReceived, deliveryReceiptCount,
+                    threadId, body, slideDeck!!, partCount, box, mismatches,
+                    networkFailures, subscriptionId, expiresIn, expireStarted,
+                    readReceiptCount, quote, contacts, previews, unidentified
             )
         }
 
@@ -1363,11 +1363,11 @@ class MmsDatabase(context: Context, databaseHelper: SQLCipherOpenHelper) : Messa
                         .let { SlideDeck(context, it) }
                     )
             return Quote(
-                quoteId,
-                fromExternal(context, quoteAuthor),
-                quoteText,
-                quoteMissing,
-                quoteDeck
+                    quoteId,
+                    fromExternal(context, quoteAuthor),
+                    quoteText,
+                    quoteMissing,
+                    quoteDeck
             )
         }
 

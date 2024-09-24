@@ -41,7 +41,7 @@ public class EmojiEditText extends AppCompatEditText {
 
   @Override
   public void invalidateDrawable(@NonNull Drawable drawable) {
-    if (drawable instanceof EmojiDrawable) invalidate();
+    if (drawable instanceof EmojiProvider.EmojiDrawable) invalidate();
     else                                   super.invalidateDrawable(drawable);
   }
 

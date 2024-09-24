@@ -23,6 +23,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import io.beldex.bchat.database.loaders.BucketedThreadMediaLoader;
+import io.beldex.bchat.mms.GlideRequests;
+import io.beldex.bchat.mms.Slide;
+import io.beldex.bchat.util.MediaUtil;
 import com.codewaves.stickyheadergrid.StickyHeaderGridAdapter;
 
 
@@ -51,7 +55,7 @@ class MediaGalleryAdapter extends StickyHeaderGridAdapter {
   private final ItemClickListener   itemClickListener;
   private final Set<MediaRecord>    selected;
 
-  private  BucketedThreadMedia media;
+  private BucketedThreadMediaLoader.BucketedThreadMedia media;
 
   private static class ViewHolder extends StickyHeaderGridAdapter.ItemViewHolder {
     ThumbnailView imageView;
@@ -75,7 +79,7 @@ class MediaGalleryAdapter extends StickyHeaderGridAdapter {
 
   MediaGalleryAdapter(@NonNull Context context,
                       @NonNull GlideRequests glideRequests,
-                      BucketedThreadMedia media,
+                      BucketedThreadMediaLoader.BucketedThreadMedia media,
                       Locale locale,
                       ItemClickListener clickListener)
   {
@@ -87,7 +91,7 @@ class MediaGalleryAdapter extends StickyHeaderGridAdapter {
     this.selected          = new HashSet<>();
   }
 
-  public void setMedia(BucketedThreadMedia media) {
+  public void setMedia(BucketedThreadMediaLoader.BucketedThreadMedia media) {
     this.media = media;
   }
 
@@ -111,7 +115,7 @@ class MediaGalleryAdapter extends StickyHeaderGridAdapter {
     MediaRecord   mediaRecord       = media.get(section, offset);
     ThumbnailView thumbnailView     = ((ViewHolder)viewHolder).imageView;
     View          selectedIndicator = ((ViewHolder)viewHolder).selectedIndicator;
-    Slide         slide             = MediaUtil.getSlideForAttachment(context, mediaRecord.getAttachment());
+    Slide slide             = MediaUtil.getSlideForAttachment(context, mediaRecord.getAttachment());
 
     if (slide != null) {
       thumbnailView.setImageResource(glideRequests, slide, false, null);

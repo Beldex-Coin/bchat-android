@@ -35,10 +35,10 @@ class LinkPreviewDraftView : LinearLayout {
         if (linkPreview.getThumbnail().isPresent) {
             // This internally fetches the thumbnail
             binding.thumbnailImageView.root.setImageResource(glide,
-                ImageSlide(
-                    context,
-                    linkPreview.getThumbnail().get()
-                ), false, null)
+                    ImageSlide(
+                            context,
+                            linkPreview.getThumbnail().get()
+                    ), false, null)
         }
         binding.linkPreviewDraftTitleTextView.text = linkPreview.title
     }

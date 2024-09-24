@@ -4,6 +4,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
+
+import io.beldex.bchat.util.MediaUtil;
 import com.beldex.libsignal.utilities.Log;
 
 import com.bumptech.glide.load.data.StreamLocalUriFetcher;

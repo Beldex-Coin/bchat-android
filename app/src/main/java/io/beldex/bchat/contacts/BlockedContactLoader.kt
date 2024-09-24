@@ -6,7 +6,7 @@ import io.beldex.bchat.util.AsyncLoader
 import io.beldex.bchat.util.ContactUtilities
 
 class BlockedContactLoader(context: Context, private val usersToExclude: Set<String>) :
-    AsyncLoader<List<String>>(context) {
+    io.beldex.bchat.util.AsyncLoader<List<String>>(context) {
 
     /*Hales63*/
     override fun loadInBackground(): List<String> {

@@ -75,7 +75,7 @@
         android:text="@string/activity_landing_title_2"
         android:visibility="gone"/>
     
-        <com.thoughtcrimes.securesms.onboarding.FakeChatView
+        <io.beldex.bchat.onboarding.FakeChatView
         android:id="@+id/fakeChatView"
         android:layout_width="match_parent"
         android:layout_height="@dimen/fake_chat_view_height"

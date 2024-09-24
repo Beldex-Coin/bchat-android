@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/page_background"
-    tools:context="com.thoughtcrimes.securesms.changelog.ChangeLogActivity">
+    tools:context="io.beldex.bchat.changelog.ChangeLogActivity">
 
     <ExpandableListView
         android:id="@+id/expandableListView"

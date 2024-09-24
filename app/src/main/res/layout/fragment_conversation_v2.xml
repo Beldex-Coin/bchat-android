@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:transitionName="@string/conversation_transition_name"
-    tools:context="com.thoughtcrimes.securesms.conversation.v2.ConversationFragmentV2">
+    tools:context="io.beldex.bchat.conversation.v2.ConversationFragmentV2">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/conversationFragment_toolbar"
@@ -173,13 +173,13 @@
         android:orientation="vertical">
 
 
-        <com.thoughtcrimes.securesms.conversation.ChatWallpaperImageView
+        <io.beldex.bchat.conversation.ChatWallpaperImageView
             android:id="@+id/contentImageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/chat_wallpaper" />
 
-        <com.thoughtcrimes.securesms.conversation.v2.components.OpenGroupGuidelinesView
+        <io.beldex.bchat.conversation.v2.components.OpenGroupGuidelinesView
             android:id="@+id/openGroupGuidelinesView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -187,21 +187,21 @@
             android:background="@color/page_background"
             android:visibility="gone" />
 
-        <com.thoughtcrimes.securesms.conversation.v2.ConversationRecyclerView
+        <io.beldex.bchat.conversation.v2.ConversationRecyclerView
             android:id="@+id/conversationRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/openGroupGuidelinesView"
             android:layout_above="@+id/typingIndicatorViewContainer" />
 
-        <com.thoughtcrimes.securesms.conversation.v2.components.TypingIndicatorViewContainer
+        <io.beldex.bchat.conversation.v2.components.TypingIndicatorViewContainer
             android:id="@+id/typingIndicatorViewContainer"
             android:layout_width="match_parent"
             android:layout_height="36dp"
             android:layout_above="@id/messageRequestBarCardView"
             android:visibility="gone" />
 
-        <com.thoughtcrimes.securesms.util.tooltip.TooltipView
+        <io.beldex.bchat.util.tooltip.TooltipView
             android:id="@+id/tooltip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -236,7 +236,7 @@
             android:layout_marginBottom="15dp"
             app:cardCornerRadius="10dp">
 
-            <com.thoughtcrimes.securesms.conversation.v2.input_bar.InputBar
+            <io.beldex.bchat.conversation.v2.input_bar.InputBar
                 android:id="@+id/inputBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -244,7 +244,7 @@
         </androidx.cardview.widget.CardView>
 
 
-        <com.thoughtcrimes.securesms.conversation.v2.search.SearchBottomBar
+        <io.beldex.bchat.conversation.v2.search.SearchBottomBar
             android:id="@+id/searchBottomBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -348,7 +348,7 @@
 
         </RelativeLayout>
 
-        <com.thoughtcrimes.securesms.conversation.v2.input_bar.InputBarRecordingView
+        <io.beldex.bchat.conversation.v2.input_bar.InputBarRecordingView
             android:id="@+id/inputBarRecordingView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -501,7 +501,7 @@
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
-        <com.thoughtcrimes.securesms.util.slidetoact.SlideToActView
+        <io.beldex.bchat.util.slidetoact.SlideToActView
             android:id="@+id/slideToPayButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

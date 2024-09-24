@@ -15,21 +15,20 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-process:$lifecycleVersion"
     implementation "androidx.paging:paging-runtime-ktx:$pagingVersion"
-    implementation 'androidx.activity:activity-ktx:1.7.2'
-    implementation 'androidx.fragment:fragment-ktx:1.6.1'
+    implementation 'androidx.activity:activity-ktx:1.5.1'
+    implementation 'androidx.fragment:fragment-ktx:1.5.3'
     implementation "androidx.core:core-ktx:$coreVersion"
-    implementation "androidx.work:work-runtime-ktx:2.8.1"
-    implementation ("com.google.firebase:firebase-messaging:23.2.1") {
+    implementation "androidx.work:work-runtime-ktx:2.7.1"
+    implementation ("com.google.firebase:firebase-messaging:24.0.0") {
         exclude group: 'com.google.firebase', module: 'firebase-core'
         exclude group: 'com.google.firebase', module: 'firebase-analytics'
         exclude group: 'com.google.firebase', module: 'firebase-measurement-connector'
     }
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.9.1'
-    implementation 'com.google.android.exoplayer:exoplayer-ui:2.9.1'
+    implementation 'androidx.media3:media3-exoplayer:1.4.0'
+    implementation 'androidx.media3:media3-ui:1.4.0'
     implementation 'org.conscrypt:conscrypt-android:2.0.0'
     implementation 'org.signal:aesgcmprovider:0.0.3'
-    implementation 'org.webrtc:google-webrtc:1.0.32006'
-    //implementation 'org.whispersystems:webrtc-android:M74'
+    implementation 'io.github.webrtc-sdk:android:125.6422.04'
     implementation "me.leolin:ShortcutBadger:1.1.16"
     implementation 'se.emilsjolander:stickylistheaders:2.7.0'
     implementation 'com.jpardogo.materialtabstrip:library:1.0.9'
@@ -37,7 +36,7 @@ dependencies {
     implementation 'commons-net:commons-net:3.7.2'
     implementation 'com.github.chrisbanes:PhotoView:2.1.3'
     implementation "com.github.bumptech.glide:glide:$glideVersion"
-    implementation 'com.google.firebase:firebase-crashlytics-buildtools:2.9.2'
+    implementation 'com.google.firebase:firebase-crashlytics-buildtools:3.0.2'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
     kapt "com.github.bumptech.glide:compiler:$glideVersion"
@@ -45,18 +44,14 @@ dependencies {
     implementation 'com.pnikosis:materialish-progress:1.5'
     implementation 'org.greenrobot:eventbus:3.0.0'
     implementation 'pl.tajchert:waitingdots:0.1.0'
-    implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+    implementation 'com.vanniktech:android-image-cropper:4.5.0'
     implementation 'com.melnykov:floatingactionbutton:1.3.0'
     implementation 'com.google.zxing:android-integration:3.1.0'
     implementation "com.google.dagger:hilt-android:$daggerVersion"
     kapt "com.google.dagger:hilt-compiler:$daggerVersion"
-    implementation 'mobi.upod:time-duration-picker:1.1.3'
     implementation 'com.google.zxing:core:3.2.1'
     implementation ('com.davemorrissey.labs:subsampling-scale-image-view:3.6.0') {
         exclude group: 'com.android.support', module: 'support-annotations'
-    }
-    implementation ('cn.carbswang.android:NumberPickerView:1.0.9') {
-        exclude group: 'com.android.support', module: 'appcompat-v7'
     }
     implementation ('com.tomergoldst.android:tooltips:1.0.6') {
         exclude group: 'com.android.support', module: 'appcompat-v7'
@@ -66,13 +61,10 @@ dependencies {
         exclude group: 'com.squareup.okhttp', module: 'okhttp-urlconnection'
     }
     implementation 'com.annimon:stream:1.1.8'
-    implementation ('com.takisoft.fix:colorpicker:0.9.1') {
-        exclude group: 'com.android.support', module: 'appcompat-v7'
-        exclude group: 'com.android.support', module: 'recyclerview-v7'
-    }
-    implementation 'com.codewaves.stickyheadergrid:stickyheadergrid:0.9.4'
-    implementation 'com.github.dmytrodanylyk.circular-progress-button:library:1.1.3-S2'
-    implementation 'androidx.sqlite:sqlite-ktx:2.2.0'
+    implementation project(':stickyheader')
+    //implementation 'com.github.dmytrodanylyk.circular-progress-button:library:1.1.3-S2'
+    implementation 'com.github.dmytrodanylyk:android-morphing-button:1.0'
+    implementation 'androidx.sqlite:sqlite-ktx:2.3.1'
     implementation 'net.zetetic:sqlcipher-android:4.5.4@aar'
     implementation ('com.googlecode.ez-vcard:ez-vcard:0.9.11') {
         exclude group: 'com.fasterxml.jackson.core'
@@ -92,21 +84,20 @@ dependencies {
     implementation "nl.komponents.kovenant:kovenant:$kovenantVersion"
     implementation "nl.komponents.kovenant:kovenant-android:$kovenantVersion"
     implementation "com.github.lelloman:android-identicons:v11"
-    implementation "com.prof.rssparser:rssparser:2.0.4"
     implementation "com.jakewharton.rxbinding3:rxbinding:3.1.0"
     implementation "com.github.tbruyelle:rxpermissions:0.10.2"
     implementation "com.github.ybq:Android-SpinKit:1.4.0"
     implementation "com.opencsv:opencsv:4.6"
-    testImplementation 'junit:junit:#junitVersion'
+    testImplementation "junit:junit:$junitVersion"
     testImplementation 'org.assertj:assertj-core:3.11.1'
-    testImplementation "org.mockito:mockito-inline:4.0.0"
+    testImplementation "org.mockito:mockito-inline:4.11.0"
     testImplementation "org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion"
     testImplementation 'org.powermock:powermock-api-mockito:1.6.1'
     testImplementation 'org.powermock:powermock-module-junit4:1.6.1'
     testImplementation 'org.powermock:powermock-module-junit4-rule:1.6.1'
     testImplementation 'org.powermock:powermock-classloading-xstream:1.6.1'
     testImplementation "androidx.test:core:$testCoreVersion"
-    testImplementation "androidx.arch.core:core-testing:2.1.0"
+    testImplementation "androidx.arch.core:core-testing:2.2.0"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
     // Core library
@@ -116,36 +107,37 @@ dependencies {
     }
 
     // AndroidJUnitRunner and JUnit Rules
-    androidTestImplementation 'androidx.test:runner:1.4.0'
-    androidTestImplementation 'androidx.test:rules:1.4.0'
+    androidTestImplementation 'androidx.test:runner:1.5.2'
+    androidTestImplementation 'androidx.test:rules:1.5.0'
 
     // Assertions
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.ext:truth:1.4.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.ext:truth:1.5.0'
+    testImplementation 'com.google.truth:truth:1.1.3'
     androidTestImplementation 'com.google.truth:truth:1.1.3'
 
     // Espresso dependencies
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.4.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.4.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-accessibility:3.4.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-web:3.4.0'
-    androidTestImplementation 'androidx.test.espresso.idling:idling-concurrent:3.4.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-idling-resource:3.4.0'
-    androidTestUtil 'androidx.test:orchestrator:1.4.1'
-
-    testImplementation 'org.robolectric:robolectric:4.4'
-    testImplementation 'org.robolectric:shadows-multidex:4.4'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.5.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.5.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-accessibility:3.5.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-web:3.5.1'
+    androidTestImplementation 'androidx.test.espresso.idling:idling-concurrent:3.5.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-idling-resource:3.5.1'
+    androidTestUtil 'androidx.test:orchestrator:1.4.2'
+    testImplementation 'org.robolectric:robolectric:4.13'
+    testImplementation 'org.robolectric:shadows-multidex:4.13'
 
     //Lottie Animation
     implementation 'com.airbnb.android:lottie:3.4.0'
 
     //New Line//
     compileOnly 'org.projectlombok:lombok:1.18.22'
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+    kapt 'org.projectlombok:lombok:1.18.22'
     implementation 'com.jakewharton.timber:timber:5.0.1'
     implementation "io.github.rburgst:okhttp-digest:2.5"
-    implementation 'com.google.android.play:core:1.8.3'
+    implementation 'com.google.android.play:app-update:2.1.0'
+    implementation 'com.google.android.play:app-update-ktx:2.1.0'
 
     implementation 'dnsjava:dnsjava:3.4.2'
     implementation 'org.jitsi:dnssecjava:2.0.0'
@@ -171,7 +163,7 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.3.0")
 
     //firebase new dependency
-    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
+    implementation(platform("com.google.firebase:firebase-bom:33.2.0"))
     implementation("com.google.firebase:firebase-config")
     implementation("com.google.firebase:firebase-analytics")
 

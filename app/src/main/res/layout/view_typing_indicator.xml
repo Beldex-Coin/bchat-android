@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.thoughtcrimes.securesms.conversation.v2.components.TypingIndicatorView
+<io.beldex.bchat.conversation.v2.components.TypingIndicatorView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
@@ -36,4 +36,4 @@
         android:alpha="0.5"
         android:background="@drawable/circle_white" />
 
-</com.thoughtcrimes.securesms.conversation.v2.components.TypingIndicatorView>
+</io.beldex.bchat.conversation.v2.components.TypingIndicatorView>

@@ -1058,12 +1058,12 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }
     }
 
-    override fun onTransactionCreated(tag: String, pendingTransaction: PendingTransaction) {
+    override fun onTransactionCreated(tag: String?, pendingTransaction: PendingTransaction?) {
         try {
             //WalletFragment Functionality --
             val currentFragment = getCurrentFragment()
             runOnUiThread {
-                val status = pendingTransaction.status
+                val status = pendingTransaction!!.status
                 if (status !== PendingTransaction.Status.Status_Ok) {
                     val errorText = pendingTransaction.errorString
                     getWallet()!!.disposePendingTransaction()

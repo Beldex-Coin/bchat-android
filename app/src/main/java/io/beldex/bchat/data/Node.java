@@ -266,8 +266,12 @@ public class Node {
             throw new UnknownHostException("loopback not supported (yet?)");
         }
         Log.d("Beldex","node class host value 2 " + host);
-        this.host = host;
-        this.hostAddress = InetAddress.getByName(host);
+        try {
+            this.host = host;
+            this.hostAddress = InetAddress.getByName(host);
+        } catch(Exception e){
+            throw new UnknownHostException("loopback not supported (yet?)");
+        }
     }
 
     public void setName() {

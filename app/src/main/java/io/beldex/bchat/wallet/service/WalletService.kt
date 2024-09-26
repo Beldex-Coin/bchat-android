@@ -42,7 +42,7 @@ class WalletService : Service() {
     private inner class MyWalletListener : WalletListener {
         var updated = true
         fun start() {
-            val wallet: Wallet = wallet
+            val wallet: Wallet? = wallet
             try {
                 if (wallet != null) {
                     wallet.setListener(this)
@@ -54,7 +54,7 @@ class WalletService : Service() {
         }
 
         fun stop() {
-            val wallet: Wallet = wallet
+            val wallet: Wallet? = wallet
             try {
                 if (wallet != null) {
                     wallet.pauseRefresh()
@@ -80,7 +80,7 @@ class WalletService : Service() {
 
         private var lastBlockTime: Long = 0
         override fun newBlock(height: Long) {
-            val wallet: Wallet = wallet
+            val wallet: Wallet? = wallet
             if (wallet != null) {
                 // don't flood with an update for every block ...
                 if (lastBlockTime < System.currentTimeMillis() - 2000) {
@@ -101,14 +101,14 @@ class WalletService : Service() {
         }
 
         override fun updated() {
-            val wallet: Wallet = wallet
+            val wallet: Wallet? = wallet
             if (wallet != null) {
                 updated = true
             }
         }
 
         override fun refreshed() { // this means it's synced
-            val wallet: Wallet = wallet
+            val wallet: Wallet? = wallet
             val latestBlock = syncingBlocks
             if (wallet != null) {
                 if (isOnline(applicationContext)) {
@@ -207,7 +207,7 @@ class WalletService : Service() {
         sendBroadCast(bundle)
     }
 
-    val wallet: Wallet
+    val wallet: Wallet?
         get() = WalletManager.getInstance().wallet
 
     /////////////////////////////////////////////
@@ -266,7 +266,7 @@ class WalletService : Service() {
                          }
 
                          REQUEST_CMD_STORE -> {
-                             val myWallet: Wallet = wallet
+                             val myWallet: Wallet? = wallet
                              if(myWallet != null) {
                                  try {
                                      val rc = myWallet.store()
@@ -285,7 +285,7 @@ class WalletService : Service() {
                          }
 
                          REQUEST_CMD_TX -> {
-                             val myWallet: Wallet = wallet
+                             val myWallet: Wallet? = wallet
                              if(myWallet != null) {
                                  myWallet.disposePendingTransaction() // remove any old pending tx
                                  val txData =
@@ -309,7 +309,7 @@ class WalletService : Service() {
                          }
 
                          REQUEST_CMD_SWEEP -> {
-                             val myWallet: Wallet = wallet
+                             val myWallet: Wallet? = wallet
                              if(myWallet != null) {
                                  myWallet.disposePendingTransaction() // remove any old pending tx
                                  val txTag =
@@ -333,7 +333,7 @@ class WalletService : Service() {
                          }
 
                          REQUEST_CMD_SEND -> {
-                             val myWallet: Wallet = wallet
+                             val myWallet: Wallet? = wallet
                              if(myWallet != null) {
                                  val pendingTransaction =
                                      myWallet.pendingTransaction
@@ -507,7 +507,7 @@ class WalletService : Service() {
         showProgress(2f)
         // if we try to refresh the history here we get occasional segfaults!
         // doesnt matter since we update as soon as we get a new block anyway
-        return wallet.fullStatus
+        return wallet?.fullStatus
     }
 
     fun stop() {
@@ -516,7 +516,7 @@ class WalletService : Service() {
             listener!!.stop()
             try {
                 val myWallet = wallet
-                myWallet.close()
+                myWallet?.close()
             } catch (e: Exception) {
                 Log.d("WalletService", e.toString())
             }

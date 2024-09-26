@@ -74,11 +74,11 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
 
     //New Line
     private fun setCall(isEnabled: Boolean): Void? {
-        if(isEnabled) {
+        /*if(isEnabled) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                 fullScreenIntentPopup()
             }
-        }
+        }*/
         (findPreference<Preference>(TextSecurePreferences.CALL_NOTIFICATIONS_ENABLED) as SwitchPreferenceCompat?)!!.isChecked =
             isEnabled
         if (isEnabled && !areNotificationsEnabled(requireActivity())) {
@@ -117,7 +117,7 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
         }
         return null
     }
-    private fun fullScreenIntentPopup() {
+   /* private fun fullScreenIntentPopup() {
         val factory=LayoutInflater.from(context)
         val fullScreenIntentDialogView : View=factory.inflate(R.layout.full_screen_intent_dialog, null)
         val fullScreenIntentDialog=AlertDialog.Builder(context).create()
@@ -133,7 +133,7 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
             fullScreenIntentDialog.dismiss()
         }
         fullScreenIntentDialog.show()
-    }
+    }*/
 
 
     //Hales63
@@ -337,7 +337,7 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
             }
         }
     }
-    private fun actionFullScreenIntent(){
+   /* private fun actionFullScreenIntent(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             if (!Settings.canDrawOverlays(context)) {
                 val intent = Intent(
@@ -347,11 +347,11 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
                 startActivityForResult(intent, 123)
             }
         }
-    }
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    }*/
+   /* override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 123) {
             println("permission result code is $resultCode ")
         }
-    }
+    }*/
 }

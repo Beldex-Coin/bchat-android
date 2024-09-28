@@ -126,7 +126,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-idling-resource:3.5.1'
     androidTestUtil 'androidx.test:orchestrator:1.4.2'
     testImplementation 'org.robolectric:robolectric:4.13'
-    testImplementation 'org.robolectric:shadows-multidex:4.13'
 
     //Lottie Animation
     implementation 'com.airbnb.android:lottie:3.4.0'

@@ -1460,7 +1460,7 @@ class AppTextSecurePreferences @Inject constructor(
     }
 
     override fun isUsingFCM(): Boolean {
-        return getBooleanPreference(TextSecurePreferences.IS_USING_FCM, false)
+        return getBooleanPreference(TextSecurePreferences.IS_USING_FCM, true)
     }
 
     override fun setIsUsingFCM(value: Boolean) {

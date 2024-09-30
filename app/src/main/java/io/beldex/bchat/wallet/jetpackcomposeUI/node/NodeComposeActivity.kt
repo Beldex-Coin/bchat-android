@@ -97,6 +97,7 @@ import io.beldex.bchat.wallet.node.Dispatcher
 import io.beldex.bchat.wallet.node.NodeInfoAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
+import io.beldex.bchat.wallet.CheckOnline
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.net.HttpURLConnection
@@ -405,18 +406,27 @@ fun NodeScreen(test:Boolean = false) {
     }
 
     if (showRefreshNodePopup) {
-        RefreshNodePopup(onDismiss={
+        if(CheckOnline.isOnline(context)) {
+            RefreshNodePopup(onDismiss={
+                showRefreshNodePopup=false
+            }, onCallRefresh = {
+                showRefreshNodePopup = false
+                isVisible=!isVisible
+                restoreDefaultNodes()
+                //refreshTheNodes()
+                lifecycleOwner.lifecycleScope.launch {
+                    delay(1000)
+                    isVisible=true
+                }
+            })
+        }else{
             showRefreshNodePopup=false
-        }, onCallRefresh = {
-            showRefreshNodePopup = false
-            isVisible=!isVisible
-            restoreDefaultNodes()
-            //refreshTheNodes()
-            lifecycleOwner.lifecycleScope.launch {
-                delay(1000)
-                isVisible=true
-            }
-        })
+            Toast.makeText(
+                context,
+                R.string.please_check_your_internet_connection,
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
         Column(modifier=Modifier

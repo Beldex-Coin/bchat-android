@@ -440,7 +440,7 @@ class WalletService : Service() {
     }
 
     private val mBinder: IBinder = WalletServiceBinder()
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Running = true
         // when the activity starts the service, it expects to start it for a new wallet
         // the service is possibly still occupied with saving the last opened wallet

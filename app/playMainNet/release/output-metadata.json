@@ -11,22 +11,9 @@
       "type": "UNIVERSAL",
       "filters": [],
       "attributes": [],
-      "versionCode": 67,
-      "versionName": "2.5.3",
-      "outputFile": "Bchat-2.5.3-universal.apk"
-    },
-    {
-      "type": "ONE_OF_MANY",
-      "filters": [
-        {
-          "filterType": "ABI",
-          "value": "x86_64"
-        }
-      ],
-      "attributes": [],
-      "versionCode": 67,
-      "versionName": "2.5.3",
-      "outputFile": "Bchat-2.5.3-x86_64.apk"
+      "versionCode": 68,
+      "versionName": "2.6.0",
+      "outputFile": "Bchat-2.6.0-universal.apk"
     },
     {
       "type": "ONE_OF_MANY",
@@ -37,9 +24,22 @@
         }
       ],
       "attributes": [],
-      "versionCode": 67,
-      "versionName": "2.5.3",
-      "outputFile": "Bchat-2.5.3-arm64-v8a.apk"
+      "versionCode": 68,
+      "versionName": "2.6.0",
+      "outputFile": "Bchat-2.6.0-arm64-v8a.apk"
+    },
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "x86_64"
+        }
+      ],
+      "attributes": [],
+      "versionCode": 68,
+      "versionName": "2.6.0",
+      "outputFile": "Bchat-2.6.0-x86_64.apk"
     },
     {
       "type": "ONE_OF_MANY",
@@ -50,9 +50,9 @@
         }
       ],
       "attributes": [],
-      "versionCode": 67,
-      "versionName": "2.5.3",
-      "outputFile": "Bchat-2.5.3-armeabi-v7a.apk"
+      "versionCode": 68,
+      "versionName": "2.6.0",
+      "outputFile": "Bchat-2.6.0-armeabi-v7a.apk"
     }
   ],
   "elementType": "File"

@@ -3,12 +3,14 @@ package io.beldex.bchat.onboarding
 import android.Manifest
 import android.app.AlertDialog
 import android.app.NotificationManager
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContracts
@@ -104,13 +106,16 @@ class LandingActivity : AppCompatActivity() {
     }
 
     private fun link() {
-        val viewIntent = Intent(
-            "android.intent.action.VIEW",
-            Uri.parse("https://bchat.beldex.io/terms-and-conditions")
-        )
-        startActivity(viewIntent)
+        try {
+            val viewIntent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://bchat.beldex.io/terms-and-conditions")
+            )
+            startActivity(viewIntent)
+        } catch(ex: ActivityNotFoundException) {
+            Log.d("LandingActivity",ex.message.toString())
+        }
         /*val intent = Intent(this, LinkDeviceActivity::class.java)
         push(intent)*/
-
     }
 }

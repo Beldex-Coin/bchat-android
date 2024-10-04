@@ -21,6 +21,7 @@ import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -174,9 +175,13 @@ public class KeyCachingService extends Service {
    */
   @Override
   public void onTaskRemoved(Intent rootIntent) {
-    Intent intent = new Intent(this, DummyActivity.class);
-    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    startActivity(intent);
+    try {
+      Intent intent = new Intent(this, DummyActivity.class);
+      intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+      startActivity(intent);
+    } catch(ActivityNotFoundException ex) {
+      Log.d("KeyCachingService", ex.getMessage());
+    }
   }
 
   @SuppressLint("StaticFieldLeak")

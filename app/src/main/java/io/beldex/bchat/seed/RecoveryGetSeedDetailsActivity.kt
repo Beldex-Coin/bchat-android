@@ -754,18 +754,15 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         Timber.d("loadFavourites")
         favouriteNodes.clear()
         val selectedNodeId = getSelectedNodeId()
-        val storedNodes = getSharedPreferences(
-            NODES_PREFS_NAME,
-            MODE_PRIVATE
-        ).all
-        for (nodeEntry in storedNodes.entries) {
+        val storedNodes: Map<String?,*>? = getSharedPreferences(NODES_PREFS_NAME, MODE_PRIVATE).all
+        for (nodeEntry: Map.Entry<String?, *>? in storedNodes!!.entries) {
             if (nodeEntry != null) { // just in case, ignore possible future errors
                 val nodeId = nodeEntry.value as String
-                val addedNode: NodeInfo = addFavourite(nodeId)!!
+                val addedNode: NodeInfo? = addFavourite(nodeId)!!
                 if (addedNode != null) {
                     if (nodeId == selectedNodeId) {
                         //Important
-                        addedNode.setSelected(true)
+                        addedNode.isSelected = true
                     }
                 }
             }

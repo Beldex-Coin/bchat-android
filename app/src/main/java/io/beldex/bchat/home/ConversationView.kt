@@ -49,7 +49,7 @@ class ConversationView : LinearLayout {
         this.thread = thread
         val recipient = thread.recipient
         val isMuted = recipient.isMuted || recipient.notifyType != NOTIFY_TYPE_ALL
-        if (thread.isPinned || isMuted) {
+        if (thread.isPinned) {
             binding.contentView.apply {
                 background = ContextCompat.getDrawable(context,R.drawable.unread_message_chat_background)
                 val params = layoutParams as FrameLayout.LayoutParams
@@ -93,14 +93,6 @@ class ConversationView : LinearLayout {
         binding.unreadCountTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize)
         binding.unreadCountTextView.setTypeface(Typeface.DEFAULT, if (unreadCount < 100) Typeface.BOLD else Typeface.NORMAL)
         binding.unreadCountIndicator.isVisible = (unreadCount != 0 && !thread.isRead)
-        if(unreadCount != 0 && !thread.isRead) {
-            binding.contentView.apply {
-                background = ContextCompat.getDrawable(context,R.drawable.unread_message_chat_background)
-                val params = layoutParams as FrameLayout.LayoutParams
-                params.setMargins(0, 16, 16, 16)
-                layoutParams = params
-            }
-        }
         val senderDisplayName = getUserDisplayName(thread.recipient)
                 ?: thread.recipient.address.toString()
         val recipientName : String=senderDisplayName.substring(0, 1).uppercase(Locale.ROOT) + senderDisplayName.substring(1).lowercase(Locale.ROOT)

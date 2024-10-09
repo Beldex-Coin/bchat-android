@@ -127,7 +127,12 @@ class Colors(
     val disableAddButtonContent: Color,
     val cancelButtonContainer: Color,
     val cancelButtonContent: Color,
-    val disabledCreateButtonContainer: Color
+    val disabledCreateButtonContainer: Color,
+    val archiveChatCountBackground: Color,
+    val deleteOptionColor: Color,
+    val archiveChatCardBackground: Color,
+    val archiveChatIconBackground: Color,
+    val userBottomSheetBorder: Color
 )
 
 val lightColors = Colors(
@@ -239,7 +244,12 @@ val lightColors = Colors(
     disableAddButtonContent = Color(0xFFA7A7BA),
     cancelButtonContainer = Color(0xFFECECEC),
     cancelButtonContent = Color(0xFF6C6C78),
-    disabledCreateButtonContainer = Color(0xFFECECEC)
+    disabledCreateButtonContainer = Color(0xFFECECEC),
+    archiveChatCountBackground = Color(0xFFFFFFFF),
+    deleteOptionColor = Color(0xFFFF3E3E),
+    archiveChatCardBackground = Color(0xFFF8F8F8),
+    archiveChatIconBackground = Color(0xFFECECEC),
+    userBottomSheetBorder = Color(0xFFA7A7BA)
 )
 
 val darkColors = Colors(
@@ -351,7 +361,12 @@ val darkColors = Colors(
     disableAddButtonContent = Color(0xFF6C6C78),
     cancelButtonContainer = Color(0xFF1C1C26),
     cancelButtonContent = Color(0xFFACACAC),
-    disabledCreateButtonContainer = Color(0xFF282836)
+    disabledCreateButtonContainer = Color(0xFF282836),
+    archiveChatCountBackground = Color(0xFF42425F),
+    deleteOptionColor = Color(0xFFFF3E3E),
+    archiveChatCardBackground = Color(0xFF282836),
+    archiveChatIconBackground = Color(0xFF1C1C26),
+    userBottomSheetBorder = Color(0xFF2C2C3B)
 )
 
 

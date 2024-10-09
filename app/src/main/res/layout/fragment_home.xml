@@ -263,7 +263,14 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:clipChildren="false">
+                    android:layout_marginTop="@dimen/medium_spacing">
+
+                    <androidx.compose.ui.platform.ComposeView
+                        android:id="@+id/archiveChatCardView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerView"
@@ -272,6 +279,7 @@
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         tools:itemCount="6"
                         tools:listitem="@layout/view_conversation"
+                        android:layout_below="@id/archiveChatCardView"
                         android:padding="8dp"/>
 
                     <View

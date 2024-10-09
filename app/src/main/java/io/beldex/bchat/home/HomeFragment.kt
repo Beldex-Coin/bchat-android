@@ -122,6 +122,7 @@ import io.beldex.bchat.webrtc.WebRTCComposeActivity
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
+import io.beldex.bchat.archivechats.ArchiveChatViewModel
 import io.beldex.bchat.databinding.FragmentHomeBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -193,6 +194,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     private var uiJob: Job? = null
     private var viewModel : CallViewModel? =null // by viewModels<CallViewModel>()
     private val callDurationFormat = "HH:mm:ss"
+    private var archiveChatViewModel : ArchiveChatViewModel? = null
 
     private val publicKey: String
         get() = TextSecurePreferences.getLocalNumber(requireActivity().applicationContext)!!
@@ -385,6 +387,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
 
         //New Line
         viewModel = ViewModelProvider(requireActivity())[CallViewModel::class.java]
+        archiveChatViewModel = ViewModelProvider(requireActivity())[ArchiveChatViewModel::class.java]
 
         // Set up Glide
         glide = GlideApp.with(this)
@@ -575,6 +578,24 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                     )
                 }
             }
+
+           if( threadDb.archivedConversationList.count !=0) {
+               binding.archiveChatCardView.visibility = View.VISIBLE
+               binding.archiveChatCardView.setContent {
+                   BChatTheme {
+                       ArchiveChatView(
+                           archiveChatViewModel=archiveChatViewModel!!,
+                           threadDatabase=threadDb,
+                           onRequestClick={
+                               showArchiveChats()
+                           },
+                           context = requireContext()
+                       )
+                   }
+               }
+           }else{
+               binding.archiveChatCardView.visibility = View.GONE
+           }
             homeAdapter.data = newData
 //            if(firstPos >= 0) { manager.scrollToPositionWithOffset(firstPos, offsetTop) }
 //            setupMessageRequestsBanner()
@@ -629,6 +650,12 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
 
     }
 
+    private fun showArchiveChats(){
+        Intent(requireContext(), MyAccountActivity::class.java).also {
+            it.putExtra(MyAccountActivity.extraStartDestination, MyAccountScreens.ArchiveChatScreen.route)
+            resultLauncher.launch(it)
+        }
+    }
     private fun callShowQrCode(){
         showQRCode()
         Handler(Looper.getMainLooper()).postDelayed({
@@ -994,6 +1021,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
             findItem(R.id.menu_mark_read).setVisible(thread.unreadCount > 0)
             findItem(R.id.menu_pin).setVisible(!thread.isPinned)
             findItem(R.id.menu_unpin).setVisible(thread.isPinned)
+            findItem(R.id.menu_archive_chat).setVisible(true)
         }
         popupMenu.setOnMenuItemClickListener {
             handlePopUpMenuClickListener(it, thread)
@@ -1104,6 +1132,9 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
             R.id.menu_delete -> {
                 deleteConversation(thread)
             }
+            R.id.menu_archive_chat ->{
+                archiveChatViewModel?.let { archiveConversation(thread, it) }
+            }
             else -> Unit
         }
     }
@@ -1202,6 +1233,17 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
             setListener(this@HomeFragment)
         }
         deleteConversation.show(childFragmentManager, ConversationActionDialog.TAG)
+    }
+
+    private fun archiveConversation(thread : ThreadRecord, archiveChatViewModel : ArchiveChatViewModel){
+        val threadID = thread.threadId
+        val context = requireActivity() as Context
+        DatabaseComponent.get(context).bchatJobDatabase()
+            .cancelPendingMessageSendJobs(threadID)
+        lifecycleScope.launch(Dispatchers.IO) {
+            threadDb.setThreadArchived(threadID)
+            archiveChatViewModel.updateArchiveChatCount(threadDb.archivedConversationList.count)
+        }
     }
 
     interface HomeFragmentListener{

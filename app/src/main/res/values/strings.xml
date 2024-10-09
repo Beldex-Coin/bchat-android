@@ -1552,4 +1552,9 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="old_new_pin_same">New PIN should not be same as old PIN.</string>
     <string name="dialog_title_full_screen_intent" translatable="false">Full Screen Notification</string>
     <string name="dialog_content_full_screen_intent" translatable="false">Allow BChat to show full screen notifications for incoming calls and other notifications when the device is locked</string>
+    <string name="archive_chat" translatable="false">Archived Chats</string>
+    <string name="archive_chat_title" translatable="false">Archive Chat</string>
+    <string name="un_archive_chat_title" translatable="false">Unarchive Chat</string>
+    <string name="archive_chat_content" translatable="false">Chats will automatically Unarchived when new messages are received.</string>
+    <string name="un_archive_chat" translatable="false">Un Archived Chats</string>
 </resources>

@@ -32,6 +32,8 @@ import io.beldex.bchat.util.LRUCache;
 
 import com.beldex.libbchat.utilities.ServiceUtil;
 
+import org.w3c.dom.Text;
+
 import java.lang.ref.WeakReference;
 import java.security.SecureRandom;
 import java.util.Arrays;
@@ -71,6 +73,8 @@ public class Permissions {
     private @DrawableRes int[]  rationalDialogHeader;
     private              String rationaleDialogMessage;
 
+    private              String rationalDialogTitle;
+
     private int minSdkVersion = 0;
     private int maxSdkVersion = Integer.MAX_VALUE;
 
@@ -83,9 +87,10 @@ public class Permissions {
       return this;
     }
 
-    public PermissionsBuilder withRationaleDialog(@NonNull String message, @NonNull @DrawableRes int... headers) {
+    public PermissionsBuilder withRationaleDialog(@NonNull String message, @NonNull String title, @NonNull @DrawableRes int... headers) {
       this.rationalDialogHeader   = headers;
       this.rationaleDialogMessage = message;
+      this.rationalDialogTitle    = title;
       return this;
     }
 
@@ -178,6 +183,7 @@ public class Permissions {
       callPermissionDialogView.<ImageView>findViewById(R.id.permissionImageview).setImageDrawable(ContextCompat.getDrawable(permissionObject.getContext(),rationalDialogHeader[0]));
       callPermissionDialogView.<ImageView>findViewById(R.id.permissionImageview).setColorFilter(ContextCompat.getColor(permissionObject.getContext(),R.color.download_icon));
       callPermissionDialogView.<TextView>findViewById(R.id.permissionDescriptionTextview).setText(rationaleDialogMessage);
+      callPermissionDialogView.<TextView>findViewById(R.id.permissionTitleTextview).setText(rationalDialogTitle);
       callPermissionDialogView.<Button>findViewById(R.id.allowDialogBoxButton).setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {

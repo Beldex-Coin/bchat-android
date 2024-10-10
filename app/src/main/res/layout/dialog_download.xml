@@ -17,7 +17,7 @@
         android:layout_marginBottom="10dp"/>
 
     <TextView
-        android:fontFamily="@font/open_sans_medium"
+        android:fontFamily="@font/open_sans_bold"
         android:id="@+id/downloadTitleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
         android:textSize="16sp" />
 
     <TextView
-        android:fontFamily="@font/open_sans_medium"
+        android:fontFamily="@font/open_sans_regular"
         android:id="@+id/downloadExplanationTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -44,36 +44,30 @@
         android:layout_marginTop="10dp"
         android:orientation="horizontal">
         <Button
+            style="@style/Widget.Bchat.Button.Dialog.Cancel"
             android:id="@+id/cancelButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/cancel"
-            android:textAllCaps="false"
             android:layout_marginEnd="5dp"
-            android:backgroundTint="@color/cancel_button"
-            android:textColor="@color/cancel_button_text"
+            android:textColor="@color/negative_green_button_text"
             android:padding="12dp"
             android:gravity="center"
             android:textSize="14sp"
-            android:layout_weight="1"
-            android:background = "@drawable/rounded_button"
-            android:textStyle="bold"/>
+            android:layout_weight="1"/>
 
         <Button
+            style="@style/Widget.Bchat.Button.Dialog.Enable"
             android:id="@+id/downloadButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/dialog_download_button_title"
-            android:textAllCaps="false"
             android:layout_marginStart="5dp"
-            android:backgroundTint="#00BD40"
             android:textColor="@color/white"
             android:padding="12dp"
             android:gravity="center"
             android:textSize="14sp"
-            android:layout_weight="1"
-            android:textStyle="bold"
-            android:background = "@drawable/rounded_button"/>
+            android:layout_weight="1"/>
 
     </LinearLayout>
 

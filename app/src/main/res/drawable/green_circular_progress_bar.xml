@@ -10,8 +10,8 @@
 
         <gradient
             android:angle="0"
-            android:endColor="@color/green_color"
-            android:startColor="@color/green_color"
+            android:endColor="@color/button_green"
+            android:startColor="@color/button_green"
             android:type="sweep"
             android:useLevel="false" />
     </shape>

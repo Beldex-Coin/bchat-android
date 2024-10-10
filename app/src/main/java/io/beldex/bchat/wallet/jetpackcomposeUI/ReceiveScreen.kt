@@ -392,9 +392,9 @@ fun ReceiveScreen(listenerCallback: ReceiveFragment.Listener?, modifier: Modifie
 
                 }, modifier = Modifier
                     .fillMaxWidth()
-                    .padding(10.dp), shape = RoundedCornerShape(16.dp)) {
+                    .padding(10.dp), shape = RoundedCornerShape(12.dp)) {
                     Image(painter = painterResource(id = R.drawable.share), contentDescription = "")
-                    Text(text = stringResource(id = R.string.share), modifier = Modifier.padding(8.dp), style = MaterialTheme.typography.titleMedium.copy(fontSize = 18.sp, fontWeight = FontWeight(700), color = Color.White))
+                    Text(text = stringResource(id = R.string.share), modifier = Modifier.padding(8.dp), style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp, fontWeight = FontWeight(400), color = Color.White))
                 }
             }
         }

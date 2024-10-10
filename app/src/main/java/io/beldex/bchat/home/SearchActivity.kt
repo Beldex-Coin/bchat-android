@@ -30,6 +30,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -52,11 +53,13 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -303,27 +306,40 @@ private fun SearchView(
                         )
                     }
                     is SearchResults.SavedMessages -> {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
+                        Card(
+                            shape = RoundedCornerShape(50),
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    onSearchResultClick(it)
-                                }
+                                .fillMaxWidth(),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.appColors.searchBackground
+                            )
                         ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_self_message),
-                                contentDescription = "",
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier
-                                    .size(ProfilePictureMode.SmallPicture.size)
-                            )
+                                    .fillMaxWidth()
+                                    .padding(10.dp)
+                                    .clickable {
+                                        onSearchResultClick(it)
+                                    }
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.ic_self_message),
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .size(ProfilePictureMode.GroupPicture.size)
+                                )
 
-                            Spacer(modifier = Modifier.width(16.dp))
+                                Spacer(modifier = Modifier.width(12.dp))
 
-                            Text(
-                                text = stringResource(id = R.string.note_to_self),
-                                style = MaterialTheme.typography.titleMedium
-                            )
+                                Text(
+                                    text = stringResource(id = R.string.note_to_self),
+                                    style = MaterialTheme.typography.titleMedium.copy(
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight(600)
+                                    )
+                                )
+                            }
                         }
                     }
                 }

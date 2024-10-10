@@ -29,12 +29,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.compose_utils.BChatCheckBox
 import io.beldex.bchat.compose_utils.BChatTheme
@@ -44,6 +47,7 @@ import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.R
+import io.beldex.bchat.compose_utils.Colors
 
 @Composable
 fun BlockedContactScreen(
@@ -182,14 +186,16 @@ fun BlockedContactScreen(
                 onClick = {
                     showConfirmationDialog = true
                 },
-                containerColor = MaterialTheme.appColors.secondaryButtonColor,
+                containerColor = MaterialTheme.appColors.primaryButtonColor,
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
                 Text(
                     text = stringResource(id = R.string.unblock_selected),
                     style = MaterialTheme.typography.titleMedium.copy(
-                        color = MaterialTheme.appColors.primaryButtonColor
+                        color = Color.White,
+                        fontWeight = FontWeight(400),
+                        fontSize = 16.sp
                     ),
                     modifier = Modifier
                         .padding(8.dp)
@@ -239,7 +245,10 @@ private fun BlockedContactItem(
             }
             Text(
                 text = contact.name ?: "",
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight(400),
+                    fontSize = 14.sp
+                ),
                 modifier = Modifier
                     .weight(1f)
                     .padding(
@@ -259,7 +268,10 @@ private fun BlockedContactItem(
             } else {
                 Text(
                     text = "Unblock",
-                    style = MaterialTheme.typography.labelMedium,
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        fontWeight = FontWeight(600),
+                        fontSize = 12.sp
+                    ),
                     modifier = Modifier
                         .background(
                             color = MaterialTheme.appColors.popUpAddressBackground,

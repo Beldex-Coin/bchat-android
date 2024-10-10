@@ -12,6 +12,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.annotation.WorkerThread
 import androidx.compose.ui.text.toLowerCase
 import androidx.core.util.getOrDefault
@@ -141,7 +142,9 @@ class ConversationAdapter(context: Context, cursor: Cursor, private val onItemPr
                         val callMissedDialog = AlertDialog.Builder(context).create()
                         callMissedDialog.window?.setBackgroundDrawableResource(R.color.transparent)
                         callMissedDialog.setView(callMissedDialogView)
-                       val okButton =  callMissedDialogView.findViewById<Button>(R.id.missedCallOkButton)
+                        val description = callMissedDialogView.findViewById<TextView>(R.id.messageTextView)
+                        description.text = context.getString(R.string.activity_public_chat_success_message, if(message.recipient.name != null) message.recipient.name else message.recipient.address)
+                        val okButton =  callMissedDialogView.findViewById<Button>(R.id.missedCallOkButton)
                         okButton.setOnClickListener {
                             val intent = Intent(context, PrivacySettingsActivity::class.java)
                             context.startActivity(intent)

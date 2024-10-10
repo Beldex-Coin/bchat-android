@@ -1,5 +1,6 @@
 package io.beldex.bchat.conversation.v2.dialogs
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -48,7 +49,7 @@ fun LeaveGroupDialog(title : String,
             Text(
                     text=title,
                     style=MaterialTheme.typography.titleMedium.copy(
-                            fontWeight=FontWeight.Bold,
+                            fontWeight=FontWeight(700),
                             fontSize=16.sp,
                             color=MaterialTheme.appColors.secondaryContentColor
                     ),
@@ -59,7 +60,9 @@ fun LeaveGroupDialog(title : String,
             Text(
                     text=message,
                     style=MaterialTheme.typography.bodyMedium.copy(
-
+                        color = MaterialTheme.appColors.editTextColor,
+                        fontWeight = FontWeight(400),
+                        fontSize = 14.sp
                     ),
                     textAlign=TextAlign.Center
             )
@@ -72,18 +75,23 @@ fun LeaveGroupDialog(title : String,
                             .fillMaxWidth()
             ) {
                 Button(
-                        onClick=onCancel,
-                        shape=RoundedCornerShape(50),
-                        colors=ButtonDefaults.buttonColors(
-                                containerColor=MaterialTheme.appColors.cancelButtonColor
-                        ),
-                        modifier=Modifier.weight(1f)
+                    onClick=onCancel,
+                    shape=RoundedCornerShape(12.dp),
+                    colors=ButtonDefaults.buttonColors(
+                            containerColor=MaterialTheme.appColors.negativeGreenButton
+                    ),
+                    modifier=Modifier.weight(1f),
+                    border = BorderStroke(
+                    width = 0.5.dp,
+                        color = MaterialTheme.appColors.negativeGreenButtonBorder
+                    ),
                 ) {
                     Text(
                             text=stringResource(id=R.string.cancel),
                             style=MaterialTheme.typography.bodyMedium.copy(
-                                    fontWeight=FontWeight.Medium,
-                                    color=MaterialTheme.appColors.cancelColor
+                                fontWeight=FontWeight(400),
+                                color=MaterialTheme.appColors.negativeGreenButtonText,
+                                fontSize = 14.sp
                             ),
                             modifier=Modifier.padding(
                                     vertical=8.dp
@@ -93,17 +101,18 @@ fun LeaveGroupDialog(title : String,
 
                 Button(
                         onClick=onLeave,
-                        shape=RoundedCornerShape(50),
+                        shape=RoundedCornerShape(12.dp),
                         colors=ButtonDefaults.buttonColors(
-                                containerColor=MaterialTheme.appColors.cancelButtonColor
+                                containerColor=MaterialTheme.appColors.negativeGreenButtonBorder
                         ),
                         modifier=Modifier.weight(1f)
                 ) {
                     Text(
                             text=positiveButtonTitle,
                             style=MaterialTheme.typography.bodyMedium.copy(
-                                    fontWeight=FontWeight.Medium,
-                                    color=Color.Red
+                                fontWeight=FontWeight(400),
+                                color = Color.White,
+                                fontSize = 14.sp
                             ),
                             modifier=Modifier.padding(
                                     vertical=8.dp

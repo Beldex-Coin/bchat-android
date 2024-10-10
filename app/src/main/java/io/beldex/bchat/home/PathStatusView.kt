@@ -87,8 +87,8 @@ class PathStatusView : View {
     private fun update() {
         if (OnionRequestAPI.paths.isNotEmpty()) {
             setBackgroundResource(R.drawable.accent_dot)
-            mainColor = resources.getColorWithID(R.color.accent, context.theme)
-            bchatShadowColor = resources.getColorWithID(R.color.accent, context.theme)
+            mainColor = resources.getColorWithID(R.color.button_green, context.theme)
+            bchatShadowColor = resources.getColorWithID(R.color.button_green, context.theme)
         } else {
             setBackgroundResource(R.drawable.paths_building_dot)
             mainColor = resources.getColorWithID(R.color.paths_building, context.theme)

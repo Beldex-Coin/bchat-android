@@ -1,6 +1,7 @@
 package io.beldex.bchat.my_account.ui.dialogs
 
 import android.content.res.Configuration
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -266,16 +268,21 @@ fun ClearDataDialog(
                 ) {
                     Button(
                         onClick = onDismissRequest,
+                        shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.appColors.secondaryButtonColor
+                            containerColor = MaterialTheme.appColors.negativeGreenButton
                         ),
                         modifier = Modifier
-                            .weight(1f)
+                            .weight(1f),
+                        border = BorderStroke(0.5.dp, MaterialTheme.appColors.negativeGreenButtonBorder),
                     ) {
                         Text(
                             text = stringResource(id = R.string.cancel),
-                            style = MaterialTheme.typography.bodyMedium,
-                                fontWeight = FontWeight(700)
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                color = MaterialTheme.appColors.negativeGreenButtonText,
+                                fontWeight = FontWeight(400),
+                                fontSize = 14.sp
+                            ),
                         )
                     }
 
@@ -283,13 +290,12 @@ fun ClearDataDialog(
 
                     Button(
                         onClick = buttonClick,
+                        shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = if(buttonTitle == stringResource(R.string.clear) || buttonTitle == stringResource(
                                     id = R.string.delete
-                                ))MaterialTheme.appColors.walletDashboardMainMenuCardBackground else MaterialTheme.appColors.primaryButtonColor,
-                            contentColor = if(buttonTitle == stringResource(R.string.clear) || buttonTitle == stringResource(
-                                    id = R.string.delete
-                                )) Color.Red else Color.White
+                                ))MaterialTheme.appColors.negativeRedButtonBorder else MaterialTheme.appColors.negativeGreenButtonBorder,
+                            contentColor = Color.White
                         ),
                         modifier = Modifier
                             .weight(1f)
@@ -297,10 +303,9 @@ fun ClearDataDialog(
                         Text(
                             text = buttonTitle.toString(),
                             style = MaterialTheme.typography.titleMedium.copy(
-                                color = if(buttonTitle == stringResource(R.string.clear) || buttonTitle == stringResource(
-                                        id = R.string.delete
-                                    )) Color.Red else Color.White,
-                                    fontWeight = FontWeight(700)
+                                color = Color.White,
+                                fontWeight = FontWeight(400),
+                                fontSize = 14.sp
                             )
                         )
                     }
@@ -341,8 +346,9 @@ fun DeleteOption(
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium.copy(
+                    color = MaterialTheme.appColors.editTextColor,
                     fontWeight = FontWeight.Normal,
-                        fontSize = 16.sp,
+                    fontSize = 16.sp,
                 )
             )
 
@@ -350,7 +356,8 @@ fun DeleteOption(
                 text = description,
                 style = MaterialTheme.typography.labelMedium.copy(
                     color = MaterialTheme.appColors.clearDataSubTitle,
-                        fontSize = 14.sp
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 14.sp
                 ),
                 textAlign = TextAlign.Center
             )

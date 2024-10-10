@@ -82,7 +82,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/copyButton"
-                style="@style/PrimaryContainedButton"
+                style="@style/PrimaryContainedIconButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -91,13 +91,11 @@
                 android:text="@string/copy_seed"
                 app:icon="@drawable/ic_restore_copy"
                 app:iconGravity="textEnd"
-                app:iconTint="@color/icon_tint"
-                app:backgroundTint="@color/your_bchat_id_bg"
-                android:textColor="@color/icon_tint"/>
+                app:iconTint="@color/icon_tint"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/shareButton"
-                style="@style/PrimaryContainedButton"
+                style="@style/PrimaryContainedPositiveButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -154,7 +152,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/very_large_spacing"
             android:layout_marginRight="@dimen/very_large_spacing"
-            android:textSize="@dimen/very_small_font_size"
+            android:textSize="@dimen/small_font_size"
             android:textStyle="normal"
             android:textColor="@color/text_hint"
             android:textAlignment="center"

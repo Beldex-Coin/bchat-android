@@ -16,7 +16,7 @@
         android:layout_marginBottom="10dp"/>
 
     <TextView
-        android:fontFamily="@font/open_sans_medium"
+        android:fontFamily="@font/open_sans_bold"
         android:id="@+id/deleteMediaTitleTextview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
 
     <TextView
         android:id="@+id/deleteMediaDescriptionTextview"
-        android:fontFamily="@font/open_sans_medium"
+        android:fontFamily="@font/open_sans_regular"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -43,20 +43,17 @@
         android:layout_marginTop="10dp"
         android:orientation="horizontal">
         <Button
+            style="@style/Widget.Bchat.Button.Dialog.Cancel"
             android:id="@+id/cancelMediaDialogBoxButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/cancel"
-            android:textAllCaps="false"
             android:layout_marginEnd="5dp"
-            android:backgroundTint="@color/cancel_button"
-            android:textColor="@color/cancel_button_text"
+            android:textColor="@color/negative_green_button_text"
             android:padding="12dp"
             android:gravity="center"
             android:textSize="14sp"
-            android:layout_weight="1"
-            android:background = "@drawable/rounded_button"
-            android:textStyle="bold"/>
+            android:layout_weight="1"/>
 
         <Button
             android:id="@+id/deleteMediaDialogBoxButton"
@@ -65,14 +62,15 @@
             android:text="@string/delete"
             android:textAllCaps="false"
             android:layout_marginStart="5dp"
-            android:backgroundTint="@color/cancel_button"
-            android:textColor="@color/red"
+            android:backgroundTint="@color/negative_red_button_border"
+            android:textColor="@color/white"
             android:padding="12dp"
             android:gravity="center"
             android:textSize="14sp"
             android:layout_weight="1"
-            android:textStyle="bold"
-            android:background = "@drawable/rounded_button"/>
+            android:textStyle="normal"
+            android:fontFamily="@font/open_sans_regular"
+            android:background="@drawable/rounded_button"/>
 
     </LinearLayout>
 

@@ -15,18 +15,20 @@
     </style>
 
     <style name="Widget.Bchat.Button.Common.ProminentFilled">
-        <item name="android:fontFamily">@font/open_sans_semi_bold</item>
+        <item name="android:fontFamily">@font/open_sans_regular</item>
         <item name="android:background">@drawable/prominent_filled_button_medium_background</item>
         <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:drawableTint" tools:ignore="NewApi">@android:color/white</item>
     </style>
 
     <!--New Line -->
     <style name="Widget.Bchat.Button.Common.ProminentFilledState" parent="Widget.AppCompat.Button">
-        <item name="android:fontFamily">@font/open_sans_semi_bold</item>
+        <item name="android:fontFamily">@font/open_sans_regular</item>
         <item name="android:background">@drawable/button_state</item>
         <item name="android:textColor">@drawable/button_text_state</item>
         <item name="android:elevation">5dp</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="FakeChatViewMessageBubble.Incoming">

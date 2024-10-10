@@ -2,6 +2,7 @@ package io.beldex.bchat.wallet.jetpackcomposeUI.walletdashboard
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.outlined.CalendarToday
@@ -41,6 +43,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import io.beldex.bchat.compose_utils.DialogContainer
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.model.TransactionInfo
@@ -91,7 +94,7 @@ fun FilterTransactionByDatePopUp(
                 Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 24.dp)) {
-                    Text(text = stringResource(id = R.string.select_date_range), style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight(800), color = MaterialTheme.appColors.selectDateRangeText), textAlign = TextAlign.Center, modifier = Modifier.padding(10.dp))
+                    Text(text = stringResource(id = R.string.select_date_range), style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight(700), color = MaterialTheme.appColors.selectDateRangeText, fontSize = 16.sp), textAlign = TextAlign.Center, modifier = Modifier.padding(10.dp))
                     OutlinedCard(
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.appColors.dialogBackground),modifier = Modifier
                             .padding(top = 10.dp)
@@ -167,8 +170,19 @@ fun FilterTransactionByDatePopUp(
                         .padding(10.dp)) {
                         Button(onClick = {
                             onDismiss()
-                        }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.appColors.cancelButtonColor), modifier = Modifier.weight(1f)) {
-                            Text(text = stringResource(id = R.string.cancel), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
+                        },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.appColors.negativeGreenButton),
+                            modifier = Modifier.weight(1f),
+                            shape = RoundedCornerShape(12.dp),
+                            border = BorderStroke(width = 0.5.dp, color = MaterialTheme.appColors.negativeGreenButtonBorder)
+                        ) {
+                            Text(text = stringResource(id = R.string.cancel),
+                                style = MaterialTheme.typography.bodyMedium.copy(
+                                    fontWeight = FontWeight(400),
+                                    fontSize = 14.sp,
+                                    color = MaterialTheme.appColors.negativeGreenButtonText
+                                ))
                         }
 
                         Spacer(modifier = Modifier.width(16.dp))
@@ -193,8 +207,17 @@ fun FilterTransactionByDatePopUp(
                                     )
                                 }
                             }
-                        }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.appColors.primaryButtonColor), modifier = Modifier.weight(1f)) {
-                            Text(text = stringResource(id = R.string.ok), style = MaterialTheme.typography.bodyMedium.copy(color = Color.White), fontWeight = FontWeight.Bold)
+                        },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.appColors.primaryButtonColor),
+                            modifier = Modifier.weight(1f),
+                            shape = RoundedCornerShape(12.dp),
+                        ) {
+                            Text(text = stringResource(id = R.string.ok), style = MaterialTheme.typography.bodyMedium.copy(
+                                color = Color.White,
+                                fontWeight = FontWeight(400),
+                                fontSize = 14.sp
+                            ))
                         }
                     }
                 }

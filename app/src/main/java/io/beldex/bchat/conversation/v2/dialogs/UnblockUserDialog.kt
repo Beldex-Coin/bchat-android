@@ -1,5 +1,6 @@
 package io.beldex.bchat.conversation.v2.dialogs
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -49,9 +50,9 @@ fun UnblockUserDialog(
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                    color = if(positiveButtonTitle == stringResource(id = R.string.unblock)) MaterialTheme.appColors.secondaryContentColor else MaterialTheme.appColors.primaryButtonColor
+                    color = MaterialTheme.appColors.secondaryContentColor,
+                    fontWeight = FontWeight(700),
+                    fontSize = 16.sp
                 ),
             )
 
@@ -60,7 +61,9 @@ fun UnblockUserDialog(
             Text(
                 text = message,
                 style = MaterialTheme.typography.bodyMedium.copy(
-
+                    color = MaterialTheme.appColors.titleTextColor,
+                    fontWeight = FontWeight(400),
+                    fontSize = 14.sp
                 ),
                 textAlign = TextAlign.Center
             )
@@ -74,17 +77,20 @@ fun UnblockUserDialog(
             ) {
                 Button(
                     onClick = onCancel,
-                    shape = RoundedCornerShape(50),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.cancelButtonColor
+                        containerColor = MaterialTheme.appColors.negativeGreenButton
                     ),
-                    modifier = Modifier.weight(1f)
+                    shape = RoundedCornerShape(12.dp),
+                    border = BorderStroke(0.5.dp, MaterialTheme.appColors.negativeGreenButtonBorder),
+                    modifier = Modifier
+                        .weight(1f)
                 ) {
                     Text(
                         text = stringResource(id = R.string.cancel),
                         style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Medium,
-                            color = MaterialTheme.appColors.cancelColor
+                            color = MaterialTheme.appColors.negativeGreenButtonText,
+                            fontWeight = FontWeight(400),
+                            fontSize = 14.sp
                         ),
                         modifier = Modifier.padding(
                             vertical = 8.dp
@@ -94,16 +100,17 @@ fun UnblockUserDialog(
 
                 Button(
                     onClick = onAccept,
-                    shape = RoundedCornerShape(50),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.primaryButtonColor
+                        containerColor = if(positiveButtonTitle == stringResource(id = R.string.decline)) MaterialTheme.appColors.negativeRedButtonBorder else MaterialTheme.appColors.negativeGreenButtonBorder
                     ),
+                    shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(
                         text = positiveButtonTitle,
                         style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Medium,
+                            fontWeight = FontWeight(400),
+                            fontSize = 14.sp,
                             color = Color.White
                         ),
                         modifier = Modifier.padding(

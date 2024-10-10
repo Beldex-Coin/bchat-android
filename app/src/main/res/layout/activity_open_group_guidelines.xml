@@ -53,10 +53,10 @@
                     android:layout_marginLeft="@dimen/large_spacing"
                     android:layout_marginTop="@dimen/large_spacing"
                     android:layout_marginRight="@dimen/large_spacing"
-                    android:fontFamily="@font/open_sans_medium"
+                    android:fontFamily="@font/open_sans_bold"
                     android:text="@string/ConversationActivity_social_group_welcome"
                     android:textColor="@color/text"
-                    android:textSize="@dimen/medium_font_size"
+                    android:textSize="16sp"
                     android:textStyle="bold"
                     />
 

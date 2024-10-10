@@ -20,7 +20,7 @@
         android:fontFamily="@font/open_sans_bold"
         android:text="@string/conversation_context__menu_delete_message"
         android:textColor="@color/text"
-        android:textSize="18sp" />
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/deleteForMeTextView"
@@ -36,7 +36,7 @@
         android:padding="@dimen/normal_padding"
         android:text="@string/delete_message_for_me"
         android:textColor="@color/text"
-        android:textSize="16sp"
+        android:textSize="14sp"
         app:drawableLeftCompat="@drawable/ic_for_me" />
 
     <TextView
@@ -53,7 +53,7 @@
         android:padding="@dimen/normal_padding"
         android:text="@string/delete_message_for_everyone"
         android:textColor="@color/clear_red_color"
-        android:textSize="16sp"
+        android:textSize="14sp"
         app:drawableLeftCompat="@drawable/ic_for_everyone" />
 
     <TextView
@@ -69,7 +69,7 @@
         android:paddingEnd="@dimen/massive_spacing"
         android:paddingBottom="@dimen/medium_spacing"
         android:text="@string/cancel"
-        android:textColor="@color/text"
-        android:textSize="16sp" />
+        android:textColor="@color/negative_green_button_text"
+        android:textSize="14sp" />
 
 </LinearLayout>

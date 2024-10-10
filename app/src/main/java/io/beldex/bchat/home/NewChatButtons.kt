@@ -131,29 +131,19 @@ fun NewChatButtons(
                 onClick = {
                     changeExpandedStatus(!isExpanded)
                 },
-                containerColor = MaterialTheme.appColors.primaryButtonColor,
+                containerColor = MaterialTheme.appColors.floatingActionButtonBackground,
                 modifier = Modifier
-                    .padding(
+                    .size(60.dp).padding(
                         bottom = 8.dp,
                         end = 8.dp
                     )
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_bchat_plus),
+                    painter = painterResource(id = R.drawable.ic_plus),
                     contentDescription = "",
                     tint = Color.White
                 )
             }
-            Icon(
-                if (isExpanded) Icons.Filled.Cancel else Icons.Filled.AddCircle,
-                contentDescription = "",
-                tint = Color.White,
-                modifier = Modifier
-                    .size(24.dp)
-                    .align(Alignment.BottomEnd)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.appColors.primaryButtonColor)
-            )
         }
     }
 }

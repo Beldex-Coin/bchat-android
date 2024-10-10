@@ -95,18 +95,20 @@
     </style>
 
     <style name="Widget.Bchat.Button.Common.ProminentFilled">
-        <item name="android:fontFamily">@font/open_sans_semi_bold</item>
+        <item name="android:fontFamily">@font/open_sans_regular</item>
         <item name="android:background">@drawable/prominent_filled_button_medium_background</item>
         <item name="android:textColor">@color/text</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:drawableTint" tools:ignore="NewApi">?android:textColorPrimary</item>
     </style>
 
     <!--New Line -->
     <style name="Widget.Bchat.Button.Common.ProminentFilledState" parent="Widget.AppCompat.Button">
-        <item name="android:fontFamily">@font/open_sans_semi_bold</item>
+        <item name="android:fontFamily">@font/open_sans_regular</item>
         <item name="android:background">@drawable/button_state</item>
         <item name="android:textColor">@drawable/button_text_state</item>
         <item name="android:elevation">5dp</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="Widget.Bchat.Button.Common.ProminentFilled.Cancel">
@@ -133,7 +135,7 @@
 
     <!--New Line -->
     <style name="Widget.Bchat.Button.Common.ProminentFilled_ClearData_WhiteText">
-        <item name="android:fontFamily">@font/open_sans_semi_bold</item>
+        <item name="android:fontFamily">@font/open_sans_regular</item>
         <item name="android:background">@drawable/prominent_filled_button_medium_cleardata_background</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:drawableTint" tools:ignore="NewApi">?android:textColorPrimary</item>
@@ -171,6 +173,7 @@
         <item name="android:fontFamily">@font/open_sans_semi_bold</item>
         <item name="android:background">@drawable/sync_option_button_background</item>
         <item name="android:textColor">@color/text_white</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:drawableTint" tools:ignore="NewApi">?android:textColorPrimary</item>
     </style>
 
@@ -215,7 +218,7 @@
     </style>
 
     <style name="Widget.Bchat.Button.Common.Disabled">
-        <item name="android:fontFamily">@font/open_sans_semi_bold</item>
+        <item name="android:fontFamily">@font/open_sans_regular</item>
         <item name="android:background">@drawable/disabled_button_background</item>
         <item name="android:textColor">@color/disable_button_text_color</item>
         <item name="android:elevation">5dp</item>
@@ -326,7 +329,7 @@
     </style>
 
     <style name="SeedBchatEditText">
-        <item name="android:fontFamily">@font/open_sans_medium</item>
+        <item name="android:fontFamily">@font/open_sans_regular</item>
         <item name="android:background">@drawable/bchat_edit_text_view_background</item>
         <item name="android:paddingLeft">@dimen/medium_spacing</item>
         <item name="android:paddingTop">@dimen/medium_spacing</item>
@@ -338,6 +341,7 @@
         <item name="android:textAlignment">viewStart</item>
         <item name="android:maxLines">1</item>
     </style>
+
 
     <style name="BchatSearchEditText">
         <item name="android:fontFamily">@font/open_sans_medium</item>
@@ -909,22 +913,46 @@
 
     <style name="PrimaryContainedButton" parent="Widget.MaterialComponents.Button">
         <item name="backgroundTint">@color/button_green</item>
-        <item name="cornerRadius">48dp</item>
+        <item name="cornerRadius">12dp</item>
         <item name="android:padding">12dp</item>
         <item name="android:textAllCaps">false</item>
-        <item name="android:fontFamily">@font/open_sans_bold</item>
+        <item name="android:fontFamily">@font/open_sans_semi_bold</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:minHeight">64dp</item>
     </style>
 
-    <style name="ContainedIconButton" parent="Widget.MaterialComponents.Button.Icon">
-        <item name="backgroundTint">@color/disable_button_background_color</item>
-        <item name="cornerRadius">48dp</item>
+    <style name="PrimaryContainedPositiveButton" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/button_green</item>
+        <item name="cornerRadius">12dp</item>
         <item name="android:padding">12dp</item>
         <item name="android:textAllCaps">false</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:fontFamily">@font/open_sans_bold</item>
+        <item name="android:fontFamily">@font/open_sans_regular</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:minHeight">64dp</item>
+    </style>
+
+    <style name="PrimaryContainedIconButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="backgroundTint">@color/negative_green_button</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:fontFamily">@font/open_sans_regular</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/icon_tint</item>
+        <item name="android:minHeight">64dp</item>
+        <item name="strokeColor">@color/negative_green_button_border</item>
+        <item name="strokeWidth">0.5dp</item>
+    </style>
+
+    <style name="ContainedIconButton" parent="Widget.MaterialComponents.Button.Icon">
+        <item name="backgroundTint">@color/disable_button_background_color</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/open_sans_regular</item>
         <item name="android:textColor">@color/version_color</item>
         <item name="android:minHeight">64dp</item>
     </style>
@@ -932,11 +960,11 @@
     <style name="OutlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="backgroundTint">@color/outlined_button_tint</item>
         <item name="strokeColor">@color/outlined_button_stroke</item>
-        <item name="cornerRadius">48dp</item>
+        <item name="cornerRadius">12dp</item>
         <item name="android:padding">12dp</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textSize">16sp</item>
-        <item name="android:fontFamily">@font/open_sans_bold</item>
+        <item name="android:fontFamily">@font/open_sans_semi_bold</item>
         <item name="android:textColor">@color/outlined_button_text_color</item>
         <item name="android:minHeight">64dp</item>
     </style>
@@ -969,13 +997,16 @@
     </style>
 
     <style name="Widget.Bchat.Button.Dialog.Cancel">
-        <item name="android:fontFamily">@font/open_sans_semi_bold</item>
-        <item name="android:background">@drawable/cancel_button_background_shape</item>
+        <item name="android:fontFamily">@font/open_sans_regular</item>
+        <item name="android:textSize">14sp</item>
+        <item name="text_color">@color/negative_green_button_text</item>
         <item name="android:shadowColor">@color/black</item>
+        <item name="android:background">@drawable/cancel_button_background_shape</item>
     </style>
 
     <style name="Widget.Bchat.Button.Dialog.Enable">
-        <item name="android:fontFamily">@font/open_sans_semi_bold</item>
+        <item name="android:fontFamily">@font/open_sans_regular</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:background">@drawable/bchat_dialog_positive_button_shape</item>
         <item name="text_color">@color/white</item>
         <item name="android:shadowColor">@color/black</item>
@@ -986,7 +1017,7 @@
     </style>
 
     <style name="ConversationLengthBchatEditText">
-        <item name="android:fontFamily">@font/open_sans_medium</item>
+        <item name="android:fontFamily">@font/open_sans_regular</item>
         <item name="android:background">@drawable/conversation_length_text_field_backgroun_shape</item>
         <item name="android:paddingLeft">@dimen/medium_spacing</item>
         <item name="android:paddingTop">@dimen/medium_spacing</item>

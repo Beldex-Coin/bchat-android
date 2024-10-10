@@ -16,15 +16,15 @@
             android:fontFamily="@font/open_sans_bold"
             android:text="@string/sync_option"
             android:textAlignment="center"
-            android:textSize="@dimen/medium_font_size"
+            android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="@color/button_green"/>
+            android:textColor="@color/text"/>
 
         <Button
             android:id="@+id/reConnectButton_Alert"
             style="@style/Widget.Bchat.Button.Common.Sync"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_width="178dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="50dp"
             android:layout_marginStart="50dp"
@@ -39,8 +39,8 @@
         <Button
             android:id="@+id/rescanButton_Alert"
             style="@style/Widget.Bchat.Button.Common.Sync"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_width="178dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="50dp"
             android:layout_marginStart="50dp"

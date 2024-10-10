@@ -25,7 +25,7 @@
         android:textStyle="bold"
         android:text="@string/initiating_transaction"
         android:textAlignment="center"
-        android:textColor="@color/button_green"
+        android:textColor="@color/text_green"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"
         android:textSize="16sp"/>
@@ -34,13 +34,13 @@
         android:id="@+id/transactionProgressText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/open_sans_medium"
+        android:fontFamily="@font/open_sans_regular"
         android:textAlignment="center"
         android:textColor="@color/text"
         android:layout_marginTop="15dp"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"
         android:layout_marginBottom="15dp"
-        android:textSize="@dimen/very_small_font_size"/>
+        android:textSize="@dimen/small_font_size"/>
 
 </LinearLayout>

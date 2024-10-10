@@ -136,7 +136,7 @@ fun WalletDashBoardScreen(
     }
 
     var progressBarColor by remember {
-        mutableIntStateOf(R.color.green_color)
+        mutableIntStateOf(R.color.button_green)
     }
 
     viewModels.progressBarColor.observe(lifecycleOwner) {
@@ -952,7 +952,7 @@ fun WalletDashBoardScreen(
                                                 transactionAmountTextColor =
                                                     R.color.tx_pending
                                             } else if (infoItems.direction === TransactionInfo.Direction.Direction_In) {
-                                                transactionAmountTextColor = R.color.tx_plus
+                                                transactionAmountTextColor = R.color.text_green
                                             } else {
                                                 transactionAmountTextColor =
                                                     R.color.wallet_send_button
@@ -1144,7 +1144,7 @@ fun WalletDashBoardScreen(
                                         R.color.tx_pending
                                 } else if (transactionInfoItem!!.direction === TransactionInfo.Direction.Direction_In) {
                                     transactionAmountTextColor =
-                                        R.color.tx_plus
+                                        R.color.text_green
                                     if (!transactionInfoItem!!.isConfirmed) {
                                         val confirmations =
                                             transactionInfoItem!!.confirmations.toInt()
@@ -1565,7 +1565,7 @@ fun WalletDashBoardScreen(
                                     )
 
                                     Text(
-                                        text = "Wallet Syncing..",
+                                        text = stringResource(id=R.string.wallet_syncing_alert_title),
                                         style = MaterialTheme.typography.titleMedium.copy(
                                             color = MaterialTheme.appColors.editTextHint,
                                             fontSize = 18.sp

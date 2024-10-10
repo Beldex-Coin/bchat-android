@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
@@ -31,6 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.util.UiMode
@@ -85,7 +87,9 @@ fun RecoverySeedView(
         Text(
             text = stringResource(id = R.string.copy_your_recovery_seed),
             style = MaterialTheme.typography.titleMedium.copy(
-                color = MaterialTheme.appColors.seedInfoTextColor
+                color = MaterialTheme.appColors.seedInfoTextColor,
+                fontWeight = FontWeight(600),
+                fontSize = 18.sp
             ),
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally)
@@ -100,7 +104,9 @@ fun RecoverySeedView(
             Text(
                 text = seed,
                 style = MaterialTheme.typography.bodyMedium.copy(
-                    color = MaterialTheme.appColors.primaryButtonColor
+                    color = MaterialTheme.appColors.primaryButtonColor,
+                    fontWeight = FontWeight(400),
+                    fontSize = 14.sp
                 ),
                 modifier = Modifier
                     .padding(16.dp)
@@ -117,7 +123,9 @@ fun RecoverySeedView(
             Text(
                 text = stringResource(id = R.string.copy),
                 style = MaterialTheme.typography.titleMedium.copy(
-                    color = Color.White
+                    color = Color.White,
+                    fontWeight = FontWeight(400),
+                    fontSize = 16.sp
                 ),
                 modifier = Modifier
                     .padding(8.dp)
@@ -183,7 +191,9 @@ private fun RecoveryWarningView(
                 Text(
                     text = stringResource(id = R.string.important),
                     style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight(800)
+                        fontWeight = FontWeight(700),
+                        fontSize = 16.sp,
+                        color = MaterialTheme.appColors.secondaryContentColor
                     )
                 )
 
@@ -191,13 +201,19 @@ private fun RecoveryWarningView(
 
                 Text(
                     text = stringResource(id = R.string.never_share_your_seed_with_anyone),
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        color = MaterialTheme.appColors.editTextColor,
+                        fontWeight = FontWeight(700),
+                        fontSize = 16.sp
+                    )
                 )
 
                 Text(
                     text = stringResource(id = R.string.seed_permission_important_description),
                     style = MaterialTheme.typography.labelMedium.copy(
-                        color = MaterialTheme.appColors.restoreDescColor
+                        color = MaterialTheme.appColors.restoreDescColor,
+                        fontWeight = FontWeight(400),
+                        fontSize = 12.sp
                     ),
                     textAlign = TextAlign.Center
                 )
@@ -206,7 +222,11 @@ private fun RecoveryWarningView(
 
                 Text(
                     text = stringResource(id = R.string.seed_permission_important_confirmTitle),
-                    style = MaterialTheme.typography.titleSmall,
+                    style = MaterialTheme.typography.titleSmall.copy(
+                        color = MaterialTheme.appColors.editTextColor,
+                        fontWeight = FontWeight(600),
+                        fontSize = 12.sp
+                    ),
                     textAlign = TextAlign.Center
                 )
 
@@ -214,6 +234,7 @@ private fun RecoveryWarningView(
 
                 Button(
                     onClick = verifyPin,
+                    shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.appColors.primaryButtonColor
                     )
@@ -221,7 +242,9 @@ private fun RecoveryWarningView(
                     Text(
                         text = stringResource(id = R.string.seed_permission_important_confirmButton),
                         style = MaterialTheme.typography.bodyMedium.copy(
-                            color = Color.White
+                            color = Color.White,
+                            fontWeight = FontWeight(400),
+                            fontSize = 14.sp
                         )
                     )
                 }

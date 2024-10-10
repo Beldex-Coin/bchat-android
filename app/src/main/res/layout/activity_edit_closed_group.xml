@@ -189,7 +189,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/apply_changes"
-            style="@style/PrimaryContainedButton"/>
+            style="@style/PrimaryContainedPositiveButton"/>
         </LinearLayout>
 
     </LinearLayout>

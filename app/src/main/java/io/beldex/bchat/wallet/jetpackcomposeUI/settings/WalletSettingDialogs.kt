@@ -84,9 +84,9 @@ fun DisplayBalanceDialog(onDismiss : () -> Unit, onClick : (Int?) -> Unit) {
                 Row(modifier = Modifier.padding(bottom = 20.dp)){
                     Text(text=stringResource(id=R.string.display_balance_as),
                         style=MaterialTheme.typography.titleMedium.copy(
-                            fontSize=20.sp,
+                            fontSize=16.sp,
                             fontWeight=FontWeight(700),
-                            color=MaterialTheme.appColors.primaryButtonColor),
+                            color=MaterialTheme.appColors.secondaryContentColor),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.weight(1f).align(Alignment.CenterVertically))
 
@@ -114,7 +114,7 @@ fun DisplayBalanceDialog(onDismiss : () -> Unit, onClick : (Int?) -> Unit) {
                                         containerColor=MaterialTheme.appColors.changeLogBackground
                                 ),
                                 border=BorderStroke(
-                                        width=2.dp,
+                                        width=1.dp,
                                         color=if (index == selectedItemIndex) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.textFiledBorderColor
                                 ),
                                 elevation=CardDefaults.cardElevation(
@@ -138,7 +138,7 @@ fun DisplayBalanceDialog(onDismiss : () -> Unit, onClick : (Int?) -> Unit) {
                             ) {
 
                                 Text(text=item, style=MaterialTheme.typography.titleMedium.copy(
-                                        color= if (index == selectedItemIndex) MaterialTheme.appColors.secondaryContentColor else MaterialTheme.appColors.secondaryTextColor, fontSize=18.sp, fontWeight=FontWeight(600)
+                                        color= if (index == selectedItemIndex) MaterialTheme.appColors.secondaryContentColor else MaterialTheme.appColors.secondaryTextColor, fontSize=16.sp, fontWeight=FontWeight(400)
                                 ), modifier=Modifier.padding(13.dp))
                             }
                         }
@@ -177,9 +177,9 @@ fun DecimalDialog(onDismiss : () -> Unit, onClick : (String?) -> Unit) {
                 Row(modifier = Modifier.padding(bottom = 20.dp)){
                     Text(text=stringResource(id=R.string.decimals),
                         style=MaterialTheme.typography.titleMedium.copy(
-                            fontSize=20.sp,
+                            fontSize=16.sp,
                             fontWeight=FontWeight(700),
-                            color=MaterialTheme.appColors.primaryButtonColor),
+                            color=MaterialTheme.appColors.secondaryContentColor),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.weight(1f).align(Alignment.CenterVertically))
 
@@ -207,7 +207,7 @@ fun DecimalDialog(onDismiss : () -> Unit, onClick : (String?) -> Unit) {
                                         containerColor=MaterialTheme.appColors.changeLogBackground
                                 ),
                                 border=BorderStroke(
-                                        width=2.dp,
+                                        width=1.dp,
                                         color=if (item == selectedItemIndex) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.textFiledBorderColor
                                 ),
                                 elevation=CardDefaults.cardElevation(
@@ -231,7 +231,7 @@ fun DecimalDialog(onDismiss : () -> Unit, onClick : (String?) -> Unit) {
                             ) {
 
                                 Text(text=item, style=MaterialTheme.typography.titleMedium.copy(
-                                        color=if (item == selectedItemIndex) MaterialTheme.appColors.secondaryContentColor else MaterialTheme.appColors.secondaryTextColor, fontSize=18.sp, fontWeight=FontWeight(600)
+                                        color=if (item == selectedItemIndex) MaterialTheme.appColors.secondaryContentColor else MaterialTheme.appColors.secondaryTextColor, fontSize=16.sp, fontWeight=FontWeight(400)
                                 ), modifier=Modifier.padding(13.dp))
                             }
                         }
@@ -319,9 +319,9 @@ fun CurrencyDialog(onDismiss : () -> Unit, onClick : (String?) -> Unit) {
                 Row(modifier = Modifier.padding(bottom = 20.dp)){
                     Text(text=stringResource(id=R.string.currency),
                         style=MaterialTheme.typography.titleMedium.copy(
-                            fontSize=20.sp,
+                            fontSize=16.sp,
                             fontWeight=FontWeight(700),
-                            color=MaterialTheme.appColors.primaryButtonColor),
+                            color=MaterialTheme.appColors.secondaryContentColor),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.weight(1f).align(Alignment.CenterVertically))
 
@@ -395,8 +395,8 @@ fun CurrencyDialog(onDismiss : () -> Unit, onClick : (String?) -> Unit) {
 
                                 Text(text=item, style=MaterialTheme.typography.titleMedium.copy(
                                         color=if (selectedItemIndex == item) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.secondaryTextColor,
-                                        fontSize=16.sp,
-                                        fontWeight=FontWeight(600),
+                                        fontSize= if (selectedItemIndex == item) 18.sp else 16.sp,
+                                        fontWeight= if (selectedItemIndex == item) FontWeight(700) else FontWeight(400),
                                         textAlign=TextAlign.Center
                                 ), modifier=Modifier.padding(vertical=20.dp, horizontal=0.dp))
 
@@ -519,9 +519,9 @@ fun FeePriorityDialog(onDismiss : () -> Unit, onClick : (Int?) -> Unit) {
                 Row(modifier = Modifier.padding(bottom = 20.dp)){
                     Text(text=stringResource(id=R.string.fee_priority),
                         style=MaterialTheme.typography.titleMedium.copy(
-                            fontSize=20.sp,
+                            fontSize=16.sp,
                             fontWeight=FontWeight(700),
-                            color=MaterialTheme.appColors.primaryButtonColor),
+                            color=MaterialTheme.appColors.secondaryContentColor),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.weight(1f).align(Alignment.CenterVertically))
 
@@ -549,7 +549,7 @@ fun FeePriorityDialog(onDismiss : () -> Unit, onClick : (Int?) -> Unit) {
                                         containerColor=MaterialTheme.appColors.changeLogBackground
                                 ),
                                 border=BorderStroke(
-                                        width=2.dp,
+                                        width=1.dp,
                                         color=if (index == selectedItemIndex) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.textFiledBorderColor
                                 ),
                                 elevation=CardDefaults.cardElevation(
@@ -573,7 +573,7 @@ fun FeePriorityDialog(onDismiss : () -> Unit, onClick : (Int?) -> Unit) {
                             ) {
 
                                 Text(text=item, style=MaterialTheme.typography.titleMedium.copy(
-                                        color=if (index == selectedItemIndex) MaterialTheme.appColors.secondaryContentColor else MaterialTheme.appColors.secondaryTextColor, fontSize=18.sp, fontWeight=FontWeight(600)
+                                        color=if (index == selectedItemIndex) MaterialTheme.appColors.secondaryContentColor else MaterialTheme.appColors.secondaryTextColor, fontSize=16.sp, fontWeight=FontWeight(400)
                                 ), modifier=Modifier.padding(13.dp))
                             }
                         }

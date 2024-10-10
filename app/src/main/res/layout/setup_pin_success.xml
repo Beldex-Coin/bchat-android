@@ -36,8 +36,9 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="10dp"
-            android:textColor="@color/button_green"
+            android:textColor="@color/text_green"
             android:gravity="center"
+            android:textSize="16sp"
             android:textAlignment="center" />
 
         <Button

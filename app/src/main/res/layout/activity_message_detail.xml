@@ -116,7 +116,7 @@
                 android:id="@+id/resend_button"
                 android:layout_width="150dp"
                 android:layout_height="52dp"
-                style="@style/Widget.Bchat.Button.Common.ProminentFilled_AnswerCall"
+                style="@style/Widget.Bchat.Button.Dialog.Enable"
                 android:text="@string/message_recipients_list_item__resend" />
 
         </LinearLayout>

@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.compose_utils.BChatTheme
@@ -150,7 +151,9 @@ fun AppLockScreen() {
                 Text(
                     text = stringResource(id = R.string.change_password),
                     style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold
+                        color = MaterialTheme.appColors.editTextColor,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 14.sp
                     )
                 )
             }
@@ -189,14 +192,18 @@ fun AppLockScreen() {
                     Text(
                         text = stringResource(id = R.string.screenlock_inactivity_timeout),
                         style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold
+                            color = MaterialTheme.appColors.editTextColor,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 14.sp
                         )
                     )
 
                     Text(
                         text = selectedLockOptions,
                         style = MaterialTheme.typography.bodySmall.copy(
-                            color = MaterialTheme.appColors.lockTimerColor
+                            color = MaterialTheme.appColors.lockTimerColor,
+                            fontWeight = FontWeight(400),
+                            fontSize = 14.sp
                         )
                     )
                 }

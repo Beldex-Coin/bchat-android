@@ -139,15 +139,6 @@ fun JoinSocialGroupScreen(
                 .fillMaxSize()
                 .padding(16.dp)
     ) {
-        Text(
-            text = stringResource(R.string.activity_join_public_chat_title),
-            style = MaterialTheme.typography.titleMedium.copy(
-                fontSize = 20.sp,
-                fontWeight = FontWeight(800)
-            )
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedCard(
             colors = CardDefaults.cardColors(
@@ -156,6 +147,18 @@ fun JoinSocialGroupScreen(
             modifier = Modifier
                 .fillMaxWidth()
         ) {
+            Text(
+                text = stringResource(R.string.activity_join_public_chat_title),
+                style = MaterialTheme.typography.titleMedium.copy(
+                    color = MaterialTheme.appColors.secondaryTextColor,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight(400)
+                ),
+                modifier =Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+            )
+
             TextField(
                     value=uiState.groupUrl,
                     placeholder={
@@ -201,7 +204,7 @@ fun JoinSocialGroupScreen(
                 onClick = {
                     joinPublicChatIfPossible(uiState.groupUrl, lifecycleOwner, context)
                 },
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(12.dp),
                 enabled = uiState.groupUrl.isNotEmpty(),
                 disabledContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
                 modifier =Modifier
@@ -217,7 +220,8 @@ fun JoinSocialGroupScreen(
                     modifier = Modifier
                         .padding(8.dp),
                     style = BChatTypography.titleMedium.copy(
-                        fontWeight = FontWeight.Medium,
+                        fontWeight = FontWeight(400),
+                        fontSize = 16.sp,
                         color = if (uiState.groupUrl.isNotEmpty()) {
                             Color.White
                         } else {
@@ -229,18 +233,15 @@ fun JoinSocialGroupScreen(
 
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         Text(
             text = stringResource(id = R.string.or_join),
             style = MaterialTheme.typography.titleMedium.copy(
-                color = MaterialTheme.appColors.editTextColor,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
+                color = MaterialTheme.appColors.secondaryTextColor,
+                fontSize = 14.sp,
+                fontWeight = FontWeight(400)
+            ),
+            modifier = Modifier.padding(vertical = 16.dp)
         )
-
-        Spacer(modifier = Modifier.height(16.dp))
 
         if (groups.isEmpty()) {
             LottieAnimation(

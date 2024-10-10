@@ -35,7 +35,7 @@
         android:paddingTop="6dip" >
 
         <com.google.android.material.textview.MaterialTextView
-            android:fontFamily="@font/open_sans_medium"
+            android:fontFamily="@font/open_sans_regular"
             android:id="@android:id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -43,10 +43,11 @@
             android:fadingEdge="horizontal"
             android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="16sp"/>
+            android:textColor="@color/setting_icon_tint"
+            android:textSize="14sp"/>
 
         <com.google.android.material.textview.MaterialTextView
-            android:fontFamily="@font/open_sans_medium"
+            android:fontFamily="@font/open_sans_semi_bold"
             android:id="@android:id/summary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -54,8 +55,9 @@
             android:layout_below="@android:id/title"
             android:maxLines="4"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="?android:attr/textColorSecondary"
-            android:textSize="14sp"/>
+            android:textColor="#ACACAC"
+            android:textSize="12sp"
+            android:layout_marginTop="5dp"/>
     </RelativeLayout>
 
     <!-- Preference should place its actual preference widget here. -->

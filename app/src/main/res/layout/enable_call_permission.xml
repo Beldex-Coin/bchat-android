@@ -31,9 +31,8 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/open_sans_bold"
         android:text="@string/dialog_voice_video_title"
-        android:textColor="@color/button_green"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textColor="@color/text_green"
+        android:textSize="16sp"/>
 
     <TextView
         android:id="@+id/description"
@@ -56,10 +55,12 @@
 
         <Button
             android:id="@+id/callPermissionCancelButton"
-            style="@style/Widget.Bchat.Button.Dialog.Ok"
+            style="@style/Widget.Bchat.Button.Dialog.Cancel"
             android:layout_width="140dp"
             android:layout_height="wrap_content"
-            android:text="@string/cancel" />
+            android:text="@string/cancel"
+            android:textColor="@color/negative_green_button_text"
+            android:textSize="14sp"/>
 
         <Button
             android:id="@+id/callPermissionEnableButton"

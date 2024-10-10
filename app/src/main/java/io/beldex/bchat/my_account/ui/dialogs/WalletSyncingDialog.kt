@@ -1,5 +1,6 @@
 package io.beldex.bchat.my_account.ui.dialogs
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -23,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import io.beldex.bchat.compose_utils.DialogContainer
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.R
@@ -57,8 +60,9 @@ fun WalletSyncingDialog(
             Text(
                     text=stringResource(id=R.string.wallet_syncing_alert_title),
                     style=MaterialTheme.typography.titleMedium.copy(
-                            fontWeight=FontWeight(800),
-                            color=MaterialTheme.appColors.primaryButtonColor
+                        color=MaterialTheme.appColors.primaryButtonColor,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight(700),
                     )
             )
 
@@ -66,7 +70,11 @@ fun WalletSyncingDialog(
 
             Text(
                     text=stringResource(id=R.string.wallet_syncing_alert_message),
-                    style=MaterialTheme.typography.bodySmall,
+                    style=MaterialTheme.typography.bodySmall.copy(
+                        color = MaterialTheme.appColors.editTextColor,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight(400)
+                    ),
                     textAlign=TextAlign.Center,
             )
 
@@ -77,16 +85,22 @@ fun WalletSyncingDialog(
                             .fillMaxWidth()
             ) {
                 Button(
-                        onClick=onDismissRequest,
-                        colors=ButtonDefaults.buttonColors(
-                                containerColor=MaterialTheme.appColors.secondaryButtonColor
-                        ),
-                        modifier=Modifier
-                                .weight(1f)
+                    onClick=onDismissRequest,
+                    shape = RoundedCornerShape(12.dp),
+                    colors=ButtonDefaults.buttonColors(
+                            containerColor=MaterialTheme.appColors.negativeGreenButton
+                    ),
+                    modifier=Modifier
+                            .weight(1f),
+                    border = BorderStroke(width = 0.5.dp, color = MaterialTheme.appColors.negativeGreenButtonBorder)
                 ) {
                     Text(
                             text=stringResource(id=R.string.cancel),
-                            style=MaterialTheme.typography.bodyMedium
+                            style=MaterialTheme.typography.bodyMedium.copy(
+                                color = MaterialTheme.appColors.negativeGreenButtonText,
+                                fontWeight = FontWeight(400),
+                                fontSize = 14.sp
+                            )
                     )
                 }
 
@@ -103,7 +117,9 @@ fun WalletSyncingDialog(
                     Text(
                             text=stringResource(id=R.string.exit),
                             style=MaterialTheme.typography.bodyMedium.copy(
-                                    color=Color.White
+                                color=Color.White,
+                                fontWeight = FontWeight(400),
+                                fontSize = 14.sp,
                             )
                     )
                 }

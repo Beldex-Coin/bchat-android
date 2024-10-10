@@ -95,10 +95,10 @@
     <string name="ConversationActivity_join_open_group" translatable="false">Join %s</string>
     <string name="ConversationActivity_join_open_group_confirmation_message" translatable="false">Are you sure you want to join the <b>%s</b> social group?</string>
 
-    <string name="ConversationActivity_to_send_audio_messages_allow_signal_access_to_your_microphone" translatable="false">BChat needs microphone access to send audio messages.</string>
+    <string name="ConversationActivity_to_send_audio_messages_allow_signal_access_to_your_microphone" translatable="false">Allow Recorder to access voice recording?</string>
     <string name="ConversationActivity_signal_requires_the_microphone_permission_in_order_to_send_audio_messages" translatable="false">BChat needs microphone access to send audio messages, but it has been permanently denied. Please continue to app settings, select \"Permissions\", and enable \"Microphone\".</string>
     <string name="ConversationActivity_to_capture_photos_and_video_allow_signal_access_to_the_camera" translatable="false">BChat needs camera access to take photos and videos.</string>
-    <string name="ConversationActivity_to_send_photos_and_video_allow_signal_access_to_storage" translatable="false">BChat needs storage access to send photos and videos.</string>
+    <string name="ConversationActivity_to_send_photos_and_video_allow_signal_access_to_storage" translatable="false">Allow attachment to access Photos and videos on this Device?</string>
     <string name="ConversationActivity_signal_needs_the_camera_permission_to_take_photos_or_video" translatable="false">BChat needs camera access to take photos and videos, but it has been permanently denied. Please continue to app settings, select \"Permissions\", and enable \"Camera\".</string>
     <string name="ConversationActivity_signal_needs_camera_permissions_to_take_photos_or_video" translatable="false">BChat needs camera access to take photos or videos.</string>
 
@@ -430,7 +430,6 @@
     <string name="open_group_invitation_view__join_accessibility_description" translatable="false">Join</string>
     <string name="open_group_invitation_view__open_group_invitation" translatable="false">Social group invitation</string>
     <string name="open_group_guidelines_pinned_message" translatable="false">Pinned message</string>
-    <string name="open_group_guidelines_community_guidelines" translatable="false">Community guidelines</string>
     <string name="open_group_guidelines_read" translatable="false">Read</string>
 
     <!-- QuoteView -->
@@ -614,7 +613,7 @@
     <string name="conversation_muted__unmute" translatable="false">Unmute</string>
 
     <!-- conversation_unmuted -->
-    <string name="conversation_unmuted__mute_notifications" translatable="false">Mute notifications</string>
+    <string name="conversation_unmuted__mute_notifications" translatable="false">Mute notification</string>
 
     <!-- conversation -->
     <string name="conversation__menu_edit_group" translatable="false">Edit group</string>
@@ -758,7 +757,7 @@
     <string name="activity_create_closed_group_not_enough_group_members_error" translatable="false">Please pick at least 1 group member</string>
     <string name="activity_create_closed_group_too_many_group_members_error" translatable="false">A secret group cannot have more than 100 members</string>
 
-    <string name="activity_join_public_chat_title" translatable="false">Join Social Group</string>
+    <string name="activity_join_public_chat_title" translatable="false">Join a Social Group</string>
     <string name="activity_join_public_chat_error" translatable="false">Couldn\'t join social group</string>
     <string name="activity_join_public_chat_enter_group_url_tab_title" translatable="false">Social Group URL</string>
     <string name="activity_join_public_chat_scan_qr_code_tab_title" translatable="false">Scan QR Code</string>
@@ -800,7 +799,7 @@
     <string name="dialog_seed_title" translatable="false">Your Recovery Seed</string>
     <string name="dialog_seed_explanation" translatable="false">This is your recovery seed. With it, you can restore or migrate your BChat ID to a new device.</string>
 
-    <string name="dialog_clear_all_data_title" translatable="false">Clear All Data</string>
+    <string name="dialog_clear_all_data_title" translatable="false">Clear all data</string>
     <string name="dialog_clear_all_data_explanation" translatable="false">Are you sure you want to Permanently clear all data from this device?</string>
     <string name="dialog_clear_all_data_network_explanation" translatable="false">Are you sure you want to Permanently clear all data from the Beldex Network?</string>
     <string name="dialog_clear_all_data_local_only" translatable="false">Delete Only</string>
@@ -1020,7 +1019,7 @@
     <string name="accept" translatable="false">Accept</string>
     <string name="decline" translatable="false">Decline</string>
     <string name="message_requests_clear_all" translatable="false">Clear All</string>
-    <string name="message_requests_delete_message" translatable="false">Are you sure you want to delete this message request?</string>
+    <string name="message_requests_delete_message" translatable="false">Are you sure you want to delete this request?</string>
     <string name="message_requests_deleted" translatable="false">Message request deleted</string>
     <string name="message_requests_clear_all_message" translatable="false">Are you sure you want to clear all message requests?</string>
     <string name="message_requests_cleared" translatable="false">Message requests deleted</string>
@@ -1049,7 +1048,7 @@
     <string name="conversation_context__menu_call" translatable="false">Call</string>
     <string name="ConversationActivity_call_title" translatable="false">Call Permissions Required</string>
     <string name="ConversationActivity_call_prompt" translatable="false">You missed a call because you need to enable the \'Voice and video calls\' permission in the privacy Settings.</string>
-    <string name="dialog_voice_video_title" translatable="false">Voice / video calls</string>
+    <string name="dialog_voice_video_title" translatable="false">Voice/Video Calls</string>
     <string name="dialog_voice_video_message" translatable="false">The current implementation of voice / video calls will expose your IP address to the Beldex servers and the calling / called user</string>
     <string name="CallNotificationBuilder_system_notification_title" translatable="false">Notifications</string>
     <string name="CallNotificationBuilder_system_notification_message" translatable="false">Having notifications disabled will prevent you from receiving calls, go to Bchat notification settings?</string>
@@ -1171,6 +1170,7 @@
     <string name="info_ledger_enabled">Ledger enabled, tap for more info.</string>
     <string name="toast_default_nodes" translatable="false">Restoring already in progress…</string>
     <string name="node_wrong_net" translatable="false">Node scanning only for mainnet!</string>
+    <string name="switch_node">Switch Node</string>
     <string name="switch_node_alert" translatable="false"> Are you sure you want to Switch to another node? </string>
     <string name="title_activity_send_new" translatable="false">SendActivityNew</string>
 
@@ -1314,7 +1314,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="unable_to_connect_test_failed" translatable="false">Unable to connect. Test failed.</string>
     <string name="search_by_name_hint" translatable="false">Search by Name...</string>
     <string name="please_add_a_mainnet_node" translatable="false">Please add a mainnet node</string>
-    <string name="wallet_syncing_alert_title" translatable="false">Wallet is syncing...</string>
+    <string name="wallet_syncing_alert_title" translatable="false">Wallet Syncing..</string>
     <string name="wallet_syncing_alert_message" translatable="false">If you close the wallet, synchronization will be paused. Are you sure you want to exit the wallet?</string>
     <string name="your_pin_has_been_changed_successfully" translatable="false">Your PIN has been changed successfully!</string>
     <string name="transaction_details_title" translatable="false">Transaction Details</string>
@@ -1334,7 +1334,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="CallNotificationBuilder_screen_on" translatable="false">Video Resumed</string>
     <string name="activity_conversation_block_user" translatable="false">Block User</string>
     <string name="message_requests_decline_messages" translatable="false">Are you sure you want to decline this message request?</string>
-    <string name="message_requests_block_message" translatable="false">Are you sure you want to block this message request?</string>
+    <string name="message_requests_block_message" translatable="false">Are you sure you want to block this request?</string>
 
     <string name="Unblock_dialog__title_single">Unblock %s</string>
     <string name="Unblock_dialog__title_multiple">Unblock Users</string>
@@ -1343,7 +1343,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
         <item quantity="one">and %d other</item>
         <item quantity="other">and %d others</item>
     </plurals>
-    <string name="unblock_selected" translatable="false">Unblock Selected</string>
+    <string name="unblock_selected" translatable="false">Unblock selected</string>
     <string name="call_alert" translatable="false">You\'re already on call</string>
     <string name="please_connect_to_other_node" translatable="false">Please connect to other node</string>
     <string name="please_try_after_some_time" translatable="false">Please try after some time</string>
@@ -1390,7 +1390,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="invalid_qr_code" translatable="false">Invalid QR Code</string>
     <string name="invitation_msg">Hey, I\'ve been using BChat to chat securely and confidentially. Come join me! Download it at https://play.google.com/store/apps/details?id=io.beldex.bchat. My Chat ID is %s !</string>
     <string name="id_format">ID: %s</string>
-    <string name="bchat" translatable="false">BChat</string>
+    <string name="bchat" translatable="false">Chats</string>
     <string name="activity_settings_profile_picture" translatable="false">Profile Picture</string>
     <string name="activity_settings_upload" translatable="false">Upload</string>
     <string name="activity_settings_remove" translatable="false">Remove Picture</string>
@@ -1416,7 +1416,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="enable_wallet" translatable="false">Enable Wallet</string>
     <string name="validation_for_empty_node_host" translatable="false">Please enter a node address</string>
     <string name="dialog_clear_all_data_clear_device_only_title" translatable="false">Clear Data </string>
-    <string name="dialog_clear_all_data_clear_device_and_network_title" translatable="false">Delete Entire Account</string>
+    <string name="dialog_clear_all_data_clear_device_and_network_title" translatable="false">Delete entire account</string>
     <string name="dialog_clear_all_data_clear_device_only_subtitle" translatable="false">Clear only in device</string>
     <string name="dialog_clear_all_data_clear_device_and_network_subtitle" translatable="false">Delete account from Network</string>
     <string name="back">Back</string>
@@ -1486,6 +1486,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="delete_data_on_this_device" translatable="false">Delete data on this device</string>
     <string name="delete_data_from_the_network" translatable="false">Delete data from the network</string>
     <string name="add" translatable="false">Add</string>
+    <string name="refresh_nodes" translatable="false">Refresh nodes</string>
     <string name="refresh_node_alert" translatable="false">Are your sure you want to refresh the nodes?</string>
     <string name="by_date" translatable="false">By date</string>
     <string name="no_addresses" translatable="false">No Addresses!</string>
@@ -1499,7 +1500,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="unblock_contact">Unblock Contact</string>
     <string name="unblock_user_confirmation">Are you sure you want to Unblock this contact?</string>
     <string name="block_user_confirmation">Are you sure you want to Block this contact?</string>
-    <string name="block_contact">Block Contact</string>
+    <string name="block_contact">Block contact</string>
     <string name="unblock">Unblock</string>
     <string name="blocked_user_message">You Blocked Person! Click here to Unblock.</string>
     <string name="password_mismatch">Both passwords should be same.</string>
@@ -1552,4 +1553,15 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="old_new_pin_same">New PIN should not be same as old PIN.</string>
     <string name="dialog_title_full_screen_intent" translatable="false">Full Screen Notification</string>
     <string name="dialog_content_full_screen_intent" translatable="false">Allow BChat to show full screen notifications for incoming calls and other notifications when the device is locked</string>
+    <string name="archive_chat" translatable="false">Archived Chats</string>
+    <string name="archive_chat_title" translatable="false">Archive Chat</string>
+    <string name="un_archive_chat_title" translatable="false">Unarchive Chat</string>
+    <string name="archive_chat_content" translatable="false">Chats will automatically Unarchived when new messages are received.</string>
+    <string name="un_archive_chat" translatable="false">Un Archived Chats</string>
+    <string name="block_request">Block Request?</string>
+    <string name="delete_request">Delete Request?</string>
+    <string name="call_missed_description">Call Missed from "%1$s" because you needed to enable the ‘Voice and video calls’ permission in the privacy settings.</string>
+    <string name="mute_notification">Mute Notification</string>
+    <string name="disappearing_messages">Disappearing Messages</string>
+    <string name="Permissions_record_permission_required" translatable="false">Record Permission Required!</string>
 </resources>

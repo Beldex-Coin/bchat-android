@@ -203,7 +203,7 @@ fun LinkYourBNSDialog(
                 modifier = if(showErrorMessage) Modifier
                         .fillMaxWidth()
                         .padding(bottom=15.dp)
-                        .border(1.dp, color=Color.Red, shape=RoundedCornerShape(16.dp)) else Modifier
+                        .border(1.dp, color= MaterialTheme.appColors.negativeRedButtonBorder, shape=RoundedCornerShape(16.dp)) else Modifier
                         .fillMaxWidth()
                         .padding(bottom=15.dp),
                 shape = RoundedCornerShape(16.dp),
@@ -229,11 +229,11 @@ fun LinkYourBNSDialog(
                 OutlinedButton(
                     onClick = { onDismissRequest(false) },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.contactCardBackground,
+                        containerColor = MaterialTheme.appColors.negativeGreenButton,
                     ),
                     border = BorderStroke(
-                        width = 1.dp,
-                        color = MaterialTheme.appColors.contactCardBackground
+                        width = 0.5.dp,
+                        color = MaterialTheme.appColors.negativeGreenButtonBorder
                     ),
                     contentPadding = PaddingValues(
                         vertical = 16.dp
@@ -243,8 +243,9 @@ fun LinkYourBNSDialog(
                     Text(
                         text = stringResource(R.string.cancel),
                         style = MaterialTheme.typography.titleMedium.copy(
-                            color = MaterialTheme.appColors.linkBnsCancelButtonContent,
-                            fontWeight = FontWeight(700)
+                            color = MaterialTheme.appColors.negativeGreenButtonText,
+                            fontWeight = FontWeight(400),
+                            fontSize = 14.sp
                         ),
                         modifier = Modifier
                             .padding(
@@ -284,7 +285,8 @@ fun LinkYourBNSDialog(
                         text = if(isVerified) stringResource(id = R.string.verified) else stringResource(R.string.verify),
                         style = MaterialTheme.typography.titleMedium.copy(
                             color = if (verifyBNSName(bnsName)) if(isVerified) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.secondaryContentColor else MaterialTheme.appColors.linkBnsDisabledButtonContent,
-                            fontWeight = FontWeight(700)
+                            fontWeight = FontWeight(400),
+                            fontSize = 14.sp
                         ),
                         modifier = Modifier
                             .padding(
@@ -321,7 +323,8 @@ fun LinkYourBNSDialog(
                         } else {
                             MaterialTheme.appColors.linkBnsDisabledButtonContent
                         },
-                        fontWeight = FontWeight(600)
+                        fontWeight = FontWeight(400),
+                        fontSize = 16.sp
                     ),
                     modifier = Modifier
                         .padding(8.dp)

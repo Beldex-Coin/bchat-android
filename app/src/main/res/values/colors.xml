@@ -94,7 +94,9 @@
 
     <color name="default_background_start">#121212</color>
     <color name="default_background_end">#171717</color>
-    <color name="button_green">#00BD40</color>
+    <color name="button_green">#078720</color>
+    <color name="text_green">#078720</color>
+    <color name="text_old_green">#00BD40</color>
     <color name="text_white">#FFFFFF</color>
     <color name="sign_in_black">#3F3E4A</color>
     <color name="card_color">#1C1C26</color>
@@ -121,7 +123,7 @@
     <color name="home_search_icon_and_hint">#B9B9B9</color>
     <color name="empty_state_container_text">#646474</color>
     <color name="conversation_list_divider_shape">#2C2C3C</color>
-    <color name="rounded_indicator">#00B705</color>
+    <color name="rounded_indicator">@color/button_green</color>
     <color name="rounded_indicator_border">#19191B</color>
     <color name="document_text">#000000</color>
     <color name="copy_and_share">@color/card_color</color>
@@ -132,14 +134,14 @@
     <color name="keyboard_background">#131319</color>
     <color name="button_background">#2F2F3C</color>
     <color name="button_text">#FFFFFF</color>
-    <color name="send_message_background">#00BD40</color>
+    <color name="send_message_background">@color/button_green</color>
     <color name="chat_id_card_background">#282833</color>
     <color name="chat_id_description_text">#82828D</color>
     <color name="beldex_address">#1782FF</color>
     <color name="start_color">#25253C</color>
     <color name="end_color">#21212C</color>
     <color name="stroke_color">#A6A6B5</color>
-    <color name="chat_user_name_color">#29FD2E</color>
+    <color name="chat_user_name_color">@color/text_green</color>
     <color name="disable_button_text_color">#6C6C78</color>
     <color name="disable_button_background_color">#1C1C26</color>
     <color name="animation_popup_background">#1C1C26</color>
@@ -160,8 +162,8 @@
     <color name="dark_grey_color">#4a636f</color>
     <color name="light_gray_bar">#eaf2f5</color>
     <color name="wallet_card_color">#333343</color>
-    <color name="wallet_send_button">#FC2727</color>
-    <color name="wallet_receive_button">#128D15</color>
+    <color name="wallet_send_button">#FF3E3E</color>
+    <color name="wallet_receive_button">@color/text_green</color>
     <color name="wallet_page_background">#1C1C26</color>
     <color name="wallet_card_transaction_card_background">#24242F</color>
     <color name="wallet_scan_qr_button_background">#333343</color>
@@ -172,7 +174,6 @@
     <color name="orange_color">#FA5544</color>
     <color name="tx_failed">@color/wallet_primary_variant</color>
     <color name="tx_pending">@color/wallet_primary_variant</color>
-    <color name="tx_plus">@color/green_color</color>
     <color name="tx_minus">@color/orange_color</color>
     <color name="wallet_settings_card_background">#353543</color>
     <color name="node_status">#1EC622</color>
@@ -223,7 +224,7 @@
     <color name="outlined_button_tint">#282836</color>
     <color name="outlined_button_text_color">#FFFFFF</color>
     <color name="icon_tint">#FFFFFF</color>
-    <color name="bchat_id_text_color">#00DB09</color>
+    <color name="bchat_id_text_color">@color/button_green</color>
     <color name="conversation_menu_background">#1C1C26</color>
     <color name="overflow_menu_background">#2C2C3B</color>
     <color name="received_message_background">#2C2C3B</color>
@@ -236,11 +237,10 @@
     <color name="wallet_dashboard_card_view">#2B2B3A</color>
     <color name="wallet_scan_background">#EBEBEB</color>
     <color name="wallet_send_background">#2979FB</color>
-    <color name="wallet_receive_background">#00BD40</color>
     <color name="wallet_rescan_background">#333343</color>
     <color name="transaction_history_background">#11111A</color>
     <color name="total_balance">#ACACAC</color>
-    <color name="dialled_call_detail_background">#008D06</color>
+    <color name="dialled_call_detail_background">@color/button_green</color>
     <color name="received_call_detail_background">#1C1C26</color>
     <color name="sent_message_time_color">#EBEBEB</color>
     <color name="received_message_time_color">#A7A7BA</color>
@@ -256,7 +256,7 @@
     <color name="call_bottom_background">#11111A</color>
     <color name="unread_chat_background">#282836</color>
     <color name="missed_call_dialog_background">#111119</color>
-    <color name="enable_call_icon_background">#30303F</color>
+    <color name="enable_call_icon_background">#1C1C26</color>
     <color name="search_background">#282836</color>
     <color name="search_background_border">#4B4B64</color>
     <color name="attachment_container_background">#21212C</color>
@@ -282,7 +282,7 @@
     <color name="incoming_message_bdx_text">#ACACAC</color>
     <color name="outgoing_message_amount_text">#FFFFFF</color>
     <color name="incoming_message_amount_text">#EBEBEB</color>
-    <color name="outgoing_message_card_background">#00A939</color>
+    <color name="outgoing_message_card_background">@color/button_green</color>
     <color name="incoming_message_card_background">#3F3F56</color>
     <color name="incoming_reply_message_icon_background">#1C1C26</color>
     <color name="outgoing_reply_message_icon">#EBEBEB</color>
@@ -303,4 +303,10 @@
     <color name="incoming_message_search_query">#4B4B64</color>
     <color name="community_guidelines_background">#11111A</color>
     <color name="grey">#FF808080 </color>
+    <color name="negative_green_button_border">@color/button_green</color>
+    <color name="negative_green_button">#1A078720</color>
+    <color name="negative_red_button_border">#FFFF3E3E</color>
+    <color name="negative_red_button">#1AFF3E3E</color>
+    <color name="negative_green_button_text">#FFACACAC</color>
+    <color name="ic_self_message">#00BD40</color>
 </resources>

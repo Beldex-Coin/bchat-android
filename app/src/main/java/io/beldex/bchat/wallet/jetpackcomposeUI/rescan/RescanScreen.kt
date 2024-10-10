@@ -256,7 +256,7 @@ fun RescanScreen(
                 Text(
                     errorMessage,
                     style = MaterialTheme.typography.titleLarge.copy(
-                        color = Color.Red,
+                        color = MaterialTheme.appColors.negativeRedButtonBorder,
                         fontWeight = FontWeight.Normal,
                         fontSize = 14.sp,
                     ),modifier = Modifier.padding(bottom = 10.dp)
@@ -299,15 +299,15 @@ fun RescanScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth(),
-                shape = RoundedCornerShape(10.dp),
+                shape = RoundedCornerShape(12.dp),
             ) {
                 Text(
                     text = stringResource(id = R.string.menu_rescan),
                     style = BChatTypography.bodyLarge.copy(
                         color = Color.White,
                         textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp
+                        fontWeight = FontWeight(400),
+                        fontSize = 16.sp
                     ),
                     modifier = Modifier.padding(8.dp)
                 )
@@ -417,8 +417,8 @@ fun MyDatePickerDialog(
             colors = DatePickerDefaults.colors(
                 containerColor = Color(0xff1C1C26),
                 weekdayContentColor = Color(0xff9595AC),
-                todayContentColor = Color(0xff00BD40),
-                selectedDayContainerColor = Color(0xff00BD40),
+                todayContentColor = MaterialTheme.appColors.textGreen,
+                selectedDayContainerColor = MaterialTheme.appColors.textGreen,
                 disabledDayContentColor = Color(0xff9595A0)
             )
         )

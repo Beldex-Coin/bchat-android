@@ -1,6 +1,7 @@
 package io.beldex.bchat.wallet.jetpackcomposeUI.send
 
 import android.content.res.Configuration
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -97,7 +98,7 @@ fun TransactionConfirmPopUp(
                 Column(horizontalAlignment = Alignment.CenterHorizontally, modifier =Modifier
                         .fillMaxWidth()
                         .padding(horizontal=16.dp, vertical=16.dp)) {
-                    Text(text = stringResource(id = R.string.confirm_sending), style = MaterialTheme.typography.titleSmall.copy(fontSize = 16.sp, fontWeight = FontWeight(800), color = MaterialTheme.appColors.primaryButtonColor), textAlign = TextAlign.Center, modifier = Modifier.padding(10.dp))
+                    Text(text = stringResource(id = R.string.confirm_sending), style = MaterialTheme.typography.titleSmall.copy(fontSize = 16.sp, fontWeight = FontWeight(800), color = MaterialTheme.appColors.secondaryContentColor), textAlign = TextAlign.Center, modifier = Modifier.padding(10.dp))
 
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center, modifier =Modifier
                             .padding(horizontal=10.dp)
@@ -149,8 +150,15 @@ fun TransactionConfirmPopUp(
                     Row(modifier =Modifier
                             .fillMaxWidth()
                             .padding(10.dp)) {
-                        Button(onClick = {onDismiss() }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.appColors.secondaryButtonColor), modifier = Modifier.weight(1f)) {
-                            Text(text = stringResource(id = R.string.cancel), style = MaterialTheme.typography.bodyMedium)
+                        Button(onClick = {onDismiss() },
+                            shape = RoundedCornerShape(12.dp),
+                            border = BorderStroke(0.5.dp, MaterialTheme.appColors.negativeGreenButtonBorder),
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.appColors.negativeGreenButton), modifier = Modifier.weight(1f)) {
+                            Text(text = stringResource(id = R.string.cancel), style = MaterialTheme.typography.bodyMedium.copy(
+                                color = Color.White,
+                                fontWeight = FontWeight(400),
+                                fontSize = 14.sp
+                            ))
                         }
 
                         Spacer(modifier = Modifier.width(16.dp))
@@ -161,8 +169,11 @@ fun TransactionConfirmPopUp(
                                 onClick()
                             }
                         }, enabled = isButtonEnabled,
-                                colors=ButtonDefaults.buttonColors(containerColor=MaterialTheme.appColors.primaryButtonColor), modifier=Modifier.weight(1f)) {
-                            Text(text=stringResource(id=R.string.ok), style=MaterialTheme.typography.bodyMedium.copy(color=Color.White))
+                            shape = RoundedCornerShape(12.dp),
+                            colors=ButtonDefaults.buttonColors(containerColor=MaterialTheme.appColors.primaryButtonColor), modifier=Modifier.weight(1f)) {
+                            Text(text=stringResource(id=R.string.ok), style=MaterialTheme.typography.bodyMedium.copy(color = Color.White,
+                                fontWeight = FontWeight(400),
+                                fontSize = 14.sp))
                         }
                     }
                 }
@@ -219,11 +230,15 @@ fun TransactionSuccessPopup(onDismiss: () -> Unit) {
                             onDismiss()
                         }
                     }
-                }, enabled = isButtonEnabled,colors=ButtonDefaults.buttonColors(containerColor=MaterialTheme.appColors.primaryButtonColor), modifier=Modifier
+                }, enabled = isButtonEnabled,
+                    shape = RoundedCornerShape(12.dp),
+                    colors=ButtonDefaults.buttonColors(containerColor=MaterialTheme.appColors.primaryButtonColor), modifier=Modifier
                         .padding(vertical=16.dp)
                         .height(50.dp)
                         .width(150.dp)) {
-                    Text(text=stringResource(id=R.string.ok), style=MaterialTheme.typography.bodyMedium.copy(color=Color.White))
+                    Text(text=stringResource(id=R.string.ok), style=MaterialTheme.typography.bodyMedium.copy(color = Color.White,
+                        fontWeight = FontWeight(400),
+                        fontSize = 14.sp))
                 }
             }
 
@@ -259,7 +274,7 @@ fun TransactionLoadingPopUp(onDismiss: () -> Unit) {
 
                 Text(text = stringResource(id = R.string.initiating_transaction), style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp, fontWeight = FontWeight(800), color = MaterialTheme.appColors.primaryButtonColor), modifier = Modifier.padding(10.dp))
 
-                Text(text = stringResource(id = R.string.transaction_progress_attention), textAlign = TextAlign.Center, style = MaterialTheme.typography.titleMedium.copy(fontSize = 12.sp, fontWeight = FontWeight(400), color = MaterialTheme.appColors.textColor), modifier = Modifier.padding(10.dp))
+                Text(text = stringResource(id = R.string.transaction_progress_attention), textAlign = TextAlign.Center, style = MaterialTheme.typography.titleMedium.copy(fontSize = 14.sp, fontWeight = FontWeight(400), color = MaterialTheme.appColors.editTextColor), modifier = Modifier.padding(10.dp))
 
             }
         }
@@ -277,18 +292,51 @@ fun TransactionFailedPopUp(onDismiss: () -> Unit, errorString: String) {
         onDismissRequest = onDismiss,
     ) {
 
-        OutlinedCard(colors = CardDefaults.cardColors(containerColor = MaterialTheme.appColors.dialogBackground), elevation = CardDefaults.cardElevation(defaultElevation = 4.dp), modifier = Modifier.fillMaxWidth()) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier =Modifier
+        OutlinedCard(
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.appColors.dialogBackground),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier
                     .fillMaxWidth()
-                    .padding(10.dp)) {
-                Text(text = stringResource(id = R.string.dialog_title_send_failed), style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp, fontWeight = FontWeight(800), color = MaterialTheme.appColors.primaryButtonColor), modifier = Modifier.padding(10.dp))
+                    .padding(10.dp)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.dialog_title_send_failed),
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight(800),
+                        color = MaterialTheme.appColors.secondaryContentColor
+                    ),
+                    modifier = Modifier.padding(10.dp)
+                )
 
-                Text(text = errorString, textAlign = TextAlign.Center, style = MaterialTheme.typography.titleMedium.copy(fontSize = 12.sp, fontWeight = FontWeight(400), color = MaterialTheme.appColors.textColor), modifier = Modifier.padding(10.dp))
+                Text(
+                    text = errorString,
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight(400),
+                        color = MaterialTheme.appColors.editTextColor
+                    ),
+                    modifier = Modifier.padding(10.dp)
+                )
 
-                Button(onClick = { onDismiss() }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.appColors.primaryButtonColor), modifier =Modifier
+                Button(
+                    onClick = { onDismiss() },
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.appColors.primaryButtonColor
+                    ),
+                    modifier = Modifier
                         .height(50.dp)
                         .width(150.dp)) {
-                    Text(text = stringResource(id = R.string.ok), style = MaterialTheme.typography.bodyMedium.copy(color = Color.White))
+                    Text(text = stringResource(id = R.string.ok), style = MaterialTheme.typography.bodyMedium.copy(color = Color.White,
+                        fontWeight = FontWeight(400),
+                        fontSize = 14.sp))
                 }
 
             }

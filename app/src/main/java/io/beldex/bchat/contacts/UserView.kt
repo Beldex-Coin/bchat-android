@@ -57,7 +57,7 @@ class UserView : LinearLayout {
         unbind()
         binding.profilePictureView.root.glide = glide
         binding.profilePictureView.root.update(user)
-        binding.actionIndicatorImageView.setImageResource(R.drawable.ic_baseline_edit_24)
+        binding.actionIndicatorImageView.setImageResource(R.drawable.ic_baseline_edit_group_name)
         binding.nameTextView.text = if (user.isGroupRecipient) user.name else getUserDisplayName(address)
         when (actionIndicator) {
             ActionIndicator.None -> {
@@ -65,7 +65,7 @@ class UserView : LinearLayout {
             }
             ActionIndicator.Menu -> {
                 binding.actionIndicatorImageView.visibility = View.VISIBLE
-                binding.actionIndicatorImageView.setImageResource(R.drawable.ic_person_remove_from_group)
+                binding.actionIndicatorImageView.setImageResource(R.drawable.ic_block_request_background)
             }
             ActionIndicator.Tick -> {
                 binding.userViewLayout.background = context.getDrawable(R.drawable.contact_list_background)

@@ -279,7 +279,7 @@ fun CreateSecretGroup(
                     modifier =Modifier
                             .fillMaxWidth()
                             .padding(16.dp),
-                    shape = RoundedCornerShape(16.dp),
+                    shape = RoundedCornerShape(12.dp),
                     enabled = groupName.isNotEmpty(),
                     disabledContainerColor = MaterialTheme.appColors.disabledCreateButtonContainer,
                 ) {
@@ -291,7 +291,8 @@ fun CreateSecretGroup(
                             } else {
                                 MaterialTheme.appColors.disabledButtonContent
                             },
-                            fontWeight = FontWeight(600)
+                            fontWeight = FontWeight(400),
+                            fontSize = 16.sp
                         ),
                         modifier = Modifier
                             .padding(8.dp)
@@ -363,6 +364,8 @@ private fun GroupContact(
             Text(
                 text = if(recipient.name != null) recipient.name.toString() else recipient.address.toString(),
                 textAlign = TextAlign.Start,
+                fontSize = 16.sp,
+                fontWeight = FontWeight(400),
                 modifier = Modifier
                     .weight(1f)
                     .padding(horizontal = 10.dp),

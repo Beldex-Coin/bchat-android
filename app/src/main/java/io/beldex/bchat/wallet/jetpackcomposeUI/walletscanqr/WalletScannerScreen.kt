@@ -170,12 +170,12 @@ fun WalletScannerScreen(
                     OutlinedButton(
                         contentPadding = PaddingValues(start = 25.dp,bottom = 20.dp,end = 25.dp, top = 20.dp),
                         modifier = Modifier.padding(15.dp),
-                        shape = RoundedCornerShape(10.dp),
+                        shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.outlinedButtonColors(
                             containerColor = MaterialTheme.appColors.walletDashboardMainMenuCardBackground,
                             contentColor = MaterialTheme.appColors.textColor
                         ),
-                        border = BorderStroke(2.dp, MaterialTheme.appColors.primaryButtonColor),
+                        border = BorderStroke(1.dp, MaterialTheme.appColors.primaryButtonColor),
                         enabled = uploadFromGalleryButtonIsEnabled,
                         onClick = {
                             uploadFromGalleryButtonIsEnabled = false
@@ -196,7 +196,7 @@ fun WalletScannerScreen(
                         Text(
                             text = stringResource(R.string.upload_from_gallery),
                             fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight(400),
                             style = TextStyle(color = MaterialTheme.appColors.textColor),
                             modifier = Modifier.padding()
                         )

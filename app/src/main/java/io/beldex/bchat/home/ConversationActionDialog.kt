@@ -24,8 +24,8 @@ import io.beldex.bchat.util.serializable
 import io.beldex.bchat.R
 
 enum class HomeDialogType {
-    DeleteRequest,
-    BlockRequest,
+    /*DeleteRequest,
+    BlockRequest,*/
     UnblockUser,
     MuteChat,
     BlockUser,
@@ -81,7 +81,7 @@ class ConversationActionDialog: DialogFragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 when (dialogType) {
-                    HomeDialogType.DeleteRequest -> {
+                    /*HomeDialogType.DeleteRequest -> {
                         BChatTheme(
                             darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
                         ) {
@@ -116,7 +116,7 @@ class ConversationActionDialog: DialogFragment() {
                                 }
                             )
                         }
-                    }
+                    }*/
                     HomeDialogType.UnblockUser -> {
                         BChatTheme(
                             darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
@@ -142,7 +142,7 @@ class ConversationActionDialog: DialogFragment() {
                         ) {
                             val timesOption = context.resources.getStringArray(R.array.mute_durations)
                             LockOptionsDialog(
-                                title = stringResource(R.string.conversation_unmuted__mute_notifications),
+                                title = stringResource(R.string.mute_notification),
                                 options = timesOption.toList(),
                                 currentValue = timesOption[argument1?.toInt() ?: 0],
                                 onDismiss = {
@@ -277,7 +277,7 @@ class ConversationActionDialog: DialogFragment() {
                                 }
                             }
                             LockOptionsDialog(
-                                title = stringResource(R.string.conversation_expiring_off__disappearing_messages),
+                                title = stringResource(R.string.disappearing_messages),
                                 options = options,
                                 currentValue = options[timesOption.indexOf(argument1?.toInt() ?: 0)],
                                 onDismiss = {

@@ -259,7 +259,7 @@ public class AttachmentManager {
       builder = builder.request(Manifest.permission.READ_EXTERNAL_STORAGE);
     }
     builder.withPermanentDenialDialog(activity.getString(R.string.AttachmentManager_signal_requires_the_external_storage_permission_in_order_to_attach_photos_videos_or_audio))
-            .withRationaleDialog(activity.getString(R.string.ConversationActivity_to_send_photos_and_video_allow_signal_access_to_storage), R.drawable.ic_baseline_photo_library_24)
+            .withRationaleDialog(activity.getString(R.string.ConversationActivity_to_send_photos_and_video_allow_signal_access_to_storage), activity.getString(R.string.Permissions_permission_required), R.drawable.ic_baseline_photo_library_24)
             .onAllGranted(() -> activity.startActivityForResult(MediaSendActivity.buildGalleryIntent(activity, recipient, body), requestCode))
             .execute();
   }
@@ -286,7 +286,7 @@ public class AttachmentManager {
     Permissions.with(activity)
         .request(Manifest.permission.CAMERA)
         .withPermanentDenialDialog(activity.getString(R.string.AttachmentManager_signal_requires_the_camera_permission_in_order_to_take_photos_but_it_has_been_permanently_denied))
-        .withRationaleDialog(activity.getString(R.string.ConversationActivity_to_capture_photos_and_video_allow_signal_access_to_the_camera),R.drawable.ic_baseline_photo_camera_24)
+        .withRationaleDialog(activity.getString(R.string.ConversationActivity_to_capture_photos_and_video_allow_signal_access_to_the_camera), activity.getString(R.string.Permissions_permission_required), R.drawable.ic_baseline_photo_camera_24)
         .onAllGranted(() -> {
           Intent captureIntent = MediaSendActivity.buildCameraIntent(activity, recipient);
           if (captureIntent.resolveActivity(activity.getPackageManager()) != null) {

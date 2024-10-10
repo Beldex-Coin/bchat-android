@@ -33,7 +33,7 @@
         android:paddingTop="6dip" >
 
         <TextView
-            android:fontFamily="@font/open_sans_medium"
+            android:fontFamily="@font/open_sans_semi_bold"
             android:id="@android:id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -41,17 +41,19 @@
             android:fadingEdge="horizontal"
             android:singleLine="true"
             android:textStyle="bold"
-            android:textColor="@color/accent"
+            android:textSize="16sp"
+            android:textColor="@color/text_green"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
-            android:fontFamily="@font/open_sans_medium"
+            android:fontFamily="@font/open_sans_semi_bold"
             android:id="@android:id/summary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@android:id/title"
             android:layout_below="@android:id/title"
             android:maxLines="4"
+            android:textSize="12sp"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="?android:attr/textColorSecondary" />
     </RelativeLayout>

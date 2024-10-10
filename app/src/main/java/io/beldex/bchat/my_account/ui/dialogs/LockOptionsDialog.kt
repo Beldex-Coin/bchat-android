@@ -55,9 +55,9 @@ fun LockOptionsDialog(
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleMedium.copy(
-                        color = MaterialTheme.appColors.primaryButtonColor,
+                        color = MaterialTheme.appColors.secondaryContentColor,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp
+                        fontSize = 16.sp
                     ),
                     textAlign = TextAlign.Center,
                     modifier = Modifier.weight(1f).align(Alignment.CenterVertically)
@@ -92,13 +92,14 @@ fun LockOptionsDialog(
                 onClick = {
                     onValueChanged(valuesPickerState.selectedItem, options.indexOf(valuesPickerState.selectedItem))
                 },
-                shape = RoundedCornerShape(50)
+                shape = RoundedCornerShape(12.dp)
             ) {
                 Text(
                     text = stringResource(id = R.string.ok),
                     style = MaterialTheme.typography.titleMedium.copy(
                         color = Color.White,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight(400),
+                        fontSize = 14.sp
                     ),
                     modifier = Modifier
                         .padding(

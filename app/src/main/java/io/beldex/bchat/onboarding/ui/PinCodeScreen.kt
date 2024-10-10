@@ -299,13 +299,13 @@ fun PinCodeScreen(
                             .onSizeChanged {
                                 buttonSize = it
                             },
-                        shape = RoundedCornerShape(16.dp),
+                        shape = RoundedCornerShape(12.dp),
                         disabledContainerColor = MaterialTheme.appColors.beldexAddressBackground
                     ) {
                         Text(
                             text = stringResource(id = R.string.next),
                             style = BChatTypography.titleMedium.copy(
-                                fontWeight = FontWeight.Medium,
+                                fontWeight = FontWeight.Normal,
                                 color = if(pin.length == 4) Color.White else MaterialTheme.appColors.disabledNextButtonColor
                             ),
                             modifier = Modifier

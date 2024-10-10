@@ -14,8 +14,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.R
@@ -30,7 +32,9 @@ fun ChatSettingsScreen(
         Text(
             text = stringResource(id = R.string.chat),
             style = MaterialTheme.typography.titleMedium.copy(
-                color = MaterialTheme.appColors.primaryButtonColor
+                color = MaterialTheme.appColors.textGreen,
+                fontWeight = FontWeight(600),
+                fontSize = 16.sp
             ),
             modifier = Modifier
                 .padding(16.dp)
@@ -74,7 +78,9 @@ fun ChatSettingsScreen(
         Text(
             text = "Message Timing",
             style = MaterialTheme.typography.titleMedium.copy(
-                color = MaterialTheme.appColors.primaryButtonColor
+                color = MaterialTheme.appColors.textGreen,
+                fontWeight = FontWeight(600),
+                fontSize = 16.sp
             ),
             modifier = Modifier
                 .padding(16.dp)

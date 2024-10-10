@@ -91,7 +91,7 @@ fun BNSNameVerifySuccessDialog(onDismiss: () -> Unit) {
                     .padding(vertical=16.dp)
                     .height(50.dp)
                     .width(150.dp)) {
-                    Text(text= stringResource(id= R.string.ok), style= MaterialTheme.typography.bodyMedium.copy(color= Color.White))
+                    Text(text= stringResource(id= R.string.ok), style= MaterialTheme.typography.bodyMedium.copy(color= Color.White, fontWeight = FontWeight(400), fontSize = 14.sp))
                 }
             }
 

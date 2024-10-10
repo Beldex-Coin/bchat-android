@@ -13,8 +13,8 @@
         android:drawablePadding="@dimen/large_spacing"
         android:gravity="center_horizontal|center_vertical"
         android:paddingHorizontal="@dimen/large_spacing"
-        android:textColor="@color/button_green"
-        android:textSize="@dimen/medium_font_size"
+        android:textColor="@color/text"
+        android:textSize="16sp"
         android:fontFamily="@font/open_sans_bold"
         app:layout_constraintBottom_toTopOf="@+id/recyclerView"
         app:layout_constraintEnd_toEndOf="parent"
@@ -35,25 +35,28 @@
         tools:itemCount="3"
         tools:listitem="@layout/notification_content_item_selectable" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/cancelButton"
         android:layout_width="148dp"
         android:layout_height="wrap_content"
         android:text="@string/cancel"
         android:textAllCaps="false"
-        android:backgroundTint="@color/notification_content_cancel_button_background"
-        android:textColor="@color/cancel_button_text"
+        android:backgroundTint="@color/negative_green_button"
+        android:textColor="@color/negative_green_button_text"
         android:padding="12dp"
+        android:fontFamily="@font/open_sans_regular"
         android:gravity="center"
         android:textSize="14sp"
         android:layout_weight="1"
-        android:background = "@drawable/rounded_button"
+        app:cornerRadius="12dp"
+        app:strokeColor="@color/negative_green_button_border"
+        app:strokeWidth="0.5dp"
         app:layout_constraintTop_toBottomOf="@id/recyclerView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="@dimen/medium_spacing"
-        android:textStyle="bold"/>
+        android:textStyle="normal"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

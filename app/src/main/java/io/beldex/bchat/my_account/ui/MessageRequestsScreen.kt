@@ -39,6 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.lifecycleScope
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.utilities.recipients.Recipient
@@ -93,6 +94,7 @@ fun MessageRequestsScreen(
         val coroutineScope = rememberCoroutineScope()
         if (showBlockConfirmationDialog) {
             RequestBlockConfirmationDialog(
+                title = stringResource(id = R.string.block_request),
                 message = stringResource(id = R.string.message_requests_block_message),
                 actionTitle = stringResource(id = R.string.yes),
                 onConfirmation = {
@@ -110,6 +112,7 @@ fun MessageRequestsScreen(
         }
         if (showDeleteConfirmationDialog) {
             RequestBlockConfirmationDialog(
+                title = stringResource(id = R.string.delete_request),
                 message = stringResource(id = R.string.message_requests_delete_message),
                 actionTitle = stringResource(id = R.string.yes),
                 onConfirmation = {
@@ -149,16 +152,16 @@ fun MessageRequestsScreen(
                         threadRecord = request
                         showBlockConfirmationDialog = true
                     },
-                    modifier =Modifier
-                            .fillMaxWidth()
-                            .background(
-                                    color=MaterialTheme.appColors.settingsCardBackground,
-                                    shape=RoundedCornerShape(50)
-                            )
-                            .padding(16.dp)
-                            .clickable {
-                                onRequestClick(recipient)
-                            }
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = MaterialTheme.appColors.settingsCardBackground,
+                            shape = RoundedCornerShape(50)
+                        )
+                        .padding(16.dp)
+                        .clickable {
+                            onRequestClick(recipient)
+                        }
                 )
             }
         }
@@ -214,7 +217,9 @@ fun MessageRequestItem(
         Text(
             text = senderName,
             style = MaterialTheme.typography.titleMedium.copy(
-                fontWeight = FontWeight(700)
+                color = MaterialTheme.appColors.editTextColor,
+                fontWeight = FontWeight(400),
+                fontSize = 14.sp
             ),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
@@ -280,7 +285,9 @@ fun MessageRequestItem(
             Icon(
                 Icons.Default.Check,
                 contentDescription = "",
-                tint = Color.White
+                tint = Color.White,
+                modifier = Modifier
+                    .size(16.dp)
             )
         }
     }

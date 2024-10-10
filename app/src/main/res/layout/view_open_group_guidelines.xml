@@ -37,7 +37,7 @@
             android:fontFamily="@font/open_sans_regular"
             android:maxWidth="260dp"
             android:maxLines="1"
-            android:text="@string/open_group_guidelines_community_guidelines"
+            android:text="@string/ConversationActivity_open_group_guidelines"
             android:textColor="@color/text"
             android:textSize="14sp" />
 
@@ -50,12 +50,12 @@
 
         <Button
             android:id="@+id/readButton"
-            style="@style/Widget.Bchat.Button.Common.ProminentFilled_AnswerCall"
+            style="@style/Widget.Bchat.Button.Dialog.Enable"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/small_button_height"
             android:layout_marginRight="12dp"
             android:text="@string/open_group_guidelines_read"
-            android:textSize="15dp"
+            android:textSize="14sp"
             android:textStyle="normal" />
 
     </LinearLayout>

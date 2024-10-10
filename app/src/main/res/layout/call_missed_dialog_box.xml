@@ -34,13 +34,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_gravity="center_horizontal"
-            android:text="Call Missed because you needed to enable the ‘Voice and video calls’ permission in the privacy settings."
+            android:text="Call Missed from user because you needed to enable the ‘Voice and video calls’ permission in the privacy settings."
             android:fontFamily="@font/open_sans_regular"
             android:textSize="14sp"
             android:textColor="@color/text"
             android:gravity="center_horizontal" />
         <Button
-            style="@style/Widget.Bchat.Button.Dialog.Ok"
+            style="@style/Widget.Bchat.Button.Dialog.Enable"
             android:id="@+id/missedCallOkButton"
             android:layout_width="150dp"
             android:layout_height="52dp"

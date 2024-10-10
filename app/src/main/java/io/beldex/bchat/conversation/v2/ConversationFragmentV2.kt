@@ -1211,6 +1211,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     .request(Manifest.permission.RECORD_AUDIO)
                     .withRationaleDialog(
                         getString(R.string.ConversationActivity_to_send_audio_messages_allow_signal_access_to_your_microphone),
+                        getString(R.string.Permissions_record_permission_required),
                         R.drawable.ic_microphone
                     )
                     .withPermanentDenialDialog(getString(R.string.ConversationActivity_signal_requires_the_microphone_permission_in_order_to_send_audio_messages))
@@ -1443,7 +1444,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 val face =
                     Typeface.createFromAsset(requireContext().assets, "fonts/open_sans_bold.ttf")
                 val color = ResourcesCompat.getColor(requireContext().resources,
-                    R.color.node_status, requireContext().theme)
+                    R.color.negative_green_button_border, requireContext().theme)
                 spannable.setSpan(ForegroundColorSpan(color),
                     14,
                     30,
@@ -1470,7 +1471,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             Typeface.createFromAsset(requireContext().assets,
                 "fonts/open_sans_medium.ttf")
         @ColorInt val color =
-            requireContext().resources.getColorWithID(R.color.red,
+            requireContext().resources.getColorWithID(R.color.negative_red_button_border,
                 requireContext().theme)
         binding.tooltip.setTextColor(color)
         binding.tooltip.typeface = face

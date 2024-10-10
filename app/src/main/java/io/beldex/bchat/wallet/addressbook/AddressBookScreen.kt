@@ -310,7 +310,7 @@ fun AddressBookScreen(
                                     style = BChatTypography.titleMedium.copy(
                                         color = MaterialTheme.appColors.textColor,
                                         fontSize = 14.sp,
-                                        fontWeight = FontWeight(700)
+                                        fontWeight = FontWeight(400)
                                     ),
                                     modifier = Modifier
                                         .padding(all = 12.dp),

@@ -707,7 +707,7 @@ fun SendScreen(
                         .border(
                                 width=0.8.dp,
                                 color=MaterialTheme.appColors.primaryButtonColor.copy(alpha=0.5f),
-                                shape=RoundedCornerShape(16.dp)
+                                shape=RoundedCornerShape(12.dp)
                         )) {
                     Column(verticalArrangement = Arrangement.Center, modifier = Modifier.padding(10.dp)) {
                         Text(text = "Total Balance", style = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.appColors.totalBalanceColor, fontSize = 14.sp, fontWeight = FontWeight(700)), modifier =Modifier
@@ -799,7 +799,7 @@ fun SendScreen(
                                         .padding(10.dp)
                                         .fillMaxWidth()
                                         .weight(1f),
-                                shape = RoundedCornerShape(8.dp),
+                                shape = RoundedCornerShape(12.dp),
                             )
                            /* Box(
                                 modifier = Modifier.background(color = MaterialTheme.appColors.maxAmountBackground, shape = RoundedCornerShape(10.dp)),
@@ -851,7 +851,7 @@ fun SendScreen(
                                     .width(32.dp)
                                     .height(32.dp)
                                     .background(
-                                            colorResource(id=R.color.wallet_receive_background),
+                                            colorResource(id=R.color.button_green),
                                             shape=RoundedCornerShape(10.dp)
                                     )
                                     .clickable {
@@ -981,7 +981,7 @@ fun SendScreen(
                                 .border(
                                         width=0.8.dp,
                                         color=colorResource(id=R.color.divider_color).copy(alpha=0.5f),
-                                        shape=RoundedCornerShape(8.dp)
+                                        shape=RoundedCornerShape(12.dp)
                                 )) {
                             Text(text = "Estimated Fee : ", style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.textHint, fontSize = 14.sp, fontWeight = FontWeight.Bold), modifier = Modifier.padding(top = 20.dp, bottom = 20.dp, start = 20.dp))
                             Text(text = "$estimatedFee BDX", style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.textColor, fontSize = 14.sp, fontWeight = FontWeight.ExtraBold), modifier = Modifier.padding(top = 20.dp, bottom = 20.dp, end = 20.dp))
@@ -998,15 +998,17 @@ fun SendScreen(
                     modifier =Modifier
                             .fillMaxWidth()
                             .padding(10.dp),
-                    shape = RoundedCornerShape(16.dp),
+                    shape = RoundedCornerShape(12.dp),
                     enabled = beldexAddress.value.isNotEmpty() && beldexAmount.value.isNotEmpty(),
                     disabledContainerColor = MaterialTheme.appColors.contactCardBackground
                 ) {
-                    Text(text = stringResource(id = R.string.send), style = BChatTypography.bodyLarge.copy(color = if (beldexAddress.value.isNotEmpty() && beldexAmount.value.isNotEmpty()) {
+                    Text(text = stringResource(id = R.string.send), style = BChatTypography.bodyLarge.copy(
+                        color = if (beldexAddress.value.isNotEmpty() && beldexAmount.value.isNotEmpty()) {
                         Color.White
                     } else {
                         MaterialTheme.appColors.linkBnsDisabledButtonContent
-                    }), modifier = Modifier.padding(8.dp))
+                    }, fontWeight = FontWeight(400),
+                        fontSize = 16.sp), modifier = Modifier.padding(8.dp))
                 }
             }
         }

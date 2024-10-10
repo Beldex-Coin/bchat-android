@@ -48,7 +48,7 @@ class TransactionInfoAdapter(context: Context?)  :
 
     init{
         this.context =context
-        inboundColour = ContextCompat.getColor(context!!, R.color.tx_plus)
+        inboundColour = ContextCompat.getColor(context!!, R.color.text_green)
         outboundColour = ContextCompat.getColor(context, R.color.wallet_send_button)//tx_minus
         pendingColour = ContextCompat.getColor(context, R.color.tx_pending)
         failedColour = ContextCompat.getColor(context, R.color.tx_failed)

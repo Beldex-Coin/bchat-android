@@ -175,7 +175,7 @@ fun StatWalletInfo(modifier: Modifier) {
             }, modifier=Modifier
                     .fillMaxWidth()
                     .padding(start=16.dp, end=16.dp, bottom=24.dp),
-                    shape=RoundedCornerShape(16.dp), enabled=isChecked) {
+                    shape=RoundedCornerShape(12.dp), enabled=isChecked) {
                 Text(
                         text=context.getString(R.string.enable_wallet),
                         style= if(isChecked)BChatTypography.bodyLarge.copy(color=Color.White) else BChatTypography.bodyLarge.copy(color=MaterialTheme.appColors.disabledNextButtonColor),

@@ -231,7 +231,7 @@ fun CreatePrivateChatScreen() {
                 modifier =Modifier
                         .fillMaxWidth()
                         .padding(start=16.dp, end=16.dp, bottom=16.dp),
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(12.dp),
                 enabled = bChatId.isNotEmpty(),
                 disabledContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
             ) {

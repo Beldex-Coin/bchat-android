@@ -384,13 +384,13 @@ class VisibleMessageContentView : MaterialCardView {
         val isSingleMessage = (isStartOfMessageCluster && isEndOfMessageCluster)
         @DrawableRes val backgroundID = when {
             isSingleMessage -> {
-                if (isOutgoing) R.drawable.message_bubble_background_sent_alone else R.drawable.message_bubble_background_sent_alone
+                if (isOutgoing) R.drawable.message_bubble_background_sent_end else R.drawable.message_bubble_background_received_end
             }
             isStartOfMessageCluster -> {
                 if (isOutgoing) R.drawable.message_bubble_background_sent_alone else R.drawable.message_bubble_background_sent_alone
             }
             isEndOfMessageCluster -> {
-                if (isOutgoing) R.drawable.message_bubble_background_sent_alone else R.drawable.message_bubble_background_sent_alone
+                if (isOutgoing) R.drawable.message_bubble_background_sent_end else R.drawable.message_bubble_background_received_end
             }
             else -> {
                 if (isOutgoing) R.drawable.message_bubble_background_sent_alone else R.drawable.message_bubble_background_sent_alone

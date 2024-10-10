@@ -447,7 +447,7 @@ fun NodeScreen(test:Boolean = false) {
 
                     ) {
                         itemsIndexed(data!!.toMutableList()) { index, item ->
-                            Card(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.editTextBackground), border=BorderStroke(width=2.dp, color=if (item.isSelected) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.editTextBackground), shape=RoundedCornerShape(16.dp), elevation=CardDefaults.cardElevation(defaultElevation=0.dp), modifier=Modifier
+                            Card(colors=CardDefaults.cardColors(containerColor=MaterialTheme.appColors.editTextBackground), border=BorderStroke(width=2.dp, color=if (item.isSelected) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.editTextBackground), shape=RoundedCornerShape(12.dp), elevation=CardDefaults.cardElevation(defaultElevation=0.dp), modifier=Modifier
                                     .fillMaxWidth()
                                     .padding(horizontal=16.dp)
                                     .combinedClickable(
@@ -494,7 +494,7 @@ fun NodeScreen(test:Boolean = false) {
                                             nodeAddress=context.resources.getString(R.string.node_testing, item.hostAddress)
                                         }
 
-                                        Text(text=nodeName, style=BChatTypography.titleMedium.copy(color=if (item.isSelected) MaterialTheme.appColors.textColor else if (errorAction) MaterialTheme.appColors.errorMessageColor else MaterialTheme.appColors.primaryButtonColor, fontSize=fontSize, fontWeight=FontWeight(700)))
+                                        Text(text=nodeName, style=BChatTypography.titleMedium.copy(color=if (item.isSelected) MaterialTheme.appColors.textColor else if (errorAction) MaterialTheme.appColors.errorMessageColor else MaterialTheme.appColors.primaryButtonColor, fontSize=fontSize, fontWeight=FontWeight(600)))
                                         Text(text=nodeAddress, style=BChatTypography.titleSmall.copy(color=MaterialTheme.appColors.editTextColor, fontSize=12.sp, fontWeight=FontWeight(400)), modifier=Modifier.padding(vertical=5.dp))
                                     }
                                 }
@@ -513,8 +513,11 @@ fun NodeScreen(test:Boolean = false) {
                         .padding(16.dp)) {
                     Button(onClick={
                         showRefreshNodePopup=true
-                    }, colors=ButtonDefaults.buttonColors(containerColor=MaterialTheme.appColors.searchBackground), modifier=Modifier.weight(1f)) {
-                        Text(text="Refresh", style=MaterialTheme.typography.bodyMedium.copy(color=MaterialTheme.appColors.secondaryContentColor, fontWeight=FontWeight.Bold), modifier=Modifier.padding(10.dp))
+                    }, colors=ButtonDefaults.buttonColors(containerColor=MaterialTheme.appColors.searchBackground),
+                        modifier=Modifier.weight(1f),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Text(text="Refresh", style=MaterialTheme.typography.bodyMedium.copy(color=MaterialTheme.appColors.secondaryContentColor, fontWeight=FontWeight(400), fontSize = 14.sp), modifier=Modifier.padding(10.dp))
                         Icon(painter=painterResource(id=R.drawable.ic_refresh), contentDescription="Refresh", modifier=Modifier, tint=MaterialTheme.appColors.secondaryContentColor)
                     }
 
@@ -522,8 +525,11 @@ fun NodeScreen(test:Boolean = false) {
 
                     Button(onClick={
                         showAddNode=true
-                    }, colors=ButtonDefaults.buttonColors(containerColor=MaterialTheme.appColors.primaryButtonColor), modifier=Modifier.weight(1f)) {
-                        Text(text=stringResource(id=R.string.node_fab_add), style=MaterialTheme.typography.bodyMedium.copy(color=Color.White, fontWeight=FontWeight.Bold), modifier=Modifier.padding(10.dp))
+                    }, colors=ButtonDefaults.buttonColors(containerColor=MaterialTheme.appColors.primaryButtonColor),
+                        modifier=Modifier.weight(1f),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Text(text=stringResource(id=R.string.node_fab_add), style=MaterialTheme.typography.bodyMedium.copy(color=Color.White, fontWeight=FontWeight(400), fontSize = 14.sp), modifier=Modifier.padding(10.dp))
                     }
                 }
             }
@@ -545,13 +551,22 @@ fun RefreshNodePopup(onDismiss: () -> Unit,onCallRefresh: () -> Unit) {
                     .padding(10.dp)) {
 
                 Text(
-                    text=stringResource(id=R.string.refresh_node_alert),
+                    text=stringResource(id=R.string.refresh_nodes),
                     textAlign=TextAlign.Center,
                     style=MaterialTheme.typography.titleMedium.copy(
                         fontSize=16.sp,
+                        fontWeight=FontWeight(700),
+                        color=MaterialTheme.appColors.secondaryContentColor),
+                    modifier=Modifier.padding(top =20.dp, start =40.dp, end = 40.dp))
+
+                Text(
+                    text=stringResource(id=R.string.refresh_node_alert),
+                    textAlign=TextAlign.Center,
+                    style=MaterialTheme.typography.titleMedium.copy(
+                        fontSize=14.sp,
                         fontWeight=FontWeight(400),
-                        color=MaterialTheme.appColors.textColor),
-                    modifier=Modifier.padding(vertical=20.dp, horizontal=40.dp))
+                        color=MaterialTheme.appColors.editTextColor),
+                    modifier=Modifier.padding(top =10.dp, bottom = 20.dp, start =40.dp, end = 40.dp))
 
                 Row(
                     modifier=Modifier
@@ -561,16 +576,19 @@ fun RefreshNodePopup(onDismiss: () -> Unit,onCallRefresh: () -> Unit) {
                     Button(
                         onClick={ onDismiss() },
                         colors=ButtonDefaults.buttonColors(
-                            containerColor=MaterialTheme.appColors.secondaryButtonColor
+                            containerColor=MaterialTheme.appColors.negativeGreenButton
                         ),
+                        shape = RoundedCornerShape(12.dp),
+                        border = BorderStroke(width = 0.5.dp, color = MaterialTheme.appColors.negativeGreenButtonBorder),
                         modifier=Modifier
                             .weight(1f)
                     ) {
                         Text(
                             text=stringResource(id=R.string.cancel),
                             style=MaterialTheme.typography.bodyMedium.copy(
-                                color = MaterialTheme.appColors.textHint,
-                                fontWeight = FontWeight.Bold
+                                color = MaterialTheme.appColors.negativeGreenButtonText,
+                                fontWeight = FontWeight(400),
+                                fontSize = 14.sp
                             ),
                             modifier=Modifier.padding(10.dp)
                         )
@@ -587,6 +605,7 @@ fun RefreshNodePopup(onDismiss: () -> Unit,onCallRefresh: () -> Unit) {
                         colors=ButtonDefaults.buttonColors(
                             containerColor=MaterialTheme.appColors.primaryButtonColor
                         ),
+                        shape = RoundedCornerShape(12.dp),
                         modifier=Modifier
                             .weight(1f)
                     ) {
@@ -594,7 +613,8 @@ fun RefreshNodePopup(onDismiss: () -> Unit,onCallRefresh: () -> Unit) {
                             text= stringResource(id = R.string.yes),
                             style=MaterialTheme.typography.bodyMedium.copy(
                                 color=Color.White,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight(400),
+                                fontSize = 14.sp
                             ),
                             modifier=Modifier.padding(10.dp)
                         )
@@ -826,9 +846,9 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                         .fillMaxWidth()
                         .padding(top=10.dp, bottom=5.dp, start=10.dp),
                         style=MaterialTheme.typography.bodyLarge.copy(
-                                fontSize=18.sp,
+                                fontSize=16.sp,
                                 fontWeight=FontWeight(700),
-                                color=MaterialTheme.appColors.textColor),
+                                color=MaterialTheme.appColors.secondaryContentColor),
                         textAlign=TextAlign.Center)
 
                 TextField(
@@ -1055,7 +1075,7 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                                 style=MaterialTheme.typography.titleMedium.copy(
                                         color= MaterialTheme.appColors.onMainContainerTextColor,
                                         fontSize=14.sp,
-                                        fontWeight=FontWeight(700)
+                                        fontWeight=FontWeight(400)
                                 ),
                                 modifier=Modifier.padding(horizontal=10.dp)
                         )
@@ -1110,19 +1130,22 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                                 .padding(16.dp)
                 ) {
                     Button(
-                            onClick={ onDismiss() },
-                            colors=ButtonDefaults.buttonColors(
-                                containerColor=MaterialTheme.appColors.cancelButtonContainer,
-                                contentColor = MaterialTheme.appColors.cancelButtonContent
-                            ),
-                            modifier=Modifier
-                                    .weight(1f)
+                        onClick={ onDismiss() },
+                        shape = RoundedCornerShape(12.dp),
+                        colors=ButtonDefaults.buttonColors(
+                            containerColor=MaterialTheme.appColors.negativeGreenButton,
+                            contentColor = MaterialTheme.appColors.negativeGreenButtonText
+                        ),
+                        modifier=Modifier
+                                .weight(1f),
+                        border = BorderStroke(width = 0.5.dp, color = MaterialTheme.appColors.negativeGreenButtonBorder)
                     ) {
                         Text(
                                 text=stringResource(id=R.string.cancel),
                                 style=MaterialTheme.typography.bodyMedium.copy(
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.appColors.cancelButtonContent
+                                    fontWeight = FontWeight(400),
+                                    fontSize = 14.sp,
+                                    color = MaterialTheme.appColors.negativeGreenButtonText
                                 ),
                                 modifier=Modifier.padding(10.dp)
                         )
@@ -1131,23 +1154,25 @@ fun AddNodePopUp(onDismiss: () -> Unit, nodeInfo: NodeInfo, nodeList: MutableSet
                     Spacer(modifier=Modifier.width(16.dp))
 
                     Button(
-                            onClick={
-                                addNode()
-                            },
-                            enabled = nodeStatusSuccessAction,
-                            colors=ButtonDefaults.buttonColors(
-                                containerColor=MaterialTheme.appColors.primaryButtonColor,
-                                disabledContainerColor = MaterialTheme.colorScheme.primary,
-                                disabledContentColor = MaterialTheme.appColors.disableAddButtonContainer
-                            ),
-                            modifier=Modifier
-                                    .weight(1f)
+                         onClick={
+                             addNode()
+                         },
+                         enabled = nodeStatusSuccessAction,
+                         shape = RoundedCornerShape(12.dp),
+                         colors=ButtonDefaults.buttonColors(
+                             containerColor=MaterialTheme.appColors.primaryButtonColor,
+                             disabledContainerColor = MaterialTheme.colorScheme.primary,
+                             disabledContentColor = MaterialTheme.appColors.disableAddButtonContainer
+                         ),
+                         modifier=Modifier
+                                 .weight(1f)
                     ) {
                         Text(
                                 text= stringResource(id = R.string.add),
                                 style=MaterialTheme.typography.bodyMedium.copy(
                                     color=if(nodeStatusSuccessAction)Color.White else MaterialTheme.appColors.disableAddButtonContent,
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight(400),
+                                    fontSize = 12.sp
                                 ),
                                 modifier=Modifier.padding(10.dp)
                         )
@@ -1176,13 +1201,22 @@ fun SwitchNodePopUp(onDismiss: () -> Unit, nodeViewModel: NodeViewModel, nodeInf
                     .padding(10.dp)) {
 
                 Text(
-                        text=stringResource(id=R.string.switch_node_alert),
-                        textAlign=TextAlign.Center,
-                        style=MaterialTheme.typography.titleMedium.copy(
-                                fontSize=16.sp,
-                                fontWeight=FontWeight(400),
-                                color=MaterialTheme.appColors.textColor),
-                        modifier=Modifier.padding(vertical=20.dp, horizontal=40.dp))
+                    text=stringResource(id=R.string.switch_node),
+                    textAlign=TextAlign.Center,
+                    style=MaterialTheme.typography.titleMedium.copy(
+                        fontSize=16.sp,
+                        fontWeight=FontWeight(700),
+                        color=MaterialTheme.appColors.textColor),
+                    modifier=Modifier.padding(top =20.dp, start = 40.dp, end = 40.dp))
+
+                Text(
+                    text=stringResource(id=R.string.switch_node_alert),
+                    textAlign=TextAlign.Center,
+                    style=MaterialTheme.typography.titleMedium.copy(
+                            fontSize=14.sp,
+                            fontWeight=FontWeight(400),
+                            color=MaterialTheme.appColors.textColor),
+                    modifier=Modifier.padding(top =10.dp, bottom = 20.dp, start =40.dp, end = 40.dp))
 
                 Row(
                         modifier=Modifier
@@ -1191,46 +1225,55 @@ fun SwitchNodePopUp(onDismiss: () -> Unit, nodeViewModel: NodeViewModel, nodeInf
                 ) {
                     Button(
                             onClick={ onDismiss() },
-                            colors=ButtonDefaults.buttonColors(
-                                    containerColor=MaterialTheme.appColors.secondaryButtonColor
-                            ),
-                            modifier=Modifier
-                                    .weight(1f)
+                        colors=ButtonDefaults.buttonColors(
+                            containerColor=MaterialTheme.appColors.negativeGreenButton
+                        ),
+                        shape = RoundedCornerShape(12.dp),
+                        border = BorderStroke(width = 0.5.dp, color = MaterialTheme.appColors.negativeGreenButtonBorder),
+                        modifier=Modifier
+                                .weight(1f)
                     ) {
                         Text(
-                                text=stringResource(id=R.string.cancel),
-                                style=MaterialTheme.typography.bodyMedium,
-                                modifier=Modifier.padding(10.dp)
+                            text=stringResource(id=R.string.cancel),
+                            style=MaterialTheme.typography.bodyMedium.copy(
+                                color = MaterialTheme.appColors.negativeGreenButtonText,
+                                fontWeight = FontWeight(400),
+                                fontSize = 14.sp
+                            ),
+                            modifier=Modifier.padding(10.dp)
                         )
                     }
 
                     Spacer(modifier=Modifier.width(16.dp))
 
                     Button(
-                            onClick={
-                                nodeInfo.isFavourite=true
-                                // Need to check
-                                nodeViewModel.setFavouriteNodes(nodeViewModel.favouritesNodes.value, context)
-                                AsyncTask.execute {
-                                    nodeViewModel.setNode(nodeInfo, true, context)
-                                    nodeInfo.isSelecting=true
-                                    changeDaemon(context, true)
-                                }
-                                onDismiss()
+                        onClick={
+                            nodeInfo.isFavourite=true
+                            // Need to check
+                            nodeViewModel.setFavouriteNodes(nodeViewModel.favouritesNodes.value, context)
+                            AsyncTask.execute {
+                                nodeViewModel.setNode(nodeInfo, true, context)
+                                nodeInfo.isSelecting=true
+                                changeDaemon(context, true)
+                            }
+                            onDismiss()
 
-                            },
-                            colors=ButtonDefaults.buttonColors(
-                                    containerColor=MaterialTheme.appColors.primaryButtonColor
-                            ),
-                            modifier=Modifier
+                        },
+                        colors=ButtonDefaults.buttonColors(
+                                containerColor=MaterialTheme.appColors.primaryButtonColor
+                        ),
+                        shape = RoundedCornerShape(12.dp),
+                        modifier=Modifier
                                     .weight(1f)
                     ) {
                         Text(
-                                text="Yes",
-                                style=MaterialTheme.typography.bodyMedium.copy(
-                                        color=Color.White
-                                ),
-                                modifier=Modifier.padding(10.dp)
+                            text= stringResource(id = R.string.yes),
+                            style=MaterialTheme.typography.bodyMedium.copy(
+                                color=Color.White,
+                                fontWeight = FontWeight(400),
+                                fontSize = 14.sp
+                            ),
+                            modifier=Modifier.padding(10.dp)
                         )
                     }
                 }

@@ -127,8 +127,8 @@ private fun LogItem(
                 Text(
                     text = versionLog.version,
                     style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 16.sp
                     ),
                     modifier = Modifier
                         .weight(1f)
@@ -173,7 +173,8 @@ private fun LogItem(
                                 Text(
                                     text = log,
                                     style = MaterialTheme.typography.titleMedium.copy(
-                                        fontWeight = FontWeight.Normal
+                                        fontWeight = FontWeight.Normal,
+                                        fontSize = 16.sp
                                     ),
                                     modifier = Modifier
                                         .weight(1f)

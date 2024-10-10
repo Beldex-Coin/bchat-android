@@ -122,8 +122,8 @@
                         android:fontFamily="@font/open_sans_medium"
                         android:padding="5dp"
                         android:text="@string/upload_from_gallery"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/very_small_font_size" />
+                        android:textColor="@color/text"
+                        android:textSize="@dimen/small_font_size" />
                 </LinearLayout>
 
                 <TextView

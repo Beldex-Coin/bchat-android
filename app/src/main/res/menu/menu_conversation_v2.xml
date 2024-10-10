@@ -29,6 +29,11 @@
         android:icon="@drawable/ic_unblock"/>
 
     <item
+        android:title="@string/archive_chat_title"
+        android:id="@+id/menu_archive_chat"
+        android:icon="@drawable/ic_archive_chats" />
+
+    <item
         android:title="@string/MuteDialog_mute_notifications"
         android:id="@+id/menu_mute_notifications"
         android:icon="@drawable/ic_mute_notification_menu"/>
@@ -52,5 +57,7 @@
         android:title="@string/delete"
         android:id="@+id/menu_delete"
         android:icon="@drawable/ic_delete_menu" />
+
+
 
 </menu>

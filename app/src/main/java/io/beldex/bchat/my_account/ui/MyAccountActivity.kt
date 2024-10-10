@@ -106,17 +106,22 @@ import io.beldex.bchat.util.toPx
 import io.beldex.bchat.wallet.jetpackcomposeUI.StatWalletInfo
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
+import io.beldex.bchat.archivechats.ArchiveChatViewModel
+import io.beldex.bchat.database.GroupDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MyAccountActivity : ComponentActivity() {
 
     private var destination = MyAccountScreens.SettingsScreen.route
+    @Inject
+    lateinit var groupDb: GroupDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -134,6 +139,7 @@ class MyAccountActivity : ComponentActivity() {
                         MyAccountNavHost(
                             navController = navController,
                             startDestination = destination,
+                            groupDatabase = groupDb,
                             modifier = Modifier
                                 .padding(it)
                         )
@@ -152,12 +158,14 @@ class MyAccountActivity : ComponentActivity() {
 fun MyAccountNavHost(
     navController: NavHostController,
     startDestination: String,
+    groupDatabase : GroupDatabase,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     val startActivity: (Intent) -> Unit = {
         context.startActivity(it)
     }
+    val archiveChatViewModel: ArchiveChatViewModel = hiltViewModel()
     val viewModel: MyAccountViewModel = hiltViewModel()
     NavHost(
         navController = navController,
@@ -398,7 +406,7 @@ fun MyAccountNavHost(
                 }
 
                 Column(
-                    modifier = Modifier
+                    modifier =Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
                         .verticalScroll(scrollState),
@@ -409,17 +417,17 @@ fun MyAccountNavHost(
                         Box(
                             modifier = if(!isBnsHolder.isNullOrEmpty()) Modifier
                                 .fillMaxWidth()
-                                .padding(top = 50.dp, bottom = 10.dp)
+                                .padding(top=50.dp, bottom=10.dp)
                                 .paint(
-                                    painterResource(id = if (isDarkMode) R.drawable.ic_bns_card_dark else R.drawable.ic_bns_card_light),
-                                    contentScale = ContentScale.FillBounds
+                                    painterResource(id=if (isDarkMode) R.drawable.ic_bns_card_dark else R.drawable.ic_bns_card_light),
+                                    contentScale=ContentScale.FillBounds
                                 )
                                 .innerShadow(
-                                    color = if (isDarkMode) MaterialTheme.appColors.primaryButtonColor else Color(
+                                    color=if (isDarkMode) MaterialTheme.appColors.primaryButtonColor else Color(
                                         0x8000BD40
                                     ),
-                                    blur = if (isDarkMode) 20.dp else 10.dp,
-                                    cornersRadius = 16.dp
+                                    blur=if (isDarkMode) 20.dp else 10.dp,
+                                    cornersRadius=16.dp
                                 ) else Modifier
                                 .fillMaxWidth()
                                 .padding(top = 50.dp, bottom = 10.dp).background(color = MaterialTheme.appColors.listItemBackground, shape = RoundedCornerShape(16.dp))
@@ -891,6 +899,45 @@ fun MyAccountNavHost(
                 )
             }
         }
+
+        composable(
+            route = MyAccountScreens.ArchiveChatScreen.route
+        ) {
+            val archiveViewModel: ArchiveChatViewModel = hiltViewModel()
+            val uiState by archiveViewModel.uiState.collectAsState()
+
+            LaunchedEffect(key1 = Unit) {
+                launch(Dispatchers.IO) {
+                    context.contentResolver
+                        .observeQuery(DatabaseContentProviders.ConversationList.CONTENT_URI)
+                        .onEach { archiveViewModel.refreshContacts() }
+                        .collect()
+                }
+            }
+            ArchiveChatScreenContainer(
+                title = stringResource(R.string.archive_chat),
+                onBackClick = {
+                    (context as ComponentActivity).finish()
+                }
+            ) {
+                ArchiveChatScreen(
+                    requestsList = uiState.archiveChats,
+                    onRequestClick = {
+                        val returnIntent = Intent()
+                        returnIntent.putExtra(ConversationFragmentV2.THREAD_ID, it.threadId)
+                        (context as Activity).run {
+                            setResult(PassphraseRequiredActionBarActivity.RESULT_OK, returnIntent)
+                            finish()
+                        }
+                    },
+                    archiveChatViewModel = archiveChatViewModel,
+                    groupDatabase = groupDatabase,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp)
+                )
+            }
+        }
     }
 }
 
@@ -1143,5 +1190,74 @@ fun CardContainer(
         modifier = modifier
     ) {
         content()
+    }
+}
+
+@Composable
+private fun ArchiveChatScreenContainer(
+    title: String,
+    wrapInCard: Boolean = true,
+    onBackClick: () -> Unit,
+    actionItems: @Composable () -> Unit = {},
+    content: @Composable () -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
+            Icon(
+                painterResource(id = R.drawable.ic_back_arrow),
+                contentDescription = stringResource(R.string.back),
+                tint = MaterialTheme.appColors.editTextColor,
+                modifier = Modifier
+                    .clickable {
+                        onBackClick()
+                    }
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleLarge.copy(
+                    color = MaterialTheme.appColors.editTextColor,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                ),
+                modifier = Modifier
+                    .weight(1f)
+            )
+            Icon(
+                painterResource(id = R.drawable.ic_unarchive_chats),
+                contentDescription = stringResource(R.string.un_archive_chat),
+                tint = MaterialTheme.appColors.editTextColor,
+                modifier = Modifier
+                    .clickable {
+                        onBackClick()
+                    }
+            )
+
+            actionItems()
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        if (wrapInCard) {
+            CardContainer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
+                content()
+            }
+        } else {
+            content()
+        }
     }
 }

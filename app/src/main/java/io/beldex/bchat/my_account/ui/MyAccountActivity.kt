@@ -473,7 +473,7 @@ fun MyAccountNavHost(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(bottom = 10.dp),
-                            shape = RoundedCornerShape(16.dp),
+                            shape = RoundedCornerShape(12.dp),
                             disabledContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
                         ) {
                             Row(

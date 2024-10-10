@@ -692,78 +692,12 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         }
     }
 
-    private fun showRequestDeleteDialog(record: ThreadRecord) {
-        val dialog = ConversationActionDialog()
-        dialog.apply {
-            arguments = Bundle().apply {
-                putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.DeleteRequest)
-                putSerializable(ConversationActionDialog.EXTRA_THREAD_RECORD, record)
-            }
-            setListener(this@HomeFragment)
-        }
-        dialog.show(childFragmentManager, ConversationActionDialog.TAG)
-    }
-
-    private fun showRequestBlockDialog(record: ThreadRecord) {
-        val dialog = ConversationActionDialog()
-        dialog.apply {
-            arguments = Bundle().apply {
-                putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.BlockRequest)
-                putSerializable(ConversationActionDialog.EXTRA_THREAD_RECORD, record)
-            }
-            setListener(this@HomeFragment)
-        }
-        dialog.show(childFragmentManager, ConversationActionDialog.TAG)
-    }
-
-
-    /*Hales63*/
-//    private fun setupMessageRequestsBanner() {
-//        println(">>>>>setting banner")
-//            val messageRequestCount = threadDb.unapprovedConversationCount
-//            // Set up message requests
-//            if (messageRequestCount > 0 && !(activity as HomeActivity).textSecurePreferences.hasHiddenMessageRequests()) {
-//                println(">>>>>setting banner:$messageRequestCount")
-//                with(ViewMessageRequestBannerBinding.inflate(layoutInflater)) {
-//                    unreadCountTextView.text = messageRequestCount.toString()
-//                    timestampTextView.text = DateUtils.getDisplayFormattedTimeSpanString(
-//                        requireActivity().applicationContext,
-//                        Locale.getDefault(),
-//                        threadDb.latestUnapprovedConversationTimestamp
-//                    )
-//                    root.setOnClickListener { showMessageRequests() }
-//                    expandMessageRequest.setOnClickListener { showMessageRequests() }
-//                    root.setOnLongClickListener { hideMessageRequests(); true }
-//                    root.layoutParams = RecyclerView.LayoutParams(
-//                        RecyclerView.LayoutParams.MATCH_PARENT,
-//                        RecyclerView.LayoutParams.WRAP_CONTENT
-//                    )
-//                    val hadHeader = homeAdapter.hasHeaderView()
-//                    homeAdapter.header = root
-//                    if (hadHeader) {
-//                        println(">>>>updating item")
-//                        homeAdapter.notifyItemRemoved(0)
-//                    } else {
-//                        println(">>>>adding item")
-//                        homeAdapter.notifyItemInserted(0)
-//                    }
-//                }
-//            } else {
-//                val hadHeader = homeAdapter.hasHeaderView()
-//                homeAdapter.header = null
-//                if (hadHeader) {
-//                    homeAdapter.notifyItemRemoved(0)
-//                }
-//            }
-//    }
-
     override fun hideMessageRequests() {
         val dialog = AlertDialog.Builder(requireActivity(), R.style.BChatAlertDialog_New)
             .setTitle("Hide message requests?")
             .setMessage("Once they are hidden, you can access them from Settings > Message Requests")
             .setPositiveButton(R.string.yes) { _, _ ->
                 (activity as HomeActivity).textSecurePreferences.setHasHiddenMessageRequests()
-//                setupMessageRequestsBanner()
                 homeViewModel.tryUpdateChannel()
             }
             .setNegativeButton(R.string.no) { _, _ ->
@@ -1674,19 +1608,6 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
 
     override fun onConfirm(dialogType: HomeDialogType, threadRecord: ThreadRecord?) {
         when (dialogType) {
-            HomeDialogType.DeleteRequest -> {
-                threadRecord?.let {
-                    homeViewModel.deleteMessageRequest(it)
-                }
-            }
-            HomeDialogType.BlockRequest -> {
-                threadRecord?.let {
-                    homeViewModel.blockMessageRequest(threadRecord)
-                    viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-                        ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(requireContext())
-                    }
-                }
-            }
             HomeDialogType.UnblockUser -> {
                 threadRecord?.let {
                     lifecycleScope.launch(Dispatchers.IO) {

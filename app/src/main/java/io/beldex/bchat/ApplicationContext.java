@@ -228,7 +228,7 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
 
         NetworkConstraint networkConstraint = new NetworkConstraint.Factory(this).create();
         HTTP.INSTANCE.setConnectedToNetwork(networkConstraint::isMet);
-        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(BuildConfig.CRASHLYTICS_ENABLED);
     }
 
     @Override

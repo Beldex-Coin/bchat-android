@@ -6,6 +6,7 @@ apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlinx-serialization'
 apply plugin: 'dagger.hilt.android.plugin'
+apply plugin: 'com.google.firebase.crashlytics'
 apply from: 'buildGradle/dependencies.gradle'
 
 dependencies {
@@ -114,9 +115,18 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            buildConfigField "boolean", "CRASHLYTICS_ENABLED", "true"
+            firebaseCrashlytics {
+                // Enable processing and uploading of native symbols to Firebase servers.
+                // By default, this is disabled to improve build speeds.
+                // This flag must be enabled to see properly-symbolicated native
+                // stack traces in the Crashlytics dashboard.
+                nativeSymbolUploadEnabled true
+            }
         }
         debug {
             minifyEnabled false
+            buildConfigField "boolean", "CRASHLYTICS_ENABLED", "false"
         }
     }
 

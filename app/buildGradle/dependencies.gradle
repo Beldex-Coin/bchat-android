@@ -72,7 +72,7 @@ dependencies {
     implementation project(":libsignal")
     implementation project(":libsession")
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxJsonVersion"
-    implementation "org.whispersystems:curve25519-java:$curve25519Version"
+    implementation "com.github.oxen-io.session-android-curve-25519:curve25519-java:$curve25519Version"
     implementation 'com.goterl:lazysodium-android:5.0.2@aar'
     implementation "net.java.dev.jna:jna:5.12.1@aar"
     implementation "com.google.protobuf:protobuf-java:$protobufVersion"
@@ -145,7 +145,6 @@ dependencies {
 
     implementation 'app.cash.copper:copper-flow:1.0.0'
     implementation 'com.google.code.gson:gson:2.8.7'
-    //implementation 'com.google.firebase:firebase-crash:16.2.1'
 
     //compose
     def composeBom = platform('androidx.compose:compose-bom:2023.06.00')
@@ -168,7 +167,9 @@ dependencies {
     //firebase new dependency
     implementation(platform("com.google.firebase:firebase-bom:33.2.0"))
     implementation("com.google.firebase:firebase-config")
+    implementation("com.google.firebase:firebase-crashlytics")
     implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-crashlytics-ndk")
 
     //memory leak dependency
 //  debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'

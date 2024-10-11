@@ -48,6 +48,8 @@ import com.beldex.libbchat.utilities.dynamiclanguage.LocaleParser;
 import com.beldex.libsignal.utilities.HTTP;
 import com.beldex.libsignal.utilities.Log;
 import com.beldex.libsignal.utilities.ThreadUtils;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
+
 import io.beldex.bchat.components.TypingStatusSender;
 import io.beldex.bchat.crypto.KeyPairUtilities;
 import io.beldex.bchat.database.BeldexAPIDatabase;
@@ -226,6 +228,7 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
 
         NetworkConstraint networkConstraint = new NetworkConstraint.Factory(this).create();
         HTTP.INSTANCE.setConnectedToNetwork(networkConstraint::isMet);
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
     }
 
     @Override

@@ -34,6 +34,7 @@ import android.text.Spanned
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.util.Log
 import android.util.Pair
 import android.util.TypedValue
@@ -2333,13 +2334,35 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     )
                     checkInputBarTextOnTextChanged(text,thread)
                 }
+
+                override fun afterTextChanged(s: Editable?) {
+                    super.afterTextChanged(s)   
+                    formatBoldText(s)
+                }
             })
         } else {
             binding.inputBar.addTextChangedListener(object : SimpleTextWatcher() {
                 override fun onTextChanged(text: String?) {
                    checkInputBarTextOnTextChanged(text,thread)
                 }
+
+                override fun afterTextChanged(s: Editable?) {
+                    super.afterTextChanged(s)
+                    formatBoldText(s)
+                }
             })
+        }
+    }
+
+    private fun formatBoldText(s: Editable?) {
+        val text = s.toString()
+        val start = text.indexOf("*")
+        val end = text.lastIndexOf("*")
+
+        if (start != -1 && end != -1 && start != end) {
+            s?.setSpan(StyleSpan(Typeface.BOLD), start+1, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            s?.delete(start, start + 1)
+            s?.delete(end-1, end)
         }
     }
 

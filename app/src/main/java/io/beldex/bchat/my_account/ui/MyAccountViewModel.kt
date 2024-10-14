@@ -1,5 +1,7 @@
 package io.beldex.bchat.my_account.ui
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.beldex.libbchat.mnode.OnionRequestAPI
 import com.beldex.libbchat.utilities.truncateIdForDisplay
@@ -32,6 +34,9 @@ class MyAccountViewModel @Inject constructor(
 
     private val _pathState = MutableStateFlow(listOf<PathNodeModel>())
     val pathState = _pathState.asStateFlow()
+
+    private val _isProfileChanged = MutableLiveData<Boolean>()
+    val isProfileChanged: LiveData<Boolean> get () = _isProfileChanged
 
     init {
         val publicKey = preferenceUtil.getPublicKey()
@@ -70,6 +75,10 @@ class MyAccountViewModel @Inject constructor(
                 profileName = preferenceUtil.getProfileName() ?: truncateIdForDisplay(uiState.value.publicKey),
             )
         }
+    }
+
+    fun updateProfile(updated: Boolean){
+        _isProfileChanged.value = updated
     }
 
 }

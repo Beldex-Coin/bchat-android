@@ -248,7 +248,6 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     private lateinit var adapter: NavigationRVAdapter
 
     private var items = arrayListOf(
-        NavigationItemModel(R.drawable.ic_account_settings, "Account Settings",0),
         NavigationItemModel(R.drawable.ic_settings_outline, "Settings",0),
         NavigationItemModel(R.drawable.ic_notification_outline, "Notification",0),
         NavigationItemModel(R.drawable.ic_msg_rqst_outline, "Message Requests",0),
@@ -404,30 +403,22 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
             override fun onClick(view: View, position: Int) {
                 when (position) {
                     0 -> {
-                        // # Account Activity
-                        openSettings()
-                    }
-                    1 -> {
                         // # Privacy Activity
                         showPrivacySettings()
                     }
-                    2 -> {
+                    1 -> {
                         // # Notification Activity
                         showNotificationSettings()
                     }
-                    3 -> {
+                    2 -> {
                         // # Message Requests Activity
                         showMessageRequests()
                     }
-//                    4 -> {
-//                        // # App Permissions Activity
-//                        callAppPermission()
-//                    }
-                    4 -> {
+                    3 -> {
                         // # Recovery Seed Activity
                         showSeed()
                     }
-                    5 -> {
+                    4 -> {
                         // # My Wallet Activity
                         if (CheckOnline.isOnline(requireActivity().applicationContext)) {
                             if (TextSecurePreferences.isWalletActive(requireContext())) {
@@ -439,25 +430,25 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                             Toast.makeText(requireActivity().applicationContext, getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
                         }
                     }
-                    6 -> {
+                    5 -> {
                         // # Support
                         activityCallback?.sendMessageToSupport()
                     }
-                    7 -> {
+                    6 -> {
                         // # Help Activity
                         help()
                     }
-                    8 -> {
+                    7 -> {
                         // # Invite Activity
                         sendInvitation(hexEncodedPublicKey)
                     }
-                    9 -> {
+                    8 -> {
                         // # About Activity
                         showAbout()
                     }
                 }
                 // Don't highlight the 'Profile' and 'Like us on Facebook' item row
-                if (position != 6 && position != 4) {
+                if (position != 5 && position != 3) {
                     updateAdapter(position)
                 }
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -486,10 +477,10 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
             event.actionMasked == MotionEvent.ACTION_MOVE
         }
         binding.navigationMenu.profileContainer.setOnClickListener{
-            callShowQrCode()
+            openSettings()
         }
         binding.navigationMenu.drawerProfileIcon.root.setOnClickListener {
-            callShowQrCode()
+            openSettings()
         }
         binding.navigationMenu.drawerProfileIcon.root.glide = glide
         binding.navigationMenu.drawerProfileIcon.root.isClickable = true
@@ -1397,6 +1388,9 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                 startActivity(it)
             }
         }
+        Handler(Looper.getMainLooper()).postDelayed({
+            binding.drawerLayout.closeDrawer(GravityCompat.END)
+        }, 200)
     }
 
     private var callSettingsActivityResultLauncher = registerForActivityResult(

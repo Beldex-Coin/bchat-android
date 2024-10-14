@@ -1,6 +1,8 @@
 package io.beldex.bchat.my_account.ui
 
+import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BlurMaskFilter
@@ -15,6 +17,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,7 +33,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -39,6 +44,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -49,6 +56,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.geometry.Offset
@@ -60,6 +68,7 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -69,15 +78,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import app.cash.copper.flow.observeQuery
+import com.beldex.libbchat.avatars.AvatarHelper
+import com.beldex.libbchat.utilities.Address
+import com.beldex.libbchat.utilities.ProfileKeyUtil
+import com.beldex.libbchat.utilities.ProfilePictureUtilities
+import com.beldex.libbchat.utilities.SSKEnvironment
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.crypto.MnemonicCodec
+import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.hexEncodedPrivateKey
+import com.canhub.cropper.CropImage
+import com.canhub.cropper.CropImageContract
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.BChatTypography
@@ -107,13 +125,29 @@ import io.beldex.bchat.wallet.jetpackcomposeUI.StatWalletInfo
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
 import io.beldex.bchat.archivechats.ArchiveChatViewModel
+import io.beldex.bchat.avatar.AvatarSelection
+import io.beldex.bchat.compose_utils.checkAndRequestPermissions
 import io.beldex.bchat.database.GroupDatabase
+import io.beldex.bchat.my_account.ui.dialogs.ProfilePicturePopup
+import io.beldex.bchat.permissions.Permissions
+import io.beldex.bchat.profiles.ProfileMediaConstraints
+import io.beldex.bchat.util.BitmapDecodingException
+import io.beldex.bchat.util.BitmapUtil
+import io.beldex.bchat.util.ConfigurationMessageUtilities
+import io.beldex.bchat.wallet.CheckOnline
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import nl.komponents.kovenant.Promise
+import nl.komponents.kovenant.all
+import nl.komponents.kovenant.ui.alwaysUi
+import nl.komponents.kovenant.ui.successUi
 import java.io.File
 import java.io.FileOutputStream
+import java.security.SecureRandom
+import java.util.Date
+import java.util.regex.Pattern
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -122,6 +156,99 @@ class MyAccountActivity : ComponentActivity() {
     private var destination = MyAccountScreens.SettingsScreen.route
     @Inject
     lateinit var groupDb: GroupDatabase
+    private var tempFile: File? = null
+    val TAG = "MyAccountActivity"
+
+    val viewModel: MyAccountViewModel by viewModels()
+
+
+    private val onAvatarCropped = registerForActivityResult(CropImageContract()) { result ->
+        when {
+            result.isSuccessful -> {
+                Log.i(TAG, result.getUriFilePath(this).toString())
+                lifecycleScope.launch(Dispatchers.IO) {
+                    try {
+                        val profilePictureToBeUploaded =
+                            BitmapUtil.createScaledBytes(
+                                this@MyAccountActivity,
+                                result.getUriFilePath(this@MyAccountActivity).toString(),
+                                ProfileMediaConstraints()
+                            ).bitmap
+                        launch(Dispatchers.Main) {
+                            TextSecurePreferences.setIsLocalProfile(this@MyAccountActivity,false)
+                            updateProfile(true,profilePictureToBeUploaded)
+                        }
+                    } catch (e: BitmapDecodingException) {
+                        Log.e(TAG, e)
+                    }
+                }
+            }
+            result is CropImage.CancelledResult -> {
+                Log.i(TAG, "Cropping image was cancelled by the user")
+            }
+            else -> {
+                Log.e(TAG, "Cropping image failed")
+            }
+        }
+    }
+    private val onPickImage = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ){ result ->
+        if (result.resultCode != Activity.RESULT_OK) return@registerForActivityResult
+        val outputFile = Uri.fromFile(File(cacheDir, "cropped"))
+        val inputFile: Uri? = result.data?.data ?: tempFile?.let(Uri::fromFile)
+        cropImage(inputFile, outputFile)
+    }
+
+    private val avatarSelection = AvatarSelection(this, onAvatarCropped, onPickImage)
+
+    private fun cropImage(inputFile: Uri?, outputFile: Uri?){
+        avatarSelection.circularCropImage(
+            inputFile = inputFile,
+            outputFile = outputFile,
+        )
+
+    }
+
+    private fun updateProfile(isUpdatingProfilePicture: Boolean, profilePicture: ByteArray? = null,
+                              displayName: String? = null) {
+        val promises = mutableListOf<Promise<*, Exception>>()
+        if (displayName != null) {
+            TextSecurePreferences.setProfileName(this, displayName)
+            viewModel.refreshProfileName()
+        }
+        val encodedProfileKey = ProfileKeyUtil.generateEncodedProfileKey(this)
+        if (isUpdatingProfilePicture) {
+            if (profilePicture != null) {
+                promises.add(ProfilePictureUtilities.upload(profilePicture, encodedProfileKey, this))
+            } else {
+                TextSecurePreferences.setLastProfilePictureUpload(this, System.currentTimeMillis())
+                TextSecurePreferences.setProfilePictureURL(this, null)
+            }
+        }
+        val compoundPromise = all(promises)
+        compoundPromise.successUi { // Do this on the UI thread so that it happens before the alwaysUi clause below
+            if (isUpdatingProfilePicture) {
+                AvatarHelper.setAvatar(
+                    this,
+                    Address.fromSerialized(TextSecurePreferences.getLocalNumber(this)!!),
+                    profilePicture
+                )
+                TextSecurePreferences.setProfileAvatarId(this,profilePicture?.let { SecureRandom().nextInt() } ?: 0)
+                TextSecurePreferences.setLastProfilePictureUpload(this, Date().time)
+                ProfileKeyUtil.setEncodedProfileKey(this, encodedProfileKey)
+            }
+            if (profilePicture != null || displayName != null) {
+                ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(this)
+            }
+        }
+        compoundPromise.alwaysUi {
+            if (isUpdatingProfilePicture) {
+                viewModel.updateProfile(true)
+            }
+        }
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -136,16 +263,44 @@ class MyAccountActivity : ComponentActivity() {
                         containerColor = MaterialTheme.colorScheme.primary,
                     ) {
                         val navController = rememberNavController()
+                        val lifecycleOwner = LocalLifecycleOwner.current
+                        var isProfileChanged by remember {
+                            mutableStateOf(false)
+                        }
+                        viewModel.isProfileChanged.observe(lifecycleOwner) { changed ->
+                            isProfileChanged = changed
+                        }
                         MyAccountNavHost(
                             navController = navController,
                             startDestination = destination,
                             groupDatabase = groupDb,
+                            startAvatarSelection = {
+                                startAvatarSelection()
+                            },
+                            modifyProfile = isProfileChanged,
                             modifier = Modifier
                                 .padding(it)
                         )
                     }
                 }
             }
+        }
+    }
+
+    private fun startAvatarSelection() {
+        if (CheckOnline.isOnline(this)) {
+            Permissions.with(this)
+                .request(Manifest.permission.CAMERA)
+                .onAnyResult {
+                    tempFile=avatarSelection.startAvatarSelection(false, true)
+                }
+                .execute()
+        } else {
+            Toast.makeText(
+                this,
+                getString(R.string.please_check_your_internet_connection),
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -159,6 +314,8 @@ fun MyAccountNavHost(
     navController: NavHostController,
     startDestination: String,
     groupDatabase : GroupDatabase,
+    startAvatarSelection: () -> Unit,
+    modifyProfile: Boolean,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -167,6 +324,94 @@ fun MyAccountNavHost(
     }
     val archiveChatViewModel: ArchiveChatViewModel = hiltViewModel()
     val viewModel: MyAccountViewModel = hiltViewModel()
+    val requiredPermission = arrayOf(Manifest.permission.CAMERA)
+    var showPermissionDialog by remember {
+        mutableStateOf(false)
+    }
+    var isProfileChanged by remember {
+        mutableStateOf(modifyProfile)
+    }
+    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestMultiplePermissions()) { result ->
+        if (result.all { it.value }) {
+
+        } else {
+            showPermissionDialog = true
+        }
+    }
+
+     fun updateProfile(isUpdatingProfilePicture: Boolean, profilePicture: ByteArray? = null,
+                              displayName: String? = null, context : Context) {
+         /* binding.loader.isVisible = true
+        lifecycleScope.launch {
+
+            delay(3000)
+            binding.loader.isVisible = false
+        }*/
+        val promises = mutableListOf<Promise<*, Exception>>()
+        if (displayName != null) {
+            TextSecurePreferences.setProfileName(context, displayName)
+            viewModel.refreshProfileName()
+        }
+        val encodedProfileKey = ProfileKeyUtil.generateEncodedProfileKey(context)
+        if (isUpdatingProfilePicture) {
+            if (profilePicture != null) {
+                promises.add(ProfilePictureUtilities.upload(profilePicture, encodedProfileKey, context))
+            } else {
+                TextSecurePreferences.setLastProfilePictureUpload(context, System.currentTimeMillis())
+                TextSecurePreferences.setProfilePictureURL(context, null)
+            }
+        }
+        val compoundPromise = all(promises)
+        compoundPromise.successUi { // Do this on the UI thread so that it happens before the alwaysUi clause below
+            if (isUpdatingProfilePicture) {
+                AvatarHelper.setAvatar(
+                    context,
+                    Address.fromSerialized(TextSecurePreferences.getLocalNumber(context)!!),
+                    profilePicture
+                )
+                TextSecurePreferences.setProfileAvatarId(context,profilePicture?.let { SecureRandom().nextInt() } ?: 0)
+                TextSecurePreferences.setLastProfilePictureUpload(context, Date().time)
+                ProfileKeyUtil.setEncodedProfileKey(context, encodedProfileKey)
+            }
+            if (profilePicture != null || displayName != null) {
+                ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(context)
+            }
+        }
+    }
+
+     fun saveDisplayName(displayName: String, context : Context): Boolean {
+         val namePattern = Pattern.compile("[A-Za-z0-9]+")
+        if (displayName.isEmpty()) {
+            Toast.makeText(
+                context,
+                R.string.activity_settings_display_name_missing_error,
+                Toast.LENGTH_SHORT
+            ).show()
+            return false
+        }
+        if (displayName.toByteArray().size > SSKEnvironment.ProfileManagerProtocol.Companion.NAME_PADDED_LENGTH) {
+            Toast.makeText(
+                context,
+                R.string.activity_settings_display_name_too_long_error,
+                Toast.LENGTH_SHORT
+            ).show()
+            return false
+        }
+        if (!displayName.matches(namePattern.toRegex())) {
+            Toast.makeText(
+                context,
+                R.string.display_name_validation,
+                Toast.LENGTH_SHORT
+            ).show()
+            return false
+        }
+
+        val checkGalleryProfile = TextSecurePreferences.getIsLocalProfile(context)
+        updateProfile(checkGalleryProfile,null, displayName = displayName, context)
+         //viewModel.refreshProfileName()
+        return true
+    }
+
     NavHost(
         navController = navController,
         startDestination = startDestination,
@@ -236,6 +481,19 @@ fun MyAccountNavHost(
                     mutableStateOf(false)
                 }
                 var isRefreshProfile by remember {
+                    mutableStateOf(false)
+                }
+                var showEditNameTextField by remember {
+                    mutableStateOf(false)
+                }
+                var showNameOnly by remember {
+                    mutableStateOf(true)
+                }
+                var saveEditName by remember {
+                    mutableStateOf(state.profileName)
+                }
+
+                var showPictureDialog by remember {
                     mutableStateOf(false)
                 }
 
@@ -332,6 +590,46 @@ fun MyAccountNavHost(
                         showBnsNameVerifySuccessDialog = false
                     }
                 }
+                fun checkForPermission() {
+                    // Ask for an optional camera permission.
+                    if (CheckOnline.isOnline(context)) {
+                        checkAndRequestPermissions(
+                            context = context,
+                            permissions = requiredPermission,
+                            launcher = launcher,
+                            onGranted = {
+                                startAvatarSelection()
+                            }
+                        )
+                    } else {
+                        Toast.makeText(
+                            context,
+                            context.resources.getString(R.string.please_check_your_internet_connection),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                if (showPictureDialog) {
+                    ProfilePicturePopup(
+                        publicKey = state.publicKey,
+                        displayName = state.profileName ?: "",
+                        onDismissRequest = {
+                            showPictureDialog = false
+                        },
+                        closePopUP = {
+                            showPictureDialog = false
+                        },
+                        removePicture = {
+                            showPictureDialog = false
+                        },
+                        uploadPicture = {
+                            showPictureDialog = false
+                            checkForPermission()
+                            //startAvatarSelection
+                        }
+                    )
+                }
 
                 fun Modifier.innerShadow(
                     color: Color = Color.Black,
@@ -415,6 +713,40 @@ fun MyAccountNavHost(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Box(
+                            modifier =Modifier
+                                .padding(start=24.dp, top=16.dp, end=0.dp, bottom=16.dp)
+                                .background(
+                                    color=if (showEditNameTextField) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.listItemBackground,
+                                    shape=RoundedCornerShape(16.dp)
+                                )
+                                .align(Alignment.TopEnd)
+                                .clickable {
+                                    if (!showEditNameTextField) {
+                                        showNameOnly=false
+                                        showEditNameTextField=true
+                                    } else {
+                                        showNameOnly=true
+                                        showEditNameTextField=false
+                                        saveEditName?.let { it1 -> saveDisplayName(it1, context) }
+                                    }
+                                }
+                            ,
+                            contentAlignment = Alignment.Center
+
+                        ){
+                            Text(
+                                text = if(showEditNameTextField) stringResource(id=R.string.menu_done_button) else stringResource(id=R.string.edit_title),
+                                style = BChatTypography.bodySmall.copy(
+                                    color = if(showEditNameTextField) Color.White  else MaterialTheme.appColors.primaryButtonColor,
+                                    fontWeight = FontWeight(600),
+                                    fontSize = 12.sp,
+                                ),
+                                modifier = Modifier.padding(start = 12.dp, top = 4.dp, end = 12.dp, bottom = 4.dp)
+
+                            )
+                        }
+
+                        Box(
                             modifier = if(!isBnsHolder.isNullOrEmpty()) Modifier
                                 .fillMaxWidth()
                                 .padding(top=50.dp, bottom=10.dp)
@@ -425,21 +757,23 @@ fun MyAccountNavHost(
                                 .innerShadow(
                                     color=if (isDarkMode) MaterialTheme.appColors.primaryButtonColor else Color(
                                         0x8000BD40
-                                    ),
-                                    blur=if (isDarkMode) 20.dp else 10.dp,
-                                    cornersRadius=16.dp
+                                    ), blur=if (isDarkMode) 20.dp else 10.dp, cornersRadius=16.dp
                                 ) else Modifier
                                 .fillMaxWidth()
-                                .padding(top = 50.dp, bottom = 10.dp).background(color = MaterialTheme.appColors.listItemBackground, shape = RoundedCornerShape(16.dp))
+                                .padding(top=50.dp, bottom=10.dp)
+                                .background(
+                                    color=MaterialTheme.appColors.listItemBackground,
+                                    shape=RoundedCornerShape(16.dp)
+                                )
                         ) {
                             ProfileCard(
                                 isBnsHolder = isBnsHolder,
                                 uiState = state,
                                 beldexAddress = beldexAddress,
-                                modifier = Modifier
+                                modifier =Modifier
                                     .fillMaxWidth()
                                     .padding(
-                                        top = 40.dp
+                                        top=40.dp
                                     ),
                                 onShowDialog = {
                                     when (it) {
@@ -452,17 +786,55 @@ fun MyAccountNavHost(
                                         else ->
                                             showQRDialog = true
                                     }
+                                },
+                                showEditNameTextField,
+                                showNameOnly,
+                                saveDisplayName ={
+                                    saveEditName = it
                                 }
                             )
                         }
-                        ProfilePictureComponent(
-                            publicKey = state.publicKey,
-                            displayName = state.profileName ?: state.publicKey,
-                            containerSize = ProfilePictureMode.LargePicture.size,
-                            pictureMode = ProfilePictureMode.LargePicture,
-                            modifier = Modifier.align(alignment = Alignment.TopCenter),
-                            isRefresh = isRefreshProfile
-                        )
+                        if(modifyProfile){
+                            isRefreshProfile = true
+                            isProfileChanged = true
+                        }
+                        Box(
+                            contentAlignment=Alignment.CenterEnd,
+                            modifier=Modifier.align(alignment=Alignment.TopCenter)
+                        ) {
+                            ProfilePictureComponent(
+                                publicKey=state.publicKey,
+                                displayName=state.profileName ?: state.publicKey,
+                                containerSize=ProfilePictureMode.LargePicture.size,
+                                pictureMode=ProfilePictureMode.LargePicture,
+                                modifier=Modifier.align(alignment=Alignment.TopCenter),
+                                isRefresh=isRefreshProfile
+                            )
+                            if (showEditNameTextField) {
+                                Box(
+                                    contentAlignment=Alignment.Center,
+                                    modifier=Modifier
+                                        .padding(start=150.dp)
+                                        .size(32.dp)
+                                        .clip(CircleShape)
+                                        .background(
+                                            color=MaterialTheme.appColors.backgroundColor
+                                        )
+                                        .clickable {
+                                            showPictureDialog=true
+
+                                        }
+                                ) {
+                                    Icon(
+                                        painterResource(id=R.drawable.ic_camera_edit),
+                                        contentDescription="",
+                                        tint=MaterialTheme.appColors.editTextColor,
+                                        modifier=Modifier
+                                            .size(20.dp)
+                                    )
+                                }
+                            }
+                        }
                     }
 
                     if(isBnsHolder.isNullOrEmpty()) {
@@ -470,9 +842,9 @@ fun MyAccountNavHost(
                             onClick = {
                                 showLinkYourBnsDialog = true
                             },
-                            modifier = Modifier
+                            modifier =Modifier
                                 .fillMaxWidth()
-                                .padding(bottom = 10.dp),
+                                .padding(bottom=10.dp),
                             shape = RoundedCornerShape(12.dp),
                             disabledContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
                         ) {
@@ -496,9 +868,9 @@ fun MyAccountNavHost(
                             }
                         }
                         Row(
-                            modifier = Modifier
+                            modifier =Modifier
                                 .fillMaxWidth()
-                                .padding(bottom = 10.dp),
+                                .padding(bottom=10.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Center
                         ) {
@@ -509,22 +881,21 @@ fun MyAccountNavHost(
                                     fontWeight = FontWeight(400),
                                     fontSize = 12.sp
                                 ),
-                                modifier = Modifier
-                                    .padding(end = 5.dp).clickable(
-                                        onClick = {
-                                            callAboutBns()
-                                        }
-                                    )
+                                modifier =Modifier
+                                    .padding(end=5.dp)
+                                    .clickable(onClick={
+                                        callAboutBns()
+                                    })
                             )
                             Icon(
                                 painterResource(id = R.drawable.ic_info_outline_dark),
                                 contentDescription = "Read more about BNS",
                                 tint = MaterialTheme.appColors.secondaryTextColor,
-                                modifier = Modifier.size(12.dp).clickable(
-                                    onClick = {
+                                modifier =Modifier
+                                    .size(12.dp)
+                                    .clickable(onClick={
                                         callAboutBns()
-                                    }
-                                )
+                                    })
                             )
                         }
                     }
@@ -672,7 +1043,7 @@ fun MyAccountNavHost(
                 }
             ) {
                 ChatSettingsScreen(
-                    modifier = Modifier
+                    modifier =Modifier
                         .fillMaxSize()
                         .padding(16.dp)
                 )
@@ -744,7 +1115,7 @@ fun MyAccountNavHost(
                                 )
                             )
                         },
-                        modifier = Modifier
+                        modifier =Modifier
                             .fillMaxSize()
                             .padding(16.dp)
                     )
@@ -765,7 +1136,7 @@ fun MyAccountNavHost(
             ) {
                 ContentScreen(
                     content = content,
-                    modifier = Modifier
+                    modifier =Modifier
                         .fillMaxSize()
                         .padding(16.dp)
                 )
@@ -824,7 +1195,7 @@ fun MyAccountNavHost(
                     seed = seed,
                     markedAsSafe = markedAsSafe,
                     verifyPin = verifyPin,
-                    modifier = Modifier
+                    modifier =Modifier
                         .fillMaxSize()
                         .padding(16.dp)
                 )
@@ -836,7 +1207,7 @@ fun MyAccountNavHost(
                 (context as ComponentActivity).finish()
             }) {
                 StatWalletInfo(
-                    modifier = Modifier
+                    modifier =Modifier
                         .fillMaxSize()
                         .padding(16.dp)
                 )
@@ -876,7 +1247,7 @@ fun MyAccountNavHost(
                             finish()
                         }
                     },
-                    modifier = Modifier
+                    modifier =Modifier
                         .fillMaxSize()
                         .padding(16.dp)
                 )
@@ -893,7 +1264,7 @@ fun MyAccountNavHost(
                 }
             ) {
                 AboutBNSScreen(
-                    modifier = Modifier
+                    modifier =Modifier
                         .fillMaxSize()
                         .padding(16.dp)
                 )
@@ -932,7 +1303,7 @@ fun MyAccountNavHost(
                     },
                     archiveChatViewModel = archiveChatViewModel,
                     groupDatabase = groupDatabase,
-                    modifier = Modifier
+                    modifier =Modifier
                         .fillMaxSize()
                         .padding(8.dp)
                 )
@@ -947,37 +1318,71 @@ fun ProfileCard(
     uiState: MyAccountViewModel.UIState,
     beldexAddress: String,
     modifier: Modifier = Modifier,
-    onShowDialog: (status: Int) -> Unit
+    onShowDialog: (status: Int) -> Unit,
+    onShowEditName: Boolean,
+    onShowNameOnly: Boolean,
+    saveDisplayName: (String) -> Unit
 ) {
     val context = LocalContext.current
     val copyToClipBoard: (String, String) -> Unit = { label, content ->
         context.copyToClipBoard(label, content)
     }
+    var textFieldValueState by remember {
+        mutableStateOf("${uiState.profileName}")
+    }
+    val savedName by remember {
+        mutableStateOf(saveDisplayName)
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
+        modifier =modifier
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        Text(
-            text = uiState.profileName ?: "",
-            style = MaterialTheme.typography.titleMedium.copy(
-                color = MaterialTheme.appColors.titleTextColor,
-                fontWeight = FontWeight(700),
-                fontSize = 18.sp,
-                lineHeight = 24.51.sp
-            ),
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.CenterHorizontally)
-        )
+
+        if (onShowNameOnly) {
+            Text(
+                text=uiState.profileName ?: "",
+                style=MaterialTheme.typography.titleMedium.copy(
+                    color=MaterialTheme.appColors.titleTextColor,
+                    fontWeight=FontWeight(700),
+                    fontSize=18.sp,
+                    lineHeight=24.51.sp
+                ),
+                textAlign=TextAlign.Center,
+                modifier=Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally)
+            )
+        }
+        if (onShowEditName) {
+           TextField(
+               value= textFieldValueState,
+               onValueChange={
+                   textFieldValueState=it
+                   savedName(it)
+               },
+               maxLines = 1,
+               singleLine = true,
+               textStyle = MaterialTheme.typography.bodyMedium.copy(
+                   fontSize = 16.sp,
+                   fontWeight = FontWeight(400),
+                   textAlign = TextAlign.Center
+               ),
+               colors = TextFieldDefaults.colors(
+                   focusedIndicatorColor = MaterialTheme.appColors.textColor,
+                   unfocusedIndicatorColor = MaterialTheme.appColors.textColor,
+                   selectionColors = TextSelectionColors(MaterialTheme.appColors.textSelectionColor, MaterialTheme.appColors.textSelectionColor),
+                   cursorColor = colorResource(id = R.color.button_green)
+           )
+           )
+        }
         if(!isBnsHolder.isNullOrEmpty()){
             Row(
-                modifier = Modifier
+                modifier =Modifier
                     .fillMaxWidth()
-                    .padding(top = 5.dp, bottom = 15.dp),
+                    .padding(top=5.dp, bottom=15.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
@@ -1062,7 +1467,7 @@ fun ProfileCardKeyContainer(
         ),
     ) {
         Box(
-            modifier = Modifier
+            modifier =Modifier
                 .padding(5.dp)
                 .clickable {
                     onShowDialog()
@@ -1092,8 +1497,8 @@ fun ProfileCardKeyContainer(
                         fontWeight = FontWeight.Medium
                     ),
                     textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(top = 8.dp)
+                    modifier =Modifier
+                        .padding(top=8.dp)
                         .align(Alignment.CenterHorizontally)
                 )
             }
@@ -1102,9 +1507,9 @@ fun ProfileCardKeyContainer(
                     painter = painterResource(id = R.drawable.ic_copy),
                     contentDescription = "",
                     tint = MaterialTheme.appColors.editTextHint,
-                    modifier = Modifier
+                    modifier =Modifier
                         .size(16.dp)
-                        .align(alignment = Alignment.TopEnd)
+                        .align(alignment=Alignment.TopEnd)
                         .clickable {
                             onCopy()
                         }
@@ -1128,7 +1533,7 @@ private fun MyAccountScreenContainer(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
+            modifier =Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
@@ -1162,7 +1567,7 @@ private fun MyAccountScreenContainer(
 
         if (wrapInCard) {
             CardContainer(
-                modifier = Modifier
+                modifier =Modifier
                     .fillMaxWidth()
                     .weight(1f)
             ) {
@@ -1207,7 +1612,7 @@ private fun ArchiveChatScreenContainer(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
+            modifier =Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
         ) {
@@ -1250,7 +1655,7 @@ private fun ArchiveChatScreenContainer(
 
         if (wrapInCard) {
             CardContainer(
-                modifier = Modifier
+                modifier =Modifier
                     .fillMaxWidth()
                     .weight(1f)
             ) {

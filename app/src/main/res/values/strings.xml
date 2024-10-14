@@ -1564,4 +1564,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="mute_notification">Mute Notification</string>
     <string name="disappearing_messages">Disappearing Messages</string>
     <string name="Permissions_record_permission_required" translatable="false">Record Permission Required!</string>
+    <string name="edit_title" translatable="false">Edit</string>
 </resources>

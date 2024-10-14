@@ -44,8 +44,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
-            app:cardBackgroundColor="@color/drawer_card_color"
-            app:cardCornerRadius="8dp"
+            app:cardBackgroundColor="@color/notification_content_cancel_button_background"
+            app:cardCornerRadius="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/drawer_settings_title">
@@ -54,7 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="5dp">
+                android:padding="8dp">
 
                 <include
                     android:id="@+id/drawer_profile_icon"
@@ -70,11 +70,11 @@
                     android:id="@+id/drawer_profile_name_layout"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="15dp"
+                    android:layout_marginStart="12dp"
                     android:orientation="vertical"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toRightOf="@id/drawer_profile_icon"
-                    app:layout_constraintRight_toLeftOf="@id/drawer_qrcode_img"
+                    app:layout_constraintRight_toLeftOf="@id/account_setting_img"
                     app:layout_constraintTop_toTopOf="parent"
                     android:focusable="true">
 
@@ -106,14 +106,13 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/drawer_qrcode_img"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/account_setting_img"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_gravity="end"
                     android:layout_weight="1"
-                    android:padding="10dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_qr_code_24"
+                    android:src="@drawable/ic_account_settings"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"

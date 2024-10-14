@@ -129,7 +129,8 @@ fun NewChatButtons(
                     hoveredElevation = 0.dp
                 ),
                 onClick = {
-                    changeExpandedStatus(!isExpanded)
+                    //changeExpandedStatus(!isExpanded)
+                          createPrivateChat()
                 },
                 containerColor = MaterialTheme.appColors.floatingActionButtonBackground,
                 modifier = Modifier

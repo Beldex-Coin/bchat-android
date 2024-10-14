@@ -61,8 +61,6 @@ import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.components.ProfilePictureView
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.conversation.v2.ConversationFragmentV2
-import io.beldex.bchat.conversation_v2.NewConversationActivity
-import io.beldex.bchat.conversation_v2.NewConversationType
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.data.NodeInfo
 import io.beldex.bchat.database.BchatContactDatabase
@@ -123,6 +121,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
 import io.beldex.bchat.archivechats.ArchiveChatViewModel
+import io.beldex.bchat.conversation_v2.NewChatConversationActivity
+import io.beldex.bchat.conversation_v2.NewGroupConversationActivity
+import io.beldex.bchat.conversation_v2.NewGroupConversationType
 import io.beldex.bchat.databinding.FragmentHomeBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -1495,27 +1496,48 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     }
 
     override fun createNewPrivateChat() {
-        val intent = Intent(requireContext(), NewConversationActivity::class.java).apply {
-            putExtra(NewConversationActivity.EXTRA_DESTINATION, NewConversationType.PrivateChat.destination)
-        }
+        val intent = Intent(requireContext(), NewChatConversationActivity::class.java)
         createNewPrivateChatResultLauncher.launch(intent)
     }
 
     private var createNewPrivateChatResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            val extras = Bundle()
-            extras.putParcelable(ConversationFragmentV2.ADDRESS,result.data!!.parcelable(ConversationFragmentV2.ADDRESS))
-            extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
-            extras.putParcelable(ConversationFragmentV2.URI,result.data!!.parcelable(ConversationFragmentV2.URI))
-            extras.putString(ConversationFragmentV2.TYPE,result.data!!.getStringExtra(ConversationFragmentV2.TYPE))
-            extras.putString(ConversationFragmentV2.BNS_NAME,result.data!!.getStringExtra(ConversationFragmentV2.BNS_NAME))
-            replaceFragment(ConversationFragmentV2(), null, extras)
+            when(result.data!!.getIntExtra(ConversationFragmentV2.ACTIVITY_TYPE,1)){
+                1 -> { //New Chat
+                    val extras = Bundle()
+                    extras.putParcelable(ConversationFragmentV2.ADDRESS,result.data!!.parcelable(ConversationFragmentV2.ADDRESS))
+                    extras.putLong(ConversationFragmentV2.THREAD_ID, result.data!!.getLongExtra(ConversationFragmentV2.THREAD_ID,-1))
+                    extras.putParcelable(ConversationFragmentV2.URI,result.data!!.parcelable(ConversationFragmentV2.URI))
+                    extras.putString(ConversationFragmentV2.TYPE,result.data!!.getStringExtra(ConversationFragmentV2.TYPE))
+                    extras.putString(ConversationFragmentV2.BNS_NAME,result.data!!.getStringExtra(ConversationFragmentV2.BNS_NAME))
+                    replaceFragment(ConversationFragmentV2(), null, extras)
+                }
+                2 -> { // Secret Group
+                    createNewSecretGroup()
+                }
+                3 -> { // Social Group
+                    joinSocialGroup()
+                }
+                4 -> { // Note to Self
+                    val recipient = Recipient.from(requireContext(), Address.fromSerialized(hexEncodedPublicKey), false)
+                    passGlobalSearchAdapterModelContactValue(recipient.address)
+                }
+                5 -> { // Invite a Friend
+                    sendInvitation(hexEncodedPublicKey)
+                }
+                6 -> { // Individual Conversation
+                    val extras = Bundle()
+                    extras.putParcelable(ConversationFragmentV2.ADDRESS,result.data!!.parcelable(ConversationFragmentV2.ADDRESS))
+                    replaceFragment(ConversationFragmentV2(),null,extras)
+                }
+                else -> return@registerForActivityResult
+            }
         }
     }
 
     override fun createNewSecretGroup() {
-        val intent = Intent(requireContext(), NewConversationActivity::class.java).apply {
-            putExtra(NewConversationActivity.EXTRA_DESTINATION, NewConversationType.SecretGroup.destination)
+        val intent = Intent(requireContext(), NewGroupConversationActivity::class.java).apply {
+            putExtra(NewGroupConversationActivity.EXTRA_DESTINATION, NewGroupConversationType.SecretGroup.destination)
         }
         createClosedGroupActivityResultLauncher.launch(intent)
     }
@@ -1533,8 +1555,8 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     }
 
     override fun joinSocialGroup() {
-        val intent = Intent(requireContext(), NewConversationActivity::class.java).apply {
-            putExtra(NewConversationActivity.EXTRA_DESTINATION, NewConversationType.PublicGroup.destination)
+        val intent = Intent(requireContext(), NewGroupConversationActivity::class.java).apply {
+            putExtra(NewGroupConversationActivity.EXTRA_DESTINATION, NewGroupConversationType.PublicGroup.destination)
         }
         joinPublicChatNewActivityResultLauncher.launch(intent)
     }

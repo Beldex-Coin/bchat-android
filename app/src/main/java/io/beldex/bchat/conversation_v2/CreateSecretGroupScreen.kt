@@ -83,7 +83,7 @@ fun CreateSecretGroup(
     contacts: List<Recipient>,
     selectedContact: List<String>,
     onEvent: (SecretGroupEvents) -> Unit,
-    activity: NewConversationActivity
+    activity: NewGroupConversationActivity
 ) {
     var groupName by remember {
         mutableStateOf("")

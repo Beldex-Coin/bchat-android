@@ -431,6 +431,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         const val SCROLL_MESSAGE_AUTHOR = "scroll_message_author"
         const val HEX_ENCODED_PUBLIC_KEY="hex_encode_public_key"
         const val BNS_NAME ="bns_name"
+        const val ACTIVITY_TYPE = "activity_type"
         //Shortcut launcher
         const val SHORTCUT_LAUNCHER ="shortcut_launcher"
         //SetDataAndType

@@ -579,9 +579,15 @@
             android:exported="true"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar"/>
         <activity
-            android:name="io.beldex.bchat.conversation_v2.NewConversationActivity"
+            android:name="io.beldex.bchat.conversation_v2.NewGroupConversationActivity"
             android:exported="false"
             android:label="@string/title_activity_create_secret_group_screen"
+            android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
+
+        <activity
+            android:name="io.beldex.bchat.conversation_v2.NewChatConversationActivity"
+            android:exported="false"
+            android:label="@string/new_chat_screen_title"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />
 
         <service

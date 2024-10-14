@@ -35,18 +35,17 @@ import io.beldex.bchat.util.UiModeUtilities
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
 
-enum class NewConversationType(val destination: String) {
-    PrivateChat("private"),
+enum class NewGroupConversationType(val destination: String) {
     SecretGroup("secret_group"),
     PublicGroup("open_group")
 }
 
 @AndroidEntryPoint
-class NewConversationActivity: ComponentActivity() {
+class NewGroupConversationActivity: ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val destination = intent?.getStringExtra(EXTRA_DESTINATION) ?: NewConversationType.PublicGroup.destination
+        val destination = intent?.getStringExtra(EXTRA_DESTINATION) ?: NewGroupConversationType.PublicGroup.destination
         setContent {
             val context = this
             BChatTheme(
@@ -62,28 +61,9 @@ class NewConversationActivity: ComponentActivity() {
                             modifier = Modifier
                                 .padding(it)
                         ) {
-                            composable(
-                                route = NewConversationType.PrivateChat.destination
-                            ) {
-                                val contactViewModel: CreateSecretGroupViewModel = hiltViewModel()
-                                val contacts by contactViewModel.recipients.collectAsState(initial = listOf())
-                                val searchQuery by contactViewModel.searchQuery.collectAsState()
-                                val selectedContact by contactViewModel.selectedRecipients.collectAsState()
-                                ScreenContainer(
-                                    title = stringResource(id = R.string.activity_create_private_chat_title),
-                                    onBackClick = { finish() },
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .background(
-                                            color = MaterialTheme.colorScheme.primary
-                                        )
-                                ) {
-                                    CreatePrivateChatScreen()
-                                }
-                            }
 
                             composable(
-                                route = NewConversationType.SecretGroup.destination
+                                route = NewGroupConversationType.SecretGroup.destination
                             ) {
                                 val contactViewModel: CreateSecretGroupViewModel = hiltViewModel()
                                 val contacts by contactViewModel.recipients.collectAsState(initial = listOf())
@@ -108,7 +88,7 @@ class NewConversationActivity: ComponentActivity() {
                                 }
                             }
                             composable(
-                                route = NewConversationType.PublicGroup.destination
+                                route = NewGroupConversationType.PublicGroup.destination
                             ) {
                                 val viewModel: DefaultGroupsViewModel = hiltViewModel()
                                 val lifecycleOwner = LocalLifecycleOwner.current

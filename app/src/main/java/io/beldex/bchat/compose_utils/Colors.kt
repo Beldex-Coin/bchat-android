@@ -139,7 +139,8 @@ class Colors(
     val negativeRedButtonBorder: Color,
     val negativeGreenButtonText: Color,
     val textGreen: Color,
-    val textOldGreen: Color
+    val textOldGreen: Color,
+    val disabledLetsBchatButton: Color,
 )
 
 val lightColors = Colors(
@@ -263,7 +264,8 @@ val lightColors = Colors(
     negativeRedButtonBorder = Color(0xFFFF3E3E),
     negativeGreenButtonText = Color(0xFF333333),
     textGreen = Color(0xFF078720),
-    textOldGreen = Color(0xFF00BD40)
+    textOldGreen = Color(0xFF00BD40),
+    disabledLetsBchatButton = Color(0xFFF8F8F8)
 )
 
 val darkColors = Colors(
@@ -387,7 +389,8 @@ val darkColors = Colors(
     negativeRedButtonBorder = Color(0xFFFF3E3E),
     negativeGreenButtonText = Color(0xFFACACAC),
     textGreen = Color(0xFF078720),
-    textOldGreen = Color(0xFF00BD40)
+    textOldGreen = Color(0xFF00BD40),
+    disabledLetsBchatButton = Color(0xFF272733)
 )
 
 

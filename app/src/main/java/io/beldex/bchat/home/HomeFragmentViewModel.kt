@@ -37,9 +37,6 @@ class HomeFragmentViewModel @Inject constructor(
     private val _conversations = MutableLiveData<List<ThreadRecord>>()
     val conversations: LiveData<List<ThreadRecord>> = _conversations
 
-    private val _isButtonsExpanded = MutableStateFlow(false)
-    val isButtonExpanded = _isButtonsExpanded.asStateFlow()
-
     private val listUpdateChannel = Channel<Unit>(capacity = Channel.CONFLATED)
 
     fun tryUpdateChannel() = listUpdateChannel.trySend(Unit)
@@ -66,10 +63,6 @@ class HomeFragmentViewModel @Inject constructor(
             }
         }
         return conversations
-    }
-
-    fun setButtonExpandedStatus(isExpanded: Boolean) {
-        _isButtonsExpanded.update { isExpanded }
     }
 
     fun blockMessageRequest(thread: ThreadRecord) = viewModelScope.launch {

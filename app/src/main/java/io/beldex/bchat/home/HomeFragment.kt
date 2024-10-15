@@ -518,7 +518,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
 //        })
 //        binding.globalSearchRecycler.adapter = globalSearchAdapter
         // Set up empty state view
-        binding.createNewPrivateChatButton.setOnClickListener { createNewPrivateChat() }
+        binding.createNewPrivateChatButton.setOnClickListener { openNewConversationChat() }
         homeViewModel.getObservable(requireActivity().applicationContext).observe(requireActivity()) { newData ->
 //            val manager = binding.recyclerView.layoutManager as LinearLayoutManager
 //            val firstPos = manager.findFirstCompletelyVisibleItemPosition()
@@ -611,20 +611,11 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         registerObservers()
         activityCallback?.callLifeCycleScope(binding.recyclerView, mmsSmsDatabase,globalSearchAdapter,publicKey,binding.profileButton.root,binding.navigationMenu.drawerProfileName,binding.navigationMenu.drawerProfileIcon.root)
         binding.chatButtons.setContent {
-            val isExpanded by homeViewModel.isButtonExpanded.collectAsState()
             BChatTheme {
                 NewChatButtons(
-                    isExpanded = isExpanded,
-                    changeExpandedStatus = homeViewModel::setButtonExpandedStatus,
-                    createPrivateChat = {
-                        createNewPrivateChat()
+                    openNewConversationChat = {
+                        openNewConversationChat()
                     },
-                    createSecretGroup = {
-                        createNewSecretGroup()
-                    },
-                    joinPublicGroup = {
-                        joinSocialGroup()
-                    }
                 )
             }
         }
@@ -1495,7 +1486,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         }
     }
 
-    override fun createNewPrivateChat() {
+    override fun openNewConversationChat() {
         val intent = Intent(requireContext(), NewChatConversationActivity::class.java)
         createNewPrivateChatResultLauncher.launch(intent)
     }
@@ -1550,7 +1541,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
             replaceFragment(ConversationFragmentV2(), null, extras)
         }
         if (result.resultCode == CreateClosedGroupActivity.closedGroupCreatedResultCode) {
-            createNewPrivateChat()
+            openNewConversationChat()
         }
     }
 

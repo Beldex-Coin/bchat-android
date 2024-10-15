@@ -73,6 +73,9 @@ class NewChatConversationActivity: ComponentActivity() {
                             returnIntent.putExtra(ConversationFragmentV2.ADDRESS,it.address)
                             context.setResult(PassphraseRequiredActionBarActivity.RESULT_OK, returnIntent)
                             context.finish()
+                        },
+                        onBackPress = {
+                            context.finish()
                         })
                 }
             }

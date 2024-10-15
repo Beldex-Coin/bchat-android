@@ -101,7 +101,8 @@ fun NewChatScreen(
     contacts: List<Recipient>,
     onEvent: (String) -> Unit,
     openActivity: (OpenActivity) -> Unit,
-    openConversation: (Recipient) -> Unit
+    openConversation: (Recipient) -> Unit,
+    onBackPress: () -> Unit,
 ) {
     val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -125,28 +126,6 @@ fun NewChatScreen(
             val bnsName = result.data!!.getStringExtra(ConversationFragmentV2.BNS_NAME)
             if(hexEncodedPublicKey!=null) {
                 createPrivateChat(hexEncodedPublicKey, context, bnsName.toString())
-            }
-        }
-    }
-
-    fun createPrivateChatIfPossible(bnsNameOrPublicKey: String, context: Context) {
-        if (PublicKeyValidation.isValid(bnsNameOrPublicKey)) {
-            createPrivateChat(bnsNameOrPublicKey, context, bnsNameOrPublicKey)
-        } else {
-            //Toast.makeText(context, R.string.invalid_bchat_id, Toast.LENGTH_SHORT).show()
-            // This could be an BNS name
-            bnsLoader = true
-            MnodeAPI.getBchatID(bnsNameOrPublicKey).successUi { hexEncodedPublicKey ->
-                bnsLoader = false
-                createPrivateChat(hexEncodedPublicKey,context,bnsNameOrPublicKey)
-            }.failUi { exception ->
-                bnsLoader = false
-                var message = context.resources.getString(R.string.fragment_enter_public_key_error_message)
-                exception.localizedMessage?.let {
-                    message = context.resources.getString(R.string.fragment_enter_public_key_error_message)
-                    Log.d("Beldex","BNS exception $it")
-                }
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -188,7 +167,7 @@ fun NewChatScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = {
-                        //activityCallback.walletOnBackPressed()
+                        onBackPress()
                     }) {
                         Icon(
                             painterResource(id = R.drawable.ic_back_arrow),
@@ -649,7 +628,7 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                                 MaterialTheme.appColors.disabledPrimaryButtonContentColor
                             },
                             fontWeight = FontWeight(400),
-                            fontSize = 12.sp
+                            fontSize = 14.sp
                         ),
                         modifier=Modifier.padding(10.dp)
                     )
@@ -700,6 +679,6 @@ fun NewChatScreenNightPreview() {
     val searchQuery by contactViewModel.searchQuery.collectAsState()
     val contacts by contactViewModel.recipients.collectAsState(initial = listOf())
     BChatTheme {
-        NewChatScreen(searchQuery, contacts,contactViewModel::onEvent, openActivity = {}, openConversation = {})
+        NewChatScreen(searchQuery, contacts,contactViewModel::onEvent, openActivity = {}, openConversation = {}, onBackPress = {})
     }
 }

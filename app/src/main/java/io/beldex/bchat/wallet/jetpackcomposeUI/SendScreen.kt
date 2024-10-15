@@ -836,7 +836,7 @@ fun SendScreen(
                                 contentAlignment = Alignment.Center
                             ) {
 
-                                Image(painter = painterResource(id = R.drawable.qr_code_send), contentDescription = "", modifier = Modifier.clickable {
+                                Image(painter = painterResource(id = R.drawable.ic_scan_qr_code), contentDescription = "", modifier = Modifier.clickable {
                                     if (!CheckOnline.isOnline(context)) {
                                         Toast.makeText(context, R.string.please_check_your_internet_connection, Toast.LENGTH_SHORT).show()
                                     } else {

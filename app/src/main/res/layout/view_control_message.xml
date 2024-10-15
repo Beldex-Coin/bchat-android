@@ -9,10 +9,10 @@
     <!--android:paddingHorizontal="@dimen/massive_spacing"-->
 
     <TextView
-        android:fontFamily="@font/open_sans_regular"
         android:id="@+id/dateBreakTextView"
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:fontFamily="@font/open_sans_regular"
         android:gravity="center"
         android:textColor="@color/conversation_day_color"
         android:textSize="@dimen/very_small_font_size"
@@ -29,63 +29,65 @@
         tools:src="@drawable/ic_timer" />
 
     <TextView
-        android:fontFamily="@font/open_sans_regular"
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="@color/icon_tint"
-        android:background="@drawable/control_message_background_shape"
-        android:textSize="10sp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        tools:text="@string/MessageRecord_you_disabled_disappearing_messages"
-        tools:ignore="SmallSp" />
+        android:background="@drawable/control_message_background_shape"
+        android:fontFamily="@font/open_sans_regular"
+        android:gravity="center"
+        android:paddingStart="20dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="8dp"
+        android:textColor="@color/icon_tint"
+        android:textSize="10sp"
+        tools:ignore="SmallSp"
+        tools:text="@string/MessageRecord_you_disabled_disappearing_messages" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/receiverStatusIconCardView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:cardCornerRadius ="10dp"
-        android:elevation="5dp"
-        android:layout_marginEnd="20dp"
-        android:visibility="gone"
-        tools:visibility="visible"
         android:layout_gravity="start"
         android:layout_marginStart="@dimen/small_spacing"
+        android:layout_marginEnd="20dp"
         android:layout_marginBottom="5dp"
-        app:cardBackgroundColor="@color/card_color">
+        android:elevation="5dp"
+        android:visibility="gone"
+        app:cardBackgroundColor="@color/card_color"
+        app:cardCornerRadius="10dp"
+        tools:visibility="visible">
+
         <LinearLayout
             android:id="@+id/receiverStatusIconLinearLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
             android:layout_gravity="center"
-            android:paddingTop="15dp"
+            android:gravity="center"
+            android:orientation="horizontal"
             android:paddingStart="13dp"
+            android:paddingTop="15dp"
             android:paddingEnd="13dp"
             android:paddingBottom="15dp">
+
             <ImageView
                 android:id="@+id/receiverStatusIconImageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:src="@drawable/ic_timer"
+                android:layout_gravity="center"
                 android:layout_marginEnd="10dp"
-                android:layout_gravity="center"/>
+                tools:src="@drawable/ic_timer" />
 
             <TextView
-                android:fontFamily="@font/open_sans_regular"
                 android:id="@+id/receiverStatusIconTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/open_sans_regular"
                 android:gravity="center"
                 android:textAlignment="center"
-                android:layout_gravity="center"
                 android:textColor="@color/text"
                 android:textSize="@dimen/very_small_font_size"
                 android:textStyle="bold"
@@ -98,45 +100,48 @@
         android:id="@+id/senderStatusIconCardView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:cardCornerRadius ="10dp"
-        android:layout_marginStart="20dp"
-        android:elevation="5dp"
         android:layout_gravity="end"
-        android:visibility="gone"
-        tools:visibility="visible"
+        android:layout_marginStart="20dp"
         android:layout_marginEnd="@dimen/medium_spacing"
-        app:cardBackgroundColor="@color/send_message_background">
+        android:elevation="5dp"
+        android:visibility="gone"
+        app:cardBackgroundColor="@color/send_message_background"
+        app:cardCornerRadius="10dp"
+        tools:visibility="visible">
+
         <LinearLayout
             android:id="@+id/senderStatusIconLinearLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
             android:layout_gravity="center"
-            android:paddingTop="15dp"
+            android:gravity="center"
+            android:orientation="horizontal"
             android:paddingStart="13dp"
+            android:paddingTop="15dp"
             android:paddingEnd="13dp"
             android:paddingBottom="15dp">
+
             <TextView
-                android:fontFamily="@font/open_sans_regular"
                 android:id="@+id/senderStatusIconTextView"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:fontFamily="@font/open_sans_regular"
                 android:gravity="center"
                 android:textAlignment="center"
-                android:layout_gravity="center"
                 android:textColor="@color/white"
                 android:textSize="@dimen/very_small_font_size"
                 android:textStyle="bold"
                 tools:text="@string/MessageRecord_you_disabled_disappearing_messages" />
+
             <ImageView
                 android:id="@+id/senderStatusIconImageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:src="@drawable/ic_timer"
+                android:layout_gravity="center"
                 android:layout_marginStart="10dp"
-                android:layout_gravity="center"/>
+                tools:src="@drawable/ic_timer" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -145,13 +150,13 @@
         android:id="@+id/receivedCallCardView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/received_message_background"
-        app:cardCornerRadius="24dp"
-        app:contentPadding="8dp"
-        android:layout_marginBottom="8dp"
-        app:cardElevation="0dp"
         android:layout_gravity="start"
-        android:layout_marginStart="8dp">
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        app:cardBackgroundColor="@color/received_message_background"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="0dp"
+        app:contentPadding="6dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -161,48 +166,43 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="16dp"
-                app:contentPadding="8dp"
+                app:cardBackgroundColor="@color/received_call_card_background"
+                app:cardCornerRadius="8dp"
                 app:cardElevation="0dp"
-                app:cardBackgroundColor="@color/received_call_card_background">
+                app:contentPadding="4dp">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="4dp">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/receivedCallIcon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:srcCompat="@drawable/ic_filled_circle_missed_call"/>
+                        app:srcCompat="@drawable/ic_filled_circle_missed_call" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/receivedCallText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintStart_toEndOf="@id/receivedCallIcon"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:text="Voice Call"
-                        android:textColor="@color/received_message_text_color"
-                        android:fontFamily="@font/open_sans_medium"
+                        android:layout_gravity="center_vertical"
                         android:layout_marginStart="8dp"
-                        android:layout_marginEnd="16dp"/>
+                        android:layout_marginEnd="16dp"
+                        android:fontFamily="@font/open_sans_medium"
+                        android:textColor="@color/received_message_text_color"
+                        android:textSize="12sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/receivedCallIcon"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="Voice Call" />
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/receivedCallTime"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintStart_toStartOf="@id/receivedCallText"
-                        app:layout_constraintTop_toBottomOf="@id/receivedCallText"
-                        tools:text="4 min"
-                        android:fontFamily="@font/open_sans_regular"
-                        android:textSize="11sp"/>
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
 
@@ -210,13 +210,14 @@
                 android:id="@+id/received_message_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans_regular"
-                android:textSize="11sp"
-                tools:text="12:00 pm"
                 android:layout_gravity="end"
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="4dp"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/open_sans_regular"
+                android:textColor="@color/received_message_time_color"
+                android:textSize="11sp"
+                tools:text="12:00 pm" />
 
         </LinearLayout>
 
@@ -226,13 +227,13 @@
         android:id="@+id/dialledCallCardView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/send_message_background"
-        app:cardCornerRadius="24dp"
-        app:contentPadding="8dp"
-        app:cardElevation="0dp"
-        android:layout_marginBottom="8dp"
         android:layout_gravity="end"
-        android:layout_marginEnd="8dp">
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:cardBackgroundColor="@color/button_green"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="0dp"
+        app:contentPadding="6dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -242,49 +243,41 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="16dp"
-                app:contentPadding="8dp"
+                app:cardBackgroundColor="@color/outgoing_call_background"
+                app:cardCornerRadius="8dp"
                 app:cardElevation="0dp"
-                app:cardBackgroundColor="@color/dialled_call_detail_background">
+                app:contentPadding="4dp">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="4dp">
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/dialledCallIcon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:srcCompat="@drawable/ic_filled_circle_incoming_call"/>
+                        app:srcCompat="@drawable/ic_filled_circle_outgoing_call" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/dialledCallText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintStart_toEndOf="@id/dialledCallIcon"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:text="Voice Call"
-                        android:textColor="@color/white"
-                        android:fontFamily="@font/open_sans_medium"
+                        android:layout_gravity="center_vertical"
                         android:layout_marginStart="8dp"
-                        android:layout_marginEnd="16dp"/>
+                        android:layout_marginEnd="16dp"
+                        android:fontFamily="@font/open_sans_medium"
+                        android:textColor="@color/sent_message_time_color"
+                        android:textSize="12sp"
+                        app:layout_constraintStart_toEndOf="@id/dialledCallIcon"
+                        tools:text="Voice Call" />
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/dialledCallTime"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintStart_toStartOf="@id/dialledCallText"
-                        app:layout_constraintTop_toBottomOf="@id/dialledCallText"
-                        android:textColor="@color/white"
-                        tools:text="4 min"
-                        android:fontFamily="@font/open_sans_regular"
-                        android:textSize="11sp"/>
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
 
@@ -292,14 +285,14 @@
                 android:id="@+id/dialled_message_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans_regular"
-                android:textSize="11sp"
-                tools:text="12:00 pm"
                 android:layout_gravity="end"
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="4dp"
                 android:layout_marginBottom="10dp"
-                android:textColor="@color/received_message_text_color"/>
+                android:fontFamily="@font/open_sans_regular"
+                android:textColor="@color/sent_message_time_color"
+                android:textSize="11sp"
+                tools:text="12:00 pm" />
 
         </LinearLayout>
 

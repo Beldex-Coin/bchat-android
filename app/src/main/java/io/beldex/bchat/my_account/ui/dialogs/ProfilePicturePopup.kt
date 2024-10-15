@@ -1,6 +1,7 @@
 package io.beldex.bchat.my_account.ui.dialogs
 
 import android.util.Log
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -26,9 +28,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.beldex.libbchat.avatars.ProfileContactPhoto
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.recipients.Recipient
@@ -150,16 +154,21 @@ fun ProfilePicturePopup(
                     onClick = removePicture,
                     enabled = profilePictureStatus,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.secondaryButtonColor,
+                        containerColor = MaterialTheme.appColors.negativeGreenButton,
+                        contentColor = if(profilePictureStatus) MaterialTheme.appColors.negativeGreenButtonText else MaterialTheme.appColors.disabledButtonContent,
                         disabledContainerColor = MaterialTheme.appColors.optionalTextfieldBackground
                     ),
                     modifier = Modifier
-                        .weight(1f)
+                        .weight(1f).height(50.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    border = BorderStroke(width = 0.5.dp, color = if(profilePictureStatus) MaterialTheme.appColors.negativeGreenButtonBorder else MaterialTheme.appColors.optionalTextfieldBackground)
                 ) {
                     Text(
                         text = stringResource(id = R.string.activity_settings_remove),
                         style = MaterialTheme.typography.bodySmall.copy(
-                            color = if(profilePictureStatus) MaterialTheme.appColors.secondaryContentColor else MaterialTheme.appColors.disabledButtonContent
+                            fontWeight = FontWeight(400),
+                            fontSize = 12.sp,
+                            color = if(profilePictureStatus) MaterialTheme.appColors.negativeGreenButtonText else MaterialTheme.appColors.disabledButtonContent
                         )
                     )
                 }
@@ -172,12 +181,15 @@ fun ProfilePicturePopup(
                         containerColor = MaterialTheme.appColors.primaryButtonColor
                     ),
                     modifier = Modifier
-                        .weight(1f)
+                        .weight(1f).height(50.dp),
+                    shape = RoundedCornerShape(12.dp),
                 ) {
                     Text(
                         text = stringResource(id = R.string.activity_settings_upload),
                         style = MaterialTheme.typography.bodySmall.copy(
-                            color = Color.White
+                            color = Color.White,
+                            fontWeight = FontWeight(400),
+                            fontSize = 12.sp
                         )
                     )
                 }

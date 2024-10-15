@@ -75,8 +75,8 @@ class PaymentCardView : LinearLayout {
                 )
             )
             paymentCardView.setCardBackgroundColor(
-                if (message.isOutgoing) context.getColor(R.color.outgoing_message_card_background) else context.getColor(
-                    R.color.incoming_message_card_background
+                if (message.isOutgoing) context.getColor(R.color.outgoing_call_background) else context.getColor(
+                    R.color.payment_card_view_background
                 )
             )
             viewPaymentCard.setOnClickListener {

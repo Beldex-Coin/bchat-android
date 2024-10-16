@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
@@ -142,6 +143,23 @@ class ControlMessageView : LinearLayout {
 //                    binding.receiverStatusIconTextView.text = messageBody
                     messageBody = ""
                     binding.receivedMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
+                }
+                if (message.isOutgoing) {
+                    binding.dialledCallCardView.background=ContextCompat.getDrawable(
+                        context,
+                        R.drawable.message_bubble_background_sent_end
+                    )
+                    binding.dialledCallCardView.backgroundTintList=
+                        ContextCompat.getColorStateList(context, R.color.button_green)
+                } else {
+                    binding.receivedCallCardView.background=ContextCompat.getDrawable(
+                        context,
+                        R.drawable.message_bubble_background_received_end
+                    )
+                    binding.receivedCallCardView.backgroundTintList=ContextCompat.getColorStateList(
+                        context,
+                        R.color.received_message_background
+                    )
                 }
             }
             message.isMessageRequestResponse -> {

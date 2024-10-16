@@ -38,6 +38,9 @@ class MyAccountViewModel @Inject constructor(
     private val _isProfileChanged = MutableLiveData<Boolean>()
     val isProfileChanged: LiveData<Boolean> get () = _isProfileChanged
 
+    private val _showLoader = MutableLiveData<Boolean>()
+    val showLoader: LiveData<Boolean> get () = _showLoader
+
     init {
         val publicKey = preferenceUtil.getPublicKey()
         _uiState.update {
@@ -79,6 +82,10 @@ class MyAccountViewModel @Inject constructor(
 
     fun updateProfile(updated: Boolean){
         _isProfileChanged.value = updated
+    }
+
+    fun updateLoaderStatus(status: Boolean){
+        _showLoader.value = status
     }
 
 }

@@ -11,6 +11,8 @@ import android.graphics.PorterDuffXfermode
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
+import android.os.Looper
 import android.os.SystemClock
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -76,6 +78,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
@@ -84,6 +88,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import app.cash.copper.flow.observeQuery
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.beldex.libbchat.avatars.AvatarHelper
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.ProfileKeyUtil
@@ -96,45 +105,45 @@ import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.hexEncodedPrivateKey
 import com.canhub.cropper.CropImage
 import com.canhub.cropper.CropImageContract
+import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
+import io.beldex.bchat.R
+import io.beldex.bchat.archivechats.ArchiveChatViewModel
+import io.beldex.bchat.avatar.AvatarSelection
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.BChatTypography
 import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
 import io.beldex.bchat.compose_utils.appColors
+import io.beldex.bchat.compose_utils.checkAndRequestPermissions
 import io.beldex.bchat.contacts.blocked.BlockedContactsViewModel
 import io.beldex.bchat.conversation.v2.ConversationFragmentV2
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.crypto.MnemonicUtilities
 import io.beldex.bchat.database.DatabaseContentProviders
+import io.beldex.bchat.database.GroupDatabase
 import io.beldex.bchat.messagerequests.MessageRequestsViewModel
 import io.beldex.bchat.my_account.ui.dialogs.BNSNameVerifySuccessDialog
 import io.beldex.bchat.my_account.ui.dialogs.ClearDataDialog
 import io.beldex.bchat.my_account.ui.dialogs.CopyContentDialog
 import io.beldex.bchat.my_account.ui.dialogs.LinkYourBNSDialog
+import io.beldex.bchat.my_account.ui.dialogs.ProfilePicturePopup
 import io.beldex.bchat.onboarding.ui.PinCodeAction
+import io.beldex.bchat.permissions.Permissions
 import io.beldex.bchat.preferences.ChatSettingsActivity
+import io.beldex.bchat.profiles.ProfileMediaConstraints
+import io.beldex.bchat.util.BitmapDecodingException
+import io.beldex.bchat.util.BitmapUtil
+import io.beldex.bchat.util.ConfigurationMessageUtilities
 import io.beldex.bchat.util.FileProviderUtil
 import io.beldex.bchat.util.QRCodeUtilities
 import io.beldex.bchat.util.UiMode
 import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.copyToClipBoard
 import io.beldex.bchat.util.toPx
-import io.beldex.bchat.wallet.jetpackcomposeUI.StatWalletInfo
-import dagger.hilt.android.AndroidEntryPoint
-import io.beldex.bchat.R
-import io.beldex.bchat.archivechats.ArchiveChatViewModel
-import io.beldex.bchat.avatar.AvatarSelection
-import io.beldex.bchat.compose_utils.checkAndRequestPermissions
-import io.beldex.bchat.database.GroupDatabase
-import io.beldex.bchat.my_account.ui.dialogs.ProfilePicturePopup
-import io.beldex.bchat.permissions.Permissions
-import io.beldex.bchat.profiles.ProfileMediaConstraints
-import io.beldex.bchat.util.BitmapDecodingException
-import io.beldex.bchat.util.BitmapUtil
-import io.beldex.bchat.util.ConfigurationMessageUtilities
 import io.beldex.bchat.wallet.CheckOnline
+import io.beldex.bchat.wallet.jetpackcomposeUI.StatWalletInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -213,11 +222,12 @@ class MyAccountActivity : ComponentActivity() {
     private fun removeAvatar() {
         val latestName = TextSecurePreferences.getProfileName(this)
         TextSecurePreferences.setIsLocalProfile(this,true)
-        updateProfile(true, null,displayName = latestName)
+        updateProfile(true, null,displayName = latestName, removeAvatar = true)
     }
 
     private fun updateProfile(isUpdatingProfilePicture: Boolean, profilePicture: ByteArray? = null,
-                              displayName: String? = null) {
+                              displayName: String? = null, removeAvatar : Boolean = false) {
+        viewModel.updateLoaderStatus(true)
         val promises = mutableListOf<Promise<*, Exception>>()
         if (displayName != null) {
             TextSecurePreferences.setProfileName(this, displayName)
@@ -251,6 +261,13 @@ class MyAccountActivity : ComponentActivity() {
         compoundPromise.alwaysUi {
             if (isUpdatingProfilePicture) {
                 viewModel.updateProfile(true)
+                if(removeAvatar) {
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        viewModel.updateLoaderStatus(false)
+                    }, 3000)
+                } else {
+                    viewModel.updateLoaderStatus(false)
+                }
             }
         }
 
@@ -346,12 +363,7 @@ fun MyAccountNavHost(
 
      fun updateProfile(isUpdatingProfilePicture: Boolean, profilePicture: ByteArray? = null,
                               displayName: String? = null, context : Context) {
-         /* binding.loader.isVisible = true
-        lifecycleScope.launch {
-
-            delay(3000)
-            binding.loader.isVisible = false
-        }*/
+        viewModel.updateLoaderStatus(true)
         val promises = mutableListOf<Promise<*, Exception>>()
         if (displayName != null) {
             TextSecurePreferences.setProfileName(context, displayName)
@@ -381,6 +393,7 @@ fun MyAccountNavHost(
             if (profilePicture != null || displayName != null) {
                 ConfigurationMessageUtilities.forceSyncConfigurationNowIfNeeded(context)
             }
+            viewModel.updateLoaderStatus(false)
         }
     }
 
@@ -415,6 +428,18 @@ fun MyAccountNavHost(
         updateProfile(checkGalleryProfile,null, displayName = displayName, context)
          //viewModel.refreshProfileName()
         return true
+    }
+
+    var showLoader by remember {
+        mutableStateOf(false)
+    }
+
+    viewModel.showLoader.observe(lifecycleOwner) { status ->
+        showLoader = status
+    }
+
+    if(showLoader){
+        LoaderAnimationPopUp()
     }
 
     NavHost(
@@ -706,7 +731,7 @@ fun MyAccountNavHost(
                 }
 
                 Column(
-                    modifier =Modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
                         .verticalScroll(scrollState),
@@ -715,20 +740,20 @@ fun MyAccountNavHost(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Box(
-                            modifier =Modifier
-                                .padding(start=24.dp, top=16.dp, end=0.dp, bottom=16.dp)
+                            modifier = Modifier
+                                .padding(start = 24.dp, top = 16.dp, end = 0.dp, bottom = 16.dp)
                                 .background(
-                                    color=if (showEditNameTextField) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.listItemBackground,
-                                    shape=RoundedCornerShape(16.dp)
+                                    color = if (showEditNameTextField) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.listItemBackground,
+                                    shape = RoundedCornerShape(16.dp)
                                 )
                                 .align(Alignment.TopEnd)
                                 .clickable {
                                     if (!showEditNameTextField) {
-                                        showNameOnly=false
-                                        showEditNameTextField=true
+                                        showNameOnly = false
+                                        showEditNameTextField = true
                                     } else {
-                                        showNameOnly=true
-                                        showEditNameTextField=false
+                                        showNameOnly = true
+                                        showEditNameTextField = false
                                         saveEditName?.let { it1 -> saveDisplayName(it1, context) }
                                     }
                                 }
@@ -751,31 +776,33 @@ fun MyAccountNavHost(
                         Box(
                             modifier = if(!isBnsHolder.isNullOrEmpty()) Modifier
                                 .fillMaxWidth()
-                                .padding(top=50.dp, bottom=10.dp)
+                                .padding(top = 50.dp, bottom = 10.dp)
                                 .paint(
-                                    painterResource(id=if (isDarkMode) R.drawable.ic_bns_card_dark else R.drawable.ic_bns_card_light),
-                                    contentScale=ContentScale.FillBounds
+                                    painterResource(id = if (isDarkMode) R.drawable.ic_bns_card_dark else R.drawable.ic_bns_card_light),
+                                    contentScale = ContentScale.FillBounds
                                 )
                                 .innerShadow(
-                                    color=if (isDarkMode) MaterialTheme.appColors.primaryButtonColor else Color(
+                                    color = if (isDarkMode) MaterialTheme.appColors.primaryButtonColor else Color(
                                         0x8000BD40
-                                    ), blur=if (isDarkMode) 20.dp else 10.dp, cornersRadius=16.dp
+                                    ),
+                                    blur = if (isDarkMode) 20.dp else 10.dp,
+                                    cornersRadius = 16.dp
                                 ) else Modifier
                                 .fillMaxWidth()
-                                .padding(top=50.dp, bottom=10.dp)
+                                .padding(top = 50.dp, bottom = 10.dp)
                                 .background(
-                                    color=MaterialTheme.appColors.listItemBackground,
-                                    shape=RoundedCornerShape(16.dp)
+                                    color = MaterialTheme.appColors.listItemBackground,
+                                    shape = RoundedCornerShape(16.dp)
                                 )
                         ) {
                             ProfileCard(
                                 isBnsHolder = isBnsHolder,
                                 uiState = state,
                                 beldexAddress = beldexAddress,
-                                modifier =Modifier
+                                modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(
-                                        top=40.dp
+                                        top = 40.dp
                                     ),
                                 onShowDialog = {
                                     when (it) {
@@ -821,15 +848,15 @@ fun MyAccountNavHost(
                             if (showEditNameTextField) {
                                 Box(
                                     contentAlignment=Alignment.Center,
-                                    modifier=Modifier
-                                        .padding(start=150.dp)
+                                    modifier= Modifier
+                                        .padding(start = 150.dp)
                                         .size(32.dp)
                                         .clip(CircleShape)
                                         .background(
-                                            color=MaterialTheme.appColors.backgroundColor
+                                            color = MaterialTheme.appColors.backgroundColor
                                         )
                                         .clickable {
-                                            showPictureDialog=true
+                                            showPictureDialog = true
 
                                         }
                                 ) {
@@ -850,9 +877,9 @@ fun MyAccountNavHost(
                             onClick = {
                                 showLinkYourBnsDialog = true
                             },
-                            modifier =Modifier
+                            modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(bottom=10.dp),
+                                .padding(bottom = 10.dp),
                             shape = RoundedCornerShape(12.dp),
                             disabledContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
                         ) {
@@ -876,9 +903,9 @@ fun MyAccountNavHost(
                             }
                         }
                         Row(
-                            modifier =Modifier
+                            modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(bottom=10.dp),
+                                .padding(bottom = 10.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Center
                         ) {
@@ -889,9 +916,9 @@ fun MyAccountNavHost(
                                     fontWeight = FontWeight(400),
                                     fontSize = 12.sp
                                 ),
-                                modifier =Modifier
-                                    .padding(end=5.dp)
-                                    .clickable(onClick={
+                                modifier = Modifier
+                                    .padding(end = 5.dp)
+                                    .clickable(onClick = {
                                         callAboutBns()
                                     })
                             )
@@ -899,9 +926,9 @@ fun MyAccountNavHost(
                                 painterResource(id = R.drawable.ic_info_outline_dark),
                                 contentDescription = "Read more about BNS",
                                 tint = MaterialTheme.appColors.secondaryTextColor,
-                                modifier =Modifier
+                                modifier = Modifier
                                     .size(12.dp)
-                                    .clickable(onClick={
+                                    .clickable(onClick = {
                                         callAboutBns()
                                     })
                             )
@@ -1051,7 +1078,7 @@ fun MyAccountNavHost(
                 }
             ) {
                 ChatSettingsScreen(
-                    modifier =Modifier
+                    modifier = Modifier
                         .fillMaxSize()
                         .padding(16.dp)
                 )
@@ -1123,7 +1150,7 @@ fun MyAccountNavHost(
                                 )
                             )
                         },
-                        modifier =Modifier
+                        modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp)
                     )
@@ -1144,7 +1171,7 @@ fun MyAccountNavHost(
             ) {
                 ContentScreen(
                     content = content,
-                    modifier =Modifier
+                    modifier = Modifier
                         .fillMaxSize()
                         .padding(16.dp)
                 )
@@ -1203,7 +1230,7 @@ fun MyAccountNavHost(
                     seed = seed,
                     markedAsSafe = markedAsSafe,
                     verifyPin = verifyPin,
-                    modifier =Modifier
+                    modifier = Modifier
                         .fillMaxSize()
                         .padding(16.dp)
                 )
@@ -1215,7 +1242,7 @@ fun MyAccountNavHost(
                 (context as ComponentActivity).finish()
             }) {
                 StatWalletInfo(
-                    modifier =Modifier
+                    modifier = Modifier
                         .fillMaxSize()
                         .padding(16.dp)
                 )
@@ -1255,7 +1282,7 @@ fun MyAccountNavHost(
                             finish()
                         }
                     },
-                    modifier =Modifier
+                    modifier = Modifier
                         .fillMaxSize()
                         .padding(16.dp)
                 )
@@ -1272,7 +1299,7 @@ fun MyAccountNavHost(
                 }
             ) {
                 AboutBNSScreen(
-                    modifier =Modifier
+                    modifier = Modifier
                         .fillMaxSize()
                         .padding(16.dp)
                 )
@@ -1311,11 +1338,53 @@ fun MyAccountNavHost(
                     },
                     archiveChatViewModel = archiveChatViewModel,
                     groupDatabase = groupDatabase,
-                    modifier =Modifier
+                    modifier = Modifier
                         .fillMaxSize()
                         .padding(8.dp)
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun AnimatedPreloader(modifier: Modifier = Modifier) {
+    val preloaderLottieComposition by rememberLottieComposition(
+        LottieCompositionSpec.RawRes(
+            R.raw.load_animation
+        )
+    )
+
+    val preloaderProgress by animateLottieCompositionAsState(
+        preloaderLottieComposition,
+        iterations = LottieConstants.IterateForever,
+        isPlaying = true
+    )
+
+
+    LottieAnimation(
+        composition = preloaderLottieComposition,
+        progress = preloaderProgress,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun LoaderAnimationPopUp() {
+    Dialog(
+        onDismissRequest = {},
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            dismissOnBackPress = false,
+            dismissOnClickOutside = false
+        )
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            AnimatedPreloader(modifier = Modifier
+                .size(200.dp)
+                .align(Alignment.Center))
         }
     }
 }
@@ -1344,7 +1413,7 @@ fun ProfileCard(
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier =modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(16.dp)
     ) {
@@ -1359,7 +1428,7 @@ fun ProfileCard(
                     lineHeight=24.51.sp
                 ),
                 textAlign=TextAlign.Center,
-                modifier=Modifier
+                modifier= Modifier
                     .fillMaxWidth()
                     .align(Alignment.CenterHorizontally)
             )
@@ -1388,9 +1457,9 @@ fun ProfileCard(
         }
         if(!isBnsHolder.isNullOrEmpty()){
             Row(
-                modifier =Modifier
+                modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top=5.dp, bottom=15.dp),
+                    .padding(top = 5.dp, bottom = 15.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
@@ -1475,7 +1544,7 @@ fun ProfileCardKeyContainer(
         ),
     ) {
         Box(
-            modifier =Modifier
+            modifier = Modifier
                 .padding(5.dp)
                 .clickable {
                     onShowDialog()
@@ -1505,8 +1574,8 @@ fun ProfileCardKeyContainer(
                         fontWeight = FontWeight.Medium
                     ),
                     textAlign = TextAlign.Center,
-                    modifier =Modifier
-                        .padding(top=8.dp)
+                    modifier = Modifier
+                        .padding(top = 8.dp)
                         .align(Alignment.CenterHorizontally)
                 )
             }
@@ -1515,9 +1584,9 @@ fun ProfileCardKeyContainer(
                     painter = painterResource(id = R.drawable.ic_copy),
                     contentDescription = "",
                     tint = MaterialTheme.appColors.editTextHint,
-                    modifier =Modifier
+                    modifier = Modifier
                         .size(16.dp)
-                        .align(alignment=Alignment.TopEnd)
+                        .align(alignment = Alignment.TopEnd)
                         .clickable {
                             onCopy()
                         }
@@ -1541,7 +1610,7 @@ private fun MyAccountScreenContainer(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier =Modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
@@ -1575,7 +1644,7 @@ private fun MyAccountScreenContainer(
 
         if (wrapInCard) {
             CardContainer(
-                modifier =Modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
             ) {
@@ -1620,7 +1689,7 @@ private fun ArchiveChatScreenContainer(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier =Modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
         ) {
@@ -1663,7 +1732,7 @@ private fun ArchiveChatScreenContainer(
 
         if (wrapInCard) {
             CardContainer(
-                modifier =Modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
             ) {

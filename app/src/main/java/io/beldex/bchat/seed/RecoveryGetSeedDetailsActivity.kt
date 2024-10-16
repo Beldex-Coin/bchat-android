@@ -79,7 +79,7 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
     private var restoreFromDateHeight = 0
     private val dateFormat = SimpleDateFormat("yyyy-MM", Locale.US)
     private var dates = ArrayMap<String,Int>()
-    private val namePattern = Pattern.compile("[A-Za-z0-9]+")
+    private val namePattern = Pattern.compile("[A-Za-z0-9\\s]+")
     private val myFormat = "yyyy-MM-dd" // mention the format you need
     val sdf = SimpleDateFormat(myFormat, Locale.US)
 
@@ -597,7 +597,8 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         getSeed: String?,
         restoreHeight: Long
     ) {
-        createWallet(name, password,
+        val trimmedName = name.replace(" ","")
+        createWallet(trimmedName, password,
             object : WalletCreator {
                 override fun createWallet(aFile: File?, password: String?): Boolean {
                     //val currentNode: NodeInfo = getNode()

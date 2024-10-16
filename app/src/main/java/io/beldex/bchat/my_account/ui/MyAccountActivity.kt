@@ -380,7 +380,7 @@ fun MyAccountNavHost(
     }
 
      fun saveDisplayName(displayName: String, context : Context): Boolean {
-         val namePattern = Pattern.compile("[A-Za-z0-9]+")
+         val namePattern = Pattern.compile("[A-Za-z0-9\\s]+")
         if (displayName.isEmpty()) {
             Toast.makeText(
                 context,

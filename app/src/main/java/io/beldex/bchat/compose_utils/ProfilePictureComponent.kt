@@ -6,6 +6,7 @@ import android.widget.ImageView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
@@ -85,7 +86,14 @@ fun ProfilePictureComponent(
                         modifier = Modifier
                             .align(Alignment.TopStart)
                     )
-                    additionalPublicKey?.let { adnPublicKey ->
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_secret_group_profile),
+                        contentDescription = null,
+                        modifier = modifier
+                            .size(30.dp)
+                            .align(Alignment.BottomEnd).padding(end = 5.dp)
+                    )
+                    /*additionalPublicKey?.let { adnPublicKey ->
                         additionalDisplayName?.let { addDisplayName ->
                             ProfilePicture(
                                 containerSize = containerSize,
@@ -95,7 +103,7 @@ fun ProfilePictureComponent(
                                     .align(Alignment.BottomEnd)
                             )
                         }
-                    }
+                    }*/
                 }
             }
             ProfilePictureMode.SmallPicture -> {
@@ -205,8 +213,9 @@ fun ProfilePicture(
                 Image(
                     painter = painterResource(id = R.drawable.ic_bns_verified_tag),
                     contentDescription = null,
-                    modifier = Modifier.align(Alignment.BottomEnd)
-                        .size(if (pictureType == 1) 15.dp else if(containerSize == 132.dp) 45.dp else 30.dp)
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .size(if (pictureType == 1) 15.dp else if (containerSize == 132.dp) 45.dp else 30.dp)
                 )
             }
         }else{
@@ -295,8 +304,9 @@ fun ProfilePicture(
                     Image(
                         painter = painterResource(id = R.drawable.ic_bns_verified_tag),
                         contentDescription = null,
-                        modifier = Modifier.align(Alignment.BottomEnd)
-                            .size(if (pictureType == 1) 15.dp else if(containerSize == 132.dp) 45.dp else 30.dp)
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .size(if (pictureType == 1) 15.dp else if (containerSize == 132.dp) 45.dp else 30.dp)
                     )
                 }
             }else {

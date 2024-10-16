@@ -89,6 +89,7 @@ import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.conversation.v2.ConversationFragmentV2
 import io.beldex.bchat.conversation_v2.NewChatScreenViewModel
 import io.beldex.bchat.conversation_v2.OpenActivity
+import io.beldex.bchat.conversation_v2.getUserDisplayName
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.wallet.CheckOnline
 import nl.komponents.kovenant.ui.failUi
@@ -337,9 +338,9 @@ fun NewChatScreen(
                             modifier = Modifier
                                 .fillMaxWidth(),
                             onClick = {
-                                Log.d("open-conversation","1")
                                 openConversation(it)
-                            }
+                            },
+                            context
                         )
                     }
                 }
@@ -431,7 +432,8 @@ fun NewChatItem(
 private fun GroupContact(
     recipient: Recipient,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    context: Context
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -444,12 +446,39 @@ private fun GroupContact(
             }
     ) {
         Box(modifier = Modifier.padding(vertical = 5.dp)) {
-            ProfilePictureComponent(
-                publicKey = recipient.address.toString(),
-                displayName = recipient.name.toString(),
-                containerSize = 40.dp,
-                pictureMode = ProfilePictureMode.SmallPicture
-            )
+            if(recipient.isGroupRecipient){
+                val groupRecipients = remember {
+                    DatabaseComponent.get(context).groupDatabase()
+                        .getGroupMemberAddresses(recipient.address.toGroupString(), true)
+                        .sorted()
+                        .take(2)
+                        .toMutableList()
+                }
+                val pictureMode = if (groupRecipients.size >= 2)
+                    ProfilePictureMode.GroupPicture
+                else
+                    ProfilePictureMode.SmallPicture
+                val pk = groupRecipients.getOrNull(0)?.serialize() ?: ""
+                val additionalPk = groupRecipients.getOrNull(1)?.serialize() ?: ""
+                val additionalDisplay =
+                    getUserDisplayName(additionalPk, context)
+
+                ProfilePictureComponent(
+                    publicKey = pk,
+                    displayName = recipient.name.toString() ?: "",
+                    additionalPublicKey = additionalPk,
+                    additionalDisplayName = additionalDisplay,
+                    containerSize = pictureMode.size,
+                    pictureMode = pictureMode
+                )
+            }else{
+                ProfilePictureComponent(
+                    publicKey = recipient.address.toString(),
+                    displayName = recipient.name.toString(),
+                    containerSize = 40.dp,
+                    pictureMode = ProfilePictureMode.SmallPicture
+                )
+            }
         }
 
         Text(

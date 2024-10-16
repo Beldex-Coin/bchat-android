@@ -69,7 +69,7 @@ class ProfilePictureView @JvmOverloads constructor(
                     .toMutableList()
             val pk = members.getOrNull(0)?.serialize() ?: ""
             publicKey = pk
-            displayName = getUserDisplayName(pk)
+            displayName = recipient.name ?: ""
             val apk = members.getOrNull(1)?.serialize() ?: ""
             additionalPublicKey = apk
             additionalDisplayName = getUserDisplayName(apk)
@@ -94,24 +94,24 @@ class ProfilePictureView @JvmOverloads constructor(
         val isBnsHolder = getUserIsBNSHolderStatus(publicKey)?:false
         if(isEditGroup){
             setProfilePictureIfNeeded(binding.editGroupdoubleModeImageView1, publicKey, displayName, R.dimen.small_profile_picture_size)
-            if (additionalPublicKey != null) {
-                setProfilePictureIfNeeded(binding.editGroupdoubleModeImageView2, additionalPublicKey, additionalDisplayName, R.dimen.small_profile_picture_size)
-            }
+            binding.editGroupdoubleModeImageView2.visibility = View.VISIBLE
             binding.editGroupdoubleModeImageViewContainer.visibility = View.VISIBLE
         }else{
             glide.clear(binding.editGroupdoubleModeImageView1)
-            glide.clear(binding.editGroupdoubleModeImageView2)
+            binding.editGroupdoubleModeImageView2.visibility = View.INVISIBLE
             binding.editGroupdoubleModeImageViewContainer.visibility = View.INVISIBLE
         }
         if (additionalPublicKey != null) {
             Log.d("beldex","if 1")
             setProfilePictureIfNeeded(binding.doubleModeImageView1, publicKey, displayName, R.dimen.small_profile_picture_size)
-            setProfilePictureIfNeeded(binding.doubleModeImageView2, additionalPublicKey, additionalDisplayName, R.dimen.small_profile_picture_size)
+            //setProfilePictureIfNeeded(binding.doubleModeImageView2, additionalPublicKey, additionalDisplayName, R.dimen.small_profile_picture_size)
+            binding.doubleModeImageView2.visibility = View.VISIBLE
             binding.doubleModeImageViewContainer.visibility = View.VISIBLE
         } else {
             Log.d("beldex","else 1")
             glide.clear(binding.doubleModeImageView1)
-            glide.clear(binding.doubleModeImageView2)
+            //glide.clear(binding.doubleModeImageView2)
+            binding.doubleModeImageView2.visibility = View.INVISIBLE
             binding.doubleModeImageViewContainer.visibility = View.INVISIBLE
         }
         if (additionalPublicKey == null && !isLarge) {

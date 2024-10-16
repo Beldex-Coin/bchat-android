@@ -210,6 +210,12 @@ class MyAccountActivity : ComponentActivity() {
 
     }
 
+    private fun removeAvatar() {
+        val latestName = TextSecurePreferences.getProfileName(this)
+        TextSecurePreferences.setIsLocalProfile(this,true)
+        updateProfile(true, null,displayName = latestName)
+    }
+
     private fun updateProfile(isUpdatingProfilePicture: Boolean, profilePicture: ByteArray? = null,
                               displayName: String? = null) {
         val promises = mutableListOf<Promise<*, Exception>>()
@@ -270,6 +276,9 @@ class MyAccountActivity : ComponentActivity() {
                             startAvatarSelection = {
                                 startAvatarSelection()
                             },
+                            removeAvatar = {
+                                removeAvatar()
+                            },
                             modifier = Modifier
                                 .padding(it)
                         )
@@ -307,6 +316,7 @@ fun MyAccountNavHost(
     startDestination: String,
     groupDatabase : GroupDatabase,
     startAvatarSelection: () -> Unit,
+    removeAvatar: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -613,6 +623,7 @@ fun MyAccountNavHost(
                         },
                         removePicture = {
                             showPictureDialog = false
+                            removeAvatar()
                         },
                         uploadPicture = {
                             showPictureDialog = false

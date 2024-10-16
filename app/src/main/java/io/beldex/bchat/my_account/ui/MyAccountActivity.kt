@@ -263,13 +263,6 @@ class MyAccountActivity : ComponentActivity() {
                         containerColor = MaterialTheme.colorScheme.primary,
                     ) {
                         val navController = rememberNavController()
-                        val lifecycleOwner = LocalLifecycleOwner.current
-                        var isProfileChanged by remember {
-                            mutableStateOf(false)
-                        }
-                        viewModel.isProfileChanged.observe(lifecycleOwner) { changed ->
-                            isProfileChanged = changed
-                        }
                         MyAccountNavHost(
                             navController = navController,
                             startDestination = destination,
@@ -277,7 +270,6 @@ class MyAccountActivity : ComponentActivity() {
                             startAvatarSelection = {
                                 startAvatarSelection()
                             },
-                            modifyProfile = isProfileChanged,
                             modifier = Modifier
                                 .padding(it)
                         )
@@ -315,10 +307,10 @@ fun MyAccountNavHost(
     startDestination: String,
     groupDatabase : GroupDatabase,
     startAvatarSelection: () -> Unit,
-    modifyProfile: Boolean,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
     val startActivity: (Intent) -> Unit = {
         context.startActivity(it)
     }
@@ -329,7 +321,10 @@ fun MyAccountNavHost(
         mutableStateOf(false)
     }
     var isProfileChanged by remember {
-        mutableStateOf(modifyProfile)
+        mutableStateOf(false)
+    }
+    viewModel.isProfileChanged.observe(lifecycleOwner) { changed ->
+        isProfileChanged = changed
     }
     val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestMultiplePermissions()) { result ->
         if (result.all { it.value }) {
@@ -480,9 +475,6 @@ fun MyAccountNavHost(
                 var showBnsNameVerifySuccessDialog by remember{
                     mutableStateOf(false)
                 }
-                var isRefreshProfile by remember {
-                    mutableStateOf(false)
-                }
                 var showEditNameTextField by remember {
                     mutableStateOf(false)
                 }
@@ -579,7 +571,6 @@ fun MyAccountNavHost(
                         showLinkYourBnsDialog = false
                         if(it){
                             isBnsHolder = TextSecurePreferences.getIsBNSHolder(context)
-                            isRefreshProfile = true
                             showBnsNameVerifySuccessDialog = true
                         }
                     })
@@ -794,22 +785,28 @@ fun MyAccountNavHost(
                                 }
                             )
                         }
-                        if(modifyProfile){
-                            isRefreshProfile = true
-                            isProfileChanged = true
-                        }
                         Box(
                             contentAlignment=Alignment.CenterEnd,
                             modifier=Modifier.align(alignment=Alignment.TopCenter)
                         ) {
-                            ProfilePictureComponent(
-                                publicKey=state.publicKey,
-                                displayName=state.profileName ?: state.publicKey,
-                                containerSize=ProfilePictureMode.LargePicture.size,
-                                pictureMode=ProfilePictureMode.LargePicture,
-                                modifier=Modifier.align(alignment=Alignment.TopCenter),
-                                isRefresh=isRefreshProfile
-                            )
+                            if(isProfileChanged) {
+                                ProfilePictureComponent(
+                                    publicKey = state.publicKey,
+                                    displayName = state.profileName ?: state.publicKey,
+                                    containerSize = ProfilePictureMode.LargePicture.size,
+                                    pictureMode = ProfilePictureMode.LargePicture,
+                                    modifier = Modifier.align(alignment = Alignment.TopCenter)
+                                )
+                                isProfileChanged = false
+                            }else{
+                                ProfilePictureComponent(
+                                    publicKey = state.publicKey,
+                                    displayName = state.profileName ?: state.publicKey,
+                                    containerSize = ProfilePictureMode.LargePicture.size,
+                                    pictureMode = ProfilePictureMode.LargePicture,
+                                    modifier = Modifier.align(alignment = Alignment.TopCenter)
+                                )
+                            }
                             if (showEditNameTextField) {
                                 Box(
                                     contentAlignment=Alignment.Center,

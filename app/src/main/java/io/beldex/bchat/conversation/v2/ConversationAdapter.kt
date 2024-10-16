@@ -4,6 +4,11 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.database.Cursor
+import android.graphics.Typeface
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.util.Log
 import android.util.SparseArray
 import android.util.SparseBooleanArray
@@ -15,6 +20,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.annotation.WorkerThread
 import androidx.compose.ui.text.toLowerCase
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.util.getOrDefault
 import androidx.core.util.set
 import androidx.lifecycle.LifecycleCoroutineScope
@@ -142,8 +148,20 @@ class ConversationAdapter(context: Context, cursor: Cursor, private val onItemPr
                         val callMissedDialog = AlertDialog.Builder(context).create()
                         callMissedDialog.window?.setBackgroundDrawableResource(R.color.transparent)
                         callMissedDialog.setView(callMissedDialogView)
+                        val color = ResourcesCompat.getColor(context.resources, R.color.text_old_green, context.theme)
                         val description = callMissedDialogView.findViewById<TextView>(R.id.messageTextView)
-                        description.text = context.getString(R.string.activity_public_chat_success_message, if(message.recipient.name != null) message.recipient.name else message.recipient.address)
+                        description.text = context.getString(R.string.call_missed_description,
+                            if(message.recipient.name != null) "\"${message.recipient.name}\"" else "\"${message.recipient.address}\"")
+
+                        val recipientName = SpannableStringBuilder(description.text)
+                        val startIndex = description.text.indexOf(message.recipient.name!!)
+                        var endIndex = 0
+                        if(startIndex != -1){
+                             endIndex = startIndex + message.recipient.name!!.length
+                        }
+                        recipientName.setSpan(ForegroundColorSpan(color), startIndex -1, endIndex +1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        recipientName.setSpan(StyleSpan(Typeface.BOLD), startIndex -1, endIndex +1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        description.text = recipientName
                         val okButton =  callMissedDialogView.findViewById<Button>(R.id.missedCallOkButton)
                         okButton.setOnClickListener {
                             val intent = Intent(context, PrivacySettingsActivity::class.java)

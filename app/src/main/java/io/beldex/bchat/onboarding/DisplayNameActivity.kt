@@ -46,7 +46,7 @@ class DisplayNameActivity : BaseActionBarActivity() {
     private val PREF_DAEMON_TESTNET = "daemon_testnet"
     private val PREF_DAEMON_STAGENET = "daemon_stagenet"
     private val PREF_DAEMON_MAINNET = "daemon_mainnet"
-    private val namePattern = Pattern.compile("[A-Za-z0-9]+")
+    private val namePattern = Pattern.compile("[A-Za-z0-9\\s]+")
 
     private var node: NodeInfo? = null
 
@@ -417,8 +417,8 @@ class DisplayNameActivity : BaseActionBarActivity() {
     }
 
     private fun _createWallet(name: String, password: String) {
-        Log.d("create Wallet 1","OK")
-        createWallet(name, password,
+        val trimmedName = name.replace(" ","")
+        createWallet(trimmedName, password,
             object : WalletCreator {
                 override fun createWallet(aFile: File?, password: String?): Boolean {
                     Log.d("create Wallet 2","OK")

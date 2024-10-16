@@ -161,7 +161,7 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         binding.quoteViewAttachmentPreviewContainer.isVisible = hasAttachments
         if (!hasAttachments) {
 //            binding.quoteViewAccentLine.setBackgroundColor(getLineColor(isOutgoingMessage))
-            binding.quoteViewAuthorTextView.isVisible = mode != Mode.Regular
+            //binding.quoteViewAuthorTextView.isVisible = mode != Mode.Regular
             binding.contentTypeIcon.isVisible = false
         } else if (attachments != null) {
             binding.mainQuoteViewContainer.post {
@@ -175,9 +175,9 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             }, context.theme))
             if(mode == Mode.Regular) {
                 val backgroundColorID = if (outgoing) {
-                    R.color.outgoingMessageProgressBackgroundTintColor
+                    R.color.button_green
                 } else {
-                    R.color.incoming_reply_message_icon_background
+                    R.color.user_view_background
                 }
                 val backgroundColor =
                     ResourcesCompat.getColor(resources, backgroundColorID, context.theme)
@@ -244,7 +244,7 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
 
     private fun getContainerColor(isOutgoingMessage: Boolean): Int {
         return when {
-            isOutgoingMessage -> R.color.dialled_call_detail_background
+            isOutgoingMessage -> R.color.outgoing_call_background
             else -> R.color.quote_view_background
         }
     }
@@ -252,7 +252,7 @@ class QuoteView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     private fun getAuthorTextColor(isOutgoingMessage: Boolean): Int {
         return when {
             isOutgoingMessage -> R.color.white
-            else -> R.color.quote_author_text_color
+            else -> R.color.text_green
         }
     }
 

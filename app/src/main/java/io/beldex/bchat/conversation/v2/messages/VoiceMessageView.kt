@@ -83,7 +83,7 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
             binding.seekbarAudio.thumbTintList = ColorStateList.valueOf(context.getColor(R.color.white))
             binding.voiceMessageViewDurationTextView.setTextColor(context.getColor(R.color.white))
             binding.voiceMessagePlaybackImageView.setColorFilter(context.getColor(R.color.white))
-            binding.viewVoiceMessageCard.setCardBackgroundColor(context.getColor(R.color.dialled_call_detail_background))
+            binding.viewVoiceMessageCard.setCardBackgroundColor(context.getColor(R.color.outgoing_call_background))
         }else{
             binding.voiceMessageViewLoader.indeterminateTintList = ColorStateList.valueOf(context.getColor(R.color.icon_tint))
             binding.seekbarAudio.progressBackgroundTintList = ColorStateList.valueOf(context.getColor(R.color.incomingMessageProgressBackgroundTintColor))

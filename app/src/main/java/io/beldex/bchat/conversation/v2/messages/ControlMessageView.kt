@@ -100,7 +100,7 @@ class ControlMessageView : LinearLayout {
                     }
                     message.isFirstMissedCall -> {
                         binding.receivedCallText.text = context.resources.getString(R.string.ThreadRecord_missed_call)
-                        binding.receivedCallTime.text = context.resources.getString(R.string.tap_to_callback)
+                        /*binding.receivedCallTime.text = context.resources.getString(R.string.tap_to_callback)*/
                         R.drawable.ic_first_missed_call
                     }
                     else -> {

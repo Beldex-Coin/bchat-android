@@ -227,4 +227,7 @@
     <color name="negative_red_button">#0DFF3E3E</color>
     <color name="negative_green_button_text">#FF333333</color>
     <color name="ic_self_message">#078720</color>
+    <color name="outgoing_call_background">#136515</color>
+    <color name="incoming_call_icon_background">#F8F8F8</color>
+    <color name="payment_card_view_background">#EBEBEB</color>
 </resources>

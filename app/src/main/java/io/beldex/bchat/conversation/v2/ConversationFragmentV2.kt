@@ -1417,11 +1417,14 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> {
                         when {
                             valueOfWallet != "100%" -> {
-                                binding.tooltip.text = Html.fromHtml("<p>Wallet Synchronizing <b> $valueOfWallet </b> </p>", Html.FROM_HTML_MODE_COMPACT)
+                                val color = ResourcesCompat.getColor(requireContext().resources, R.color.text_old_green, requireContext().theme)
+                                val valueOfWalletText = SpannableStringBuilder(valueOfWallet)
+                                valueOfWalletText.setSpan(ForegroundColorSpan(color), valueOfWallet.indexOf(valueOfWallet) , valueOfWallet.indexOf(valueOfWallet) + valueOfWallet.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                                binding.tooltip.text = Html.fromHtml("<p>Wallet Synchronizing : <b> <font color='#00BD40'>$valueOfWallet</font> </b> </p>", Html.FROM_HTML_MODE_COMPACT)
                                 tooltipStyle()
                             }
                             else -> {
-                                binding.tooltip.text = Html.fromHtml("<p> <b>Balance : $valueOfBalance </b> </p> <br /> <p><b>Unlocked Balance : $valueOfUnLockedBalance</b> </p> <br /> <p>Wallet :  $valueOfWallet </p>", Html.FROM_HTML_MODE_COMPACT)
+                                binding.tooltip.text = Html.fromHtml("<p> <b>Balance : <font color='#00BD40'> $valueOfBalance </font> </b> </p> <br /> <p><b>Unlocked Balance : $valueOfUnLockedBalance</b> </p> <br /> <p>Wallet :  $valueOfWallet </p>", Html.FROM_HTML_MODE_COMPACT)
                                 tooltipStyle()
                             }
                         }
@@ -1429,11 +1432,11 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                     else -> {
                         when {
                             valueOfWallet != "100%" -> {
-                                binding.tooltip.text = Html.fromHtml("<p> Wallet Synchronizing <b> $valueOfWallet</b> </p>")
+                                binding.tooltip.text = Html.fromHtml("<p> Wallet Synchronizing:  <b> <font color='#00BD40'> $valueOfWallet </font> </b> </p>")
                                 tooltipStyle()
                             }
                             else -> {
-                                binding.tooltip.text = Html.fromHtml("<p> <b>Balance : $valueOfBalance </b> </p> <br /> <p><b>Unlocked Balance : $valueOfUnLockedBalance</b> </p> <br /> <p>Wallet :  $valueOfWallet </p>")
+                                binding.tooltip.text = Html.fromHtml("<p> <b>Balance : <font color='#00BD40'> $valueOfBalance </font> </b> </p> <br /> <p><b>Unlocked Balance : <font color='#00BD40'> $valueOfUnLockedBalance </font> </b> </p> <br /> <p>Wallet :  $valueOfWallet </p>")
                                 tooltipStyle()
                             }
                         }

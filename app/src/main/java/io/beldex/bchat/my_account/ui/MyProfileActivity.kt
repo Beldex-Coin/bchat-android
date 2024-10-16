@@ -82,7 +82,7 @@ class MyProfileActivity: AppCompatActivity() {
     private lateinit var glide: GlideRequests
     private var tempFile: File? = null
     private lateinit var binding: ActivityMyProfileBinding
-    private val namePattern = Pattern.compile("[A-Za-z0-9]+")
+    private val namePattern = Pattern.compile("[A-Za-z0-9\\s]+")
     private val hexEncodedPublicKey: String
         get() {
             return TextSecurePreferences.getLocalNumber(this)!!

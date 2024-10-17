@@ -1,6 +1,7 @@
 package io.beldex.bchat.conversation.v2.dialogs
 
 import android.content.res.Configuration
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -20,12 +21,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import io.beldex.bchat.compose_utils.BChatTheme
 import io.beldex.bchat.compose_utils.DialogContainer
 import io.beldex.bchat.compose_utils.appColors
@@ -63,7 +66,7 @@ fun ClearChatDialog(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = stringResource(id = R.string.delete_chat),
+                text = stringResource(id = R.string.clear_chat),
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.SemiBold
                 ),
@@ -72,7 +75,7 @@ fun ClearChatDialog(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = stringResource(id = R.string.delete_chat_confirmation),
+                text = stringResource(id = R.string.clear_chat_confirmation),
                 style = MaterialTheme.typography.bodyMedium.copy(
 
                 ),
@@ -88,17 +91,19 @@ fun ClearChatDialog(
             ) {
                 Button(
                     onClick = onCancel,
-                    shape = RoundedCornerShape(50),
+                    shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.cancelButtonColor
+                        containerColor = MaterialTheme.appColors.negativeGreenButton
                     ),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    border = BorderStroke(width = 0.5.dp, color = MaterialTheme.appColors.negativeGreenButtonBorder)
                 ) {
                     Text(
                         text = stringResource(id = R.string.cancel),
                         style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Medium,
-                            color = MaterialTheme.appColors.cancelColor
+                            fontWeight = FontWeight(400),
+                            fontSize = 14.sp,
+                            color = MaterialTheme.appColors.negativeGreenButtonText
                         ),
                         modifier = Modifier.padding(
                             vertical = 8.dp
@@ -108,17 +113,18 @@ fun ClearChatDialog(
 
                 Button(
                     onClick = onAccept,
-                    shape = RoundedCornerShape(50),
+                    shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.appColors.cancelButtonColor
+                        containerColor = MaterialTheme.appColors.negativeRedButtonBorder
                     ),
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(
-                        text = stringResource(id = R.string.delete),
+                        text = stringResource(id = R.string.clear),
                         style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Medium,
-                            color = MaterialTheme.appColors.clearColor
+                            fontWeight = FontWeight(400),
+                            fontSize = 14.sp,
+                            color = Color.White
                         ),
                         modifier = Modifier.padding(
                             vertical = 8.dp

@@ -2524,7 +2524,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         showBlockProgressBar(recipient)
         /*setting click listener on banner to avoid background click gesture - DO NOT REMOVE This line*/
         binding.blockedBanner.setOnClickListener {  }
-        binding.deleteChat.setOnClickListener {
+        binding.clearChat.setOnClickListener {
             clearChatDialog()
         }
         binding.unblockButton.setOnClickListener {

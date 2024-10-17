@@ -328,6 +328,7 @@ fun RescanScreen(
                         restoreFromDateStr = ""
                     }
                 },
+                shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.outlinedButtonColors(containerColor = MaterialTheme.appColors.disabledButtonContainerColor)
             ) {

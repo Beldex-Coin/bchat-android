@@ -1495,8 +1495,8 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="missed_voice_call">Missed Voice Call</string>
     <string name="tap_to_callback">Tap to Callback</string>
     <string name="enter_your_4_digit_wallet_pin">Enter your 4 digit Wallet PIN</string>
-    <string name="delete_chat">Delete Chat</string>
-    <string name="delete_chat_confirmation">Are you sure you want to delete this chat from this contact?</string>
+    <string name="clear_chat">Clear Chat</string>
+    <string name="clear_chat_confirmation">Are you sure you want to clear all the chat from this contact?</string>
     <string name="unblock_contact">Unblock Contact</string>
     <string name="unblock_user_confirmation">Are you sure you want to Unblock this contact?</string>
     <string name="block_user_confirmation">Are you sure you want to Block this contact?</string>

@@ -147,14 +147,14 @@ class ControlMessageView : LinearLayout {
                 if (message.isOutgoing) {
                     binding.dialledCallCardView.background=ContextCompat.getDrawable(
                         context,
-                        R.drawable.message_bubble_background_sent_end
+                        R.drawable.call_message_bubble_background_sent_end
                     )
                     binding.dialledCallCardView.backgroundTintList=
                         ContextCompat.getColorStateList(context, R.color.button_green)
                 } else {
                     binding.receivedCallCardView.background=ContextCompat.getDrawable(
                         context,
-                        R.drawable.message_bubble_background_received_end
+                        R.drawable.call_message_bubble_background_received_end
                     )
                     binding.receivedCallCardView.backgroundTintList=ContextCompat.getColorStateList(
                         context,

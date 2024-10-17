@@ -105,6 +105,8 @@ class VisibleMessageContentView : MaterialCardView {
             color,
             BlendModeCompat.SRC_IN
         )
+        binding.tailSendView.colorFilter = filter
+        binding.tailReceiveView.colorFilter = filter
         background.colorFilter = filter
         setBackground(background)
 
@@ -384,16 +386,48 @@ class VisibleMessageContentView : MaterialCardView {
         val isSingleMessage = (isStartOfMessageCluster && isEndOfMessageCluster)
         @DrawableRes val backgroundID = when {
             isSingleMessage -> {
-                if (isOutgoing) R.drawable.message_bubble_background_sent_end else R.drawable.message_bubble_background_received_end
+                if (isOutgoing) {
+                    binding.tailSendView.visibility = View.VISIBLE
+                    binding.tailReceiveView.visibility = View.GONE
+                    R.drawable.message_bubble_background_sent_end
+                } else {
+                    binding.tailSendView.visibility = View.GONE
+                    binding.tailReceiveView.visibility = View.VISIBLE
+                    R.drawable.message_bubble_background_received_end
+                }
             }
             isStartOfMessageCluster -> {
-                if (isOutgoing) R.drawable.message_bubble_background_sent_alone else R.drawable.message_bubble_background_sent_alone
+                if (isOutgoing) {
+                    binding.tailSendView.visibility = View.GONE
+                    binding.tailReceiveView.visibility = View.GONE
+                    R.drawable.message_bubble_background_sent_alone
+                } else {
+                    binding.tailSendView.visibility = View.GONE
+                    binding.tailReceiveView.visibility = View.GONE
+                    R.drawable.message_bubble_background_sent_alone
+                }
             }
             isEndOfMessageCluster -> {
-                if (isOutgoing) R.drawable.message_bubble_background_sent_end else R.drawable.message_bubble_background_received_end
+                if (isOutgoing) {
+                    binding.tailSendView.visibility = View.VISIBLE
+                    binding.tailReceiveView.visibility = View.GONE
+                    R.drawable.message_bubble_background_sent_end
+                } else {
+                    binding.tailSendView.visibility = View.GONE
+                    binding.tailReceiveView.visibility = View.VISIBLE
+                    R.drawable.message_bubble_background_received_end
+                }
             }
             else -> {
-                if (isOutgoing) R.drawable.message_bubble_background_sent_alone else R.drawable.message_bubble_background_sent_alone
+                if (isOutgoing) {
+                    binding.tailSendView.visibility = View.GONE
+                    binding.tailReceiveView.visibility = View.GONE
+                    R.drawable.message_bubble_background_sent_alone
+                } else {
+                    binding.tailSendView.visibility = View.GONE
+                    binding.tailReceiveView.visibility = View.GONE
+                    R.drawable.message_bubble_background_sent_alone
+                }
             }
         }
         return ResourcesCompat.getDrawable(resources, backgroundID, context.theme)!!

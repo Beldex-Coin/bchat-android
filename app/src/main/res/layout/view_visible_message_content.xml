@@ -8,6 +8,9 @@
     app:cardElevation="0dp"
     app:message_sent_background_color="@color/send_message_background">
 
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -86,7 +89,7 @@
                 android:id="@+id/documentView"
                 layout="@layout/view_document"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="100dp"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -191,8 +194,25 @@
             android:layout_gravity="end"
             android:layout_marginEnd="16dp"
             android:layout_marginTop="4dp"
-            android:layout_marginBottom="10dp"/>
+            android:layout_marginBottom="12dp"/>
 
     </LinearLayout>
+        <ImageView
+            android:id="@+id/tailReceiveView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/tail_receive"
+            android:layout_gravity="bottom"
+            android:visibility="gone"
+            android:contentDescription="Receive Message Tail View" />
+        <ImageView
+            android:id="@+id/tailSendView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/tail_send"
+            android:layout_gravity="bottom|end"
+            android:visibility="gone"
+            android:contentDescription="Send Message Tail View" />
+    </FrameLayout>
 
 </io.beldex.bchat.conversation.v2.messages.VisibleMessageContentView>

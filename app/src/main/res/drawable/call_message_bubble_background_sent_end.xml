@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:bottom="10dp"
+    <item android:bottom="8dp"
         android:gravity="end">
         <shape android:shape="rectangle">
             <solid android:color="@color/white" />
@@ -19,7 +19,7 @@
             android:viewportHeight="24">
             <path
                 android:pathData="M24,15.394C24,12.44 20.907,10.505 18.25,11.797L5.5,18L24,24V15.394Z"
-                android:fillColor="@color/transparent"/>
+                android:fillColor="@color/white"/>
         </vector>
     </item>
 </layer-list>

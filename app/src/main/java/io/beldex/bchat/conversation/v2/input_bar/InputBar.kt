@@ -68,7 +68,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
     private var microPhoneButtonLastLongClickTime: Long = 0
 
     private val attachmentsButton by lazy { InputBarButton(context, R.drawable.ic_attach, isMessageBox = true) }
-    private val microphoneButton by lazy { InputBarButton(context, R.drawable.ic_microphone, true, isMessageBox = true) }
+    private val microphoneButton by lazy { InputBarButton(context, R.drawable.ic_filled_microphone, true, isMessageBox = true) }
     private val sendButton by lazy { InputBarButton(context, R.drawable.send, true, isMessageBox = true) }
 
     // region Lifecycle

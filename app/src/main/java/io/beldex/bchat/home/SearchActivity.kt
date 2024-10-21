@@ -96,8 +96,9 @@ class SearchActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
             BChatTheme(
-                darkTheme = UiModeUtilities.getUserSelectedUiMode(LocalContext.current) == UiMode.NIGHT
+                darkTheme = isDarkTheme
             ) {
                 Surface {
                     Scaffold {
@@ -123,7 +124,8 @@ class SearchActivity : ComponentActivity() {
                                 },
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .padding(16.dp)
+                                    .padding(16.dp),
+                                isDarkTheme
                             )
                         }
                     }
@@ -168,7 +170,8 @@ private fun SearchView(
     results: List<SearchResults>,
     onQueryChanged: (String) -> Unit,
     onClick: (SearchResults) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isDarkTheme: Boolean
 ) {
     val lifeCycle = LocalLifecycleOwner.current
     val focusRequester = remember { FocusRequester() }
@@ -324,7 +327,7 @@ private fun SearchView(
                                     }
                             ) {
                                 Image(
-                                    painter = painterResource(id = R.drawable.ic_self_message),
+                                    painter = painterResource(id = if(isDarkTheme) R.drawable.ic_note_to_self else R.drawable.ic_note_to_self_light),
                                     contentDescription = "",
                                     modifier = Modifier
                                         .size(ProfilePictureMode.GroupPicture.size)
@@ -569,7 +572,8 @@ private fun SearchViewPreview() {
                 onClick = {},
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp)
+                    .padding(16.dp),
+                isDarkTheme = false
             )
         }
     }
@@ -587,7 +591,8 @@ private fun SearchViewPreviewDark() {
                 onClick = {},
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp)
+                    .padding(16.dp),
+                isDarkTheme = true
             )
         }
     }

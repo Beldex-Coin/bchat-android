@@ -61,6 +61,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
@@ -91,9 +92,12 @@ import io.beldex.bchat.conversation_v2.NewChatScreenViewModel
 import io.beldex.bchat.conversation_v2.OpenActivity
 import io.beldex.bchat.conversation_v2.getUserDisplayName
 import io.beldex.bchat.dependencies.DatabaseComponent
+import io.beldex.bchat.util.UiMode
+import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.wallet.CheckOnline
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
+import kotlin.concurrent.thread
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -104,6 +108,7 @@ fun NewChatScreen(
     openActivity: (OpenActivity) -> Unit,
     openConversation: (Recipient) -> Unit,
     onBackPress: () -> Unit,
+    isDarkTheme: Boolean
 ) {
     val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -263,7 +268,7 @@ fun NewChatScreen(
                         )
                     )
                 }
-                NewChatItem(image = R.drawable.ic_new_chat, title = stringResource(id = R.string.activity_create_private_chat_title),MaterialTheme.appColors.textGreen, PaddingValues(start = 10.dp, end = 10.dp, top = 10.dp),true, onClick = {
+                NewChatItem(image = if(isDarkTheme) R.drawable.ic_new_chat else R.drawable.ic_new_chat_light, title = stringResource(id = R.string.activity_create_private_chat_title),MaterialTheme.appColors.textGreen, PaddingValues(start = 10.dp, end = 10.dp, top = 10.dp),true, onClick = {
                     showNewChatPopup = !showNewChatPopup
                 }, onClickScanQRCode = {
                     val intent = Intent(
@@ -273,7 +278,7 @@ fun NewChatScreen(
                     privateChatScanQRCodeActivityResultLauncher.launch(intent)
                 })
                 NewChatItem(
-                    image = R.drawable.ic_secret_group,
+                    image = if(isDarkTheme) R.drawable.ic_secret_group else R.drawable.ic_secret_group_light,
                     title = stringResource(id = R.string.home_screen_secret_groups_title),
                     MaterialTheme.appColors.textColor,
                     PaddingValues(start = 10.dp, end = 10.dp, top = 5.dp),
@@ -283,7 +288,7 @@ fun NewChatScreen(
                     onClickScanQRCode = {}
                 )
                 NewChatItem(
-                    image = R.drawable.ic_social_group,
+                    image = if(isDarkTheme) R.drawable.ic_social_group else R.drawable.ic_social_group_light,
                     title = stringResource(id = R.string.home_screen_social_groups_title),
                     MaterialTheme.appColors.textColor,
                     PaddingValues(start = 10.dp, end = 10.dp, top = 5.dp),
@@ -293,7 +298,7 @@ fun NewChatScreen(
                     onClickScanQRCode = {}
                 )
                 NewChatItem(
-                    image = R.drawable.ic_note_to_self,
+                    image = if(isDarkTheme) R.drawable.ic_note_to_self else R.drawable.ic_note_to_self_light,
                     title = stringResource(id = R.string.note_to_self),
                     MaterialTheme.appColors.textColor,
                     PaddingValues(start = 10.dp, end = 10.dp, top = 5.dp),
@@ -414,10 +419,12 @@ fun NewChatItem(
 
         if(showQrCode) {
             Image(
-                painterResource(id = R.drawable.ic_scan_qr_code),
+                painterResource(id = R.drawable.qr_code_send),
                 contentDescription = "",
-                modifier = Modifier
-                    .padding(5.dp)
+                colorFilter = ColorFilter.tint(
+                    color = MaterialTheme.appColors.editTextColor
+                ),
+                modifier = Modifier.weight(0.5f).size(21.dp).padding(end = 15.dp)
                     .clickable {
                         onClickScanQRCode()
                     },
@@ -488,7 +495,7 @@ private fun GroupContact(
             fontWeight = FontWeight(400),
             modifier = Modifier
                 .weight(1f)
-                .padding(horizontal = 15.dp),
+                .padding(start = if(recipient.isGroupRecipient) 5.dp else 15.dp , end = 15.dp),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
@@ -528,7 +535,7 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
         }
     }
 
-    DialogContainer(onDismissRequest = {}) {
+    DialogContainer(containerColor = MaterialTheme.appColors.newChatCardBackground, onDismissRequest = {}) {
 
         OutlinedCard(
             modifier = Modifier
@@ -543,14 +550,14 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(14.dp),
                 textAlign = TextAlign.Center
             )
 
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp),
+                    .padding(start = 14.dp, end = 14.dp),
                 shape = RoundedCornerShape(16.dp),
                 border = BorderStroke(0.5.dp, if(bchatIdErrorStatus) MaterialTheme.appColors.negativeRedButtonBorder else MaterialTheme.appColors.textFieldUnfocusedColor)
             ) {
@@ -595,7 +602,7 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
             Row(
                 modifier= Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(14.dp)
             ) {
                 Button(
                     onClick={ onDismiss() },
@@ -619,7 +626,7 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                     )
                 }
 
-                Spacer(modifier=Modifier.width(16.dp))
+                Spacer(modifier=Modifier.width(7.dp))
 
                 Button(
                     onClick={
@@ -643,7 +650,7 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                     colors= ButtonDefaults.buttonColors(
                         containerColor=MaterialTheme.appColors.primaryButtonColor,
                         disabledContainerColor = MaterialTheme.appColors.disabledLetsBchatButton,
-                        disabledContentColor = MaterialTheme.appColors.disabledPrimaryButtonContentColor
+                        disabledContentColor = MaterialTheme.appColors.disabledLetsBchatContent
                     ),
                     modifier=Modifier
                         .weight(1f)
@@ -654,7 +661,7 @@ fun NewChatPopUp(context: Context, onDismiss: () -> Unit, onClick: (String) -> U
                             color = if (bChatId.isNotEmpty() && !bchatIdErrorStatus) {
                                 Color.White
                             } else {
-                                MaterialTheme.appColors.disabledPrimaryButtonContentColor
+                                MaterialTheme.appColors.disabledLetsBchatContent
                             },
                             fontWeight = FontWeight(400),
                             fontSize = 14.sp
@@ -708,6 +715,6 @@ fun NewChatScreenNightPreview() {
     val searchQuery by contactViewModel.searchQuery.collectAsState()
     val contacts by contactViewModel.recipients.collectAsState(initial = listOf())
     BChatTheme {
-        NewChatScreen(searchQuery, contacts,contactViewModel::onEvent, openActivity = {}, openConversation = {}, onBackPress = {})
+        NewChatScreen(searchQuery, contacts,contactViewModel::onEvent, openActivity = {}, openConversation = {}, onBackPress = {}, isDarkTheme = true)
     }
 }

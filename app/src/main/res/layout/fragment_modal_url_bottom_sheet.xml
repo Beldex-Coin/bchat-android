@@ -7,7 +7,11 @@
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:paddingTop="@dimen/large_spacing"
+    android:layout_marginBottom="10dp"
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="10dp"
     app:behavior_hideable="true"
+    app:layout_constraintBottom_toBottomOf="parent"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <LinearLayout

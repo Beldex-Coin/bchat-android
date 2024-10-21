@@ -41,8 +41,8 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/snippetTextView"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="36dp"
-            app:layout_constraintEnd_toStartOf="@id/unreadCountIndicator"/>
+            android:layout_marginEnd="24dp"
+            app:layout_constraintEnd_toStartOf="@id/timestampTextView"/>
 
         <TextView
             android:fontFamily="@font/open_sans_regular"
@@ -67,7 +67,7 @@
             android:layout_height="24dp"
             android:background="@drawable/rounded_indicator"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginEnd="16dp"
             >
 
@@ -97,7 +97,7 @@
             android:alpha="0.4"
             tools:text="9:41 AM"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/snippetTextView"
+            app:layout_constraintBottom_toBottomOf="@id/conversationViewDisplayNameTextView"
             android:layout_marginEnd="16dp"/>
 
         <ImageView
@@ -105,8 +105,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_mute_home"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/timestampTextView"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/timestampTextView"
             app:layout_constraintEnd_toStartOf="@id/unreadCountIndicator"
             android:layout_marginEnd="5dp"
 

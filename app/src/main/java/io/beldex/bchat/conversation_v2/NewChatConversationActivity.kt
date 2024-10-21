@@ -38,8 +38,9 @@ class NewChatConversationActivity: ComponentActivity() {
             val contactViewModel: NewChatScreenViewModel = hiltViewModel()
             val searchQuery by contactViewModel.searchQuery.collectAsState()
             val contacts by contactViewModel.recipients.collectAsState(initial = listOf())
+            val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
             BChatTheme(
-                darkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
+                darkTheme = isDarkTheme
             ) {
                 // A surface container using the 'background' color from the theme
                 Surface {
@@ -76,7 +77,7 @@ class NewChatConversationActivity: ComponentActivity() {
                         },
                         onBackPress = {
                             context.finish()
-                        })
+                        },isDarkTheme)
                 }
             }
         }

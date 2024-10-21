@@ -1012,7 +1012,7 @@
     <string name="activity_settings_profile_name_title" translatable="false">Profile Name</string>
     <string name="bchat_id_clipboard" translatable="false">Your BChat ID is copied to clipboard</string>
     <string name="beldex_address_clipboard" translatable="false">Your Beldex Address is copied to clipboard</string>
-    <string name="copy_the_recovery_seed_to_continue" translatable="false">Copy the recovery seed to continue</string>
+    <string name="copy_the_recovery_seed_to_continue" translatable="false">Copy and Save the seed to continue</string>
     <string name="message_requests_notification" translatable="false">You have a new message request</string>
     <string name="activity_message_requests_title" translatable="false">Message Requests</string>
     <string name="message_requests_send_notice" translatable="false">Sending a message to this user will automatically accept their message request and reveal your BChat ID.</string>

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
@@ -47,15 +48,17 @@ fun NewChatButtons(
                 },
                 containerColor = MaterialTheme.appColors.floatingActionButtonBackground,
                 modifier = Modifier
-                    .size(60.dp).padding(
+                    .size(48.dp).padding(
                         bottom = 8.dp,
                         end = 8.dp
-                    )
+                    ),
+                shape = RoundedCornerShape(14.dp)
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_plus),
                     contentDescription = "",
-                    tint = Color.White
+                    tint = Color.White,
+                    modifier = Modifier.size(16.dp)
                 )
             }
         }

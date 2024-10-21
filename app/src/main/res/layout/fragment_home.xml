@@ -271,6 +271,17 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="8dp" />
+                    <View
+                        android:id="@+id/archiveChatDivider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:visibility="gone"
+                        android:background="@color/divider_line"
+                        android:layout_below="@id/archiveChatCardView"
+                        android:contentDescription="Divider" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerView"
@@ -279,7 +290,7 @@
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         tools:itemCount="6"
                         tools:listitem="@layout/view_conversation"
-                        android:layout_below="@id/archiveChatCardView"
+                        android:layout_below="@id/archiveChatDivider"
                         android:padding="8dp"/>
 
                     <View

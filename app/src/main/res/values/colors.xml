@@ -312,4 +312,6 @@
     <color name="outgoing_call_background">#136515</color>
     <color name="incoming_call_icon_background">#252534</color>
     <color name="payment_card_view_background">#3F3F56</color>
+    <color name="chat_icon_background">#2C2C3B</color>
+    <color name="chat_icon_foreground">#EBEBEB</color>
 </resources>

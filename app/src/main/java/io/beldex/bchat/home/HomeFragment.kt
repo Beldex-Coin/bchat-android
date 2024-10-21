@@ -434,6 +434,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                     5 -> {
                         // # Support
                         activityCallback?.sendMessageToSupport()
+                        binding.drawerLayout.closeDrawer(GravityCompat.END)
                     }
                     6 -> {
                         // # Help Activity
@@ -573,6 +574,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
 
            if( threadDb.archivedConversationList.count !=0) {
                binding.archiveChatCardView.visibility = View.VISIBLE
+               binding.archiveChatDivider.visibility = View.VISIBLE
                binding.archiveChatCardView.setContent {
                    BChatTheme {
                        ArchiveChatView(
@@ -587,6 +589,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                }
            }else{
                binding.archiveChatCardView.visibility = View.GONE
+               binding.archiveChatDivider.visibility = View.GONE
            }
             homeAdapter.data = newData
 //            if(firstPos >= 0) { manager.scrollToPositionWithOffset(firstPos, offsetTop) }

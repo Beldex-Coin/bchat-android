@@ -100,7 +100,7 @@ class ConversationView : LinearLayout {
         binding.conversationViewDisplayNameTextView.text = recipientName
         binding.timestampTextView.text = DateUtils.getDisplayFormattedTimeSpanString(context, Locale.getDefault(), thread.date)
         if(unreadCount !=0 && !thread.isRead) {
-            binding.timestampTextView.setTextColor(context.getColor(R.color.button_green))
+            binding.timestampTextView.setTextColor(context.getColor(R.color.text_green))
         } else{
             binding.timestampTextView.setTextColor(context.getColor(R.color.text))
         }

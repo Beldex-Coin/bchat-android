@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -231,12 +232,13 @@ fun LinkYourBNSDialog(
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.appColors.negativeGreenButton,
                     ),
+                    shape = RoundedCornerShape(12.dp),
                     border = BorderStroke(
                         width = 0.5.dp,
                         color = MaterialTheme.appColors.negativeGreenButtonBorder
                     ),
                     contentPadding = PaddingValues(
-                        vertical = 16.dp
+                        vertical = 14.dp
                     ),
                     modifier = Modifier.weight(1F)
                 ) {
@@ -272,12 +274,13 @@ fun LinkYourBNSDialog(
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.appColors.contactCardBackground,
                     ),
+                    shape = RoundedCornerShape(12.dp),
                     border = BorderStroke(
                         width = 1.dp,
                         color = if (verifyBNSName(bnsName)) MaterialTheme.appColors.primaryButtonColor else MaterialTheme.appColors.contactCardBackground
                     ),
                     contentPadding = PaddingValues(
-                        vertical = 16.dp
+                        vertical = 14.dp
                     ),
                     modifier = Modifier.weight(1F)
                 ) {
@@ -311,7 +314,7 @@ fun LinkYourBNSDialog(
                 },
                 modifier = Modifier
                     .fillMaxWidth(),
-                shape = CircleShape,
+                shape = RoundedCornerShape(12.dp),
                 enabled = isVerified,
                 disabledContainerColor = MaterialTheme.appColors.contactCardBackground,
             ) {

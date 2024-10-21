@@ -1715,15 +1715,6 @@ private fun ArchiveChatScreenContainer(
                 modifier = Modifier
                     .weight(1f)
             )
-            Icon(
-                painterResource(id = R.drawable.ic_unarchive_chats),
-                contentDescription = stringResource(R.string.un_archive_chat),
-                tint = MaterialTheme.appColors.editTextColor,
-                modifier = Modifier
-                    .clickable {
-                        onBackClick()
-                    }
-            )
 
             actionItems()
         }

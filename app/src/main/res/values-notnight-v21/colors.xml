@@ -230,4 +230,6 @@
     <color name="outgoing_call_background">#136515</color>
     <color name="incoming_call_icon_background">#F8F8F8</color>
     <color name="payment_card_view_background">#EBEBEB</color>
+    <color name="chat_icon_background">#DDDDDD</color>
+    <color name="chat_icon_foreground">#2C2C3B</color>
 </resources>

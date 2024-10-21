@@ -61,7 +61,7 @@ class LinkPreviewView : LinearLayout {
         // Body
         binding.titleTextView.setTextColor(ResourcesCompat.getColor(resources, textColorID, context.theme))
         val cardBackgroundColorID = if (message.isOutgoing) {
-            R.color.dialled_call_detail_background
+            R.color.outgoing_call_background
         } else {
             R.color.transaction_history_background
         }

@@ -6,7 +6,10 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewDocumentBinding
 import io.beldex.bchat.database.model.MmsMessageRecord
 
@@ -54,6 +57,35 @@ class DocumentView : LinearLayout {
             else{
                 binding.gifProgress.visibility = View.VISIBLE
             }
+        }
+        val backgroundColorID = if (message.isOutgoing) {
+            R.color.button_green
+        } else {
+            R.color.user_view_background
+        }
+        val backgroundColor =
+            ResourcesCompat.getColor(resources, backgroundColorID, context.theme)
+        binding.documentTypePreviewContainer.backgroundTintList =
+            ColorStateList.valueOf(backgroundColor)
+
+        binding.documentViewContainer.setBackgroundColor(resources.getColor(getContainerColor(message.isOutgoing), null))
+        if (message.isOutgoing) {
+            binding.documentViewContainer.background=ContextCompat.getDrawable(
+                context,
+                R.drawable.document_view_background
+            )
+        } else {
+            binding.documentViewContainer.background=ContextCompat.getDrawable(
+                context,
+                R.drawable.document_incoming_view_background
+            )
+        }
+    }
+
+    private fun getContainerColor(isOutgoingMessage: Boolean): Int {
+        return when {
+            isOutgoingMessage -> R.color.outgoing_call_background
+            else -> R.color.quote_view_background
         }
     }
 // endregion

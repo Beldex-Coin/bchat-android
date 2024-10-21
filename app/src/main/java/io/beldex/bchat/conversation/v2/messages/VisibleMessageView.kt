@@ -191,7 +191,7 @@ class VisibleMessageView : LinearLayout {
         // Populate content view
         binding.messageContentView.root.indexInAdapter = indexInAdapter
         binding.messageContentView.root.bind(message, isStartOfMessageCluster, isEndOfMessageCluster, glide, thread, searchQuery, message.isOutgoing || isGroupThread || (contact?.isTrusted ?: false),
-            onAttachmentNeedsDownload)
+            onAttachmentNeedsDownload, thread.isOpenGroupRecipient)
         binding.messageContentView.root.delegate = contentViewDelegate
         onDoubleTap = { binding.messageContentView.root.onContentDoubleTap?.invoke() }
     }

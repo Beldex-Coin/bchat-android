@@ -91,8 +91,8 @@ class PathStatusView : View {
             bchatShadowColor = resources.getColorWithID(R.color.button_green, context.theme)
         } else {
             setBackgroundResource(R.drawable.paths_building_dot)
-            mainColor = resources.getColorWithID(R.color.paths_building, context.theme)
-            bchatShadowColor = resources.getColorWithID(R.color.paths_building, context.theme)
+            mainColor = resources.getColorWithID(R.color.clear_red_color, context.theme)
+            bchatShadowColor = resources.getColorWithID(R.color.clear_red_color, context.theme)
         }
     }
 

@@ -166,7 +166,9 @@ fun IgnoreRequestDialog(
                     .fillMaxWidth()
             ) {
                 Button(
-                    onClick = onBlock,
+                    onClick ={
+                        onBlock()
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.appColors.negativeRedButton
                     ),
@@ -188,7 +190,9 @@ fun IgnoreRequestDialog(
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Button(
-                    onClick = onDelete,
+                    onClick ={
+                        onDelete()
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.appColors.negativeRedButtonBorder
                     ),

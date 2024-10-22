@@ -123,7 +123,7 @@ fun MessageRequestsView(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = stringResource(id = R.string.activity_message_requests_title),
+                    text = stringResource(id = if(requests.size==1) R.string.activity_message_request_title else R.string.activity_message_requests_title),
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight(700)
                     )

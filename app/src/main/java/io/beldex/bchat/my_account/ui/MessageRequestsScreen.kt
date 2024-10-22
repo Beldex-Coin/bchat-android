@@ -96,7 +96,7 @@ fun MessageRequestsScreen(
             RequestBlockConfirmationDialog(
                 title = stringResource(id = R.string.block_request),
                 message = stringResource(id = R.string.message_requests_block_message),
-                actionTitle = stringResource(id = R.string.yes),
+                actionTitle = stringResource(id = R.string.recipient_preferences__block),
                 onConfirmation = {
                     threadRecord?.let {
                         onEvent(MessageRequestEvents.BlockRequest(it))
@@ -114,7 +114,7 @@ fun MessageRequestsScreen(
             RequestBlockConfirmationDialog(
                 title = stringResource(id = R.string.delete_request),
                 message = stringResource(id = R.string.message_requests_delete_message),
-                actionTitle = stringResource(id = R.string.yes),
+                actionTitle = stringResource(id = R.string.delete),
                 onConfirmation = {
                     threadRecord?.let {
                         onEvent(MessageRequestEvents.DeleteRequest(it))

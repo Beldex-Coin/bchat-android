@@ -10,8 +10,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:clickable="true"
         android:layout_height="match_parent"
+        android:clickable="true"
         android:focusable="true">
 
         <TextView
@@ -64,19 +64,19 @@
                     android:layout_marginStart="5dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <LinearLayout
                     android:id="@+id/drawer_profile_name_layout"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="12dp"
+                    android:focusable="true"
                     android:orientation="vertical"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toRightOf="@id/drawer_profile_icon"
                     app:layout_constraintRight_toLeftOf="@id/account_setting_img"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:focusable="true">
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <TextView
                         android:id="@+id/drawer_profile_name"
@@ -85,8 +85,8 @@
                         android:fontFamily="@font/open_sans_bold"
                         android:gravity="center_vertical"
                         android:textColor="@color/text"
-                        android:textStyle="bold"
                         android:textSize="16sp"
+                        android:textStyle="bold"
                         app:layout_constraintLeft_toRightOf="@id/drawer_profile_icon"
                         tools:text="User Name" />
 
@@ -132,7 +132,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/profile_container"
-            app:layout_constraintBottom_toTopOf="@id/version"
+            app:layout_constraintBottom_toTopOf="@id/darkModeLayout"
             tools:itemCount="10"
             tools:listitem="@layout/row_nav_drawer" />
 
@@ -145,21 +145,37 @@
             android:textAlignment="viewEnd"
             android:textColor="@color/version_color"
             android:textStyle="normal"
+            android:textSize="12sp"
             android:clickable="true"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             tools:text="BChat V2.6.0"
-            android:padding="8dp"
+            android:padding="12dp"
             android:focusable="true" />
+
+        <LinearLayout
+            android:id="@+id/darkModeLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="12dp"
+            android:layout_margin="16dp"
+            android:padding="8dp"
+            android:gravity="center_vertical"
+            tools:ignore="MissingConstraints">
+
+
 
         <TextView
             android:id="@+id/ui_mode"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:fontFamily="@font/open_sans_semi_bold"
             android:textAlignment="viewEnd"
-            android:textColor="@color/appearance_text"
+            android:textColor="@color/edit_text_title"
             android:textStyle="normal"
             android:textSize="12sp"
             android:clickable="true"
@@ -182,7 +198,7 @@
             app:layout_constraintTop_toTopOf="@id/version"
             app:layout_constraintBottom_toBottomOf="@id/version"
             android:layout_marginEnd="8dp"/>
-
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>

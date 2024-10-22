@@ -218,6 +218,7 @@ class ConversationActionDialog: DialogFragment() {
                         BChatTheme(
                             darkTheme = UiModeUtilities.getUserSelectedUiMode(requireContext()) == UiMode.NIGHT
                         ) {
+                            threadRecord =  arguments?.serializable(EXTRA_THREAD_RECORD)
                             IgnoreRequestDialog(
                                 onBlock = {
                                     dismiss()

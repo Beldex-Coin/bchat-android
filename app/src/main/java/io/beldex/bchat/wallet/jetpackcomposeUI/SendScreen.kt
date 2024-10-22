@@ -696,38 +696,42 @@ fun SendScreen(
                 }
 
                 if(showTransactionSentFailedPopup){
-                    TransactionFailedPopUp(onDismiss = {
-                        showTransactionSentFailedPopup = false },
-                        errorString = transactionSentFailedError)
+                    TransactionFailedPopUp(
+                        onDismiss={
+                            showTransactionSentFailedPopup=false
+                            pendingTransactions=null
+                        },
+                        errorString=transactionSentFailedError
+                    )
                 }
 
                 Box(modifier =Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp, 10.dp)
-                        .border(
-                                width=0.8.dp,
-                                color=MaterialTheme.appColors.primaryButtonColor.copy(alpha=0.5f),
-                                shape=RoundedCornerShape(12.dp)
-                        )) {
+                    .fillMaxWidth()
+                    .padding(10.dp, 10.dp)
+                    .border(
+                        width=0.8.dp,
+                        color=MaterialTheme.appColors.primaryButtonColor.copy(alpha=0.5f),
+                        shape=RoundedCornerShape(12.dp)
+                    )) {
                     Column(verticalArrangement = Arrangement.Center, modifier = Modifier.padding(10.dp)) {
                         Text(text = "Total Balance", style = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.appColors.totalBalanceColor, fontSize = 14.sp, fontWeight = FontWeight(700)), modifier =Modifier
-                                .fillMaxWidth()
-                                .padding(start=10.dp, top=10.dp, end=10.dp))
+                            .fillMaxWidth()
+                            .padding(start=10.dp, top=10.dp, end=10.dp))
                         Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(start = 10.dp, end = 10.dp)
                         ) {
                             Image(painter = painterResource(id = R.drawable.ic_beldex), contentDescription = "beldex logo", modifier = Modifier)
                             Text(text = totalBalance, style = MaterialTheme.typography.titleLarge.copy(color = MaterialTheme.appColors.textColor, fontSize = 24.sp, fontWeight = FontWeight(700)), modifier =Modifier
-                                    .fillMaxWidth()
-                                    .padding(10.dp), fontSize = 24.sp)
+                                .fillMaxWidth()
+                                .padding(10.dp), fontSize = 24.sp)
                         }
                     }
                 }
                 Column(modifier =Modifier
-                        .padding(10.dp)
-                        .background(
-                                color=MaterialTheme.appColors.receiveCardBackground,
-                                shape=RoundedCornerShape(18.dp)
-                        )
+                    .padding(10.dp)
+                    .background(
+                        color=MaterialTheme.appColors.receiveCardBackground,
+                        shape=RoundedCornerShape(18.dp)
+                    )
 
                 ) {
                     Column(modifier = Modifier.padding(10.dp)
@@ -735,8 +739,8 @@ fun SendScreen(
                     ) {
 
                         Text(text = context.getString(R.string.enter_bdx_amount), modifier =Modifier
-                                .fillMaxWidth()
-                                .padding(top=10.dp, bottom=5.dp, start=10.dp), style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp, fontWeight = FontWeight(600), color = MaterialTheme.appColors.textColor))
+                            .fillMaxWidth()
+                            .padding(top=10.dp, bottom=5.dp, start=10.dp), style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp, fontWeight = FontWeight(600), color = MaterialTheme.appColors.textColor))
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
 
                             BChatOutlinedTextField(
@@ -796,9 +800,9 @@ fun SendScreen(
                                 unFocusedContainerColor = MaterialTheme.appColors.beldexAddressBackground,
                                 maxLen = 16,
                                 modifier =Modifier
-                                        .padding(10.dp)
-                                        .fillMaxWidth()
-                                        .weight(1f),
+                                    .padding(10.dp)
+                                    .fillMaxWidth()
+                                    .weight(1f),
                                 shape = RoundedCornerShape(12.dp),
                             )
                            /* Box(
@@ -821,18 +825,18 @@ fun SendScreen(
 
                         ) {
                             Text(text = context.getString(R.string.beldex_address), style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.textColor, fontSize = 16.sp, fontWeight = FontWeight(700)), modifier =Modifier
-                                    .fillMaxWidth()
-                                    .weight(1f)
-                                    .padding(10.dp))
+                                .fillMaxWidth()
+                                .weight(1f)
+                                .padding(10.dp))
 
                             Box(
                                 modifier =Modifier
-                                        .width(32.dp)
-                                        .height(32.dp)
-                                        .background(
-                                                colorResource(id=R.color.your_bchat_id_bg),
-                                                shape=RoundedCornerShape(10.dp)
-                                        ),
+                                    .width(32.dp)
+                                    .height(32.dp)
+                                    .background(
+                                        colorResource(id=R.color.your_bchat_id_bg),
+                                        shape=RoundedCornerShape(10.dp)
+                                    ),
                                 contentAlignment = Alignment.Center
                             ) {
 
@@ -848,15 +852,15 @@ fun SendScreen(
                             Spacer(modifier = Modifier.width(10.dp))
 
                             Box(modifier =Modifier
-                                    .width(32.dp)
-                                    .height(32.dp)
-                                    .background(
-                                            colorResource(id=R.color.button_green),
-                                            shape=RoundedCornerShape(10.dp)
-                                    )
-                                    .clickable {
-                                        openAddressBookActivity()
-                                    }, contentAlignment = Alignment.Center) {
+                                .width(32.dp)
+                                .height(32.dp)
+                                .background(
+                                    colorResource(id=R.color.button_green),
+                                    shape=RoundedCornerShape(10.dp)
+                                )
+                                .clickable {
+                                    openAddressBookActivity()
+                                }, contentAlignment = Alignment.Center) {
 
                                 Image(painter = painterResource(id = R.drawable.address_book), contentDescription = "")
                             }
@@ -891,9 +895,9 @@ fun SendScreen(
                                 setMode(Mode.BDX)
                             }
                         }, modifier =Modifier
-                                .fillMaxWidth()
-                                .height(120.dp)
-                                .padding(10.dp),
+                            .fillMaxWidth()
+                            .height(120.dp)
+                            .padding(10.dp),
                                 shape = RoundedCornerShape(12.dp),
                                 colors = TextFieldDefaults.colors(
                                         unfocusedContainerColor = MaterialTheme.appColors.beldexAddressBackground,
@@ -976,13 +980,13 @@ fun SendScreen(
 
 
                         Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically, modifier =Modifier
-                                .fillMaxWidth()
-                                .padding(20.dp)
-                                .border(
-                                        width=0.8.dp,
-                                        color=colorResource(id=R.color.divider_color).copy(alpha=0.5f),
-                                        shape=RoundedCornerShape(12.dp)
-                                )) {
+                            .fillMaxWidth()
+                            .padding(20.dp)
+                            .border(
+                                width=0.8.dp,
+                                color=colorResource(id=R.color.divider_color).copy(alpha=0.5f),
+                                shape=RoundedCornerShape(12.dp)
+                            )) {
                             Text(text = "Estimated Fee : ", style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.textHint, fontSize = 14.sp, fontWeight = FontWeight.Bold), modifier = Modifier.padding(top = 20.dp, bottom = 20.dp, start = 20.dp))
                             Text(text = "$estimatedFee BDX", style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.appColors.textColor, fontSize = 14.sp, fontWeight = FontWeight.ExtraBold), modifier = Modifier.padding(top = 20.dp, bottom = 20.dp, end = 20.dp))
                         }
@@ -996,8 +1000,8 @@ fun SendScreen(
                         // context.startActivity(Intent(context, OnBoardingActivity::class.java))
                     },
                     modifier =Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp),
+                        .fillMaxWidth()
+                        .padding(10.dp),
                     shape = RoundedCornerShape(12.dp),
                     enabled = beldexAddress.value.isNotEmpty() && beldexAmount.value.isNotEmpty(),
                     disabledContainerColor = MaterialTheme.appColors.contactCardBackground

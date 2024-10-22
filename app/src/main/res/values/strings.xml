@@ -1015,6 +1015,7 @@
     <string name="copy_the_recovery_seed_to_continue" translatable="false">Copy and Save the seed to continue</string>
     <string name="message_requests_notification" translatable="false">You have a new message request</string>
     <string name="activity_message_requests_title" translatable="false">Message Requests</string>
+    <string name="activity_message_request_title" translatable="false">Message Request</string>
     <string name="message_requests_send_notice" translatable="false">Sending a message to this user will automatically accept their message request and reveal your BChat ID.</string>
     <string name="accept" translatable="false">Accept</string>
     <string name="decline" translatable="false">Decline</string>

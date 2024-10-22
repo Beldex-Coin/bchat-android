@@ -125,6 +125,8 @@ import io.beldex.bchat.conversation_v2.NewChatConversationActivity
 import io.beldex.bchat.conversation_v2.NewGroupConversationActivity
 import io.beldex.bchat.conversation_v2.NewGroupConversationType
 import io.beldex.bchat.databinding.FragmentHomeBinding
+import io.beldex.bchat.my_account.ui.MessageRequestEvents
+import io.beldex.bchat.repository.ConversationRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
@@ -196,6 +198,8 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
     private var viewModel : CallViewModel? =null // by viewModels<CallViewModel>()
     private val callDurationFormat = "HH:mm:ss"
     private var archiveChatViewModel : ArchiveChatViewModel? = null
+    @Inject
+    lateinit var repository : ConversationRepository
 
     private val publicKey: String
         get() = TextSecurePreferences.getLocalNumber(requireActivity().applicationContext)!!
@@ -553,7 +557,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                             val dialog = ConversationActionDialog()
                             dialog.apply {
                                 arguments = Bundle().apply {
-                                    putSerializable(ConversationActionDialog.EXTRA_THREAD_RECORD, it.recipient.notifyType)
+                                    putSerializable(ConversationActionDialog.EXTRA_THREAD_RECORD, it)
                                     putSerializable(ConversationActionDialog.EXTRA_DIALOG_TYPE, HomeDialogType.IgnoreRequest)
                                 }
                                 setListener(this@HomeFragment)
@@ -1693,6 +1697,17 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
                     }
                 }
             }
+            HomeDialogType.IgnoreRequest -> {
+                threadRecord.let {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        val recipient = threadRecord?.recipient
+                        if (recipient!!.isContactRecipient) {
+                            repository.setBlocked(recipient, true)
+                            repository.deleteMessageRequest(threadRecord)
+                        }
+                    }
+                }
+            }
             else -> Unit
         }
     }
@@ -1701,6 +1716,13 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
         when (dialogType) {
             HomeDialogType.DeleteChat -> {
                 binding.recyclerView.adapter?.notifyDataSetChanged()
+            }
+            HomeDialogType.IgnoreRequest -> {
+                threadRecord.let {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        repository.deleteMessageRequest(threadRecord!!)
+                    }
+                }
             }
             else -> Unit
         }

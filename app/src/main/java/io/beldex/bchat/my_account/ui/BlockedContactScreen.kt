@@ -263,7 +263,8 @@ private fun BlockedContactItem(
                     checked = isSelected,
                     onCheckedChange = {
                         selectContact(it)
-                    }
+                    },
+                    modifier = Modifier.padding(end = 10.dp)
                 )
             } else {
                 Text(

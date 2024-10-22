@@ -378,6 +378,7 @@ private fun GroupContact(
                 onCheckedChange = {
                     onSelectionChanged(recipient, it)
                 },
+                modifier = Modifier.padding(end = 25.dp)
             )
         }
     }

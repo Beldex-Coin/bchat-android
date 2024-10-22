@@ -35,9 +35,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import io.beldex.bchat.util.CustomCheckBox
 
 @Composable
 fun PrimaryButton(
@@ -201,12 +203,10 @@ fun BChatCheckBox(
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Checkbox(
+    CustomCheckBox(
         checked = checked,
         onCheckedChange = onCheckedChange,
-        colors = CheckboxDefaults.colors(
-            checkedColor = MaterialTheme.appColors.primaryButtonColor,
-        ),
+        checkBoxSize = 18.dp,
         modifier = modifier
     )
 }

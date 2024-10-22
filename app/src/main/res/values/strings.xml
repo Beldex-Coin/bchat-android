@@ -453,7 +453,7 @@
     <string name="load_more_header__loading" translatable="false">Loading</string>
 
     <!-- media_overview_activity -->
-    <string name="media_overview_activity__no_media" translatable="false">No media items to show</string>
+    <string name="media_overview_activity__no_media" translatable="false">No Media items to show!</string>
 
     <!-- message_recipients_list_item -->
     <string name="message_recipients_list_item__resend" translatable="false">Resend</string>
@@ -702,7 +702,7 @@
 
     <string name="activity_display_name_title_2" translatable="false">Pick your display name</string>
     <string name="activity_display_name_explanation" translatable="false">This will be your name when you use BChat. It can be your real name, an alias, or anything else you like.</string>
-    <string name="activity_display_name_edit_text_hint" translatable="false">Enter a display name</string>
+    <string name="activity_display_name_edit_text_hint" translatable="false">Enter name</string>
     <string name="activity_display_name_display_name_missing_error" translatable="false">Please pick a display name</string>
     <string name="activity_display_name_display_name_too_long_error" translatable="false">Please pick a shorter display name</string>
     <string name="activity_display_name_hint" translatable="false">You can change it anytime :)</string>
@@ -983,7 +983,7 @@
     <string name="beldex_address" translatable="false">Beldex Address</string>
     <string name="dummy_beldex_address" translatable="false">bx00f9b10ec366631ba25a9c6a0279e12d93c260134fce646d4c425356da5c9b480987654321a7b8c9e7a4d1b6f9e9e8</string>
     <string name="landing_screen_content" translatable="false">Welcome to BChat, your private haven for seamless communication and connection.</string>
-    <string name="display_name_screen_title_content" translatable="false">Set your display name</string>
+    <string name="display_name_screen_title_content" translatable="false">Set your Display Name</string>
     <string name="display_name_screen_description_content" translatable="false">Your display name is not your username and you can change it anytime.</string>
     <string name="register_screen_chat_id_description_content" translatable="false">Your BChat ID is like your username. You can share it with your friends to begin a conversation.</string>
     <string name="register_screen_beldex_address_description_content" translatable="false">Your Beldex address is connected to your BChat ID. You can use this address to receive BDX.</string>
@@ -1450,7 +1450,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="enter_your_4_digit_bchat_pin">Enter your 4 digit BChat PIN</string>
     <string name="no_pending_requests">No Pending message Requests!</string>
     <string name="create_secret_group">Create Secret Group</string>
-    <string name="enter_group_name">Enter Group Name</string>
+    <string name="enter_group_name">Enter Secret Group name</string>
     <string name="search_contact">Search Contact</string>
     <string name="message_request">Message Request</string>
     <string name="block_or_delete_request">Do you want to block or just delete this user?</string>

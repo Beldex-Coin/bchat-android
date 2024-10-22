@@ -61,7 +61,14 @@ class ProfilePictureView @JvmOverloads constructor(
         fun isOpenGroupWithProfilePicture(recipient: Recipient): Boolean {
             return recipient.isOpenGroupRecipient && recipient.groupAvatarId != null
         }
-        if (recipient.isGroupRecipient && !isOpenGroupWithProfilePicture(recipient)) {
+
+        if(isOpenGroupWithProfilePicture(recipient)){
+            val publicKey = recipient.address.toString()
+            this.publicKey = publicKey
+            displayName = getUserDisplayName(publicKey)
+            additionalPublicKey = null
+        }
+        else if (recipient.isGroupRecipient && !isOpenGroupWithProfilePicture(recipient)) {
             val members = DatabaseComponent.get(context).groupDatabase()
                     .getGroupMemberAddresses(recipient.address.toGroupString(), true)
                     .sorted()

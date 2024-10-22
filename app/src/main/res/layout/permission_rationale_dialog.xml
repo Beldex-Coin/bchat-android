@@ -17,8 +17,7 @@
         android:layout_marginBottom="10dp"
         android:padding="15dp"
         android:background="@drawable/circle_background"
-        android:contentDescription="Default permission"
-        app:tint="@color/download_icon" />
+        android:contentDescription="Default permission"/>
 
     <TextView
         android:fontFamily="@font/open_sans_bold"

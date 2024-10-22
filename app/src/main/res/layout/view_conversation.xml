@@ -117,8 +117,8 @@
 
     <RelativeLayout
         android:id="@+id/pinnedViewContainer"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
         android:background="@drawable/pin_rounded_indicator"
         android:layout_gravity="center_vertical|end"
         android:gravity="center"
@@ -126,8 +126,8 @@
         android:visibility="visible">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="11dp"
+            android:layout_height="11dp"
             android:src="@drawable/ic_pin" />
 
     </RelativeLayout>

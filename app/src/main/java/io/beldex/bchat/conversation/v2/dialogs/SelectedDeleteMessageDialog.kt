@@ -1,5 +1,6 @@
 package io.beldex.bchat.conversation.v2.dialogs
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,88 +28,96 @@ import io.beldex.bchat.R
 
 @Composable
 fun SelectedDeleteMessage(
-        title: String,
-        message: String,
-        positiveButtonTitle: String,
-        onAccept: () -> Unit,
-        onCancel: () -> Unit,
-        modifier: Modifier = Modifier,
-        negativeButtonTitle: String = stringResource(id = R.string.cancel)
+    title: String,
+    message: String,
+    positiveButtonTitle: String,
+    onAccept: () -> Unit,
+    onCancel: () -> Unit,
+    modifier: Modifier = Modifier,
+    negativeButtonTitle: String = stringResource(id = R.string.cancel)
 ) {
     DialogContainer(
-            dismissOnBackPress = true,
-            dismissOnClickOutside = true,
-            onDismissRequest = onCancel
+        dismissOnBackPress = true,
+        dismissOnClickOutside = true,
+        onDismissRequest = onCancel
     ) {
         Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(16.dp)
         ) {
             Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
-                            color = MaterialTheme.appColors.secondaryContentColor
-                    ),
+                text = title,
+                style = MaterialTheme.typography.titleMedium.copy(
+                    color = MaterialTheme.appColors.secondaryContentColor,
+                    fontWeight = FontWeight(700),
+                    fontSize = 16.sp
+                ),
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                    text = message,
-                    style = MaterialTheme.typography.bodyMedium.copy(
-
-                    ),
-                    textAlign = TextAlign.Center
+                text = message,
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    color = MaterialTheme.appColors.titleTextColor,
+                    fontWeight = FontWeight(400),
+                    fontSize = 14.sp
+                ),
+                textAlign = TextAlign.Center
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier
-                            .fillMaxWidth()
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
             ) {
                 Button(
-                        onClick = onCancel,
-                        shape = RoundedCornerShape(50),
-                        colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.appColors.cancelButtonColor
-                        ),
-                        modifier = Modifier.weight(1f)
+                    onClick = onCancel,
+                    shape = RoundedCornerShape(12.dp),
+                    border = BorderStroke(
+                        0.5.dp,
+                        MaterialTheme.appColors.negativeGreenButtonBorder
+                    ),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.appColors.negativeGreenButton
+                    ),
+                    modifier = Modifier.weight(1f)
                 ) {
                     Text(
-                            text = stringResource(id = R.string.cancel),
-                            style = MaterialTheme.typography.bodyMedium.copy(
-                                    fontWeight = FontWeight.Medium,
-                                    color = MaterialTheme.appColors.cancelColor
-                            ),
-                            modifier = Modifier.padding(
-                                    vertical = 8.dp
-                            )
+                        text = stringResource(id = R.string.cancel),
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = MaterialTheme.appColors.negativeGreenButtonText,
+                            fontWeight = FontWeight(400),
+                            fontSize = 14.sp
+                        ),
+                        modifier = Modifier.padding(
+                            vertical = 8.dp
+                        )
                     )
                 }
 
                 Button(
-                        onClick = onAccept,
-                        shape = RoundedCornerShape(50),
-                        colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.appColors.errorMessageColor
-                        ),
-                        modifier = Modifier.weight(1f)
+                    onClick = onAccept,
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.appColors.negativeRedButtonBorder
+                    ),
+                    modifier = Modifier.weight(1f)
                 ) {
                     Text(
-                            text = positiveButtonTitle,
-                            style = MaterialTheme.typography.bodyMedium.copy(
-                                    fontWeight = FontWeight.Medium,
-                                    color = Color.White
-                            ),
-                            modifier = Modifier.padding(
-                                    vertical = 8.dp
-                            )
+                        text = positiveButtonTitle,
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontWeight = FontWeight(400),
+                            fontSize = 14.sp,
+                            color = Color.White
+                        ),
+                        modifier = Modifier.padding(
+                            vertical = 8.dp
+                        )
                     )
                 }
             }

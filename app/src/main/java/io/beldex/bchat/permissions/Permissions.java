@@ -39,6 +39,7 @@ import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import io.beldex.bchat.R;
 
@@ -181,7 +182,10 @@ public class Permissions {
       AlertDialog callPermissionDialog = new AlertDialog.Builder(permissionObject.getContext()).create();
       callPermissionDialog.setView(callPermissionDialogView);
       callPermissionDialogView.<ImageView>findViewById(R.id.permissionImageview).setImageDrawable(ContextCompat.getDrawable(permissionObject.getContext(),rationalDialogHeader[0]));
-      callPermissionDialogView.<ImageView>findViewById(R.id.permissionImageview).setColorFilter(ContextCompat.getColor(permissionObject.getContext(),R.color.download_icon));
+      if(!Objects.equals(rationaleDialogMessage, permissionObject.getContext().getString(R.string.ConversationActivity_to_send_photos_and_video_allow_signal_access_to_storage))) {
+        Log.d("Message-String",""+rationaleDialogMessage+","+permissionObject.getContext().getString(R.string.ConversationActivity_to_send_photos_and_video_allow_signal_access_to_storage));
+        callPermissionDialogView.<ImageView>findViewById(R.id.permissionImageview).setColorFilter(ContextCompat.getColor(permissionObject.getContext(), R.color.download_icon));
+      }
       callPermissionDialogView.<TextView>findViewById(R.id.permissionDescriptionTextview).setText(rationaleDialogMessage);
       callPermissionDialogView.<TextView>findViewById(R.id.permissionTitleTextview).setText(rationalDialogTitle);
       callPermissionDialogView.<Button>findViewById(R.id.allowDialogBoxButton).setOnClickListener(new View.OnClickListener() {

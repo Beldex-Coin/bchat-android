@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -402,11 +403,15 @@ fun PassWordChangedPopup(onDismiss : () -> Unit, showPinChangedPopupTitle : Stri
                         modifier=Modifier.padding(vertical=16.dp)
                         )
 
-                Button(onClick={ onDismiss() }, colors=ButtonDefaults.buttonColors(containerColor=MaterialTheme.appColors.primaryButtonColor), modifier=Modifier
+                Button(onClick={ onDismiss() }, shape = RoundedCornerShape(12.dp), colors=ButtonDefaults.buttonColors(containerColor=MaterialTheme.appColors.primaryButtonColor), modifier=Modifier
                         .height(50.dp)
                         .width(150.dp)
                 ) {
-                    Text(text=stringResource(id=R.string.ok), style=MaterialTheme.typography.bodyMedium.copy(color=Color.White))
+                    Text(text=stringResource(id=R.string.ok), style=MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight(400),
+                        fontSize = 14.sp,
+                        color=Color.White
+                    ))
                 }
             }
 

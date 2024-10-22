@@ -476,8 +476,7 @@ public class ThreadDatabase extends Database {
 
 
   public Cursor getArchivedConversationList() {
-    String where  = "(" + MESSAGE_COUNT + " != 0 OR " + GroupDatabase.TABLE_NAME + "." + GROUP_ID + " LIKE '" + OPEN_GROUP_PREFIX + "%') " +
-            "AND " + ARCHIVED + " = 1 ";
+    String where  = "(" + MESSAGE_COUNT + " != 0) " + "AND " + ARCHIVED + " = 1 ";
     return getConversationList(where);
   }
 

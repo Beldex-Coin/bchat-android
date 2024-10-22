@@ -7,5 +7,5 @@
 
     <corners android:radius="32dp" />
 
-    <stroke android:width="@dimen/border_thickness" android:color="@color/user_view_background" />
+    <stroke android:width="@dimen/border_thickness" android:color="@color/contact_list_border" />
 </shape>

@@ -102,7 +102,7 @@ class ConversationView : LinearLayout {
         if(unreadCount !=0 && !thread.isRead) {
             binding.timestampTextView.setTextColor(context.getColor(R.color.text_green))
         } else{
-            binding.timestampTextView.setTextColor(context.getColor(R.color.text))
+            binding.timestampTextView.setTextColor(context.getColor(R.color.received_quoted_text_color))
         }
         binding.muteIcon.isVisible = isMuted
         val drawableRes = if (recipient.isMuted || recipient.notifyType == NOTIFY_TYPE_NONE) {

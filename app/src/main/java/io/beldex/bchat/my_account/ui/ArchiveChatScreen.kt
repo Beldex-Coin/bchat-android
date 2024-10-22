@@ -1,6 +1,8 @@
 package io.beldex.bchat.my_account.ui
 
+import android.app.Activity
 import android.content.Context
+import android.view.WindowManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -12,7 +14,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -30,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCompositionContext
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,10 +45,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libbchat.utilities.TextSecurePreferences
+import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.isScreenSecurityEnabled
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.R
 import io.beldex.bchat.archivechats.ArchiveChatViewModel
@@ -79,6 +83,7 @@ fun ArchiveChatScreen(
     modifier : Modifier=Modifier
 ) {
     val context=LocalContext.current
+    val activity = (context as? Activity)
     val requestToTakeAction : ThreadRecord?=null
     var threadRecord by remember {
         mutableStateOf(requestToTakeAction)
@@ -105,7 +110,10 @@ fun ArchiveChatScreen(
     var showDeletePopup by remember {
         mutableStateOf(false)
     }
-
+    if (isScreenSecurityEnabled(context))
+        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE) else {
+        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+    }
     if (showBlockPopup) {
         BChatTheme(
             darkTheme=UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
@@ -441,9 +449,6 @@ fun ArchiveChatItem(
     thread : ThreadRecord,
     modifier : Modifier=Modifier
 ) {
-    val muteIconVisible by remember {
-        mutableStateOf(thread.recipient.isMuted || thread.recipient.notifyType != RecipientDatabase.NOTIFY_TYPE_ALL)
-    }
     val unreadCount by remember {
         mutableIntStateOf(thread.unreadCount)
     }
@@ -539,13 +544,18 @@ fun ArchiveChatItem(
                 verticalAlignment=Alignment.CenterVertically,
                 modifier=Modifier.align(Alignment.CenterHorizontally)
             ) {
-                if (muteIconVisible) {
+                if (thread.recipient.isMuted) {
                     Image(
                         painter=painterResource(id=R.drawable.ic_mute_home), contentDescription=""
                     )
                 }
+                if(thread.recipient.notifyType == RecipientDatabase.NOTIFY_TYPE_MENTIONS && !thread.recipient.isMuted){
+                    Image(
+                        painter=painterResource(id=R.drawable.ic_mention_home), contentDescription=""
+                    )
+                }
                 Spacer(modifier=Modifier.width(4.dp))
-                if (unreadCount != 0 && !thread.isRead) {
+                if (thread.unreadCount != 0 && !thread.isRead) {
                     Box(
                         contentAlignment=Alignment.Center, modifier=Modifier
                             .size(24.dp)

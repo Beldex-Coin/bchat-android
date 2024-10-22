@@ -103,7 +103,7 @@ fun LeaveGroupDialog(title : String,
                         onClick=onLeave,
                         shape=RoundedCornerShape(12.dp),
                         colors=ButtonDefaults.buttonColors(
-                                containerColor=MaterialTheme.appColors.negativeGreenButtonBorder
+                                containerColor=MaterialTheme.appColors.negativeRedButtonBorder
                         ),
                         modifier=Modifier.weight(1f)
                 ) {

@@ -33,7 +33,7 @@
             android:maxLines="1"
             android:textAlignment="viewStart"
             android:ellipsize="end"
-            android:textSize="@dimen/small_font_size"
+            android:textSize="16sp"
             android:layout_weight="1"
             tools:text="User Name"
             android:textColor="@color/edit_text_title"/>

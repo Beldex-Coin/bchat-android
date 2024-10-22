@@ -155,7 +155,7 @@ fun TransactionConfirmPopUp(
                             border = BorderStroke(0.5.dp, MaterialTheme.appColors.negativeGreenButtonBorder),
                             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.appColors.negativeGreenButton), modifier = Modifier.weight(1f)) {
                             Text(text = stringResource(id = R.string.cancel), style = MaterialTheme.typography.bodyMedium.copy(
-                                color = Color.White,
+                                color = MaterialTheme.appColors.negativeGreenButtonText,
                                 fontWeight = FontWeight(400),
                                 fontSize = 14.sp
                             ))

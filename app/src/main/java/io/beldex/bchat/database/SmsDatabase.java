@@ -544,10 +544,9 @@ public class SmsDatabase extends MessagingDatabase {
     if (insertListener != null) {
       insertListener.onComplete();
     }
-
-    if (runThreadUpdate) {
+    /*if (runThreadUpdate) {
       DatabaseComponent.get(context).threadDatabase().update(threadId, true);
-    }
+    }*/
     DatabaseComponent.get(context).threadDatabase().setLastSeen(threadId);
 
     DatabaseComponent.get(context).threadDatabase().setHasSent(threadId, true);

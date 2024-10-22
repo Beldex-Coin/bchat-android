@@ -127,18 +127,10 @@ fun CreateSecretGroup(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            Column(
+            Box(
                 modifier = Modifier
                     .padding(16.dp)
             ) {
-                Text(
-                    text = stringResource(R.string.create_secret_group),
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight(800)
-                    ),
-                    modifier = Modifier.padding(vertical = 10.dp)
-                )
                 TextField(
                     value = groupName,
                     placeholder = {
@@ -158,7 +150,7 @@ fun CreateSecretGroup(
                     modifier =Modifier
                             .fillMaxWidth()
                             .padding(vertical=8.dp),
-                    shape = RoundedCornerShape(16.dp),
+                    shape = RoundedCornerShape(12.dp),
                     colors = TextFieldDefaults.colors(
                         unfocusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
                         focusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
@@ -404,7 +396,7 @@ private fun createClosedGroup(
             Toast.LENGTH_LONG
         ).show()
     }
-    else if (name.length >= 64) {
+    else if (name.length >= 26) {
         return Toast.makeText(
             context,
             R.string.activity_create_closed_group_group_name_too_long_error,

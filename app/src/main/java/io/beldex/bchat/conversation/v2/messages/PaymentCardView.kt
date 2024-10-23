@@ -20,6 +20,8 @@ import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewPaymentCardBinding
+import io.beldex.bchat.util.DateUtils
+import java.util.Locale
 
 
 class PaymentCardView : LinearLayout {
@@ -88,6 +90,14 @@ class PaymentCardView : LinearLayout {
                     Toast.makeText(context, "Can't open URL", Toast.LENGTH_LONG).show()
                 }
             }
+
+            paymentCardViewMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
+            paymentCardViewMessageTime.setTextColor(
+                VisibleMessageContentView.getTimeTextColor(
+                    context,
+                    message.isOutgoing
+                )
+            )
         }
     }
 

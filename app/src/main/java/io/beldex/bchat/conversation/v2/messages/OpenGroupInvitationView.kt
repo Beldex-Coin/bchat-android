@@ -12,6 +12,8 @@ import com.beldex.libbchat.utilities.OpenGroupUrlParser
 import io.beldex.bchat.conversation.v2.dialogs.JoinOpenGroupDialog
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.util.ActivityDispatcher
+import io.beldex.bchat.util.DateUtils
+import java.util.Locale
 
 class OpenGroupInvitationView : LinearLayout {
     private val binding: ViewOpenGroupInvitationBinding by lazy { ViewOpenGroupInvitationBinding.bind(this) }
@@ -34,6 +36,13 @@ class OpenGroupInvitationView : LinearLayout {
             openGroupTitleTextView.setTextColor(textColor)
             openGroupJoinMessageTextView.setTextColor(textColor)
             openGroupURLTextView.setTextColor(textColor)
+            openGroupMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
+            openGroupMessageTime.setTextColor(
+                VisibleMessageContentView.getTimeTextColor(
+                    context,
+                    message.isOutgoing
+                )
+            )
         }
     }
 

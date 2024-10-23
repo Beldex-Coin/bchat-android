@@ -19,11 +19,13 @@ import android.text.util.Linkify
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
@@ -125,10 +127,6 @@ class VisibleMessageContentView : MaterialCardView {
 
         if (message.isDeleted) {
             binding.deletedMessageView.root.isVisible = true
-            binding.deleteMessageLayout.isVisible = true
-            binding.deleteMessageTime.isVisible = true
-            binding.deleteMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
-            binding.deleteMessageTime.setTextColor(getTimeTextColor(context, message.isOutgoing))
             binding.deletedMessageView.root.bind(
                 message,
                 VisibleMessageContentView.getTextColor(context, message)
@@ -138,21 +136,13 @@ class VisibleMessageContentView : MaterialCardView {
             binding.quoteView.root.isVisible = false
             binding.linkPreviewView.root.isVisible = false
             binding.untrustedView.root.isVisible = false
-            binding.untrustedViewLayout.isVisible = false
-            binding.untrustedAttachmentMessageTime.isVisible = false
             binding.voiceMessageView.root.isVisible = false
-            binding.voiceMessageLayout.isVisible = false
-            binding.voiceMessageTime.isVisible = false
             binding.documentView.root.isVisible = false
-            binding.deleteMessageLayout.isVisible = false
             binding.albumThumbnailView.root.isVisible = false
-            binding.albumMessageTime.isVisible = false
             binding.openGroupInvitationView.root.isVisible = false
             return
         } else {
             binding.deletedMessageView.root.isVisible = false
-            binding.deleteMessageLayout.isVisible = false
-            binding.deleteMessageTime.isVisible = false
         }
 
         // clear the
@@ -172,15 +162,9 @@ class VisibleMessageContentView : MaterialCardView {
 
         binding.untrustedView.root.isVisible =
             !contactIsTrusted && message is MmsMessageRecord && message.quote == null && message.linkPreviews.isEmpty()
-        binding.untrustedViewLayout.isVisible =
-            !contactIsTrusted && message is MmsMessageRecord && message.quote == null && message.linkPreviews.isEmpty()
         binding.voiceMessageView.root.isVisible =
             contactIsTrusted && message is MmsMessageRecord && message.slideDeck.audioSlide != null
-        binding.voiceMessageLayout.isVisible =
-            contactIsTrusted && message is MmsMessageRecord && message.slideDeck.audioSlide != null
         binding.documentView.root.isVisible =
-            contactIsTrusted && message is MmsMessageRecord && message.slideDeck.documentSlide != null
-        binding.documentViewLayout.isVisible =
             contactIsTrusted && message is MmsMessageRecord && message.slideDeck.documentSlide != null
         binding.albumThumbnailView.root.isVisible = mediaThumbnailMessage
         binding.openGroupInvitationView.root.isVisible = message.isOpenGroupInvitation
@@ -250,10 +234,6 @@ class VisibleMessageContentView : MaterialCardView {
             }
             message is MmsMessageRecord && message.slideDeck.audioSlide != null -> {
                 hideBody = true
-                binding.voiceMessageLayout.visibility = View.VISIBLE
-                binding.voiceMessageTime.visibility = View.VISIBLE
-                binding.voiceMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
-                binding.voiceMessageTime.setTextColor(getTimeTextColor(context, message.isOutgoing))
 
                 // Audio attachment
                 if (contactIsTrusted || message.isOutgoing) {
@@ -271,11 +251,9 @@ class VisibleMessageContentView : MaterialCardView {
                     onContentDoubleTap = { binding.voiceMessageView.root.handleDoubleTap() }
                 } else {
                     // TODO: move this out to its own area
-                    binding.untrustedAttachmentMessageTime.visibility = View.VISIBLE
-                    binding.untrustedAttachmentMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
-                    binding.untrustedAttachmentMessageTime.setTextColor(getTimeTextColor(context, message.isOutgoing))
 
                     binding.untrustedView.root.bind(
+                        message,
                         UntrustedAttachmentView.AttachmentType.AUDIO,
                         VisibleMessageContentView.getTextColor(context, message)
                     )
@@ -284,9 +262,6 @@ class VisibleMessageContentView : MaterialCardView {
             }
             message is MmsMessageRecord && message.slideDeck.documentSlide != null -> {
                 hideBody = true
-                binding.documentViewMessageTime.isVisible = true
-                binding.documentViewMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
-                binding.documentViewMessageTime.setTextColor(getTimeTextColor(context, message.isOutgoing))
                 // Document attachment
                 if (contactIsTrusted || message.isOutgoing) {
                     binding.documentView.root.bind(
@@ -324,11 +299,8 @@ class VisibleMessageContentView : MaterialCardView {
                         }
                     }
                 } else {
-                    binding.untrustedAttachmentMessageTime.visibility = View.VISIBLE
-                    binding.untrustedAttachmentMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
-                    binding.untrustedAttachmentMessageTime.setTextColor(getTimeTextColor(context, message.isOutgoing))
-
                     binding.untrustedView.root.bind(
+                        message,
                         UntrustedAttachmentView.AttachmentType.DOCUMENT,
                         VisibleMessageContentView.getTextColor(context, message)
                     )
@@ -363,11 +335,9 @@ class VisibleMessageContentView : MaterialCardView {
                     }
                 } else {
                     hideBody = true
-                    binding.untrustedAttachmentMessageTime.visibility = View.VISIBLE
-                    binding.untrustedAttachmentMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
-                    binding.untrustedAttachmentMessageTime.setTextColor(getTimeTextColor(context, message.isOutgoing))
                     binding.albumThumbnailView.root.clearViews()
                     binding.untrustedView.root.bind(
+                        message,
                         UntrustedAttachmentView.AttachmentType.MEDIA,
                         VisibleMessageContentView.getTextColor(context, message)
                     )
@@ -401,25 +371,14 @@ class VisibleMessageContentView : MaterialCardView {
 
         binding.bodyTextView.isVisible = message.body.isNotEmpty() && !hideBody
         binding.bodyTextViewLayout.isVisible = message.body.isNotEmpty() && !hideBody
-        binding.messageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
-        binding.messageTime.setTextColor(getTimeTextColor(context, message.isOutgoing))
         binding.shortMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
         binding.shortMessageTime.setTextColor(getTimeTextColor(context, message.isOutgoing))
 
 
-        if (message.body.length >= 50) {
-            binding.shortMessageTime.visibility=View.GONE
-            binding.messageTime.visibility=View.VISIBLE
-        } else {
-            binding.shortMessageTime.visibility=View.VISIBLE
-            binding.messageTime.visibility=View.INVISIBLE
-            binding.messageTime.layoutParams.width = 12
-            binding.messageTime.layoutParams.height = 12
-
-        }
         if(binding.quoteView.root.isVisible){
-         val params = binding.bodyTextViewLayout.layoutParams
+         val params: ConstraintLayout.LayoutParams = binding.bodyTextViewLayout.layoutParams as ConstraintLayout.LayoutParams
             params.width = binding.quoteView.root.width
+            params.topMargin = 4
         }else if(binding.albumThumbnailView.root.isVisible){
             val params = binding.bodyTextViewLayout.layoutParams
             params.width = binding.albumContainer.width
@@ -427,8 +386,8 @@ class VisibleMessageContentView : MaterialCardView {
             val params = binding.bodyTextViewLayout.layoutParams
             params.width = binding.albumContainer.width
         }else{
-            val params = binding.bodyTextViewLayout.layoutParams
-            params.width = LinearLayout.LayoutParams.WRAP_CONTENT
+            val params: ConstraintLayout.LayoutParams = binding.bodyTextViewLayout.layoutParams as ConstraintLayout.LayoutParams
+            params.width = ConstraintLayout.LayoutParams.WRAP_CONTENT
         }
 
         // set it to use constraints if not only a text message, otherwise wrap content to whatever width it wants
@@ -463,7 +422,6 @@ class VisibleMessageContentView : MaterialCardView {
             albumThumbnailView.root,
             linkPreviewView.root,
             voiceMessageView.root,
-            voiceMessageLayout,
             quoteView.root
         ).none { it.isVisible }
 
@@ -545,14 +503,8 @@ class VisibleMessageContentView : MaterialCardView {
     fun recycle() {
         arrayOf(
             binding.deletedMessageView.root,
-            binding.deleteMessageLayout,
-            binding.deleteMessageTime,
             binding.untrustedView.root,
-            binding.untrustedViewLayout,
-            binding.untrustedAttachmentMessageTime,
             binding.voiceMessageView.root,
-            binding.voiceMessageLayout,
-            binding.voiceMessageTime,
             binding.openGroupInvitationView.root,
             binding.paymentCardView, //Payment Tag
             binding.documentView.root,

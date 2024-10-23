@@ -12,6 +12,8 @@ import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewDocumentBinding
 import io.beldex.bchat.database.model.MmsMessageRecord
+import io.beldex.bchat.util.DateUtils
+import java.util.Locale
 
 class DocumentView : LinearLayout {
     private val binding: ViewDocumentBinding by lazy { ViewDocumentBinding.bind(this) }
@@ -80,6 +82,14 @@ class DocumentView : LinearLayout {
                 R.drawable.document_incoming_view_background
             )
         }
+
+        binding.documentViewMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
+        binding.documentViewMessageTime.setTextColor(
+            VisibleMessageContentView.getTimeTextColor(
+                context,
+                message.isOutgoing
+            )
+        )
     }
 
     private fun getContainerColor(isOutgoingMessage: Boolean): Int {

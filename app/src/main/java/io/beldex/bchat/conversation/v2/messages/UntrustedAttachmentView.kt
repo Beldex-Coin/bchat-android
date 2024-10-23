@@ -9,7 +9,9 @@ import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.conversation.v2.dialogs.DownloadDialog
 import io.beldex.bchat.util.ActivityDispatcher
 import io.beldex.bchat.R
+import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.databinding.ViewUntrustedAttachmentBinding
+import io.beldex.bchat.util.DateUtils
 import java.util.Locale
 
 class UntrustedAttachmentView: LinearLayout {
@@ -27,7 +29,7 @@ class UntrustedAttachmentView: LinearLayout {
     // endregion
 
     // region Updating
-    fun bind(attachmentType: AttachmentType, @ColorInt textColor: Int) {
+    fun bind(message: MessageRecord, attachmentType: AttachmentType, @ColorInt textColor: Int) {
         val (iconRes, stringRes) = when (attachmentType) {
             AttachmentType.AUDIO -> R.drawable.ic_microphone to R.string.Slide_audio
             AttachmentType.DOCUMENT -> R.drawable.ic_document_large_light to R.string.document
@@ -40,6 +42,14 @@ class UntrustedAttachmentView: LinearLayout {
 
         binding.untrustedAttachmentIcon.setImageDrawable(iconDrawable)
         binding.untrustedAttachmentTitle.text = text
+
+        binding.untrustedAttachmentMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
+        binding.untrustedAttachmentMessageTime.setTextColor(
+            VisibleMessageContentView.getTimeTextColor(
+                context,
+                message.isOutgoing
+            )
+        )
     }
     // endregion
 

@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainVoiceMessageViewContainer"
     android:layout_width="250dp"
-    android:layout_height="100dp">
+    android:layout_height="65dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/viewVoiceMessageCard"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="36dp"
         android:layout_marginTop="10dp"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
@@ -95,5 +95,20 @@
                 tools:text="0:00" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/voice_message_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/viewVoiceMessageCard"
+        android:gravity="end"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="@font/open_sans_regular"
+        android:textSize="11sp"
+        android:visibility="visible"
+        tools:text="12:00 pm" />
 
 </io.beldex.bchat.conversation.v2.messages.VoiceMessageView>

@@ -1,111 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/viewPaymentCard"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical"
-    android:orientation="vertical"
-    android:padding="8dp">
+    android:orientation="vertical">
 
-
-    <androidx.cardview.widget.CardView
-        android:id="@id/paymentCardView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:cardBackgroundColor="@color/transparent_white_40"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="0dp">
-
-        <LinearLayout
-            android:id="@+id/paymentCardViewLayout"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/viewPaymentCard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:padding="8dp">
+        <androidx.cardview.widget.CardView
+            android:id="@id/paymentCardView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:elevation="0dp"
-            android:orientation="horizontal"
-            android:padding="10dp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:id="@+id/paymentCardViewBdxIconImageView"
-                android:layout_width="24dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_payment_beldex_logo" />
+            app:cardBackgroundColor="@color/transparent_white_40"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp">
 
             <LinearLayout
-                android:id="@+id/paymentCardViewLinearLayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
+                android:id="@+id/paymentCardViewLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:elevation="0dp"
                 android:orientation="horizontal"
-                android:layout_marginEnd="@dimen/medium_spacing"
+                android:padding="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/paymentCardViewBdxIconImageView"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <TextView
-                    android:id="@+id/paymentCardViewBdxAmountTextView"
-                    android:layout_width="wrap_content"
+                <ImageView
+                    android:id="@+id/paymentCardViewBdxIconImageView"
+                    android:layout_width="24dp"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans_bold"
-                    android:gravity="center_vertical|end"
-                    android:maxLines="2"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/large_font_size"
-                    android:textStyle="bold"
-                    tools:text="0.01" />
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_payment_beldex_logo" />
 
-                <TextView
-                    android:id="@+id/paymentCardViewBdxTextView"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/paymentCardViewLinearLayout"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="2dp"
-                    android:fontFamily="@font/open_sans_bold"
+                    android:layout_marginStart="5dp"
+                    android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:text="@string/bdx"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/large_font_size"
-                    android:textStyle="bold" />
+                    android:orientation="horizontal"
+                    android:layout_marginEnd="@dimen/medium_spacing"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/paymentCardViewBdxIconImageView"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/paymentCardViewBdxAmountTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/open_sans_bold"
+                        android:gravity="center_vertical|end"
+                        android:maxLines="2"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/large_font_size"
+                        android:textStyle="bold"
+                        tools:text="0.01" />
+
+                    <TextView
+                        android:id="@+id/paymentCardViewBdxTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="2dp"
+                        android:fontFamily="@font/open_sans_bold"
+                        android:gravity="center_vertical"
+                        android:text="@string/bdx"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/large_font_size"
+                        android:textStyle="bold" />
+                </LinearLayout>
             </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="12dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toBottomOf="@id/paymentCardView">
+            <TextView
+                android:id="@+id/paymentCardViewMessageTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/open_sans_medium"
+                android:maxLines="1"
+                android:textColor="@color/white"
+                android:textSize="11sp"
+                tools:text="Send Successfully"/>
+            <ImageView
+                android:id="@+id/paymentCardViewMessageImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginStart="5dp"
+                android:src="@drawable/ic_payment_status"
+                android:contentDescription="@string/message_payment_status" />
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/payment_card_view_message_time"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="5dp"
-        android:layout_marginStart="12dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        app:layout_constraintTop_toBottomOf="@id/paymentCardView">
-        <TextView
-            android:id="@+id/paymentCardViewMessageTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/open_sans_medium"
-            android:maxLines="1"
-            android:textColor="@color/white"
-            android:textSize="11sp"
-            tools:text="Send Successfully"/>
-        <ImageView
-            android:id="@+id/paymentCardViewMessageImageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginStart="5dp"
-            android:src="@drawable/ic_payment_status"
-            android:contentDescription="@string/message_payment_status" />
-    </LinearLayout>
+        android:layout_gravity="end|bottom"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="4dp"
+        android:fontFamily="@font/open_sans_regular"
+        android:textSize="11sp"
+        android:visibility="visible"
+        tools:text="12:00 pm" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

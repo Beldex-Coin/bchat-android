@@ -20,7 +20,9 @@ import io.beldex.bchat.database.AttachmentDatabase
 import io.beldex.bchat.database.model.MmsMessageRecord
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.R
+import io.beldex.bchat.conversation.v2.messages.VisibleMessageContentView.Companion.getTimeTextColor
 import io.beldex.bchat.databinding.ViewVoiceMessageBinding
+import io.beldex.bchat.util.DateUtils
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -68,6 +70,8 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
 
     // region Updating
     fun bind(message: MmsMessageRecord, isStartOfMessageCluster: Boolean, isEndOfMessageCluster: Boolean) {
+        binding.voiceMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
+        binding.voiceMessageTime.setTextColor(getTimeTextColor(context, message.isOutgoing))
         val audio = message.slideDeck.audioSlide!!
         binding.voiceMessageViewLoader.isVisible = audio.isInProgress
         binding.voiceMessagePlaybackImageView.isVisible = !audio.isInProgress

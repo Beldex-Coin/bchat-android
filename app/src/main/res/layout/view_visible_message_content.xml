@@ -12,141 +12,48 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp">
 
-                <!-- Content that will only show on its own -->
-
-                <LinearLayout
-                    android:id="@+id/delete_message_layout"
+                <!--Deleted MessageView-->
+                <include
+                    android:id="@+id/deletedMessageView"
+                    layout="@layout/view_deleted_message"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                    <include
-                        android:id="@+id/deletedMessageView"
-                        layout="@layout/view_deleted_message"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/delete_message_time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end|bottom"
-                        android:layout_marginTop="4dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="4dp"
-                        android:fontFamily="@font/open_sans_regular"
-                        android:textSize="11sp"
-                        android:visibility="gone"
-                        tools:text="12:00 pm" />
-
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:id="@+id/untrustedView_layout"
+                <!--Download Attachment File MessageView-->
+                <include
+                    android:id="@+id/untrustedView"
+                    layout="@layout/view_untrusted_attachment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent"/>
 
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        app:cardBackgroundColor="@color/received_call_detail_background"
-                        app:cardCornerRadius="100dp"
-                        app:cardElevation="0dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <include
-                            android:id="@+id/untrustedView"
-                            layout="@layout/view_untrusted_attachment"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:visibility="gone" />
-
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/untrusted_attachment_message_time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end|bottom"
-                        android:layout_marginTop="4dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="4dp"
-                        android:fontFamily="@font/open_sans_regular"
-                        android:gravity="end"
-                        android:textSize="11sp"
-                        android:visibility="visible"
-                        tools:text="12:00 pm" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/voice_message_layout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
+                <!--Voice MessageView-->
+                <include
+                    android:id="@+id/voiceMessageView"
+                    layout="@layout/view_voice_message"
+                    android:layout_width="250dp"
+                    android:layout_height="65dp"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                    <include
-                        android:id="@+id/voiceMessageView"
-                        layout="@layout/view_voice_message"
-                        android:layout_width="250dp"
-                        android:layout_height="36dp"
-                        android:visibility="gone"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/voice_message_time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end|bottom"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="4dp"
-                        android:fontFamily="@font/open_sans_regular"
-                        android:textSize="11sp"
-                        android:visibility="visible"
-                        tools:text="12:00 pm" />
-
-
-                </LinearLayout>
-
+                <!--Social Group Invitation MessageView without TimeView-->
                 <include
                     android:id="@+id/openGroupInvitationView"
                     layout="@layout/view_open_group_invitation"
@@ -158,6 +65,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <!--Payment Card MessageView without TimeView-->
                 <io.beldex.bchat.conversation.v2.messages.PaymentCardView
                     android:id="@+id/paymentCardView"
                     android:layout_width="wrap_content"
@@ -168,49 +76,21 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <LinearLayout
-                    android:id="@+id/documentView_layout"
+                <!--Document MessageView-->
+                <include
+                    android:id="@+id/documentView"
+                    layout="@layout/view_document"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxWidth="@dimen/max_text_width"
-                    android:orientation="vertical"
-                    android:visibility="visible"
+                    android:layout_margin="@dimen/small_spacing"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:visibility="gone" />
 
-
-                    <include
-                        android:id="@+id/documentView"
-                        layout="@layout/view_document"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/small_spacing"
-                        android:layout_marginTop="@dimen/small_spacing"
-                        android:layout_marginEnd="@dimen/small_spacing"
-                        android:layout_marginBottom="@dimen/small_spacing"
-                        android:visibility="gone"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-
-                        tools:visibility="visible" />
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/documentView_message_time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end|bottom"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="4dp"
-                        android:fontFamily="@font/open_sans_regular"
-                        android:textSize="11sp"
-                        android:visibility="gone"
-                        tools:text="12:00 pm" />
-
-                </LinearLayout>
-                <!-- Content that will show with other elements -->
-
+                <!--Quote MessageView without TimeView-->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/quote_container"
                     android:layout_width="wrap_content"
@@ -235,16 +115,7 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <!--   <LinearLayout
-                       android:id="@+id/linkPreview_message_layout"
-                       android:layout_width="wrap_content"
-                       android:layout_height="wrap_content"
-                       android:orientation="vertical"
-                       android:visibility="gone"
-                       app:layout_constraintStart_toStartOf="parent"
-                       app:layout_constraintTop_toBottomOf="@id/quote_container"
-                       >-->
-
+                <!--LinkPreview MessageView without TimeView-->
                 <include
                     android:id="@+id/linkPreviewView"
                     layout="@layout/view_link_preview"
@@ -255,22 +126,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/quote_container" />
 
-                <!--  <com.google.android.material.textview.MaterialTextView
-                       android:id="@+id/linkPreview_message_time"
-                       android:layout_width="wrap_content"
-                       android:layout_height="wrap_content"
-                       android:fontFamily="@font/open_sans_regular"
-                       android:textSize="11sp"
-                       tools:text="12:00 pm"
-                       android:visibility="gone"
-                       android:layout_gravity="end|bottom"
-                       android:layout_marginEnd="16dp"
-                       android:layout_marginTop="8dp"
-                       android:layout_marginBottom="4dp"
-                       />-->
-
-                <!-- </LinearLayout>-->
-
                 <androidx.constraintlayout.widget.Barrier
                     android:id="@+id/bodyBarrier"
                     android:layout_width="wrap_content"
@@ -279,6 +134,7 @@
                     app:barrierDirection="end"
                     app:constraint_referenced_ids="album_container,quote_container" />
 
+                <!--Album ThumbnailView MessageView-->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/album_container"
                     android:layout_width="wrap_content"
@@ -321,11 +177,13 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
+                <!--Body Text MessageView-->
                 <LinearLayout
                     android:id="@+id/bodyTextViewLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:layout_marginTop="-4dp"
                     app:layout_constraintEnd_toEndOf="@+id/bodyBarrier"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintStart_toStartOf="parent"
@@ -340,13 +198,10 @@
                         android:fontFamily="@font/open_sans_regular"
                         android:maxWidth="@dimen/max_text_width"
                         android:paddingHorizontal="12dp"
-                        android:paddingTop="4dp"
                         android:paddingBottom="4dp"
                         android:visibility="gone"
-                        app:layout_constraintEnd_toEndOf="@+id/bodyBarrier"
-                        app:layout_constraintHorizontal_bias="0"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/album_container" />
+                        tools:visibility="visible"
+                        tools:text="Message"/>
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/short_message_time"
@@ -357,26 +212,12 @@
                         android:layout_marginBottom="4dp"
                         android:fontFamily="@font/open_sans_regular"
                         android:textSize="11sp"
-                        android:visibility="gone"
+                        android:visibility="visible"
                         tools:text="12:00 pm" />
 
                 </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/message_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="12dp"
-                android:fontFamily="@font/open_sans_regular"
-                android:textSize="11sp"
-                tools:text="12:00 pm" />
-
-        </LinearLayout>
 
         <ImageView
             android:id="@+id/tailReceiveView"

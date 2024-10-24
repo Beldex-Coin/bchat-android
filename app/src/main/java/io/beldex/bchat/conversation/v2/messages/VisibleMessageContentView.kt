@@ -19,8 +19,7 @@ import android.text.util.Linkify
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
-import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorInt
@@ -379,15 +378,23 @@ class VisibleMessageContentView : MaterialCardView {
          val params: ConstraintLayout.LayoutParams = binding.bodyTextViewLayout.layoutParams as ConstraintLayout.LayoutParams
             params.width = binding.quoteView.root.width
             params.topMargin = 4
+            val params1: RelativeLayout.LayoutParams = binding.bodyTextView.layoutParams as RelativeLayout.LayoutParams
+            params1.width = RelativeLayout.LayoutParams.MATCH_PARENT
         }else if(binding.albumThumbnailView.root.isVisible){
             val params = binding.bodyTextViewLayout.layoutParams
             params.width = binding.albumContainer.width
+            val params1: RelativeLayout.LayoutParams = binding.bodyTextView.layoutParams as RelativeLayout.LayoutParams
+            params1.width = RelativeLayout.LayoutParams.MATCH_PARENT
         } else if(binding.linkPreviewView.root.isVisible){
             val params = binding.bodyTextViewLayout.layoutParams
             params.width = binding.albumContainer.width
+            val params1: RelativeLayout.LayoutParams = binding.bodyTextView.layoutParams as RelativeLayout.LayoutParams
+            params1.width = RelativeLayout.LayoutParams.MATCH_PARENT
         }else{
             val params: ConstraintLayout.LayoutParams = binding.bodyTextViewLayout.layoutParams as ConstraintLayout.LayoutParams
             params.width = ConstraintLayout.LayoutParams.WRAP_CONTENT
+            val params1: RelativeLayout.LayoutParams = binding.bodyTextView.layoutParams as RelativeLayout.LayoutParams
+            params1.width = RelativeLayout.LayoutParams.WRAP_CONTENT
         }
 
         // set it to use constraints if not only a text message, otherwise wrap content to whatever width it wants
@@ -402,10 +409,10 @@ class VisibleMessageContentView : MaterialCardView {
             binding.bodyTextView.setLinkTextColor(color)
             val body = getBodySpans(context, message, searchQuery)
 
-            binding.bodyTextView.text = body
+            binding.bodyTextView.text = "$body     "
             //New Line
-            if (binding.bodyTextView.length() > 705) {
-                addReadMore(binding.bodyTextView.text.toString(), binding.bodyTextView, message)
+            if (binding.bodyTextView.text.trim().length > 705) {
+                addReadMore(binding.bodyTextView.text.trim().toString(), binding.bodyTextView, message)
             }
             //makeTextViewResizable(binding.bodyTextView, 3, "View More", true);
             onContentClick.add { e: MotionEvent ->

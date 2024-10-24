@@ -178,7 +178,7 @@
                 </com.google.android.material.card.MaterialCardView>
 
                 <!--Body Text MessageView-->
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/bodyTextViewLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -192,13 +192,13 @@
 
                     <io.beldex.bchat.components.emoji.EmojiTextView
                         android:id="@+id/bodyTextView"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:fontFamily="@font/open_sans_regular"
                         android:maxWidth="@dimen/max_text_width"
+                        android:minWidth="@dimen/min_text_width"
                         android:paddingHorizontal="12dp"
-                        android:paddingBottom="4dp"
+                        android:paddingBottom="5dp"
                         android:visibility="gone"
                         tools:visibility="visible"
                         tools:text="Message"/>
@@ -207,15 +207,18 @@
                         android:id="@+id/short_message_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignBottom="@id/bodyTextView"
+                        android:layout_alignEnd="@id/bodyTextView"
+                        android:gravity="end"
                         android:layout_gravity="end|bottom"
-                        android:layout_marginTop="-8dp"
+                        android:layout_marginTop="6dp"
                         android:layout_marginBottom="4dp"
                         android:fontFamily="@font/open_sans_regular"
                         android:textSize="11sp"
                         android:visibility="visible"
                         tools:text="12:00 pm" />
 
-                </LinearLayout>
+                </RelativeLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

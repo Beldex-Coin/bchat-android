@@ -872,9 +872,9 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
 
     private fun updateEmptyState() {
         val threadCount = (binding.recyclerView.adapter)!!.itemCount
-        binding.emptyStateContainer.isVisible = threadCount == 0 && binding.recyclerView.isVisible
+        binding.emptyStateContainer.isVisible = threadCount == 0 && binding.recyclerView.isVisible && threadDb.archivedConversationList.count ==0
         binding.emptyStateContainerText.isVisible =
-            threadCount == 0 && binding.recyclerView.isVisible
+            threadCount == 0 && binding.recyclerView.isVisible && threadDb.archivedConversationList.count ==0
         val activity =activity
         if(isAdded && activity !=null) {
             val isDayUiMode = UiModeUtilities.isDayUiMode(requireActivity())

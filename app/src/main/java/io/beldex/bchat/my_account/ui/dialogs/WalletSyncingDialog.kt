@@ -107,12 +107,13 @@ fun WalletSyncingDialog(
                 Spacer(modifier=Modifier.width(16.dp))
 
                 Button(
-                        onClick=exit,
-                        colors=ButtonDefaults.buttonColors(
-                                containerColor=MaterialTheme.appColors.primaryButtonColor
-                        ),
-                        modifier=Modifier
-                                .weight(1f)
+                    onClick=exit,
+                    shape = RoundedCornerShape(12.dp),
+                    colors=ButtonDefaults.buttonColors(
+                            containerColor=MaterialTheme.appColors.primaryButtonColor
+                    ),
+                    modifier=Modifier
+                            .weight(1f)
                 ) {
                     Text(
                             text=stringResource(id=R.string.exit),

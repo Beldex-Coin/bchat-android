@@ -1426,7 +1426,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                                 tooltipStyle()
                             }
                             else -> {
-                                binding.tooltip.text = Html.fromHtml("<p> <b>Balance : <font color='#00BD40'> $valueOfBalance </font> </b> </p> <br /> <p><b>Unlocked Balance : $valueOfUnLockedBalance</b> </p> <br /> <p>Wallet :  $valueOfWallet </p>", Html.FROM_HTML_MODE_COMPACT)
+                                binding.tooltip.text = Html.fromHtml("<p> <b>Balance : <font color='#00BD40'> $valueOfBalance </font> BDX</b> </p> <br /> <p><b>Unlocked Balance : <font color='#00BD40'> $valueOfUnLockedBalance </font> </b> BDX</p> <br /> <p>Wallet : <font color='#00BD40'> $valueOfWallet </font> </p>", Html.FROM_HTML_MODE_COMPACT)
                                 tooltipStyle()
                             }
                         }
@@ -1438,7 +1438,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                                 tooltipStyle()
                             }
                             else -> {
-                                binding.tooltip.text = Html.fromHtml("<p> <b>Balance : <font color='#00BD40'> $valueOfBalance </font> </b> </p> <br /> <p><b>Unlocked Balance : <font color='#00BD40'> $valueOfUnLockedBalance </font> </b> </p> <br /> <p>Wallet :  $valueOfWallet </p>")
+                                binding.tooltip.text = Html.fromHtml("<p> <b>Balance : <font color='#00BD40'> $valueOfBalance </font> BDX</b> </p> <br /> <p><b>Unlocked Balance : <font color='#00BD40'> $valueOfUnLockedBalance </font> </b> BDX</p> <br /> <p>Wallet : <font color='#00BD40'> $valueOfWallet </font> </p>")
                                 tooltipStyle()
                             }
                         }

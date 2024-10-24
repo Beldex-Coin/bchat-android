@@ -53,6 +53,7 @@ import io.beldex.bchat.R
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.TextSecurePreferences
@@ -183,6 +184,9 @@ fun LinkYourBNSDialog(
             )
             TextField(
                 value = bnsName,
+                textStyle = TextStyle(
+                    color = if(isVerified) MaterialTheme.appColors.negativeGreenButtonBorder else MaterialTheme.appColors.secondaryContentColor
+                ),
                 placeholder = {
                     Text(
                         text = stringResource(R.string.bns_textfield_hint),
@@ -201,12 +205,31 @@ fun LinkYourBNSDialog(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done
                 ),
-                modifier = if(showErrorMessage) Modifier
+                modifier = if(showErrorMessage) {
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 15.dp)
+                        .border(
+                            1.dp,
+                            color = MaterialTheme.appColors.negativeRedButtonBorder,
+                            shape = RoundedCornerShape(16.dp)
+                        )
+                }else {
+                    if (isVerified) {
+                        Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 15.dp)
+                        .border(
+                            1.dp,
+                            color = MaterialTheme.appColors.negativeGreenButtonBorder,
+                            shape = RoundedCornerShape(16.dp)
+                        )
+                    }else {
+                        Modifier
                         .fillMaxWidth()
                         .padding(bottom=15.dp)
-                        .border(1.dp, color= MaterialTheme.appColors.negativeRedButtonBorder, shape=RoundedCornerShape(16.dp)) else Modifier
-                        .fillMaxWidth()
-                        .padding(bottom=15.dp),
+                    }
+                },
                 shape = RoundedCornerShape(16.dp),
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = MaterialTheme.appColors.contactCardBackground,

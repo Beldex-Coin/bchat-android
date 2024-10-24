@@ -614,7 +614,7 @@ fun WalletDashBoardScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .padding(10.dp)
+                        .padding(start = 19.dp, bottom = 10.dp, top = 10.dp, end = 10.dp)
                         .fillMaxWidth()
 
                 ) {
@@ -1282,7 +1282,7 @@ fun WalletDashBoardScreen(
                                         color = MaterialTheme.appColors.transactionHistoryCardDivider,
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(start = 10.dp, end = 10.dp)
+                                            .padding(start = 10.dp, end = 10.dp, top = 12.dp, bottom = 12.dp)
                                     )
                                     if (transactionPaymentIdIsVisible) {
                                         Text(
@@ -1329,7 +1329,7 @@ fun WalletDashBoardScreen(
                                             color = MaterialTheme.appColors.transactionHistoryCardDivider,
                                             modifier = Modifier
                                                 .fillMaxWidth()
-                                                .padding(start = 10.dp, end = 10.dp)
+                                                .padding(start = 10.dp, end = 10.dp, bottom = 12.dp)
                                         )
                                     }
                                     Row(
@@ -1360,7 +1360,7 @@ fun WalletDashBoardScreen(
                                         color = MaterialTheme.appColors.transactionHistoryCardDivider,
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(start = 10.dp, end = 10.dp)
+                                            .padding(start = 10.dp, end = 10.dp, top = 12.dp, bottom = 12.dp)
                                     )
                                     Row(
                                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -1390,7 +1390,7 @@ fun WalletDashBoardScreen(
                                         color = MaterialTheme.appColors.transactionHistoryCardDivider,
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(start = 10.dp, end = 10.dp)
+                                            .padding(start = 10.dp, end = 10.dp, top = 12.dp, bottom = 12.dp)
                                     )
                                     Row(
                                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -1420,7 +1420,7 @@ fun WalletDashBoardScreen(
                                         color = MaterialTheme.appColors.transactionHistoryCardDivider,
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(start = 10.dp, end = 10.dp)
+                                            .padding(start = 10.dp, end = 10.dp, top = 12.dp, bottom = 12.dp)
                                     )
                                     if (transactionFeeIsVisible) {
                                         Row(
@@ -1451,7 +1451,7 @@ fun WalletDashBoardScreen(
                                             color = MaterialTheme.appColors.transactionHistoryCardDivider,
                                             modifier = Modifier
                                                 .fillMaxWidth()
-                                                .padding(start = 10.dp, end = 10.dp)
+                                                .padding(start = 10.dp, end = 10.dp, top = 12.dp, bottom = 12.dp)
                                         )
                                     }
                                     if (transactionRecipientAddress!!.isNotEmpty()) {

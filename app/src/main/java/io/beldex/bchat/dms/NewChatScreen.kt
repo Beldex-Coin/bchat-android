@@ -414,7 +414,7 @@ fun NewChatItem(
             ),
             modifier = Modifier
                 .weight(1f)
-                .padding(horizontal = 10.dp),
+                .padding(start = 10.dp,end = 5.dp),
         )
 
         if(showQrCode) {
@@ -424,7 +424,7 @@ fun NewChatItem(
                 colorFilter = ColorFilter.tint(
                     color = MaterialTheme.appColors.editTextColor
                 ),
-                modifier = Modifier.weight(0.5f).size(21.dp).padding(end = 15.dp)
+                modifier = Modifier.size(35.dp).padding(end = 15.dp)
                     .clickable {
                         onClickScanQRCode()
                     },

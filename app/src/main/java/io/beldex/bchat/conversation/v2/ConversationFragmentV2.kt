@@ -1393,8 +1393,10 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
                 dispatchTouched = false
             }
             else -> {
-                binding.tooltip.visibility = View.VISIBLE
-                tooltipIsVisible = true
+                if(!binding.slideToPayButton.isVisible) {
+                    binding.tooltip.visibility = View.VISIBLE
+                    tooltipIsVisible = true
+                }
             }
         }
         toolTip()

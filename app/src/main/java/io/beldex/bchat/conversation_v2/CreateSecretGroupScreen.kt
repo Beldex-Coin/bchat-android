@@ -116,6 +116,10 @@ fun CreateSecretGroup(
         restartOnPlay = false
     )
 
+    var updateProfile by remember {
+        mutableStateOf(true)
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -147,9 +151,9 @@ fun CreateSecretGroup(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Done
                     ),
-                    modifier =Modifier
-                            .fillMaxWidth()
-                            .padding(vertical=8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
                     shape = RoundedCornerShape(12.dp),
                     colors = TextFieldDefaults.colors(
                         unfocusedContainerColor = MaterialTheme.appColors.disabledButtonContainerColor,
@@ -182,15 +186,18 @@ fun CreateSecretGroup(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done
                 ),
-                onValueChange = { onEvent(SecretGroupEvents.SearchQueryChanged(it)) },
-                modifier =Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                        .border(
-                                width=1.dp,
-                                color=MaterialTheme.appColors.textFiledBorderColor,
-                                shape=RoundedCornerShape(36.dp)
-                        ),
+                onValueChange = {
+                    updateProfile = !updateProfile
+                    onEvent(SecretGroupEvents.SearchQueryChanged(it))
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.appColors.textFiledBorderColor,
+                        shape = RoundedCornerShape(36.dp)
+                    ),
                 shape = RoundedCornerShape(36.dp),
                 trailingIcon = {
                     Icon(
@@ -235,6 +242,7 @@ fun CreateSecretGroup(
                                 )
                             )
                         },
+                        updateProfile = updateProfile,
                         modifier = Modifier
                             .fillMaxWidth()
                     )
@@ -320,6 +328,7 @@ private fun GroupContact(
     recipient: Recipient,
     isSelected: Boolean,
     onSelectionChanged: (Recipient, Boolean) -> Unit,
+    updateProfile: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     OutlinedCard(
@@ -345,12 +354,21 @@ private fun GroupContact(
                     .padding(vertical = 4.dp)
         ) {
             Box(modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)) {
-                ProfilePictureComponent(
-                    publicKey = recipient.address.toString(),
-                    displayName = recipient.name.toString(),
-                    containerSize = 36.dp,
-                    pictureMode = ProfilePictureMode.SmallPicture
-                )
+                if(updateProfile) {
+                    ProfilePictureComponent(
+                        publicKey = recipient.address.toString(),
+                        displayName = recipient.name.toString(),
+                        containerSize = 36.dp,
+                        pictureMode = ProfilePictureMode.SmallPicture
+                    )
+                }else {
+                    ProfilePictureComponent(
+                        publicKey = recipient.address.toString(),
+                        displayName = recipient.name.toString(),
+                        containerSize = 36.dp,
+                        pictureMode = ProfilePictureMode.SmallPicture
+                    )
+                }
             }
 
             Text(

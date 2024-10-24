@@ -1567,4 +1567,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="Permissions_record_permission_required" translatable="false">Record Permission Required!</string>
     <string name="edit_title" translatable="false">Edit</string>
     <string name="new_chat_screen_title">New</string>
+    <string name="message_details">Message Details</string>
 </resources>

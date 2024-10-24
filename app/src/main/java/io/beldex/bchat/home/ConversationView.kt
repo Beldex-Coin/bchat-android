@@ -57,7 +57,7 @@ class ConversationView : LinearLayout {
                 layoutParams = params
                 if(isMuted && thread.unreadCount == 0 && !thread.isRead){
                     binding.muteIcon.updateLayoutParams<ConstraintLayout.LayoutParams> {
-                        rightMargin=40
+                        rightMargin=50
                     }
                 }
 
@@ -70,6 +70,11 @@ class ConversationView : LinearLayout {
                 val params = layoutParams as FrameLayout.LayoutParams
                 params.setMargins(0, 0, 0, 0)
                 layoutParams = params
+            }
+        }
+        if(isMuted && thread.unreadCount == 0 && !thread.isRead && !thread.isPinned){
+            binding.muteIcon.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                rightMargin=70
             }
         }
         binding.profilePictureView.root.glide = glide

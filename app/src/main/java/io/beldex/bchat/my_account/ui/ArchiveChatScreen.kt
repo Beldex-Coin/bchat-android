@@ -534,7 +534,9 @@ fun ArchiveChatItem(
 
             Text(
                 text=timeStamp, style=MaterialTheme.typography.bodySmall.copy(
-                    fontWeight=FontWeight(400), fontSize=10.sp
+                    fontWeight=FontWeight(400),
+                    fontSize=10.sp,
+                    color = if(thread.unreadCount !=0 && !thread.isRead) MaterialTheme.appColors.textGreen else MaterialTheme.appColors.textColor
                 ), maxLines=1, overflow=TextOverflow.Ellipsis, modifier=Modifier.padding(top=12.dp)
             )
             Spacer(modifier=Modifier.height(8.dp))

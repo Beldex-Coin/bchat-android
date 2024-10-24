@@ -116,11 +116,16 @@ class ControlMessageView : LinearLayout {
                     )
                 )
                 binding.iconImageView.visibility = View.VISIBLE*/
-                message
 
                 //SteveJosephh21
                 if(message.isOutgoing){
                     binding.dialledCallCardView.visibility = View.VISIBLE
+                    binding.dialledCallCardView.background=ContextCompat.getDrawable(
+                        context,
+                        R.drawable.call_message_bubble_background_sent_end
+                    )
+                    binding.dialledCallCardView.backgroundTintList=
+                        ContextCompat.getColorStateList(context, R.color.button_green)
                     binding.dialledCallIcon.setImageDrawable(
                         ResourcesCompat.getDrawable(
                             resources,
@@ -133,6 +138,14 @@ class ControlMessageView : LinearLayout {
                     binding.dialledMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
                 }else{
                     binding.receivedCallCardView.visibility = View.VISIBLE
+                    binding.receivedCallCardView.background=ContextCompat.getDrawable(
+                        context,
+                        R.drawable.call_message_bubble_background_received_end
+                    )
+                    binding.receivedCallCardView.backgroundTintList=ContextCompat.getColorStateList(
+                        context,
+                        R.color.received_message_background
+                    )
                     binding.receivedCallIcon.setImageDrawable(
                         ResourcesCompat.getDrawable(
                             resources,
@@ -144,7 +157,7 @@ class ControlMessageView : LinearLayout {
                     messageBody = ""
                     binding.receivedMessageTime.text = DateUtils.getTimeStamp(context, Locale.getDefault(), message.timestamp)
                 }
-                if (message.isOutgoing) {
+            /*    if (message.isOutgoing) {
                     binding.dialledCallCardView.background=ContextCompat.getDrawable(
                         context,
                         R.drawable.call_message_bubble_background_sent_end
@@ -160,7 +173,7 @@ class ControlMessageView : LinearLayout {
                         context,
                         R.color.received_message_background
                     )
-                }
+                }*/
             }
             message.isMessageRequestResponse -> {
                 messageBody = context.getString(R.string.message_requests_accepted)

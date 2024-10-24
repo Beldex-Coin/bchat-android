@@ -11,6 +11,7 @@ import com.beldex.libbchat.utilities.Address;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +25,11 @@ public class AvatarHelper {
   public static InputStream getInputStreamFor(@NonNull Context context, @NonNull Address address)
       throws IOException
   {
-    return new FileInputStream(getAvatarFile(context, address));
+    File avatarFile = getAvatarFile(context, address);
+    if (!avatarFile.exists()) {
+      throw new FileNotFoundException("Avatar file not found: " + avatarFile.getAbsolutePath());
+    }
+    return new FileInputStream(avatarFile);
   }
 
   public static List<File> getAvatarFiles(@NonNull Context context) {

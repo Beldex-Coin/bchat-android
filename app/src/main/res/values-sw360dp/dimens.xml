@@ -13,4 +13,6 @@
     <dimen name="album_5_cell_size_small">83dp</dimen>
     <dimen name="max_text_width">240dp</dimen>
     <dimen name="min_text_width">90dp</dimen>
+    <dimen name="max_body_text_width">290dp</dimen>
+    <dimen name="min_body_text_width">115dp</dimen>
 </resources>

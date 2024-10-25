@@ -411,8 +411,11 @@ class VisibleMessageContentView : MaterialCardView {
             binding.bodyTextView.setTextColor(color)
             binding.bodyTextView.setLinkTextColor(color)
             val body = getBodySpans(context, message, searchQuery)
-
-            binding.bodyTextView.text = "$body     "
+            if(body.length>=5){
+                binding.bodyTextView.text = "$body             "
+            }else {
+                binding.bodyTextView.text = "$body     "
+            }
             //New Line
             if (binding.bodyTextView.text.trim().length > 705) {
                 addReadMore(binding.bodyTextView.text.trim().toString(), binding.bodyTextView, message)

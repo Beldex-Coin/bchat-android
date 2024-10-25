@@ -31,8 +31,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.PopupMenu
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.getColor
@@ -51,6 +49,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.mnode.OnionRequestAPI
 import com.beldex.libbchat.utilities.Address
+import com.beldex.libbchat.utilities.GroupRecord
 import com.beldex.libbchat.utilities.GroupUtil
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
@@ -125,7 +124,6 @@ import io.beldex.bchat.conversation_v2.NewChatConversationActivity
 import io.beldex.bchat.conversation_v2.NewGroupConversationActivity
 import io.beldex.bchat.conversation_v2.NewGroupConversationType
 import io.beldex.bchat.databinding.FragmentHomeBinding
-import io.beldex.bchat.my_account.ui.MessageRequestEvents
 import io.beldex.bchat.repository.ConversationRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -941,7 +939,7 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
 
             findItem(R.id.menu_unmute_notifications).setVisible(recipient.isMuted && !recipient.isLocalNumber)
             findItem(R.id.menu_mute_notifications).setVisible(!recipient.isMuted && !recipient.isLocalNumber)
-            findItem(R.id.menu_notification_settings).setVisible(recipient.isGroupRecipient && !recipient.isMuted)
+            findItem(R.id.menu_notification_settings).setVisible(recipient.isGroupRecipient && !recipient.isMuted && isSecretGroupIsActive(recipient))
             findItem(R.id.menu_mark_read).setVisible(thread.unreadCount > 0)
             findItem(R.id.menu_pin).setVisible(!thread.isPinned)
             findItem(R.id.menu_unpin).setVisible(thread.isPinned)
@@ -1004,6 +1002,17 @@ class HomeFragment : BaseFragment(),ConversationClickListener,
 //        }
 //        bottomSheet.show(requireActivity().supportFragmentManager, bottomSheet.tag)
     }
+
+    private fun isSecretGroupIsActive(recipient: Recipient):Boolean {
+        return if (recipient.isClosedGroupRecipient) {
+            val group = getGroup(recipient)
+            val isActive = (group?.isActive == true)
+            isActive
+        } else {
+            true
+        }
+    }
+    fun getGroup(recipient: Recipient): GroupRecord? = groupDb.getGroup(recipient.address.toGroupString()).orNull()
 
     private fun handlePopUpMenuClickListener(item: MenuItem, thread: ThreadRecord) {
         when (item.itemId) {

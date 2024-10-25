@@ -1045,7 +1045,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             if (success) {
                 Toast.makeText(
                     this@HomeActivity,
-                    getString(R.string.status_wallet_unloaded),
+                    getString(R.string.wallet_synced_text),
                     Toast.LENGTH_SHORT
                 ).show()
             } else {

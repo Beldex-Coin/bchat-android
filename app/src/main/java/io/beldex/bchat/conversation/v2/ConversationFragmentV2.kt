@@ -1571,7 +1571,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     override fun cancelVoiceMessage() {
         hideVoiceMessageUI()
         this.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        audioRecorder.stopRecording()
+        try {
+            if(::audioRecorder.isInitialized) {
+                audioRecorder.stopRecording()
+            }
+        }catch(ex: UninitializedPropertyAccessException){
+            Log.d("Audio Recorder ",ex.message.toString())
+        }
 //        amplitudeJob?.cancel()
         stopAudioHandler.removeCallbacks(stopVoiceMessageRecordingTask)
     }

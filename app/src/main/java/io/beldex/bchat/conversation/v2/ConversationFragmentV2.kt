@@ -836,6 +836,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private fun showPayWithSlide(thread: Recipient?, status: Boolean) {
         if (thread != null && !thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && thread.isApproved && HomeActivity.reportIssueBChatID!=thread.address.toString() && !thread.isLocalNumber && status) {
             binding.slideToPayButton.visibility = View.VISIBLE
+            dispatchTouchEvent()
         }else{
             binding.slideToPayButton.visibility = View.GONE
         }

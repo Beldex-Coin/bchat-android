@@ -220,6 +220,9 @@ class VisibleMessageContentView : MaterialCardView {
 
         when {
             message is MmsMessageRecord && message.linkPreviews.isNotEmpty() -> {
+                binding.bodyTextView.setOnClickListener {
+                    ActivityDispatcher.get(context)?.showBottomSheetDialog(ModalUrlBottomSheet(message.linkPreviews.first().url),"Open URL Dialog")
+                }
                 binding.linkPreviewView.root.bind(
                     message,
                     glide,

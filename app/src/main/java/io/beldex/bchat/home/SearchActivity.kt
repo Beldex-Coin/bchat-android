@@ -97,6 +97,7 @@ class SearchActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
+            val focusManager = LocalFocusManager.current
             BChatTheme(
                 darkTheme = isDarkTheme
             ) {
@@ -104,7 +105,9 @@ class SearchActivity : ComponentActivity() {
                     Scaffold {
                         ScreenContainer(
                             title = stringResource(id = R.string.SearchToolbar_search),
-                            onBackClick = { finish() },
+                            onBackClick = {
+                                focusManager.clearFocus()
+                                finish() },
                             modifier = Modifier
                                 .fillMaxSize()
                                 .background(

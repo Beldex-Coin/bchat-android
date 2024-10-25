@@ -19,6 +19,8 @@ import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.NoExternalStorageException
 import io.beldex.bchat.util.FileProviderUtil
 import io.beldex.bchat.util.IntentUtils
+import io.beldex.bchat.util.UiMode
+import io.beldex.bchat.util.UiModeUtilities
 import java.io.File
 import java.io.IOException
 import java.util.LinkedList
@@ -28,8 +30,10 @@ class AvatarSelection(
     private val onPickImage: ActivityResultLauncher<Intent>
 ) {
     private val TAG: String = AvatarSelection::class.java.simpleName
-    private val bgColor by lazy { activity.getColorFromAttr(android.R.attr.colorPrimary) }
-    private val txtColor by lazy { activity.getColorFromAttr(android.R.attr.textColorPrimary) }
+    private val bgDarkColor by lazy { ContextCompat.getColor(activity, R.color.black) }
+    private val bgLightColor by lazy { ContextCompat.getColor(activity, R.color.white) }
+    private val txtDarkColor by lazy {ContextCompat.getColor(activity, R.color.white) }
+    private val txtLightColor by lazy {ContextCompat.getColor(activity, R.color.black) }
     private val imageScrim by lazy { ContextCompat.getColor(activity, R.color.avatar_background) }
     private val activityTitle by lazy { activity.getString(R.string.CropImageActivity_profile_avatar) }
     /**
@@ -39,6 +43,7 @@ class AvatarSelection(
         inputFile: Uri?,
         outputFile: Uri?
     ) {
+        val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(activity.applicationContext) == UiMode.NIGHT
         onAvatarCropped.launch(
             CropImageContractOptions(
                 uri = inputFile,
@@ -52,13 +57,13 @@ class AvatarSelection(
                     allowRotation = true,
                     allowFlipping = true,
                     backgroundColor = imageScrim,
-                    toolbarColor = bgColor,
-                    activityBackgroundColor = bgColor,
-                    toolbarTintColor = txtColor,
-                    toolbarBackButtonColor = txtColor,
-                    toolbarTitleColor = txtColor,
-                    activityMenuIconColor = txtColor,
-                    activityMenuTextColor = txtColor,
+                    toolbarColor = if(isDarkTheme) bgDarkColor else bgLightColor,
+                    activityBackgroundColor = if(isDarkTheme) bgDarkColor else bgLightColor,
+                    toolbarTintColor = if(isDarkTheme) txtDarkColor else txtLightColor,
+                    toolbarBackButtonColor = if(isDarkTheme) txtDarkColor else txtLightColor,
+                    toolbarTitleColor = if(isDarkTheme) txtDarkColor else txtLightColor,
+                    activityMenuIconColor = if(isDarkTheme) txtDarkColor else txtLightColor,
+                    activityMenuTextColor = if(isDarkTheme) txtDarkColor else txtLightColor,
                     activityTitle = activityTitle
                 )
             )

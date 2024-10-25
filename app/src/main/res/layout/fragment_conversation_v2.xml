@@ -38,26 +38,26 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="-2dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="12dp"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/conversationTitleView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:text="User"
                     android:textColor="@color/text"
-                    android:textSize="@dimen/very_large_font_size"
+                    android:textSize="@dimen/medium_font_size"
                     android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
                     android:gravity="center_vertical"
+
                     android:orientation="horizontal">
 
                     <ImageView

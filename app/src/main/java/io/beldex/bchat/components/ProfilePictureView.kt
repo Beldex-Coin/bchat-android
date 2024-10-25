@@ -238,6 +238,7 @@ class ProfilePictureView @JvmOverloads constructor(
 
     fun recycle() {
         profilePicturesCache.clear()
+        profilePicturesCacheWithBnsTag.clear()
     }
     // endregion
 }

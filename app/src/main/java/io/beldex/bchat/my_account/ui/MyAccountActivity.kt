@@ -607,6 +607,7 @@ fun MyAccountNavHost(
                         if(it){
                             isBnsHolder = TextSecurePreferences.getIsBNSHolder(context)
                             showBnsNameVerifySuccessDialog = true
+                            viewModel.updateProfile(true)
                         }
                     })
                 }
@@ -754,7 +755,7 @@ fun MyAccountNavHost(
                                     } else {
                                         showNameOnly = true
                                         showEditNameTextField = false
-                                        saveEditName?.let { it1 -> saveDisplayName(it1, context) }
+                                        saveEditName?.let { it1 -> saveDisplayName(it1.trim(), context) }
                                     }
                                 }
                             ,
@@ -819,7 +820,7 @@ fun MyAccountNavHost(
                                 showEditNameTextField,
                                 showNameOnly,
                                 saveDisplayName ={
-                                    saveEditName = it
+                                    saveEditName = it.trim()
                                 }
                             )
                         }

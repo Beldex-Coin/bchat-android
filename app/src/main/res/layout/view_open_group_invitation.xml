@@ -42,7 +42,7 @@
                     android:fontFamily="@font/open_sans_medium"
                     android:maxLines="1"
                     android:text="@string/ThreadRecord_open_group_invitation"
-                    android:textColor="@color/incoming_message_amount_text"
+                    android:textColor="@color/text"
                     android:textSize="@dimen/small_font_size"
                     android:textStyle="bold"
                     android:visibility="visible"
@@ -82,7 +82,7 @@
             </LinearLayout>
 
             <RelativeLayout
-                android:id="@+id/groupIconPreviewContainer"
+                android:id="@+id/InvitationIconPreviewContainer"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:background="@drawable/view_quote_attachment_preview_background"
@@ -96,21 +96,13 @@
                 tools:visibility="visible">
 
                 <ImageView
-                    android:id="@+id/groupProfilePreviewImageView"
+                    android:id="@+id/invitationImageView"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_centerInParent="true"
                     android:contentDescription="Social Group Profile"
                     android:scaleType="centerInside"
-                    android:src="@drawable/ic_microphone" />
-
-                <include
-                    android:id="@+id/quoteViewAttachmentThumbnailImageView"
-                    layout="@layout/thumbnail_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    android:visibility="gone" />
+                    android:src="@drawable/ic_social_group_chat" />
 
             </RelativeLayout>
 

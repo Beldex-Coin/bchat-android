@@ -381,23 +381,24 @@ class VisibleMessageContentView : MaterialCardView {
          val params: ConstraintLayout.LayoutParams = binding.bodyTextViewLayout.layoutParams as ConstraintLayout.LayoutParams
             params.width = binding.quoteView.root.width
             params.topMargin = 4
-            val params1: RelativeLayout.LayoutParams = binding.bodyTextView.layoutParams as RelativeLayout.LayoutParams
-            params1.width = RelativeLayout.LayoutParams.MATCH_PARENT
+            val params1: ConstraintLayout.LayoutParams = binding.bodyTextView.layoutParams as ConstraintLayout.LayoutParams
+            params1.width = ConstraintLayout.LayoutParams.MATCH_PARENT
         }else if(binding.albumThumbnailView.root.isVisible){
-            val params = binding.bodyTextViewLayout.layoutParams
+            val params: ConstraintLayout.LayoutParams = binding.bodyTextViewLayout.layoutParams as ConstraintLayout.LayoutParams
             params.width = binding.albumContainer.width
-            val params1: RelativeLayout.LayoutParams = binding.bodyTextView.layoutParams as RelativeLayout.LayoutParams
-            params1.width = RelativeLayout.LayoutParams.MATCH_PARENT
+            params.topMargin = 4
+            val params1: ConstraintLayout.LayoutParams = binding.bodyTextView.layoutParams as ConstraintLayout.LayoutParams
+            params1.width = ConstraintLayout.LayoutParams.MATCH_PARENT
         } else if(binding.linkPreviewView.root.isVisible){
             val params = binding.bodyTextViewLayout.layoutParams
             params.width = binding.albumContainer.width
-            val params1: RelativeLayout.LayoutParams = binding.bodyTextView.layoutParams as RelativeLayout.LayoutParams
-            params1.width = RelativeLayout.LayoutParams.MATCH_PARENT
+            val params1: ConstraintLayout.LayoutParams = binding.bodyTextView.layoutParams as ConstraintLayout.LayoutParams
+            params1.width = ConstraintLayout.LayoutParams.MATCH_PARENT
         }else{
             val params: ConstraintLayout.LayoutParams = binding.bodyTextViewLayout.layoutParams as ConstraintLayout.LayoutParams
             params.width = ConstraintLayout.LayoutParams.WRAP_CONTENT
-            val params1: RelativeLayout.LayoutParams = binding.bodyTextView.layoutParams as RelativeLayout.LayoutParams
-            params1.width = RelativeLayout.LayoutParams.WRAP_CONTENT
+            val params1: ConstraintLayout.LayoutParams = binding.bodyTextView.layoutParams as ConstraintLayout.LayoutParams
+            params1.width = ConstraintLayout.LayoutParams.WRAP_CONTENT
         }
 
         // set it to use constraints if not only a text message, otherwise wrap content to whatever width it wants
@@ -411,11 +412,7 @@ class VisibleMessageContentView : MaterialCardView {
             binding.bodyTextView.setTextColor(color)
             binding.bodyTextView.setLinkTextColor(color)
             val body = getBodySpans(context, message, searchQuery)
-            if(body.length>=5){
-                binding.bodyTextView.text = "$body             "
-            }else {
-                binding.bodyTextView.text = "$body     "
-            }
+            binding.bodyTextView.text = body
             //New Line
             if (binding.bodyTextView.text.trim().length > 705) {
                 addReadMore(binding.bodyTextView.text.trim().toString(), binding.bodyTextView, message)

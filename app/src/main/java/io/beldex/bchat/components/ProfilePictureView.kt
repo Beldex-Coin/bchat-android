@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.annotation.DimenRes
+import androidx.core.view.isVisible
 import com.beldex.libbchat.avatars.ContactColors
 import com.beldex.libbchat.avatars.PlaceholderAvatarPhoto
 import com.beldex.libbchat.avatars.ProfileContactPhoto
@@ -62,13 +63,7 @@ class ProfilePictureView @JvmOverloads constructor(
             return recipient.isOpenGroupRecipient && recipient.groupAvatarId != null
         }
 
-        if(isOpenGroupWithProfilePicture(recipient)){
-            val publicKey = recipient.address.toString()
-            this.publicKey = publicKey
-            displayName = getUserDisplayName(publicKey)
-            additionalPublicKey = null
-        }
-        else if (recipient.isGroupRecipient && !isOpenGroupWithProfilePicture(recipient)) {
+        if (recipient.isGroupRecipient && !isOpenGroupWithProfilePicture(recipient)) {
             val members = DatabaseComponent.get(context).groupDatabase()
                     .getGroupMemberAddresses(recipient.address.toGroupString(), true)
                     .sorted()
@@ -87,7 +82,7 @@ class ProfilePictureView @JvmOverloads constructor(
             displayName = getUserDisplayName(publicKey)
             additionalPublicKey = null
         }
-        update(displayName,groupImage)
+        update(displayName,groupImage, isSecretGroup = recipient.isClosedGroupRecipient)
     }
 
     private fun getUserIsBNSHolderStatus(publicKey: String): Boolean? {
@@ -95,7 +90,7 @@ class ProfilePictureView @JvmOverloads constructor(
         return contact?.isBnsHolder
     }
 
-    fun update(displayName: String? = publicKey,groupImage:Boolean = false) {
+    fun update(displayName: String? = publicKey,groupImage:Boolean = false, isSecretGroup: Boolean = false) {
         val publicKey = publicKey ?: return
         val additionalPublicKey = additionalPublicKey
         val isBnsHolder = getUserIsBNSHolderStatus(publicKey)?:false
@@ -112,7 +107,7 @@ class ProfilePictureView @JvmOverloads constructor(
             Log.d("beldex","if 1")
             setProfilePictureIfNeeded(binding.doubleModeImageView1, publicKey, displayName, R.dimen.small_profile_picture_size)
             //setProfilePictureIfNeeded(binding.doubleModeImageView2, additionalPublicKey, additionalDisplayName, R.dimen.small_profile_picture_size)
-            binding.doubleModeImageView2.visibility = View.VISIBLE
+            binding.doubleModeImageView2.isVisible = isSecretGroup
             binding.doubleModeImageViewContainer.visibility = View.VISIBLE
         } else {
             Log.d("beldex","else 1")
@@ -238,6 +233,7 @@ class ProfilePictureView @JvmOverloads constructor(
 
     fun recycle() {
         profilePicturesCache.clear()
+        profilePicturesCacheWithBnsTag.clear()
     }
     // endregion
 }

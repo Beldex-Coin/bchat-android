@@ -836,6 +836,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     private fun showPayWithSlide(thread: Recipient?, status: Boolean) {
         if (thread != null && !thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && thread.isApproved && HomeActivity.reportIssueBChatID!=thread.address.toString() && !thread.isLocalNumber && status) {
             binding.slideToPayButton.visibility = View.VISIBLE
+            dispatchTouchEvent()
         }else{
             binding.slideToPayButton.visibility = View.GONE
         }
@@ -1570,7 +1571,13 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     override fun cancelVoiceMessage() {
         hideVoiceMessageUI()
         this.activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        audioRecorder.stopRecording()
+        try {
+            if(::audioRecorder.isInitialized) {
+                audioRecorder.stopRecording()
+            }
+        }catch(ex: UninitializedPropertyAccessException){
+            Log.d("Audio Recorder ",ex.message.toString())
+        }
 //        amplitudeJob?.cancel()
         stopAudioHandler.removeCallbacks(stopVoiceMessageRecordingTask)
     }

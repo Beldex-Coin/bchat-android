@@ -146,17 +146,15 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <com.google.android.material.card.MaterialCardView
+    <LinearLayout
         android:id="@+id/receivedCallCardView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
-        app:cardBackgroundColor="@color/received_message_background"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="0dp"
-        app:contentPadding="6dp">
+        android:padding="6dp"
+        android:background="@drawable/call_message_bubble_background_received_end">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -221,19 +219,17 @@
 
         </LinearLayout>
 
-    </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
 
-    <com.google.android.material.card.MaterialCardView
+    <LinearLayout
         android:id="@+id/dialledCallCardView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        app:cardBackgroundColor="@color/button_green"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="0dp"
-        app:contentPadding="6dp">
+        android:padding="6dp"
+        android:background="@drawable/call_message_bubble_background_sent_end">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -296,6 +292,6 @@
 
         </LinearLayout>
 
-    </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
 
 </LinearLayout>

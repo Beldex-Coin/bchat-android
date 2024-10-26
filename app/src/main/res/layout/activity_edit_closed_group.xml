@@ -115,13 +115,16 @@
                     android:textColor="@color/text"
                     android:textSize="@dimen/medium_font_size"
                     android:textStyle="bold"
-                    tools:text="SomeGroupName" />
+                    android:drawablePadding="4dp"
+                    tools:text="SomeGroupName"
+                    app:drawableEndCompat="@drawable/ic_baseline_edit_group_name" />
 
                 <ImageView
                     android:id="@+id/lblGroupNameEditImageview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_marginStart="8dp"
+                    android:visibility="gone"
                     android:src="@drawable/ic_baseline_edit_group_name"
                     android:contentDescription="@string/edit_group_name" />
 

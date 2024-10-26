@@ -32,7 +32,14 @@ class OpenGroupInvitationView : LinearLayout {
         val umd = UpdateMessageData.fromJSON(message.body)!!
         val data = umd.kind as UpdateMessageData.Kind.OpenGroupInvitation
         this.data = data
+        val iconID = if (message.isOutgoing) R.drawable.ic_social_group_chat else R.drawable.ic_social_group_chat
         with(binding){
+            invitationImageView.setImageResource(iconID)
+            invitationImageView.imageTintList= ColorStateList.valueOf(ResourcesCompat.getColor(resources, if (message.isOutgoing) {
+                R.color.outgoing_reply_message_icon
+            } else {
+                R.color.incoming_reply_message_icon
+            }, context.theme))
             try {
                 val mainObject = JSONObject(message.body)
                 val uniObject = mainObject.getJSONObject("kind")
@@ -48,7 +55,7 @@ class OpenGroupInvitationView : LinearLayout {
             val backgroundColorID = if (message.isOutgoing) {
                 R.color.outgoing_call_background
             } else {
-                R.color.user_view_background
+                R.color.quote_view_background
             }
             val backgroundColor =
                 ResourcesCompat.getColor(resources, backgroundColorID, context.theme)
@@ -58,12 +65,29 @@ class OpenGroupInvitationView : LinearLayout {
             } else {
                 R.color.received_message_background
             }
+            val invitationIconColorID = if (message.isOutgoing) {
+                R.color.button_green
+            } else {
+                R.color.user_view_background
+            }
             val cardBackgroundColor =
                 ResourcesCompat.getColor(resources, cardBackgroundColorID, context.theme)
+            val invitationIconBackgroundColor =
+                ResourcesCompat.getColor(resources, invitationIconColorID, context.theme)
             socialGroupCardView.setCardBackgroundColor(ColorStateList.valueOf(cardBackgroundColor))
+            InvitationIconPreviewContainer.backgroundTintList = ColorStateList.valueOf(invitationIconBackgroundColor)
+
+            val titleColor = getTitleTextColor(message.isOutgoing)
+            titleTextView.setTextColor(resources.getColor(titleColor, null))
+
     }
 }
-
+    private fun getTitleTextColor(isOutgoingMessage: Boolean): Int {
+        return when {
+            isOutgoingMessage -> R.color.white
+            else -> R.color.text
+        }
+    }
     fun joinOpenGroup() {
         val data = data ?: return
         ActivityDispatcher.get(context)?.showDialog(JoinOpenGroupDialog(data.groupName,data.groupUrl),"Join Open Group Dialog")

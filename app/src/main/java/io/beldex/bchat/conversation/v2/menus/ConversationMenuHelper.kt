@@ -49,11 +49,12 @@ object ConversationMenuHelper {
         // Prepare
         menu.clear()
         val isOpenGroup = thread.isOpenGroupRecipient
+        val isBlockedContact = thread.isBlocked
         // Base menu (options that should always be present)
         inflater.inflate(R.menu.menu_conversation, menu)
         // Expiring messages
         //New Line v32
-        if (!isOpenGroup && (thread.hasApprovedMe() || thread.isClosedGroupRecipient)){
+        if (!isOpenGroup && (thread.hasApprovedMe() || thread.isClosedGroupRecipient) && !isBlockedContact){
             if (thread.expireMessages > 0) {
                 inflater.inflate(R.menu.menu_conversation_expiration_on, menu)
                 val item = menu.findItem(R.id.menu_expiring_messages)
@@ -65,7 +66,12 @@ object ConversationMenuHelper {
                 badgeView?.text = ExpirationUtil.getExpirationAbbreviatedDisplayValue(context, thread.expireMessages)
                 actionView?.setOnClickListener { onOptionsItemSelected(item) }
             } else {
-                inflater.inflate(R.menu.menu_conversation_expiration_off, menu)
+                if (thread.isGroupRecipient && fragmentV2.isSecretGroupIsActive()) {
+                    inflater.inflate(R.menu.menu_conversation_expiration_off, menu)
+                }
+                if(!thread.isGroupRecipient){
+                    inflater.inflate(R.menu.menu_conversation_expiration_off, menu)
+                }
             }
         }
         // One-on-one chat menu (options that should only be present for one-on-one chats)
@@ -101,7 +107,8 @@ object ConversationMenuHelper {
             }
         }
 
-        if (thread.isGroupRecipient && !thread.isMuted) {
+        if (thread.isGroupRecipient && !thread.isMuted && fragmentV2.isSecretGroupIsActive()) {
+            Log.d("menu-status ->","1")
             inflater.inflate(R.menu.menu_conversation_notification_settings, menu)
         }
 

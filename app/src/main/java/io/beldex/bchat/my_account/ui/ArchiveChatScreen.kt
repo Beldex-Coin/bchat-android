@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import com.beldex.libbchat.messaging.contacts.Contact
+import com.beldex.libbchat.utilities.GroupRecord
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.isScreenSecurityEnabled
 import com.beldex.libbchat.utilities.recipients.Recipient
@@ -240,6 +241,17 @@ fun ArchiveChatScreen(
         }
     }
 
+    fun getGroup(recipient: Recipient): GroupRecord? = groupDatabase.getGroup(recipient.address.toGroupString()).orNull()
+
+    fun isSecretGroupIsActive(recipient: Recipient):Boolean {
+        return if (recipient.isClosedGroupRecipient) {
+            val group = getGroup(recipient)
+            val isActive = (group?.isActive == true)
+            isActive
+        } else {
+            true
+        }
+    }
 
     if (showMenu) {
         Popup(
@@ -339,7 +351,7 @@ fun ArchiveChatScreen(
                             Text(stringResource(id=if (threadRecord!!.recipient.isMuted) R.string.conversation_muted__unmute else R.string.conversation_unmuted__mute_notifications))
                         }
                     }
-                    if (!recipient.isMuted && !recipient.isLocalNumber) {
+                    if (recipient.isGroupRecipient && !recipient.isMuted && !recipient.isLocalNumber && isSecretGroupIsActive(recipient)) {
                         Row(
                             horizontalArrangement=Arrangement.Start,
                             verticalAlignment=Alignment.CenterVertically

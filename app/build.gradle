@@ -123,10 +123,19 @@ android {
                 // stack traces in the Crashlytics dashboard.
                 nativeSymbolUploadEnabled true
             }
+            manifestPlaceholders = [
+                    providerId: "io.beldex",
+                    appName: "BChat Messenger"
+            ]
         }
         debug {
             minifyEnabled false
-            buildConfigField "boolean", "CRASHLYTICS_ENABLED", "false"
+            applicationIdSuffix '.debug'
+            buildConfigField "boolean", "CRASHLYTICS_ENABLED", "true"
+            manifestPlaceholders = [
+                    providerId: "io.beldex.debug",
+                    appName: "BChat Debug"
+            ]
         }
     }
 

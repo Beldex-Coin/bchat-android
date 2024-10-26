@@ -75,12 +75,12 @@
         android:name="io.beldex.bchat.ApplicationContext"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="${appName}"
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/Theme.Bchat.DayNight"
         android:usesCleartextTraffic="true"
-        tools:replace="android:allowBackup">
+        tools:replace="android:allowBackup, android:label">
         <activity
             android:name="io.beldex.bchat.contacts.blocked.BlockedContactsActivity"
             android:exported="false"
@@ -656,12 +656,12 @@
 
         <provider
             android:name="io.beldex.bchat.providers.PartProvider"
-            android:authorities="io.beldex.provider.securesms"
+            android:authorities="${providerId}.provider.securesms"
             android:exported="false"
             android:grantUriPermissions="true" />
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="io.beldex.securesms.fileprovider"
+            android:authorities="${providerId}.securesms.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -670,27 +670,27 @@
         </provider>
         <provider
             android:name="io.beldex.bchat.database.DatabaseContentProviders$Conversation"
-            android:authorities="io.beldex.securesms.database.conversation"
+            android:authorities="${providerId}.securesms.database.conversation"
             android:exported="false" />
         <provider
             android:name="io.beldex.bchat.database.DatabaseContentProviders$ConversationList"
-            android:authorities="io.beldex.securesms.database.conversationlist"
+            android:authorities="${providerId}.securesms.database.conversationlist"
             android:exported="false" />
         <provider
             android:name="io.beldex.bchat.database.DatabaseContentProviders$Attachment"
-            android:authorities="io.beldex.securesms.database.attachment"
+            android:authorities="${providerId}.securesms.database.attachment"
             android:exported="false" />
         <provider
             android:name="io.beldex.bchat.database.DatabaseContentProviders$Sticker"
-            android:authorities="io.beldex.securesms.database.sticker"
+            android:authorities="${providerId}.securesms.database.sticker"
             android:exported="false" />
         <provider
             android:name="io.beldex.bchat.database.DatabaseContentProviders$StickerPack"
-            android:authorities="io.beldex.securesms.database.stickerpack"
+            android:authorities="${providerId}.securesms.database.stickerpack"
             android:exported="false" />
         <provider
             android:name="io.beldex.bchat.database.DatabaseContentProviders$Recipient"
-            android:authorities="io.beldex.securesms.database.recipient"
+            android:authorities="${providerId}.securesms.database.recipient"
             android:exported="false" />
 
         <receiver

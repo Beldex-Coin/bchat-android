@@ -465,13 +465,13 @@ private fun GroupContact(
                     ProfilePictureMode.GroupPicture
                 else
                     ProfilePictureMode.SmallPicture
-                val pk = groupRecipients.getOrNull(0)?.serialize() ?: ""
+                /*val pk = groupRecipients.getOrNull(0)?.serialize() ?: ""*/
                 val additionalPk = groupRecipients.getOrNull(1)?.serialize() ?: ""
                 val additionalDisplay =
                     getUserDisplayName(additionalPk, context)
 
                 ProfilePictureComponent(
-                    publicKey = pk,
+                    publicKey = recipient.address.toString() ?: "",
                     displayName = recipient.name.toString() ?: "",
                     additionalPublicKey = additionalPk,
                     additionalDisplayName = additionalDisplay,

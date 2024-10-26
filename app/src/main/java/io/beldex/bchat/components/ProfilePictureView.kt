@@ -69,8 +69,8 @@ class ProfilePictureView @JvmOverloads constructor(
                     .sorted()
                     .take(2)
                     .toMutableList()
-            val pk = members.getOrNull(0)?.serialize() ?: ""
-            publicKey = pk
+            /*val pk = members.getOrNull(0)?.serialize() ?: ""*/
+            publicKey = recipient.address.toString() ?: ""
             displayName = recipient.name ?: ""
             val apk = members.getOrNull(1)?.serialize() ?: ""
             additionalPublicKey = apk

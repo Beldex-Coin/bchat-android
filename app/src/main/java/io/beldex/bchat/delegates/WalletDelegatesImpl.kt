@@ -97,7 +97,7 @@ class WalletDelegatesImpl: WalletDelegates {
                     else -> {
                         setBalance(
                             walletBalance!!,
-                            null
+                            walletUnlockedBalance ?: ""
                         )
                     }
                 }

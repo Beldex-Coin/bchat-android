@@ -674,7 +674,7 @@ class WalletFragment : Fragment(),OnBackPressedListener {
         }
 
         //Steve Josephh21 ANRS
-        if(CheckOnline.isOnline(requireContext())) {
+        if(CheckOnline.isOnline(requireActivity())) {
             check(activityCallback!!.hasBoundService()) { "WalletService not bound." }
             val daemonConnected: Wallet.ConnectionStatus = activityCallback!!.connectionStatus!!
             if (daemonConnected === Wallet.ConnectionStatus.ConnectionStatus_Connected) {

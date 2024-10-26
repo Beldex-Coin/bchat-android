@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -66,6 +67,10 @@ fun StatWalletInfo(modifier: Modifier) {
 
     val context = LocalContext.current
     val activity = context as? Activity ?: return
+    if (TextSecurePreferences.isScreenSecurityEnabled(context))
+        activity.window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE) else {
+        activity.window?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+    }
     var isChecked by remember {
         mutableStateOf(false)
     }

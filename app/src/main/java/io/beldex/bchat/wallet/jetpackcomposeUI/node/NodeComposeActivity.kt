@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -72,6 +73,7 @@ import androidx.core.text.isDigitsOnly
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.changeDaemon
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getNodeIsMainnet
 import com.beldex.libbchat.utilities.TextSecurePreferences.Companion.getNodeIsTested
@@ -119,6 +121,12 @@ class NodeComposeActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             BChatTheme(darkTheme=UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT) {
+                val context = LocalContext.current
+                val activity = (context as? Activity)
+                if (TextSecurePreferences.isScreenSecurityEnabled(context))
+                    activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE) else {
+                    activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+                }
                 Surface {
                     Scaffold(
                             containerColor=MaterialTheme.colorScheme.primary,

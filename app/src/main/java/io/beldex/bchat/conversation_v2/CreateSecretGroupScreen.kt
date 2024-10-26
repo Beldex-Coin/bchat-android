@@ -2,6 +2,7 @@ package io.beldex.bchat.conversation_v2
 
 import android.app.Activity
 import android.content.Context
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -89,6 +90,10 @@ fun CreateSecretGroup(
         mutableStateOf("")
     }
     val context = LocalContext.current
+    if (TextSecurePreferences.isScreenSecurityEnabled(context))
+        activity.window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE) else {
+        activity.window?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+    }
     var showLoader by remember {
         mutableStateOf(false)
     }

@@ -3,12 +3,14 @@ package io.beldex.bchat.conversation_v2
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import io.beldex.bchat.compose_utils.BChatTheme
@@ -43,6 +45,11 @@ class NewChatConversationActivity: ComponentActivity() {
                 darkTheme = isDarkTheme
             ) {
                 // A surface container using the 'background' color from the theme
+                val activity = (context as? Activity)
+                if (TextSecurePreferences.isScreenSecurityEnabled(context))
+                    activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE) else {
+                    activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+                }
                 Surface {
                     NewChatScreen(
                         searchQuery = searchQuery,

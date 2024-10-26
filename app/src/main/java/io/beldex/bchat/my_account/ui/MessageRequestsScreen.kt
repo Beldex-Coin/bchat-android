@@ -1,6 +1,8 @@
 package io.beldex.bchat.my_account.ui
 
+import android.app.Activity
 import android.content.Context
+import android.view.WindowManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -42,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.lifecycleScope
 import com.beldex.libbchat.messaging.contacts.Contact
+import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.compose_utils.ProfilePictureComponent
 import io.beldex.bchat.compose_utils.ProfilePictureMode
@@ -62,9 +65,14 @@ fun MessageRequestsScreen(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    val activity = (context as? Activity)
     val requestToTakeAction: ThreadRecord? = null
     var threadRecord by remember {
         mutableStateOf(requestToTakeAction)
+    }
+    if (TextSecurePreferences.isScreenSecurityEnabled(context))
+        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE) else {
+        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
     }
     if (requestsList.isEmpty()) {
         Column(

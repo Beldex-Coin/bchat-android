@@ -33,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -60,6 +61,7 @@ import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.compose_utils.PrimaryButton
 import io.beldex.bchat.my_account.ui.MyAccountViewModel
 import io.beldex.bchat.wallet.CheckOnline
+import kotlinx.coroutines.delay
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
 import java.util.Locale
@@ -362,6 +364,19 @@ fun LinkYourBNSDialog(
 
 @Composable
 fun BnsNameVerifyingLoader(onDismiss: () -> Unit) {
+
+    val context = LocalContext.current
+    var isConnected by remember { mutableStateOf(CheckOnline.isOnline(context)) }
+    LaunchedEffect(isConnected) {
+        if (!isConnected) {
+            onDismiss()
+        }
+        while (isConnected) {
+            delay(1000)
+            isConnected=CheckOnline.isOnline(context)
+        }
+    }
+
     DialogContainer(
         dismissOnBackPress = false,
         dismissOnClickOutside = false,

@@ -127,6 +127,7 @@ android {
                     providerId: "io.beldex",
                     appName: "BChat Messenger"
             ]
+            buildConfigField "String", "providerId", "\"io.beldex\""
         }
         debug {
             minifyEnabled false
@@ -136,6 +137,7 @@ android {
                     providerId: "io.beldex.debug",
                     appName: "BChat Debug"
             ]
+            buildConfigField "String", "providerId", "\"io.beldex.debug\""
         }
     }
 

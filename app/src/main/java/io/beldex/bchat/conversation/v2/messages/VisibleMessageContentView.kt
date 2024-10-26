@@ -558,10 +558,7 @@ class VisibleMessageContentView : MaterialCardView {
             body.getSpans<URLSpan>(0, body.length).toList().forEach { urlSpan ->
                 val updatedUrl = urlSpan.url.let { it.toHttpUrlOrNull().toString() }
                 val replacementSpan = ModalURLSpan(updatedUrl) { url ->
-                    if (SystemClock.elapsedRealtime() - linkLastClickTime >= 1000) {
-                        linkLastClickTime = SystemClock.elapsedRealtime()
-                        ActivityDispatcher.get(context)?.showBottomSheetDialog(ModalUrlBottomSheet(url),"Open URL Dialog")
-                    }
+                    ActivityDispatcher.get(context)?.showBottomSheetDialog(ModalUrlBottomSheet(url),"Open URL Dialog")
                 }
                 val start = body.getSpanStart(urlSpan)
                 val end = body.getSpanEnd(urlSpan)

@@ -481,16 +481,16 @@ fun ArchiveChatItem(
             val members=DatabaseComponent.get(context).groupDatabase()
                 .getGroupMemberAddresses(thread.recipient.address.toGroupString(), true).sorted()
                 .take(2).toMutableList()
-            val pk=members.getOrNull(0)?.serialize() ?: ""
-            val displayName=getDisplayName(context, pk)
+            /*val pk=members.getOrNull(0)?.serialize() ?: ""
+            val displayName=getDisplayName(context, pk)*/
             val additionalPk=members.getOrNull(1)?.serialize() ?: ""
             val additionalDisplay=getDisplayName(context, additionalPk)
             ProfilePictureComponent(
-                publicKey=pk,
-                displayName=displayName,
+                publicKey=thread.recipient.address.toString() ?: "",
+                displayName=thread.recipient.name.toString() ?: "",
                 additionalPublicKey=additionalPk,
                 additionalDisplayName=additionalDisplay,
-                containerSize=pictureType.size,
+                containerSize=ProfilePictureMode.SmallPicture.size,
                 pictureMode=pictureType
             )
         } else {

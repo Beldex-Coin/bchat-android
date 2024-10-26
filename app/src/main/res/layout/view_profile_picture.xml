@@ -30,6 +30,21 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/doubleModeSocialGroupImageViewContainer"
+        android:layout_width="@dimen/medium_profile_picture_size"
+        android:layout_height="@dimen/medium_profile_picture_size">
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/doubleModeSocialGroupImageView1"
+            android:layout_width="@dimen/medium_profile_picture_size"
+            android:layout_height="@dimen/medium_profile_picture_size"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            app:riv_corner_radius="200dp"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/largeSingleModeWithTagContainer"
         android:layout_width="@dimen/large_profile_picture_size"
         android:layout_height="@dimen/large_profile_picture_size">

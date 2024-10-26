@@ -427,7 +427,8 @@ private fun MessageView(
                 isOpenGroup = recipient.isOpenGroupRecipient,
                 address = address,
                 groupRecipients = groupRecipients,
-                title = recipient.name
+                title = recipient.name,
+                recipient = recipient.address.toString()
             )
         } else {
             ProfilePictureComponent(
@@ -498,7 +499,8 @@ private fun GroupConversationView(
             isOpenGroup = model.groupRecord.isOpenGroup,
             address = Address.fromSerialized(model.groupRecord.encodedId),
             groupRecipients = groupRecipients.map { it.address },
-            title = model.groupRecord.title
+            title = model.groupRecord.title,
+            recipient = model.groupRecord.encodedId
         )
 
         Spacer(modifier = Modifier.width(16.dp))
@@ -529,7 +531,8 @@ private fun GetGroupProfilePicture(
     address: Address,
     modifier: Modifier = Modifier,
     groupRecipients: List<Address> = emptyList(),
-    title : String? = ""
+    title : String? = "",
+    recipient: String? = ""
 ) {
     if (isOpenGroup) {
         val pictureMode = ProfilePictureMode.SmallPicture
@@ -547,13 +550,13 @@ private fun GetGroupProfilePicture(
             ProfilePictureMode.GroupPicture
         else
             ProfilePictureMode.SmallPicture
-        val pk = groupRecipients.getOrNull(0)?.serialize() ?: ""
+       /* val pk = groupRecipients.getOrNull(0)?.serialize() ?: ""*/
         val additionalPk = groupRecipients.getOrNull(1)?.serialize() ?: ""
         val additionalDisplay =
             getUserDisplayName(additionalPk, context)
 
         ProfilePictureComponent(
-            publicKey = pk,
+            publicKey = recipient ?: "",
             displayName = title ?: "",
             additionalPublicKey = additionalPk,
             additionalDisplayName = additionalDisplay,

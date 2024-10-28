@@ -9,9 +9,11 @@ import androidx.core.content.FileProvider;
 
 import java.io.File;
 
+import io.beldex.bchat.BuildConfig;
+
 public class FileProviderUtil {
 
-  private static final String AUTHORITY = "io.beldex.securesms.fileprovider";
+  private static final String AUTHORITY = BuildConfig.providerId+".securesms.fileprovider";
 
   public static Uri getUriFor(@NonNull Context context, @NonNull File file) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)

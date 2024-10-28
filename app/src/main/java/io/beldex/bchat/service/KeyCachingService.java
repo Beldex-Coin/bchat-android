@@ -37,6 +37,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import io.beldex.bchat.ApplicationContext;
+import io.beldex.bchat.BuildConfig;
 import io.beldex.bchat.DatabaseUpgradeActivity;
 import io.beldex.bchat.DummyActivity;
 import io.beldex.bchat.home.HomeActivity;
@@ -63,7 +64,7 @@ public class KeyCachingService extends Service {
 
   public static final int SERVICE_RUNNING_ID = 4141;
 
-  public  static final String KEY_PERMISSION           = "io.beldex.bchat.ACCESS_BCHAT_SECRETS";
+  public  static final String KEY_PERMISSION           = BuildConfig.APPLICATION_ID+".ACCESS_BCHAT_SECRETS";
   public  static final String CLEAR_KEY_EVENT          = "io.beldex.bchat.service.action.CLEAR_KEY_EVENT";
   public  static final String LOCK_TOGGLED_EVENT       = "io.beldex.bchat.service.action.LOCK_ENABLED_EVENT";
   private static final String PASSPHRASE_EXPIRED_EVENT = "io.beldex.bchat.service.action.PASSPHRASE_EXPIRED_EVENT";

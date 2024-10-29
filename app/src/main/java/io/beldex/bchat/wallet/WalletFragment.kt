@@ -203,14 +203,24 @@ class WalletFragment : Fragment(),OnBackPressedListener {
                                     Log.d("FiatCurrency Exception: ", "one")
                                     updateFiatCurrency(walletAvailableBalance!!)
                                 }
-                                TextSecurePreferences.setCurrencyAmount(requireActivity(),price.toString())
+                                if(isAdded) {
+                                    TextSecurePreferences.setCurrencyAmount(
+                                        requireActivity(),
+                                        price.toString()
+                                    )
+                                }
                             }else{
                                 price = 0.00
                                 if(walletAvailableBalance!=null) {
                                     Log.d("FiatCurrency Exception: ", "two")
                                     updateFiatCurrency(walletAvailableBalance!!)
                                 }
-                                TextSecurePreferences.setCurrencyAmount(requireActivity(),price.toString())
+                                if(isAdded) {
+                                    TextSecurePreferences.setCurrencyAmount(
+                                        requireActivity(),
+                                        price.toString()
+                                    )
+                                }
                             }
                         }
                     } else {

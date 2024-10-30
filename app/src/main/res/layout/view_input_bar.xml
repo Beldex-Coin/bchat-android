@@ -137,7 +137,6 @@
         android:id="@+id/microphoneOrSendButtonContainer"
         android:layout_width="@dimen/input_bar_button_expanded_size"
         android:layout_height="@dimen/input_bar_button_expanded_size"
-        android:layout_marginEnd="@dimen/small_spacing"
         android:layout_gravity="bottom"/>
 
 </LinearLayout>

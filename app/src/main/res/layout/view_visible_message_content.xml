@@ -196,7 +196,6 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/open_sans_regular"
                         android:maxWidth="@dimen/max_text_width"
-                        android:minWidth="@dimen/min_text_width"
                         android:paddingStart="12dp"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/short_message_time"

@@ -112,6 +112,7 @@
                     android:layout_gravity="end"
                     android:layout_weight="1"
                     android:scaleType="fitCenter"
+                    android:layout_marginEnd="5dp"
                     android:src="@drawable/ic_account_settings"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toRightOf="parent"

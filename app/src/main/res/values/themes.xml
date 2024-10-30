@@ -142,7 +142,7 @@
     </style>
 
     <style name="PopupMenu" parent="@android:style/Widget.PopupMenu">
-        <item name="android:popupBackground">@drawable/popup_menu_background</item>
+        <item name="android:popupBackground">@drawable/chat_popup_menu_background</item>
     </style>
 
     <style name="Theme.Bchat.DayNight.FlatActionBar">

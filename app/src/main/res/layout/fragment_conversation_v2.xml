@@ -20,10 +20,10 @@
             android:id="@+id/back_to_home_Btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="10dp"
             android:background="@android:color/transparent"
-            android:padding="4dp"
-            android:src="@drawable/ic_back_arrow" />
+            android:padding="1dp"
+            android:src="@drawable/ic_new_back_arrow" />
 
         <LinearLayout
             android:id="@+id/layout_conversation"
@@ -390,7 +390,7 @@
                 app:anchoredView="@id/inputBar"
                 android:layout_marginBottom="5dp"
                 android:layout_alignParentEnd="true"
-                android:layout_marginEnd="60dp"
+                android:layout_marginEnd="46dp"
                 app:arrowLocation="bottom"
                 app:arrowAlignment="end"
                 app:arrowWidth="10dp"
@@ -412,7 +412,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="4dp"
                 android:layout_marginBottom="8dp"/>
 
 <!--            <LinearLayout-->

@@ -481,7 +481,9 @@ fun WalletDashBoardScreen(
                                     LottieAnimation(
                                         composition, lottieProgress, modifier = Modifier
                                             .width(10.dp)
-                                            .height(5.dp)
+                                            .height(10.dp)
+                                            .padding(start = 2.dp)
+
                                     )
                                 }
                             }
@@ -494,9 +496,9 @@ fun WalletDashBoardScreen(
                             horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(
-                                    start = 30.dp,
+                                    start = 40.dp,
                                     top = 80.dp,
-                                    end = 30.dp,
+                                    end = 40.dp,
                                     bottom = 0.dp
                                 )
                                 .background(
@@ -508,9 +510,9 @@ fun WalletDashBoardScreen(
 
 
                             Row(
-                                horizontalArrangement = Arrangement.SpaceEvenly,
+                                horizontalArrangement = Arrangement.SpaceAround,
                                 verticalAlignment = Alignment.CenterVertically, modifier = Modifier
-                                    .padding(10.dp)
+                                    .padding(start = 10.dp,top = 20.dp,end = 10.dp, bottom = 10.dp)
                                     .fillMaxWidth()
                             ) {
                                 FilledIconButton(

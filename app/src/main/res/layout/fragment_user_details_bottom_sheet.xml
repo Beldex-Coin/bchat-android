@@ -7,7 +7,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:gravity="center_horizontal"
-    android:background="@null"
+    android:background="@drawable/default_dialog_background"
     android:paddingLeft="@dimen/large_spacing"
     android:paddingRight="@dimen/large_spacing"
     android:paddingBottom="@dimen/large_spacing"

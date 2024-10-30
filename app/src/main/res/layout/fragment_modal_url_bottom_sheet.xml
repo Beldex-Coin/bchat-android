@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/url_bottom_sheet_layout"
     android:background="@drawable/default_dialog_background"
     android:gravity="center_horizontal"
     android:orientation="vertical"
@@ -20,6 +21,7 @@
         android:gravity="center"
         android:layout_gravity="center"
         android:layout_marginStart="20dp"
+        android:layout_marginTop="@dimen/small_spacing"
         android:orientation="horizontal">
 
         <TextView

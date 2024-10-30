@@ -30,9 +30,9 @@
 
 
 
-    <style name="Widget.Bchat.BottomSheetDialog" parent="Widget.Design.BottomSheet.Modal">
+   <!-- <style name="Widget.Bchat.BottomSheetDialog" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/default_bottom_sheet_background</item>
-    </style>
+    </style>-->
 
     <style name="Widget.Bchat.AlertDialog.NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
         <item name="android:textColor">@color/accent</item>

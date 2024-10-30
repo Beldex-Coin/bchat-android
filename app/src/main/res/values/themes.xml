@@ -188,7 +188,7 @@
         <item name="android:windowAnimationStyle">
             @style/Animation.MaterialComponents.BottomSheetDialog
         </item>
-        <item name="bottomSheetStyle">@style/Widget.Bchat.BottomSheetDialog</item>
+       <!-- <item name="bottomSheetStyle">@style/Widget.Bchat.BottomSheetDialog</item>-->
     </style>
 
     <style name="Base.Theme.TextSecure" parent="@style/Theme.Bchat.DayNight">

@@ -66,6 +66,11 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
         val threadID = arguments?.getLong(ARGUMENT_THREAD_ID) ?: return dismiss()
         val recipient = Recipient.from(requireContext(), Address.fromSerialized(publicKey), false)
         val threadRecipient = threadDb.getRecipientForThreadId(threadID) ?: return dismiss()
+        val layouts= view.layoutParams as ViewGroup.MarginLayoutParams
+        layouts.leftMargin = 32
+        layouts.rightMargin = 32
+        layouts.bottomMargin = 24
+        view.layoutParams = layouts
         with(binding) {
             profilePictureView.root.publicKey = publicKey
             profilePictureView.root.glide = GlideApp.with(this@UserDetailsBottomSheet)

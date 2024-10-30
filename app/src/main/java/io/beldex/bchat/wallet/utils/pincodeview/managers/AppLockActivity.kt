@@ -126,7 +126,9 @@ abstract class AppLockActivity : PinActivity(), KeyboardButtonClickedListener, V
                                 PinCodeSteps.EnterPin -> {
                                     stringResource(R.string.create_pin)
                                 }
-                                PinCodeSteps.OldPin,
+                                PinCodeSteps.OldPin -> {
+                                    stringResource(R.string.change_pin_title)
+                                }
                                 PinCodeSteps.VerifyPin -> {
                                     stringResource(R.string.verify_pin)
                                 }

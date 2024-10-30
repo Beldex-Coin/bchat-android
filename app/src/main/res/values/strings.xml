@@ -1569,4 +1569,5 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="new_chat_screen_title">New</string>
     <string name="message_details">Message Details</string>
     <string name="wallet_synced_text" translatable="false">Wallet is fully synchronized</string>
+    <string name="change_pin_title" translatable="false">Change PIN</string>
 </resources>

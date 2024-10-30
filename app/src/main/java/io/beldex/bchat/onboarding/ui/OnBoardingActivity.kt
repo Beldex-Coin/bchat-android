@@ -233,10 +233,11 @@ fun OnBoardingNavHost(
                 }
             }
             ScreenContainer(
-                title = if (pinCodeAction == PinCodeAction.VerifyPinCode.action)
-                    stringResource(R.string.verify_pin)
-                else
-                    stringResource(R.string.create_password),
+                title =when (pinCodeAction) {
+                    PinCodeAction.VerifyPinCode.action -> stringResource(R.string.verify_pin)
+                    PinCodeAction.ChangePinCode.action -> stringResource(R.string.change_password)
+                    else -> stringResource(R.string.create_password)
+                },
                 wrapInCard = false,
                 onBackClick = {
                     if (finish) {

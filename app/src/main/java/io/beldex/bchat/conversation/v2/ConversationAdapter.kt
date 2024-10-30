@@ -154,13 +154,23 @@ class ConversationAdapter(context: Context, cursor: Cursor, private val onItemPr
                             if(message.recipient.name != null) "\"${message.recipient.name}\"" else "\"${message.recipient.address}\"")
 
                         val recipientName = SpannableStringBuilder(description.text)
-                        val startIndex = description.text.indexOf(message.recipient.name!!)
+                        val startIndex =message.recipient.name?.let { it1 ->
+                            description.text.indexOf(
+                                it1
+                            )
+                        }
                         var endIndex = 0
                         if(startIndex != -1){
-                             endIndex = startIndex + message.recipient.name!!.length
+                            if (startIndex != null) {
+                                endIndex = startIndex + message.recipient.name!!.length
+                            }
                         }
-                        recipientName.setSpan(ForegroundColorSpan(color), startIndex -1, endIndex +1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        recipientName.setSpan(StyleSpan(Typeface.BOLD), startIndex -1, endIndex +1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        if (startIndex != null) {
+                            recipientName.setSpan(ForegroundColorSpan(color), startIndex -1, endIndex +1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        }
+                        if (startIndex != null) {
+                            recipientName.setSpan(StyleSpan(Typeface.BOLD), startIndex -1, endIndex +1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        }
                         description.text = recipientName
                         val okButton =  callMissedDialogView.findViewById<Button>(R.id.missedCallOkButton)
                         okButton.setOnClickListener {

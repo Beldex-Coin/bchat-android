@@ -175,7 +175,9 @@ class VoiceMessageView : RelativeLayout, AudioSlidePlayer.Listener {
             binding.progressView.layoutParams = layoutParams
         } else {
             isPlaying = false
-            player!!.stop()
+            if(player != null) {
+                player!!.stop()
+            }
         }
     }
 

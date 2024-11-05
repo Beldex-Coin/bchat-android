@@ -2374,14 +2374,23 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     private fun formatBoldText(s: Editable?) {
-        val text = s.toString()
-        val start = text.indexOf("*")
-        val end = text.lastIndexOf("*")
+        try {
+            val text = s.toString()
+            val start = text.indexOf("*")
+            val end = text.lastIndexOf("*")
 
-        if (start != -1 && end != -1 && start != end) {
-            s?.setSpan(StyleSpan(Typeface.BOLD), start+1, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            s?.delete(start, start + 1)
-            s?.delete(end-1, end)
+            if (start != -1 && end != -1 && start != end) {
+                s?.setSpan(
+                    StyleSpan(Typeface.BOLD),
+                    start + 1,
+                    end,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                s?.delete(start, start + 1)
+                s?.delete(end - 1, end)
+            }
+        } catch (ex: IndexOutOfBoundsException) {
+            Log.d("ConversationFragment ",ex.message.toString())
         }
     }
 

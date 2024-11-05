@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.SystemClock
 import android.text.TextWatcher
 import android.util.AttributeSet
-import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -211,6 +210,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         if(i==1){
             binding.inputBarEditText.text?.clear()
         }
+        delegate?.setConversationRecyclerViewLayout(false)
     }
 
     fun draftLinkPreview() {
@@ -413,4 +413,5 @@ interface InputBarDelegate {
     fun commitInputContent(contentUri: Uri)
     fun inChatBDXOptions()
     fun walletDetailsUI()
+    fun setConversationRecyclerViewLayout(status: Boolean)
 }

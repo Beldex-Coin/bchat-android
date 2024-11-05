@@ -961,6 +961,16 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         val recipient = viewModel.recipient.value ?: return
         binding.slideToPayButton.visibility = View.GONE
         binding.inputBar.draftQuote(recipient, message, glide)
+        setConversationRecyclerViewLayout(true)
+    }
+
+    override fun setConversationRecyclerViewLayout(status: Boolean) {
+        val layoutParams: RelativeLayout.LayoutParams = binding.conversationRecyclerView.layoutParams as RelativeLayout.LayoutParams
+        if(status) {
+            layoutParams.addRule(RelativeLayout.ABOVE, R.id.inputBar)
+        } else {
+            layoutParams.addRule(RelativeLayout.ABOVE, R.id.typingIndicatorViewContainer)
+        }
     }
 
     private fun handleLongPress(message: MessageRecord, position: Int) {
@@ -1854,6 +1864,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         if(messages.isNotEmpty()) {
             binding.slideToPayButton.visibility = View.GONE
             binding.inputBar.draftQuote(recipient, messages.first(), glide)
+            setConversationRecyclerViewLayout(true)
         }
         endActionMode()
     }

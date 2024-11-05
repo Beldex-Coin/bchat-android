@@ -586,6 +586,7 @@
 
         <activity
             android:name="io.beldex.bchat.conversation_v2.NewChatConversationActivity"
+            android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"
             android:exported="false"
             android:label="@string/new_chat_screen_title"
             android:theme="@style/Theme.Bchat.DayNight.NoActionBar" />

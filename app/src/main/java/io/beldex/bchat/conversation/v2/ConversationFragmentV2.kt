@@ -10,7 +10,6 @@ import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.database.Cursor
 import android.graphics.Color
@@ -23,9 +22,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.telephony.PhoneStateListener
-import android.telephony.TelephonyCallback
-import android.telephony.TelephonyManager
 import android.text.Editable
 import android.text.Html
 import android.text.Spannable
@@ -56,9 +52,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.ColorInt
 import androidx.annotation.DimenRes
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -2042,6 +2036,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
             val threadRecipient = viewModel.recipient.value ?: return@runOnUiThread
             if (threadRecipient.isContactRecipient) {
                 binding.blockedBanner.isVisible = threadRecipient.isBlocked
+                setConversationRecyclerViewLayout(threadRecipient)
                 callShowPayAsYouChatBDXIcon(threadRecipient)
                 showBlockProgressBar(threadRecipient)
             }
@@ -2529,6 +2524,7 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
 //        binding.blockedBannerTextView.text =
 //            resources.getString(R.string.activity_conversation_blocked_banner_text, name)
         binding.blockedBanner.isVisible = recipient.isBlocked
+        setConversationRecyclerViewLayout(recipient)
         callShowPayAsYouChatBDXIcon(recipient)
         showBlockProgressBar(recipient)
         /*setting click listener on banner to avoid background click gesture - DO NOT REMOVE This line*/
@@ -2538,6 +2534,15 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
         }
         binding.unblockButton.setOnClickListener {
             unblockContactDialog()
+        }
+    }
+
+    private fun setConversationRecyclerViewLayout(recipient: Recipient){
+        val layoutParams: RelativeLayout.LayoutParams = binding.conversationRecyclerView.layoutParams as RelativeLayout.LayoutParams
+        if(recipient.isBlocked){
+            layoutParams.addRule(RelativeLayout.ABOVE,R.id.blockedBanner)
+        }else{
+            layoutParams.addRule(RelativeLayout.ABOVE,R.id.typingIndicatorViewContainer)
         }
     }
 

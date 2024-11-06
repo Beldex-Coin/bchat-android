@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
+import android.util.Log
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
@@ -307,9 +308,8 @@ class VisibleMessageView : LinearLayout {
         val bottom = top + iconSize
         swipeToReplyIconRect.left = -(spacing+spacing)
         swipeToReplyIconRect.top = top
-        swipeToReplyIconRect.right = binding.expirationTimerViewContainer.left
+        swipeToReplyIconRect.right = 16
         swipeToReplyIconRect.bottom = bottom
-
         if (translationX > 0 && !binding.expirationTimerView.isVisible) {
             val threshold = swipeToReplyThreshold
             swipeToReplyIcon.bounds = swipeToReplyIconRect

@@ -92,12 +92,9 @@ import io.beldex.bchat.conversation_v2.NewChatScreenViewModel
 import io.beldex.bchat.conversation_v2.OpenActivity
 import io.beldex.bchat.conversation_v2.getUserDisplayName
 import io.beldex.bchat.dependencies.DatabaseComponent
-import io.beldex.bchat.util.UiMode
-import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.wallet.CheckOnline
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
-import kotlin.concurrent.thread
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -189,6 +186,9 @@ fun NewChatScreen(
                     .background(color = MaterialTheme.colorScheme.primary),
                 actions = {
                     IconButton(onClick = {
+                        if(showSearchOption){
+                            onEvent("")
+                        }
                         showSearchOption = !showSearchOption
                     }) {
                         Icon(

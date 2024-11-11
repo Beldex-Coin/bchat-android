@@ -1197,35 +1197,48 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     override fun startRecordingVoiceMessage() {
-        hideAttachmentContainer()
-        checkUnBlock()
-        val recipient = viewModel.recipient.value ?: return
-        if (recipient.isBlocked) {
-            unblock()
-            return
-        }
-        if(callViewModel?.callStartTime == -1L) {
-            if (Permissions.hasAll(requireActivity(), Manifest.permission.RECORD_AUDIO)) {
-                showVoiceMessageUI()
-                this.activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                audioRecorder.startRecording()
-                stopAudioHandler.postDelayed(
+        val startTime = callViewModel!!.callStartTime
+        if (startTime == -1L) {
+            hideAttachmentContainer()
+            checkUnBlock()
+            val recipient = viewModel.recipient.value ?: return
+            if (recipient.isBlocked) {
+                unblock()
+                return
+            }
+            if (callViewModel?.callStartTime == -1L) {
+                if (Permissions.hasAll(requireActivity(), Manifest.permission.RECORD_AUDIO)) {
+                    showVoiceMessageUI()
+                    this.activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                    audioRecorder.startRecording()
+                    stopAudioHandler.postDelayed(
                         stopVoiceMessageRecordingTask,
                         300000
-                ) // Limit voice messages to 5 minute each
+                    ) // Limit voice messages to 5 minute each
+                } else {
+                    Permissions.with(this)
+                        .request(Manifest.permission.RECORD_AUDIO)
+                        .withRationaleDialog(
+                            getString(R.string.ConversationActivity_to_send_audio_messages_allow_signal_access_to_your_microphone),
+                            getString(R.string.Permissions_record_permission_required),
+                            R.drawable.ic_microphone
+                        )
+                        .withPermanentDenialDialog(getString(R.string.ConversationActivity_signal_requires_the_microphone_permission_in_order_to_send_audio_messages))
+                        .execute()
+                }
             } else {
-                Permissions.with(this)
-                    .request(Manifest.permission.RECORD_AUDIO)
-                    .withRationaleDialog(
-                        getString(R.string.ConversationActivity_to_send_audio_messages_allow_signal_access_to_your_microphone),
-                        getString(R.string.Permissions_record_permission_required),
-                        R.drawable.ic_microphone
-                    )
-                    .withPermanentDenialDialog(getString(R.string.ConversationActivity_signal_requires_the_microphone_permission_in_order_to_send_audio_messages))
-                    .execute()
+                Toast.makeText(
+                    requireActivity(),
+                    getString(R.string.record_voice_restriction),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-        }else{
-            Toast.makeText(requireActivity(),getString(R.string.record_voice_restriction),Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(
+                requireActivity(),
+                getString(R.string.warning_message_of_voice_recording),
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 

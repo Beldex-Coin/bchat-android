@@ -1295,7 +1295,7 @@ Your wallet password can be used to access your wallet within BChat and authenti
     <string name="dialog_block_height_title" translatable="false">Enter the block height or date at which you created the wallet.</string>
     <string name="block_height" translatable="false"> Block Height</string>
     <string name="block_height_info" translatable="false">Blockheight is the block number in a blockchain at a given time. Enter the block height at which you created the wallet for fast synchronization.</string>
-    <string name="enter_address" translatable="false">Enter Address</string>
+    <string name="enter_address" translatable="false">Enter Address or BNS name</string>
     <string name="enter_bdx_amount" translatable="false">Enter BDX Amount</string>
     <string name="amount_hint" translatable="false">Amount</string>
     <string name="restore_height_error_message" translatable="false">Enter a valid blockheight</string>

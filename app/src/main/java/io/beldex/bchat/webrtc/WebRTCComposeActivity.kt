@@ -803,6 +803,71 @@ class WebRTCComposeActivity : ComponentActivity() {
                                         surfaceView=it)
                             }
                         }
+                        Column(verticalArrangement=Arrangement.Bottom, horizontalAlignment=Alignment.CenterHorizontally, modifier=Modifier.fillMaxSize()) {
+                            if (isShowDialingStatus) {
+                                Text(isStatusDialingText,
+                                    Modifier
+                                        .padding(all=12.dp)
+                                        .offset(y=(-50).dp),
+                                    style=BChatTypography.titleMedium.copy(
+                                        color=MaterialTheme.appColors.textColor,
+                                        fontSize=18.sp, fontWeight=FontWeight(400)))
+                            }
+                            if(isShowIncomingStatus){
+                                Text(isStatusInComingText,
+                                    Modifier
+                                        .padding(all=12.dp)
+                                        .offset(y=(-60).dp),
+                                    style=BChatTypography.titleMedium.copy(
+                                        color=MaterialTheme.appColors.textColor,
+                                        fontSize=18.sp, fontWeight=FontWeight(400)))
+                            }
+                            if (isShowCallAudioStatus) {
+                                Text(isStatusCallAudioText, Modifier.padding(all=12.dp), style=BChatTypography.titleMedium.copy(color=MaterialTheme.appColors.textColor, fontSize=12.sp, fontWeight=FontWeight(400)))
+                            }
+                            if (isShowReConnecting) {
+                                Text(
+                                    text=isStatusReConnectingText,
+                                    style=BChatTypography.titleMedium.copy(
+                                        color=MaterialTheme.appColors.textColor,
+                                        fontSize=18.sp,
+                                        fontWeight=FontWeight(400)),
+                                    modifier=Modifier.offset(y=(-80).dp)
+                                )
+                            }
+
+                            Text(
+                                text=isPersonNameText,
+                                style=BChatTypography.titleMedium.copy(color=MaterialTheme.appColors.textColor, fontSize=24.sp, fontWeight=FontWeight(700)),
+                                textAlign=TextAlign.Center,
+                                modifier=Modifier.padding(top = 12.dp, start = 12.dp, end = 12.dp).offset(y= (-50).dp),
+                            )
+
+                            if (isShowCallDurationStatus) {
+                                Text(isStatusCallDurationText,
+                                    Modifier
+                                        .padding(all=12.dp)
+                                        .offset(y=(-50).dp),
+                                    style=BChatTypography.titleMedium.copy(
+                                        color=MaterialTheme.appColors.textColor,
+                                        fontSize=18.sp,
+                                        fontWeight=FontWeight(400)))
+                            }
+                            if (callLoading) {
+                                Box(
+                                    modifier=Modifier
+                                        .wrapContentSize()
+                                        .offset(y=(-70).dp),
+                                    contentAlignment=Alignment.Center
+                                ) {
+                                    LottieAnimation(
+                                        composition,
+                                        progress,
+                                        modifier=Modifier.size(70.dp)
+                                    )
+                                }
+                            }
+                        }
                     }
                     Row(
                             verticalAlignment=Alignment.CenterVertically,

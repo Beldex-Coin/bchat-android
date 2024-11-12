@@ -81,6 +81,7 @@ class SaveAttachmentTask : ProgressDialogAsyncTask<SaveAttachmentTask.Attachment
         this.attachmentCount = count
     }
 
+    @Deprecated("Deprecated in Java")
     override fun doInBackground(vararg attachments: Attachment?): Pair<Int, String?> {
         if (attachments.isEmpty()) {
             throw IllegalArgumentException("Must pass in at least one attachment")
@@ -242,6 +243,7 @@ class SaveAttachmentTask : ProgressDialogAsyncTask<SaveAttachmentTask.Attachment
         return File(fileName).name
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onPostExecute(result: Pair<Int, String?>) {
         super.onPostExecute(result)
         val context = contextReference.get() ?: return

@@ -247,6 +247,7 @@ class PasswordActivity : BaseActionBarActivity() {
         setIntent(intent)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultcode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultcode, data)
         if (requestCode != 1) return
@@ -267,6 +268,7 @@ class PasswordActivity : BaseActionBarActivity() {
         push(intent)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
             super.onBackPressed()
         //New Line

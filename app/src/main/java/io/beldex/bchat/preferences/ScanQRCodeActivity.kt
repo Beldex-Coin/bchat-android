@@ -95,6 +95,7 @@ class ScanQRCodeActivity : PassphraseRequiredActionBarActivity(), ScanQRCodePlac
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         super.onBackPressed()
         /*val intent = Intent(this,ShowQRCodeWithScanQRCodeActivity::class.java)

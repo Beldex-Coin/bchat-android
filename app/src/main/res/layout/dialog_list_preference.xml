@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/default_dialog_background_inset">
+
+    <TextView
+        android:id="@+id/messageTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawablePadding="@dimen/large_spacing"
+        android:gravity="center_horizontal|center_vertical"
+        android:paddingHorizontal="@dimen/large_spacing"
+        android:textColor="@color/text"
+        android:textSize="16sp"
+        android:fontFamily="@font/open_sans_bold"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="@dimen/medium_spacing"
+        tools:text="Show"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/medium_spacing"
+        app:layout_constraintTop_toBottomOf="@+id/messageTextView"
+        tools:itemCount="3"
+        tools:listitem="@layout/notification_content_item_selectable" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/cancelButton"
+        android:layout_width="148dp"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel"
+        android:textAllCaps="false"
+        android:backgroundTint="@color/negative_green_button"
+        android:textColor="@color/negative_green_button_text"
+        android:padding="12dp"
+        android:fontFamily="@font/open_sans_regular"
+        android:gravity="center"
+        android:textSize="14sp"
+        android:layout_weight="1"
+        app:cornerRadius="12dp"
+        app:strokeColor="@color/negative_green_button_border"
+        app:strokeWidth="0.5dp"
+        app:layout_constraintTop_toBottomOf="@id/recyclerView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="@dimen/medium_spacing"
+        android:textStyle="normal"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

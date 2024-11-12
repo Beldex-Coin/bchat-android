@@ -6,9 +6,6 @@ import android.os.Parcelable;
 import io.beldex.bchat.model.PendingTransaction;
 import io.beldex.bchat.model.Wallet;
 import io.beldex.bchat.util.Helper;
-import io.beldex.bchat.model.PendingTransaction;
-import io.beldex.bchat.model.Wallet;
-import io.beldex.bchat.util.Helper;
 
 // https://stackoverflow.com/questions/2139134/how-to-send-an-object-from-one-android-activity-to-another-using-intents
 public class TxData implements Parcelable {

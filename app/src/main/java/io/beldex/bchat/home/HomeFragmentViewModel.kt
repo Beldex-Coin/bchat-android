@@ -1,7 +1,6 @@
 package io.beldex.bchat.home
 
 import android.content.Context
-import android.database.Cursor
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -11,14 +10,16 @@ import app.cash.copper.flow.observeQuery
 import io.beldex.bchat.database.DatabaseContentProviders
 import io.beldex.bchat.database.ThreadDatabase
 import io.beldex.bchat.database.model.ThreadRecord
+import io.beldex.bchat.repository.ConversationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.withContext
@@ -26,8 +27,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeFragmentViewModel @Inject constructor(
-        private val threadDb: ThreadDatabase,
-        savedStateHandle: SavedStateHandle
+    private val threadDb: ThreadDatabase,
+    private val repository: ConversationRepository,
+    savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
     private val executor = viewModelScope + SupervisorJob()
@@ -61,6 +63,18 @@ class HomeFragmentViewModel @Inject constructor(
             }
         }
         return conversations
+    }
+
+    fun blockMessageRequest(thread: ThreadRecord) = viewModelScope.launch {
+        val recipient = thread.recipient
+        if (recipient.isContactRecipient) {
+            repository.setBlocked(recipient, true)
+            deleteMessageRequest(thread)
+        }
+    }
+
+    fun deleteMessageRequest(thread: ThreadRecord) = viewModelScope.launch {
+        repository.deleteMessageRequest(thread)
     }
 
 }

@@ -14,7 +14,7 @@
             app:iconSpaceReserved="false"
             android:defaultValue="true"
             app:layout="@layout/preference_layout"
-            />
+            app:icon="@drawable/ic_all_nodification_setting"/>
 
         <io.beldex.bchat.preferences.widgets.SignalListPreference
             android:key="pref_notification_priority"
@@ -24,10 +24,8 @@
             android:defaultValue="1"
             android:entries="@array/pref_notification_priority_entries"
             android:entryValues="@array/pref_notification_priority_values"
-            app:layout="@layout/preference_layout"/>
-
-
-
+            app:layout="@layout/preference_layout"
+            app:icon="@drawable/ic_priority_setting"/>
 
     <PreferenceCategory android:title="@string/preferences_notifications_strategy_category_title"
         app:iconSpaceReserved="false"
@@ -40,7 +38,8 @@
             android:title="@string/preferences_notifications_strategy_category_fast_mode_title"
             android:summary="@string/preferences_notifications_strategy_category_fast_mode_summary"
             android:defaultValue="true"
-            app:layout="@layout/preference_layout"/>
+            app:layout="@layout/preference_layout"
+            app:icon="@drawable/ic_fast_mode_setting"/>
 
     </PreferenceCategory>
 
@@ -56,7 +55,8 @@
             android:title="@string/preferences__sound"
             android:persistent="false"
             android:defaultValue="content://settings/system/notification_sound"
-            app:layout="@layout/preference_layout"/>
+            app:layout="@layout/preference_layout"
+            app:icon="@drawable/ic_sound_setting"/>
 
         <io.beldex.bchat.components.SwitchPreferenceCompat
             android:dependency="pref_key_enable_notifications"
@@ -64,7 +64,8 @@
             app:iconSpaceReserved="false"
             android:defaultValue="true"
             android:title="@string/preferences__vibrate"
-            app:layout="@layout/preference_layout"/>
+            app:layout="@layout/preference_layout"
+            app:icon="@drawable/ic_vibrate_setting"/>
 
         <io.beldex.bchat.preferences.widgets.LEDColorListPreference
             android:key="pref_led_color"
@@ -75,7 +76,7 @@
             android:entries="@array/pref_led_color_entries"
             android:entryValues="@array/pref_led_color_values"
             app:isPreferenceVisible="false"
-            app:layout="@layout/preference_layout"/>
+            app:layout="@layout/preference_layout" />
 
         <io.beldex.bchat.preferences.widgets.SignalListPreference
             android:key="pref_led_blink"
@@ -94,7 +95,8 @@
             app:iconSpaceReserved="false"
             android:dependency="pref_key_enable_notifications"
             android:defaultValue="true"
-            app:layout="@layout/preference_layout"/>
+            app:layout="@layout/preference_layout"
+            app:icon="@drawable/ic_chat_sound_setting"/>
 
         <io.beldex.bchat.preferences.widgets.SignalListPreference
             android:key="pref_repeat_alerts"
@@ -123,7 +125,8 @@
             android:defaultValue="all"
             android:entries="@array/pref_notification_privacy_entries"
             android:entryValues="@array/pref_notification_privacy_values"
-            app:layout="@layout/preference_layout"/>
+            app:layout="@layout/preference_layout"
+            app:icon="@drawable/ic_show_setting"/>
 
     </PreferenceCategory>
 

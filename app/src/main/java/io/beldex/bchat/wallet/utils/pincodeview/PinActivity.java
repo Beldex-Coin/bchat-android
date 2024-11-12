@@ -12,8 +12,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import io.beldex.bchat.wallet.utils.keyboardview.interfaces.LifeCycleInterface;
 import io.beldex.bchat.wallet.utils.pincodeview.managers.AppLockActivity;
-import io.beldex.bchat.wallet.utils.keyboardview.interfaces.LifeCycleInterface;
-import io.beldex.bchat.wallet.utils.pincodeview.managers.AppLockActivity;
 
 public class PinActivity extends AppCompatActivity {
     private static LifeCycleInterface mLifeCycleListener;

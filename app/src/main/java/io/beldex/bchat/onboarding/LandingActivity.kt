@@ -3,12 +3,14 @@ package io.beldex.bchat.onboarding
 import android.Manifest
 import android.app.AlertDialog
 import android.app.NotificationManager
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContracts
@@ -18,6 +20,8 @@ import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.permissions.Permissions
 import io.beldex.bchat.service.KeyCachingService
 import io.beldex.bchat.util.UiModeUtilities
+import io.beldex.bchat.util.nodelistasync.DownloadNodeListFileAsyncTask
+import io.beldex.bchat.util.nodelistasync.NodeListConstants
 import io.beldex.bchat.util.push
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityLandingBinding
@@ -30,15 +34,14 @@ class LandingActivity : AppCompatActivity() {
         setContentView(binding.root)
         TextSecurePreferences.setCopiedSeed(this, false)
         with(binding) {
-            fakeChatView.startAnimating()
             registerButton.setOnClickListener() { register() }
             restoreButton.setOnClickListener { restore() }
             TermsandCondtionsTxt.setOnClickListener { link() }
             val isDayUiMode = UiModeUtilities.isDayUiMode(this@LandingActivity)
             (if (isDayUiMode) R.raw.landing_animation_light_theme else R.raw.landing_animation_dark_theme).also {
-                img.setAnimation(
-                    it
-                )
+//                img.setAnimation(
+//                    it
+//                )
             }
         }
         IdentityKeyUtil.generateIdentityKeyPair(this)
@@ -52,6 +55,9 @@ class LandingActivity : AppCompatActivity() {
         ) {
             notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
+
+        val async = DownloadNodeListFileAsyncTask(this)
+        async.execute<String>(NodeListConstants.downloadNodeListUrl)
     }
 
     private val notificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
@@ -100,13 +106,16 @@ class LandingActivity : AppCompatActivity() {
     }
 
     private fun link() {
-        val viewIntent = Intent(
-            "android.intent.action.VIEW",
-            Uri.parse("https://bchat.beldex.io/terms-and-conditions")
-        )
-        startActivity(viewIntent)
+        try {
+            val viewIntent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://bchat.beldex.io/terms-and-conditions")
+            )
+            startActivity(viewIntent)
+        } catch(ex: ActivityNotFoundException) {
+            Log.d("LandingActivity",ex.message.toString())
+        }
         /*val intent = Intent(this, LinkDeviceActivity::class.java)
         push(intent)*/
-
     }
 }

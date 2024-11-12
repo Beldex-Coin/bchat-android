@@ -1,0 +1,5 @@
+<vector android:alpha="0.9" android:height="58dp"
+    android:viewportHeight="58" android:viewportWidth="58"
+    android:width="58dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillColor="@color/download_icon_background" android:pathData="M29,29m-29,0a29,29 0,1 1,58 0a29,29 0,1 1,-58 0"/>
+</vector>

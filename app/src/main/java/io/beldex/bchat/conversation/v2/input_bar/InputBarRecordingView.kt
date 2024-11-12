@@ -1,25 +1,25 @@
 package io.beldex.bchat.conversation.v2.input_bar
 
 import android.animation.FloatEvaluator
-import android.animation.IntEvaluator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
+import io.beldex.bchat.util.DateUtils
+import io.beldex.bchat.util.disableClipping
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ViewInputBarRecordingBinding
-import io.beldex.bchat.util.DateUtils
-import io.beldex.bchat.util.animateSizeChange
-import io.beldex.bchat.util.disableClipping
-import io.beldex.bchat.util.toPx
 import java.util.Date
 
 class InputBarRecordingView : RelativeLayout {
@@ -29,6 +29,8 @@ class InputBarRecordingView : RelativeLayout {
     private var dotViewAnimation: ValueAnimator? = null
     private var pulseAnimation: ValueAnimator? = null
     var delegate: InputBarRecordingViewDelegate? = null
+    private val sendButton by lazy { InputBarButton(context, R.drawable.send, true, isMessageBox = true) }
+    private var sendButtonLastClickTime: Long = 0
 
     val lockView: LinearLayout
         get() = binding.lockView
@@ -51,14 +53,25 @@ class InputBarRecordingView : RelativeLayout {
     private fun initialize() {
         binding = ViewInputBarRecordingBinding.inflate(LayoutInflater.from(context), this, true)
         binding.inputBarMiddleContentContainer.disableClipping()
-        binding.inputBarCancelButton.setOnClickListener { hide() }
+//        binding.inputBarCancelButton.setOnClickListener { hide() }
+        binding.microphoneOrSendButtonContainer.addView(sendButton)
+        sendButton.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+        sendButton.onUp = {
+            if (SystemClock.elapsedRealtime() - sendButtonLastClickTime >= 500){
+                sendButtonLastClickTime = SystemClock.elapsedRealtime()
+                delegate?.sendVoiceMessage()
+            }
+        }
+        binding.deleteView.setOnClickListener {
+            delegate?.cancelVoiceMessage()
+        }
     }
 
     fun show() {
         isTimerRunning = true
         startTimestamp = Date().time
-        binding.recordButtonOverlayImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_microphone, context.theme))
-        binding.inputBarCancelButton.alpha = 0.0f
+        binding.recordButtonOverlayImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_filled_microphone, context.theme))
+//        binding.inputBarCancelButton.alpha = 0.0f
         binding.inputBarMiddleContentContainer.alpha = 1.0f
         binding.lockView.alpha = 1.0f
         isVisible = true
@@ -68,6 +81,8 @@ class InputBarRecordingView : RelativeLayout {
         animation.addUpdateListener { animator ->
             alpha = animator.animatedValue as Float
         }
+        binding.pulseView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.destructive)
+        binding.recordButtonOverlay.backgroundTintList = ContextCompat.getColorStateList(context, R.color.destructive)
         animation.start()
         animateDotView()
         pulse()
@@ -105,9 +120,9 @@ class InputBarRecordingView : RelativeLayout {
     }
 
     private fun pulse() {
-        val collapsedSize = toPx(80.0f, resources)
-        val expandedSize = toPx(104.0f, resources)
-        binding.pulseView.animateSizeChange(collapsedSize, expandedSize, 1000)
+//        val collapsedSize = toPx(64.0f, resources)
+//        val expandedSize = toPx(72.0f, resources)
+//        binding.pulseView.animateSizeChange(collapsedSize, expandedSize, 1000)
         val animation = ValueAnimator.ofObject(FloatEvaluator(), 0.5, 0.0f)
         pulseAnimation = animation
         animation.duration = 1000L
@@ -119,18 +134,18 @@ class InputBarRecordingView : RelativeLayout {
     }
 
     private fun animateLockViewUp() {
-        val startMarginBottom = toPx(32, resources)
-        val endMarginBottom = toPx(72, resources)
-        val layoutParams = binding.lockView.layoutParams as LayoutParams
-        layoutParams.bottomMargin = startMarginBottom
-        binding.lockView.layoutParams = layoutParams
-        val animation = ValueAnimator.ofObject(IntEvaluator(), startMarginBottom, endMarginBottom)
-        animation.duration = 250L
-        animation.addUpdateListener { animator ->
-            layoutParams.bottomMargin = animator.animatedValue as Int
-            binding.lockView.layoutParams = layoutParams
-        }
-        animation.start()
+//        val startMarginBottom = toPx(32, resources)
+//        val endMarginBottom = toPx(72, resources)
+//        val layoutParams = binding.lockView.layoutParams as LayoutParams
+//        layoutParams.bottomMargin = startMarginBottom
+//        binding.lockView.layoutParams = layoutParams
+//        val animation = ValueAnimator.ofObject(IntEvaluator(), startMarginBottom, endMarginBottom)
+//        animation.duration = 250L
+//        animation.addUpdateListener { animator ->
+//            layoutParams.bottomMargin = animator.animatedValue as Int
+//            binding.lockView.layoutParams = layoutParams
+//        }
+//        animation.start()
     }
 
     private fun updateTimer() {
@@ -141,23 +156,38 @@ class InputBarRecordingView : RelativeLayout {
         }
     }
 
+    fun addAmplitude(amp: Float) {
+        binding.audioWaveForm.addAmplitude(amp)
+    }
+
     fun lock() {
         val fadeOutAnimation = ValueAnimator.ofObject(FloatEvaluator(), 1.0f, 0.0f)
         fadeOutAnimation.duration = 250L
         fadeOutAnimation.addUpdateListener { animator ->
             binding.inputBarMiddleContentContainer.alpha = animator.animatedValue as Float
             binding.lockView.alpha = animator.animatedValue as Float
+            /*binding.pulseView.alpha = animator.animatedValue as Float
+            binding.recordButtonOverlay.alpha = animator.animatedValue as Float
+            pulseAnimation?.removeAllUpdateListeners()*/
         }
         fadeOutAnimation.start()
         val fadeInAnimation = ValueAnimator.ofObject(FloatEvaluator(), 0.0f, 1.0f)
         fadeInAnimation.duration = 250L
-        fadeInAnimation.addUpdateListener { animator ->
+       /* fadeInAnimation.addUpdateListener { animator ->
             binding.inputBarCancelButton.alpha = animator.animatedValue as Float
-        }
+        }*/
         fadeInAnimation.start()
-        binding.recordButtonOverlayImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_arrow_up, context.theme))
+        binding.recordButtonOverlayImageView.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.send, context.theme))
+        binding.pulseView.backgroundTintList = ContextCompat.getColorStateList(context, R.color.button_green)
+        binding.recordButtonOverlay.backgroundTintList = ContextCompat.getColorStateList(context, R.color.button_green)
         binding.recordButtonOverlay.setOnClickListener { delegate?.sendVoiceMessage() }
-        binding.inputBarCancelButton.setOnClickListener { delegate?.cancelVoiceMessage() }
+//        binding.pulseGroup.visibility = View.GONE
+        binding.microphoneOrSendButtonContainer.isVisible = true
+        binding.audioWaveForm.visibility = View.VISIBLE
+        binding.dotView.visibility = View.GONE
+        dotViewAnimation?.repeatCount = 0
+        binding.deleteView.visibility = View.VISIBLE
+//        binding.inputBarCancelButton.setOnClickListener { delegate?.cancelVoiceMessage() }
     }
 }
 

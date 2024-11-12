@@ -24,7 +24,6 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 import android.widget.VideoView;
-
 import io.beldex.bchat.mms.PartAuthority;
 import io.beldex.bchat.mms.VideoSlide;
 
@@ -52,10 +51,10 @@ public class VideoPlayer extends FrameLayout {
   private static final String TAG = VideoPlayer.class.getSimpleName();
 
   @Nullable private final VideoView           videoView;
-  @Nullable private final PlayerView exoView;
+  @Nullable private final PlayerView          exoView;
 
-  @Nullable private ExoPlayer exoPlayer;
-  @Nullable private LegacyPlayerControlView exoControls;
+  @Nullable private ExoPlayer                 exoPlayer;
+  @Nullable private LegacyPlayerControlView   exoControls;
   @Nullable private       AttachmentServer    attachmentServer;
   @Nullable private       Window              window;
 

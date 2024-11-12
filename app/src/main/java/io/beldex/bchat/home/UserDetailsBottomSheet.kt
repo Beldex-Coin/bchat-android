@@ -56,6 +56,7 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentUserDetailsBottomSheetBinding.inflate(inflater, container, false)
+        setStyle(STYLE_NORMAL, R.style.Theme_Bchat_BottomSheet)
         return binding.root
     }
 
@@ -65,13 +66,18 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
         val threadID = arguments?.getLong(ARGUMENT_THREAD_ID) ?: return dismiss()
         val recipient = Recipient.from(requireContext(), Address.fromSerialized(publicKey), false)
         val threadRecipient = threadDb.getRecipientForThreadId(threadID) ?: return dismiss()
+        val layouts= view.layoutParams as ViewGroup.MarginLayoutParams
+        layouts.leftMargin = 32
+        layouts.rightMargin = 32
+        layouts.bottomMargin = 24
+        view.layoutParams = layouts
         with(binding) {
             profilePictureView.root.publicKey = publicKey
             profilePictureView.root.glide = GlideApp.with(this@UserDetailsBottomSheet)
             profilePictureView.root.isLarge = true
             profilePictureView.root.update(recipient)
             nameTextViewContainer.visibility = View.VISIBLE
-            nameTextViewContainer.setOnClickListener {
+            nameEditIcon.setOnClickListener {
                 nameTextViewContainer.visibility = View.INVISIBLE
                 nameEditTextContainer.visibility = View.VISIBLE
                 nicknameEditText.text = null
@@ -130,6 +136,11 @@ class UserDetailsBottomSheet : BottomSheetDialogFragment() {
         val window = dialog?.window ?: return
         val isLightMode = UiModeUtilities.isDayUiMode(requireContext())
         window.setDimAmount(if (isLightMode) 0.1f else 0.75f)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        hideSoftKeyboard()
     }
 
     private fun saveNickName(recipient: Recipient) = with(binding) {

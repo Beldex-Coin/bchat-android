@@ -119,11 +119,11 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/open_sans_medium"
+                        android:fontFamily="@font/open_sans_regular"
                         android:padding="5dp"
                         android:text="@string/upload_from_gallery"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/very_small_font_size" />
+                        android:textColor="@color/text"
+                        android:textSize="@dimen/small_font_size" />
                 </LinearLayout>
 
                 <TextView

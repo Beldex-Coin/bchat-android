@@ -4,9 +4,6 @@ import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
 
-import io.beldex.bchat.jobmanager.impl.NetworkConstraint;
-import io.beldex.bchat.util.BitmapDecodingException;
-import io.beldex.bchat.util.BitmapUtil;
 import io.beldex.bchat.mms.AttachmentStreamUriLoader;
 import com.beldex.libbchat.messaging.utilities.Data;
 import com.beldex.libbchat.utilities.DownloadUtilities;

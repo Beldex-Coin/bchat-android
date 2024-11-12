@@ -9,10 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
-import io.beldex.bchat.crypto.AttachmentSecret;
-import io.beldex.bchat.crypto.AttachmentSecretProvider;
-import io.beldex.bchat.crypto.ModernDecryptingPartInputStream;
-import io.beldex.bchat.crypto.ModernEncryptingPartOutputStream;
+import io.beldex.bchat.BuildConfig;
 import io.beldex.bchat.crypto.AttachmentSecret;
 import io.beldex.bchat.crypto.AttachmentSecretProvider;
 import io.beldex.bchat.crypto.ModernDecryptingPartInputStream;
@@ -40,8 +37,8 @@ public class BlobProvider {
   private static final String MULTI_BCHAT_DIRECTORY  = "multi_bchat_blobs";
   private static final String SINGLE_BCHAT_DIRECTORY = "single_bchat_blobs";
 
-  public static final Uri        CONTENT_URI = Uri.parse("content://io.beldex.provider.securesms/blob");
-  public static final String     AUTHORITY   = "io.beldex.provider.securesms";
+  public static final Uri        CONTENT_URI = Uri.parse("content://"+ BuildConfig.providerId +".provider.securesms/blob");
+  public static final String     AUTHORITY   = BuildConfig.providerId + ".provider.securesms";
   public static final String     PATH        = "blob/*/*/*/*/*";
 
   private static final int STORAGE_TYPE_PATH_SEGMENT = 1;

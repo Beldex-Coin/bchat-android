@@ -27,11 +27,12 @@ import androidx.annotation.NonNull;
 import androidx.loader.content.CursorLoader;
 
 import io.beldex.bchat.database.GroupDatabase;
+
+import com.beldex.libbchat.utilities.GroupRecord;
+import io.beldex.bchat.database.GroupDatabase;
 import io.beldex.bchat.database.ThreadDatabase;
 import io.beldex.bchat.database.model.ThreadRecord;
 import io.beldex.bchat.dependencies.DatabaseComponent;
-
-import com.beldex.libbchat.utilities.GroupRecord;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -2,6 +2,7 @@ package io.beldex.bchat.contacts
 
 import android.content.Context
 import com.beldex.libbchat.utilities.recipients.Recipient
+import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.util.AsyncLoader
 import io.beldex.bchat.R
 import io.beldex.bchat.util.ContactUtilities
@@ -11,7 +12,7 @@ sealed class ContactSelectionListItem {
     class Contact(val recipient: Recipient) : ContactSelectionListItem()
 }
 
-class ContactSelectionListLoader(context: Context, val mode: Int, val filter: String?) : io.beldex.bchat.util.AsyncLoader<List<ContactSelectionListItem>>(context) {
+class ContactSelectionListLoader(context: Context, val mode: Int, val filter: String?) : AsyncLoader<List<ContactSelectionListItem>>(context) {
 
     object DisplayMode {
         const val FLAG_CONTACTS = 1
@@ -46,13 +47,14 @@ class ContactSelectionListLoader(context: Context, val mode: Int, val filter: St
 
     private fun getContacts(contacts: List<Recipient>): List<ContactSelectionListItem> {
         return getItems(contacts, context.getString(R.string.fragment_contact_selection_contacts_title)) {
-            !it.isGroupRecipient
+            !it.isGroupRecipient && it.isApproved
         }
     }
 
     private fun getClosedGroups(contacts: List<Recipient>): List<ContactSelectionListItem> {
         return getItems(contacts, context.getString(R.string.fragment_contact_selection_closed_groups_title)) {
-            it.address.isClosedGroup
+            it.address.isClosedGroup && DatabaseComponent.get(context)
+                    .groupDatabase().isActive(it.address.toGroupString())
         }
     }
 

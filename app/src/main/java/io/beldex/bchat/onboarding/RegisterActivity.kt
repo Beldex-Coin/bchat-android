@@ -1,5 +1,6 @@
 package io.beldex.bchat.onboarding
 
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -16,24 +17,32 @@ import android.text.style.StyleSpan
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import io.beldex.bchat.crypto.MnemonicUtilities
-import com.goterl.lazysodium.utils.KeyPair
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityRegisterBinding
+import androidx.core.net.toUri
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.crypto.MnemonicCodec
 import com.beldex.libsignal.crypto.ecc.ECKeyPair
-import com.beldex.libsignal.utilities.*
+import com.beldex.libsignal.utilities.Hex
+import com.beldex.libsignal.utilities.KeyHelper
+import com.beldex.libsignal.utilities.hexEncodedPrivateKey
+import com.beldex.libsignal.utilities.hexEncodedPublicKey
+import com.goterl.lazysodium.utils.KeyPair
 import io.beldex.bchat.BaseActionBarActivity
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.crypto.KeyPairUtilities
+import io.beldex.bchat.crypto.MnemonicUtilities
 import io.beldex.bchat.model.AsyncTaskCoroutine
 import io.beldex.bchat.model.Wallet
 import io.beldex.bchat.model.WalletManager
+import io.beldex.bchat.onboarding.ui.PinCodeAction
+import io.beldex.bchat.service.KeyCachingService
 import io.beldex.bchat.util.BChatThreadPoolExecutor
 import io.beldex.bchat.util.push
 import io.beldex.bchat.util.setUpActionBarBchatLogo
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ActivityRegisterBinding
+import java.util.Locale
 import java.util.concurrent.Executor
 
 class RegisterActivity : BaseActionBarActivity() {
@@ -64,7 +73,7 @@ class RegisterActivity : BaseActionBarActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setUpActionBarBchatLogo("Register", true)
+        setUpActionBarBchatLogo(getString(R.string.register), false)
 
         TextSecurePreferences.apply {
             setHasViewedSeed(this@RegisterActivity, false)
@@ -108,7 +117,8 @@ class RegisterActivity : BaseActionBarActivity() {
         walletPath = intent.extras?.getString(REQUEST_PATH)
         localPassword = intent.extras?.getString(REQUEST_PASSWORD)
         displayName =intent.extras?.getString(REQUEST_NAME)
-        binding.titleContentTextView?.text = "Hey $displayName, welcome to BChat!"
+        val displayedName : String=displayName?.substring(0, 1)?.uppercase(Locale.ROOT) + displayName?.substring(1)?.lowercase(Locale.ROOT)
+        binding.titleContentTextView.text= "Hey $displayedName, welcome to BChat!"
 
         Log.d("--> wallet path ", walletPath!!)
         Log.d("--> wallet localPassword ", localPassword!!)
@@ -383,6 +393,24 @@ class RegisterActivity : BaseActionBarActivity() {
     }
 // endregion
 
+    private val pinCodeLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            //New Line AirDrop
+            TextSecurePreferences.setAirdropAnimationStatus(this,true)
+
+            TextSecurePreferences.setScreenLockEnabled(this, true)
+            TextSecurePreferences.setScreenLockTimeout(this, 950400)
+            //New Line
+            TextSecurePreferences.setHasSeenWelcomeScreen(this, true)
+            val intent1 = Intent(this, KeyCachingService::class.java)
+            intent1.action = KeyCachingService.LOCK_TOGGLED_EVENT
+            this.startService(intent1)
+            val intent = Intent(this, RecoveryPhraseActivity::class.java)
+            push(intent)
+            finish()
+        }
+    }
+
     // region Interaction
     private fun register() {
         //Important
@@ -394,9 +422,11 @@ class RegisterActivity : BaseActionBarActivity() {
         TextSecurePreferences.setLocalNumber(this, userHexEncodedPublicKey)
         TextSecurePreferences.setRestorationTime(this, 0)
         TextSecurePreferences.setHasViewedSeed(this, false)
-        val intent = Intent(this, CreatePasswordActivity::class.java)
-        intent.putExtra("callPage", 1)
-        push(intent)
+//        val intent = Intent(this, CreatePasswordActivity::class.java)
+//        intent.putExtra("callPage", 1)
+//        push(intent)
+        val intent = Intent(Intent.ACTION_VIEW, "onboarding://manage_pin?finish=true&action=${PinCodeAction.CreatePinCode.action}".toUri())
+        pinCodeLauncher.launch(intent)
         //       finish()
     }
 

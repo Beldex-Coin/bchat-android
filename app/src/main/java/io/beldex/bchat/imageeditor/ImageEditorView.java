@@ -21,11 +21,6 @@ import io.beldex.bchat.imageeditor.model.EditorModel;
 import io.beldex.bchat.imageeditor.model.ThumbRenderer;
 import io.beldex.bchat.imageeditor.renderers.BezierDrawingRenderer;
 import io.beldex.bchat.imageeditor.renderers.TextRenderer;
-import io.beldex.bchat.imageeditor.model.EditorElement;
-import io.beldex.bchat.imageeditor.model.EditorModel;
-import io.beldex.bchat.imageeditor.model.ThumbRenderer;
-import io.beldex.bchat.imageeditor.renderers.BezierDrawingRenderer;
-import io.beldex.bchat.imageeditor.renderers.TextRenderer;
 
 /**
  * ImageEditorView

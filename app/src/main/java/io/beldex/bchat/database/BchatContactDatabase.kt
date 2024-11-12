@@ -2,8 +2,8 @@ package io.beldex.bchat.database
 
 import android.content.ContentValues
 import android.content.Context
-import androidx.core.database.getStringOrNull
 import android.database.Cursor
+import androidx.core.database.getStringOrNull
 import com.beldex.libbchat.messaging.contacts.Contact
 import com.beldex.libsignal.utilities.Base64
 import com.beldex.libsignal.utilities.Log
@@ -22,6 +22,7 @@ class BchatContactDatabase(context: Context, helper: SQLCipherOpenHelper) : Data
         const val threadID = "thread_id"
         const val isTrusted = "is_trusted"
         const val beldexAddress = "beldex_address"
+        const val isBnsHolder = "is_bns_holder"
         @JvmStatic val createBchatContactTableCommand =
             "CREATE TABLE $bchatContactTable " +
                 "($bchatID STRING PRIMARY KEY, " +
@@ -32,7 +33,11 @@ class BchatContactDatabase(context: Context, helper: SQLCipherOpenHelper) : Data
                 "$profilePictureEncryptionKey BLOB DEFAULT NULL, " +
                 "$threadID INTEGER DEFAULT -1, " +
                 "$isTrusted INTEGER DEFAULT 0, " +
-                "$beldexAddress STRING DEFAULT NULL);"
+                "$beldexAddress STRING DEFAULT NULL, " +
+                "$isBnsHolder INTEGER DEFAULT 0);"
+
+        @JvmStatic val createIsBnsHolderCommand = "ALTER TABLE " + bchatContactTable + " " +
+                "ADD COLUMN " + isBnsHolder + " INTEGER DEFAULT 0;"
     }
 
     fun getContactWithBchatID(bchatID: String): Contact? {
@@ -79,10 +84,21 @@ class BchatContactDatabase(context: Context, helper: SQLCipherOpenHelper) : Data
         notifyConversationListListeners()
     }
 
+    fun setIsBnsHolder(contact: Contact, isBnsHolder: Boolean, threadID: Long) {
+        val database = databaseHelper.writableDatabase
+        val contentValues = ContentValues(1)
+        contentValues.put(Companion.isBnsHolder, if (isBnsHolder) 1 else 0)
+        database.update(bchatContactTable, contentValues, "$bchatID = ?", arrayOf( contact.bchatID ))
+        if (threadID >= 0) {
+            notifyConversationListeners(threadID)
+        }
+        notifyConversationListListeners()
+    }
+
     fun setContact(contact: Contact) {
         Log.d("Beldex","Set contact fun called")
         val database = databaseHelper.writableDatabase
-        val contentValues = ContentValues(9)
+        val contentValues = ContentValues(10)
         contentValues.put(bchatID, contact.bchatID)
         Log.d("Beldex","Set contact fun called contact.bchatID ${contact.bchatID}")
         contentValues.put(name, contact.name)
@@ -99,6 +115,7 @@ class BchatContactDatabase(context: Context, helper: SQLCipherOpenHelper) : Data
         contentValues.put(threadID, contact.threadID)
         contentValues.put(isTrusted, if (contact.isTrusted) 1 else 0)
         contentValues.put(beldexAddress,contact.beldexAddress)
+        contentValues.put(isBnsHolder,if(contact.isBnsHolder) 1 else 0)
         database.insertOrUpdate(bchatContactTable, contentValues, "$bchatID = ?", arrayOf( contact.bchatID ))
         notifyConversationListListeners()
     }
@@ -116,6 +133,7 @@ class BchatContactDatabase(context: Context, helper: SQLCipherOpenHelper) : Data
         contact.threadID = cursor.getLong(cursor.getColumnIndexOrThrow(threadID))
         contact.isTrusted = cursor.getInt(cursor.getColumnIndexOrThrow(isTrusted)) != 0
         contact.beldexAddress   = cursor.getStringOrNull(cursor.getColumnIndexOrThrow(beldexAddress))
+        contact.isBnsHolder = cursor.getInt(cursor.getColumnIndexOrThrow(isBnsHolder)) != 0
         return contact
     }
 

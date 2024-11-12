@@ -9,10 +9,6 @@ import android.text.TextUtils;
 
 import io.beldex.bchat.giph.model.GiphyImage;
 import io.beldex.bchat.giph.model.GiphyResponse;
-import io.beldex.bchat.giph.model.GiphyImage;
-import io.beldex.bchat.giph.model.GiphyResponse;
-import io.beldex.bchat.giph.model.GiphyImage;
-import io.beldex.bchat.giph.model.GiphyResponse;
 import io.beldex.bchat.net.ContentProxySelector;
 import com.beldex.libsignal.utilities.Log;
 

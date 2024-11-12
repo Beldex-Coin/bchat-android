@@ -253,7 +253,7 @@ class NewConversationButtonSetView : RelativeLayout {
 
         bchatButtonTitle.setOnClickListener {
             if(isExpanded) {
-                delegate?.createNewPrivateChat(); collapse()
+                delegate?.openNewConversationChat(); collapse()
             }
         }
         secretGroupButtonTitle.setOnClickListener {
@@ -276,7 +276,7 @@ class NewConversationButtonSetView : RelativeLayout {
         }
         bchatButton.setOnClickListener {
             if(isExpanded) {
-                delegate?.createNewPrivateChat(); collapse()
+                delegate?.openNewConversationChat(); collapse()
             }
         }
         secretGroupButton.setOnClickListener {
@@ -411,7 +411,7 @@ fun View.animateAlphaChange(startAlpha: Float, endAlpha: Float) {
 interface NewConversationButtonSetViewDelegate {
 
     fun joinSocialGroup()
-    fun createNewPrivateChat()
+    fun openNewConversationChat()
     fun createNewSecretGroup()
 }
 // endregion

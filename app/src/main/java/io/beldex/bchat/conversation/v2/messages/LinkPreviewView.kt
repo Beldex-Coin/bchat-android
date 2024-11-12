@@ -4,30 +4,27 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Rect
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ViewLinkPreviewBinding
 import io.beldex.bchat.components.CornerMask
 import io.beldex.bchat.conversation.v2.ModalUrlBottomSheet
-import io.beldex.bchat.conversation.v2.utilities.MessageBubbleUtilities
-import io.beldex.bchat.conversation.v2.utilities.TextUtilities.getIntersectedModalSpans
 import io.beldex.bchat.database.model.MmsMessageRecord
 import io.beldex.bchat.mms.GlideRequests
 import io.beldex.bchat.mms.ImageSlide
 import io.beldex.bchat.util.ActivityDispatcher
 import io.beldex.bchat.util.UiModeUtilities
+import io.beldex.bchat.util.toPx
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ViewLinkPreviewBinding
 
 class LinkPreviewView : LinearLayout {
     private val binding: ViewLinkPreviewBinding by lazy { ViewLinkPreviewBinding.bind(this) }
     private val cornerMask by lazy {
         CornerMask(
-                this
+            this
         )
     }
     private var url: String? = null
@@ -40,10 +37,10 @@ class LinkPreviewView : LinearLayout {
 
     // region Updating
     fun bind(
-            message: MmsMessageRecord,
-            glide: GlideRequests,
-            isStartOfMessageCluster: Boolean,
-            isEndOfMessageCluster: Boolean
+        message: MmsMessageRecord,
+        glide: GlideRequests,
+        isStartOfMessageCluster: Boolean,
+        isEndOfMessageCluster: Boolean
     ) {
         val linkPreview = message.linkPreviews.first()
         url = linkPreview.url
@@ -63,12 +60,19 @@ class LinkPreviewView : LinearLayout {
         binding.titleTextView.setTextColor(ResourcesCompat.getColor(resources, textColorID, context.theme))
         // Body
         binding.titleTextView.setTextColor(ResourcesCompat.getColor(resources, textColorID, context.theme))
-        // Corner radii
-        val cornerRadii = MessageBubbleUtilities.calculateRadii(context, isStartOfMessageCluster, isEndOfMessageCluster, message.isOutgoing)
-        cornerMask.setTopLeftRadius(cornerRadii[0])
-        cornerMask.setTopRightRadius(cornerRadii[1])
-        cornerMask.setBottomRightRadius(cornerRadii[2])
-        cornerMask.setBottomLeftRadius(cornerRadii[3])
+        val cardBackgroundColorID = if (message.isOutgoing) {
+            R.color.outgoing_call_background
+        } else {
+            R.color.transaction_history_background
+        }
+        binding.linkPreviewCard.setCardBackgroundColor(ResourcesCompat.getColor(resources, cardBackgroundColorID, context.theme))
+
+//        // Corner radii
+//        val cornerRadii = MessageBubbleUtilities.calculateRadii(context, isStartOfMessageCluster, isEndOfMessageCluster, message.isOutgoing)
+//        cornerMask.setTopLeftRadius(cornerRadii[0])
+//        cornerMask.setTopRightRadius(cornerRadii[1])
+//        cornerMask.setBottomRightRadius(cornerRadii[2])
+//        cornerMask.setBottomLeftRadius(cornerRadii[3])
     }
 
     override fun dispatchDraw(canvas: Canvas) {

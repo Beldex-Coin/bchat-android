@@ -5,7 +5,6 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 
 import io.beldex.bchat.crypto.KeyStoreHelper;
-import io.beldex.bchat.crypto.KeyStoreHelper;
 import com.beldex.libsignal.utilities.Base64;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
 

@@ -176,4 +176,7 @@ interface StorageProtocol {
     fun unblock(toUnblock: List<Recipient>)
     fun blockedContacts(): List<Recipient>
     fun unblockSingleUser(toUnblock: Recipient)
+    fun setIsBnsHolder(senderPublicKey: String, isBnsHolder: Boolean)
+
+    fun getIsBnsHolder():String?
 }

@@ -1,32 +1,22 @@
 package io.beldex.bchat.home
 
 import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import app.cash.copper.flow.observeQuery
 import io.beldex.bchat.data.NetworkNodes
 import io.beldex.bchat.data.NodeInfo
-import io.beldex.bchat.database.DatabaseContentProviders
 import io.beldex.bchat.database.ThreadDatabase
-import io.beldex.bchat.database.model.ThreadRecord
 import io.beldex.bchat.util.Helper
 import io.beldex.bchat.util.SharedPreferenceUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-        private val threadDb: ThreadDatabase,
-        private val sharedPreferenceUtil: SharedPreferenceUtil
+    private val threadDb: ThreadDatabase,
+    private val sharedPreferenceUtil: SharedPreferenceUtil
 ): ViewModel() {
 
     private val _favouritesNodes = MutableStateFlow<HashSet<NodeInfo>?>(null)
@@ -71,10 +61,10 @@ class HomeViewModel @Inject constructor(
         _favouritesNodes.value = nodes.toHashSet()
     }
 
-    fun getOrPopulateFavourites(): MutableSet<NodeInfo> {
+    fun getOrPopulateFavourites(context: Context): MutableSet<NodeInfo> {
         val newSet = favouritesNodes.value ?: hashSetOf()
         if (newSet.isEmpty()) {
-            for (node in NetworkNodes.getNodes()) {
+            for (node in NetworkNodes.getNodes(context)) {
                 val nodeInfo = NodeInfo.fromString(node)
                 if (nodeInfo != null) {
                     nodeInfo.isFavourite = true
@@ -82,6 +72,25 @@ class HomeViewModel @Inject constructor(
                 }
             }
             sharedPreferenceUtil.saveFavourites(newSet)
+            _favouritesNodes.value = newSet
+        }
+        return newSet
+    }
+
+    fun getOrPopulateFavouritesRemoteNodeList(context : Context, storeNodes : Boolean): MutableSet<NodeInfo> {
+        val newSet = favouritesNodes.value ?: hashSetOf()
+        newSet.clear()
+        if (newSet.isEmpty()) {
+            for (node in NetworkNodes.getNodes(context)) {
+                val nodeInfo = NodeInfo.fromString(node)
+                if (nodeInfo != null) {
+                    nodeInfo.isFavourite = true
+                    newSet.add(nodeInfo)
+                }
+            }
+            if(storeNodes){
+                sharedPreferenceUtil.saveFavourites(newSet)
+            }
             _favouritesNodes.value = newSet
         }
         return newSet

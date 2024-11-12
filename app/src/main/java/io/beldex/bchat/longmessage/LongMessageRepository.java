@@ -7,12 +7,6 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.annotation.WorkerThread;
 
-import io.beldex.bchat.database.model.MessageRecord;
-import io.beldex.bchat.database.model.MmsMessageRecord;
-import io.beldex.bchat.dependencies.DatabaseComponent;
-import io.beldex.bchat.mms.PartAuthority;
-import io.beldex.bchat.mms.TextSlide;
-import io.beldex.bchat.dependencies.DatabaseComponent;
 import io.beldex.bchat.database.MmsDatabase;
 import io.beldex.bchat.database.SmsDatabase;
 import io.beldex.bchat.database.model.MessageRecord;

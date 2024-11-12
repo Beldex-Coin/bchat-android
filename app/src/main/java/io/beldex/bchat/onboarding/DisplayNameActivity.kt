@@ -1,34 +1,37 @@
 package io.beldex.bchat.onboarding
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
-import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
-import io.beldex.bchat.wallet.CheckOnline
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityDisplayNameBinding
+import androidx.core.content.ContextCompat
 import com.beldex.libbchat.utilities.SSKEnvironment.ProfileManagerProtocol
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import io.beldex.bchat.BaseActionBarActivity
-import io.beldex.bchat.data.DefaultNodes
 import io.beldex.bchat.data.NetworkNodes
 import io.beldex.bchat.data.NodeInfo
 import io.beldex.bchat.model.AsyncTaskCoroutine
 import io.beldex.bchat.model.NetworkType
 import io.beldex.bchat.model.Wallet
 import io.beldex.bchat.model.WalletManager
-import io.beldex.bchat.util.*
 import io.beldex.bchat.util.BChatThreadPoolExecutor
 import io.beldex.bchat.util.Helper
 import io.beldex.bchat.util.NodePinger
+import io.beldex.bchat.util.push
 import io.beldex.bchat.util.setUpActionBarBchatLogo
+import io.beldex.bchat.wallet.CheckOnline
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ActivityDisplayNameBinding
 import timber.log.Timber
 import java.io.File
-import java.util.*
+import java.util.Collections
+import java.util.UUID
 import java.util.concurrent.Executor
 import java.util.regex.Pattern
 
@@ -43,7 +46,7 @@ class DisplayNameActivity : BaseActionBarActivity() {
     private val PREF_DAEMON_TESTNET = "daemon_testnet"
     private val PREF_DAEMON_STAGENET = "daemon_stagenet"
     private val PREF_DAEMON_MAINNET = "daemon_mainnet"
-    private val namePattern = Pattern.compile("[A-Za-z0-9]+")
+    private val namePattern = Pattern.compile("[A-Za-z0-9\\s]+")
 
     private var node: NodeInfo? = null
 
@@ -54,7 +57,7 @@ class DisplayNameActivity : BaseActionBarActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setUpActionBarBchatLogo("Display Name",true)
+        setUpActionBarBchatLogo(getString(R.string.display_name),false)
         binding = ActivityDisplayNameBinding.inflate(layoutInflater)
         setContentView(binding.root)
         with(binding) {
@@ -70,7 +73,91 @@ class DisplayNameActivity : BaseActionBarActivity() {
                     }
                     false
                 })
-            registerButton.setOnClickListener { register() }
+
+            registerButton.setTextColor(
+                ContextCompat.getColor(
+                    this@DisplayNameActivity,
+                    R.color.disable_button_text_color
+                )
+            )
+            if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                registerButton.setBackgroundDrawable(
+                    ContextCompat.getDrawable(
+                        this@DisplayNameActivity,
+                        R.drawable.disabled_button_background
+                    )
+                );
+            } else {
+                registerButton.background =
+                    ContextCompat.getDrawable(
+                        this@DisplayNameActivity,
+                        R.drawable.disabled_button_background
+                    );
+            }
+            registerButton.isEnabled = displayNameEditText.text.isNotEmpty()
+            displayNameEditText.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable) {}
+                override fun beforeTextChanged(
+                    s: CharSequence, start: Int,
+                    count: Int, after: Int
+                ) {
+                }
+
+                override fun onTextChanged(
+                    s: CharSequence, start: Int,
+                    before: Int, count: Int
+                ) {
+                    if (s.isEmpty() && s.isBlank()) {
+                        registerButton.isEnabled = false
+                        registerButton.setTextColor(
+                            ContextCompat.getColor(
+                                this@DisplayNameActivity,
+                                R.color.disable_button_text_color
+                            )
+                        )
+                        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                            registerButton.setBackgroundDrawable(
+                                ContextCompat.getDrawable(
+                                    this@DisplayNameActivity,
+                                    R.drawable.disabled_button_background
+                                )
+                            );
+                        } else {
+                            registerButton.background =
+                                ContextCompat.getDrawable(
+                                    this@DisplayNameActivity,
+                                    R.drawable.disabled_button_background
+                                );
+                        }
+                    } else {
+                        registerButton.isEnabled = true
+                        registerButton.setTextColor(
+                            ContextCompat.getColor(
+                                this@DisplayNameActivity, R.color.white
+                            )
+                        )
+                        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                            registerButton.setBackgroundDrawable(
+                                ContextCompat.getDrawable(
+                                    this@DisplayNameActivity,
+                                    R.drawable.prominent_filled_button_medium_background
+                                )
+                            );
+                        } else {
+                            registerButton.background =
+                                ContextCompat.getDrawable(
+                                    this@DisplayNameActivity,
+                                    R.drawable.prominent_filled_button_medium_background
+                                );
+                        }
+                    }
+                }
+            })
+            registerButton.setOnClickListener {
+                if (displayNameEditText.text.isNotEmpty()) {
+                    register()
+                }
+            }
         }
         //New Line load favourites with network function
         if (CheckOnline.isOnline(this)) {
@@ -87,9 +174,9 @@ class DisplayNameActivity : BaseActionBarActivity() {
         }
     }
 
-    fun getOrPopulateFavourites(): Set<NodeInfo?> {
+    fun getOrPopulateFavourites(context: Context): Set<NodeInfo?> {
         if (favouriteNodes.isEmpty()) {
-            for (node in NetworkNodes.getNodes()) {
+            for (node in NetworkNodes.getNodes(context)) {
                 val nodeInfo = NodeInfo.fromString(node)
                 if (nodeInfo != null) {
                     nodeInfo.isFavourite = true
@@ -167,7 +254,7 @@ class DisplayNameActivity : BaseActionBarActivity() {
         }
 
         override fun doInBackground(vararg params: Int?): NodeInfo? {
-            val favourites: Set<NodeInfo?> = displayNameActivity.getOrPopulateFavourites()
+            val favourites: Set<NodeInfo?> = displayNameActivity.getOrPopulateFavourites(displayNameActivity)
 
             var selectedNode: NodeInfo?
             if (params[0] == FIND_BEST) {
@@ -330,8 +417,8 @@ class DisplayNameActivity : BaseActionBarActivity() {
     }
 
     private fun _createWallet(name: String, password: String) {
-        Log.d("create Wallet 1","OK")
-        createWallet(name, password,
+        val trimmedName = name.replace(" ","")
+        createWallet(trimmedName, password,
             object : WalletCreator {
                 override fun createWallet(aFile: File?, password: String?): Boolean {
                     Log.d("create Wallet 2","OK")
@@ -340,7 +427,7 @@ class DisplayNameActivity : BaseActionBarActivity() {
                     // get it from the connected node if we have one, and go back ca. 4 days
                     val restoreHeight: Long = if (currentNode != null) currentNode.height else -1
                     Log.d("Beldex", "Value of restoreHeight $restoreHeight")
-                    val newWallet: Wallet= WalletManager.getInstance()
+                    val newWallet: Wallet = WalletManager.getInstance()
                         .createWallet(
                             aFile,
                             password,
@@ -360,7 +447,7 @@ class DisplayNameActivity : BaseActionBarActivity() {
                     //val currentNode: NodeInfo = getNode()
                     // get it from the connected node if we have one, and go back ca. 4 days
                     //val restoreHeight: Long = if (currentNode != null) currentNode.getHeight() - 2000 else -1
-                    val newWallet: Wallet= WalletManager.getInstance()
+                    val newWallet: Wallet = WalletManager.getInstance()
                         .getWallet()
                     return checkAndCloseWallet(newWallet)
                 }
@@ -553,18 +640,15 @@ class DisplayNameActivity : BaseActionBarActivity() {
         Timber.d("loadFavourites")
         favouriteNodes.clear()
         val selectedNodeId = getSelectedNodeId()
-        val storedNodes = getSharedPreferences(
-            NODES_PREFS_NAME,
-            MODE_PRIVATE
-        ).all
-        for (nodeEntry in storedNodes.entries) {
+        val storedNodes: Map<String?,*>? = getSharedPreferences(NODES_PREFS_NAME, MODE_PRIVATE).all
+        for (nodeEntry: Map.Entry<String?, *>? in storedNodes!!.entries) {
             if (nodeEntry != null) { // just in case, ignore possible future errors
                 val nodeId = nodeEntry.value as String
-                val addedNode: NodeInfo= addFavourite(nodeId)!!
+                val addedNode: NodeInfo? = addFavourite(nodeId)!!
                 if (addedNode != null) {
                     if (nodeId == selectedNodeId) {
                         //Important
-                        addedNode.setSelected(true)
+                        addedNode.isSelected = true
                     }
                 }
             }

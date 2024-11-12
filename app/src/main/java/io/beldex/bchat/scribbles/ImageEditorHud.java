@@ -14,10 +14,6 @@ import android.widget.LinearLayout;
 import io.beldex.bchat.imageeditor.ImageEditorView;
 import io.beldex.bchat.scribbles.widget.ColorPaletteAdapter;
 import io.beldex.bchat.scribbles.widget.VerticalSlideColorPicker;
-import io.beldex.bchat.imageeditor.ImageEditorView;
-import io.beldex.bchat.imageeditor.ImageEditorView;
-import io.beldex.bchat.scribbles.widget.ColorPaletteAdapter;
-import io.beldex.bchat.scribbles.widget.VerticalSlideColorPicker;
 
 import io.beldex.bchat.R;
 import io.beldex.bchat.scribbles.widget.ColorPaletteAdapter;

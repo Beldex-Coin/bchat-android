@@ -13,12 +13,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import io.beldex.bchat.mms.DocumentSlide;
-import io.beldex.bchat.mms.PartAuthority;
-import io.beldex.bchat.mms.Slide;
-import io.beldex.bchat.util.DateUtils;
-import io.beldex.bchat.util.MediaUtil;
-import io.beldex.bchat.util.StickyHeaderDecoration;
 import io.beldex.bchat.MediaDocumentsAdapter.HeaderViewHolder;
 import io.beldex.bchat.MediaDocumentsAdapter.ViewHolder;
 import io.beldex.bchat.components.DocumentView;
@@ -62,7 +56,7 @@ public class MediaDocumentsAdapter extends CursorRecyclerViewAdapter<ViewHolder>
   @Override
   public void onBindItemViewHolder(ViewHolder viewHolder, @NonNull Cursor cursor) {
     MediaDatabase.MediaRecord mediaRecord = MediaDatabase.MediaRecord.from(getContext(), cursor);
-    Slide slide       = MediaUtil.getSlideForAttachment(getContext(), mediaRecord.getAttachment());
+    Slide                     slide       = MediaUtil.getSlideForAttachment(getContext(), mediaRecord.getAttachment());
 
     if (slide != null && slide.hasDocument()) {
       viewHolder.documentView.setDocument((DocumentSlide)slide, false);

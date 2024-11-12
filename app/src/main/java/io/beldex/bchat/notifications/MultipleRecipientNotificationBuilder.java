@@ -10,8 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
-import io.beldex.bchat.home.HomeActivity;
-import io.beldex.bchat.home.HomeActivity;
 import io.beldex.bchat.database.BchatContactDatabase;
 import io.beldex.bchat.dependencies.DatabaseComponent;
 import io.beldex.bchat.home.HomeActivity;

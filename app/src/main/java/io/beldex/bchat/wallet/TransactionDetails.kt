@@ -40,7 +40,7 @@ class TransactionDetails : PassphraseRequiredActionBarActivity() {
         supportActionBar!!.title = resources.getString(R.string.transaction_details_title)
         info = intent.extras?.getParcelable(ARG_INFO)
 
-        inboundColour = ContextCompat.getColor(this, R.color.tx_plus)
+        inboundColour = ContextCompat.getColor(this, R.color.text_green)
         outboundColour = ContextCompat.getColor(this, R.color.wallet_send_button)//tx_minus
         pendingColour = ContextCompat.getColor(this, R.color.tx_pending)
         failedColour = ContextCompat.getColor(this, R.color.tx_failed)

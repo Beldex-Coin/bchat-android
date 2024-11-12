@@ -30,12 +30,6 @@ import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
-import io.beldex.bchat.database.helpers.SQLCipherOpenHelper;
-import io.beldex.bchat.jobmanager.impl.JsonDataSerializer;
-import io.beldex.bchat.jobmanager.impl.NetworkConstraint;
-import io.beldex.bchat.jobs.FastJobStorage;
-import io.beldex.bchat.jobs.JobManagerFactories;
-import io.beldex.bchat.model.NetworkType;
 import com.beldex.libbchat.avatars.AvatarHelper;
 import com.beldex.libbchat.database.MessageDataProvider;
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration;
@@ -54,19 +48,27 @@ import com.beldex.libbchat.utilities.dynamiclanguage.LocaleParser;
 import com.beldex.libsignal.utilities.HTTP;
 import com.beldex.libsignal.utilities.Log;
 import com.beldex.libsignal.utilities.ThreadUtils;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
+
 import io.beldex.bchat.components.TypingStatusSender;
 import io.beldex.bchat.crypto.KeyPairUtilities;
 import io.beldex.bchat.database.BeldexAPIDatabase;
 import io.beldex.bchat.database.JobDatabase;
 import io.beldex.bchat.database.Storage;
+import io.beldex.bchat.database.helpers.SQLCipherOpenHelper;
 import io.beldex.bchat.dependencies.DatabaseComponent;
 import io.beldex.bchat.dependencies.DatabaseModule;
 import io.beldex.bchat.groups.OpenGroupManager;
 import io.beldex.bchat.home.HomeActivity;
 import io.beldex.bchat.jobmanager.JobManager;
+import io.beldex.bchat.jobmanager.impl.JsonDataSerializer;
+import io.beldex.bchat.jobmanager.impl.NetworkConstraint;
+import io.beldex.bchat.jobs.FastJobStorage;
+import io.beldex.bchat.jobs.JobManagerFactories;
 import io.beldex.bchat.logging.AndroidLogger;
 import io.beldex.bchat.logging.PersistentLogger;
 import io.beldex.bchat.logging.UncaughtExceptionLogger;
+import io.beldex.bchat.model.NetworkType;
 import io.beldex.bchat.notifications.BackgroundPollWorker;
 import io.beldex.bchat.notifications.BeldexPushNotificationManager;
 import io.beldex.bchat.notifications.DefaultMessageNotifier;
@@ -99,6 +101,7 @@ import javax.inject.Inject;
 
 import dagger.hilt.EntryPoints;
 import dagger.hilt.android.HiltAndroidApp;
+import io.beldex.bchat.BuildConfig;
 import kotlin.Unit;
 import kotlinx.coroutines.Job;
 
@@ -225,14 +228,15 @@ public class ApplicationContext extends Application implements DefaultLifecycleO
 
         NetworkConstraint networkConstraint = new NetworkConstraint.Factory(this).create();
         HTTP.INSTANCE.setConnectedToNetwork(networkConstraint::isMet);
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(BuildConfig.CRASHLYTICS_ENABLED);
     }
 
     @Override
     public void onStart(@NonNull LifecycleOwner owner) {
+        TextSecurePreferences.setRefreshDynamicNodesStatus(this, true);
         isAppVisible = true;
         Log.i(TAG, "App is now visible.");
         KeyCachingService.onAppForegrounded(this);
-
         ThreadUtils.queue(()->{
             if (poller != null) {
                 poller.setCaughtUp(false);

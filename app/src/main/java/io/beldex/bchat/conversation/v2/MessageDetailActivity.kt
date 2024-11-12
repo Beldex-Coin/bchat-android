@@ -32,7 +32,7 @@ class MessageDetailActivity: PassphraseRequiredActionBarActivity() {
         super.onCreate(savedInstanceState, ready)
         binding = ActivityMessageDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        title = resources.getString(R.string.conversation_context__menu_message_details)
+        title = resources.getString(R.string.message_details)
         val timestamp = intent.getLongExtra(MESSAGE_TIMESTAMP, -1L)
         // We only show this screen for messages fail to send,
         // so the author of the messages must be the current user.
@@ -55,10 +55,14 @@ class MessageDetailActivity: PassphraseRequiredActionBarActivity() {
 
         val errorMessage = DatabaseComponent.get(this).beldexMessageDatabase().getErrorMessage(messageRecord!!.getId())
         if (errorMessage != null) {
+            binding.messageStatusTitle.text = getString(R.string.tx_failed)
+            binding.messageStatusTitle.setTextColor(this.getColor(R.color.negative_red_button_border))
             binding.errorMessage.text = errorMessage
             binding.resendContainer.isVisible = true
             binding.errorContainer.isVisible = true
         } else {
+            binding.messageStatusTitle.text = getString(R.string.message_details_header__sent)
+            binding.messageStatusTitle.setTextColor(this.getColor(R.color.text))
             binding.errorContainer.isVisible = false
             binding.resendContainer.isVisible = false
         }

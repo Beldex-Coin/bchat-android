@@ -12,7 +12,6 @@ import android.text.util.Linkify;
 
 import com.annimon.stream.Stream;
 import io.beldex.bchat.util.DateUtils;
-import io.beldex.bchat.util.DateUtils;
 
 import com.beldex.libsignal.utilities.guava.Optional;
 

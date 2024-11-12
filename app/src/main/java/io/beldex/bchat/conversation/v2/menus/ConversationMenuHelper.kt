@@ -1,49 +1,47 @@
 package io.beldex.bchat.conversation.v2.menus
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
-import android.graphics.Typeface
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.AsyncTask
+import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorInt
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
-import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
+import androidx.fragment.app.FragmentManager
 import com.beldex.libbchat.messaging.sending_receiving.MessageSender
 import com.beldex.libbchat.messaging.sending_receiving.leave
 import com.beldex.libbchat.utilities.ExpirationUtil
 import com.beldex.libbchat.utilities.GroupUtil.doubleDecodeGroupID
-import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.guava.Optional
 import com.beldex.libsignal.utilities.toHexString
-import io.beldex.bchat.*
-import io.beldex.bchat.calls.WebRtcCallActivity
+import io.beldex.bchat.ShortcutLauncherActivity
+import io.beldex.bchat.compose_utils.ComposeDialogContainer
+import io.beldex.bchat.compose_utils.DialogType
 import io.beldex.bchat.contacts.SelectContactsActivity
-import io.beldex.bchat.conversation.v2.utilities.NotificationUtils
+import io.beldex.bchat.conversation.v2.ConversationFragmentV2
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.groups.EditClosedGroupActivity
 import io.beldex.bchat.groups.EditClosedGroupActivity.Companion.groupIDKey
-import io.beldex.bchat.preferences.PrivacySettingsActivity
-import io.beldex.bchat.service.WebRtcCallService
 import io.beldex.bchat.util.BitmapUtil
 import io.beldex.bchat.util.getColorWithID
-import java.io.IOException
-import android.content.*
-import android.view.*
 import io.beldex.bchat.R
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import io.beldex.bchat.conversation.v2.ConversationFragmentV2
+import java.io.IOException
 
 object ConversationMenuHelper {
 
@@ -51,11 +49,12 @@ object ConversationMenuHelper {
         // Prepare
         menu.clear()
         val isOpenGroup = thread.isOpenGroupRecipient
+        val isBlockedContact = thread.isBlocked
         // Base menu (options that should always be present)
         inflater.inflate(R.menu.menu_conversation, menu)
         // Expiring messages
         //New Line v32
-        if (!isOpenGroup && (thread.hasApprovedMe() || thread.isClosedGroupRecipient)){
+        if (!isOpenGroup && (thread.hasApprovedMe() || thread.isClosedGroupRecipient) && !isBlockedContact){
             if (thread.expireMessages > 0) {
                 inflater.inflate(R.menu.menu_conversation_expiration_on, menu)
                 val item = menu.findItem(R.id.menu_expiring_messages)
@@ -67,7 +66,12 @@ object ConversationMenuHelper {
                 badgeView?.text = ExpirationUtil.getExpirationAbbreviatedDisplayValue(context, thread.expireMessages)
                 actionView?.setOnClickListener { onOptionsItemSelected(item) }
             } else {
-                inflater.inflate(R.menu.menu_conversation_expiration_off, menu)
+                if (thread.isGroupRecipient && fragmentV2.isSecretGroupIsActive()) {
+                    inflater.inflate(R.menu.menu_conversation_expiration_off, menu)
+                }
+                if(!thread.isGroupRecipient){
+                    inflater.inflate(R.menu.menu_conversation_expiration_off, menu)
+                }
             }
         }
         // One-on-one chat menu (options that should only be present for one-on-one chats)
@@ -80,12 +84,15 @@ object ConversationMenuHelper {
         }
         // Secret group menu (options that should only be present in secret groups)
         if (thread.isClosedGroupRecipient) {
-            val groupPublicKey = doubleDecodeGroupID(thread.address.toString()).toHexString()
+            if(fragmentV2.isSecretGroupIsActive()){
+                inflater.inflate(R.menu.menu_conversation_closed_group, menu)
+            }
+           /* val groupPublicKey = doubleDecodeGroupID(thread.address.toString()).toHexString()
             val isClosedGroup =
                 DatabaseComponent.get(context).beldexAPIDatabase().isClosedGroup(groupPublicKey)
             if (isClosedGroup) {
                 inflater.inflate(R.menu.menu_conversation_closed_group, menu)
-            }
+            }*/
         }
         // Social group menu
         if (isOpenGroup) {
@@ -100,7 +107,8 @@ object ConversationMenuHelper {
             }
         }
 
-        if (thread.isGroupRecipient && !thread.isMuted) {
+        if (thread.isGroupRecipient && !thread.isMuted && fragmentV2.isSecretGroupIsActive()) {
+            Log.d("menu-status ->","1")
             inflater.inflate(R.menu.menu_conversation_notification_settings, menu)
         }
 
@@ -110,49 +118,50 @@ object ConversationMenuHelper {
         }
 
         // Search
-        val searchViewItem = menu.findItem(R.id.menu_search)
-        fragmentV2.searchViewItem = searchViewItem
-        val searchView = searchViewItem.actionView as SearchView
-
-        val queryListener = object : OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                return true
-            }
-
-            override fun onQueryTextChange(query: String): Boolean {
-                fragmentV2.onSearchQueryUpdated(query)
-                Log.d("Beldex","Search Query text change")
-                return true
-            }
-        }
-        searchViewItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
-            override fun onMenuItemActionExpand(item: MenuItem): Boolean {
-                Log.d("Beldex","Search expand listener")
-                searchView.setOnQueryTextListener(queryListener)
-                fragmentV2.onSearchOpened()
-                for (i in 0 until menu.size()) {
-                    if (menu.getItem(i) != searchViewItem) {
-                        menu.getItem(i).isVisible = false
-                    }
-                }
-                return true
-            }
-
-            override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-                searchView.setOnQueryTextListener(null)
-                fragmentV2.onSearchClosed()
-                return true
-            }
-        })
+//        val searchViewItem = menu.findItem(R.id.menu_search)
+//        fragmentV2.searchViewItem = searchViewItem
+//        val searchView = searchViewItem.actionView as SearchView
+//
+//        val queryListener = object : OnQueryTextListener {
+//            override fun onQueryTextSubmit(query: String): Boolean {
+//                return true
+//            }
+//
+//            override fun onQueryTextChange(query: String): Boolean {
+//                fragmentV2.onSearchQueryUpdated(query)
+//                Log.d("Beldex","Search Query text change")
+//                return true
+//            }
+//        }
+//        searchViewItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+//            override fun onMenuItemActionExpand(item: MenuItem): Boolean {
+//                Log.d("Beldex","Search expand listener")
+//                searchView.setOnQueryTextListener(queryListener)
+//                fragmentV2.onSearchOpened()
+//                for (i in 0 until menu.size()) {
+//                    if (menu.getItem(i) != searchViewItem) {
+//                        menu.getItem(i).isVisible = false
+//                    }
+//                }
+//                return true
+//            }
+//
+//            override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
+//                searchView.setOnQueryTextListener(null)
+//                fragmentV2.onSearchClosed()
+//                return true
+//            }
+//        })
 
     }
 
     fun onOptionItemSelected(
-        context: Context,
-        fragmentV2: ConversationFragmentV2,
-        item: MenuItem,
-        thread: Recipient,
-        listenerCallback: ConversationFragmentV2.Listener?
+            context : Context,
+            fragmentV2 : ConversationFragmentV2,
+            item : MenuItem,
+            thread : Recipient,
+            listenerCallback : ConversationFragmentV2.Listener?,
+            childFragmentManager : FragmentManager
     ): Boolean {
         when (item.itemId) {
             R.id.menu_view_all_media -> { showAllMedia(thread,listenerCallback) }
@@ -164,11 +173,11 @@ object ConversationMenuHelper {
             R.id.menu_block -> { block(fragmentV2, thread,deleteThread = false) }
             R.id.menu_copy_bchat_id -> { copyBchatID(fragmentV2, thread) }
             R.id.menu_edit_group -> { editClosedGroup(context, thread) }
-            R.id.menu_leave_group -> { leaveClosedGroup(context, thread) }
+            R.id.menu_leave_group -> { leaveClosedGroup(context, thread,fragmentV2,childFragmentManager) }
             R.id.menu_invite_to_open_group -> { inviteContacts(context, thread) }
             R.id.menu_unmute_notifications -> { unmute(context, thread) }
-            R.id.menu_mute_notifications -> { mute(context, thread) }
-            R.id.menu_notification_settings -> { setNotifyType(context, thread) }
+            R.id.menu_mute_notifications -> { mute(fragmentV2, thread) }
+            R.id.menu_notification_settings -> { setNotifyType(context, thread, childFragmentManager) }
         }
         return true
     }
@@ -200,50 +209,10 @@ object ConversationMenuHelper {
     }
 
     private fun search(context: ConversationFragmentV2) {
-        val searchViewModel = context.searchViewModel
-        searchViewModel!!.onSearchOpened()
-    }
-
-    //New Line
-    private fun call(context: Context, thread: Recipient) {
-
-        if (!TextSecurePreferences.isCallNotificationsEnabled(context)) {
-            /* AlertDialog.Builder(context)
-                 .setTitle(R.string.ConversationActivity_call_title)
-                 .setMessage(R.string.ConversationActivity_call_prompt)
-                 .setPositiveButton(R.string.activity_settings_title) { _, _ ->
-                     val intent = Intent(context, PrivacySettingsActivity::class.java)
-                     context.startActivity(intent)
-                 }
-                 .setNeutralButton(R.string.cancel) { d, _ ->
-                     d.dismiss()
-                 }.show()*/
-            //SteveJosephh22
-            val factory = LayoutInflater.from(context)
-            val callPermissionDialogView: View = factory.inflate(R.layout.call_permissions_dialog_box, null)
-            val callPermissionDialog = AlertDialog.Builder(context).create()
-            callPermissionDialog.setView(callPermissionDialogView)
-            callPermissionDialogView.findViewById<TextView>(R.id.settingsDialogBoxButton).setOnClickListener{
-                val intent = Intent(context, PrivacySettingsActivity::class.java)
-                context.startActivity(intent)
-                callPermissionDialog.dismiss()
-            }
-            callPermissionDialogView.findViewById<TextView>(R.id.cancelDialogBoxButton).setOnClickListener{
-                callPermissionDialog.dismiss()
-            }
-            callPermissionDialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
-            callPermissionDialog.show()
-            return
-        }
-
-        val service = WebRtcCallService.createCall(context, thread)
-        context.startService(service)
-
-        val activity = Intent(context, WebRtcCallActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        }
-        context.startActivity(activity)
-
+//        val searchViewModel = context.searchViewModel
+//        searchViewModel!!.onSearchOpened()
+        val listener = context as? ConversationMenuListener ?: return
+        listener.openSearch()
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -315,48 +284,47 @@ object ConversationMenuHelper {
         context.startActivity(intent)
     }
 
-    private fun leaveClosedGroup(context: Context, thread: Recipient) {
+    private fun leaveClosedGroup(
+            context : Context,
+            thread : Recipient,
+            fragmentV2 : ConversationFragmentV2,
+            childFragmentManager : FragmentManager,
+
+            ) {
         if (!thread.isClosedGroupRecipient) { return }
-        val group = DatabaseComponent.get(context).groupDatabase().getGroup(thread.address.toGroupString()).orNull()
-        val admins = group.admins
-        val bchatID = TextSecurePreferences.getLocalNumber(context)
-        val isCurrentUserAdmin = admins.any { it.toString() == bchatID }
-        val message = if (isCurrentUserAdmin) {
-            "Because you are the creator of this group it will be deleted for everyone. This cannot be undone."
-        } else {
-            context.resources.getString(R.string.ConversationActivity_are_you_sure_you_want_to_leave_this_group)
-        }
-        val builder = AlertDialog.Builder(context,R.style.BChatAlertDialog_Clear_All)
-            .setTitle(context.resources.getString(R.string.ConversationActivity_leave_group))
-            .setCancelable(true)
-            .setMessage(message)
-            .setPositiveButton(R.string.leave) { _, _ ->
-                var groupPublicKey: String?
-                var isClosedGroup: Boolean
-                try {
-                    groupPublicKey = doubleDecodeGroupID(thread.address.toString()).toHexString()
-                    isClosedGroup = DatabaseComponent.get(context).beldexAPIDatabase().isClosedGroup(groupPublicKey)
-                } catch (e: IOException) {
-                    groupPublicKey = null
-                    isClosedGroup = false
-                }
-                try {
-                    if (isClosedGroup) {
-                        MessageSender.leave(groupPublicKey!!, true)
-                    } else {
+
+        val dialog = ComposeDialogContainer(
+                dialogType = DialogType.LeaveGroup,
+                onConfirm = {
+                    var groupPublicKey: String?
+                    var isClosedGroup: Boolean
+                    try {
+                        groupPublicKey = doubleDecodeGroupID(thread.address.toString()).toHexString()
+                        isClosedGroup = DatabaseComponent.get(context).beldexAPIDatabase().isClosedGroup(groupPublicKey)
+                    } catch (e: IOException) {
+                        groupPublicKey = null
+                        isClosedGroup = false
+                    }
+                    try {
+                        if (isClosedGroup) {
+                            MessageSender.leave(groupPublicKey!!, true)
+                            fragmentV2.backToHome()
+                        } else {
+                            Toast.makeText(context, R.string.ConversationActivity_error_leaving_group, Toast.LENGTH_LONG).show()
+                        }
+                    } catch (e: Exception) {
                         Toast.makeText(context, R.string.ConversationActivity_error_leaving_group, Toast.LENGTH_LONG).show()
                     }
-                } catch (e: Exception) {
-                    Toast.makeText(context, R.string.ConversationActivity_error_leaving_group, Toast.LENGTH_LONG).show()
-                }
+                },
+                onCancel = {},
+                onConfirmWithData = { index -> }
+        )
+        dialog.apply {
+            arguments = Bundle().apply {
+                putString(ComposeDialogContainer.EXTRA_ARGUMENT_1,thread.address.toGroupString())
             }
-            .setNegativeButton(R.string.no, null)
-            .show()
-
-        //New Line
-        val textView: TextView? = builder.findViewById(android.R.id.message)
-        val face: Typeface = Typeface.createFromAsset(context.assets,"fonts/open_sans_medium.ttf")
-        textView!!.typeface = face
+        }
+        dialog.show(childFragmentManager, ComposeDialogContainer.TAG)
     }
 
     private fun inviteContacts(context: Context, thread: Recipient) {
@@ -370,16 +338,31 @@ object ConversationMenuHelper {
         DatabaseComponent.get(context).recipientDatabase().setMuted(thread, 0)
     }
 
-    private fun mute(context: Context, thread: Recipient) {
-        MuteDialog.show(context) { until: Long ->
-            DatabaseComponent.get(context).recipientDatabase().setMuted(thread, until)
-        }
+    private fun mute(context: ConversationFragmentV2, thread: Recipient) {
+//        MuteDialog.show(context) { until: Long ->
+//            DatabaseComponent.get(context).recipientDatabase().setMuted(thread, until)
+//        }
+        val listener = context as? ConversationMenuListener ?: return
+        listener.showMuteOptionDialog(thread)
     }
 
-    private fun setNotifyType(context: Context, thread: Recipient) {
-        NotificationUtils.showNotifyDialog(context, thread) { notifyType ->
-            DatabaseComponent.get(context).recipientDatabase().setNotifyType(thread, notifyType)
+    private fun setNotifyType(context : Context, thread : Recipient, fragmentManager : FragmentManager) {
+        val dialog = ComposeDialogContainer(
+                dialogType = DialogType.NotificationSettings,
+                onConfirm = {
+
+                },
+                onCancel = {},
+                onConfirmWithData = { index ->
+                    DatabaseComponent.get(context).recipientDatabase().setNotifyType(thread, index.toString().toInt())
+                }
+        )
+        dialog.apply {
+            arguments = Bundle().apply {
+                putInt(ComposeDialogContainer.EXTRA_ARGUMENT_1,thread.notifyType)
+            }
         }
+        dialog.show(fragmentManager, ComposeDialogContainer.TAG)
     }
 
     interface ConversationMenuListener {
@@ -387,7 +370,10 @@ object ConversationMenuHelper {
         fun unblock()
         fun copyBchatID(bchatId: String)
         fun showExpiringMessagesDialog(thread: Recipient)
+        fun showMuteOptionDialog(thread: Recipient)
+        fun openSearch()
     }
 
 }
+
 

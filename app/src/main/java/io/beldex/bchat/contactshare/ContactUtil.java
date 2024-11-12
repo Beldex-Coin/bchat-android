@@ -7,8 +7,6 @@ import android.text.TextUtils;
 
 import io.beldex.bchat.components.emoji.EmojiStrings;
 import io.beldex.bchat.util.SpanUtil;
-import io.beldex.bchat.components.emoji.EmojiStrings;
-import io.beldex.bchat.util.SpanUtil;
 import com.beldex.libbchat.utilities.Contact;
 
 import io.beldex.bchat.R;

@@ -10,17 +10,17 @@
     android:padding="32dp">
 
     <TextView
-        android:fontFamily="@font/open_sans_medium"
+        android:fontFamily="@font/open_sans_bold"
         android:id="@+id/joinOpenGroupTitleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/dialog_join_open_group_title"
         android:textColor="@color/text"
         android:textStyle="bold"
-        android:textSize="@dimen/large_font_size" />
+        android:textSize="16dp" />
 
     <TextView
-        android:fontFamily="@font/open_sans_medium"
+        android:fontFamily="@font/open_sans_regular"
         android:id="@+id/joinOpenGroupExplanationTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -38,21 +38,25 @@
         android:orientation="horizontal">
 
         <Button
-            style="@style/Widget.Bchat.Button.Dialog.Unimportant"
+            style="@style/Widget.Bchat.Button.Dialog.Cancel"
             android:id="@+id/cancelButton"
             android:layout_width="0dp"
-            android:layout_height="@dimen/small_button_height"
+            android:layout_height="52dp"
             android:layout_weight="1"
-            android:text="@string/cancel" />
+            android:text="@string/cancel"
+            android:textColor="@color/negative_green_button_text"
+            android:textSize="14sp"/>
 
         <Button
-            style="@style/Widget.Bchat.Button.Dialog.Unimportant"
+            style="@style/Widget.Bchat.Button.Dialog.Enable"
             android:id="@+id/joinButton"
             android:layout_width="0dp"
-            android:layout_height="@dimen/small_button_height"
+            android:layout_height="52dp"
             android:layout_weight="1"
             android:layout_marginStart="@dimen/medium_spacing"
-            android:text="@string/open_group_invitation_view__join_accessibility_description" />
+            android:textColor="@color/white"
+            android:text="@string/open_group_invitation_view__join_accessibility_description"
+            android:textSize="14sp"/>
 
     </LinearLayout>
 

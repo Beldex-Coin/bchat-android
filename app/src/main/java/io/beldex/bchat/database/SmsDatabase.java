@@ -30,10 +30,6 @@ import net.zetetic.database.sqlcipher.SQLiteDatabase;
 import net.zetetic.database.sqlcipher.SQLiteStatement;
 
 
-import io.beldex.bchat.database.helpers.SQLCipherOpenHelper;
-import io.beldex.bchat.database.model.MessageRecord;
-import io.beldex.bchat.database.model.SmsMessageRecord;
-import io.beldex.bchat.dependencies.DatabaseComponent;
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration;
 import com.beldex.libbchat.messaging.calls.CallMessageType;
 import com.beldex.libbchat.messaging.messages.signal.IncomingGroupMessage;
@@ -51,7 +47,6 @@ import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libsignal.utilities.JsonUtil;
 import com.beldex.libsignal.utilities.Log;
 import com.beldex.libsignal.utilities.guava.Optional;
-import io.beldex.bchat.dependencies.DatabaseComponent;
 import io.beldex.bchat.database.helpers.SQLCipherOpenHelper;
 import io.beldex.bchat.database.model.MessageRecord;
 import io.beldex.bchat.database.model.SmsMessageRecord;
@@ -549,10 +544,9 @@ public class SmsDatabase extends MessagingDatabase {
     if (insertListener != null) {
       insertListener.onComplete();
     }
-
-    if (runThreadUpdate) {
+    /*if (runThreadUpdate) {
       DatabaseComponent.get(context).threadDatabase().update(threadId, true);
-    }
+    }*/
     DatabaseComponent.get(context).threadDatabase().setLastSeen(threadId);
 
     DatabaseComponent.get(context).threadDatabase().setHasSent(threadId, true);

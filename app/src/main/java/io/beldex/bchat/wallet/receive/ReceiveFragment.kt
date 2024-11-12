@@ -9,31 +9,32 @@ import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.os.Environment
-import android.os.SystemClock
-import android.text.Editable
-import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.google.android.material.transition.MaterialContainerTransform
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
 import com.google.zxing.WriterException
 import com.google.zxing.qrcode.QRCodeWriter
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import com.jakewharton.rxbinding3.view.visibility
-import io.beldex.bchat.crypto.IdentityKeyUtil
+import io.beldex.bchat.compose_utils.BChatTheme
+import io.beldex.bchat.compose_utils.appColors
 import io.beldex.bchat.data.BarcodeData
 import io.beldex.bchat.data.Crypto
-import io.beldex.bchat.home.HomeActivity
 import io.beldex.bchat.model.Wallet
 import io.beldex.bchat.util.FileProviderUtil
 import io.beldex.bchat.util.Helper
 import io.beldex.bchat.util.toPx
 import io.beldex.bchat.wallet.OnBackPressedListener
-import io.beldex.bchat.wallet.utils.ThemeHelper
+import io.beldex.bchat.wallet.jetpackcomposeUI.ReceiveScreen
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityReceiveBinding
 import timber.log.Timber
@@ -76,9 +77,9 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = ActivityReceiveBinding.inflate(layoutInflater,container,false)
+     /*   binding = ActivityReceiveBinding.inflate(layoutInflater,container,false)
         (activity as HomeActivity).setSupportActionBar(binding.toolbar)
-        binding.walletAddressReceive.text = IdentityKeyUtil.retrieve(requireActivity(), IdentityKeyUtil.IDENTITY_W_ADDRESS_PREF)
+        binding.walletAddressReceive.text = IdentityKeyUtil.retrieve(requireActivity(),IdentityKeyUtil.IDENTITY_W_ADDRESS_PREF)
         generateQr()
 
         binding.amountEditTextReceive.addTextChangedListener(object : TextWatcher {
@@ -121,7 +122,19 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
             listenerCallback?.walletOnBackPressed()
         }
 
-        return binding.root
+        return binding.root*/
+        return ComposeView(requireContext()).apply { 
+            setContent {
+                BChatTheme {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.appColors.cardBackground
+                    ) {
+                        ReceiveScreen(listenerCallback,modifier = Modifier)
+                    }
+                }
+            }
+        }
     }
 
     private fun hideErrorMessage(){
@@ -168,7 +181,7 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
         val address: String = binding.walletAddressReceive.text.toString()
         val notes: String = ""
         val bdxAmount: String = binding.amountEditTextReceive.text.toString()
-        bcData =BarcodeData(Crypto.BDX, address, notes, bdxAmount)
+        bcData = BarcodeData(Crypto.BDX, address, notes, bdxAmount)
 
         val size = toPx(280, resources)
         val qr = generate(bcData!!.uriString, size, size)
@@ -214,7 +227,7 @@ class ReceiveFragment : Fragment(), OnBackPressedListener {
             clearQR()
             return
         }
-        bcData =BarcodeData(Crypto.BDX, address, notes, bdxAmount)
+        bcData = BarcodeData(Crypto.BDX, address, notes, bdxAmount)
         val size = toPx(280, resources)
         val qr = generate(bcData!!.uriString, size, size)
         if (qr != null) {

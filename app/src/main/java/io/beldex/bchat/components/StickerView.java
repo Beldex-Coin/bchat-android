@@ -8,8 +8,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import io.beldex.bchat.conversation.v2.utilities.ThumbnailView;
-import io.beldex.bchat.conversation.v2.utilities.ThumbnailView;
-import io.beldex.bchat.conversation.v2.utilities.ThumbnailView;
 
 import io.beldex.bchat.R;
 

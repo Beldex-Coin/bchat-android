@@ -12,11 +12,6 @@ import io.beldex.bchat.jobmanager.persistence.ConstraintSpec;
 import io.beldex.bchat.jobmanager.persistence.DependencySpec;
 import io.beldex.bchat.jobmanager.persistence.FullSpec;
 import io.beldex.bchat.jobmanager.persistence.JobSpec;
-import io.beldex.bchat.database.helpers.SQLCipherOpenHelper;
-import io.beldex.bchat.jobmanager.persistence.ConstraintSpec;
-import io.beldex.bchat.jobmanager.persistence.DependencySpec;
-import io.beldex.bchat.jobmanager.persistence.FullSpec;
-import io.beldex.bchat.jobmanager.persistence.JobSpec;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -31,23 +31,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.annimon.stream.Stream;
-import io.beldex.bchat.ApplicationContext;
-import io.beldex.bchat.contactshare.ContactUtil;
-import io.beldex.bchat.database.helpers.SQLCipherOpenHelper;
-import io.beldex.bchat.database.model.MediaMmsMessageRecord;
-import io.beldex.bchat.database.model.MessageRecord;
-import io.beldex.bchat.database.model.MmsMessageRecord;
-import io.beldex.bchat.database.model.ThreadRecord;
-import io.beldex.bchat.dependencies.DatabaseComponent;
-import io.beldex.bchat.mms.Slide;
-import io.beldex.bchat.mms.SlideDeck;
-import io.beldex.bchat.notifications.MarkReadReceiver;
-import io.beldex.bchat.util.BchatMetaProtocol;
 import com.beldex.libbchat.mnode.MnodeAPI;
-import io.beldex.bchat.contactshare.ContactUtil;
-import io.beldex.bchat.dependencies.DatabaseComponent;
-import io.beldex.bchat.notifications.MarkReadReceiver;
-import io.beldex.bchat.util.BchatMetaProtocol;
 import io.beldex.bchat.ApplicationContext;
 import io.beldex.bchat.mms.Slide;
 import io.beldex.bchat.mms.SlideDeck;
@@ -492,8 +476,7 @@ public class ThreadDatabase extends Database {
 
 
   public Cursor getArchivedConversationList() {
-    String where  = "(" + MESSAGE_COUNT + " != 0 OR " + GroupDatabase.TABLE_NAME + "." + GROUP_ID + " LIKE '" + OPEN_GROUP_PREFIX + "%') " +
-            "AND " + ARCHIVED + " = 1 ";
+    String where  = "(" + MESSAGE_COUNT + " != 0) " + "AND " + ARCHIVED + " = 1 ";
     return getConversationList(where);
   }
 
@@ -633,6 +616,17 @@ public class ThreadDatabase extends Database {
     notifyConversationListeners(threadId);
   }
 
+  public void setThreadUnArchived(long threadId) {
+    ContentValues contentValues = new ContentValues(1);
+    contentValues.put(ARCHIVED, 0);
+
+    databaseHelper.getWritableDatabase().update(TABLE_NAME, contentValues, ID_WHERE,
+            new String[] {String.valueOf(threadId)});
+
+    notifyConversationListListeners();
+    notifyConversationListeners(threadId);
+  }
+
   public long getOrCreateThreadIdFor(Recipient recipient, int distributionType) {
     SQLiteDatabase db            = databaseHelper.getReadableDatabase();
     String         where         = ADDRESS + " = ?";
@@ -700,7 +694,6 @@ public class ThreadDatabase extends Database {
       notifyConversationListListeners();
       return true;
     }
-
     MmsSmsDatabase.Reader reader = null;
 
     try {

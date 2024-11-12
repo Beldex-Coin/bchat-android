@@ -31,6 +31,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,11 +54,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import io.beldex.bchat.database.loaders.BucketedThreadMediaLoader;
-import io.beldex.bchat.database.loaders.ThreadMediaLoader;
-import io.beldex.bchat.mms.GlideApp;
-import io.beldex.bchat.util.AttachmentUtil;
-import io.beldex.bchat.util.StickyHeaderDecoration;
 import com.beldex.libbchat.mnode.MnodeAPI;
 import com.beldex.libsignal.utilities.Log;
 import com.codewaves.stickyheadergrid.StickyHeaderGridLayoutManager;
@@ -75,18 +72,25 @@ import io.beldex.bchat.mms.GlideApp;
 import io.beldex.bchat.permissions.Permissions;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import io.beldex.bchat.util.AttachmentUtil;
+import io.beldex.bchat.util.GridSpaceItemDecoration;
 import io.beldex.bchat.util.SaveAttachmentTask;
 import io.beldex.bchat.util.StickyHeaderDecoration;
 import com.beldex.libbchat.utilities.Util;
 import com.beldex.libbchat.utilities.ViewUtil;
 import com.beldex.libbchat.utilities.task.ProgressDialogAsyncTask;
+import io.beldex.bchat.util.UiMode;
+import io.beldex.bchat.util.UiModeUtilities;
+
+import org.w3c.dom.Text;
 
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import io.beldex.bchat.R;
+import kotlin.Unit;
 
 /**
  * Activity for displaying media attachments in-app
@@ -137,8 +141,8 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
   private void initializeToolbar() {
     setSupportActionBar(this.toolbar);
     ActionBar actionBar = getSupportActionBar();
-    actionBar.setTitle(recipient.toShortString());
-    actionBar.setHomeAsUpIndicator(R.drawable.ic_back);
+    actionBar.setTitle(R.string.all_media);
+    actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24);
     actionBar.setDisplayHomeAsUpEnabled(true);
     this.recipient.addListener(recipient -> {
       Util.runOnMain(() -> actionBar.setTitle(recipient.toShortString()));
@@ -196,7 +200,7 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
     public static final String ADDRESS_EXTRA = "address";
     public static final String LOCALE_EXTRA  = "locale_extra";
 
-    protected TextView     noMedia;
+    protected LinearLayout noMedia;
     protected Recipient    recipient;
     protected RecyclerView recyclerView;
     protected Locale       locale;
@@ -219,7 +223,7 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
   }
 
   public static class MediaOverviewGalleryFragment
-      extends MediaOverviewFragment<BucketedThreadMediaLoader.BucketedThreadMedia>
+      extends MediaOverviewFragment<BucketedThreadMedia>
       implements MediaGalleryAdapter.ItemClickListener
   {
 
@@ -237,10 +241,12 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
 
       this.recyclerView.setAdapter(new MediaGalleryAdapter(getContext(),
                                                            GlideApp.with(this),
-                                                           new BucketedThreadMediaLoader.BucketedThreadMedia(getContext()),
+                                                           new BucketedThreadMedia(getContext()),
                                                            locale,
                                                            this));
+      GridSpaceItemDecoration itemDecoration = new GridSpaceItemDecoration(getContext(), R.dimen.item_offset);
       this.recyclerView.setLayoutManager(gridManager);
+      this.recyclerView.addItemDecoration(itemDecoration);
       this.recyclerView.setHasFixedSize(true);
 
       return view;
@@ -256,12 +262,12 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
     }
 
     @Override
-    public @NonNull Loader<BucketedThreadMediaLoader.BucketedThreadMedia> onCreateLoader(int i, Bundle bundle) {
+    public @NonNull Loader<BucketedThreadMedia> onCreateLoader(int i, Bundle bundle) {
       return new BucketedThreadMediaLoader(getContext(), recipient.getAddress());
     }
 
     @Override
-    public void onLoadFinished(@NonNull Loader<BucketedThreadMediaLoader.BucketedThreadMedia> loader, BucketedThreadMediaLoader.BucketedThreadMedia bucketedThreadMedia) {
+    public void onLoadFinished(@NonNull Loader<BucketedThreadMedia> loader, BucketedThreadMedia bucketedThreadMedia) {
       ((MediaGalleryAdapter) recyclerView.getAdapter()).setMedia(bucketedThreadMedia);
       ((MediaGalleryAdapter) recyclerView.getAdapter()).notifyAllSectionsDataSetChanged();
 
@@ -270,8 +276,8 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
     }
 
     @Override
-    public void onLoaderReset(@NonNull Loader<BucketedThreadMediaLoader.BucketedThreadMedia> cursorLoader) {
-      ((MediaGalleryAdapter) recyclerView.getAdapter()).setMedia(new BucketedThreadMediaLoader.BucketedThreadMedia(getContext()));
+    public void onLoaderReset(@NonNull Loader<BucketedThreadMedia> cursorLoader) {
+      ((MediaGalleryAdapter) recyclerView.getAdapter()).setMedia(new BucketedThreadMedia(getContext()));
     }
 
     @Override
@@ -296,7 +302,7 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
 
     //SetDataAndType
     ActivityResultLauncher resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result->{
-      if (result.getResultCode() == RESULT_OK) {
+      if (result.getResultCode() == Activity.RESULT_OK) {
         Bundle extras = new Bundle();
         assert result.getData() != null;
         extras.putParcelable(ConversationFragmentV2.ADDRESS,result.getData().getParcelableExtra(ConversationFragmentV2.ADDRESS));
@@ -347,9 +353,9 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
     @SuppressWarnings("CodeBlock2Expr")
     @SuppressLint({"InlinedApi", "StaticFieldLeak"})
     private void handleSaveMedia(@NonNull Collection<MediaDatabase.MediaRecord> mediaRecords) {
-      final Context context = getContext();
+      final Context context = requireContext();
 
-      SaveAttachmentTask.showWarningDialog(context, (dialogInterface, which) -> {
+      SaveAttachmentTask.showWarningDialog(context, mediaRecords.size(), () -> {
         Permissions.with(this)
                 .request(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .maxSdkVersion(Build.VERSION_CODES.P)
@@ -391,7 +397,8 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
                   }.execute();
                 })
                 .execute();
-      }, mediaRecords.size());
+        return Unit.INSTANCE;
+      });
     }
 
     private void sendMediaSavedNotificationIfNeeded() {
@@ -412,32 +419,53 @@ public class MediaOverviewActivity extends PassphraseRequiredActionBarActivity {
                                                     recordCount);
 
       AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-      builder.setIconAttribute(R.attr.dialog_alert_icon);
-      builder.setTitle(confirmTitle);
-      builder.setMessage(confirmMessage);
-      builder.setCancelable(true);
+      LayoutInflater inflater = getLayoutInflater();
+      View dialogView = inflater.inflate(R.layout.delete_media_dialog, null);
 
-      builder.setPositiveButton(R.string.delete, (dialogInterface, i) -> {
-        new ProgressDialogAsyncTask<MediaDatabase.MediaRecord, Void, Void>(getContext(),
-                                                                           R.string.MediaOverviewActivity_Media_delete_progress_title,
-                                                                           R.string.MediaOverviewActivity_Media_delete_progress_message)
-        {
-          @Override
-          protected Void doInBackground(MediaDatabase.MediaRecord... records) {
-            if (records == null || records.length == 0) {
+      builder.setView(dialogView);
+
+      Button cancelButton = dialogView.findViewById(R.id.cancelButton);
+      Button deleteButton = dialogView.findViewById(R.id.deleteButton);
+      TextView title = dialogView.findViewById(R.id.titleTextView);
+      TextView contentMessage = dialogView.findViewById(R.id.deleteMessageContent);
+      title.setText(confirmTitle);
+      contentMessage.setText(confirmMessage);
+      AlertDialog alert = builder.create();
+      Objects.requireNonNull(alert.getWindow()).setBackgroundDrawableResource(R.color.transparent);
+      alert.setCanceledOnTouchOutside(true);
+      alert.show();
+
+
+      deleteButton.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+          new ProgressDialogAsyncTask<MediaDatabase.MediaRecord, Void, Void>(getContext(),
+                  R.string.MediaOverviewActivity_Media_delete_progress_title,
+                  R.string.MediaOverviewActivity_Media_delete_progress_message)
+          {
+            @Override
+            protected Void doInBackground(MediaDatabase.MediaRecord... records) {
+              if (records == null || records.length == 0) {
+                return null;
+              }
+
+              for (MediaDatabase.MediaRecord record : records) {
+                AttachmentUtil.deleteAttachment(getContext(), record.getAttachment());
+              }
               return null;
             }
 
-            for (MediaDatabase.MediaRecord record : records) {
-              AttachmentUtil.deleteAttachment(getContext(), record.getAttachment());
-            }
-            return null;
-          }
-
-        }.execute(mediaRecords.toArray(new MediaDatabase.MediaRecord[mediaRecords.size()]));
+          }.execute(mediaRecords.toArray(new MediaDatabase.MediaRecord[mediaRecords.size()]));
+          alert.dismiss();
+        }
       });
-      builder.setNegativeButton(android.R.string.cancel, null);
-      builder.show();
+
+      cancelButton.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+          alert.dismiss();
+        }
+      });
     }
 
     private void handleSelectAllMedia() {

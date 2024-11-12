@@ -2,8 +2,8 @@ package io.beldex.bchat.data;
 
 import android.util.Log;
 
-import io.beldex.bchat.model.NetworkType;
-import io.beldex.bchat.model.WalletManager;
+import androidx.annotation.WorkerThread;
+
 import io.beldex.bchat.model.NetworkType;
 import io.beldex.bchat.model.WalletManager;
 
@@ -13,10 +13,7 @@ import java.net.InetSocketAddress;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
-
 import io.beldex.bchat.BuildConfig;
-import lombok.Getter;
-import lombok.Setter;
 import timber.log.Timber;
 
 public class Node {
@@ -268,8 +265,17 @@ public class Node {
             throw new UnknownHostException("loopback not supported (yet?)");
         }
         Log.d("Beldex","node class host value 2 " + host);
-        this.host = host;
-        this.hostAddress = InetAddress.getByName(host);
+        setHostAndHostAddress(host);
+    }
+
+    @WorkerThread
+    protected void setHostAndHostAddress(String host) throws UnknownHostException {
+        try {
+            this.host = host;
+            this.hostAddress = InetAddress.getByName(host);
+        } catch(Exception e){
+            throw new UnknownHostException("loopback not supported (yet?)");
+        }
     }
 
     public void setName() {

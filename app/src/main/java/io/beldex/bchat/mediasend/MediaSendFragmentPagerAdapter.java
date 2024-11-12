@@ -9,9 +9,6 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 
-import io.beldex.bchat.scribbles.ImageEditorFragment;
-import io.beldex.bchat.util.MediaUtil;
-import io.beldex.bchat.scribbles.ImageEditorFragment;
 import io.beldex.bchat.util.MediaUtil;
 import io.beldex.bchat.scribbles.ImageEditorFragment;
 import io.beldex.bchat.util.MediaUtil;

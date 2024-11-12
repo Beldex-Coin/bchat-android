@@ -3,7 +3,6 @@ package io.beldex.bchat.groups
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.content.Context
-import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -34,6 +33,7 @@ import com.beldex.libsignal.utilities.Log
 import com.beldex.libsignal.utilities.PublicKeyValidation
 import io.beldex.bchat.BaseActionBarActivity
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
+import io.beldex.bchat.conversation_v2.DefaultGroupsViewModel
 import io.beldex.bchat.util.ConfigurationMessageUtilities
 import io.beldex.bchat.util.ScanQRCodeWrapperFragment
 import io.beldex.bchat.util.ScanQRCodeWrapperFragmentDelegate

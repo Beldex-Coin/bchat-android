@@ -3,14 +3,6 @@ package io.beldex.bchat.service;
 import android.content.Context;
 
 import io.beldex.bchat.database.MmsDatabase;
-import io.beldex.bchat.database.SmsDatabase;
-import io.beldex.bchat.database.model.MessageRecord;
-import io.beldex.bchat.dependencies.DatabaseComponent;
-import io.beldex.bchat.mms.MmsException;
-import io.beldex.bchat.database.MmsDatabase;
-import io.beldex.bchat.database.SmsDatabase;
-import io.beldex.bchat.dependencies.DatabaseComponent;
-import io.beldex.bchat.database.MmsDatabase;
 import io.beldex.bchat.mms.MmsException;
 
 import org.jetbrains.annotations.NotNull;

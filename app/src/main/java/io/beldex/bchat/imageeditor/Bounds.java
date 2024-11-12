@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import io.beldex.bchat.imageeditor.model.EditorElement;
-import io.beldex.bchat.imageeditor.model.EditorElement;
 
 /**
  * The local extent of a {@link EditorElement}.

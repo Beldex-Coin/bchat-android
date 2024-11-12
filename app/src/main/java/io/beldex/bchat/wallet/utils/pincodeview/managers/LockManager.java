@@ -6,7 +6,7 @@ import io.beldex.bchat.wallet.utils.pincodeview.PinActivity;
 
 
 /**
- * Allows to handle the {@link AppLock} from within
+ * Allows to handle the {@link io.beldex.bchat.wallet.utils.pincodeview.managers.AppLock} from within
  * the actual app calling the library.
  * You must get this static instance by calling {@link #getInstance()}
  */
@@ -17,7 +17,7 @@ public class LockManager<T extends AppLockActivity> {
      */
     private static LockManager mInstance;
     /**
-     * The static singleton instance of {@link AppLock}
+     * The static singleton instance of {@link io.beldex.bchat.wallet.utils.pincodeview.managers.AppLock}
      */
     private static AppLock mAppLocker;
 
@@ -35,9 +35,9 @@ public class LockManager<T extends AppLockActivity> {
 
     /**
      * You must call that into your custom {@link android.app.Application} to enable the
-     * {@link PinActivity}
+     * {@link io.beldex.bchat.wallet.utils.pincodeview.PinActivity}
      */
-    public void enableAppLock(Context context, Class<T> activityClass) {
+    public <T extends AppLockActivity> void enableAppLock(Context context, Class<T> activityClass) {
         if (mAppLocker != null) {
             mAppLocker.disable();
         }
@@ -46,7 +46,7 @@ public class LockManager<T extends AppLockActivity> {
     }
 
     /**
-     * Tells the app if the {@link AppLock} is enabled or not
+     * Tells the app if the {@link io.beldex.bchat.wallet.utils.pincodeview.managers.AppLock} is enabled or not
      */
     /*public boolean isAppLockEnabled() {
         return (mAppLocker != null && (PinActivity.hasListeners() ||

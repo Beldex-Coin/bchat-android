@@ -24,7 +24,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import io.beldex.bchat.util.Util;
-import io.beldex.bchat.util.Util;
 import io.beldex.bchat.util.VersionTracker;
 
 public class DatabaseUpgradeActivity extends BaseActivity {

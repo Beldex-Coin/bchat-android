@@ -6,7 +6,6 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 
 import io.beldex.bchat.mms.PartAuthority;
-import io.beldex.bchat.mms.PartAuthority;
 import com.beldex.libsignal.utilities.Log;
 
 import com.beldex.libsignal.utilities.Hex;

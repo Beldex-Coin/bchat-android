@@ -3,7 +3,6 @@ package io.beldex.bchat.mms;
 import android.content.Context;
 
 import io.beldex.bchat.util.Util;
-import io.beldex.bchat.util.Util;
 
 import com.beldex.libbchat.messaging.file_server.FileServerAPIV2;
 

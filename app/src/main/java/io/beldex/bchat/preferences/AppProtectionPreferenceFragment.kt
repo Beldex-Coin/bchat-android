@@ -10,7 +10,10 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import android.view.LayoutInflater
+import android.view.View
 import android.view.WindowManager
+import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.DialogFragment
 import androidx.preference.Preference
@@ -29,6 +32,8 @@ import com.beldex.libsignal.utilities.Log
 import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.components.SwitchPreferenceCompat
 import io.beldex.bchat.home.HomeActivity
+import io.beldex.bchat.onboarding.ui.EXTRA_PIN_CODE_ACTION
+import io.beldex.bchat.onboarding.ui.PinCodeAction
 import io.beldex.bchat.permissions.Permissions
 import io.beldex.bchat.service.KeyCachingService
 import io.beldex.bchat.util.CallNotificationBuilder.Companion.areNotificationsEnabled
@@ -40,8 +45,6 @@ import io.beldex.bchat.wallet.utils.pincodeview.managers.AppLock
 import io.beldex.bchat.wallet.utils.pincodeview.managers.LockManager
 import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
-/*import mobi.upod.timedurationpicker.TimeDurationPicker
-import mobi.upod.timedurationpicker.TimeDurationPickerDialog*/
 import java.util.concurrent.TimeUnit
 
 class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
@@ -71,6 +74,11 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
 
     //New Line
     private fun setCall(isEnabled: Boolean): Void? {
+        /*if(isEnabled) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                fullScreenIntentPopup()
+            }
+        }*/
         (findPreference<Preference>(TextSecurePreferences.CALL_NOTIFICATIONS_ENABLED) as SwitchPreferenceCompat?)!!.isChecked =
             isEnabled
         if (isEnabled && !areNotificationsEnabled(requireActivity())) {
@@ -109,6 +117,24 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
         }
         return null
     }
+   /* private fun fullScreenIntentPopup() {
+        val factory=LayoutInflater.from(context)
+        val fullScreenIntentDialogView : View=factory.inflate(R.layout.full_screen_intent_dialog, null)
+        val fullScreenIntentDialog=AlertDialog.Builder(context).create()
+        fullScreenIntentDialog.window?.setBackgroundDrawableResource(R.color.transparent)
+        fullScreenIntentDialog.setView(fullScreenIntentDialogView)
+        val enableButton=fullScreenIntentDialogView.findViewById<Button>(R.id.fullScreenIntentEnableButton)
+        val cancelButton=fullScreenIntentDialogView.findViewById<Button>(R.id.fullScreenIntentCancelButton)
+        enableButton.setOnClickListener {
+            actionFullScreenIntent()
+            fullScreenIntentDialog.dismiss()
+        }
+        cancelButton.setOnClickListener {
+            fullScreenIntentDialog.dismiss()
+        }
+        fullScreenIntentDialog.show()
+    }*/
+
 
     //Hales63
     override fun onRequestPermissionsResult(
@@ -190,7 +216,7 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
 
     private inner class ScreenLockTimeoutListener : Preference.OnPreferenceClickListener {
         override fun onPreferenceClick(preference: Preference): Boolean {
-         /*TimeDurationPickerDialog(context, { view: TimeDurationPicker?, duration: Long ->
+           /* TimeDurationPickerDialog(context, { view: TimeDurationPicker?, duration: Long ->
                 if (duration == 0L) {
                     setScreenLockTimeout(context!!, 0)
                 } else {
@@ -250,17 +276,19 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
             val walletName = getWalletName(requireContext())
             val walletPassword = getWalletPassword(requireContext())
             if (walletName != null && walletPassword != null) {
-                val lockManager = LockManager.getInstance()
+                val lockManager: LockManager<CustomPinActivity> = LockManager.getInstance() as LockManager<CustomPinActivity>
                 lockManager.enableAppLock(requireContext(), CustomPinActivity::class.java)
-                val intent = Intent(requireContext(), CustomPinActivity::class.java)
-                if (getWalletEntryPassword(requireContext()) != null) {
-                    intent.putExtra(AppLock.EXTRA_TYPE, AppLock.UNLOCK_PIN)
-                } else {
-                    intent.putExtra(AppLock.EXTRA_TYPE, AppLock.ENABLE_PINLOCK)
+                Intent(requireContext(), CustomPinActivity::class.java).also {
+                    if(getWalletEntryPassword(requireContext()) != null) {
+                        it.putExtra(EXTRA_PIN_CODE_ACTION, PinCodeAction.VerifyWalletPin.action)
+                        it.putExtra("send_authentication",false)
+                        setUpWalletPinActivityResultLauncher.launch(it)
+                    } else{
+                        it.putExtra(EXTRA_PIN_CODE_ACTION, PinCodeAction.CreateWalletPin.action)
+                        it.putExtra("send_authentication",false)
+                        setUpWalletPinActivityResultLauncher.launch(it)
+                    }
                 }
-                intent.putExtra("change_pin", false)
-                intent.putExtra("send_authentication", false)
-                setUpWalletPinActivityResultLauncher.launch(intent)
             } else {
                 val intent = Intent(requireContext(), WalletInfoActivity::class.java)
                 startActivity(intent)
@@ -309,4 +337,21 @@ class AppProtectionPreferenceFragment : ListSummaryPreferenceFragment() {
             }
         }
     }
+   /* private fun actionFullScreenIntent(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            if (!Settings.canDrawOverlays(context)) {
+                val intent = Intent(
+                        Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT,
+                        Uri.parse("package:${BuildConfig.APPLICATION_ID}")
+                )
+                startActivityForResult(intent, 123)
+            }
+        }
+    }*/
+   /* override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 123) {
+            println("permission result code is $resultCode ")
+        }
+    }*/
 }

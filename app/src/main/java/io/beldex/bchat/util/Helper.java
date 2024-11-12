@@ -37,9 +37,9 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 
-import io.beldex.bchat.model.WalletManager;
 import com.google.android.material.textfield.TextInputLayout;
 import io.beldex.bchat.data.Crypto;
+import io.beldex.bchat.model.WalletManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -95,6 +95,7 @@ public class Helper {
 
     static public final int PERMISSIONS_REQUEST_CAMERA = 7;
     static public  final int PERMISSION_REQUEST_PHONE_STATE = 1;
+    static public  final int PERMISSION_REQUEST_BLUETOOTH_STATE = 2;
 
     static public boolean getCameraPermission(Activity context) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {

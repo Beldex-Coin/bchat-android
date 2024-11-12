@@ -2,7 +2,9 @@ package io.beldex.bchat.model;
 
 import android.util.Log;
 
-public class PendingTransaction {
+import java.io.Serializable;
+
+public class PendingTransaction implements Serializable {
     static {
         System.loadLibrary("app");
     }

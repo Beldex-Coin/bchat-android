@@ -5,7 +5,6 @@ import android.content.Context;
 
 import io.beldex.bchat.mms.MediaConstraints;
 import io.beldex.bchat.mms.MediaConstraints;
-import io.beldex.bchat.mms.MediaConstraints;
 
 public class ProfileMediaConstraints extends MediaConstraints {
   @Override

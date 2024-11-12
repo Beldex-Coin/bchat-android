@@ -7,8 +7,6 @@ import android.graphics.RectF;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import io.beldex.bchat.imageeditor.renderers.CropAreaRenderer;
-import io.beldex.bchat.imageeditor.renderers.InverseFillRenderer;
 import io.beldex.bchat.imageeditor.Bounds;
 
 import io.beldex.bchat.R;

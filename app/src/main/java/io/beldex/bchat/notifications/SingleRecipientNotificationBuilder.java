@@ -23,14 +23,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationCompat.Action;
 import androidx.core.app.RemoteInput;
 
-import io.beldex.bchat.mms.DecryptableStreamUriLoader;
-import io.beldex.bchat.mms.GlideApp;
-import io.beldex.bchat.mms.Slide;
-import io.beldex.bchat.mms.SlideDeck;
-import io.beldex.bchat.util.AvatarPlaceholderGenerator;
-import io.beldex.bchat.util.BitmapUtil;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import io.beldex.bchat.util.AvatarPlaceholderGenerator;
 import io.beldex.bchat.database.BchatContactDatabase;
 import io.beldex.bchat.dependencies.DatabaseComponent;
 import io.beldex.bchat.mms.DecryptableStreamUriLoader;

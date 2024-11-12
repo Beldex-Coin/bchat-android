@@ -11,8 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import io.beldex.bchat.mms.DecryptableStreamUriLoader;
-import io.beldex.bchat.mms.GlideApp;
-import io.beldex.bchat.mms.DecryptableStreamUriLoader;
 
 import io.beldex.bchat.R;
 import io.beldex.bchat.mms.DecryptableStreamUriLoader;

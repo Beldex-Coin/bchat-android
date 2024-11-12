@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 
 import com.annimon.stream.Stream;
 import io.beldex.bchat.util.WakeLockUtil;
-import io.beldex.bchat.util.WakeLockUtil;
 
 import com.beldex.libsignal.utilities.Log;
 

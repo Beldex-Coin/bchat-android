@@ -13,7 +13,6 @@ import androidx.annotation.CallSuper;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import io.beldex.bchat.wallet.utils.dialog.ProgressDialog;
 import io.beldex.bchat.data.BarcodeData;
 import io.beldex.bchat.util.Helper;
 import io.beldex.bchat.wallet.utils.dialog.ProgressDialog;

@@ -433,7 +433,7 @@ class SlideToActView @JvmOverloads constructor(
 
                 actualImageDrawable = getResourceId(
                     R.styleable.SlideToActView_send_image_icon,
-                    R.drawable.ic_send_bdx_icon
+                    R.drawable.send
                 )
 
                 mIconMargin = getDimensionPixelSize(

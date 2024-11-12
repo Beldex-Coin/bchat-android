@@ -1,5 +1,6 @@
 package io.beldex.bchat.permissions;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -11,8 +12,13 @@ import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
@@ -23,15 +29,17 @@ import androidx.fragment.app.Fragment;
 import com.annimon.stream.Stream;
 import com.annimon.stream.function.Consumer;
 import io.beldex.bchat.util.LRUCache;
-import io.beldex.bchat.util.LRUCache;
 
 import com.beldex.libbchat.utilities.ServiceUtil;
+
+import org.w3c.dom.Text;
 
 import java.lang.ref.WeakReference;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import io.beldex.bchat.R;
 
@@ -66,6 +74,8 @@ public class Permissions {
     private @DrawableRes int[]  rationalDialogHeader;
     private              String rationaleDialogMessage;
 
+    private              String rationalDialogTitle;
+
     private int minSdkVersion = 0;
     private int maxSdkVersion = Integer.MAX_VALUE;
 
@@ -78,9 +88,10 @@ public class Permissions {
       return this;
     }
 
-    public PermissionsBuilder withRationaleDialog(@NonNull String message, @NonNull @DrawableRes int... headers) {
+    public PermissionsBuilder withRationaleDialog(@NonNull String message, @NonNull String title, @NonNull @DrawableRes int... headers) {
       this.rationalDialogHeader   = headers;
       this.rationaleDialogMessage = message;
+      this.rationalDialogTitle    = title;
       return this;
     }
 
@@ -162,14 +173,37 @@ public class Permissions {
       request.onResult(requestedPermissions, grantResults, new boolean[requestedPermissions.length]);
     }
 
+    @SuppressLint("MissingInflatedId")
     @SuppressWarnings("ConstantConditions")
     private void executePermissionsRequestWithRationale(PermissionsRequest request) {
-      RationaleDialog.createFor(permissionObject.getContext(), rationaleDialogMessage, rationalDialogHeader)
-                     .setPositiveButton(R.string.Permissions_continue, (dialog, which) -> executePermissionsRequest(request))
-                     .setNegativeButton(R.string.Permissions_not_now, (dialog, which) -> executeNoPermissionsRequest(request))
-                     .show()
-                     .getWindow()
-                     .setLayout((int)(permissionObject.getWindowWidth() * .75), ViewGroup.LayoutParams.WRAP_CONTENT);
+      LayoutInflater factory = LayoutInflater.from(permissionObject.getContext());
+      View callPermissionDialogView =
+              factory.inflate(R.layout.permission_rationale_dialog, null);
+      AlertDialog callPermissionDialog = new AlertDialog.Builder(permissionObject.getContext()).create();
+      callPermissionDialog.setView(callPermissionDialogView);
+      callPermissionDialogView.<ImageView>findViewById(R.id.permissionImageview).setImageDrawable(ContextCompat.getDrawable(permissionObject.getContext(),rationalDialogHeader[0]));
+      if(!Objects.equals(rationaleDialogMessage, permissionObject.getContext().getString(R.string.ConversationActivity_to_send_photos_and_video_allow_signal_access_to_storage))) {
+        Log.d("Message-String",""+rationaleDialogMessage+","+permissionObject.getContext().getString(R.string.ConversationActivity_to_send_photos_and_video_allow_signal_access_to_storage));
+        callPermissionDialogView.<ImageView>findViewById(R.id.permissionImageview).setColorFilter(ContextCompat.getColor(permissionObject.getContext(), R.color.download_icon));
+      }
+      callPermissionDialogView.<TextView>findViewById(R.id.permissionDescriptionTextview).setText(rationaleDialogMessage);
+      callPermissionDialogView.<TextView>findViewById(R.id.permissionTitleTextview).setText(rationalDialogTitle);
+      callPermissionDialogView.<Button>findViewById(R.id.allowDialogBoxButton).setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+          executePermissionsRequest(request);
+          callPermissionDialog.dismiss();
+        }
+      });
+      callPermissionDialogView.<Button>findViewById(R.id.denyDialogBoxButton).setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+          executeNoPermissionsRequest(request);
+          callPermissionDialog.dismiss();
+        }
+      });
+      callPermissionDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+      callPermissionDialog.show();
     }
 
     private void executePermissionsRequest(PermissionsRequest request) {
@@ -362,8 +396,8 @@ public class Permissions {
         new AlertDialog.Builder(context)
             .setTitle(R.string.Permissions_permission_required)
             .setMessage(message)
-            .setPositiveButton(R.string.Permissions_continue, (dialog, which) -> context.startActivity(getApplicationSettingsIntent(context)))
-            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(R.string.Permissions_allow, (dialog, which) -> context.startActivity(getApplicationSettingsIntent(context)))
+            .setNeutralButton(R.string.Permissions_deny, null)
             .show();
       }
     }

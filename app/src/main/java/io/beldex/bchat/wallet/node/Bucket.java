@@ -19,8 +19,6 @@ package io.beldex.bchat.wallet.node;
 
 import io.beldex.bchat.wallet.node.util.HexHelper;
 import io.beldex.bchat.wallet.node.util.LevinReader;
-import io.beldex.bchat.wallet.node.util.HexHelper;
-import io.beldex.bchat.wallet.node.util.LevinReader;
 
 import java.io.DataInput;
 import java.io.DataOutput;

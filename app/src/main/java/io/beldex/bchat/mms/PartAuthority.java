@@ -10,6 +10,8 @@ import androidx.annotation.Nullable;
 
 import com.beldex.libbchat.messaging.sending_receiving.attachments.Attachment;
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentId;
+
+import io.beldex.bchat.BuildConfig;
 import io.beldex.bchat.dependencies.DatabaseComponent;
 import io.beldex.bchat.providers.BlobProvider;
 import io.beldex.bchat.providers.PartProvider;
@@ -20,9 +22,9 @@ import java.io.InputStream;
 
 public class PartAuthority {
 
-  private static final String PART_URI_STRING     = "content://io.beldex.provider.securesms/part";
-  private static final String THUMB_URI_STRING    = "content://io.beldex.provider.securesms/thumb";
-  private static final String STICKER_URI_STRING  = "content://io.beldex.provider.securesms/sticker";
+  private static final String PART_URI_STRING     = "content://"+ BuildConfig.providerId +".provider.securesms/part";
+  private static final String THUMB_URI_STRING    = "content://"+ BuildConfig.providerId +".provider.securesms/thumb";
+  private static final String STICKER_URI_STRING  = "content://"+ BuildConfig.providerId +".provider.securesms/sticker";
   private static final Uri    PART_CONTENT_URI    = Uri.parse(PART_URI_STRING);
   private static final Uri    THUMB_CONTENT_URI   = Uri.parse(THUMB_URI_STRING);
   private static final Uri    STICKER_CONTENT_URI = Uri.parse(STICKER_URI_STRING);
@@ -37,9 +39,9 @@ public class PartAuthority {
 
   static {
     uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-    uriMatcher.addURI("io.beldex.provider.securesms", "part/*/#", PART_ROW);
-    uriMatcher.addURI("io.beldex.provider.securesms", "thumb/*/#", THUMB_ROW);
-    uriMatcher.addURI("io.beldex.provider.securesms", "sticker/#", STICKER_ROW);
+    uriMatcher.addURI(BuildConfig.providerId  + ".provider.securesms", "part/*/#", PART_ROW);
+    uriMatcher.addURI(BuildConfig.providerId + ".provider.securesms", "thumb/*/#", THUMB_ROW);
+    uriMatcher.addURI(BuildConfig.providerId + ".provider.securesms", "sticker/#", STICKER_ROW);
     uriMatcher.addURI(BlobProvider.AUTHORITY, BlobProvider.PATH, BLOB_ROW);
   }
 

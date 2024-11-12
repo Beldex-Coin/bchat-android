@@ -42,6 +42,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.activity.result.contract.ActivityResultContracts
 import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import io.beldex.bchat.conversation.v2.ConversationFragmentV2
+import io.beldex.bchat.conversation_v2.DefaultGroupsViewModel
 import io.beldex.bchat.util.Helper
 
 class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
@@ -222,7 +223,7 @@ class JoinPublicChatNewActivity : PassphraseRequiredActionBarActivity() {
 
     // region Convenience
     private fun joinPublicChatIfPossible() {
-        val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        val inputMethodManager = getSystemService(BaseActionBarActivity.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(binding.chatURLEditText.windowToken, 0)
         val chatURL = binding.chatURLEditText.text.trim().toString().lowercase(Locale.US)
         joinPublicChatIfPossible(chatURL)

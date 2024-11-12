@@ -12,11 +12,6 @@ import android.text.TextUtils;
 
 import com.annimon.stream.Stream;
 import io.beldex.bchat.mms.MediaConstraints;
-import io.beldex.bchat.providers.BlobProvider;
-import io.beldex.bchat.util.MediaUtil;
-import io.beldex.bchat.util.SingleLiveEvent;
-import io.beldex.bchat.providers.BlobProvider;
-import io.beldex.bchat.mms.MediaConstraints;
 import io.beldex.bchat.util.MediaUtil;
 import io.beldex.bchat.util.SingleLiveEvent;
 

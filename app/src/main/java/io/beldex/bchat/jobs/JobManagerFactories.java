@@ -4,13 +4,6 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 
-import io.beldex.bchat.jobmanager.impl.CellServiceConstraint;
-import io.beldex.bchat.jobmanager.impl.CellServiceConstraintObserver;
-import io.beldex.bchat.jobmanager.impl.NetworkConstraint;
-import io.beldex.bchat.jobmanager.impl.NetworkConstraintObserver;
-import io.beldex.bchat.jobmanager.impl.NetworkOrCellServiceConstraint;
-import io.beldex.bchat.jobmanager.impl.SqlCipherMigrationConstraint;
-import io.beldex.bchat.jobmanager.impl.SqlCipherMigrationConstraintObserver;
 import io.beldex.bchat.jobmanager.Constraint;
 import io.beldex.bchat.jobmanager.ConstraintObserver;
 import io.beldex.bchat.jobmanager.Job;

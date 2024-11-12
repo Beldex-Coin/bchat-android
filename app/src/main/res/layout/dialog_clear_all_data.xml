@@ -18,8 +18,7 @@
         android:text="@string/dialog_clear_all_data_title"
         android:textColor="@color/text"
         android:layout_marginBottom="20dp"
-        android:textStyle="bold"
-        android:textSize="@dimen/medium_font_size" />
+        android:textSize="16sp" />
 
     <TextView
         android:fontFamily="@font/open_sans_medium"
@@ -48,7 +47,7 @@
         android:orientation="horizontal">
 
         <Button
-            style="@style/Widget.Bchat.Button.Dialog.Unimportant.New"
+            style="@style/Widget.Bchat.Button.Dialog.Cancel"
             android:id="@+id/cancelButton"
             android:layout_width="0dp"
             android:layout_height="@dimen/medium_button_height"

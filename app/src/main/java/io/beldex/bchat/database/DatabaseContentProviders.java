@@ -7,6 +7,8 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import io.beldex.bchat.BuildConfig;
+
 /**
  * Starting in API 26, a {@link ContentProvider} needs to be defined for each authority you wish to
  * observe changes on. These classes essentially do nothing except exist so Android doesn't complain.
@@ -14,11 +16,11 @@ import androidx.annotation.Nullable;
 public class DatabaseContentProviders {
 
   public static class ConversationList extends NoopContentProvider {
-    public static final Uri CONTENT_URI = Uri.parse("content://io.beldex.securesms.database.conversationlist");
+    public static final Uri CONTENT_URI = Uri.parse("content://"+ BuildConfig.providerId +".securesms.database.conversationlist");
   }
 
   public static class Conversation extends NoopContentProvider {
-    private static final String CONTENT_URI_STRING = "content://io.beldex.securesms.database.conversation/";
+    private static final String CONTENT_URI_STRING = "content://"+ BuildConfig.providerId +".securesms.database.conversation/";
 
     public static Uri getUriForThread(long threadId) {
       return Uri.parse(CONTENT_URI_STRING + threadId);
@@ -26,19 +28,19 @@ public class DatabaseContentProviders {
   }
 
   public static class Attachment extends NoopContentProvider {
-    public static final Uri CONTENT_URI = Uri.parse("content://io.beldex.securesms.database.attachment");
+    public static final Uri CONTENT_URI = Uri.parse("content://"+ BuildConfig.providerId +".securesms.database.attachment");
   }
 
   public static class Sticker extends NoopContentProvider {
-    public static final Uri CONTENT_URI = Uri.parse("content://io.beldex.securesms.database.sticker");
+    public static final Uri CONTENT_URI = Uri.parse("content://"+ BuildConfig.providerId +".securesms.database.sticker");
   }
 
   public static class StickerPack extends NoopContentProvider {
-    public static final Uri CONTENT_URI = Uri.parse("content://io.beldex.securesms.database.stickerpack");
+    public static final Uri CONTENT_URI = Uri.parse("content://"+ BuildConfig.providerId +".securesms.database.stickerpack");
   }
 
   public static class Recipient extends NoopContentProvider {
-    public static final Uri CONTENT_URI = Uri.parse("content://io.beldex.securesms.database.recipient");
+    public static final Uri CONTENT_URI = Uri.parse("content://"+ BuildConfig.providerId +".securesms.database.recipient");
   }
 
   private static abstract class NoopContentProvider extends ContentProvider {

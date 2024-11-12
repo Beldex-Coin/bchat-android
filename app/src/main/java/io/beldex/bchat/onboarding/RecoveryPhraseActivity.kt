@@ -5,11 +5,11 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.View
 import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ActivityRecoveryPhraseBinding
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libsignal.crypto.MnemonicCodec
 import com.beldex.libsignal.utilities.hexEncodedPrivateKey
@@ -17,21 +17,28 @@ import io.beldex.bchat.BaseActionBarActivity
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.crypto.MnemonicUtilities
 import io.beldex.bchat.home.HomeActivity
+import io.beldex.bchat.util.UiMode
+import io.beldex.bchat.util.UiModeUtilities
 import io.beldex.bchat.util.push
 import io.beldex.bchat.util.setUpActionBarBchatLogo
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ActivityRecoveryPhraseBinding
 
 
 class RecoveryPhraseActivity : BaseActionBarActivity() {
     private lateinit var binding: ActivityRecoveryPhraseBinding
     var copiedSeed = false
+    private var shareButtonLastClickTime: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setUpActionBarBchatLogo("Recovery Phrase", true)
+        setUpActionBarBchatLogo(getString(R.string.activity_settings_recovery_phrase_button_title), false)
         binding = ActivityRecoveryPhraseBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val isDarkTheme = UiModeUtilities.getUserSelectedUiMode(this) == UiMode.NIGHT
         with(binding)
         {
+            if(isDarkTheme) restoreSeedHintIcon.setImageResource(R.drawable.ic_restore_seed_dark) else restoreSeedHintIcon.setImageResource(R.drawable.ic_restore_seed_white)
             registerButton.setTextColor(ContextCompat.getColor(this@RecoveryPhraseActivity, R.color.disable_button_text_color))
             if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
                 registerButton.setBackgroundDrawable(
@@ -63,12 +70,15 @@ class RecoveryPhraseActivity : BaseActionBarActivity() {
                     homepage()
                 }
             }
-            recoveryPhraseCopyIcon.setOnClickListener() {
+            copyButton.setOnClickListener() {
                 copiedSeed = true
                 copySeed()
             }
-            shareBtn.setOnClickListener() {
-                shareAddress()
+            shareButton.setOnClickListener() {
+                if (SystemClock.elapsedRealtime() - shareButtonLastClickTime >= 1000) {
+                    shareButtonLastClickTime = SystemClock.elapsedRealtime()
+                    shareAddress()
+                }
             }
             if (bChatSeedTextView != null) {
                 bChatSeedTextView.text = seed
@@ -108,7 +118,7 @@ class RecoveryPhraseActivity : BaseActionBarActivity() {
         clipboard.setPrimaryClip(clip)
         Toast.makeText(this, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
         binding.registerButton.isEnabled = true
-        binding.hint?.visibility = View.GONE
+        binding.hint.visibility = View.GONE
         binding.registerButton.setTextColor(ContextCompat.getColor(this, R.color.white))
         if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
             binding.registerButton.setBackgroundDrawable(

@@ -1,14 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list
-    xmlns:android="http://schemas.android.com/apk/res/android">
-    <item>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:bottom="10dp"
+        android:gravity="end">
         <shape android:shape="rectangle">
-            <corners
-                android:topLeftRadius="@dimen/message_corner_radius"
-                android:topRightRadius="@dimen/message_corner_collapse_radius"
-                android:bottomRightRadius="@dimen/message_corner_radius"
-                android:bottomLeftRadius="@dimen/message_corner_radius" />
             <solid android:color="@color/white" />
+            <corners android:topLeftRadius="10dp"
+                android:topRightRadius="10dp"
+                android:bottomRightRadius="0dp"
+                android:bottomLeftRadius="10dp"/>
         </shape>
+    </item>
+    <item
+        android:gravity="end">
+        <vector
+            android:width="24dp"
+            android:height="24dp"
+            android:viewportWidth="24"
+            android:viewportHeight="24">
+            <path
+                android:pathData="M24,15.394C24,12.44 20.907,10.505 18.25,11.797L5.5,18L24,24V15.394Z"
+                android:fillColor="@color/transparent"/>
+        </vector>
     </item>
 </layer-list>

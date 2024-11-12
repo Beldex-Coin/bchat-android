@@ -1,7 +1,6 @@
 package io.beldex.bchat.data;
 
 import android.os.NetworkOnMainThreadException;
-import android.util.Log;
 
 import io.beldex.bchat.util.NodePinger;
 import io.beldex.bchat.util.OkHttpHelper;
@@ -19,6 +18,7 @@ import com.burgstaller.okhttp.digest.Credentials;
 import io.beldex.bchat.wallet.node.LevinPeer;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -37,7 +37,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import timber.log.Timber;
 
-public class  NodeInfo extends Node {
+public class  NodeInfo extends Node implements Serializable {
     final static public int MIN_MAJOR_VERSION = 12;
     final static public String RPC_VERSION = "2.0";
 

@@ -14,14 +14,6 @@ import android.service.chooser.ChooserTargetService;
 import androidx.annotation.NonNull;
 
 import io.beldex.bchat.ShareActivity;
-import io.beldex.bchat.database.ThreadDatabase;
-import io.beldex.bchat.database.model.ThreadRecord;
-import io.beldex.bchat.dependencies.DatabaseComponent;
-import io.beldex.bchat.mms.GlideApp;
-import io.beldex.bchat.util.BitmapUtil;
-import io.beldex.bchat.database.ThreadDatabase;
-import io.beldex.bchat.dependencies.DatabaseComponent;
-import io.beldex.bchat.ShareActivity;
 import io.beldex.bchat.util.BitmapUtil;
 import com.beldex.libbchat.utilities.recipients.Recipient;
 import com.beldex.libsignal.utilities.Log;
@@ -45,7 +37,7 @@ public class DirectShareService extends ChooserTargetService {
   {
     List<ChooserTarget> results        = new LinkedList<>();
     ComponentName       componentName  = new ComponentName(this, ShareActivity.class);
-    ThreadDatabase threadDatabase = DatabaseComponent.get(this).threadDatabase();
+    ThreadDatabase      threadDatabase = DatabaseComponent.get(this).threadDatabase();
       try (Cursor cursor = threadDatabase.getDirectShareList()) {
           ThreadDatabase.Reader reader = threadDatabase.readerFor(cursor);
           ThreadRecord record;

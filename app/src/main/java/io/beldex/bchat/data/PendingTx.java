@@ -1,7 +1,6 @@
 package io.beldex.bchat.data;
 
 import io.beldex.bchat.model.PendingTransaction;
-import io.beldex.bchat.model.PendingTransaction;
 
 public class PendingTx {
     public PendingTransaction.Status status;

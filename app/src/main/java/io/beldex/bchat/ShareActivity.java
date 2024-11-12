@@ -26,8 +26,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.provider.OpenableColumns;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -84,6 +87,12 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
   private String                       mimeType;
   private boolean                      isPassingAlongMedia;
 
+  private ImageView                    back;
+
+  private EditText                     searchField;
+
+  private ImageView                    searchAndClearImageview;
+
   @Override
   protected void onCreate(Bundle icicle, boolean ready) {
     if (!getIntent().hasExtra(ContactSelectionListFragment.DISPLAY_MODE)) {
@@ -93,11 +102,44 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
     getIntent().putExtra(ContactSelectionListFragment.REFRESHABLE, false);
 
     setContentView(R.layout.share_activity);
-
-    initializeToolbar();
     initializeResources();
-    initializeSearch();
     initializeMedia();
+    handledFunctionalities();
+  }
+
+  private void handledFunctionalities() {
+    back.setOnClickListener(view -> finish());
+
+    searchField.addTextChangedListener(new TextWatcher() {
+      @Override
+      public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+      }
+
+      @Override
+      public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        filter(charSequence.toString());
+        if(!charSequence.toString().isEmpty()){
+          searchAndClearImageview.setImageResource(R.drawable.ic_close);
+        }else{
+          searchAndClearImageview.setImageResource(R.drawable.ic_search_contact);
+        }
+      }
+
+      @Override
+      public void afterTextChanged(Editable editable) {
+      }
+    });
+
+    searchAndClearImageview.setOnClickListener(view -> {
+      if(!searchField.getText().toString().isEmpty()){
+        searchField.getText().clear();
+      }
+    });
+  }
+
+  public void filter(String text) {
+    contactsFragment.setQueryFilter(text);
   }
 
   @Override
@@ -151,6 +193,9 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
     searchAction     = findViewById(R.id.search_action);
     contactsFragment = (ContactSelectionListFragment) getSupportFragmentManager().findFragmentById(R.id.contact_selection_list_fragment);
     contactsFragment.setOnContactSelectedListener(this);
+    back             = findViewById(R.id.back);
+    searchField      = findViewById(R.id.searchContact);
+    searchAndClearImageview = findViewById(R.id.searchAndClearImageview);
   }
 
   private void initializeSearch() {
@@ -221,7 +266,6 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
       contactsFragment.getView().setVisibility(View.VISIBLE);
       progressWheel.setVisibility(View.GONE);
     } else {
-      Log.d("mediaPreviewPage->handleResolvedMedia ","true");
       createConversation(threadId, address, distributionType,true);
     }
   }
@@ -233,14 +277,10 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
     intent.putExtra(ConversationFragmentV2.THREAD_ID, threadId);
 
     isPassingAlongMedia = true;
-    Log.d("share->address ",""+address);
-    Log.d("share->threadId ",""+threadId);
     if(!mediaPreviewPage){
-      Log.d("mediaPreviewPage-> ","true");
       intent.putExtra(HomeActivity.SHORTCUT_LAUNCHER,true);
       startActivity(intent);
     }else {
-      Log.d("mediaPreviewPage-> ","false");
       setResult(RESULT_OK, intent);
       finish();
     }

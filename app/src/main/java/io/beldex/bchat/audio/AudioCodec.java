@@ -193,4 +193,27 @@ public class AudioCodec {
     return mediaCodec;
   }
 
+  /*public float getAmplitude() {
+    try {
+      // Get the audio data from the AudioRecord object
+      short[] audioData = new short[audioRecord.getBufferSizeInFrames()];
+      audioRecord.read(audioData, 0, audioRecord.getBufferSizeInFrames());
+
+      // Calculate the maximum absolute value of the audio data
+      var maxAmplitude = 0;
+      for (short sample:  audioData) {
+        int absSample = Math.abs(sample);
+        if (absSample > maxAmplitude) {
+          maxAmplitude = absSample;
+        }
+      }
+
+      // Convert the maximum amplitude to a percentage
+      return (maxAmplitude / (float) Short.MAX_VALUE * 100);
+    } catch (Exception e) {
+      e.printStackTrace();
+      return -1f;
+    }
+  }*/
+
 }

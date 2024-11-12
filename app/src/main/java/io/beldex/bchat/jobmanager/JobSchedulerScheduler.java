@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import io.beldex.bchat.ApplicationContext;
-import io.beldex.bchat.ApplicationContext;
 import com.beldex.libsignal.utilities.Log;
 
 import java.util.List;

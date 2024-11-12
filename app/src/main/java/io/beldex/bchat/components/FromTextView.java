@@ -13,8 +13,6 @@ import android.text.style.StyleSpan;
 import android.text.style.TypefaceSpan;
 import android.util.AttributeSet;
 
-import io.beldex.bchat.components.emoji.EmojiTextView;
-import io.beldex.bchat.util.ResUtil;
 import io.beldex.bchat.util.ResUtil;
 
 import io.beldex.bchat.R;

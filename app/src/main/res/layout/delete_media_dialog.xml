@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/default_dialog_background_inset">
+
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/medium_spacing"
+        android:drawablePadding="@dimen/large_spacing"
+        android:fontFamily="@font/open_sans_bold"
+        android:gravity="center_horizontal|center_vertical"
+        android:paddingHorizontal="@dimen/large_spacing"
+        android:textColor="@color/text"
+        android:textSize="@dimen/medium_font_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/delete" />
+
+    <TextView
+        android:id="@+id/deleteMessageContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/medium_spacing"
+        android:drawablePadding="@dimen/large_spacing"
+        android:fontFamily="@font/open_sans_regular"
+        android:gravity="center_horizontal|center_vertical"
+        android:paddingHorizontal="@dimen/large_spacing"
+        android:textColor="@color/text"
+        android:textSize="@dimen/small_font_size"
+        app:layout_constraintTop_toBottomOf="@id/titleTextView"
+        tools:text="@string/delete" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/medium_spacing"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/deleteMessageContent"
+        tools:ignore="MissingConstraints">
+
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/large_spacing"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="@dimen/small_spacing"
+            android:layout_marginBottom="@dimen/medium_spacing"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="@color/notification_content_cancel_button_background"
+            android:gravity="center"
+            android:padding="12dp"
+            android:text="@string/cancel"
+            android:textAllCaps="false"
+            android:textColor="@color/cancel_button_text"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <Button
+            android:id="@+id/deleteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/small_spacing"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="@dimen/large_spacing"
+            android:layout_marginBottom="@dimen/medium_spacing"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="@color/notification_content_cancel_button_background"
+            android:padding="12dp"
+            android:text="@string/delete"
+            android:textAllCaps="false"
+            android:textColor="@color/clear_red_color"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

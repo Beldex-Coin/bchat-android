@@ -9,8 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-import io.beldex.bchat.giph.model.ChunkedImageUrl;
-import io.beldex.bchat.giph.model.GiphyImage;
+
 import com.beldex.libsignal.utilities.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,9 +27,6 @@ import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.util.ByteBufferUtil;
 
 import io.beldex.bchat.R;
-
-import io.beldex.bchat.giph.model.ChunkedImageUrl;
-import io.beldex.bchat.giph.model.GiphyImage;
 import io.beldex.bchat.giph.model.GiphyImage;
 import io.beldex.bchat.giph.model.ChunkedImageUrl;
 import io.beldex.bchat.mms.GlideApp;

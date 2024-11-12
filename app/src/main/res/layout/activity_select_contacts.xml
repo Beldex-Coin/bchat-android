@@ -1,14 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="@color/page_background"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/card_color"
     android:layout_height="match_parent">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/searchCardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/medium_spacing"
+        android:layout_marginTop="@dimen/large_spacing"
+        android:layout_marginRight="@dimen/medium_spacing"
+        app:cardBackgroundColor="@color/search_background"
+        app:cardCornerRadius="30dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/search_edit_text_background"
+            >
+
+            <EditText
+                android:id="@+id/searchContact"
+                style="@style/BchatSearchEditText"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="54dp"
+                android:gravity="center_vertical"
+                android:hint="@string/search_contact"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLines="1"
+                android:background="@color/transparent"
+                android:singleLine="true" />
+
+            <ImageView
+                android:id="@+id/searchAndClearImageview"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:src="@drawable/ic_baseline_search_24"
+                android:layout_marginEnd="15dp"
+                android:contentDescription="@string/search_contact" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_above="@id/addButtonLayout"
+        android:layout_below="@id/searchCardView"
+        android:layout_marginTop="@dimen/small_spacing"
+        android:layout_marginBottom="@dimen/small_spacing"
+        tools:listitem="@layout/view_user"/>
 
     <LinearLayout
         android:id="@+id/emptyStateContainer"
@@ -29,4 +79,21 @@
 
     </LinearLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <LinearLayout
+        android:id="@+id/addButtonLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/syncing_option_card_background"
+        android:layout_alignParentBottom="true"
+        android:padding="@dimen/small_spacing">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/addButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/add"
+            style="@style/PrimaryContainedPositiveButton"/>
+    </LinearLayout>
+
+</RelativeLayout>

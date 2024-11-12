@@ -289,5 +289,4 @@
         <attr name="labeledEditText_background" format="color" />
         <attr name="labeledEditText_textLayout" format="reference" />
     </declare-styleable>
-
 </resources>

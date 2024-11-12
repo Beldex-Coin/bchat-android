@@ -4,14 +4,16 @@ import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
 import android.content.DialogInterface.OnClickListener
-import android.graphics.Typeface
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.text.TextUtils
+import android.view.LayoutInflater
+import android.view.View
 import android.webkit.MimeTypeMap
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -19,7 +21,10 @@ import com.beldex.libbchat.utilities.task.ProgressDialogAsyncTask
 import io.beldex.bchat.R
 import com.beldex.libsignal.utilities.ExternalStorageUtil
 import com.beldex.libsignal.utilities.Log
+import io.beldex.bchat.compose_utils.ComposeDialogContainer
+import io.beldex.bchat.compose_utils.DialogType
 import io.beldex.bchat.mms.PartAuthority
+import io.beldex.bchat.preferences.PrivacySettingsActivity
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -43,23 +48,25 @@ class SaveAttachmentTask : ProgressDialogAsyncTask<SaveAttachmentTask.Attachment
 
         @JvmStatic
         @JvmOverloads
-        fun showWarningDialog(context: Context, onAcceptListener: OnClickListener, count: Int = 1) {
-            val builder = AlertDialog.Builder(context, R.style.BChatAlertDialog)
-            .setTitle(R.string.ConversationFragment_save_to_sd_card)
-            .setIconAttribute(R.attr.dialog_alert_icon)
-            .setCancelable(true)
-            .setMessage(context.resources.getQuantityString(
-             R.plurals.ConversationFragment_saving_n_media_to_storage_warning,
-             count,
-             count))
-            .setPositiveButton(R.string.yes, onAcceptListener)
-            .setNegativeButton(R.string.no, null)
-            .show()
-
-            //New Line
-            val textView: TextView? = builder.findViewById(android.R.id.message)
-            val face: Typeface = Typeface.createFromAsset(context.assets,"fonts/open_sans_medium.ttf")
-            textView!!.typeface = face
+        fun showWarningDialog(context: Context, count: Int = 1, onAcceptListener: () -> Unit = {}) {
+            val factory = LayoutInflater.from(context)
+            val saveToStorageDialogView: View = factory.inflate(R.layout.save_storage_dialog_box, null)
+            val saveToStorageDialog = AlertDialog.Builder(context).create()
+            saveToStorageDialog.setView(saveToStorageDialogView)
+            saveToStorageDialog.setCancelable(false)
+            saveToStorageDialogView.findViewById<TextView>(R.id.messageTextView).text = context.resources.getQuantityString(
+                R.plurals.ConversationFragment_saving_n_media_to_storage_warning,
+                count,
+                count)
+            saveToStorageDialogView.findViewById<Button>(R.id.negativeButton).setOnClickListener{
+                saveToStorageDialog.dismiss()
+            }
+            saveToStorageDialogView.findViewById<Button>(R.id.positiveButton).setOnClickListener{
+                onAcceptListener()
+                saveToStorageDialog.dismiss()
+            }
+            saveToStorageDialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+            saveToStorageDialog.show()
         }
     }
 

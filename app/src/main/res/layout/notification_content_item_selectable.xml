@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/backgroundContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:background="@drawable/notification_content_item_background"
+    android:paddingHorizontal="@dimen/medium_spacing"
+    android:layout_marginHorizontal="@dimen/medium_spacing"
+    app:layout_columnSpan="5"
+    android:layout_marginBottom="10dp"
+    android:paddingVertical="@dimen/medium_spacing">
+
+    <View
+        android:id="@+id/selectButton"
+        android:layout_width="17dp"
+        android:layout_height="17dp"
+        android:background="@drawable/clear_data_option_select"
+        android:foreground="@drawable/radial_select_clear_option" />
+
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/medium_spacing"
+        android:fontFamily="@font/open_sans_regular"
+        android:lines="1"
+        android:textColor="@color/text"
+        android:textSize="@dimen/text_size"
+        tools:text="Notification Content" />
+</LinearLayout>

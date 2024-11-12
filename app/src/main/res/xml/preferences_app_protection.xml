@@ -5,8 +5,7 @@
 
     <PreferenceCategory android:title="@string/preferences_app_protection__app_access"
         app:iconSpaceReserved="false"
-        app:layout="@layout/preference_layout_header"
-        >
+        app:layout="@layout/preference_layout_header">
 
         <io.beldex.bchat.components.SwitchPreferenceCompat
             android:key="pref_android_screen_lock"
@@ -51,9 +50,9 @@
             android:key="pref_screen_security"
             app:iconSpaceReserved="false"
             android:title="@string/preferences__screen_security"
-
             android:summary="@string/preferences__disable_screen_security_to_allow_screen_shots"
-            app:layout="@layout/preference_layout"/>
+            app:layout="@layout/preference_layout"
+            app:icon="@drawable/ic_screen_security"/>
 
         <io.beldex.bchat.components.SwitchPreferenceCompat
             android:defaultValue="true"
@@ -61,7 +60,8 @@
             android:key="pref_incognito_keyboard"
             android:title="@string/preferences__incognito_keyboard"
             android:summary="@string/preferences__request_keyboard_to_disable_personalized_learning"
-            app:layout="@layout/preference_layout"/>
+            app:layout="@layout/preference_layout"
+            app:icon="@drawable/ic_incognito_keyboard" />
 
     </PreferenceCategory>
 
@@ -75,7 +75,8 @@
             app:iconSpaceReserved="false"
             android:title="Start Wallet"
             android:summary="@string/preferences_start_wallet_subtitle"
-            app:layout="@layout/preference_layout"/>
+            app:layout="@layout/preference_layout"
+            app:icon="@drawable/ic_wallet_setting"/>
 
         <io.beldex.bchat.components.SwitchPreferenceCompat
             android:defaultValue="false"
@@ -84,7 +85,8 @@
             android:title="@string/preferences_chat_pay_as_you_chat_title"
             android:dependency="pref_is_wallet_active"
             android:summary="@string/preferences_pay_as_you_chat_subTitle"
-            app:layout="@layout/preference_layout"/>
+            app:layout="@layout/preference_layout"
+            app:icon="@drawable/ic_pay_as_chat_setting"/>
 
     </PreferenceCategory>
 
@@ -105,7 +107,8 @@
             app:iconSpaceReserved="false"
             android:title="@string/preferences__read_receipts"
             android:summary="@string/preferences__if_read_receipts_are_disabled_you_wont_be_able_to_see_read_receipts"
-            app:layout="@layout/preference_layout"/>
+            app:layout="@layout/preference_layout"
+            app:icon="@drawable/ic_read_receipet_setting"/>
 
         <io.beldex.bchat.components.SwitchPreferenceCompat
             android:defaultValue="false"
@@ -113,7 +116,8 @@
             android:key="pref_typing_indicators"
             android:title="@string/preferences__typing_indicators"
             android:summary="@string/preferences__if_typing_indicators_are_disabled_you_wont_be_able_to_see_typing_indicators"
-            app:layout="@layout/preference_layout"/>
+            app:layout="@layout/preference_layout"
+            app:icon="@drawable/ic_type_indicater_setting"/>
 
         <io.beldex.bchat.components.SwitchPreferenceCompat
             android:defaultValue="true"
@@ -121,7 +125,8 @@
             app:iconSpaceReserved="false"
             android:summary="@string/preferences__previews_are_supported_for"
             android:title="@string/preferences__send_link_previews"
-            app:layout="@layout/preference_layout"/>
+            app:layout="@layout/preference_layout"
+            app:icon="@drawable/ic_send_link_setting"/>
 
         <!-- <Preference android:key="preference_category_blocked"
                     android:title="@string/preferences_app_protection__blocked_contacts" /> -->
@@ -131,7 +136,8 @@
             android:key="pref_call_notifications_enabled"
             android:title="@string/preferences__voice_video_calls"
             android:summary="@string/preferences__allow_access_voice_video"
-            app:layout="@layout/preference_layout"/>
+            app:layout="@layout/preference_layout"
+            app:icon="@drawable/ic_video_call_setting"/>
     </PreferenceCategory>
 
     <!-- <PreferenceCategory android:layout="@layout/preference_divider"/>

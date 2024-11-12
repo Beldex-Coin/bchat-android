@@ -7,10 +7,6 @@ import androidx.loader.content.Loader;
 
 import io.beldex.bchat.giph.model.GiphyImage;
 import io.beldex.bchat.giph.net.GiphyGifLoader;
-import io.beldex.bchat.giph.model.GiphyImage;
-import io.beldex.bchat.giph.net.GiphyGifLoader;
-import io.beldex.bchat.giph.model.GiphyImage;
-import io.beldex.bchat.giph.net.GiphyGifLoader;
 
 import java.util.List;
 

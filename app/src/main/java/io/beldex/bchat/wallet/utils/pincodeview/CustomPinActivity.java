@@ -11,9 +11,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import io.beldex.bchat.wallet.utils.pincodeview.managers.AppLockActivity;
+import com.airbnb.lottie.LottieAnimationView;
 import com.beldex.libbchat.utilities.TextSecurePreferences;
+import io.beldex.bchat.util.UiMode;
+import io.beldex.bchat.util.UiModeUtilities;
 import io.beldex.bchat.wallet.utils.pincodeview.managers.AppLockActivity;
+
+import java.util.Objects;
 
 import io.beldex.bchat.R;
 
@@ -55,9 +59,16 @@ public class CustomPinActivity extends AppLockActivity {
         View dialogView = inflater.inflate(R.layout.setup_pin_success, null);
 
         dialog.setView(dialogView);
-
+        boolean isDarkTheme = UiModeUtilities.getUserSelectedUiMode(getApplicationContext()) == UiMode.NIGHT;
         Button okButton = dialogView.findViewById(R.id.okButton);
         TextView title = dialogView.findViewById(R.id.setUpPinSuccessTitle);
+        LottieAnimationView animationView = dialogView.findViewById(R.id.success_animation);
+        if(isDarkTheme){
+            animationView.setAnimation(R.raw.sent);
+        }else {
+            animationView.setAnimation(R.raw.sent_light);
+        }
+
         if(status){
             title.setText(R.string.your_pin_has_been_set_up_successfully);
         }else{
@@ -65,7 +76,7 @@ public class CustomPinActivity extends AppLockActivity {
         }
 
         AlertDialog alert = dialog.create();
-        alert.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Objects.requireNonNull(alert.getWindow()).setBackgroundDrawableResource(R.color.transparent);
         alert.setCanceledOnTouchOutside(false);
         alert.show();
 

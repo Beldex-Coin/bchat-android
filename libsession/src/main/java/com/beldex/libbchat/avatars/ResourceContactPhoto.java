@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import androidx.annotation.DrawableRes;
 import androidx.appcompat.content.res.AppCompatResources;
 
+
 import com.makeramen.roundedimageview.RoundedDrawable;
 
 
@@ -36,10 +37,8 @@ public class ResourceContactPhoto implements FallbackContactPhoto {
     GradientDrawable background = new GradientDrawable();
     background.setShape(GradientDrawable.OVAL);
     background.setColor(inverted ? Color.WHITE : color);
-
     // resource image in the foreground
     RoundedDrawable foreground = (RoundedDrawable) RoundedDrawable.fromDrawable(AppCompatResources.getDrawable(context, resourceId));
-
     if (foreground != null) {
       if(padding == 0f){
         foreground.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -49,7 +48,6 @@ public class ResourceContactPhoto implements FallbackContactPhoto {
         foreground.setBorderColor(Color.TRANSPARENT);
         foreground.setBorderWidth(padding);
       }
-
       if (inverted) {
         foreground.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
       }

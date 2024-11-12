@@ -5,29 +5,48 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
-    android:padding="@dimen/small_spacing"
-    android:gravity="center">
-
-    <ImageView
-        android:id="@+id/deletedMessageViewIconImageView"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_marginStart="@dimen/small_spacing"
-        android:src="?menu_trash_icon"
-        app:tint="@color/text" />
-
-    <TextView
-        android:fontFamily="@font/open_sans_regular"
-        android:id="@+id/deleteTitleTextView"
-        android:layout_width="wrap_content"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="@dimen/small_spacing"
-        android:textSize="@dimen/very_small_font_size"
-        android:textColor="@color/text"
-        tools:text="This message has been deleted"
-        android:maxLines="2"
-        android:ellipsize="end" />
+        android:orientation="horizontal"
+        android:layout_marginTop="4dp"
+        android:paddingTop="@dimen/small_spacing"
+        android:paddingStart="@dimen/small_spacing"
+        android:paddingEnd="@dimen/small_spacing"
+        android:paddingBottom="4dp"
+        android:gravity="center">
+        <ImageView
+            android:id="@+id/deletedMessageViewIconImageView"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="@dimen/small_spacing"
+            android:src="?menu_trash_icon"
+            app:tint="@color/text" />
+
+        <TextView
+            android:fontFamily="@font/open_sans_regular"
+            android:id="@+id/deleteTitleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="@dimen/small_spacing"
+            android:textSize="@dimen/very_small_font_size"
+            android:textColor="@color/text"
+            tools:text="This message has been deleted"
+            android:maxLines="2"
+            android:ellipsize="end" />
+    </LinearLayout>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/delete_message_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="@font/open_sans_regular"
+        android:textSize="11sp"
+        android:visibility="visible"
+        tools:text="12:00 pm" />
 
 </io.beldex.bchat.conversation.v2.messages.DeletedMessageView>

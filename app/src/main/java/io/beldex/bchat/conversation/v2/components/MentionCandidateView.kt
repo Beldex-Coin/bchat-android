@@ -32,7 +32,7 @@ class MentionCandidateView : LinearLayout {
         profilePictureView.root.displayName = mentionCandidate.displayName
         profilePictureView.root.additionalPublicKey = null
         profilePictureView.root.glide = glide!!
-        profilePictureView.root.update()
+        profilePictureView.root.update(mentionCandidate.displayName)
         if (openGroupServer != null && openGroupRoom != null) {
             val isUserModerator = OpenGroupAPIV2.isUserModerator(mentionCandidate.publicKey, openGroupRoom!!, openGroupServer!!)
             moderatorIconImageView.visibility = if (isUserModerator) View.VISIBLE else View.GONE

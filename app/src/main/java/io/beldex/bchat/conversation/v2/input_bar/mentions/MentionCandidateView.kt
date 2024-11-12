@@ -32,7 +32,7 @@ class MentionCandidateView : RelativeLayout {
         profilePictureView.root.displayName = candidate.displayName
         profilePictureView.root.additionalPublicKey = null
         profilePictureView.root.glide = glide!!
-        profilePictureView.root.update()
+        profilePictureView.root.update(candidate.displayName)
         if (openGroupServer != null && openGroupRoom != null) {
             val isUserModerator = OpenGroupAPIV2.isUserModerator(candidate.publicKey, openGroupRoom!!, openGroupServer!!)
             moderatorIconImageView.visibility = if (isUserModerator) View.VISIBLE else View.GONE

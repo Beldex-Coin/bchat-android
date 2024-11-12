@@ -7,8 +7,6 @@ import androidx.annotation.NonNull;
 
 import io.beldex.bchat.imageeditor.model.EditorElement;
 import io.beldex.bchat.imageeditor.model.ThumbRenderer;
-import io.beldex.bchat.imageeditor.model.EditorElement;
-import io.beldex.bchat.imageeditor.model.ThumbRenderer;
 
 class ThumbDragEditBchat extends ElementEditBchat {
 

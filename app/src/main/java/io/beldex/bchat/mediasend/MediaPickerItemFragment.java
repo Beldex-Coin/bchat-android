@@ -22,7 +22,6 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import io.beldex.bchat.mms.GlideApp;
-import io.beldex.bchat.mms.GlideApp;
 import com.beldex.libbchat.utilities.Util;
 
 import java.util.ArrayList;

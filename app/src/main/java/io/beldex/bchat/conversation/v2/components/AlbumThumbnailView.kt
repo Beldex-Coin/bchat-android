@@ -11,8 +11,6 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.view.children
 import androidx.core.view.isVisible
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.AlbumThumbnailViewBinding
 import com.beldex.libbchat.messaging.sending_receiving.attachments.AttachmentTransferProgress
 import com.beldex.libbchat.messaging.sending_receiving.attachments.DatabaseAttachment
 import com.beldex.libbchat.utilities.recipients.Recipient
@@ -23,6 +21,11 @@ import io.beldex.bchat.database.model.MmsMessageRecord
 import io.beldex.bchat.mms.GlideRequests
 import io.beldex.bchat.mms.Slide
 import io.beldex.bchat.util.ActivityDispatcher
+import io.beldex.bchat.R
+import io.beldex.bchat.conversation.v2.messages.VisibleMessageContentView
+import io.beldex.bchat.databinding.AlbumThumbnailViewBinding
+import io.beldex.bchat.util.DateUtils
+import java.util.Locale
 
 class AlbumThumbnailView : RelativeLayout {
 
@@ -39,7 +42,7 @@ class AlbumThumbnailView : RelativeLayout {
 
     private val cornerMask by lazy {
         CornerMask(
-                this
+            this
         )
     }
     private var slides: List<Slide> = listOf()
@@ -54,7 +57,7 @@ class AlbumThumbnailView : RelativeLayout {
 
     // region Interaction
 
-    fun calculateHitObject(event: MotionEvent, mms: MmsMessageRecord, threadRecipient: Recipient, onAttachmentNeedsDownload: (Long, Long) -> Unit) {
+    fun calculateHitObject(event: MotionEvent, mms: MmsMessageRecord, threadRecipient: Recipient,  onAttachmentNeedsDownload: (Long, Long) -> Unit) {
         val rawXInt = event.rawX.toInt()
         val rawYInt = event.rawY.toInt()
         val eventRect = Rect(rawXInt, rawYInt, rawXInt, rawYInt)
@@ -93,7 +96,7 @@ class AlbumThumbnailView : RelativeLayout {
             // this should never be encountered because it's checked by parent
             return
         }
-        calculateRadius(isStart, isEnd, message.isOutgoing)
+        //calculateRadius(isStart, isEnd, message.isOutgoing)
 
         // recreate cell views if different size to what we have already (for recycling)
         if (slides.size != this.slideSize) {

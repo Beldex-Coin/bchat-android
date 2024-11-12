@@ -1,5 +1,7 @@
 package io.beldex.bchat.seed
+import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -12,6 +14,8 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import com.beldex.libbchat.utilities.SSKEnvironment
 import com.beldex.libbchat.utilities.TextSecurePreferences
@@ -21,12 +25,14 @@ import io.beldex.bchat.BaseActionBarActivity
 import io.beldex.bchat.crypto.IdentityKeyUtil
 import io.beldex.bchat.data.NetworkNodes
 import io.beldex.bchat.data.NodeInfo
+import io.beldex.bchat.home.HomeActivity
 import io.beldex.bchat.model.AsyncTaskCoroutine
 import io.beldex.bchat.model.NetworkType
 import io.beldex.bchat.model.Wallet
 import io.beldex.bchat.model.WalletManager
 import io.beldex.bchat.onboarding.AppLockActivity
-import io.beldex.bchat.onboarding.CreatePasswordActivity
+import io.beldex.bchat.onboarding.ui.PinCodeAction
+import io.beldex.bchat.service.KeyCachingService
 import io.beldex.bchat.util.BChatThreadPoolExecutor
 import io.beldex.bchat.util.Helper
 import io.beldex.bchat.util.NodePinger
@@ -40,7 +46,6 @@ import timber.log.Timber
 import java.io.File
 import java.math.BigInteger
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.util.Calendar
 import java.util.Collections
 import java.util.Date
@@ -74,7 +79,7 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
     private var restoreFromDateHeight = 0
     private val dateFormat = SimpleDateFormat("yyyy-MM", Locale.US)
     private var dates = ArrayMap<String,Int>()
-    private val namePattern = Pattern.compile("[A-Za-z0-9]+")
+    private val namePattern = Pattern.compile("[A-Za-z0-9\\s]+")
     private val myFormat = "yyyy-MM-dd" // mention the format you need
     val sdf = SimpleDateFormat(myFormat, Locale.US)
 
@@ -83,7 +88,7 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityRecoveryGetSeedDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setUpActionBarBchatLogo("Restore from Seed", true)
+        setUpActionBarBchatLogo(getString(R.string.restore_from_seed), false)
 
         dates["2019-03"] = 21164
         dates["2019-04"] = 42675
@@ -148,6 +153,13 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         dates["2024-01"] = 2894560
         dates["2024-02"] = 2986700
         dates["2024-03"] = 3049909
+        dates["2024-04"] = 3130730
+        dates["2024-05"] = 3187670
+        dates["2024-06"] = 3317020
+        dates["2024-07"] = 3429750
+        dates["2024-08"] = 3479700
+        dates["2024-09"] = 3536850
+        dates["2024-10"] = 3668050
 
         getSeed = intent.extras?.getString("seed")
         // create an OnDateSetListener
@@ -184,6 +196,24 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
             }
 
             restoreSeedWalletName.imeOptions = restoreSeedWalletName.imeOptions or 16777216 // Always use incognito keyboard
+            restoreSeedWalletName.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable) {
+                    restoreSeedRestoreButton.isEnabled =
+                        (s.isNotEmpty() && restoreSeedWalletRestoreHeight.text.trim().isNotEmpty()) || (s.isNotEmpty() && restoreSeedWalletRestoreDate.text.trim().isNotEmpty())
+                }
+
+                override fun beforeTextChanged(
+                    s: CharSequence, start: Int,
+                    count: Int, after: Int
+                ) {
+                }
+
+                override fun onTextChanged(
+                    s: CharSequence, start: Int,
+                    before: Int, count: Int
+                ) {
+                }
+            })
             restoreSeedWalletName.setOnEditorActionListener(
                 TextView.OnEditorActionListener { _, actionID, _ ->
                     if (actionID == EditorInfo.IME_ACTION_SEARCH ||
@@ -203,6 +233,8 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
                             Toast.LENGTH_SHORT
                         ).show()
                     }
+                    restoreSeedRestoreButton.isEnabled =
+                        (s.isNotEmpty() && restoreSeedWalletName.text.trim().isNotEmpty()) || (restoreSeedWalletName.text.trim().isNotEmpty() && restoreSeedWalletRestoreDate.text.trim().isNotEmpty())
                 }
 
                 override fun beforeTextChanged(
@@ -231,16 +263,21 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         }
 
         binding.restoreFromDateButton.setOnClickListener {
+            binding.restoreFromSeedBlockHeightTitle.text = getString(R.string.restore_from_date_title)
             binding.restoreSeedWalletRestoreDateCard.visibility = View.VISIBLE
             binding.restoreSeedWalletRestoreHeightCard.visibility = View.GONE
             binding.restoreFromHeightButton.visibility = View.VISIBLE
             binding.restoreFromDateButton.visibility = View.GONE
+            binding.restoreSeedWalletRestoreHeight.text.clear()
         }
         binding.restoreFromHeightButton.setOnClickListener {
+            binding.restoreFromSeedBlockHeightTitle.text = getString(R.string.restore_from_height_title)
             binding.restoreSeedWalletRestoreDateCard.visibility = View.GONE
             binding.restoreSeedWalletRestoreHeightCard.visibility = View.VISIBLE
             binding.restoreFromHeightButton.visibility = View.GONE
             binding.restoreFromDateButton.visibility = View.VISIBLE
+            binding.restoreSeedWalletRestoreDate.text=""
+            binding.restoreSeedRestoreButton.isEnabled = false
         }
 
 
@@ -251,8 +288,31 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
     }
     private fun updateDateInView() {
         binding.restoreSeedWalletRestoreDate.text = sdf.format(cal.time)
+        binding.restoreSeedRestoreButton.isEnabled =
+            (binding.restoreSeedWalletName.text.trim().isNotEmpty() && binding.restoreSeedWalletRestoreHeight.text.trim().isNotEmpty()) || (binding.restoreSeedWalletName.text.trim().isNotEmpty() && binding.restoreSeedWalletRestoreDate.text.trim().isNotEmpty())
         if (cal.time != null) {
             restoreFromDateHeight = RestoreHeight.getInstance().getHeight(sdf.format(cal.time)).toInt()
+        }
+    }
+
+    private val pinCodeLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            TextSecurePreferences.setCopiedSeed(this,true)
+            //New Line AirDrop
+            TextSecurePreferences.setAirdropAnimationStatus(this,true)
+
+            TextSecurePreferences.setScreenLockEnabled(this, true)
+            /*Hales63*/
+
+            TextSecurePreferences.setScreenLockTimeout(this, 950400)
+            TextSecurePreferences.setHasSeenWelcomeScreen(this, true)
+            val intent1 = Intent(this, KeyCachingService::class.java)
+            intent1.action = KeyCachingService.LOCK_TOGGLED_EVENT
+            this.startService(intent1)
+            val intent = Intent(this, HomeActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            push(intent)
+            finish()
         }
     }
 
@@ -312,10 +372,11 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
        /* TextSecurePreferences.setRestorationTime(this, 0)
         TextSecurePreferences.setHasViewedSeed(this, false)
 */
-        val intent = Intent(this, CreatePasswordActivity::class.java)
-        intent.putExtra("callPage",2)
-        push(intent)
-        finish()
+        binding.restoreSeedRestoreButton.isEnabled = true
+        val intent = Intent(Intent.ACTION_VIEW, "onboarding://manage_pin?finish=true&action=${PinCodeAction.CreatePinCode.action}".toUri())
+        pinCodeLauncher.launch(intent)
+//        val intent = Intent(this, CreatePasswordActivity::class.java)
+//        intent.putExtra("callPage",2)
 
         //Old Code
        /* val keyPairGenerationResult = KeyPairUtilities.generate()
@@ -351,9 +412,9 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         pingSelectedNode()
     }
 
-    fun getOrPopulateFavourites(): Set<NodeInfo?> {
+    fun getOrPopulateFavourites(context: Context): Set<NodeInfo?> {
         if (favouriteNodes.isEmpty()) {
-            for (node in NetworkNodes.getNodes()) {
+            for (node in NetworkNodes.getNodes(context)) {
                 val nodeInfo = NodeInfo.fromString(node)
                 if (nodeInfo != null) {
                     nodeInfo.isFavourite = true
@@ -431,7 +492,7 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         }
 
         override fun doInBackground(vararg params: Int?): NodeInfo? {
-            val favourites: Set<NodeInfo?> = recoveryGetSeedDetailsActivity.getOrPopulateFavourites()
+            val favourites: Set<NodeInfo?> = recoveryGetSeedDetailsActivity.getOrPopulateFavourites(recoveryGetSeedDetailsActivity)
 
             var selectedNode: NodeInfo?
             if (params[0] == FIND_BEST) {
@@ -454,11 +515,9 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
                     selectedNode.testRpcService()
             } else throw java.lang.IllegalStateException()
             return if (selectedNode != null && selectedNode.isValid) {
-                Timber.d("Testing-->12")
                 recoveryGetSeedDetailsActivity.setNode(selectedNode)
                 selectedNode
             } else {
-                Timber.d("Testing-->13")
                 recoveryGetSeedDetailsActivity.setNode(null)
                 null
             }
@@ -538,16 +597,14 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         getSeed: String?,
         restoreHeight: Long
     ) {
-        Log.d("recovery Wallet 1","OK")
-        Log.d("Beldex"," Restore Height $restoreHeight")
-        createWallet(name, password,
+        val trimmedName = name.replace(" ","")
+        createWallet(trimmedName, password,
             object : WalletCreator {
                 override fun createWallet(aFile: File?, password: String?): Boolean {
-                    Log.d("recovery Wallet 2","OK")
                     //val currentNode: NodeInfo = getNode()
                     // get it from the connected node if we have one, and go back ca. 4 days
                     //val restoreHeight: Long = if (currentNode != null) currentNode.getHeight() - 2000 else -1
-                    val newWallet: Wallet= io.beldex.bchat.model.WalletManager.getInstance()
+                    val newWallet: Wallet = WalletManager.getInstance()
                         .recoveryWallet(
                             aFile,
                             password,
@@ -575,7 +632,6 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         name: String?, password: String?,
         walletCreator: WalletCreator
     ) {
-        Timber.d("create Wallet","OK")
         if (name != null && password != null) {
 
             AsyncCreateWallet(name, password, walletCreator, this)
@@ -612,7 +668,6 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
             recoveryGetSeedDetailsActivity.dismissProgressDialog()
             if (result == true) {
                 //startDetails(newWalletFile, walletPassword, GenerateReviewFragment.VIEW_TYPE_ACCEPT)
-                Log.d("Recovery Wallet","OK")
 
                 /*val intent = Intent(recoveryGetSeedDetailsActivity, RegisterActivity::class.java)
                 val b = Bundle()
@@ -642,8 +697,10 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
             val keysFile = File(walletFolder, "$walletName.keys")
             val addressFile = File(walletFolder, "$walletName.address.txt")
             if (cacheFile.exists() || keysFile.exists() || addressFile.exists()) {
-                Timber.e("Some wallet files already exist for %s", cacheFile.absolutePath)
-                return false
+                cacheFile.delete()
+                keysFile.delete()
+                addressFile.delete()
+                //return false
             }
             newWalletFile = File(walletFolder, walletName)
             val success = walletCreator.createWallet(newWalletFile, walletPassword)
@@ -698,18 +755,15 @@ class RecoveryGetSeedDetailsActivity :  BaseActionBarActivity() {
         Timber.d("loadFavourites")
         favouriteNodes.clear()
         val selectedNodeId = getSelectedNodeId()
-        val storedNodes = getSharedPreferences(
-            NODES_PREFS_NAME,
-            MODE_PRIVATE
-        ).all
-        for (nodeEntry in storedNodes.entries) {
+        val storedNodes: Map<String?,*>? = getSharedPreferences(NODES_PREFS_NAME, MODE_PRIVATE).all
+        for (nodeEntry: Map.Entry<String?, *>? in storedNodes!!.entries) {
             if (nodeEntry != null) { // just in case, ignore possible future errors
                 val nodeId = nodeEntry.value as String
-                val addedNode: NodeInfo= addFavourite(nodeId)!!
+                val addedNode: NodeInfo? = addFavourite(nodeId)!!
                 if (addedNode != null) {
                     if (nodeId == selectedNodeId) {
                         //Important
-                        addedNode.setSelected(true)
+                        addedNode.isSelected = true
                     }
                 }
             }

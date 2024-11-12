@@ -6,8 +6,6 @@ import androidx.annotation.NonNull;
 
 import io.beldex.bchat.imageeditor.model.EditorElement;
 import io.beldex.bchat.imageeditor.renderers.BezierDrawingRenderer;
-import io.beldex.bchat.imageeditor.model.EditorElement;
-import io.beldex.bchat.imageeditor.renderers.BezierDrawingRenderer;
 
 /**
  * Passes touch events into a {@link BezierDrawingRenderer}.

@@ -22,9 +22,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import io.beldex.bchat.database.GroupDatabase;
-import io.beldex.bchat.dependencies.DatabaseComponent;
 
 import com.beldex.libbchat.utilities.GroupRecord;
+import io.beldex.bchat.database.GroupDatabase;
+import io.beldex.bchat.dependencies.DatabaseComponent;
 
 import java.util.LinkedList;
 import java.util.List;

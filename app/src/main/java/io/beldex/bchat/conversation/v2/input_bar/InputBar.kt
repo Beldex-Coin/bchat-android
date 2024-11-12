@@ -7,16 +7,16 @@ import android.net.Uri
 import android.os.SystemClock
 import android.text.TextWatcher
 import android.util.AttributeSet
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnKeyListener
 import android.view.inputmethod.EditorInfo
 import android.widget.RelativeLayout
 import androidx.core.view.isVisible
 import com.beldex.libbchat.messaging.sending_receiving.link_preview.LinkPreview
-import io.beldex.bchat.R
-import io.beldex.bchat.databinding.ViewInputBarBinding
 import com.beldex.libbchat.utilities.TextSecurePreferences
 import com.beldex.libbchat.utilities.recipients.Recipient
 import io.beldex.bchat.conversation.v2.components.LinkPreviewDraftView
@@ -25,10 +25,14 @@ import io.beldex.bchat.conversation.v2.messages.QuoteView
 import io.beldex.bchat.conversation.v2.messages.QuoteViewDelegate
 import io.beldex.bchat.database.model.MessageRecord
 import io.beldex.bchat.database.model.MmsMessageRecord
+import io.beldex.bchat.mms.GlideRequests
+import io.beldex.bchat.util.UiMode
+import io.beldex.bchat.util.UiModeUtilities
+import io.beldex.bchat.util.getColorWithID
 import io.beldex.bchat.util.toDp
 import io.beldex.bchat.util.toPx
-import io.beldex.bchat.mms.GlideRequests
-import io.beldex.bchat.util.getColorWithID
+import io.beldex.bchat.R
+import io.beldex.bchat.databinding.ViewInputBarBinding
 
 
 class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, LinkPreviewDraftViewDelegate{
@@ -64,8 +68,8 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
     private var microPhoneButtonLastLongClickTime: Long = 0
 
     private val attachmentsButton by lazy { InputBarButton(context, R.drawable.ic_attach, isMessageBox = true) }
-    private val microphoneButton by lazy { InputBarButton(context, R.drawable.ic_microphone, isMessageBox = true) }
-    private val sendButton by lazy { InputBarButton(context, R.drawable.ic_send, true, isMessageBox = true) }
+    private val microphoneButton by lazy { InputBarButton(context, R.drawable.ic_filled_microphone, true, isMessageBox = true) }
+    private val sendButton by lazy { InputBarButton(context, R.drawable.send, true, isMessageBox = true) }
 
     // region Lifecycle
     constructor(context: Context) : super(context) { initialize() }
@@ -129,11 +133,10 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         /* Hales63 */
         val incognitoFlag = if (TextSecurePreferences.isIncognitoKeyboardEnabled(context)) 16777216 else 0
         binding.inputBarEditText.imeOptions = binding.inputBarEditText.imeOptions or incognitoFlag
-        if(TextSecurePreferences.isEnterSendsEnabled(context))
-        {
+        if(TextSecurePreferences.isEnterSendsEnabled(context)) {
             //Log.d("Beldex","is enter send enable if ${TextSecurePreferences.isEnterSendsEnabled(context)}")
             binding.inputBarEditText.inputType = (EditorInfo.TYPE_CLASS_TEXT)
-            binding.inputBarEditText.imeOptions = (EditorInfo.IME_ACTION_SEND);
+            binding.inputBarEditText.imeOptions = (EditorInfo.IME_ACTION_SEND)
             binding.inputBarEditText.setOnKeyListener(OnKeyListener { v, keyCode, event -> // If the event is a key-down event on the "enter" button
                 if (event.action == KeyEvent.ACTION_DOWN &&
                     keyCode == KeyEvent.KEYCODE_ENTER
@@ -145,6 +148,12 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
                 }
                 false
             })
+        }
+        val isDarkMode = UiModeUtilities.getUserSelectedUiMode(context) == UiMode.NIGHT
+        binding.containerCardView.strokeWidth = if (isDarkMode) {
+            0
+        } else {
+            2
         }
     }
     // endregion
@@ -179,6 +188,8 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         linkPreview = null
         linkPreviewDraftView = null
         binding.inputBarAdditionalContentContainer.removeAllViews()
+        // adjust rounded corner of background card
+        binding.containerCardView.radius = toPx(24, resources).toFloat()
         // inflate quoteview with typed array here
         val layout = LayoutInflater.from(context).inflate(R.layout.view_quote_draft, binding.inputBarAdditionalContentContainer, false)
         val quoteView = layout.findViewById<QuoteView>(R.id.mainQuoteViewContainer)
@@ -194,6 +205,8 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
     override fun cancelQuoteDraft(i:Int) {
         quote = null
         binding.inputBarAdditionalContentContainer.removeAllViews()
+        //adjust input bar card radius
+        binding.containerCardView.radius = toPx(48, resources).toFloat()
         requestLayout()
         if(i==1){
             binding.inputBarEditText.text?.clear()
@@ -207,6 +220,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         linkPreviewDraftView.delegate = this
         this.linkPreviewDraftView = linkPreviewDraftView
         binding.inputBarAdditionalContentContainer.addView(linkPreviewDraftView)
+        binding.containerCardView.radius = toPx(24, resources).toFloat()
         requestLayout()
     }
 
@@ -220,6 +234,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         if (quote != null) { return }
         linkPreview = null
         binding.inputBarAdditionalContentContainer.removeAllViews()
+        binding.containerCardView.radius = toPx(48, resources).toFloat()
         requestLayout()
         if(i==1){
             binding.inputBarEditText.text?.clear()
@@ -228,16 +243,17 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
 
     private fun showOrHideInputIfNeeded() {
         if (showInput) {
-            setOf( binding.inputBarEditText, attachmentsButton ).forEach { it.isVisible = true }
+            setOf( binding.inputBarEditText, attachmentsButton, binding.microphoneOrSendButtonContainer ).forEach { it.isVisible = true }
             microphoneButton.isVisible = text.isEmpty() || text.isBlank()
             sendButton.isVisible = text.isNotEmpty() && text.isNotBlank()
             binding.noLongerParticipantTextView.isVisible = false
         } else {
             cancelQuoteDraft(2)
             cancelLinkPreviewDraft(2)
-            val views = setOf( binding.inputBarEditText, attachmentsButton, microphoneButton, sendButton )
+            val views = setOf( binding.inputBarEditText, attachmentsButton, microphoneButton, sendButton, binding.microphoneOrSendButtonContainer )
             views.forEach { it.isVisible = false }
             binding.noLongerParticipantTextView.isVisible = true
+//            binding.containerCardView.setContentPadding(16, 16, 16, 16)
         }
     }
     /*Hales63*/
@@ -256,7 +272,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
     //Payment Tag
 
     fun setTextColor(thread: Recipient?, reportIssueId: String, status: Boolean) {
-        if (!thread?.isGroupRecipient!! && thread.hasApprovedMe() && !thread.isBlocked && reportIssueId != thread.address.toString() && !thread.isLocalNumber) {
+        if (!thread?.isGroupRecipient!! && thread.hasApprovedMe() && !thread.isBlocked && thread.isApproved && reportIssueId != thread.address.toString() && !thread.isLocalNumber) {
             if (status) {
                 val face = Typeface.createFromAsset(context!!.assets,
                     "fonts/open_sans_bold.ttf")
@@ -272,10 +288,10 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
     }
 
     fun showPayAsYouChatBDXIcon(thread: Recipient,reportIssueId:String) {
-        if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && reportIssueId!=thread.address.toString() && !thread.isLocalNumber && TextSecurePreferences.isWalletActive(context)) {
+        if (!thread.isGroupRecipient && thread.hasApprovedMe() && !thread.isBlocked && thread.isApproved && reportIssueId!=thread.address.toString() && !thread.isLocalNumber && TextSecurePreferences.isWalletActive(context)) {
             binding.payAsYouChatLayout.visibility = View.VISIBLE
         }else{
-            binding.payAsYouChatLayout.visibility = View.GONE
+            binding.payAsYouChatLayout.visibility = View.INVISIBLE
         }
     }
 
@@ -292,7 +308,7 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
         binding.blockProgressBar.progress = progress
     }
 
-    fun setDrawableProgressBar(context: Context, type: Boolean,syncStatus: String) {
+    fun setDrawableProgressBar(context: Context, type: Boolean,syncStatus: String,n: Float) {
         if(TextSecurePreferences.isPayAsYouChat(context)) {
             if (type) {
                 binding.failedBlockProgressBar.isVisible = type
@@ -303,6 +319,50 @@ class InputBar : RelativeLayout, InputBarEditTextDelegate, QuoteViewDelegate, Li
                 binding.blockProgressBar.isVisible = !type
                 if(syncStatus == "100%" && syncStatus != "--") {
                     binding.blockProgressBar.progress = 100
+                }else{
+                    when {
+                        n==4f -> {
+                            binding.blockProgressBar.isVisible = !type
+                        }
+                        n==2f -> {
+                            binding.blockProgressBar.isVisible = !type
+                        }
+                        n==3f -> {
+                            binding.blockProgressBar.isVisible = !type
+                            binding.blockProgressBar.progress = 100
+                        }
+                        n<1f && n >= 0f -> {
+                            if(n>=0.01f && n<0.1f){
+                                binding.blockProgressBar.progress = 5
+                            }else if(n>=0.1f && n<0.2f){
+                                binding.blockProgressBar.progress = 10
+                            }else if(n>=0.2f && n<0.3f){
+                                binding.blockProgressBar.progress = 20
+                            }else if(n>=0.3f && n<0.4f){
+                                binding.blockProgressBar.progress = 30
+                            }else if(n>=0.4f && n<0.5f){
+                                binding.blockProgressBar.progress = 40
+                            }else if(n>=0.55f && n<0.6f){
+                                binding.blockProgressBar.progress = 55
+                            }else if(n>=0.6f && n<0.7f){
+                                binding.blockProgressBar.progress = 60
+                            }else if(n>=0.7f && n<0.8f){
+                                binding.blockProgressBar.progress = 70
+                            }else if(n>=0.8f && n<0.9f){
+                                binding.blockProgressBar.progress = 80
+                            }else if(n>=0.9f && n<0.95f){
+                                binding.blockProgressBar.progress = 90
+                            }else if(n>=0.95f && n<0.99f){
+                                binding.blockProgressBar.progress = 95
+                            }else{
+                                binding.blockProgressBar.progress = 100
+                            }
+                            binding.blockProgressBar.isVisible = !type
+                        }
+                        else -> { // <0
+                            binding.blockProgressBar.isVisible = false
+                        }
+                    }
                 }
                 binding.failedBlockProgressBar.isVisible = type
                 binding.failedBlockProgressBar.progress = 0

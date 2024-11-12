@@ -98,4 +98,10 @@ public class AudioRecorder {
   private <T> void sendToFuture(final SettableFuture<T> future, final T result) {
     Util.runOnMain(() -> future.set(result));
   }
+
+  /*public float getAmplitude() {
+    if (audioCodec != null)
+      return audioCodec.getAmplitude();
+    else return -1f;
+  }*/
 }

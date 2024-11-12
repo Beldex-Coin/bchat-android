@@ -13,9 +13,6 @@ import android.net.Uri;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
-import io.beldex.bchat.notifications.NotificationChannels;
-import io.beldex.bchat.util.FileProviderUtil;
-import io.beldex.bchat.notifications.NotificationChannels;
 import io.beldex.bchat.util.FileProviderUtil;
 import com.beldex.libsignal.utilities.Log;
 

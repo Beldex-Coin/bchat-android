@@ -12,9 +12,6 @@ import android.view.View;
 import android.view.Window;
 import android.widget.FrameLayout;
 
-import io.beldex.bchat.mms.GlideRequests;
-import io.beldex.bchat.mms.VideoSlide;
-import io.beldex.bchat.video.VideoPlayer;
 import io.beldex.bchat.mms.VideoSlide;
 import io.beldex.bchat.video.VideoPlayer;
 

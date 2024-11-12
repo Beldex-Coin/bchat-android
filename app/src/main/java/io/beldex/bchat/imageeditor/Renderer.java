@@ -4,7 +4,6 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 import io.beldex.bchat.imageeditor.model.EditorElement;
-import io.beldex.bchat.imageeditor.model.EditorElement;
 
 /**
  * Responsible for rendering a single {@link EditorElement} to the canvas.

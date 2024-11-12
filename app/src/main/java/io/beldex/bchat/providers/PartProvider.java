@@ -29,10 +29,7 @@ import android.provider.OpenableColumns;
 
 import androidx.annotation.NonNull;
 
-import io.beldex.bchat.dependencies.DatabaseComponent;
-import io.beldex.bchat.mms.PartUriParser;
-import io.beldex.bchat.util.MemoryFileUtil;
-import io.beldex.bchat.dependencies.DatabaseComponent;
+import io.beldex.bchat.BuildConfig;
 import io.beldex.bchat.mms.PartUriParser;
 import io.beldex.bchat.service.KeyCachingService;
 import io.beldex.bchat.util.MemoryFileUtil;
@@ -51,7 +48,7 @@ public class PartProvider extends ContentProvider {
 
   private static final String TAG = PartProvider.class.getSimpleName();
 
-  private static final String CONTENT_URI_STRING = "content://io.beldex.provider.securesms/part";
+  private static final String CONTENT_URI_STRING = "content://"+ BuildConfig.providerId +".provider.securesms/part";
   private static final Uri    CONTENT_URI        = Uri.parse(CONTENT_URI_STRING);
   private static final int    SINGLE_ROW         = 1;
 
@@ -59,7 +56,7 @@ public class PartProvider extends ContentProvider {
 
   static {
     uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-    uriMatcher.addURI("io.beldex.provider.securesms", "part/*/#", SINGLE_ROW);
+    uriMatcher.addURI(BuildConfig.providerId + ".provider.securesms", "part/*/#", SINGLE_ROW);
   }
 
   @Override

@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.ComponentName
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.IntentSender
 import android.content.ServiceConnection
@@ -32,7 +31,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
+import com.beldex.libbchat.messaging.MessagingModuleConfiguration
 import com.beldex.libbchat.messaging.jobs.JobQueue
+import com.beldex.libbchat.mnode.MnodeAPI
 import com.beldex.libbchat.utilities.Address
 import com.beldex.libbchat.utilities.ProfilePictureModifiedEvent
 import com.beldex.libbchat.utilities.TextSecurePreferences
@@ -51,6 +52,8 @@ import io.beldex.bchat.ApplicationContext
 import io.beldex.bchat.MediaOverviewActivity
 import io.beldex.bchat.PassphraseRequiredActionBarActivity
 import io.beldex.bchat.components.ProfilePictureView
+import io.beldex.bchat.compose_utils.ComposeDialogContainer
+import io.beldex.bchat.compose_utils.DialogType
 import io.beldex.bchat.conversation.v2.ConversationFragmentV2
 import io.beldex.bchat.conversation.v2.ConversationViewModel
 import io.beldex.bchat.conversation.v2.messages.VoiceMessageViewDelegate
@@ -63,7 +66,6 @@ import io.beldex.bchat.database.MmsSmsDatabase
 import io.beldex.bchat.dependencies.DatabaseComponent
 import io.beldex.bchat.groups.OpenGroupManager
 import io.beldex.bchat.home.search.GlobalSearchAdapter
-import io.beldex.bchat.home.search.GlobalSearchInputLayout
 import io.beldex.bchat.home.search.GlobalSearchViewModel
 import io.beldex.bchat.model.AsyncTaskCoroutine
 import io.beldex.bchat.model.NetworkType
@@ -88,6 +90,8 @@ import io.beldex.bchat.wallet.OnUriScannedListener
 import io.beldex.bchat.wallet.OnUriWalletScannedListener
 import io.beldex.bchat.wallet.WalletFragment
 import io.beldex.bchat.wallet.info.WalletInfoActivity
+import io.beldex.bchat.wallet.jetpackcomposeUI.settings.WalletSettingComposeActivity
+import io.beldex.bchat.wallet.jetpackcomposeUI.settings.WalletSettingScreens
 import io.beldex.bchat.wallet.node.NodeFragment
 import io.beldex.bchat.wallet.receive.ReceiveFragment
 import io.beldex.bchat.wallet.rescan.RescanDialog
@@ -95,20 +99,20 @@ import io.beldex.bchat.wallet.scanner.ScannerFragment
 import io.beldex.bchat.wallet.scanner.WalletScannerFragment
 import io.beldex.bchat.wallet.send.SendFragment
 import io.beldex.bchat.wallet.service.WalletService
-import io.beldex.bchat.wallet.settings.WalletSettings
 import io.beldex.bchat.wallet.utils.LegacyStorageHelper
+import io.beldex.bchat.webrtc.NetworkChangeReceiver
 import dagger.hilt.android.AndroidEntryPoint
 import io.beldex.bchat.BuildConfig
 import io.beldex.bchat.R
 import io.beldex.bchat.databinding.ActivityHomeBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import nl.komponents.kovenant.ui.failUi
+import nl.komponents.kovenant.ui.successUi
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -121,7 +125,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDelegate,HomeFragment.HomeFragmentListener,ConversationFragmentV2.Listener,UserDetailsBottomSheet.UserDetailsBottomSheetListener,VoiceMessageViewDelegate, ActivityDispatcher,
     WalletFragment.Listener, WalletService.Observer, WalletScannerFragment.OnScannedListener,SendFragment.OnScanListener,SendFragment.Listener,ReceiveFragment.Listener,WalletFragment.OnScanListener,
-    ScannerFragment.OnWalletScannedListener,WalletScannerFragment.Listener, NodeFragment.Listener {
+    ScannerFragment.OnWalletScannedListener,WalletScannerFragment.Listener,NodeFragment.Listener {
 
     private lateinit var binding: ActivityHomeBinding
 
@@ -172,6 +176,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     lateinit var remoteConfig: FirebaseRemoteConfigUtil
     private var favouriteNodes: Set<NodeInfo> = setOf()
     val list: MutableList<TransactionInfo> = ArrayList()
+    private var networkChangedReceiver: NetworkChangeReceiver? = null
 
     // region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?, isReady: Boolean) {
@@ -182,6 +187,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
 
         //-Wallet
         LegacyStorageHelper.migrateWallets(this)
+
+        networkChangedReceiver = NetworkChangeReceiver(::networkChange)
+        networkChangedReceiver!!.register(this)
 
         if(intent.getBooleanExtra(SHORTCUT_LAUNCHER,false)){
            //Shortcut launcher
@@ -261,6 +269,50 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }*/
     }
 
+    private fun networkChange(networkAvailable: Boolean) {
+        if (networkAvailable) {
+            checkIsBnsHolder()
+        }
+    }
+
+    private fun checkIsBnsHolder(){
+        val isBnsHolder = TextSecurePreferences.getIsBNSHolder(this)
+        val publicKey = TextSecurePreferences.getLocalNumber(this)
+        if(!isBnsHolder.isNullOrEmpty() && !publicKey.isNullOrEmpty()){
+            verifyBNS(isBnsHolder,publicKey,this) {
+                if (!it) {
+                    TextSecurePreferences.setIsBNSHolder(this, null)
+                    MessagingModuleConfiguration.shared.storage.setIsBnsHolder(publicKey, false)
+                    val currentFragment = getCurrentFragment()
+                    if(currentFragment is HomeFragment) {
+                        currentFragment.updateProfileButton()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun verifyBNS(bnsName: String, publicKey: String?, context: Context, result: (status: Boolean) -> Unit) {
+        // This could be an BNS name
+        MnodeAPI.getBchatID(bnsName).successUi { hexEncodedPublicKey ->
+            if(hexEncodedPublicKey == publicKey){
+                result(true)
+            }else{
+                result(false)
+                Toast.makeText(context, context.resources.getString(R.string.invalid_bns_warning_message), Toast.LENGTH_SHORT).show()
+            }
+        }.failUi { exception ->
+            var message =
+                context.resources.getString(R.string.bns_name_changed_warning_message)
+            exception.localizedMessage?.let {
+                message = context.resources.getString(R.string.bns_name_changed_warning_message)
+                Log.d("Beldex", "BNS exception $it")
+            }
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            result(false)
+        }
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onUpdateProfileEvent(event: ProfilePictureModifiedEvent) {
         if (event.recipient.isLocalNumber) {
@@ -272,6 +324,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             val currentFragment = getCurrentFragment()
             if(currentFragment is HomeFragment) {
                 currentFragment.homeViewModel.tryUpdateChannel()
+                currentFragment.updateAdapter()
             }
         }
     }
@@ -371,14 +424,13 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     override fun callLifeCycleScope(
-            recyclerView: RecyclerView,
-            globalSearchInputLayout: GlobalSearchInputLayout,
-            mmsSmsDatabase: MmsSmsDatabase,
-            globalSearchAdapter: GlobalSearchAdapter,
-            publicKey: String,
-            profileButton: ProfilePictureView,
-            drawerProfileName: TextView,
-            drawerProfileIcon: ProfilePictureView
+        recyclerView: RecyclerView,
+        mmsSmsDatabase: MmsSmsDatabase,
+        globalSearchAdapter: GlobalSearchAdapter,
+        publicKey: String,
+        profileButton: ProfilePictureView,
+        drawerProfileName: TextView,
+        drawerProfileIcon: ProfilePictureView
     ) {
         lifecycleScope.launchWhenStarted {
             launch(Dispatchers.IO) {
@@ -402,11 +454,11 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                 }
             }
             // monitor the global search VM query
-            launch {
-                globalSearchInputLayout.query
-                    .onEach(globalSearchViewModel::postQuery)
-                    .collect()
-            }
+//            launch {
+//                globalSearchInputLayout.query
+//                    .onEach(globalSearchViewModel::postQuery)
+//                    .collect()
+//            }
             // Get group results and display them
             launch {
                 globalSearchViewModel.result.collect { result ->
@@ -478,7 +530,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             .commit()
     }
 
-    private fun replaceFragmentWithTransition(view: View?, newFragment: Fragment, stackName: String?, extras: Bundle?) {
+    private fun replaceFragmentWithTransition(newFragment: Fragment, stackName: String?, extras: Bundle?) {
         if (extras != null) {
             newFragment.arguments = extras
         }
@@ -497,14 +549,14 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         profileButton.publicKey = publicKey
         profileButton.displayName = TextSecurePreferences.getProfileName(this)
         profileButton.recycle()
-        profileButton.update()
+        profileButton.update(TextSecurePreferences.getProfileName(this))
 
         //New Line
         drawerProfileName.text = TextSecurePreferences.getProfileName(this)
         drawerProfileIcon.publicKey = publicKey
         drawerProfileIcon.displayName = TextSecurePreferences.getProfileName(this)
         drawerProfileIcon.recycle()
-        drawerProfileIcon.update()
+        drawerProfileIcon.update(TextSecurePreferences.getProfileName(this))
     }
 
     //Important
@@ -554,28 +606,19 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     private fun backToHome(fragment: HomeFragment?) {
         when {
             !synced && TextSecurePreferences.isWalletActive(this) -> {
-                val dialog: AlertDialog.Builder =
-                    AlertDialog.Builder(this, R.style.BChatAlertDialog_Wallet_Syncing_Exit_Alert)
-                dialog.setTitle(getString(R.string.wallet_syncing_alert_title))
-                dialog.setMessage(getString(R.string.wallet_syncing_alert_message))
-
-                dialog.setPositiveButton(R.string.exit) { _, _ ->
-                    if (CheckOnline.isOnline(this)) {
-                        onDisposeRequest()
-                    }
-                    setBarcodeData(null)
-                    fragment!!.onBackPressed()
-                    finish()
-                }
-                dialog.setNegativeButton(R.string.cancel) { _, _ ->
-                    // Do nothing
-                }
-                val alert: AlertDialog = dialog.create()
-                alert.show()
-                alert.getButton(DialogInterface.BUTTON_NEGATIVE)
-                    .setTextColor(ContextCompat.getColor(this, R.color.text))
-                alert.getButton(DialogInterface.BUTTON_POSITIVE)
-                    .setTextColor(ContextCompat.getColor(this, R.color.alert_ok))
+                val walletSyncDialog = ComposeDialogContainer(
+                        dialogType = DialogType.WalletSyncing,
+                        onConfirm = {
+                            if (CheckOnline.isOnline(this)) {
+                                onDisposeRequest()
+                            }
+                            setBarcodeData(null)
+                            fragment!!.onBackPressed()
+                            finish()
+                        },
+                        onCancel = {}
+                )
+                walletSyncDialog.show(this.supportFragmentManager, ComposeDialogContainer.TAG)
             }
             else -> {
                 if (CheckOnline.isOnline(this)) {
@@ -626,6 +669,8 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             }
             stopWalletService()
         }
+        networkChangedReceiver?.unregister(this)
+        networkChangedReceiver = null
         super.onDestroy()
     }
 
@@ -782,9 +827,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     override val daemonHeight: Long
         get() = mBoundService!!.daemonHeight
 
-    override fun onSendRequest(view: View?) {
+    override fun onSendRequest() {
         if(CheckOnline.isOnline(this)) {
-            replaceFragmentWithTransition(view,SendFragment(),null,null)
+            replaceFragment(SendFragment(),null, extras = null)
+            //replaceFragmentWithTransition(SendFragment(),null,null)
             uri = null // only use uri once
         }else{
             Toast.makeText(this, getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
@@ -809,9 +855,10 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         return getWallet()!!.getTxKey(txId)
     }
 
-    override fun onWalletReceive(view: View?) {
+    override fun onWalletReceive() {
         if(CheckOnline.isOnline(this)) {
-            replaceFragmentWithTransition(view, ReceiveFragment(), null, null)
+            //replaceFragmentWithTransition(ReceiveFragment(), null, null)
+            replaceFragment(ReceiveFragment(),null,null)
         } else {
             Toast.makeText(this, getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show()
         }
@@ -840,8 +887,12 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         return favouriteNodes.toHashSet()
     }
 
-    override fun getOrPopulateFavourites(): MutableSet<NodeInfo> {
-        return viewModel.getOrPopulateFavourites()
+    override fun getOrPopulateFavourites(context: Context): MutableSet<NodeInfo> {
+        return viewModel.getOrPopulateFavourites(context)
+    }
+
+    override fun getOrPopulateFavouritesRemoteNodeList(context: Context, storeNodes: Boolean): MutableSet<NodeInfo> {
+        return viewModel.getOrPopulateFavouritesRemoteNodeList(context, storeNodes)
     }
 
     override fun setFavouriteNodes(nodes: MutableCollection<NodeInfo>?) {
@@ -852,7 +903,16 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         return if(TextSecurePreferences.getDaemon(this)){
             TextSecurePreferences.changeDaemon(this,false)
             val selectedNodeId = sharedPreferenceUtil.getSelectedNodeId()
-            val nodeInfo = NodeInfo.fromString(selectedNodeId)
+            var nodeInfo = node
+            val storedNodes=sharedPreferenceUtil.getStoredNodes().all
+            for (nodeEntry in storedNodes.entries) {
+                if (nodeEntry != null) { // just in case, ignore possible future errors
+                    val nodeId=nodeEntry.value as String
+                    if (nodeId == selectedNodeId) {
+                        nodeInfo = NodeInfo.fromString(selectedNodeId)
+                    }
+                }
+            }
             nodeInfo
         }else {
             node
@@ -916,7 +976,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                         }
                     }
                     if (!synced) { // first sync
-                        onProgress(-2)//onProgress(-1)
+                        onProgress(3f)
                         saveWallet() // save on first sync
                         synced = true
                         //WalletFragment Functionality --
@@ -962,7 +1022,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }
     }
 
-    override fun onProgress(n: Int) {
+    override fun onProgress(n: Float) {
         runOnUiThread {
             try {
                 //WalletFragment Functionality --
@@ -985,7 +1045,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             if (success) {
                 Toast.makeText(
                     this@HomeActivity,
-                    getString(R.string.status_wallet_unloaded),
+                    getString(R.string.wallet_synced_text),
                     Toast.LENGTH_SHORT
                 ).show()
             } else {
@@ -998,26 +1058,26 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }
     }
 
-    override fun onTransactionCreated(tag: String, pendingTransaction: PendingTransaction) {
+    override fun onTransactionCreated(tag: String?, pendingTransaction: PendingTransaction?) {
         try {
             //WalletFragment Functionality --
             val currentFragment = getCurrentFragment()
             runOnUiThread {
-                val status = pendingTransaction.status
+                val status = pendingTransaction!!.status
                 if (status !== PendingTransaction.Status.Status_Ok) {
                     val errorText = pendingTransaction.errorString
                     getWallet()!!.disposePendingTransaction()
                     if(currentFragment is ConversationFragmentV2){
                         currentFragment.onCreateTransactionFailed(errorText)
-                    }else if(currentFragment is SendFragment){
+                    }/*else if(currentFragment is SendFragment){
                         currentFragment.onCreateTransactionFailed(errorText)
-                    }
+                    }*/
                 } else {
                      if(currentFragment is ConversationFragmentV2){
                         currentFragment.onTransactionCreated("txTag", pendingTransaction)
-                    }else if(currentFragment is SendFragment){
+                    }/*else if(currentFragment is SendFragment){
                         currentFragment.onTransactionCreated("txTag", pendingTransaction)
-                    }
+                    }*/
                 }
             }
         } catch (ex: ClassCastException) {
@@ -1036,9 +1096,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             val currentFragment = getCurrentFragment()
             if(currentFragment is ConversationFragmentV2){
                 runOnUiThread { currentFragment.onTransactionSent(txId) }
-            }else if(currentFragment is SendFragment){
+            }/*else if(currentFragment is SendFragment){
                 runOnUiThread { currentFragment.onTransactionSent(txId) }
-            }
+            }*/
         } catch (ex: ClassCastException) {
             // not in spend fragment
             Timber.d(ex.localizedMessage)
@@ -1130,9 +1190,9 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     /// QR scanner callbacks
-    override fun onScan(view: View?) {
+    override fun onScan() {
         if (Helper.getCameraPermission(this)) {
-            replaceFragmentWithTransition(view,ScannerFragment(),null,null)
+            replaceFragmentWithTransition(ScannerFragment(),null,null)
         } else {
             Timber.i("Waiting for permissions")
         }
@@ -1260,11 +1320,11 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         onBackPressed()
     }
 
-    override fun onWalletScan(view: View?) {
+    override fun onWalletScan() {
         if(CheckOnline.isOnline(this)) {
             if (Helper.getCameraPermission(this)) {
                 val extras = Bundle()
-                replaceFragmentWithTransition(view,WalletScannerFragment(), null, extras)
+                replaceFragmentWithTransition(WalletScannerFragment(), null, extras)
             } else {
                 Timber.i("Waiting for permissions")
             }
@@ -1497,12 +1557,12 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
                     setNode(node)
                     if(currentWallet is WalletFragment) {
                         currentWallet.setProgress(getString(R.string.reconnecting))
-                        currentWallet.setProgress(101)
+                        currentWallet.setProgress(2f)
                         invalidateOptionsMenu()
                     }
                 } else {
                     if(currentWallet is WalletFragment) {
-                        currentWallet.setProgress(R.string.failed_connected_to_the_node)
+                        currentWallet.setProgress(getString(R.string.failed_connected_to_the_node))
                     }
                 }
             } else {
@@ -1520,8 +1580,11 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
     }
 
     private fun openWalletSettings() {
-        val intent = Intent(this, WalletSettings::class.java)
-        walletSettingsResultLauncher.launch(intent)
+        Intent(this, WalletSettingComposeActivity::class.java).also {
+            it.putExtra(WalletSettingComposeActivity.extraStartDestination, WalletSettingScreens.MyWalletSettingsScreen.route)
+            walletSettingsResultLauncher.launch(it)
+        }
+
     }
 
     private var walletSettingsResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -1543,7 +1606,7 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
         }
 
         override fun doInBackground(vararg params: Int?): NodeInfo? {
-            val favourites: Set<NodeInfo?> = orPopulateFavourites
+            val favourites: Set<NodeInfo?> = getOrPopulateFavourites(this@HomeActivity)
             var selectedNode: NodeInfo?
             if (params[0] == FIND_BEST) {
                 selectedNode = autoselect(favourites)
@@ -1603,7 +1666,6 @@ class HomeActivity : PassphraseRequiredActionBarActivity(),SeedReminderViewDeleg
             }
         }
     }
-
 
     //SetDataAndType
     override fun passSharedMessageToConversationScreen(thread:Recipient) {

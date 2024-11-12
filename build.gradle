@@ -4,14 +4,14 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:$gradlePluginVersion"
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21'
+        classpath 'com.android.tools.build:gradle:8.2.0'
         classpath "com.google.gms:google-services:$googleServicesVersion"
         classpath files('libs/gradle-witness.jar')
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlinVersion"
         classpath "com.google.gms:google-services:4.3.12"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$daggerVersion"
+        classpath "com.google.firebase:firebase-crashlytics-gradle:2.9.8"
     }
 }
 
@@ -19,30 +19,30 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-//        maven {
-//            url "https://raw.github.com/signalapp/maven/master/photoview/releases/"
-//            content {
-//                includeGroupByRegex "com\\.github\\.chrisbanes.*"
-//            }
-//        }
-//        maven {
-//            url "https://raw.github.com/signalapp/maven/master/shortcutbadger/releases/"
-//            content {
-//                includeGroupByRegex "me\\.leolin.*"
-//            }
-//        }
-//        maven {
-//            url "https://raw.github.com/signalapp/maven/master/circular-progress-button/releases/"
-//            content {
-//                includeGroupByRegex "com\\.github\\.dmytrodanylyk\\.circular-progress-button\\.*"
-//            }
-//        }
-//        maven {
-//            url "https://raw.github.com/signalapp/maven/master/sqlcipher/release/"
-//            content {
-//                includeGroupByRegex "org\\.signal.*"
-//            }
-//        }
+        /*maven {
+            url "https://raw.github.com/signalapp/maven/master/photoview/releases/"
+            content {
+                includeGroupByRegex "com\\.github\\.chrisbanes.*"
+            }
+        }
+        maven {
+            url "https://raw.github.com/signalapp/maven/master/shortcutbadger/releases/"
+            content {
+                includeGroupByRegex "me\\.leolin.*"
+            }
+        }
+        maven {
+            url "https://raw.github.com/signalapp/maven/master/circular-progress-button/releases/"
+            content {
+                includeGroupByRegex "com\\.github\\.dmytrodanylyk\\.circular-progress-button\\.*"
+            }
+        }
+        maven {
+            url "https://raw.github.com/signalapp/maven/master/sqlcipher/release/"
+            content {
+                includeGroupByRegex "org\\.signal.*"
+            }
+        }*/
         maven {
             url "https://repo1.maven.org/maven2/com/goterl/lazysodium-android"
             content {

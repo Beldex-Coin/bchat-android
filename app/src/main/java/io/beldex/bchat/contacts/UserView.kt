@@ -54,9 +54,10 @@ class UserView : LinearLayout {
         val threadID = DatabaseComponent.get(context).threadDatabase().getOrCreateThreadIdFor(user)
         MentionManagerUtilities.populateUserPublicKeyCacheIfNeeded(threadID, context) // FIXME: This is a bad place to do this
         val address = user.address.serialize()
+        unbind()
         binding.profilePictureView.root.glide = glide
         binding.profilePictureView.root.update(user)
-        binding.actionIndicatorImageView.setImageResource(R.drawable.ic_baseline_edit_24)
+        binding.actionIndicatorImageView.setImageResource(R.drawable.ic_baseline_edit_group_name)
         binding.nameTextView.text = if (user.isGroupRecipient) user.name else getUserDisplayName(address)
         when (actionIndicator) {
             ActionIndicator.None -> {
@@ -64,12 +65,13 @@ class UserView : LinearLayout {
             }
             ActionIndicator.Menu -> {
                 binding.actionIndicatorImageView.visibility = View.VISIBLE
-                binding.actionIndicatorImageView.setImageResource(R.drawable.ic_person_remove_from_group)
+                binding.actionIndicatorImageView.setImageResource(R.drawable.ic_block_request_background)
             }
             ActionIndicator.Tick -> {
+                binding.userViewLayout.background = context.getDrawable(R.drawable.contact_list_background)
                 binding.actionIndicatorImageView.visibility = View.VISIBLE
                 binding.actionIndicatorImageView.setImageResource(
-                    if (isSelected) R.drawable.ic_circle_check else R.drawable.ic_circle
+                        if (isSelected) R.drawable.ic_checkedbox else R.drawable.ic_checkbox
                 )
             }
         }
@@ -78,7 +80,7 @@ class UserView : LinearLayout {
     fun toggleCheckbox(isSelected: Boolean = false) {
         binding.actionIndicatorImageView.visibility = View.VISIBLE
         binding.actionIndicatorImageView.setImageResource(
-            if (isSelected) R.drawable.ic_circle_check else R.drawable.ic_circle
+            if (isSelected) R.drawable.ic_checkedbox else R.drawable.ic_checkbox
         )
     }
 

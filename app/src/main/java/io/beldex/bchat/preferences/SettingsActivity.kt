@@ -73,13 +73,12 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
         get() {
             return TextSecurePreferences.getLocalNumber(this)!!
         }
-    private val TAG = "SettingsActivity"
 
+    private val TAG = "SettingsActivity"
     private val onAvatarCropped = registerForActivityResult(CropImageContract()) { result ->
         when {
             result.isSuccessful -> {
                 Log.i(TAG, result.getUriFilePath(this).toString())
-
                 lifecycleScope.launch(Dispatchers.IO) {
                     try {
                         val profilePictureToBeUploaded =
@@ -104,17 +103,14 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             }
         }
     }
-
     private val onPickImage = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ){ result ->
         if (result.resultCode != Activity.RESULT_OK) return@registerForActivityResult
-
         val outputFile = Uri.fromFile(File(cacheDir, "cropped"))
         val inputFile: Uri? = result.data?.data ?: tempFile?.let(Uri::fromFile)
         cropImage(inputFile, outputFile)
     }
-
     private val avatarSelection = AvatarSelection(this, onAvatarCropped, onPickImage)
 
     companion object {
@@ -125,7 +121,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
     private lateinit var animation1: Animation
     private lateinit var animation2: Animation
     private var isFrontOfCardShowing = true
-    private val namePattern = Pattern.compile("[A-Za-z0-9]+")
+    private val namePattern = Pattern.compile("[A-Za-z0-9\\s]+")
     private var shareButtonLastClickTime: Long = 0
 
     private fun getDisplayName(): String =
@@ -229,7 +225,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             publicKey = hexEncodedPublicKey
             displayName = getDisplayName()
             isLarge = true
-            update()
+            update(displayName)
         }
     }
 
@@ -381,7 +377,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
             }
             if (isUpdatingProfilePicture) {
                 binding.profilePictureView.root.recycle() // Clear the cached image before updating
-                binding.profilePictureView.root.update()
+                binding.profilePictureView.root.update(displayName)
             }
             binding.loader.isVisible = false
         }
@@ -582,7 +578,7 @@ class SettingsActivity : PassphraseRequiredActionBarActivity(), Animation.Animat
     }
 
     private fun showSeed() {
-        SeedDialog().show(supportFragmentManager, "Recovery Phrase Dialog")
+        SeedDialog().show(supportFragmentManager, "Recovery Seed Dialog")
     }
 
     private fun clearAllData() {

@@ -11,11 +11,8 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
-import io.beldex.bchat.ApplicationContext;
-import io.beldex.bchat.util.BchatMetaProtocol;
 import com.beldex.libbchat.mnode.MnodeAPI;
 import com.beldex.libbchat.utilities.recipients.Recipient;
-import io.beldex.bchat.util.BchatMetaProtocol;
 import io.beldex.bchat.ApplicationContext;
 import io.beldex.bchat.database.MessagingDatabase;
 import io.beldex.bchat.dependencies.DatabaseComponent;

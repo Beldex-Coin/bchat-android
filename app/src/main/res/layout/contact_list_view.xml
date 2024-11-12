@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bchat_dialog_button_shape"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginTop="8dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/contentView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="@dimen/small_spacing">
+
+        <include layout="@layout/view_profile_picture"
+            android:id="@+id/profilePictureView"
+            android:layout_width="@dimen/medium_profile_picture_size"
+            android:layout_height="@dimen/medium_profile_picture_size" />
+
+        <TextView
+            android:fontFamily="@font/open_sans_medium"
+            android:id="@+id/nameTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/medium_spacing"
+            android:maxLines="1"
+            android:textAlignment="viewStart"
+            android:ellipsize="end"
+            android:textSize="@dimen/small_font_size"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            tools:text="User Name" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        />
+
+</LinearLayout>

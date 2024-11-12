@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 
 import com.annimon.stream.Stream;
 import io.beldex.bchat.ApplicationContext;
-import io.beldex.bchat.ApplicationContext;
 
 import io.beldex.bchat.BuildConfig;
 import com.beldex.libsignal.utilities.Log;

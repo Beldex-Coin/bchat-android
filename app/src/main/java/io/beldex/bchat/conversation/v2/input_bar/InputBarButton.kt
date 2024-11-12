@@ -7,16 +7,20 @@ import android.graphics.PointF
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import android.util.AttributeSet
 import android.view.Gravity
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.annotation.DrawableRes
+import io.beldex.bchat.util.GlowViewUtilities
+import io.beldex.bchat.util.InputBarButtonImageViewContainer
+import io.beldex.bchat.util.InputBarButtonSendImageViewContainer
+import io.beldex.bchat.util.animateSizeChange
+import io.beldex.bchat.util.getColorWithID
+import io.beldex.bchat.util.toPx
 import io.beldex.bchat.R
-import io.beldex.bchat.util.*
-import java.util.*
+import java.util.Date
 
 class InputBarButton : RelativeLayout {
     private val gestureHandler = Handler(Looper.getMainLooper())
@@ -45,12 +49,12 @@ class InputBarButton : RelativeLayout {
         if (hasOpaqueBackground) {
             R.color.input_bar_button_background_opaque
         } else if (isSendButton) {
-            R.color.card_color
+            R.color.button_green
         } else if (isMessageBox){
-            R.color.card_color
+            R.color.input_bar_background
         }
         else {
-            R.color.accent
+            R.color.button_green
             //R.color.input_bar_button_background
         }
     }
@@ -127,13 +131,13 @@ class InputBarButton : RelativeLayout {
     fun getIconID() = iconID
 
     fun expand() {
-        GlowViewUtilities.animateColorChange(context, imageViewContainer, colorID, R.color.accent)
+        GlowViewUtilities.animateColorChange(context, imageViewContainer, colorID, R.color.button_green)
         imageViewContainer.animateSizeChange(R.dimen.input_bar_button_collapsed_size, R.dimen.input_bar_button_expanded_size, animationDuration)
         animateImageViewContainerPositionChange(collapsedImageViewPosition, expandedImageViewPosition)
     }
 
     fun collapse() {
-        GlowViewUtilities.animateColorChange(context, imageViewContainer, R.color.accent, colorID)
+        GlowViewUtilities.animateColorChange(context, imageViewContainer, R.color.button_green, colorID)
         imageViewContainer.animateSizeChange(R.dimen.input_bar_button_expanded_size, R.dimen.input_bar_button_collapsed_size, animationDuration)
         animateImageViewContainerPositionChange(expandedImageViewPosition, collapsedImageViewPosition)
     }

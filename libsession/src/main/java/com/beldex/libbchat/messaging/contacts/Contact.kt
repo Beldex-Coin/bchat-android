@@ -39,6 +39,10 @@ class Contact(val bchatID: String) {
      */
     var beldexAddress: String? = null
     /**
+     * The flag is used to verify the BNS holder
+     */
+    var isBnsHolder = false
+    /**
      * The report issue's BChat ID, set by default.
      */
     private val reportIssueBChatID = BuildConfig.REPORT_ISSUE_ID
@@ -48,7 +52,7 @@ class Contact(val bchatID: String) {
     fun displayName(context: ContactContext): String? {
         if(context != ContactContext.OPEN_GROUP) {
             if (bchatID == reportIssueBChatID) {
-                name="Report Issue"
+                name = "Report Issue"
                 return name
             }
         }

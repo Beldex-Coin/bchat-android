@@ -26,7 +26,6 @@ import android.os.AsyncTask;
 import androidx.core.app.NotificationManagerCompat;
 
 import io.beldex.bchat.ApplicationContext;
-import io.beldex.bchat.ApplicationContext;
 import io.beldex.bchat.database.MessagingDatabase;
 import com.beldex.libsignal.utilities.Log;
 

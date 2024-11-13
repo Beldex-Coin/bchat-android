@@ -2684,7 +2684,6 @@ class ConversationFragmentV2 : Fragment(), InputBarDelegate,
     }
 
     @Deprecated("Deprecated in Java")
-    @Deprecated("Deprecated in Java")
     override fun onPrepareOptionsMenu(menu: Menu) {
         val recipient = viewModel.recipient.value ?: return
         //New Line
